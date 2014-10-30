@@ -2,7 +2,7 @@
 #include "chandler.h"
 #include "shi/ConvFtoI.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -37,7 +37,7 @@ C_Fill::C_Fill() : C_Base()
     Step_ = 0.0f;
     DitherSize_ = 0;
     DitherPattern_ = NULL;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE;
 }
 
 C_Fill::C_Fill(char **stream) : C_Base(stream)
@@ -75,7 +75,7 @@ void C_Fill::SetGradient(long s, long e)
     Start_ = static_cast<short>(s);
     End_ = static_cast<short>(e);
 
-    if (s != e)
+    if (s not_eq e)
         SetFlagBitOn(C_BIT_USEGRADIENT);
     else
     {
@@ -114,10 +114,10 @@ void C_Fill::SetDither(short size, short range)
 {
     short i, j;
 
-    if ((size < 3) || !(range))
+    if ((size < 3) or not (range))
         size = 0;
 
-    if (size != DitherSize_)
+    if (size not_eq DitherSize_)
     {
         if (DitherPattern_)
         {
@@ -154,7 +154,7 @@ void C_Fill::SetDither(short size, short range)
 
 void C_Fill::Cleanup(void)
 {
-    if (DitherPattern_ && DitherSize_)
+    if (DitherPattern_ and DitherSize_)
     {
 #ifdef USE_SH_POOLS
         MemFreePtr(DitherPattern_);
@@ -167,7 +167,7 @@ void C_Fill::Cleanup(void)
 
 void C_Fill::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     F4CSECTIONHANDLE* Leave = UI_Enter(Parent_);
@@ -180,7 +180,7 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
     UI95_RECT s, d;
     float startg;
 
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     d.left = GetX();
@@ -188,7 +188,7 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
     d.right = d.left + GetW();
     d.bottom = d.top + GetH();
 
-    if (!(Flags_ & C_BIT_ABSOLUTE))
+    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
     {
         d.left += Parent_->VX_[GetClient()];
         d.top += Parent_->VY_[GetClient()];
@@ -196,16 +196,16 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
         d.bottom += Parent_->VY_[GetClient()];
     }
 
-    if (!Parent_->ClipToArea(&s, &d, cliprect))
+    if ( not Parent_->ClipToArea(&s, &d, cliprect))
         return;
 
-    if (!(Flags_ & C_BIT_ABSOLUTE))
-        if (!Parent_->ClipToArea(&s, &d, &Parent_->ClientArea_[GetClient()]))
+    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
+        if ( not Parent_->ClipToArea(&s, &d, &Parent_->ClientArea_[GetClient()]))
             return;
 
-    if (Flags_ & C_BIT_USEGRADIENT)
+    if (Flags_ bitand C_BIT_USEGRADIENT)
     {
-        if (Flags_ & C_BIT_TRANSLUCENT)
+        if (Flags_ bitand C_BIT_TRANSLUCENT)
         {
             if (Type_ == C_TYPE_HORIZONTAL)
             {
@@ -335,7 +335,7 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
     }
     else
     {
-        if ((Flags_ & C_BIT_TRANSLUCENT) && (Start_ < 100) && Start_)
+        if ((Flags_ bitand C_BIT_TRANSLUCENT) and (Start_ < 100) and Start_)
         {
             Parent_->BlitTranslucent(surface, Color_, Start_, &d, C_BIT_ABSOLUTE, 0);
         }
@@ -375,7 +375,7 @@ void C_Fill::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CFIL_SETCOLOR:
-            SetColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CFIL_SETGRADIENT:

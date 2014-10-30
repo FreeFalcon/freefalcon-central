@@ -128,12 +128,12 @@ namespace ComSup
 
     inline HRESULT RegisterServer(HINSTANCE hInst)
     {
-        if (!hInst) return E_FAIL;
+        if ( not hInst) return E_FAIL;
 
         HRESULT(__stdcall * pprocDLLRegisterServer)() = (HRESULT(__stdcall *)())
                 GetProcAddress(hInst, "DllRegisterServer");
 
-        if (!pprocDLLRegisterServer) return -2;
+        if ( not pprocDLLRegisterServer) return -2;
 
         return pprocDLLRegisterServer();
     }
@@ -142,7 +142,7 @@ namespace ComSup
     {
         HINSTANCE hInst = LoadLibrary(lpszServername); // retry
 
-        if (!hInst) return E_FAIL;
+        if ( not hInst) return E_FAIL;
 
         HRESULT hr = RegisterServer(hInst);
         FreeLibrary(hInst);
@@ -151,12 +151,12 @@ namespace ComSup
 
     inline HRESULT UnregisterServer(HINSTANCE hInst)
     {
-        if (!hInst) return E_FAIL;
+        if ( not hInst) return E_FAIL;
 
         HRESULT(__stdcall * pprocDLLUnregisterServer)() = (HRESULT(__stdcall *)())
                 GetProcAddress(hInst, "DllUnregisterServer");
 
-        if (!pprocDLLUnregisterServer) return -2;
+        if ( not pprocDLLUnregisterServer) return -2;
 
         return pprocDLLUnregisterServer();
     }
@@ -165,7 +165,7 @@ namespace ComSup
     {
         HINSTANCE hInst = LoadLibrary(lpszServername); // retry
 
-        if (!hInst) return E_FAIL;
+        if ( not hInst) return E_FAIL;
 
         HRESULT hr = UnregisterServer(hInst);
         FreeLibrary(hInst);
@@ -181,7 +181,7 @@ namespace ComSup
         else if (e.ErrorMessage()) strMsg += e.ErrorMessage();
         else strMsg += "Unspecified Error.";
 
-        ::MessageBox(NULL, strMsg.c_str(), "Information", MB_OK | MB_SETFOREGROUND | MB_ICONINFORMATION);
+        ::MessageBox(NULL, strMsg.c_str(), "Information", MB_OK bitor MB_SETFOREGROUND bitor MB_ICONINFORMATION);
     }
 
     // returns an ANSI string from a CLSID or GUID

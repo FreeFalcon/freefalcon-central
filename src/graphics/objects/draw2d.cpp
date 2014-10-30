@@ -6,6 +6,7 @@
 ** History:
 ** 14-Jul-97 (edg)  We go dancing in .....
 */
+#include <cISO646>
 #include "TimeMgr.h"
 #include "TOD.h"
 #include "RenderOW.h"
@@ -208,7 +209,7 @@ TYPES2D gTypeTable[] =
 {
     // Air explosion
     {
-        ANIM_STOP | FADE_START | DO_FIVE_POINTS, // flags
+        ANIM_STOP bitor FADE_START bitor DO_FIVE_POINTS, // flags
         1.0f, // initAlpha
         0.0f, // fadeRate
         1, // texture id sequence
@@ -221,7 +222,7 @@ TYPES2D gTypeTable[] =
     },
     // Small Hit Explosion
     {
-        ANIM_HALF_RATE | ANIM_STOP | DO_FIVE_POINTS, // flags
+        ANIM_HALF_RATE bitor ANIM_STOP bitor DO_FIVE_POINTS, // flags
         1.0f, // initAlpha
         0.0f, // fadeRate
         0, // texture id sequence
@@ -234,7 +235,7 @@ TYPES2D gTypeTable[] =
     },
     // Smoke
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.9f,  // COBRA - RED - a Little More visible: was 1.0f, // initAlpha
         .00005f, // fadeRate
         10,
@@ -260,7 +261,7 @@ TYPES2D gTypeTable[] =
     },
     // Air Explosion 2
     {
-        ANIM_HALF_RATE | ANIM_STOP | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP, // flags
+        ANIM_HALF_RATE bitor ANIM_STOP bitor EXPLODE_SCATTER_PLOT bitor ANIM_NO_CLAMP, // flags
         0.8f, // initAlpha
         0.0f, // fadeRate
         1,
@@ -273,7 +274,7 @@ TYPES2D gTypeTable[] =
     },
     // Smoke Ring
     {
-        FADE_START | ANIM_HOLD_LAST , // flags
+        FADE_START bitor ANIM_HOLD_LAST , // flags
         1.0f, // initAlpha
         0.0008f, // fadeRate
         3,
@@ -286,7 +287,7 @@ TYPES2D gTypeTable[] =
     },
     // Small Chem Explosion
     {
-        ANIM_HALF_RATE | ANIM_STOP | DO_FIVE_POINTS, // flags
+        ANIM_HALF_RATE bitor ANIM_STOP bitor DO_FIVE_POINTS, // flags
         1.0f, // initAlpha
         0.0f, // fadeRate
         6, // texture id sequence
@@ -299,7 +300,7 @@ TYPES2D gTypeTable[] =
     },
     // Chem Explosion
     {
-        ANIM_HALF_RATE | ANIM_STOP | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP, // flags
+        ANIM_HALF_RATE bitor ANIM_STOP bitor EXPLODE_SCATTER_PLOT bitor ANIM_NO_CLAMP, // flags
         0.8f, // initAlpha
         0.0f, // fadeRate
         6,
@@ -312,7 +313,7 @@ TYPES2D gTypeTable[] =
     },
     // Small Debris Explosion
     {
-        ANIM_HALF_RATE | ANIM_STOP | DO_FIVE_POINTS, // flags
+        ANIM_HALF_RATE bitor ANIM_STOP bitor DO_FIVE_POINTS, // flags
         1.0f, // initAlpha
         0.0f, // fadeRate
         4, // texture id sequence
@@ -325,7 +326,7 @@ TYPES2D gTypeTable[] =
     },
     // Debris Explosion
     {
-        ANIM_HALF_RATE | ANIM_STOP | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP, // flags
+        ANIM_HALF_RATE bitor ANIM_STOP bitor EXPLODE_SCATTER_PLOT bitor ANIM_NO_CLAMP, // flags
         0.8f, // initAlpha
         0.0f, // fadeRate
         4,
@@ -338,7 +339,7 @@ TYPES2D gTypeTable[] =
     },
     // Cloud 5
     {
-        ANIM_HOLD_LAST | USES_BB_MATRIX, // flags
+        ANIM_HOLD_LAST bitor USES_BB_MATRIX, // flags
         1.0f, // initAlpha
         0.0f, // fadeRate
         3,
@@ -351,7 +352,7 @@ TYPES2D gTypeTable[] =
     },
     // Dustcloud
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.8f, // initAlpha
         .00005f, // fadeRate
         8,
@@ -364,7 +365,7 @@ TYPES2D gTypeTable[] =
     },
     // Gunsmoke
     {
-        ANIM_LOOP | FADE_START, // flags
+        ANIM_LOOP bitor FADE_START, // flags
         0.8f, // initAlpha
         .0001f, // fadeRate
         6,
@@ -377,7 +378,7 @@ TYPES2D gTypeTable[] =
     },
     // Air Smoke 2
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         1.0f, // initAlpha
         .0002f, // fadeRate
         10,
@@ -390,7 +391,7 @@ TYPES2D gTypeTable[] =
     },
     // Glowing explosion Object Square
     {
-        FADE_START | ALPHA_DAYLIGHT | ALPHA_BRIGHTEN | GLOW_SPHERE, // flags
+        FADE_START bitor ALPHA_DAYLIGHT bitor ALPHA_BRIGHTEN bitor GLOW_SPHERE, // flags
         1.0f, // initAlpha
         .0006f, // fadeRate
         NULL, // texture id sequence
@@ -403,7 +404,7 @@ TYPES2D gTypeTable[] =
     },
     // missile Glowing Object
     {
-        GLOW_SPHERE | GLOW_RAND_POINTS, // flags
+        GLOW_SPHERE bitor GLOW_RAND_POINTS, // flags
         0.9f, // initAlpha
         0.0f, // fadeRate
         NULL, // texture id sequence
@@ -416,7 +417,7 @@ TYPES2D gTypeTable[] =
     },
     // Glowing explosion Object Sphere
     {
-        GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT, // flags
+        GLOW_SPHERE bitor ALPHA_BRIGHTEN bitor ALPHA_DAYLIGHT, // flags
         0.6f, // initAlpha
         0.0f, // fadeRate
         NULL, // texture id sequence
@@ -481,7 +482,7 @@ TYPES2D gTypeTable[] =
     },
     // FIRE
     {
-        RAND_START_FRAME | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        RAND_START_FRAME bitor ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.9f, // initAlpha
         0.0f, // fadeRate
         0,
@@ -520,7 +521,7 @@ TYPES2D gTypeTable[] =
     },
     // Hit Explosion
     {
-        ANIM_HALF_RATE | ANIM_STOP | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP, // flags
+        ANIM_HALF_RATE bitor ANIM_STOP bitor EXPLODE_SCATTER_PLOT bitor ANIM_NO_CLAMP, // flags
         0.8f, // initAlpha
         0.0f, // fadeRate
         0,
@@ -534,7 +535,7 @@ TYPES2D gTypeTable[] =
     // Sparks
     /*
     {
-     ANIM_STOP | USES_BB_MATRIX | ANIM_HALF_RATE, // flags
+     ANIM_STOP bitor USES_BB_MATRIX bitor ANIM_HALF_RATE, // flags
      1.0f, // initAlpha
      0.0f, // fadeRate
      0,
@@ -548,7 +549,7 @@ TYPES2D gTypeTable[] =
     */
     // SPARKS explosion Object Star
     {
-        FADE_START | ALPHA_DAYLIGHT | ALPHA_BRIGHTEN | GLOW_SPHERE | GLOW_RAND_POINTS, // flags
+        FADE_START bitor ALPHA_DAYLIGHT bitor ALPHA_BRIGHTEN bitor GLOW_SPHERE bitor GLOW_RAND_POINTS, // flags
         1.0f, // initAlpha
         .0015f, // fadeRate
         NULL, // texture id sequence
@@ -561,7 +562,7 @@ TYPES2D gTypeTable[] =
     },
     // Artillery Explosion
     {
-        USES_TREE_MATRIX | ANIM_STOP, // flags
+        USES_TREE_MATRIX bitor ANIM_STOP, // flags
         0.8f, // initAlpha
         0.0f, // fadeRate
         3,
@@ -574,7 +575,7 @@ TYPES2D gTypeTable[] =
     },
     // shock ring
     {
-        USES_TREE_MATRIX | FADE_START | ANIM_HOLD_LAST, // flags
+        USES_TREE_MATRIX bitor FADE_START bitor ANIM_HOLD_LAST, // flags
         0.5f, // initAlpha
         0.0007f, // fadeRate
         4,
@@ -587,7 +588,7 @@ TYPES2D gTypeTable[] =
     },
     // long hanging smoke
     {
-        ANIM_HALF_RATE | ANIM_LOOP | FADE_START | DO_FIVE_POINTS, // flags
+        ANIM_HALF_RATE bitor ANIM_LOOP bitor FADE_START bitor DO_FIVE_POINTS, // flags
         1.0f, // initAlpha
         .00001f, // fadeRate
         6,
@@ -600,7 +601,7 @@ TYPES2D gTypeTable[] =
     },
     // Shaped FIRE DEBRIS
     {
-        ANIM_LOOP | TEXTURED_CONE | FADE_START, // flags
+        ANIM_LOOP bitor TEXTURED_CONE bitor FADE_START, // flags
         1.0f, // initAlpha
         0.0001f, // fadeRate
         6,
@@ -614,7 +615,7 @@ TYPES2D gTypeTable[] =
 
     // Water CLOUD
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.6f, // initAlpha
         .0001f, // fadeRate
         7,
@@ -627,7 +628,7 @@ TYPES2D gTypeTable[] =
     },
     // DARK DEBRIS
     {
-        GOURAUD_TRI | GLOW_RAND_POINTS,  // flags
+        GOURAUD_TRI bitor GLOW_RAND_POINTS,  // flags
         1.0f, // initAlpha
         0.0f, // fadeRate
         NULL, // texture id sequence
@@ -640,7 +641,7 @@ TYPES2D gTypeTable[] =
     },
     // FIRE DEBRIS
     {
-        GOURAUD_TRI | GLOW_RAND_POINTS,  // flags
+        GOURAUD_TRI bitor GLOW_RAND_POINTS,  // flags
         1.0f, // initAlpha
         0.0f, // fadeRate
         NULL, // texture id sequence
@@ -653,7 +654,7 @@ TYPES2D gTypeTable[] =
     },
     // LIGHT DEBRIS
     {
-        GOURAUD_TRI | GLOW_RAND_POINTS,  // flags
+        GOURAUD_TRI bitor GLOW_RAND_POINTS,  // flags
         1.0f, // initAlpha
         0.0f, // fadeRate
         NULL, // texture id sequence
@@ -666,7 +667,7 @@ TYPES2D gTypeTable[] =
     },
     // Glowing explosion Object Sphere
     {
-        GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT, // flags
+        GLOW_SPHERE bitor ALPHA_BRIGHTEN bitor ALPHA_DAYLIGHT, // flags
         0.8f, // initAlpha
         0.0009f, // fadeRate
         NULL, // texture id sequence
@@ -679,7 +680,7 @@ TYPES2D gTypeTable[] =
     },
     // shock ring -- small
     {
-        USES_TREE_MATRIX | FADE_START | ANIM_HOLD_LAST, // flags
+        USES_TREE_MATRIX bitor FADE_START bitor ANIM_HOLD_LAST, // flags
         0.6f, // initAlpha
         0.0007f, // fadeRate
         4,
@@ -692,7 +693,7 @@ TYPES2D gTypeTable[] =
     },
     // fast fading cloud
     {
-        ANIM_HALF_RATE | ANIM_LOOP | FADE_START | DO_FIVE_POINTS, // flags
+        ANIM_HALF_RATE bitor ANIM_LOOP bitor FADE_START bitor DO_FIVE_POINTS, // flags
         1.0f, // initAlpha
         .0005f, // fadeRate
         6,
@@ -705,7 +706,7 @@ TYPES2D gTypeTable[] =
     },
     // long hanging smoke 2
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.5f, // initAlpha
         .000015f, // fadeRate
         6,
@@ -718,7 +719,7 @@ TYPES2D gTypeTable[] =
     },
     // FLAME
     {
-        ANIM_LOOP | DO_FIVE_POINTS, // flags
+        ANIM_LOOP bitor DO_FIVE_POINTS, // flags
         0.7f, // initAlpha
         0.0f, // fadeRate
         4,
@@ -731,7 +732,7 @@ TYPES2D gTypeTable[] =
     },
     // FIRE EXPANDING
     {
-        FADE_START | RAND_START_FRAME | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        FADE_START bitor RAND_START_FRAME bitor ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.6f, // initAlpha
         .00045f, // fadeRate
         0,
@@ -744,7 +745,7 @@ TYPES2D gTypeTable[] =
     },
     // Dustcloud
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.4f, // initAlpha
         .00004f, // fadeRate
         8,
@@ -757,7 +758,7 @@ TYPES2D gTypeTable[] =
     },
     // fire hot
     {
-        ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.7f, // initAlpha
         .0009f, // fadeRate
         0,
@@ -770,7 +771,7 @@ TYPES2D gTypeTable[] =
     },
     // fire med
     {
-        ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.6f, // initAlpha
         .0009f, // fadeRate
         2,
@@ -783,7 +784,7 @@ TYPES2D gTypeTable[] =
     },
     // fire cool
     {
-        ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.4f, // initAlpha
         .0009f, // fadeRate
         4,
@@ -796,7 +797,7 @@ TYPES2D gTypeTable[] =
     },
     // fire 1
     {
-        FADE_LAST | ANIM_LOOP | SEQ_SCATTER_ANIM | SMOKE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        FADE_LAST bitor ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor SMOKE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         1.0f, // initAlpha
         0.0001f, // fadeRate
         0,
@@ -809,7 +810,7 @@ TYPES2D gTypeTable[] =
     },
     // fire 2
     {
-        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        FADE_START bitor ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.6f, // initAlpha
         0.0001f, // fadeRate
         0,
@@ -822,7 +823,7 @@ TYPES2D gTypeTable[] =
     },
     // fire 3
     {
-        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        FADE_START bitor ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.4f, // initAlpha
         0.0001f, // fadeRate
         2,
@@ -835,7 +836,7 @@ TYPES2D gTypeTable[] =
     },
     // fire 4
     {
-        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | SMOKE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        FADE_START bitor ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor SMOKE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.9f, // initAlpha
         0.00007f, // fadeRate
         0,
@@ -848,7 +849,7 @@ TYPES2D gTypeTable[] =
     },
     // fire 5
     {
-        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        FADE_START bitor ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.9f, // initAlpha
         0.00007f, // fadeRate
         0,
@@ -861,7 +862,7 @@ TYPES2D gTypeTable[] =
     },
     // fire 6
     {
-        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        FADE_START bitor ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.8f, // initAlpha
         0.0001f, // fadeRate
         0,
@@ -874,7 +875,7 @@ TYPES2D gTypeTable[] =
     },
     // Fire Smoke
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.9f, // COBRA - RED - a Little More visible: was 0.8f, // initAlpha
         .00005f, // fadeRate
         6,
@@ -887,7 +888,7 @@ TYPES2D gTypeTable[] =
     },
     // Trail Smoke
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         1.0f, // initAlpha
         .0002f, // fadeRate
         10,
@@ -900,7 +901,7 @@ TYPES2D gTypeTable[] =
     },
     // Trail Dust
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.5f, // COBRA - RED - a Little Less visible: was 0.8f, // initAlpha
         .0002f, // fadeRate
         8,
@@ -913,7 +914,7 @@ TYPES2D gTypeTable[] =
     },
     // fire 7
     {
-        ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.15f, // initAlpha
         0.0001f, // fadeRate
         6,
@@ -926,7 +927,7 @@ TYPES2D gTypeTable[] =
     },
     // Blue Cloud
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.6f, // initAlpha
         .0003f, // fadeRate
         9,
@@ -939,7 +940,7 @@ TYPES2D gTypeTable[] =
     },
     // STEAM CLOUD
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.8f, // initAlpha
         .00005f, // fadeRate
         7,
@@ -952,7 +953,7 @@ TYPES2D gTypeTable[] =
     },
     // Ground Flash
     {
-        GROUND_GLOW | GLOW_RAND_POINTS | GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT, // flags
+        GROUND_GLOW bitor GLOW_RAND_POINTS bitor GLOW_SPHERE bitor ALPHA_BRIGHTEN bitor ALPHA_DAYLIGHT, // flags
         0.4f, // initAlpha
         0.0005f, // fadeRate
         NULL, // texture id sequence
@@ -965,7 +966,7 @@ TYPES2D gTypeTable[] =
     },
     // Ground Glow
     {
-        GROUND_GLOW | GLOW_RAND_POINTS | GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT, // flags
+        GROUND_GLOW bitor GLOW_RAND_POINTS bitor GLOW_SPHERE bitor ALPHA_BRIGHTEN bitor ALPHA_DAYLIGHT, // flags
         0.2f, // initAlpha
         0.0f, // fadeRate
         NULL, // texture id sequence
@@ -978,7 +979,7 @@ TYPES2D gTypeTable[] =
     },
     // Missile Ground Glow
     {
-        GROUND_GLOW | GLOW_RAND_POINTS | GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT, // flags
+        GROUND_GLOW bitor GLOW_RAND_POINTS bitor GLOW_SPHERE bitor ALPHA_BRIGHTEN bitor ALPHA_DAYLIGHT, // flags
         0.2f, // initAlpha
         0.0f, // fadeRate
         NULL, // texture id sequence
@@ -991,7 +992,7 @@ TYPES2D gTypeTable[] =
     },
     // Big Smoke 1
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         1.0f, // initAlpha
         .00005f, // fadeRate
         10,
@@ -1004,7 +1005,7 @@ TYPES2D gTypeTable[] =
     },
     // Big Smoke 2
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         1.0f, // initAlpha
         .00005f, // fadeRate
         6,
@@ -1017,7 +1018,7 @@ TYPES2D gTypeTable[] =
     },
     // Big Dust 1
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         1.0f, // initAlpha
         .00006f, // fadeRate
         8,
@@ -1030,7 +1031,7 @@ TYPES2D gTypeTable[] =
     },
     // Incendiary Explosion
     {
-        FADE_START | ANIM_LOOP | ANIM_HALF_RATE | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP, // flags
+        FADE_START bitor ANIM_LOOP bitor ANIM_HALF_RATE bitor EXPLODE_SCATTER_PLOT bitor ANIM_NO_CLAMP, // flags
         1.0f, // initAlpha
         0.0001f, // fadeRate
         1,
@@ -1043,7 +1044,7 @@ TYPES2D gTypeTable[] =
     },
     // Water Wake
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.6f, // initAlpha
         0.00001f, // fadeRate
         7, // texid
@@ -1068,7 +1069,7 @@ Drawable2D::Drawable2D(int type2d, float scale, Tpoint *p)
     : DrawableObject(scale)
 {
     // sanity check
-    ShiAssert(type2d < DRAW2D_MAXTYPES && type2d >= 0);
+    ShiAssert(type2d < DRAW2D_MAXTYPES and type2d >= 0);
 
     // save type
     type = type2d;
@@ -1081,7 +1082,7 @@ Drawable2D::Drawable2D(int type2d, float scale, Tpoint *p)
     curSFrame = 0;
     curBFrame = 0;
 
-    if (typeData.flags & RAND_START_FRAME)
+    if (typeData.flags bitand RAND_START_FRAME)
         startSFrame = rand() % typeData.numGlowVerts;
     else
         startSFrame = 0;
@@ -1124,7 +1125,7 @@ Drawable2D::Drawable2D(int type2d, float scale, Tpoint *p, Trotation *rot)
     type = type2d;
 
     // sanity check
-    ShiAssert(type2d < DRAW2D_MAXTYPES && type2d >= 0);
+    ShiAssert(type2d < DRAW2D_MAXTYPES and type2d >= 0);
 
     // get typeData ptr
     typeData = gTypeTable[ type2d ];
@@ -1135,7 +1136,7 @@ Drawable2D::Drawable2D(int type2d, float scale, Tpoint *p, Trotation *rot)
     curSFrame = 0;
     curBFrame = 0;
 
-    if (typeData.flags & RAND_START_FRAME)
+    if (typeData.flags bitand RAND_START_FRAME)
         startSFrame = rand() % typeData.numGlowVerts;
     else
         startSFrame = 0;
@@ -1185,7 +1186,7 @@ Drawable2D::Drawable2D(int type2d, float scale, Tpoint *p, int nVerts, Tpoint *v
     type = type2d;
 
     // sanity check
-    ShiAssert(type2d < DRAW2D_MAXTYPES && type2d >= 0);
+    ShiAssert(type2d < DRAW2D_MAXTYPES and type2d >= 0);
 
     // at the moment we only allow 4 verts
     ShiAssert(nVerts == 4);
@@ -1198,7 +1199,7 @@ Drawable2D::Drawable2D(int type2d, float scale, Tpoint *p, int nVerts, Tpoint *v
     curSFrame = 0;
     curBFrame = 0;
 
-    if (typeData.flags & RAND_START_FRAME)
+    if (typeData.flags bitand RAND_START_FRAME)
         startSFrame = rand() % typeData.numGlowVerts;
     else
         startSFrame = 0;
@@ -1280,7 +1281,7 @@ float Drawable2D::GetAlphaTimeToLive(void)
     if (typeData.fadeRate == 0.0f)
         return 0.0f;
 
-    typeData.fadeRate *= (1.0f + (float)((rand() & 0x07) - 4) / 10.0f);
+    typeData.fadeRate *= (1.0f + (float)((rand() bitand 0x07) - 4) / 10.0f);
 
     rate = initAlpha / (1000.0f * typeData.fadeRate);
 
@@ -1329,14 +1330,14 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
 
 
     // special case of object
-    if (typeData.flags & GLOW_SPHERE)
+    if (typeData.flags bitand GLOW_SPHERE)
     {
         DrawGlowSphere(renderer, LOD);
         return;
     }
 
     // special case of object
-    if (typeData.flags & GOURAUD_TRI)
+    if (typeData.flags bitand GOURAUD_TRI)
     {
         DrawGouraudTri(renderer, LOD);
         return;
@@ -1361,7 +1362,7 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
     v3.csZ = 0.0F;
 
     // see if we should do 5 points for billboard
-    if (typeData.flags & DO_FIVE_POINTS)
+    if (typeData.flags bitand DO_FIVE_POINTS)
     {
         float scaleZ;
 
@@ -1399,7 +1400,7 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
         return;
 
     //  get the texture....
-    if (typeData.flags & ALPHA_PER_TEXEL)
+    if (typeData.flags bitand ALPHA_PER_TEXEL)
     {
         if (curFrame < 0)
         {
@@ -1409,7 +1410,7 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
             else
                 expandStartTime = now;
 
-            if (typeData.flags & FADE_START)
+            if (typeData.flags bitand FADE_START)
             {
                 if (explicitStartTime == TRUE)
                     alphaStartTime = startTime;
@@ -1453,7 +1454,7 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
 
             curFrame = firstFrame;
 
-            if (typeData.flags & FADE_START)
+            if (typeData.flags bitand FADE_START)
             {
                 if (explicitStartTime == TRUE)
                     alphaStartTime = startTime;
@@ -1475,11 +1476,11 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
         // reached the end? and should we hold it?
         if (curFrame == typeData.numTextures)
         {
-            if (typeData.flags & ANIM_HOLD_LAST)
+            if (typeData.flags bitand ANIM_HOLD_LAST)
             {
                 curFrame--;
             }
-            else if (typeData.flags & ANIM_NO_CLAMP)
+            else if (typeData.flags bitand ANIM_NO_CLAMP)
             {
                 // do nothing
             }
@@ -1517,8 +1518,8 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
         return;
 
 
-    // sanity check since time can now go backwards!
-    if (!(typeData.flags & ANIM_NO_CLAMP))
+    // sanity check since time can now go backwards
+    if ( not (typeData.flags bitand ANIM_NO_CLAMP))
     {
         if (curFrame >= typeData.numTextures)
         {
@@ -1530,9 +1531,9 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
         }
     }
 
-    if (typeData.flags & (FIRE_SCATTER_PLOT | SMOKE_SCATTER_PLOT | EXPLODE_SCATTER_PLOT))
+    if (typeData.flags bitand (FIRE_SCATTER_PLOT bitor SMOKE_SCATTER_PLOT bitor EXPLODE_SCATTER_PLOT))
     {
-        if (typeData.flags & ALPHA_PER_TEXEL)
+        if (typeData.flags bitand ALPHA_PER_TEXEL)
             APLScatterPlot(renderer);
         else
             ScatterPlot(renderer);
@@ -1540,7 +1541,7 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
         return;
     }
 
-    if (typeData.flags & (TEXTURED_CONE))
+    if (typeData.flags bitand (TEXTURED_CONE))
     {
         DrawTexturedCone(renderer, LOD);
         return;
@@ -1589,7 +1590,7 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
 
         // immediately cull any non-oriented billboards
         // that are behind near clip
-        if (hasOrientation == FALSE && v0.csZ < 1.0f)
+        if (hasOrientation == FALSE and v0.csZ < 1.0f)
             return;
 
         ws.x = position.x + dl.x + du.x;
@@ -1608,7 +1609,7 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
         renderer->TransformPoint(&ws,  &v3);
 
 
-        if (typeData.flags & ALPHA_PER_TEXEL)
+        if (typeData.flags bitand ALPHA_PER_TEXEL)
         {
             v1.u = 0.0f;
             v1.v = 0.0f;
@@ -1654,7 +1655,7 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
 
 
         // otay.  now we xform depending on the matrix flag specified
-        if (typeData.flags & USES_BB_MATRIX)
+        if (typeData.flags bitand USES_BB_MATRIX)
         {
             // get the position of this object in view space
             renderer->TransformPointToView(&position,  &viewLoc);
@@ -1675,7 +1676,7 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
             os.z = oVerts[3].z * scale2d * realRadius;
             renderer->TransformBillboardPoint(&os,  &viewLoc, &v3);
         }
-        else if (typeData.flags & USES_TREE_MATRIX)
+        else if (typeData.flags bitand USES_TREE_MATRIX)
         {
             // get the position of this object in view space
             renderer->TransformPointToView(&position,  &viewLoc);
@@ -1732,16 +1733,16 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
 
     // if( renderer->GetAlphaMode() )
     // {
-    if (!sGreenMode)  //JAM - FIXME
+    if ( not sGreenMode)  //JAM - FIXME
     {
-        if (typeData.flags & USES_TREE_MATRIX)
+        if (typeData.flags bitand USES_TREE_MATRIX)
             renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD_PERSPECTIVE);
         else
             renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD);
     }
     else
     {
-        if (typeData.flags & USES_TREE_MATRIX)
+        if (typeData.flags bitand USES_TREE_MATRIX)
             renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD_PERSPECTIVE);
         else
             renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD);
@@ -1752,13 +1753,13 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
      {
      doFivePoints = FALSE;
 
-     if(typeData.flags & USES_TREE_MATRIX)
+     if(typeData.flags bitand USES_TREE_MATRIX)
      renderer->context.RestoreState(STATE_ALPHA_TEXTURE_PERSPECTIVE);
      else
      renderer->context.RestoreState(STATE_ALPHA_TEXTURE);
      }
     */
-    if (!sGreenMode)  //JAM - FIXME
+    if ( not sGreenMode)  //JAM - FIXME
     {
         if (renderer->GetFilteringMode())
         {
@@ -1800,7 +1801,7 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
 
         // if this type uses 5 points and its scaled to not at the moment,
         // adjust alpha so that it appears more alpha'd
-        if (typeData.flags & DO_FIVE_POINTS)
+        if (typeData.flags bitand DO_FIVE_POINTS)
         {
             v0.a = v1.a = alpha * 0.65f;
             v2.a = v3.a = alpha * 0.65f;
@@ -1844,30 +1845,30 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
 
     for (i = 0; i < NUM_TEX_SHEETS; i++)
     {
-        if (i >= 0 && i < NUM_TEXTURES_USED || i >= 15 && i < 15 + NUM_TEXTURES_USED)
+        if (i >= 0 and i < NUM_TEXTURES_USED or i >= 15 and i < 15 + NUM_TEXTURES_USED)
         {
             sprintf(texfile, "bom00%02d.gif", i + 1);
 
             // it looks like the way we share a palette is to set the texture
             // palette prior to LoadAndCreate
-            if (i > 0 && i < NUM_TEXTURES_USED)
+            if (i > 0 and i < NUM_TEXTURES_USED)
             {
                 gGlobTextures[i].SetPalette(gGlobTextures[0].GetPalette());
             }
-            else if (i > 15 && i < 15 + NUM_TEXTURES_USED)
+            else if (i > 15 and i < 15 + NUM_TEXTURES_USED)
             {
                 gGlobTextures[i].SetPalette(gGlobTextures[15].GetPalette());
             }
 
             if (i == 0)
             {
-                gGlobTextures[0].LoadAndCreate(texfile, MPR_TI_CHROMAKEY | MPR_TI_PALETTE | MPR_TI_ALPHA);
+                gGlobTextures[0].LoadAndCreate(texfile, MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
                 Palette *globPal = gGlobTextures[0].GetPalette();
 
                 for (j = 0; j < 256; j++)
                 {
                     intalp = (globPal->paletteData[j] >> 24);
-                    globPal->paletteData[j] &= 0x00ffffff;
+                    globPal->paletteData[j] and_eq 0x00ffffff;
 
                     if (j == 0)
                         continue;
@@ -1875,23 +1876,23 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
                     alp = 255.0f * 0.5f +  255.0f * 0.5f * NRANDPOS;
                     intalp = FloatToInt32(alp);
 
-                    r = (globPal->paletteData[j] & 0x000000ff);
-                    g = (globPal->paletteData[j] & 0x0000ff00) >> 8;
-                    b = (globPal->paletteData[j] & 0x00ff0000) >> 16;
+                    r = (globPal->paletteData[j] bitand 0x000000ff);
+                    g = (globPal->paletteData[j] bitand 0x0000ff00) >> 8;
+                    b = (globPal->paletteData[j] bitand 0x00ff0000) >> 16;
 
                     intalp = max((r + b + g) / 3, 120);
-                    globPal->paletteData[j] |= (intalp << 24);
+                    globPal->paletteData[j] or_eq (intalp << 24);
                 }
 
                 globPal->UpdateMPR(globPal->paletteData);
             }
             else if (i < NUM_TEXTURES_USED)
             {
-                gGlobTextures[i].LoadAndCreate(texfile, MPR_TI_CHROMAKEY | MPR_TI_PALETTE | MPR_TI_ALPHA);
+                gGlobTextures[i].LoadAndCreate(texfile, MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
             }
             else
             {
-                gGlobTextures[i].LoadAndCreate(texfile, MPR_TI_CHROMAKEY | MPR_TI_PALETTE);
+                gGlobTextures[i].LoadAndCreate(texfile, MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE);
             }
         }
     }
@@ -1905,12 +1906,12 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
             {
                 gFireScatterPoints[i][j].x = (float)((float)rand() / (float)RAND_MAX);
 
-                if (rand() & 1)
+                if (rand() bitand 1)
                     gFireScatterPoints[i][j].x = -gFireScatterPoints[i][j].x;
 
                 gFireScatterPoints[i][j].y = (float)((float)rand() / (float)RAND_MAX);
 
-                if (rand() & 1)
+                if (rand() bitand 1)
                     gFireScatterPoints[i][j].y = -gFireScatterPoints[i][j].y;
 
                 gFireScatterPoints[i][j].z = 0.3f + (float)((float)rand() / (float)RAND_MAX) * 0.7f;
@@ -1939,10 +1940,10 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
      if ( i == 0 )
      {
      gSmokeScatterPoints[i][j].x = (float)((float)rand()/(float)RAND_MAX);
-     if ( rand() & 1 )
+     if ( rand() bitand 1 )
      gSmokeScatterPoints[i][j].x = -gSmokeScatterPoints[i][j].x;
      gSmokeScatterPoints[i][j].y = (float)((float)rand()/(float)RAND_MAX);
-     if ( rand() & 1 )
+     if ( rand() bitand 1 )
      gSmokeScatterPoints[i][j].y = -gSmokeScatterPoints[i][j].y;
      gSmokeScatterPoints[i][j].z = (float)((float)rand()/(float)RAND_MAX) * 0.3f + 0.3f;
      continue;
@@ -1959,23 +1960,23 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
      {
      if ( i == 0 )
      {
-     if ( j & 1 )
+     if ( j bitand 1 )
      {
      gFireScatterPoints[i][j].x = (float)((float)rand()/(float)RAND_MAX);
-     if ( rand() & 1 )
+     if ( rand() bitand 1 )
      gFireScatterPoints[i][j].x = -gFireScatterPoints[i][j].x;
      gFireScatterPoints[i][j].y = (float)((float)rand()/(float)RAND_MAX);
-     if ( rand() & 1 )
+     if ( rand() bitand 1 )
      gFireScatterPoints[i][j].y = -gFireScatterPoints[i][j].y;
      gFireScatterPoints[i][j].z = 0.9f + (float)((float)rand()/(float)RAND_MAX) * 0.3f;
      }
      else
      {
      gFireScatterPoints[i][j].x = (float)((float)rand()/(float)RAND_MAX);
-     if ( rand() & 1 )
+     if ( rand() bitand 1 )
      gFireScatterPoints[i][j].x = -gFireScatterPoints[i][j].x;
      gFireScatterPoints[i][j].y = (float)((float)rand()/(float)RAND_MAX);
-     if ( rand() & 1 )
+     if ( rand() bitand 1 )
      gFireScatterPoints[i][j].y = -gFireScatterPoints[i][j].y;
      gFireScatterPoints[i][j].z = 0.3f + (float)((float)rand()/(float)RAND_MAX) * 0.3f;
      }
@@ -1983,7 +1984,7 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
      continue;
      }
 
-     if ( j & 1 )
+     if ( j bitand 1 )
      {
      gFireScatterPoints[i][j].x = gFireScatterPoints[i-1][j].x;
      gFireScatterPoints[i][j].y = gFireScatterPoints[i-1][j].y + 0.2f;
@@ -2026,12 +2027,12 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
                 {
                     gSmokeScatterPoints[i][j].x = (float)((float)rand() / (float)RAND_MAX) * 0.3f + 0.7f;
 
-                    if (rand() & 1)
+                    if (rand() bitand 1)
                         gSmokeScatterPoints[i][j].x = -gSmokeScatterPoints[i][j].x;
 
                     gSmokeScatterPoints[i][j].y = (float)((float)rand() / (float)RAND_MAX) * 0.3f + 0.7f;
 
-                    if (rand() & 1)
+                    if (rand() bitand 1)
                         gSmokeScatterPoints[i][j].y = -gSmokeScatterPoints[i][j].y;
 
                     gSmokeScatterPoints[i][j].z = (float)((float)rand() / (float)RAND_MAX) * 0.3f + 0.3f;
@@ -2073,12 +2074,12 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
 
             gExplodeScatterPoints[i][j].x = (float)((float)rand() / (float)RAND_MAX);
 
-            if (rand() & 1)
+            if (rand() bitand 1)
                 gExplodeScatterPoints[i][j].x = -gExplodeScatterPoints[i][j].x;
 
             gExplodeScatterPoints[i][j].y = (float)((float)rand() / (float)RAND_MAX);
 
-            if (rand() & 1)
+            if (rand() bitand 1)
                 gExplodeScatterPoints[i][j].y = -gExplodeScatterPoints[i][j].y;
 
             gExplodeScatterPoints[i][j].z = (float)((float)rand() / (float)RAND_MAX) * 0.3f + 0.3f;
@@ -2127,7 +2128,7 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
     // create star by scaling every other circle vert
     for (i = 0; i < numGlowCircleVerts; i++)
     {
-        if (i & 1)
+        if (i bitand 1)
             radius = 0.3f;
         else
             radius = 3.0f;
@@ -2139,13 +2140,13 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
 
 
     // Load our normal textures
-    gAplTextures[0].LoadAndCreate("sfx01.APL", MPR_TI_CHROMAKEY | MPR_TI_PALETTE);
+    gAplTextures[0].LoadAndCreate("sfx01.APL", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE);
     Palette *aplPal0 = gAplTextures[0].GetPalette();
 
     for (j = 0; j < 256; j++)
     {
         intalp = (aplPal0->paletteData[j] >> 24);
-        aplPal0->paletteData[j] &= 0x00ffffff;
+        aplPal0->paletteData[j] and_eq 0x00ffffff;
 
         if (j == 0)
         {
@@ -2155,7 +2156,7 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
         alp = (float)intalp;
         alp = alp * 0.5f + alp * 0.5f * PRANDFloat();
         intalp = FloatToInt32(alp);
-        aplPal0->paletteData[j] |= (intalp << 24);
+        aplPal0->paletteData[j] or_eq (intalp << 24);
     }
 
     aplPal0->UpdateMPR(aplPal0->paletteData);
@@ -2166,13 +2167,13 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
 
         // temp comment
         // gAplTextures[i].palette = gAplTextures[0].palette;
-        gAplTextures[i].LoadAndCreate(texfile, MPR_TI_CHROMAKEY | MPR_TI_PALETTE);
+        gAplTextures[i].LoadAndCreate(texfile, MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE);
         Palette *aplPalI = gAplTextures[i].GetPalette();
 
         for (j = 0; j < 256; j++)
         {
             intalp = (aplPalI->paletteData[j] >> 24);
-            aplPalI->paletteData[j] &= 0x00ffffff;
+            aplPalI->paletteData[j] and_eq 0x00ffffff;
 
             if (j == 0)
                 continue;
@@ -2187,7 +2188,7 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
                 alp = alp * 0.8f + alp * 0.2f * PRANDFloat();
 
             intalp = FloatToInt32(alp);
-            aplPalI->paletteData[j] |= (intalp << 24);
+            aplPalI->paletteData[j] or_eq (intalp << 24);
         }
 
         aplPalI->UpdateMPR(aplPalI->paletteData);
@@ -2195,13 +2196,13 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
     }
 
     // Load our green textures
-    gAplTexturesGreen[0].LoadAndCreate("sfxg01.GIF", MPR_TI_CHROMAKEY | MPR_TI_PALETTE);
+    gAplTexturesGreen[0].LoadAndCreate("sfxg01.GIF", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE);
 
     for (i = 1; i < NUM_APL_TEXTURES; i++)
     {
         sprintf(texfile, "sfxg%02d.GIF", i + 1);
         gAplTexturesGreen[i].SetPalette(gAplTexturesGreen[0].GetPalette());
-        gAplTexturesGreen[i].LoadAndCreate(texfile, MPR_TI_CHROMAKEY | MPR_TI_PALETTE);
+        gAplTexturesGreen[i].LoadAndCreate(texfile, MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE);
     }
 
     // Initialize the lighting conditions and register for future time of day updates
@@ -2222,7 +2223,7 @@ void Drawable2D::ReleaseTexturesOnDevice(DXContext *rc)
     // release sheets
     for (i = 0; i < NUM_TEX_SHEETS; i++)
     {
-        if (i >= 0 && i < NUM_TEXTURES_USED || i >= 15 && i < 15 + NUM_TEXTURES_USED)
+        if (i >= 0 and i < NUM_TEXTURES_USED or i >= 15 and i < 15 + NUM_TEXTURES_USED)
         {
             gGlobTextures[i].FreeAll();
         }
@@ -2302,7 +2303,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
     if (realRadius <= 0.0f)
         return;
 
-    if (typeData.flags & ALPHA_DAYLIGHT)
+    if (typeData.flags bitand ALPHA_DAYLIGHT)
     {
 
         alpha = initAlpha - ((float)(now - alphaStartTime)) * typeData.fadeRate;
@@ -2313,7 +2314,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
     }
     else
     {
-        // if ( !renderer->GetAlphaMode() )
+        // if ( not renderer->GetAlphaMode() )
         // return;
 
         alpha = initAlpha * (1.0f - lightLevel * 0.5f) - ((float)(now - alphaStartTime)) * typeData.fadeRate;
@@ -2345,7 +2346,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
     {
         v0.a = alpha;
 
-        if (type == DRAW2D_SPARKS || type == DRAW2D_EXPLSTAR_GLOW)
+        if (type == DRAW2D_SPARKS or type == DRAW2D_EXPLSTAR_GLOW)
         {
             v0.r = 1.0f;
             v0.g = 1.0f;
@@ -2353,7 +2354,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
             v0.a -= alpha * NRANDPOS * 0.9f;
 
         }
-        else if ((typeData.flags & GROUND_GLOW) && type != DRAW2D_MISSILE_GROUND_GLOW)
+        else if ((typeData.flags bitand GROUND_GLOW) and type not_eq DRAW2D_MISSILE_GROUND_GLOW)
         {
             v0.r = 1.0f;
             v0.g = 0.3f + NRANDPOS * 0.5f;
@@ -2367,7 +2368,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
         }
 
 
-        if (type == DRAW2D_SPARKS || type == DRAW2D_EXPLSTAR_GLOW)
+        if (type == DRAW2D_SPARKS or type == DRAW2D_EXPLSTAR_GLOW)
         {
             v1.r = 1.0f;
             v1.g = 1.0f;
@@ -2379,7 +2380,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
             v2.b = 0.2f + NRANDPOS * 0.2f;
             v2.a = 0.0f;
         }
-        else if (typeData.flags & GROUND_GLOW)
+        else if (typeData.flags bitand GROUND_GLOW)
         {
             v1.r = 0.1f + NRANDPOS * 0.8f;
             v1.b = 0.0f;
@@ -2391,7 +2392,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
             v2.g = 0.1f + NRANDPOS * 0.8f;
             v2.a = 0.0f;
         }
-        else if (typeData.flags & ALPHA_BRIGHTEN)
+        else if (typeData.flags bitand ALPHA_BRIGHTEN)
         {
             v1.r = 0.1f + NRANDPOS * 0.8f;
             v1.g = 0.0f;
@@ -2422,7 +2423,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
     renderer->context.RestoreState(STATE_ALPHA_GOURAUD);
     renderer->context.SetState(MPR_STA_ALPHA_OP_FUNCTION, MPR_TO_MODULATE); //JAM 18Oct03
 
-    if (!(typeData.flags & GROUND_GLOW))
+    if ( not (typeData.flags bitand GROUND_GLOW))
     {
         // transform the center point
         renderer->TransformPointToView(&position,  &center);
@@ -2439,7 +2440,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
             os.y = typeData.glowVerts[0].y * scale2d * randradius;
             os.z = typeData.glowVerts[0].z * scale2d * randradius;
         }
-        else if (typeData.flags & GLOW_RAND_POINTS)
+        else if (typeData.flags bitand GLOW_RAND_POINTS)
         {
             float randradius;
 
@@ -2464,7 +2465,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
         for (i = 1; i < typeData.numGlowVerts; i++)
         {
             // get 3rd point of triangle
-            if (!(i & 1) && (type == DRAW2D_SPARKS))
+            if ( not (i bitand 1) and (type == DRAW2D_SPARKS))
             {
                 float randradius;
 
@@ -2474,7 +2475,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
                 os.y = typeData.glowVerts[i].y * scale2d * randradius;
                 os.z = typeData.glowVerts[i].z * scale2d * randradius;
             }
-            else if (!(i & 1) && (typeData.flags & GLOW_RAND_POINTS))
+            else if ( not (i bitand 1) and (typeData.flags bitand GLOW_RAND_POINTS))
             {
                 float randradius;
 
@@ -2507,7 +2508,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
         renderer->TransformPoint(&position,  &v0);
 
         // do 1st point
-        if (typeData.flags & GLOW_RAND_POINTS)
+        if (typeData.flags bitand GLOW_RAND_POINTS)
         {
             float randradius;
 
@@ -2532,7 +2533,7 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
         for (i = 1; i < typeData.numGlowVerts; i++)
         {
             // get 3rd point of triangle
-            if (!(i & 1) && (typeData.flags & GLOW_RAND_POINTS))
+            if ( not (i bitand 1) and (typeData.flags bitand GLOW_RAND_POINTS))
             {
                 float randradius;
 
@@ -2769,10 +2770,10 @@ void Draw2DLensFlare(class RenderOTW *renderer)
 
 
     // If we're below the overcast layer, do not draw the lens flare.
-    if (realWeather->InsideOvercast() || realWeather->UnderOvercast()) return;
+    if (realWeather->InsideOvercast() or realWeather->UnderOvercast()) return;
 
     // is there a sun, if not return
-    if (!TheTimeOfDay.ThereIsASun()) return;
+    if ( not TheTimeOfDay.ThereIsASun()) return;
 
     // get the Look At vector and lighting vector
     renderer->GetAt(&av);
@@ -2796,7 +2797,7 @@ void Draw2DLensFlare(class RenderOTW *renderer)
     if (0)
         Draw2DSunGlowEffect(renderer, &center, radius, alphaPct * 0.7f);
 
-    if (g_nGfxFix & 0x04)
+    if (g_nGfxFix bitand 0x04)
         gif = true;
 
     // now calculate where we want to start the first circle (world space)
@@ -2825,7 +2826,7 @@ void Draw2DLensFlare(class RenderOTW *renderer)
 
         if (Alpha < 0.001f) continue;
 
-        v[0].dwColour &= 0x00ffffff;
+        v[0].dwColour and_eq 0x00ffffff;
 
         radius = lensRadius[j];
 
@@ -2838,7 +2839,7 @@ void Draw2DLensFlare(class RenderOTW *renderer)
 
 
 
-        if (j == 2 || j == 8 || j == 9)
+        if (j == 2 or j == 8 or j == 9)
         {
             v[0].pos.x = lensFlareVerts[0].x * radius * 0.8f;
             v[0].pos.y = lensFlareVerts[0].y * radius * 0.8f;
@@ -2876,7 +2877,7 @@ void Draw2DLensFlare(class RenderOTW *renderer)
             v[0].pos.y = 0;
             v[0].pos.z = 0;
             v[0].dwSpecular = 0x00000000;
-            v[0].dwColour = ColorOut & 0x00ffffff;
+            v[0].dwColour = ColorOut bitand 0x00ffffff;
 
             // Now the circle vertices
             for (i = 0; i < numLensFlareVerts; i++)
@@ -2897,7 +2898,7 @@ void Draw2DLensFlare(class RenderOTW *renderer)
             v[i + 1].dwColour = ColorOut;
 
             // And draw the FAN
-            TheDXEngine.DX2D_AddPoly(LAYER_TOP, POLY_BB | POLY_FAN, (D3DXVECTOR3*)&position, v, radius, numLensFlareVerts + 2, NULL);
+            TheDXEngine.DX2D_AddPoly(LAYER_TOP, POLY_BB bitor POLY_FAN, (D3DXVECTOR3*)&position, v, radius, numLensFlareVerts + 2, NULL);
         }
 
 
@@ -2919,7 +2920,7 @@ void Draw2DSunGlowEffect(class RenderOTW *renderer, Tpoint *cntr, float dist, fl
     float radius, iradius;
     bool gif = false;
 
-    // if ( !renderer->GetAlphaMode() )
+    // if ( not renderer->GetAlphaMode() )
     // return;
 
     if (alpha < 0.0001)
@@ -2993,7 +2994,7 @@ void Draw2DSunGlowEffect(class RenderOTW *renderer, Tpoint *cntr, float dist, fl
     // save it for last tri in strip
     vLast = v1;
 
-    if (g_nGfxFix & 0x04) // sun, sun glow and moon fix
+    if (g_nGfxFix bitand 0x04) // sun, sun glow and moon fix
         gif = true;
 
     for (i = 1; i < numLensFlareVerts; i++)
@@ -3041,7 +3042,7 @@ void Draw2DSunGlowEffect(class RenderOTW *renderer, Tpoint *cntr, float dist, fl
 
     for (i = 1; i < numLensFlareVerts; i++)
     {
-        if (i & 1)
+        if (i bitand 1)
         {
             os.y = lensFlareVerts[i].y * radius * 0.1f;
             os.z = lensFlareVerts[i].z * radius * 0.1f;
@@ -3167,7 +3168,7 @@ int Drawable2D::GetAnimFrame(int dT, DWORD start)
     if (dT <= 0)
         return 0;
 
-    if (typeData.flags & ANIM_HALF_RATE)
+    if (typeData.flags bitand ANIM_HALF_RATE)
     {
         ms = 104;
     }
@@ -3176,7 +3177,7 @@ int Drawable2D::GetAnimFrame(int dT, DWORD start)
         ms = 62;
     }
 
-    if (typeData.flags & (FIRE_SCATTER_PLOT | SMOKE_SCATTER_PLOT | EXPLODE_SCATTER_PLOT))
+    if (typeData.flags bitand (FIRE_SCATTER_PLOT bitor SMOKE_SCATTER_PLOT bitor EXPLODE_SCATTER_PLOT))
     {
         // ms = 124;
         curSFrame = dT / 164 + startSFrame;
@@ -3188,7 +3189,7 @@ int Drawable2D::GetAnimFrame(int dT, DWORD start)
         }
 
         // hack for fireball
-        if (type >= DRAW2D_FIRE1 && type <= DRAW2D_FIRE6)
+        if (type >= DRAW2D_FIRE1 and type <= DRAW2D_FIRE6)
         {
             if (curBFrame >= 6)
             {
@@ -3213,7 +3214,7 @@ int Drawable2D::GetAnimFrame(int dT, DWORD start)
 
                 if (curBFrame >= 6)
                 {
-                    if (typeData.flags & FADE_LAST)
+                    if (typeData.flags bitand FADE_LAST)
                     {
                         alphaStartTime = start + dT;
                         startFade = TRUE;
@@ -3223,14 +3224,14 @@ int Drawable2D::GetAnimFrame(int dT, DWORD start)
                         curBFrame = 7;
                     else if (type == DRAW2D_FIRE5)
                     {
-                        if (rand() & 1)
+                        if (rand() bitand 1)
                             curBFrame = 8;
                         else
                             curBFrame = 6;
                     }
-                    else if (type == DRAW2D_FIRE4 || type == DRAW2D_FIRE1)
+                    else if (type == DRAW2D_FIRE4 or type == DRAW2D_FIRE1)
                     {
-                        if (rand() & 1)
+                        if (rand() bitand 1)
                             curBFrame = 10;
                         else
                             curBFrame = 6;
@@ -3249,13 +3250,13 @@ int Drawable2D::GetAnimFrame(int dT, DWORD start)
 
     if (newFrame >= typeData.numTextures)
     {
-        if (typeData.flags & ANIM_LOOP_PING)
+        if (typeData.flags bitand ANIM_LOOP_PING)
         {
             num = newFrame / typeData.numTextures;
             rem = newFrame % typeData.numTextures;
 
             // if num is odd, we're going backwards
-            if (num & 1)
+            if (num bitand 1)
             {
                 newFrame = typeData.numTextures - 1 - rem;
             }
@@ -3264,11 +3265,11 @@ int Drawable2D::GetAnimFrame(int dT, DWORD start)
                 newFrame = rem;
             }
         }
-        else if (typeData.flags & ANIM_LOOP)
+        else if (typeData.flags bitand ANIM_LOOP)
         {
             newFrame = newFrame % typeData.numTextures;
         }
-        else if (typeData.flags & ANIM_NO_CLAMP)
+        else if (typeData.flags bitand ANIM_NO_CLAMP)
         {
             // do nothing
         }
@@ -3276,7 +3277,7 @@ int Drawable2D::GetAnimFrame(int dT, DWORD start)
         {
             newFrame = typeData.numTextures;
 
-            if (typeData.flags & FADE_LAST)
+            if (typeData.flags bitand FADE_LAST)
             {
                 alphaStartTime = start + typeData.numTextures * ms;
                 startFade = TRUE;
@@ -3345,7 +3346,7 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
         return;
 
     // hack to make long hanging smoke look better
-    if (type == DRAW2D_LONG_HANGING_SMOKE2 || type == DRAW2D_FIRE1)
+    if (type == DRAW2D_LONG_HANGING_SMOKE2 or type == DRAW2D_FIRE1)
     {
         scaleZ = 1.0f;
     }
@@ -3386,8 +3387,8 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
 
     // a nicer effect: put a point in the center of a square, make it
     // a dark alpha and have the edges fade to 0.  LOD this effect.
-    // doFivePoints = !(typeData.flags & NO_FIVE_POINTS ) && ( scaleZ * sLOD > 0.4f || type == DRAW2D_LONG_HANGING_SMOKE2 );
-    doFivePoints = !(typeData.flags & NO_FIVE_POINTS);
+    // doFivePoints = not (typeData.flags bitand NO_FIVE_POINTS ) and ( scaleZ * sLOD > 0.4f or type == DRAW2D_LONG_HANGING_SMOKE2 );
+    doFivePoints = not (typeData.flags bitand NO_FIVE_POINTS);
 
     // setup rendering context
     if (sGreenMode) //JAM - FIXME
@@ -3412,12 +3413,12 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
 
     renderer->context.SetState(MPR_STA_ALPHA_OP_FUNCTION, MPR_TO_MODULATE); //JAM 18Oct03
 
-    if (type == DRAW2D_LONG_HANGING_SMOKE2 || type == DRAW2D_FIRE1)
+    if (type == DRAW2D_LONG_HANGING_SMOKE2 or type == DRAW2D_FIRE1)
         // numToPlot = (NUM_EXPLODE_SCATTER_POINTS);
         numToPlot = 1;
-    else if (typeData.flags & FIRE_SCATTER_PLOT)
+    else if (typeData.flags bitand FIRE_SCATTER_PLOT)
         numToPlot = max(1, (int)(NUM_FIRE_SCATTER_POINTS * scaleZ * sLOD));
-    else if (typeData.flags & SMOKE_SCATTER_PLOT)
+    else if (typeData.flags bitand SMOKE_SCATTER_PLOT)
         numToPlot = max(1, (int)(NUM_SMOKE_SCATTER_POINTS * scaleZ * sLOD));
     else
         numToPlot = max(1, (int)(NUM_EXPLODE_SCATTER_POINTS * scaleZ * sLOD));
@@ -3437,7 +3438,7 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
         v0.g = v2.g = v3.g = v1.g = 0.0f;
 
         // randomly tweak the edge RGB's to give a glowy kind of effect
-        if (typeData.flags & NO_RANDOM_BLEND)
+        if (typeData.flags bitand NO_RANDOM_BLEND)
         {
             v0.r = v2.r = v3.r = v1.r = 0.0f;
             v0.b = v2.b = v3.b = v1.b = 0.0f;
@@ -3449,7 +3450,7 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
         }
     }
     /*
-    else if ( typeData.flags & EXPLODE_SCATTER_PLOT )
+    else if ( typeData.flags bitand EXPLODE_SCATTER_PLOT )
     {
      v0.r = v1.r = 1.0f;
      v0.g = v1.g = 1.0f;
@@ -3480,7 +3481,7 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
     {
 
         // center of this element
-        if (typeData.flags & FIRE_SCATTER_PLOT)
+        if (typeData.flags bitand FIRE_SCATTER_PLOT)
         {
             dl.x = gFireScatterPoints[ curSFrame ][ i ].x * screenR + spos.x;
 
@@ -3492,7 +3493,7 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
             elementR = gFireScatterPoints[ curSFrame ][ i ].z * elementRbase +
                        elementRbase * 0.25f;
         }
-        else if (typeData.flags & EXPLODE_SCATTER_PLOT)
+        else if (typeData.flags bitand EXPLODE_SCATTER_PLOT)
         {
             dl.x = gExplodeScatterPoints[ curSFrame ][ i ].x * screenR + spos.x;
 
@@ -3520,30 +3521,30 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
         // we do our own clipping checks -- for now, any point not within
         // screen bounds, we toss the entire element
 
-        //if ( dl.x < left || dl.y < top || dl.x > right || dl.y > bottom )
+        //if ( dl.x < left or dl.y < top or dl.x > right or dl.y > bottom )
         // continue;
 
         v0.x = dl.x - elementR;
         v0.y = dl.y - elementR;
-        //if ( v0.x < left || v0.y < top || v0.x > right || v0.y > bottom )
+        //if ( v0.x < left or v0.y < top or v0.x > right or v0.y > bottom )
         // continue;
 
         v1.x = dl.x + elementR;
         v1.y = dl.y - elementR;
-        //if ( v1.x < left || v1.y < top || v1.x > right || v1.y > bottom )
+        //if ( v1.x < left or v1.y < top or v1.x > right or v1.y > bottom )
         // continue;
 
         v2.x = dl.x + elementR;
         v2.y = dl.y + elementR;
-        //if ( v2.x < left || v2.y < top || v2.x > right || v2.y > bottom )
+        //if ( v2.x < left or v2.y < top or v2.x > right or v2.y > bottom )
         // continue;
 
         v3.x = dl.x - elementR;
         v3.y = dl.y + elementR;
-        //if ( v3.x < left || v3.y < top || v3.x > right || v3.y > bottom )
+        //if ( v3.x < left or v3.y < top or v3.x > right or v3.y > bottom )
         // continue;
 
-        if (v2.x < left || v2.y < top || v0.x > right || v0.y > bottom)
+        if (v2.x < left or v2.y < top or v0.x > right or v0.y > bottom)
             continue;
 
         renderer->SetClipFlags(&v0);
@@ -3554,10 +3555,10 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
 
 
         // get and set texture
-        if (typeData.flags & SEQ_SCATTER_ANIM)
+        if (typeData.flags bitand SEQ_SCATTER_ANIM)
         {
             // hack for fireball
-            if (type >= DRAW2D_FIRE1 && type <= DRAW2D_FIRE6)
+            if (type >= DRAW2D_FIRE1 and type <= DRAW2D_FIRE6)
             {
                 if (curBFrame >= 6)
                 {
@@ -3576,7 +3577,7 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
         }
 
         // hack, only randomize alpha if fire texture
-        if (doFivePoints && texseq >= 0 && texseq <= 5)
+        if (doFivePoints and texseq >= 0 and texseq <= 5)
         {
             vm.a = alpha * 0.1f + alpha * 0.9f * NRANDPOS;
 
@@ -3616,7 +3617,7 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
             vertArray[4] = &v3;
             vertArray[5] = &v0;
 
-            if (g_nGfxFix & 0x01)
+            if (g_nGfxFix bitand 0x01)
                 renderer->ClipAndDraw2DFan(vertArray, 6, true);  // true = gifPicture -> fix for clipping explosion graphics
             else
                 renderer->ClipAndDraw2DFan(vertArray, 6);
@@ -3635,7 +3636,7 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
             vertArray[2] = &v2;
             vertArray[3] = &v3;
 
-            if (g_nGfxFix & 0x01)
+            if (g_nGfxFix bitand 0x01)
                 renderer->ClipAndDraw2DFan(vertArray, 4, true);
             else
                 renderer->ClipAndDraw2DFan(vertArray, 4);
@@ -3735,12 +3736,12 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
 
     // a nicer effect: put a point in the center of a square, make it
     // a dark alpha and have the edges fade to 0.  LOD this effect.
-    doFivePoints = (scaleZ * sLOD > 0.4f || type == DRAW2D_LONG_HANGING_SMOKE2);
+    doFivePoints = (scaleZ * sLOD > 0.4f or type == DRAW2D_LONG_HANGING_SMOKE2);
 
     // setup rendering context
     // if( renderer->GetAlphaMode() )
     // {
-    if (!sGreenMode) //JAM - FIXME
+    if ( not sGreenMode) //JAM - FIXME
         renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD);
     else
         renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD);
@@ -3752,7 +3753,7 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
      doFivePoints = FALSE;
      }
     */
-    if (!sGreenMode)
+    if ( not sGreenMode)
     {
         if (renderer->GetFilteringMode())
         {
@@ -3764,11 +3765,11 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
     renderer->context.SetState(MPR_STA_ALPHA_OP_FUNCTION, MPR_TO_MODULATE); //JAM 18Oct03
     renderer->context.SelectTexture1(curTex->TexHandle());
 
-    if (type == DRAW2D_LONG_HANGING_SMOKE2 && doFivePoints)
+    if (type == DRAW2D_LONG_HANGING_SMOKE2 and doFivePoints)
         numToPlot = (NUM_EXPLODE_SCATTER_POINTS);
-    else if (typeData.flags & FIRE_SCATTER_PLOT)
+    else if (typeData.flags bitand FIRE_SCATTER_PLOT)
         numToPlot = max(1, (int)(NUM_FIRE_SCATTER_POINTS * scaleZ * sLOD));
-    else if (typeData.flags & SMOKE_SCATTER_PLOT)
+    else if (typeData.flags bitand SMOKE_SCATTER_PLOT)
         numToPlot = max(1, (int)(NUM_SMOKE_SCATTER_POINTS * scaleZ * sLOD));
     else
         numToPlot = max(1, (int)(NUM_EXPLODE_SCATTER_POINTS * scaleZ * sLOD));
@@ -3788,7 +3789,7 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
         v0.g = v2.g = v3.g = v1.g = 0.0f;
 
         // randomly tweak the edge RGB's to give a glowy kind of effect
-        if (typeData.flags & NO_RANDOM_BLEND)
+        if (typeData.flags bitand NO_RANDOM_BLEND)
         {
             v0.r = v2.r = v3.r = v1.r = 0.0f;
             v0.b = v2.b = v3.b = v1.b = 0.0f;
@@ -3799,7 +3800,7 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
             v0.b = v2.b = v3.b = v1.b = 0.1f + NRANDPOS * 0.8f;
         }
     }
-    else if (typeData.flags & EXPLODE_SCATTER_PLOT)
+    else if (typeData.flags bitand EXPLODE_SCATTER_PLOT)
     {
         v0.r = v1.r = 1.0f;
         v0.g = v1.g = 1.0f;
@@ -3827,7 +3828,7 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
     for (i = 0; i < numToPlot; i++)
     {
         // center of this element
-        if (typeData.flags & FIRE_SCATTER_PLOT)
+        if (typeData.flags bitand FIRE_SCATTER_PLOT)
         {
             dl.x = gFireScatterPoints[ curSFrame ][ i ].x * screenR + spos.x;
 
@@ -3839,7 +3840,7 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
             elementR = gFireScatterPoints[ curSFrame ][ i ].z * elementRbase +
                        elementRbase * 0.25f;
         }
-        else if (typeData.flags & EXPLODE_SCATTER_PLOT)
+        else if (typeData.flags bitand EXPLODE_SCATTER_PLOT)
         {
             dl.x = gExplodeScatterPoints[ curSFrame ][ i ].x * screenR + spos.x;
 
@@ -3851,7 +3852,7 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
             elementR = gExplodeScatterPoints[ curSFrame ][ i ].z * elementRbase +
                        elementRbase * 0.25f;
 
-            if (!doFivePoints)
+            if ( not doFivePoints)
             {
                 if (i == 0)
                 {
@@ -3880,34 +3881,34 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
 
         // we do our own clipping checks -- for now, any point not within
         // screen bounds, we toss the entire element
-        if (dl.x < left || dl.y < top || dl.x > right || dl.y > bottom)
+        if (dl.x < left or dl.y < top or dl.x > right or dl.y > bottom)
             continue;
 
         v0.x = dl.x - elementR;
         v0.y = dl.y - elementR;
 
-        if (v0.x < left || v0.y < top || v0.x > right || v0.y > bottom)
+        if (v0.x < left or v0.y < top or v0.x > right or v0.y > bottom)
             continue;
 
         v1.x = dl.x + elementR;
         v1.y = dl.y - elementR;
 
-        if (v1.x < left || v1.y < top || v1.x > right || v1.y > bottom)
+        if (v1.x < left or v1.y < top or v1.x > right or v1.y > bottom)
             continue;
 
         v2.x = dl.x + elementR;
         v2.y = dl.y + elementR;
 
-        if (v2.x < left || v2.y < top || v2.x > right || v2.y > bottom)
+        if (v2.x < left or v2.y < top or v2.x > right or v2.y > bottom)
             continue;
 
         v3.x = dl.x - elementR;
         v3.y = dl.y + elementR;
 
-        if (v3.x < left || v3.y < top || v3.x > right || v3.y > bottom)
+        if (v3.x < left or v3.y < top or v3.x > right or v3.y > bottom)
             continue;
 
-        if (typeData.flags & ANIM_NO_CLAMP)
+        if (typeData.flags bitand ANIM_NO_CLAMP)
         {
             // ANIM_NO_CLAMP uses a type of sequence animation: the frames
             // are sequenced and staggered such that the 1st point begins
@@ -3915,14 +3916,14 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
             // rippling type explosions
             int texseq = curFrame - i;
 
-            if (texseq < 0 || texseq >= typeData.numTextures)
+            if (texseq < 0 or texseq >= typeData.numTextures)
                 continue;
 
             texseq += typeData.startTexture;
             v1.u = gTexUV[ texseq ].u;
             v1.v = gTexUV[ texseq ].v;
         }
-        else if (typeData.flags & SEQ_SCATTER_ANIM)
+        else if (typeData.flags bitand SEQ_SCATTER_ANIM)
         {
             int texseq = typeData.startTexture + (curFrame + i) % typeData.numTextures;
 
@@ -3951,7 +3952,7 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
             vm.v = v1.v + TEX_UV_DIM * 0.5f;
             bool gif = false;
 
-            if (g_nGfxFix & 0x02)
+            if (g_nGfxFix bitand 0x02)
                 gif = true;
 
             renderer->DrawTriangle(&v0, &v1, &vm, CULL_ALLOW_ALL, gif);
@@ -3961,7 +3962,7 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
         }
         else
         {
-            if (g_nGfxFix & 0x02)
+            if (g_nGfxFix bitand 0x02)
                 renderer->DrawSquare(&v0, &v1, &v2, &v3, CULL_ALLOW_ALL, true);
             else
                 renderer->DrawSquare(&v0, &v1, &v2, &v3, CULL_ALLOW_ALL);

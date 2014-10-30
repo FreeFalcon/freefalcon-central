@@ -44,7 +44,7 @@ int FalconDamageMessage::Process(uchar autodisp)
             ((SimBaseClass*)theEntity)->ApplyDamage(this);
 
             // Record any hits directly
-            if (TheCampaign.MissionEvaluator && !(theEntity->IsSetFalcFlag(FEC_INVULNERABLE)))
+            if (TheCampaign.MissionEvaluator and not (theEntity->IsSetFalcFlag(FEC_INVULNERABLE)))
             {
                 TheCampaign.MissionEvaluator->RegisterHit(this);
             }
@@ -56,8 +56,8 @@ int FalconDamageMessage::Process(uchar autodisp)
 
             shooter = (FalconEntity*)vuDatabase->Find(dataBlock.fEntityID);
 
-            // ShiAssert (!"This is a bad thing I think");
-            if (!shooter)
+            // ShiAssert ( not "This is a bad thing I think");
+            if ( not shooter)
             {
                 return TRUE;
             }
@@ -71,12 +71,12 @@ int FalconDamageMessage::Process(uchar autodisp)
                 campShooter = (CampEntity)shooter;
             }
 
-            if (!campTarget->IsAggregate())
+            if ( not campTarget->IsAggregate())
             {
                 // This thing is actually deaggregated (probably happened while
                 // the missile was in flight). Chalk it up as a miss if it
                 // doesn't happen very often.
-                // ShiAssert (!"This probably shouldn't happen.");
+                // ShiAssert ( not "This probably shouldn't happen.");
             }
             else if (campShooter->IsUnit())
             {
@@ -101,7 +101,7 @@ int FalconDamageMessage::Process(uchar autodisp)
             // KCK: Currently Apply Damage calls register hit (sometimes multiple times). Theoretically,
             // it should be possible to call it here, like we do for sim entities - but this is a task
             // for another time.
-            // if (TheCampaign.MissionEvaluator && (!theEntity || !theEntity->IsSetFalcFlag(FEC_INVULNERABLE)))
+            // if (TheCampaign.MissionEvaluator and ( not theEntity or not theEntity->IsSetFalcFlag(FEC_INVULNERABLE)))
             // TheCampaign.MissionEvaluator->RegisterHit(this);
         }
     }
@@ -113,7 +113,7 @@ FalconDamageMessage *CreateGroundCollisionMessage(SimVehicleClass* vehicle, int 
 {
     ShiAssert(vehicle);
 
-    if (FalconLocalSession && vehicle == FalconLocalSession->GetPlayerEntity())
+    if (FalconLocalSession and vehicle == FalconLocalSession->GetPlayerEntity())
         g_intellivibeData.CollisionCounter++;
 
     FalconEntity *lastToHit = (SimVehicleClass*)vuDatabase->Find(vehicle->LastShooter());
@@ -122,7 +122,7 @@ FalconDamageMessage *CreateGroundCollisionMessage(SimVehicleClass* vehicle, int 
     FalconDamageMessage* message;
     message = new FalconDamageMessage(vehicle->Id(), target);
 
-    if (lastToHit && !lastToHit->IsEject())
+    if (lastToHit and not lastToHit->IsEject())
     {
         message->dataBlock.fEntityID  = lastToHit->Id();
         message->dataBlock.fIndex     = lastToHit->Type();

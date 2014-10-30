@@ -299,7 +299,7 @@ void RebuildTeamLists()
 
     for (i = 0; i < NUM_TEAMS; i++)
     {
-        if (TeamInfo[i] && (TeamInfo[i]->flags & TEAM_ACTIVE))
+        if (TeamInfo[i] and (TeamInfo[i]->flags bitand TEAM_ACTIVE))
             item = mk_item(i, TeamInfo[i]->GetName());
         else
         {
@@ -307,7 +307,7 @@ void RebuildTeamLists()
             item->Label_->SetFlagBitOn(C_BIT_INVISIBLE);
         }
 
-        if (!team_lbox)
+        if ( not team_lbox)
             team_lbox = item;
         else
             last->Next = item;
@@ -335,11 +335,11 @@ void InitVCArgLists()
     LISTBOX *last = NULL, *item = NULL;
     short i = 0;
 
-    if (!team_lbox)
+    if ( not team_lbox)
     {
         for (i = 0; i < NUM_TEAMS; i++)
         {
-            if (TeamInfo[i] && (TeamInfo[i]->flags & TEAM_ACTIVE))
+            if (TeamInfo[i] and (TeamInfo[i]->flags bitand TEAM_ACTIVE))
                 item = mk_item(i, TeamInfo[i]->GetName());
             else
             {
@@ -347,7 +347,7 @@ void InitVCArgLists()
                 item->Label_->SetFlagBitOn(C_BIT_INVISIBLE);
             }
 
-            if (!team_lbox)
+            if ( not team_lbox)
                 team_lbox = item;
             else
                 last->Next = item;
@@ -356,7 +356,7 @@ void InitVCArgLists()
         }
     }
 
-    if (!action_lbox)
+    if ( not action_lbox)
     {
         last = mk_item(vt_occupy, TXT_OCCUPY);
         action_lbox = last;
@@ -374,7 +374,7 @@ void InitVCArgLists()
     }
 
     // 10 -> 100 %
-    if (!percent_lbox)
+    if ( not percent_lbox)
     {
         last = mk_item(1, TXT_TEN_PERC);
         percent_lbox = last;
@@ -406,7 +406,7 @@ void InitVCArgLists()
         last->Next = item;
     }
 
-    if (!intercept_lbox)
+    if ( not intercept_lbox)
     {
         last = mk_item(1, TXT_ONE);
         intercept_lbox = last;
@@ -486,7 +486,7 @@ void SetVCSortTypeCB(long ID, short hittype, C_Base *)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     VCSortType = ID;
@@ -508,13 +508,13 @@ BOOL VCSortCB(TREELIST *list, TREELIST *newitem)
 {
     C_Victory *lvc, *nvc;
 
-    if (!list || !newitem)
+    if ( not list or not newitem)
         return(FALSE);
 
     lvc = (C_Victory*)list->Item_;
     nvc = (C_Victory*)newitem->Item_;
 
-    if (!lvc || !nvc)
+    if ( not lvc or not nvc)
         return(FALSE);
 
     switch (VCSortType)
@@ -522,7 +522,7 @@ BOOL VCSortCB(TREELIST *list, TREELIST *newitem)
         case SORT_VC_TEAM: // Sort by Team
             if (nvc->GetTeam()->GetTextID() < lvc->GetTeam()->GetTextID())
                 return(TRUE);
-            else if (nvc->GetTeam()->GetTextID() == lvc->GetTeam()->GetTextID() && newitem->ID_ < list->ID_)
+            else if (nvc->GetTeam()->GetTextID() == lvc->GetTeam()->GetTextID() and newitem->ID_ < list->ID_)
                 return(TRUE);
 
             break;
@@ -530,7 +530,7 @@ BOOL VCSortCB(TREELIST *list, TREELIST *newitem)
         case SORT_VC_TYPE: // Sort by Action
             if (nvc->GetAction()->GetTextID() < lvc->GetAction()->GetTextID())
                 return(TRUE);
-            else if (nvc->GetAction()->GetTextID() == lvc->GetAction()->GetTextID() && newitem->ID_ < list->ID_)
+            else if (nvc->GetAction()->GetTextID() == lvc->GetAction()->GetTextID() and newitem->ID_ < list->ID_)
                 return(TRUE);
 
             break;
@@ -538,7 +538,7 @@ BOOL VCSortCB(TREELIST *list, TREELIST *newitem)
         case SORT_VC_POINTS: // Sort by Points
             if (nvc->GetPoints()->GetInteger() > lvc->GetPoints()->GetInteger())
                 return(TRUE);
-            else if (nvc->GetPoints()->GetInteger() == lvc->GetPoints()->GetInteger() && newitem->ID_ < list->ID_)
+            else if (nvc->GetPoints()->GetInteger() == lvc->GetPoints()->GetInteger() and newitem->ID_ < list->ID_)
                 return(TRUE);
 
             break;
@@ -568,12 +568,12 @@ void UpdateVCOptions(victory_condition *vc)
     FeatureClassDataType *fc;
     long classID, i;
 
-    if (!vc)
+    if ( not vc)
         return;
 
     vctrl = (C_Victory*)vc->control;
 
-    if (!vctrl || !vctrl->Parent_)
+    if ( not vctrl or not vctrl->Parent_)
         return;
 
     ent = (CampEntity)vuDatabase->Find(vc->get_vu_id());
@@ -590,7 +590,7 @@ void UpdateVCOptions(victory_condition *vc)
         else
             ent->GetName(buffer, 35, FALSE);
 
-        if (ent->IsObjective() && vc->get_type() == vt_destroy && vc->get_sub_objective() >= 0)
+        if (ent->IsObjective() and vc->get_type() == vt_destroy and vc->get_sub_objective() >= 0)
         {
             classID = ((Objective)ent)->GetFeatureID(vc->get_sub_objective());
 
@@ -598,7 +598,7 @@ void UpdateVCOptions(victory_condition *vc)
             {
                 fc = GetFeatureClassData(classID);
 
-                if (fc && !(fc->Flags & FEAT_VIRTUAL))
+                if (fc and not (fc->Flags bitand FEAT_VIRTUAL))
                 {
                     _tcscat(buffer, ", ");
                     _tcscat(buffer, fc->Name);
@@ -630,7 +630,7 @@ void UpdateVCOptions(victory_condition *vc)
 
                     lbox->SetFlagBitOff(C_BIT_INVISIBLE);
 
-                    if (vc->get_type() == vt_attrit || vc->get_type() == vt_intercept)
+                    if (vc->get_type() == vt_attrit or vc->get_type() == vt_intercept)
                         vc->set_type(vt_degrade);
 
                 }
@@ -645,7 +645,7 @@ void UpdateVCOptions(victory_condition *vc)
                     lbox->SetValue(vt_intercept);
                     lbox->SetFlagBitOff(C_BIT_INVISIBLE);
 
-                    if (vc->get_type() != vt_intercept)
+                    if (vc->get_type() not_eq vt_intercept)
                         vc->set_type(vt_intercept);
                 }
                 else if (ent->IsBattalion())
@@ -659,7 +659,7 @@ void UpdateVCOptions(victory_condition *vc)
                     lbox->SetValue(vt_attrit);
                     lbox->SetFlagBitOff(C_BIT_INVISIBLE);
 
-                    if (vc->get_type() != vt_attrit)
+                    if (vc->get_type() not_eq vt_attrit)
                         vc->set_type(vt_attrit);
                 }
                 else
@@ -681,7 +681,7 @@ void UpdateVCOptions(victory_condition *vc)
                     lbox->SetRoot(intercept_lbox);
                     lbox->SetFlagBitOff(C_BIT_INVISIBLE);
 
-                    if (ent && ent->IsFlight())
+                    if (ent and ent->IsFlight())
                     {
                         vc->set_tolerance(max(1, min(vc->get_tolerance(), 4)));
                     }
@@ -732,19 +732,19 @@ void VCChangeTeamNoCB(long, short hittype, C_Base *)
     C_Victory *vctrl;
     TREELIST *item;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     item = gVCTree->GetLastItem();
 
-    if (item && item->Item_)
+    if (item and item->Item_)
     {
         vctrl = (C_Victory*)item->Item_;
         vc = (victory_condition*)vctrl->GetPtr();
 
         if (vc)
         {
-            if (vctrl->GetTeam()->GetTextID() != vc->get_team())
+            if (vctrl->GetTeam()->GetTextID() not_eq vc->get_team())
             {
                 gMapMgr->RemoveVC(vc->get_team(), vc->get_number());
                 vc->set_team(vctrl->GetTeam()->GetTextID());
@@ -763,12 +763,12 @@ void VCChangeActionCB(long, short hittype, C_Base *control)
     C_Victory *vctrl;
     TREELIST *item;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     item = gVCTree->GetLastItem();
 
-    if (item && item->Item_)
+    if (item and item->Item_)
     {
         vctrl = (C_Victory*)item->Item_;
         vc = (victory_condition*)vctrl->GetPtr();
@@ -778,7 +778,7 @@ void VCChangeActionCB(long, short hittype, C_Base *control)
             vc->set_type((victory_type)((C_ListBox*)control)->GetTextID());
             UpdateVCOptions(vc);
 
-            if (vc->get_type() == vt_destroy && vc->get_sub_objective() < 0)
+            if (vc->get_type() == vt_destroy and vc->get_sub_objective() < 0)
             {
                 // we need to target a building
                 C_Window *win;
@@ -793,7 +793,7 @@ void VCChangeActionCB(long, short hittype, C_Base *control)
                     if (TargetTree)
                         TargetTree->DeleteBranch(TargetTree->GetRoot());
 
-                    if (!OldReconCWCB)
+                    if ( not OldReconCWCB)
                     {
                         btn = win->FindControl(CLOSE_WINDOW);
 
@@ -815,7 +815,7 @@ void VCChangeActionCB(long, short hittype, C_Base *control)
                 SelectToolTypeCB(TARGET_VC, C_TYPE_LMOUSEUP, vctrl);
                 BuildSpecificTargetList(vc->get_vu_id());
             }
-            else if (vc->get_type() != vt_destroy)
+            else if (vc->get_type() not_eq vt_destroy)
                 vc->set_sub_objective(-1);
         }
     }
@@ -830,27 +830,27 @@ void VCSetTargetCB(long, short hittype, C_Base *control)
     C_Window *win;
     C_Base *btn;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (control && control->GetUserNumber(10))
+    if (control and control->GetUserNumber(10))
     {
         SetCursor(gCursors[CRSR_WAIT]);
 
         item = gVCTree->GetLastItem();
 
-        if (item && item->Item_)
+        if (item and item->Item_)
         {
             vctrl = (C_Victory*)item->Item_;
             vc = (victory_condition*)vctrl->GetPtr();
             win = gMainHandler->FindWindow(RECON_LIST_WIN);
 
-            if (win && vc)
+            if (win and vc)
             {
                 if (TargetTree)
                     TargetTree->DeleteBranch(TargetTree->GetRoot());
 
-                if (!OldReconCWCB)
+                if ( not OldReconCWCB)
                 {
                     btn = win->FindControl(CLOSE_WINDOW);
 
@@ -875,19 +875,19 @@ void VCSetTargetCB(long, short hittype, C_Base *control)
     SelectToolTypeCB(TARGET_VC, hittype, control);
 }
 
-// sets up the target & Args controls
+// sets up the target bitand Args controls
 void VCArgsCB(long, short hittype, C_Base *)
 {
     victory_condition *vc;
     C_Victory *vctrl;
     TREELIST *item;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     item = gVCTree->GetLastItem();
 
-    if (item && item->Item_)
+    if (item and item->Item_)
     {
         vctrl = (C_Victory*)item->Item_;
         vc = (victory_condition*)vctrl->GetPtr();
@@ -899,19 +899,19 @@ void VCArgsCB(long, short hittype, C_Base *)
     }
 }
 
-// sets up the target & Args controls
+// sets up the target bitand Args controls
 void VCSetPointsCB(long, short hittype, C_Base *control)
 {
     victory_condition *vc;
     C_Victory *vctrl;
     TREELIST *item;
 
-    if (hittype && hittype != DIK_RETURN)
+    if (hittype and hittype not_eq DIK_RETURN)
         return;
 
     item = gVCTree->GetLastItem();
 
-    if (item && item->Item_)
+    if (item and item->Item_)
     {
         vctrl = (C_Victory*)item->Item_;
         vc = (victory_condition*)vctrl->GetPtr();
@@ -927,7 +927,7 @@ void VCSetPointsCB(long, short hittype, C_Base *control)
 
 void VCSelectVCCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gVCTree)
@@ -942,12 +942,12 @@ void AssignVCCB(long ID, short hittype, C_Base *control)
     C_Victory *vctrl;
     victory_condition *vc;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     CloseReconWindowCB(ID, hittype, control);
 
-    if (FeatureID != FalconNullId && FeatureNo >= 0)
+    if (FeatureID not_eq FalconNullId and FeatureNo >= 0)
     {
         if (gVCTree)
         {
@@ -982,7 +982,7 @@ void SetVCTargetInfo(CampEntity ent)
     C_Victory *vctrl;
     victory_condition *vc;
 
-    if (!gVCTree)
+    if ( not gVCTree)
         return;
 
     if (ent->IsFlight())
@@ -1022,7 +1022,7 @@ void SetVCTargetInfo(CampEntity ent)
             if (TargetTree)
                 TargetTree->DeleteBranch(TargetTree->GetRoot());
 
-            if (!OldReconCWCB)
+            if ( not OldReconCWCB)
             {
                 btn = win->FindControl(CLOSE_WINDOW);
 
@@ -1076,7 +1076,7 @@ void SelectVCTargetCB(long ID, short hittype, C_Base *control)
     victory_condition *vc;
     TREELIST *item;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     icon = (C_MapIcon*)control;
@@ -1115,7 +1115,7 @@ void SelectVCTargetCB(long ID, short hittype, C_Base *control)
                                 }
                                 else
                                 {
-                                    if (vc->get_type() != vt_occupy && vc->get_type() != vt_degrade)
+                                    if (vc->get_type() not_eq vt_occupy and vc->get_type() not_eq vt_degrade)
                                     {
                                         vc->set_type(vt_degrade);
                                         vc->set_tolerance(10);
@@ -1150,22 +1150,22 @@ void VCActionOpenCB(C_Base *me)
     C_Victory *vctrl;
     victory_condition *vc;
 
-    if (!gVCTree)
+    if ( not gVCTree)
         return;
 
     item = gVCTree->GetLastItem();
 
-    if (!item)
+    if ( not item)
         return;
 
     vctrl = (C_Victory *)item->Item_;
 
-    if (!vctrl)
+    if ( not vctrl)
         return;
 
     vc = (victory_condition*)vctrl->GetPtr();
 
-    if (!vc)
+    if ( not vc)
         return;
 
     switch (vc->get_type())
@@ -1206,29 +1206,29 @@ void VCArgsOpenCB(C_Base *me)
     CampEntity ent;
     long i;
 
-    if (!gVCTree)
+    if ( not gVCTree)
         return;
 
     item = gVCTree->GetLastItem();
 
-    if (!item)
+    if ( not item)
         return;
 
     vctrl = (C_Victory *)item->Item_;
 
-    if (!vctrl)
+    if ( not vctrl)
         return;
 
     vc = (victory_condition*)vctrl->GetPtr();
 
-    if (!vc)
+    if ( not vc)
         return;
 
     if (vc->get_type() == vt_intercept)
     {
         ent = (CampEntity)vuDatabase->Find(vc->get_vu_id());
 
-        if (ent && ent->IsFlight())
+        if (ent and ent->IsFlight())
         {
             for (i = 1; i <= ((Flight)ent)->GetTotalVehicles(); i++)
                 ((C_ListBox*)me)->SetItemFlags(i, C_BIT_ENABLED);
@@ -1250,7 +1250,7 @@ C_Victory *MakeVCControl(victory_condition *vc)
     _TCHAR buffer[60];
     long fh;
 
-    if (!gVCTree)
+    if ( not gVCTree)
         return(NULL);
 
     fh = gFontList->GetHeight(gVCTree->GetFont()) + 2;
@@ -1282,7 +1282,7 @@ C_Victory *MakeVCControl(victory_condition *vc)
     lbox->SetDropDown(BID_DROPDOWN);
     lbox->SetCallback(VCChangeTeamNoCB);
     lbox->SetFlagBitOff(C_BIT_ENABLED);
-    lbox->SetFlagBitOn(gVCTree->GetFlags() & C_BIT_ENABLED);
+    lbox->SetFlagBitOn(gVCTree->GetFlags() bitand C_BIT_ENABLED);
     vcntrl->SetTeam(lbox);
 
     // Action
@@ -1296,10 +1296,10 @@ C_Victory *MakeVCControl(victory_condition *vc)
     lbox->SetOpenCallback(VCActionOpenCB);
     lbox->SetCallback(VCChangeActionCB);
     lbox->SetFlagBitOff(C_BIT_ENABLED);
-    lbox->SetFlagBitOn(gVCTree->GetFlags() & C_BIT_ENABLED);
+    lbox->SetFlagBitOn(gVCTree->GetFlags() bitand C_BIT_ENABLED);
     lbox->SetDropDown(BID_DROPDOWN);
 
-    if (!ent)
+    if ( not ent)
         lbox->SetFlagBitOn(C_BIT_INVISIBLE);
 
     vcntrl->SetAction(lbox);
@@ -1343,7 +1343,7 @@ C_Victory *MakeVCControl(victory_condition *vc)
     lbox->SetCallback(VCArgsCB);
     lbox->SetOpenCallback(VCArgsOpenCB);
     lbox->SetFlagBitOff(C_BIT_ENABLED);
-    lbox->SetFlagBitOn(gVCTree->GetFlags() & C_BIT_ENABLED);
+    lbox->SetFlagBitOn(gVCTree->GetFlags() bitand C_BIT_ENABLED);
 
     if (vc->get_type() == vt_intercept)
         lbox->SetRoot(intercept_lbox);
@@ -1367,7 +1367,7 @@ C_Victory *MakeVCControl(victory_condition *vc)
 
     lbox->SetValue(vc->get_tolerance());
 
-    if (!ent)
+    if ( not ent)
         lbox->SetFlagBitOn(C_BIT_INVISIBLE);
 
     // Points
@@ -1379,7 +1379,7 @@ C_Victory *MakeVCControl(victory_condition *vc)
     ebox->SetMaxInteger(99999);
     ebox->SetInteger(vc->get_points());
     ebox->SetBgColor(11370561); //
-    ebox->SetFlagBitOn(C_BIT_USEOUTLINE | C_BIT_RIGHT);
+    ebox->SetFlagBitOn(C_BIT_USEOUTLINE bitor C_BIT_RIGHT);
     ebox->SetCallback(VCSetPointsCB);
     vcntrl->SetPoints(ebox);
 
@@ -1414,8 +1414,8 @@ int advance_team(int team, int state)
         {
             if
             (
-                (loop != team) &&
-                (TeamInfo[loop]) &&
+                (loop not_eq team) and 
+                (TeamInfo[loop]) and 
                 (TeamInfo[loop]->GetFlag() == state)
             )
             {
@@ -1459,7 +1459,7 @@ long GetCurrentVCScore(long teamno)
 
     while (vc)
     {
-        if (vc->get_team() == teamno && vc->get_active())
+        if (vc->get_team() == teamno and vc->get_active())
             value += vc->get_points();
 
         vc = current_tactical_mission->get_next_unfiltered_victory_condition();
@@ -1478,7 +1478,7 @@ long GetPossibleVCScore(long teamno)
 
     while (vc)
     {
-        if (vc->get_team() == teamno && vc->get_points() > 0)
+        if (vc->get_team() == teamno and vc->get_points() > 0)
             value += vc->get_points();
 
         vc = current_tactical_mission->get_next_unfiltered_victory_condition();
@@ -1503,11 +1503,11 @@ void UpdateVCScoring(long WinID, short mode)
 
     for (i = 0; i < NUM_TEAMS; i++)
     {
-        if (TeamInfo[i] && (TeamInfo[i]->flags & TEAM_ACTIVE))
+        if (TeamInfo[i] and (TeamInfo[i]->flags bitand TEAM_ACTIVE))
         {
             sortindex[line] = i;
 
-            if (!mode) // Show current score for this team
+            if ( not mode) // Show current score for this team
             {
                 points[line] = GetCurrentVCScore(i);
             }
@@ -1520,7 +1520,7 @@ void UpdateVCScoring(long WinID, short mode)
         }
     }
 
-    if (!mode)
+    if ( not mode)
     {
         for (i = 1; i < line; i++)
         {
@@ -1608,7 +1608,7 @@ void update_team_victory_window(void)
 {
     if (gMainHandler)
     {
-        if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+        if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
             UpdateVCScoring(TAC_VC_WIN, 1);
         else
             UpdateVCScoring(TAC_VC_WIN, 0);
@@ -1677,10 +1677,10 @@ static void delete_current_vc(long, short hittype, C_Base *)
     C_Victory *vctrl;
     victory_condition *vc;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (!gVCTree)
+    if ( not gVCTree)
         return;
 
     SelectToolTypeCB(0, C_TYPE_LMOUSEUP, NULL);
@@ -1713,12 +1713,12 @@ static void new_victory_condition(long, short hittype, C_Base *)
     victory_condition *vc;
     TREELIST *item;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     //MonoPrint ("New Victory Condition\n");
 
-    if (!gVCTree)
+    if ( not gVCTree)
         return;
 
     vc = new victory_condition(current_tactical_mission);
@@ -1770,7 +1770,7 @@ static void change_vc_team_name(long ID, short hittype, C_Base *ctrl)
     old_team,
     new_team;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
     {
         return;
     }
@@ -1786,8 +1786,8 @@ static void change_vc_team_name(long ID, short hittype, C_Base *ctrl)
 
     if
     (
-        ((old_team > 0) && (new_team > 0)) ||
-        ((new_team < 0) && (old_team < 0))
+        ((old_team > 0) and (new_team > 0)) or
+        ((new_team < 0) and (old_team < 0))
     )
     {
         // don't need to do anything else, cos the team hasn't changed type.
@@ -1843,7 +1843,7 @@ static void change_vc_team_action(long ID, short hittype, C_Base *ctrl)
     C_Window
     *win;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
     {
         return;
     }
@@ -1893,7 +1893,7 @@ static void change_vc_tolerance(long ID, short hittype, C_Base *ctrl)
     C_Window
     *win;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
     {
         return;
     }
@@ -1922,7 +1922,7 @@ static void change_vc_steerpoint(long ID, short hittype, C_Base *ctrl)
     C_Window
     *win;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
     {
         return;
     }
@@ -1967,7 +1967,7 @@ static void set_points_required_for_victory(long, short hittype, C_Base *ctrl)
     C_EditBox
     *editbox;
 
-    if (hittype != DIK_RETURN)
+    if (hittype not_eq DIK_RETURN)
         return;
 
     editbox = (C_EditBox *) ctrl;
@@ -2094,22 +2094,22 @@ static void delete_tactical_object(long, short, C_Base *)
                     {
                         for (x = 0; x < width; x ++)
                         {
-                            if (x & 1)
+                            if (x bitand 1)
                             {
-                                old_team = (src[(y * width + x) / 2] & 0xf0) >> 4;
+                                old_team = (src[(y * width + x) / 2] bitand 0xf0) >> 4;
 
                                 if (old_team == team_mapping[loop])
                                 {
-                                    src[(y * width + x) / 2] &= 0x0f;
+                                    src[(y * width + x) / 2] and_eq 0x0f;
                                 }
                             }
                             else
                             {
-                                old_team = src[(y * width + x) / 2] & 0xf;
+                                old_team = src[(y * width + x) / 2] bitand 0xf;
 
                                 if (old_team == team_mapping[loop])
                                 {
-                                    src[(y * width + x) / 2] &= 0xf0;
+                                    src[(y * width + x) / 2] and_eq 0xf0;
                                 }
                             }
                         }
@@ -2155,10 +2155,10 @@ void tactical_add_victory_condition(VU_ID id, C_Base *)
 
     ent = (CampEntity)vuDatabase->Find(id);
 
-    if (!ent)
+    if ( not ent)
         return;
 
-    if (ent->IsObjective() || ent->IsFlight() || ent->IsBattalion())
+    if (ent->IsObjective() or ent->IsFlight() or ent->IsBattalion())
     {
         vc = new victory_condition(current_tactical_mission);
 
@@ -2295,7 +2295,7 @@ void add_all_vcs_to_ui(void)
     TREELIST *item;
     victory_condition *vc;
 
-    if (!gVCTree)
+    if ( not gVCTree)
         return;
 
     gVCTree->DeleteBranch(gVCTree->GetRoot());
@@ -2353,7 +2353,7 @@ long EvaluateSituation()
 
     for (i = 0; i < NUM_TEAMS; i++)
     {
-        if (TeamInfo[i] && (TeamInfo[i]->flags & TEAM_ACTIVE))
+        if (TeamInfo[i] and (TeamInfo[i]->flags bitand TEAM_ACTIVE))
         {
             TeamScores[i] = GetCurrentVCScore(i);
             teams++;
@@ -2442,7 +2442,7 @@ void EndGameEvaluation()
             lbox->SetValue(eval);
             lbitem = lbox->FindID(eval);
 
-            if (lbitem && lbitem->Label_)
+            if (lbitem and lbitem->Label_)
             {
                 win->HideCluster(lbitem->Label_->GetUserNumber(1));
                 win->HideCluster(lbitem->Label_->GetUserNumber(2));
@@ -2464,14 +2464,14 @@ void TriggerTacEndGame(void)
 {
     ShowGameOverWindow = 1;
 
-    if (gMainHandler && ShowGameOverWindow)
+    if (gMainHandler and ShowGameOverWindow)
     {
         C_Window *win;
 
         TheCampaign.EndgameResult = 1;
         SetTimeCompression(0);
 
-        if (gMainHandler->GetWindowFlags(CP_COUNTDOWN_WIN) & C_BIT_ENABLED)
+        if (gMainHandler->GetWindowFlags(CP_COUNTDOWN_WIN) bitand C_BIT_ENABLED)
         {
             win = gMainHandler->FindWindow(CP_COUNTDOWN_WIN);
 
@@ -2492,7 +2492,7 @@ void TriggerTacEndGame(void)
 
 void OpenTEGameOverWindow()
 {
-    if (!gMainHandler)
+    if ( not gMainHandler)
         return;
 
     EndGameEvaluation();
@@ -2510,7 +2510,7 @@ void TacEngGameOver()
         check_victory_conditions();
 
         TriggerTacEndGame(); // Tell UI to open window
-        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() | SHOW_TE_SCORES);
+        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitor SHOW_TE_SCORES);
     }
 }
 
@@ -2539,10 +2539,10 @@ void TacEngSetVCCompleted(long ID, int value)
 
         gRefreshScoresList = 1;
 
-        if (!current_tactical_mission->get_game_over() && check_victory_conditions())
+        if ( not current_tactical_mission->get_game_over() and check_victory_conditions())
         {
             TriggerTacEndGame(); // Tell UI to open window
-            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() | SHOW_TE_SCORES);
+            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitor SHOW_TE_SCORES);
         }
     }
 }
@@ -2557,12 +2557,12 @@ void CheckForVictory(void)
     if (current_tactical_mission)
     {
         // Victory Condition Checks
-        if (!current_tactical_mission->get_game_over() && check_victory_conditions())
+        if ( not current_tactical_mission->get_game_over() and check_victory_conditions())
         {
             // Kevin, when you transmit the EndgameResult variable... there is a duplicate section of code to this in
             // te_team_victory.cpp at the bottom
             TriggerTacEndGame(); // Tell UI to open window
-            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() | SHOW_TE_SCORES);
+            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitor SHOW_TE_SCORES);
         }
     }
 }

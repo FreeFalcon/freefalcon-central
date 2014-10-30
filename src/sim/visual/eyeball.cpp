@@ -35,7 +35,7 @@ SimObjectType* EyeballClass::Exec(SimObjectType* newTargetList)
     SimObjectType* tmpPtr = newTargetList;
 
 
-    if (!lockedTarget)
+    if ( not lockedTarget)
         return lockedTarget;
 
     // Validate our locked target
@@ -47,13 +47,13 @@ SimObjectType* EyeballClass::Exec(SimObjectType* newTargetList)
     {
 
         // Can't hold a lock if its outside our sensor cone
-        if (!CanSeeObject(lockedTarget))
+        if ( not CanSeeObject(lockedTarget))
         {
             newLock = NULL;
         }
 
         // Can't hold lock if the object is too far away or is occluded
-        if (!CanDetectObject(lockedTarget))
+        if ( not CanDetectObject(lockedTarget))
         {
             newLock = NULL;
         }
@@ -67,7 +67,7 @@ SimObjectType* EyeballClass::Exec(SimObjectType* newTargetList)
     Falcon4EntityClassType *classPtr = (Falcon4EntityClassType*)platform->EntityType();
 
     // If we are, get our skill and from it, calculate the 'retention time'
-    if (classPtr->dataType == DTYPE_VEHICLE && ((SimVehicleClass *)platform) && ((SimVehicleClass *)platform)->Brain())
+    if (classPtr->dataType == DTYPE_VEHICLE and ((SimVehicleClass *)platform) and ((SimVehicleClass *)platform)->Brain())
         retentionTime = ((SimVehicleClass *)platform)->Brain()->SkillLevel() * g_nAIVisualRetentionSkill + g_nAIVisualRetentionTime;
 
     // END OF ADDED SECTION
@@ -76,12 +76,12 @@ SimObjectType* EyeballClass::Exec(SimObjectType* newTargetList)
     while (tmpPtr)
     {
         // Can't hold a lock if its outside our sensor cone
-        if (CanSeeObject(tmpPtr) && CanDetectObject(tmpPtr))
+        if (CanSeeObject(tmpPtr) and CanDetectObject(tmpPtr))
         {
             tmpPtr->localData->sensorState[Type()] = SensorTrack;
             tmpPtr->localData->sensorLoopCount[Type()] = SimLibElapsedTime;
 
-            if (newLock == NULL && lockedTarget == NULL)
+            if (newLock == NULL and lockedTarget == NULL)
             {
                 newLock = tmpPtr;//Cobra added this because new detects are being passedto newLock
             }
@@ -99,7 +99,7 @@ SimObjectType* EyeballClass::Exec(SimObjectType* newTargetList)
 
     // Update our lock
     // ADDED BY S.G. THIS CODE WILL SET THE LOCK IF newLock IS NON NULL OR IF IT IS NULL AND THE TARGET WAS LOST LONG ENOUGH
-    if (newLock == NULL && lockedTarget && (unsigned int)lockedTarget->localData->sensorLoopCount[Visual] + retentionTime >= SimLibElapsedTime)
+    if (newLock == NULL and lockedTarget and (unsigned int)lockedTarget->localData->sensorLoopCount[Visual] + retentionTime >= SimLibElapsedTime)
         SetSensorTarget(lockedTarget);
     else
         // END OF ADDED SECTION
@@ -172,9 +172,9 @@ float EyeballClass::GetSignature(SimObjectType* obj)
             {
                 // Are the exterior lights turned on?
                 if (
-                    aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_LIGHTS) ||
-                    aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_NAVLIGHTS) ||
-                    aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_TAILSTROBE) ||
+                    aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_LIGHTS) or
+                    aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_NAVLIGHTS) or
+                    aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_TAILSTROBE) or
                     aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_LANDINGLIGHT)
                 )
                 {
@@ -182,7 +182,7 @@ float EyeballClass::GetSignature(SimObjectType* obj)
                 }
 
                 //Are we in Afterburner?
-                if (aircraft->af->GetHasAB() && aircraft->PowerOutput() > 1.0f && bogeyAngle > 20.0f)
+                if (aircraft->af->GetHasAB() and aircraft->PowerOutput() > 1.0f and bogeyAngle > 20.0f)
                 {
                     visDetMod = max(visDetMod, 30);
                 }
@@ -217,7 +217,7 @@ float EyeballClass::GetSignature(SimObjectType* obj)
             else
             {
                 // Contrails
-                if (objAlt > ((WeatherClass*)realWeather)->contrailLow &&
+                if (objAlt > ((WeatherClass*)realWeather)->contrailLow and 
                     objAlt < ((WeatherClass*)realWeather)->contrailHigh)
                 {
                     visDetMod = 10.0f;
@@ -236,8 +236,8 @@ float EyeballClass::GetSignature(SimObjectType* obj)
                 }
 
                 // MIL smoking aircraft
-                if (!aircraft->OnGround() &&
-                    aircraft->PowerOutput() <= 1.0f && aircraft->PowerOutput() > 0.90f)
+                if ( not aircraft->OnGround() and 
+                    aircraft->PowerOutput() <= 1.0f and aircraft->PowerOutput() > 0.90f)
                 {
                     float smoke = aircraft->af->EngineSmokeFactor();
 
@@ -253,7 +253,7 @@ float EyeballClass::GetSignature(SimObjectType* obj)
 
                 // 2000-10-16 ADDED BY S.G. SO DUST/WATER TRAIL IMPROVES VISIBILITY, BUT NOT AS MUCH AS CONTRAILS OR ENGINE SMOKE...
                 // Altitude is within 10 to 80 feet off the ground and we're not over a runway
-                //if (aircraft->ZPos() - aircraft->af->groundZ >= -80.0f && object->ZPos() - ((AircraftClass *)object)->af->groundZ <= -10.0f && !aircraft->af->IsSet(AirframeClass::OverRunway))
+                //if (aircraft->ZPos() - aircraft->af->groundZ >= -80.0f and object->ZPos() - ((AircraftClass *)object)->af->groundZ <= -10.0f and not aircraft->af->IsSet(AirframeClass::OverRunway))
                 //bonus *= 2.0F;
                 // END OF ADDED SECTION (WITHIN CODE I ADDED)
 
@@ -291,7 +291,7 @@ float EyeballClass::GetSignature(SimObjectType* obj)
                 float afVisDetNM = visDetNM * afCompPercent;
                 afVisDetNM = min(afVisDetNM, 10); //Cap at 10 miles vis
 
-                if (visDetMod == 5 && afVisDetNM < visDetMod)
+                if (visDetMod == 5 and afVisDetNM < visDetMod)
                 {
                     visDetMod = afVisDetNM;
                 }
@@ -324,10 +324,10 @@ float EyeballClass::GetSignature(SimObjectType* obj)
     // Now look if we (ourself) are a vehicle. Only vehicle have a brain.
     Falcon4EntityClassType *classPtr = (Falcon4EntityClassType*)platform->EntityType();
     // If we are, get our skill + 1
-    if (classPtr->dataType == DTYPE_VEHICLE &&
+    if (classPtr->dataType == DTYPE_VEHICLE and 
      // S.G. SHOULDN'T BE REQUIRED, ALL VEHICLES ARE ASSIGNED A BRAIN...
      // O.W. WRONG ASSUMPTION DUDE >:)
-     ((SimVehicleClass *)platform) && ((SimVehicleClass *)platform)->Brain())//me123 addet brain check to avoid CTD
+     ((SimVehicleClass *)platform) and ((SimVehicleClass *)platform)->Brain())//me123 addet brain check to avoid CTD
      skill = ((SimVehicleClass *)platform)->Brain()->SkillLevel() + 1;
 
     // Now if we have a locked target and that target is a vehicle, get his signature.
@@ -361,10 +361,10 @@ float EyeballClass::GetSignature(SimObjectType* obj)
     // M.N. Factor in the radius value of the draw pointer as representation of overall aircraft size
     /*if (g_bAddACSizeVisual)
     {
-     if (object->IsSim() && object->IsAirplane())
+     if (object->IsSim() and object->IsAirplane())
      {
      theObject = (SimBaseClass*) vuDatabase->Find(object->Id());
-     if (theObject && theObject->drawPointer)
+     if (theObject and theObject->drawPointer)
      {
      float radius = theObject->drawPointer->Radius();
      visualSignature *= (radius / g_fVisualNormalizeFactor); // normalize on F-16 drawpointer radius

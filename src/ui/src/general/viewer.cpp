@@ -28,7 +28,7 @@
 #include "textids.h"
 #include "teamdata.h"
 #include "classtbl.h"
-// 3D stuff in the UI? No Way!!!
+// 3D stuff in the UI? No Way
 
 
 // Ground Altitude Function = UIrenderer->GetGroundLevel(x,y);
@@ -95,7 +95,7 @@ void CenterOnFeatureCB(long, short hittype, C_Base *control)
     C_Feature *feat;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gUIViewer)
@@ -131,7 +131,7 @@ void SetHeading(C_Window *win)
     C_Text *txt;
     _TCHAR buffer[5];
 
-    if (!win)
+    if ( not win)
         return;
 
     txt = (C_Text*)win->FindControl(RECON_HEADING);
@@ -154,7 +154,7 @@ void FindCameraDeltas(OBJECTINFO *Info)
 
 void PositionCamera(OBJECTINFO *Info, C_Window *win, long client)
 {
-    if (!gUIViewer || !Info || !win)
+    if ( not gUIViewer or not Info or not win)
         return;
 
     FindCameraDeltas(Info);
@@ -168,7 +168,7 @@ void SetSlantRange(C_Window *win)
     C_Text *txt;
     _TCHAR buffer[15];
 
-    if (!win)
+    if ( not win)
         return;
 
     txt = (C_Text*)win->FindControl(SLANT_RANGE);
@@ -188,7 +188,7 @@ void SetBullsEye(C_Window *win)
     long brg, dist;
     _TCHAR buffer[40];
 
-    if (!win)
+    if ( not win)
         return;
 
     txt = (C_Text*)win->FindControl(BULLSEYE);
@@ -224,7 +224,7 @@ BOOL ReconListSortCB(TREELIST *list, TREELIST *newitem)
     C_Feature *feat1, *feat2;
     C_Entity *ent1, *ent2;
 
-    if (!list || !newitem)
+    if ( not list or not newitem)
         return(FALSE);
 
     if (list->Type_ == C_TYPE_ROOT)
@@ -240,7 +240,7 @@ BOOL ReconListSortCB(TREELIST *list, TREELIST *newitem)
         ent1 = (C_Entity*)list->Item_;
         ent2 = (C_Entity*)newitem->Item_;
 
-        if (!ent1 || !ent2)
+        if ( not ent1 or not ent2)
             return(FALSE);
 
         if (_tcscmp(ent2->GetName(), ent1->GetName()) < 0)
@@ -252,7 +252,7 @@ BOOL ReconListSortCB(TREELIST *list, TREELIST *newitem)
         feat1 = (C_Feature*)list->Item_;
         feat2 = (C_Feature*)newitem->Item_;
 
-        if (!feat1 || !feat2)
+        if ( not feat1 or not feat2)
             return(FALSE);
 
         if (feat2->GetFeatureValue() > feat1->GetFeatureValue())
@@ -295,12 +295,12 @@ int UI_Deaggregate(ObjectiveClass* objective)
 
     tree = (C_TreeList*)win->FindControl(RECON_TREE);
 
-    if (!tree)
+    if ( not tree)
         return(0);
 
     root = tree->Find(objective->GetTeam());
 
-    if (!root)
+    if ( not root)
     {
         txt = new C_Text;
         txt->Setup(C_DONT_CARE, 0);
@@ -316,7 +316,7 @@ int UI_Deaggregate(ObjectiveClass* objective)
 
     }
 
-    if (!root)
+    if ( not root)
         return(0);
 
     recon_ent = BuildObjective(objective);
@@ -338,7 +338,7 @@ int UI_Deaggregate(ObjectiveClass* objective)
         {
             fc = GetFeatureClassData(classID);
 
-            if (!fc || fc->Flags & FEAT_VIRTUAL)
+            if ( not fc or fc->Flags bitand FEAT_VIRTUAL)
                 continue;
 
             objective->GetFeatureOffset(f, &y, &x, &z);
@@ -347,11 +347,11 @@ int UI_Deaggregate(ObjectiveClass* objective)
             objPos.z = z;
             classPtr = &Falcon4ClassTable[fc->Index];
 
-            if (classPtr != NULL)
+            if (classPtr not_eq NULL)
             {
-                drawptr = LoadFeature(objective->GetCampID() << 16 | f, classPtr->visType[objective->GetFeatureStatus(f)], &objPos, (float)FeatureEntryDataTable[fid].Facing);
+                drawptr = LoadFeature(objective->GetCampID() << 16 bitor f, classPtr->visType[objective->GetFeatureStatus(f)], &objPos, (float)FeatureEntryDataTable[fid].Facing);
 
-                if (drawptr != NULL)
+                if (drawptr not_eq NULL)
                 {
                     // if(objective->GetFeatureValue(f))
                     // {
@@ -361,7 +361,7 @@ int UI_Deaggregate(ObjectiveClass* objective)
 
                     if (feat)
                     {
-                        item = tree->CreateItem(objective->GetCampID() << 16 | f, C_TYPE_ITEM, feat);
+                        item = tree->CreateItem(objective->GetCampID() << 16 bitor f, C_TYPE_ITEM, feat);
 
                         if (item)
                             tree->AddChildItem(parent, item);
@@ -394,7 +394,7 @@ void MoveViewTimerCB(long, short, C_Base *control)
 
     if (control->GetUserNumber(_UI95_TIMER_COUNTER_) < 1)
     {
-        if (Recon.Direction == 0) // && TheLoader.LoaderQueueEmpty())
+        if (Recon.Direction == 0) // and TheLoader.LoaderQueueEmpty())
             return;
 
         Recon.Heading += Recon.Direction;
@@ -448,7 +448,7 @@ void LoadObject(long objID)
         if (currentObj == objID)
             return;
 
-        if (currentObj != -1)
+        if (currentObj not_eq -1)
             DrawableBSP::Unlock(currentObj);
 
         DrawableBSP::LockAndLoad(objID);
@@ -458,7 +458,7 @@ void LoadObject(long objID)
 
 void UnloadObject()
 {
-    if (currentObj != -1)
+    if (currentObj not_eq -1)
     {
         DrawableBSP::Unlock(currentObj);
         currentObj = -1;
@@ -475,7 +475,7 @@ void CleanupObjectViewer()
         UIrend3d = NULL;
     }
 
-    if (gBSPList != NULL)
+    if (gBSPList not_eq NULL)
     {
         gBSPList->RemoveAll();
         delete gBSPList;
@@ -491,7 +491,7 @@ void ViewBSPObjectCB(long, short, C_Base *)
 
     obj = gBSPList->Find(FirstPlane << 24);
 
-    if (obj != NULL)
+    if (obj not_eq NULL)
     {
         UIrend3d->StartDraw();
         ((DrawableBSP*)obj->object)->Draw(UIrend3d);

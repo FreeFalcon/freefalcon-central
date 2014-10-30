@@ -16,7 +16,7 @@ VuFullGridIterator::~VuFullGridIterator()
 
 VuEntity *VuFullGridIterator::GetFirst()
 {
-    if (!collection_)
+    if ( not collection_)
     {
         return NULL;
     }
@@ -41,7 +41,7 @@ VuEntity *VuFullGridIterator::GetNext()
 
     do
     {
-        if (ret != NULL)
+        if (ret not_eq NULL)
         {
             // found it
             return ret;
@@ -69,7 +69,7 @@ VuEntity *VuFullGridIterator::GetFirst(VuFilter* filter)
 {
     VuEntity* retval = GetFirst();
 
-    if (retval == 0 || filter->Test(retval))
+    if (retval == 0 or filter->Test(retval))
     {
         return retval;
     }
@@ -81,7 +81,7 @@ VuEntity *VuFullGridIterator::GetNext(VuFilter* filter)
 {
     VuEntity* retval = 0;
 
-    while ((retval = GetNext()) != 0)
+    while ((retval = GetNext()) not_eq 0)
     {
         if (filter->Test(retval))
         {
@@ -133,7 +133,7 @@ VuEntity *VuFullGridIterator::GetFirst()
 VuEntity *VuFullGridIterator::GetNext()
 {
     // sfr: smartpointer
-    while ((curnode_ == 0) && (++currow_ < ((VuGridTree *)collection_)->rowcount_))
+    while ((curnode_ == 0) and (++currow_ < ((VuGridTree *)collection_)->rowcount_))
     {
         curRB_++;
         curnode_ = curRB_->root_;
@@ -177,7 +177,7 @@ VuEntity *VuFullGridIterator::GetFirst(VuFilter* filter)
 {
     VuEntity* retval = GetFirst();
 
-    if (retval == 0 || filter->Test(retval))
+    if (retval == 0 or filter->Test(retval))
     {
         return retval;
     }
@@ -189,7 +189,7 @@ VuEntity *VuFullGridIterator::GetNext(VuFilter* filter)
 {
     VuEntity* retval = 0;
 
-    while ((retval = GetNext()) != 0)
+    while ((retval = GetNext()) not_eq 0)
     {
         if (filter->Test(retval))
         {

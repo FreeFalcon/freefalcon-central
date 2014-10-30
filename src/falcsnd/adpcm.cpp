@@ -5,6 +5,7 @@
 
 *************************************************************************/
 
+#include <cISO646>
 #include <windows.h>
 #include "debuggr.h"
 #include "fsound.h"
@@ -54,14 +55,14 @@ long CSoundMgr::StreamIMAADPCM(SOUNDSTREAM *Stream, char *dest, long dlen)
     }
     else if (Stream->ImaInfo->sreadidx < Stream->ImaInfo->slen)
     {
-        if (!(Stream->ImaInfo->Status & SND_STREAM_PART2))
+        if ( not (Stream->ImaInfo->Status bitand SND_STREAM_PART2))
         {
             if ((Stream->ImaInfo->sidx % Stream->ImaInfo->srcsize) > (Stream->ImaInfo->srcsize >> 1))
             {
                 bytestoread = min(Stream->ImaInfo->slen - Stream->ImaInfo->sreadidx, (Stream->ImaInfo->srcsize >> 1));
                 ReadFile(Stream->fp, &Stream->ImaInfo->src[Stream->ImaInfo->sreadidx % Stream->ImaInfo->srcsize], bytestoread, &bytesread, NULL);
                 Stream->ImaInfo->sreadidx += bytesread;
-                Stream->ImaInfo->Status ^= SND_STREAM_PART2;
+                Stream->ImaInfo->Status xor_eq SND_STREAM_PART2;
             }
         }
         else
@@ -71,7 +72,7 @@ long CSoundMgr::StreamIMAADPCM(SOUNDSTREAM *Stream, char *dest, long dlen)
                 bytestoread = min(Stream->ImaInfo->slen - Stream->ImaInfo->sreadidx, (Stream->ImaInfo->srcsize >> 1));
                 ReadFile(Stream->fp, &Stream->ImaInfo->src[Stream->ImaInfo->sreadidx % Stream->ImaInfo->srcsize], bytestoread, &bytesread, NULL);
                 Stream->ImaInfo->sreadidx += bytesread;
-                Stream->ImaInfo->Status ^= SND_STREAM_PART2;
+                Stream->ImaInfo->Status xor_eq SND_STREAM_PART2;
             }
         }
     }
@@ -105,9 +106,9 @@ long CSoundMgr::StreamImaM16(IMA_STREAM *Info, char *dBuff, long dlen)
     didx = 0;
 
     //step through each byte of IMA ADPCM and decode it to PCM
-    while (Info->sidx < Info->slen && didx < dlen && Info->didx < Info->dlen)
+    while (Info->sidx < Info->slen and didx < dlen and Info->didx < Info->dlen)
     {
-        if (!Info->blockLength)
+        if ( not Info->blockLength)
         {
             Info->blockLength  = min(Info->slen, SND_ADPCM_MBLOCK_ALIGN);
             Info->blockLength    -= sizeof(IMA_BLOCK) * SND_WAV_MCHAN;
@@ -118,7 +119,7 @@ long CSoundMgr::StreamImaM16(IMA_STREAM *Info, char *dBuff, long dlen)
             Info->predSampleL  = header->iSamp0;
             Info->stepIndexL  = (short)header->bStepTableIndex;
 
-            if (!IMA_ValidStepIndex(Info->stepIndexL))
+            if ( not IMA_ValidStepIndex(Info->stepIndexL))
             {
                 MonoPrint("S16:  invalid left step index\n");
                 return 0;
@@ -132,9 +133,9 @@ long CSoundMgr::StreamImaM16(IMA_STREAM *Info, char *dBuff, long dlen)
             Info->count = 0;
         }
 
-        while (Info->blockLength && didx < dlen && Info->didx < Info->dlen)
+        while (Info->blockLength and didx < dlen and Info->didx < Info->dlen)
         {
-            if (!Info->count)
+            if ( not Info->count)
             {
                 Info->leftSamples  = Info->src[Info->sidx % Info->srcsize];
                 Info->sidx++;
@@ -144,9 +145,9 @@ long CSoundMgr::StreamImaM16(IMA_STREAM *Info, char *dBuff, long dlen)
                 Info->count = 2;
             }
 
-            while (Info->count && didx < dlen && Info->didx < Info->dlen)
+            while (Info->count and didx < dlen and Info->didx < Info->dlen)
             {
-                encSample = (short)(Info->leftSamples & 0x0F);
+                encSample = (short)(Info->leftSamples bitand 0x0F);
                 stepSize = step[Info->stepIndexL];
                 Info->predSampleL  = IMA_SampleDecode(encSample, Info->predSampleL, stepSize);
                 Info->stepIndexL = IMA_NextStepIndex(encSample, Info->stepIndexL);
@@ -184,9 +185,9 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
     didx = 0;
 
     //step through each byte of IMA ADPCM and decode it to PCM
-    while (Info->sidx < Info->slen && didx < dlen && Info->didx < Info->dlen)
+    while (Info->sidx < Info->slen and didx < dlen and Info->didx < Info->dlen)
     {
-        if (!Info->blockLength)
+        if ( not Info->blockLength)
         {
             //data should always be block aligned
             if (Info->slen < SND_ADPCM_SBLOCK_ALIGN)
@@ -204,7 +205,7 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
             Info->predSampleL  = header->iSamp0;
             Info->stepIndexL  = (short)header->bStepTableIndex;
 
-            if (!IMA_ValidStepIndex(Info->stepIndexL))
+            if ( not IMA_ValidStepIndex(Info->stepIndexL))
             {
                 MonoPrint("S16:  invalid left step index\n");
                 return 0;
@@ -216,7 +217,7 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
             Info->predSampleR  = header->iSamp0;
             Info->stepIndexR  = (short)header->bStepTableIndex;
 
-            if (!IMA_ValidStepIndex(Info->stepIndexR))
+            if ( not IMA_ValidStepIndex(Info->stepIndexR))
             {
                 MonoPrint("S16:  invlid right step index\n");
                 return 0;
@@ -230,7 +231,7 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
             //the first long contains 4 left samples the second long
             //contains 4 right samples.  Will process the source in 8-byte
             //chunks to make it eay to interleave the output correctly
-            if ((Info->blockLength % 8) != 0)
+            if ((Info->blockLength % 8) not_eq 0)
             {
                 MonoPrint("S16:  buffer length is not divisible by 8\n");
                 return 0;
@@ -239,9 +240,9 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
             Info->count = 0;
         }
 
-        while (Info->blockLength && didx < dlen && Info->didx < Info->dlen)
+        while (Info->blockLength and didx < dlen and Info->didx < Info->dlen)
         {
-            if (!Info->count)
+            if ( not Info->count)
             {
                 Info->blockLength    -= 8;
 
@@ -253,16 +254,16 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
                 Info->count = 8;
             }
 
-            while (Info->count && didx < dlen && Info->didx < Info->dlen)
+            while (Info->count and didx < dlen and Info->didx < Info->dlen)
             {
                 //left channel
-                encSampleL = (short)(Info->leftSamples & 0x0F);
+                encSampleL = (short)(Info->leftSamples bitand 0x0F);
                 stepSize = step[Info->stepIndexL];
                 Info->predSampleL = IMA_SampleDecode(encSampleL, Info->predSampleL, stepSize);
                 Info->stepIndexL = IMA_NextStepIndex(encSampleL, Info->stepIndexL);
 
                 //right channel
-                encSampleR  = (short)(Info->rightSamples & 0x0F);
+                encSampleR  = (short)(Info->rightSamples bitand 0x0F);
                 stepSize = step[Info->stepIndexR];
                 Info->predSampleR = IMA_SampleDecode(encSampleR, Info->predSampleR, stepSize);
                 Info->stepIndexR  = IMA_NextStepIndex(encSampleR, Info->stepIndexR);
@@ -332,7 +333,7 @@ long CSoundMgr::ImaDecodeS16(char *sBuff, char *dBuff, long bufferLength)
         predSampleL = header.iSamp0;
         stepIndexL = (short)header.bStepTableIndex;
 
-        if (!IMA_ValidStepIndex(stepIndexL))
+        if ( not IMA_ValidStepIndex(stepIndexL))
         {
             MonoPrint("S16:  invalid left step index\n");
             return 0;
@@ -344,7 +345,7 @@ long CSoundMgr::ImaDecodeS16(char *sBuff, char *dBuff, long bufferLength)
         predSampleR = header.iSamp0;
         stepIndexR = (short)header.bStepTableIndex;
 
-        if (!IMA_ValidStepIndex(stepIndexR))
+        if ( not IMA_ValidStepIndex(stepIndexR))
         {
             MonoPrint("S16:  invlid right step index\n");
             return 0;
@@ -357,13 +358,13 @@ long CSoundMgr::ImaDecodeS16(char *sBuff, char *dBuff, long bufferLength)
         //the first long contains 4 left samples the second long
         //contains 4 right samples.  Will process the source in 8-byte
         //chunks to make it eay to interleave the output correctly
-        if ((blockLength % 8) != 0)
+        if ((blockLength % 8) not_eq 0)
         {
             MonoPrint("S16:  buffer length is not divisible by 8\n");
             return 0;
         }
 
-        while (0 != blockLength)
+        while (0 not_eq blockLength)
         {
             blockLength    -= 8;
 
@@ -375,13 +376,13 @@ long CSoundMgr::ImaDecodeS16(char *sBuff, char *dBuff, long bufferLength)
             for (i = 8; i > 0; i--)
             {
                 //left channel
-                encSampleL = (short)(leftSamples & 0x0F);
+                encSampleL = (short)(leftSamples bitand 0x0F);
                 stepSize = step[stepIndexL];
                 predSampleL = IMA_SampleDecode(encSampleL, predSampleL, stepSize);
                 stepIndexL = IMA_NextStepIndex(encSampleL, stepIndexL);
 
                 //right channel
-                encSampleR  = (short)(rightSamples & 0x0F);
+                encSampleR  = (short)(rightSamples bitand 0x0F);
                 stepSize = step[stepIndexR];
                 predSampleR = IMA_SampleDecode(encSampleR, predSampleR, stepSize);
                 stepIndexR  = IMA_NextStepIndex(encSampleR, stepIndexR);
@@ -394,8 +395,8 @@ long CSoundMgr::ImaDecodeS16(char *sBuff, char *dBuff, long bufferLength)
                 leftSamples  >>= 4;
                 rightSamples >>= 4;
             } //loop of i=8 decrement to 0
-        } //0 != blockLength
-    } //while 0 != bufferLength
+        } //0 not_eq blockLength
+    } //while 0 not_eq bufferLength
 
     //return the number of bytes written
     return (long)(dBuff - dBuffStart);
@@ -438,7 +439,7 @@ long CSoundMgr::ImaDecodeM16(char *sBuff, char *dBuff, long bufferLength)
         predSample  = header.iSamp0;
         stepIndex  = (short)header.bStepTableIndex;
 
-        if (!IMA_ValidStepIndex(stepIndex))
+        if ( not IMA_ValidStepIndex(stepIndex))
         {
             MonoPrint("M16: invalid step index\n");
             return 0;
@@ -453,7 +454,7 @@ long CSoundMgr::ImaDecodeM16(char *sBuff, char *dBuff, long bufferLength)
             sample   = *sBuff++;
 
             //sample 1
-            encSample = (short)(sample & 0x0F);
+            encSample = (short)(sample bitand 0x0F);
             stepSize = step[stepIndex];
             predSample  = IMA_SampleDecode(encSample, predSample, stepSize);
             stepIndex = IMA_NextStepIndex(encSample, stepIndex);
@@ -469,7 +470,7 @@ long CSoundMgr::ImaDecodeM16(char *sBuff, char *dBuff, long bufferLength)
 
             *(short *)dBuff = (short)predSample;
             dBuff = dBuff + sizeof(short);
-        } //0 != blockLength
+        } //0 not_eq blockLength
     } //while bufferLength >= blockHeaderSize
 
     //return the number of bytes written
@@ -505,20 +506,20 @@ short CSoundMgr::IMA_SampleDecode(short nEncodedSample, short nPredictedSample, 
     //
     lDifference = nStepSize >> 3;
 
-    if (nEncodedSample & 4)
+    if (nEncodedSample bitand 4)
         lDifference += nStepSize;
 
-    if (nEncodedSample & 2)
+    if (nEncodedSample bitand 2)
         lDifference += nStepSize >> 1;
 
-    if (nEncodedSample & 1)
+    if (nEncodedSample bitand 1)
         lDifference += nStepSize >> 2;
 
     //
     //  If the 'sign bit' of the encoded nibble is set, then the
     //  difference is negative...
     //
-    if (nEncodedSample & 8)
+    if (nEncodedSample bitand 8)
         lDifference = -lDifference;
 
     //
@@ -596,7 +597,7 @@ short CSoundMgr::IMA_NextStepIndex(short nEncodedSample, short nStepIndex)
 BOOL CSoundMgr::IMA_ValidStepIndex(short nStepIndex)
 {
 
-    if (nStepIndex >= 0 && nStepIndex <= 88)
+    if (nStepIndex >= 0 and nStepIndex <= 88)
         return TRUE;
     else
         return FALSE;

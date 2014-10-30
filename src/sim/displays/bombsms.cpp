@@ -40,11 +40,11 @@ int SMSClass::DropBomb(int allowRipple)
 
 
     // Check for SMS Failure or other reason not to drop
-    if (!CurStationOK() || //Weapon Station failure
-        ownship->OnGround() || // Weight on wheels inhibit
-        !curWeapon || // No Weapon
-        ownship->GetNz() < 0.0F || // Negative Gs
-        MasterArm() != Arm) // Not in arm mode
+    if ( not CurStationOK() or //Weapon Station failure
+        ownship->OnGround() or // Weight on wheels inhibit
+ not curWeapon or // No Weapon
+        ownship->GetNz() < 0.0F or // Negative Gs
+        MasterArm() not_eq Arm) // Not in arm mode
     {
         ownship->GetFCC()->bombPickle = FALSE;
         return retval;
@@ -60,7 +60,7 @@ int SMSClass::DropBomb(int allowRipple)
         slotId = curHardpoint;
 
     // Verify curWeapon on curHardpoint
-    if (curHardpoint < 0 || hardPoint[curHardpoint]->weaponPointer.get() != curWeapon)
+    if (curHardpoint < 0 or hardPoint[curHardpoint]->weaponPointer.get() not_eq curWeapon)
     {
         for (i = 0; i < numHardpoints; i++)
         {
@@ -82,7 +82,7 @@ int SMSClass::DropBomb(int allowRipple)
         }
     }
 
-    if (curWeapon && fabs(ownship->Roll()) < 60.0F * DTR)
+    if (curWeapon and fabs(ownship->Roll()) < 60.0F * DTR)
     {
         F4Assert(curWeapon->IsBomb());
 
@@ -90,7 +90,7 @@ int SMSClass::DropBomb(int allowRipple)
 
         theBomb.reset((BombClass *)curWeapon.get());
 
-        // edg: it's been observed that theBomb will be NULL at times?!
+        // edg: it's been observed that theBomb will be NULL at times?
         // leonr: This happens when you ask for too many release pulses.
         if (theBomb == NULL)
         {
@@ -128,16 +128,16 @@ int SMSClass::DropBomb(int allowRipple)
         AircraftClass *self = ((AircraftClass*)playerAC);
 
         //AircraftClass *self = ((AircraftClass*)ownship->DriveEntity);
-        if (theBomb && ownship->GetFCC())
+        if (theBomb and ownship->GetFCC())
         {
             // Cobra - targets for all
             if (theBomb->IsSetBombFlag(BombClass::IsGPS)
-                || theBomb->IsSetBombFlag(BombClass::IsJSOW))
+                or theBomb->IsSetBombFlag(BombClass::IsJSOW))
             {
                 // Cobra - Dynamic select of target from list
-                //TOO mode  //Cobra - !JDAMsbc = PB aggregated - Temp CTD fix
+                //TOO mode  //Cobra - not JDAMsbc = PB aggregated - Temp CTD fix
                 if (((AircraftClass*)ownship)->GetSMS()->JDAMtargeting == SMSBaseClass::TOO
-                    || !(((AircraftClass*)ownship)->JDAMsbc))
+                    or not (((AircraftClass*)ownship)->JDAMsbc))
                 {
                     theBomb->gpsx = ownship->GetFCC()->groundDesignateX;
                     theBomb->gpsy = ownship->GetFCC()->groundDesignateY;
@@ -180,7 +180,7 @@ int SMSClass::DropBomb(int allowRipple)
         vc = GetVehicleClassData(ownship->Type() - VU_LAST_ENTITY_TYPE);
         visFlag = vc->VisibleFlags;
 
-        if (visFlag & (1 << curHardpoint) && theBomb->drawPointer)
+        if (visFlag bitand (1 << curHardpoint) and theBomb->drawPointer)
         {
             // Detach visual from parent
             hardPoint[curHardpoint]->DetachWeaponBSP(theBomb.get()); // MLR 2/21/2004 -
@@ -190,7 +190,7 @@ int SMSClass::DropBomb(int allowRipple)
              OTWDriver.DetachObject(hardPoint[curHardpoint]->GetRackOrPylon(),
              (DrawableBSP*)(theBomb->drawPointer), theBomb->GetRackSlot());// MLR 2/20/2004 - added OrPylon
             }
-            else if (ownship->drawPointer && curHardpoint && theBomb->drawPointer)
+            else if (ownship->drawPointer and curHardpoint and theBomb->drawPointer)
             {
              OTWDriver.DetachObject((DrawableBSP*)(ownship->drawPointer), (DrawableBSP*)(theBomb->drawPointer), slotId);
             }
@@ -237,7 +237,7 @@ int SMSClass::DropBomb(int allowRipple)
             g_intellivibeData.BombDropped++;
         }
 
-        // Note: The drawable for this object has already been created!
+        // Note: The drawable for this object has already been created
         theBomb->Wake();
         // Record the drop
         ownship->SendFireMessage(theBomb.get(), FalconWeaponsFire::BMB, TRUE, ownship->targetPtr);
@@ -252,10 +252,10 @@ int SMSClass::DropBomb(int allowRipple)
         }
 
         // Want to drop a pair - No pairs w/ only one rack of bombs unless from centerline
-        //if (pair && allowRipple && (curHardpoint != matchingStation || curHardpoint == (numHardpoints / 2 + 1)))
+        //if (pair and allowRipple and (curHardpoint not_eq matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
         // Cobra -
-        //if (GetAGBPair() && allowRipple && (curHardpoint != matchingStation || curHardpoint == (numHardpoints / 2 + 1)))
-        if (GetAGBPair() && (curHardpoint != matchingStation || curHardpoint == (numHardpoints / 2 + 1)))
+        //if (GetAGBPair() and allowRipple and (curHardpoint not_eq matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
+        if (GetAGBPair() and (curHardpoint not_eq matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
         {
             theBomb.reset((BombClass *)curWeapon.get());
 
@@ -277,19 +277,19 @@ int SMSClass::DropBomb(int allowRipple)
                 // in case the target is aggregated and an AI is bombing it
 
                 //Wombat778 03-09-04 Copy the current ground designated point into the bomb
-                if (theBomb && ownship->GetFCC())
+                if (theBomb and ownship->GetFCC())
                 {
                     // Cobra - targets for all
                     //if (theBomb->IsSetBombFlag(BombClass::IsGPS))
-                    //if (ownship->IsPlayer() && (theBomb->IsSetBombFlag(BombClass::IsGPS)
+                    //if (ownship->IsPlayer() and (theBomb->IsSetBombFlag(BombClass::IsGPS)
                     // FRB - for all
-                    if ((theBomb->IsSetBombFlag(BombClass::IsGPS) || theBomb->IsSetBombFlag(BombClass::IsJSOW)))
+                    if ((theBomb->IsSetBombFlag(BombClass::IsGPS) or theBomb->IsSetBombFlag(BombClass::IsJSOW)))
                     {
                         // Cobra - Dynamic select of target from list
                         if (((AircraftClass*)ownship)->GetSMS()->JDAMtargeting == SMSBaseClass::TOO
-                            || !(((AircraftClass*)ownship)->JDAMsbc))
+                            or not (((AircraftClass*)ownship)->JDAMsbc))
                         {
-                            //TOO mode  //Cobra - !JDAMsbc = PB aggregated - Temp CTD fix
+                            //TOO mode  //Cobra - not JDAMsbc = PB aggregated - Temp CTD fix
                             theBomb->gpsx = ownship->GetFCC()->groundDesignateX;
                             theBomb->gpsy = ownship->GetFCC()->groundDesignateY;
                             theBomb->JSOWtgtID = ((AircraftClass*)ownship)->JDAMtgtnum;
@@ -389,7 +389,7 @@ int SMSClass::DropBomb(int allowRipple)
 
         retval = TRUE;
 
-        if (!curRippleCount)
+        if ( not curRippleCount)
         {
             // Can we do a ripple drop?
             if (allowRipple)
@@ -400,7 +400,7 @@ int SMSClass::DropBomb(int allowRipple)
             nextDrop = SimLibElapsedTime + FloatToInt32((GetAGBRippleInterval()) /
                        (float)sqrt(ownship->XDelta() * ownship->XDelta() + ownship->YDelta() * ownship->YDelta()) * SEC_TO_MSEC);
 
-            if (!curRippleCount)
+            if ( not curRippleCount)
             {
                 ClearFlag(Firing);
             }
@@ -428,7 +428,7 @@ void SMSBaseClass::ReplaceBomb(int station, BombClass *theBomb)
     vc = GetVehicleClassData(ownship->Type() - VU_LAST_ENTITY_TYPE);
     visFlag = vc->VisibleFlags;
 
-    if (visFlag & 1 << curHardpoint)
+    if (visFlag bitand 1 << curHardpoint)
     {
         CreateDrawable(newBomb.get(), OTWDriver.Scale());
 

@@ -26,7 +26,7 @@ extern bool g_bAntElevKnobFix;  // MD -- 20031222: antenna elevation knob fixes
 
 void RadarDopplerClass::ExecModes(int newDesignate, int newDrop)
 {
-    designateCmd = newDesignate && IsSOI();
+    designateCmd = newDesignate and IsSOI();
 
     if (designateCmd)
         SetFlagBit(Designating);
@@ -99,12 +99,12 @@ void RadarDopplerClass::RWSMode()
     /*-----------------------*/
     /* Spotlight / Designate */
     /*-----------------------*/
-    if (IsSet(Spotlight) && !designateCmd)
+    if (IsSet(Spotlight) and not designateCmd)
         SetFlagBit(Designating);
     else
         ClearFlagBit(Designating);
 
-    if (!IsSet(Spotlight) && designateCmd)
+    if ( not IsSet(Spotlight) and designateCmd)
     {
         lastAzScan = azScan;
         lastBars = bars;
@@ -135,7 +135,7 @@ void RadarDopplerClass::RWSMode()
             /*----------------------*/
             /* detection this frame */
             /*----------------------*/
-            if (rdrData->rdrDetect & 0x10)
+            if (rdrData->rdrDetect bitand 0x10)
             {
                 AddToHistory(rdrObj, Solid);
             }
@@ -151,16 +151,16 @@ void RadarDopplerClass::RWSMode()
         /*-------------*/
         // 2002-03-25 MN add a check if the target is in our radar cone - if not, we not even have an UnreliableTrack
         // This fixes the AI oscillating target acquisition and losing
-        if ((rdrData->rdrDetect & 0x1f) && (fabs(rdrData->ata) < radarData->ScanHalfAngle))
+        if ((rdrData->rdrDetect bitand 0x1f) and (fabs(rdrData->ata) < radarData->ScanHalfAngle))
             rdrData->sensorState[Radar] = UnreliableTrack;
 
         /*--------------------------------*/
         /* If designating, check for lock */
         /*--------------------------------*/
-        if (IsSet(Designating) && (mode == RWS || mode == LRS) && rdrObj->BaseData()->Id() == targetUnderCursor)
+        if (IsSet(Designating) and (mode == RWS or mode == LRS) and rdrObj->BaseData()->Id() == targetUnderCursor)
         {
             // Always lock if it is bright green (detected last time around)
-            if (rdrData->rdrDetect & 0x10)
+            if (rdrData->rdrDetect bitand 0x10)
             {
                 rdrData->rdrDetect = 0x1f;
                 SetSensorTarget(rdrObj);
@@ -207,15 +207,15 @@ void RadarDopplerClass::SAMMode(void)
     }
 
     // Drop immediatly on leaving volume
-    if (fabs(lockedTargetData->ata) > MAX_ANT_EL)//me123 ||
+    if (fabs(lockedTargetData->ata) > MAX_ANT_EL)//me123 or
         //me123 fabs(lockedTargetData->el) > MAX_ANT_EL)
     {
         dropSAM = TRUE;
     }
 
-    if (!g_bAntElevKnobFix)
+    if ( not g_bAntElevKnobFix)
     {
-        if (oldseekerElCenter && subMode != SAM_AUTO_MODE)
+        if (oldseekerElCenter and subMode not_eq SAM_AUTO_MODE)
         {
             seekerElCenter = min(max(oldseekerElCenter, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
             oldseekerElCenter = 0.0f;
@@ -233,7 +233,7 @@ void RadarDopplerClass::SAMMode(void)
         {
             float elhack;
 
-            if (!g_bAntElevKnobFix)
+            if ( not g_bAntElevKnobFix)
                 elhack = oldseekerElCenter;
 
             azScan = lastSAMAzScan;
@@ -245,7 +245,7 @@ void RadarDopplerClass::SAMMode(void)
             ClearFlagBit(STTingTarget);
             ChangeMode(SAM);
 
-            if (!g_bAntElevKnobFix)
+            if ( not g_bAntElevKnobFix)
             {
                 oldseekerElCenter = elhack;
                 seekerElCenter = elhack;
@@ -267,7 +267,7 @@ void RadarDopplerClass::SAMMode(void)
 
         while (rdrObj)
         {
-            if (rdrObj->BaseData()->Id() == targetUnderCursor && IsSet(Designating) && !didDesignate)
+            if (rdrObj->BaseData()->Id() == targetUnderCursor and IsSet(Designating) and not didDesignate)
             {
                 // Bug a target and go into STT
                 if (rdrObj == lockedTarget)
@@ -296,7 +296,7 @@ void RadarDopplerClass::SAMMode(void)
                 {
                     // Move sam target to something else.
                     // Lock anything detected at last chance
-                    if (rdrObj->localData->rdrDetect & 0x10)
+                    if (rdrObj->localData->rdrDetect bitand 0x10)
                     {
                         if (lockedTarget)
                         {
@@ -331,7 +331,7 @@ void RadarDopplerClass::SAMMode(void)
                 /*----------------------*/
                 /* detection this frame */
                 /*----------------------*/
-                if (rdrObj->localData->rdrDetect & 0x10)
+                if (rdrObj->localData->rdrDetect bitand 0x10)
                 {
                     AddToHistory(rdrObj, Solid);
                 }
@@ -353,7 +353,7 @@ void RadarDopplerClass::SAMMode(void)
 
         if (lockedTargetData->painted)
         {
-            if (lockedTargetData->rdrDetect & 0x10)
+            if (lockedTargetData->rdrDetect bitand 0x10)
             {
                 lockedTargetData->sensorState[Radar] = SensorTrack;
                 AddToHistory(lockedTarget, Track);
@@ -375,9 +375,9 @@ void RadarDopplerClass::SAMMode(void)
             seekerAzCenter = min(max(tmpVal , -MAX_ANT_EL + azScan), MAX_ANT_EL - azScan);
             tmpVal = TargetEl(platform, lockedTarget);
 
-            if (!g_bAntElevKnobFix)
+            if ( not g_bAntElevKnobFix)
             {
-                if (!oldseekerElCenter)
+                if ( not oldseekerElCenter)
                     seekerElCenter = min(max(tmpVal, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
             }
             else
@@ -388,18 +388,18 @@ void RadarDopplerClass::SAMMode(void)
         /* Auto Range Scale */
         /*------------------*/
         //me123 don't autorange in SAM MODE
-        //    if (lockedTargetData->range > 0.9F * tdisplayRange &&
+        //    if (lockedTargetData->range > 0.9F * tdisplayRange and 
         //     curRangeIdx < NUM_RANGES - 1)
         //    rangeChangeCmd = 1;
-        //    else if (lockedTargetData->range < 0.4F * tdisplayRange &&
+        //    else if (lockedTargetData->range < 0.4F * tdisplayRange and 
         //     curRangeIdx > 0)
         //    rangeChangeCmd = -1;
-        if (!dropTrackCmd)
+        if ( not dropTrackCmd)
             justdidSTT = FALSE;
 
-        if (totHits < HITS_FOR_TRACK || dropSAM || (dropTrackCmd && !justdidSTT))
+        if (totHits < HITS_FOR_TRACK or dropSAM or (dropTrackCmd and not justdidSTT))
         {
-            if (platform == SimDriver.GetPlayerAircraft() && ((AircraftClass*)platform)->AutopilotType() == AircraftClass::CombatAP)
+            if (platform == SimDriver.GetPlayerAircraft() and ((AircraftClass*)platform)->AutopilotType() == AircraftClass::CombatAP)
             {
                 // nothing....this causes lock and brakelocs stream in mp
             }
@@ -449,7 +449,7 @@ void RadarDopplerClass::TWSMode(void)
         }
     }
 
-    if (oldseekerElCenter && !targetUnderCursor) //me123
+    if (oldseekerElCenter and not targetUnderCursor) //me123
     {
         seekerElCenter = min(max(oldseekerElCenter, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
         oldseekerElCenter = 0.0f;
@@ -466,14 +466,14 @@ void RadarDopplerClass::TWSMode(void)
     /*-----------------------*/
     /* Spotlight / Designate */
     /*-----------------------*/
-    if (IsSet(Spotlight) && !designateCmd)
+    if (IsSet(Spotlight) and not designateCmd)
         SetFlagBit(Designating);
     else
         ClearFlagBit(Designating);
 
-    if (!IsSet(Spotlight) && designateCmd)
+    if ( not IsSet(Spotlight) and designateCmd)
     {
-        if (!tgtenteredcursor)
+        if ( not tgtenteredcursor)
         {
             lastAzScan = azScan;
             lastBars = bars;
@@ -482,7 +482,7 @@ void RadarDopplerClass::TWSMode(void)
             ClearSensorTarget();
             ClearFlagBit(STTingTarget);
         }
-        else if (lockedTarget && lockedTarget->BaseData()->Id() == targetUnderCursor)
+        else if (lockedTarget and lockedTarget->BaseData()->Id() == targetUnderCursor)
         {
             ClearFlagBit(Designating);
             SetSensorTarget(lockedTarget);
@@ -518,10 +518,10 @@ void RadarDopplerClass::TWSMode(void)
     }
 
     // max 30 az when tgt under cursor or "locked" target
-    if (!IsSet(Spotlight) && !IsSet(Designating))
+    if ( not IsSet(Spotlight) and not IsSet(Designating))
     {
 
-        if (targetUnderCursor || (lockedTargetData && !g_bMLU))
+        if (targetUnderCursor or (lockedTargetData and not g_bMLU))
         {
 
             if (azScan > 30.0F * DTR)
@@ -532,7 +532,7 @@ void RadarDopplerClass::TWSMode(void)
                 tgtenteredcursor = TRUE;
             }
         }
-        else if (tgtenteredcursor && lastAzScan > 30.0F * DTR)
+        else if (tgtenteredcursor and lastAzScan > 30.0F * DTR)
         {
             azScan = lastAzScan;
             tgtenteredcursor = FALSE;
@@ -546,7 +546,7 @@ void RadarDopplerClass::TWSMode(void)
         //check if the attached target is still in the targetlist
         rdrObj = platform->targetList;
 
-        while (rdrObj && !attach)
+        while (rdrObj and not attach)
         {
             //TJL 11/16/03 Adding init of rdrData
             rdrData = rdrObj->localData;
@@ -560,9 +560,9 @@ void RadarDopplerClass::TWSMode(void)
             // exceeds max antenna AZ/EL but it may be more correct to extrapolate the track even out
             // past the end of the field of view.
 
-            //if ((rdrObj == lasttargetUnderCursor) && (rdrData->painted || lockedTarget) )
+            //if ((rdrObj == lasttargetUnderCursor) and (rdrData->painted or lockedTarget) )
             if (rdrObj == lasttargetUnderCursor)
-                if ((HitsOnTrack(rdrObj->localData) > HITS_FOR_TRACK) || lockedTarget)
+                if ((HitsOnTrack(rdrObj->localData) > HITS_FOR_TRACK) or lockedTarget)
                     if (fabs(TargetAz(platform, lasttargetUnderCursor)) < MAX_ANT_EL)
                         if (fabs(TargetEl(platform, lasttargetUnderCursor)) < MAX_ANT_EL)
                             attach = TRUE;
@@ -570,22 +570,22 @@ void RadarDopplerClass::TWSMode(void)
             rdrObj = rdrObj->next;
         }
 
-        if (attach && SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->FCC
-            && SimDriver.GetPlayerAircraft()->FCC->cursorXCmd == 0 && SimDriver.GetPlayerAircraft()->FCC->cursorYCmd == 0)
+        if (attach and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->FCC
+           and SimDriver.GetPlayerAircraft()->FCC->cursorXCmd == 0 and SimDriver.GetPlayerAircraft()->FCC->cursorYCmd == 0)
 
         {
             //me123 attach the cursor
 
             TargetToXY(lasttargetUnderCursor->localData, 0, tdisplayRange, &cursorX, &cursorY);
 
-            if (!oldseekerElCenter)
+            if ( not oldseekerElCenter)
                 oldseekerElCenter = seekerElCenter;//me123
 
             tmpVal = TargetAz(platform, lasttargetUnderCursor);
             seekerAzCenter = min(max(tmpVal , -MAX_ANT_EL + azScan), MAX_ANT_EL - azScan);
             tmpVal = TargetEl(platform, lasttargetUnderCursor);
 
-            if (!g_bAntElevKnobFix)    // MD -- 20031222: EL should only follow target if we're locked on
+            if ( not g_bAntElevKnobFix)    // MD -- 20031222: EL should only follow target if we're locked on
             {
                 seekerElCenter = min(max(tmpVal, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
             }
@@ -618,13 +618,13 @@ void RadarDopplerClass::TWSMode(void)
         /*-------------------------------*/
         if (rdrObj->BaseData()->Id() == targetUnderCursor)
         {
-            if (!lasttargetUnderCursor)
+            if ( not lasttargetUnderCursor)
                 lasttargetUnderCursor = rdrObj;
 
             // MD -- 20031222: use a helper function
             totHits = HitsOnTrack(rdrData);
 
-            if (IsSet(Designating) && totHits > HITS_FOR_TRACK)
+            if (IsSet(Designating) and totHits > HITS_FOR_TRACK)
             {
                 SetSensorTarget(rdrObj);
                 ClearFlagBit(Designating);
@@ -643,7 +643,7 @@ void RadarDopplerClass::TWSMode(void)
             /*----------------------*/
             /* detection this frame */
             /*----------------------*/
-            if (rdrData->rdrDetect & 0x10)
+            if (rdrData->rdrDetect bitand 0x10)
             {
                 if (totHits > HITS_FOR_TRACK)
                 {
@@ -666,7 +666,7 @@ void RadarDopplerClass::TWSMode(void)
     {
         if (lockedTargetData->painted)
         {
-            if (lockedTargetData->rdrDetect & 0x10)
+            if (lockedTargetData->rdrDetect bitand 0x10)
             {
                 lockedTargetData->sensorState[Radar] = SensorTrack;
                 AddToHistory(lockedTarget, Bug);
@@ -675,18 +675,18 @@ void RadarDopplerClass::TWSMode(void)
 
         static int test = 10;
         test = 20;
-        //if (!oldseekerElCenter) oldseekerElCenter = seekerElCenter;//me123
+        //if ( not oldseekerElCenter) oldseekerElCenter = seekerElCenter;//me123
         tmpVal = TargetAz(platform, lockedTarget);
         seekerAzCenter = min(max(tmpVal , -MAX_ANT_EL + azScan), MAX_ANT_EL - azScan);
         tmpVal = TargetEl(platform, lockedTarget);
 
-        if (!g_bMLU && !g_bAntElevKnobFix)   // MD -- 20031223: antenna elevation fixes
+        if ( not g_bMLU and not g_bAntElevKnobFix)   // MD -- 20031223: antenna elevation fixes
             seekerElCenter = min(max(tmpVal, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
 
         /*------------------*/
         /* Auto Range Scale */
         /*------------------*/
-        if (lockedTargetData->range > 0.9F * tdisplayRange &&
+        if (lockedTargetData->range > 0.9F * tdisplayRange and 
             curRangeIdx < NUM_RANGES - 1)
             rangeChangeCmd = 1;
 
@@ -697,17 +697,17 @@ void RadarDopplerClass::TWSMode(void)
         {
             //me123 gimbal check addet
             // Drop lock if the guy is outside our radar cone
-            if ((fabs(lockedTarget->localData->az) > radarData->ScanHalfAngle) ||
+            if ((fabs(lockedTarget->localData->az) > radarData->ScanHalfAngle) or
                 (fabs(lockedTarget->localData->el) > radarData->ScanHalfAngle))
             {
                 ClearSensorTarget();
             }
         }
 
-        if (!dropTrackCmd)
+        if ( not dropTrackCmd)
             justdidSTT = FALSE;
 
-        if (!IsSet(STTingTarget) && ((dropTrackCmd && !justdidSTT) || totHits < HITS_FOR_TRACK))
+        if ( not IsSet(STTingTarget) and ((dropTrackCmd and not justdidSTT) or totHits < HITS_FOR_TRACK))
         {
             rangeChangeCmd = 0;
 
@@ -764,14 +764,14 @@ void RadarDopplerClass::TWSMode(void)
     /*-----------------------*/
     /* Spotlight / Designate */
     /*-----------------------*/
-    if (IsSet(Spotlight) && !designateCmd)
+    if (IsSet(Spotlight) and not designateCmd)
         SetFlagBit(Designating);
     else
         ClearFlagBit(Designating);
 
-    if (!IsSet(Spotlight) && designateCmd)
+    if ( not IsSet(Spotlight) and designateCmd)
     {
-        if (!tgtenteredcursor)
+        if ( not tgtenteredcursor)
         {
             lastTwsAzIdx = curAzIdx;
             lastTwsBarIdx = curBarIdx;
@@ -791,10 +791,10 @@ void RadarDopplerClass::TWSMode(void)
     else
         ClearFlagBit(Spotlight);
 
-    if (!IsSet(Spotlight) && !IsSet(Designating) && !IsSet(STTingTarget))
+    if ( not IsSet(Spotlight) and not IsSet(Designating) and not IsSet(STTingTarget))
     {
 
-        if (targetUnderCursor || (lockedTargetData && !g_bMLU))
+        if (targetUnderCursor or (lockedTargetData and not g_bMLU))
         {
             lastTwsAzIdx = curAzIdx;
             lastTwsBarIdx = curBarIdx;
@@ -823,19 +823,19 @@ void RadarDopplerClass::TWSMode(void)
         //check if the attached target is still in the targetlist
         rdrObj = platform->targetList;
 
-        while (rdrObj && !attach)
+        while (rdrObj and not attach)
         {
             rdrData = rdrObj->localData;
 
             if (rdrObj == lasttargetUnderCursor)
-                if (rdrData->TWSTrackFileOpen || lockedTarget)
+                if (rdrData->TWSTrackFileOpen or lockedTarget)
                     attach = TRUE;
 
             rdrObj = rdrObj->next;
         }
 
-        if (attach && SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->FCC
-            && SimDriver.GetPlayerAircraft()->FCC->cursorXCmd == 0 && SimDriver.GetPlayerAircraft()->FCC->cursorYCmd == 0)
+        if (attach and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->FCC
+           and SimDriver.GetPlayerAircraft()->FCC->cursorXCmd == 0 and SimDriver.GetPlayerAircraft()->FCC->cursorYCmd == 0)
 
         {
             //me123 attach the cursor
@@ -845,7 +845,7 @@ void RadarDopplerClass::TWSMode(void)
             seekerAzCenter = min(max(tmpVal , -MAX_ANT_EL + azScan), MAX_ANT_EL - azScan);
             tmpVal = TargetEl(platform, lasttargetUnderCursor);
 
-            if (!g_bAntElevKnobFix)    // MD -- 20031222: EL should only follow target if we're locked on
+            if ( not g_bAntElevKnobFix)    // MD -- 20031222: EL should only follow target if we're locked on
             {
                 seekerElCenter = min(max(tmpVal, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
             }
@@ -878,12 +878,12 @@ void RadarDopplerClass::TWSMode(void)
         /*-------------------------------*/
         if (rdrObj->BaseData()->Id() == targetUnderCursor)
         {
-            if (!lasttargetUnderCursor)
+            if ( not lasttargetUnderCursor)
                 lasttargetUnderCursor = rdrObj;
 
             if (IsSet(Designating))
             {
-                if (lockedTarget && (lockedTarget->BaseData()->Id() == targetUnderCursor))
+                if (lockedTarget and (lockedTarget->BaseData()->Id() == targetUnderCursor))
                 {
                     ClearFlagBit(Designating);
                     SetSensorTarget(lockedTarget);
@@ -907,7 +907,7 @@ void RadarDopplerClass::TWSMode(void)
                 else
 
                     // can't bug on a target being extrapolated
-                    if (rdrData->TWSTrackFileOpen && (rdrData->extrapolateStart == 0))
+                    if (rdrData->TWSTrackFileOpen and (rdrData->extrapolateStart == 0))
                     {
                         SetSensorTarget(rdrObj);
                         AddToHistory(rdrObj, Bug);  // promote to bug
@@ -937,9 +937,9 @@ void RadarDopplerClass::TWSMode(void)
             /*----------------------*/
             /* detection this frame */
             /*----------------------*/
-            if (rdrData->rdrDetect & 0x10)
+            if (rdrData->rdrDetect bitand 0x10)
             {
-                if (!rdrData->TWSTrackFileOpen)
+                if ( not rdrData->TWSTrackFileOpen)
                 {
                     AddToHistory(rdrObj, Solid);
                 }
@@ -962,19 +962,19 @@ void RadarDopplerClass::TWSMode(void)
         rdrObj = rdrObj->next;
     }
 
-    if (lockedTarget && lockedTargetData)
+    if (lockedTarget and lockedTargetData)
     {
         /*------------------*/
         /* Auto Range Scale */
         /*------------------*/
-        if (lockedTargetData->range > 0.9F * tdisplayRange &&
+        if (lockedTargetData->range > 0.9F * tdisplayRange and 
             curRangeIdx < NUM_RANGES - 1)
             rangeChangeCmd = 1;
 
         if (lockedTarget)
         {
             // Drop lock if the guy is outside our radar cone and remove the track file
-            if ((fabs(lockedTarget->localData->az) > radarData->ScanHalfAngle) ||
+            if ((fabs(lockedTarget->localData->az) > radarData->ScanHalfAngle) or
                 (fabs(lockedTarget->localData->el) > radarData->ScanHalfAngle))
             {
                 ClearHistory(lockedTarget);
@@ -987,14 +987,14 @@ void RadarDopplerClass::TWSMode(void)
             else
 
                 // when there is a bugged target, elevation is centered on it not the antenna knob position
-                if (!IsSet(STTingTarget))
+                if ( not IsSet(STTingTarget))
                     seekerElCenter = lockedTarget->localData->el;
         }
 
-        if (!dropTrackCmd)
+        if ( not dropTrackCmd)
             justdidSTT = FALSE;
 
-        if (!IsSet(STTingTarget) && ((dropTrackCmd && !justdidSTT) && lockedTargetData->TWSTrackFileOpen))
+        if ( not IsSet(STTingTarget) and ((dropTrackCmd and not justdidSTT) and lockedTargetData->TWSTrackFileOpen))
         {
             rangeChangeCmd = 0;
 
@@ -1012,7 +1012,7 @@ void RadarDopplerClass::TWSMode(void)
     }
     else
     {
-        if (dropTrackCmd && !lockedTarget && TWSTrackDirectory)
+        if (dropTrackCmd and not lockedTarget and TWSTrackDirectory)
         {
             // on udesignate with no bugged target, clear track directory and history and rebuild
             // starting next frame.
@@ -1023,7 +1023,7 @@ void RadarDopplerClass::TWSMode(void)
         }
     }
 
-    if (IsSet(Designating) && !IsSet(STTingTarget))
+    if (IsSet(Designating) and not IsSet(STTingTarget))
     {
         curBarIdx = (twsBarIdx = lastTwsBarIdx);
         curAzIdx = (twsAzIdx = lastTwsAzIdx);
@@ -1038,17 +1038,17 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
     int totHits;
     static bool diddroptrack = FALSE;
 
-    if (oldseekerElCenter && !lockedTargetData) //me123
+    if (oldseekerElCenter and not lockedTargetData) //me123
     {
         seekerElCenter = min(max(oldseekerElCenter, -MAX_ANT_EL + elScan), MAX_ANT_EL - elScan);
         oldseekerElCenter = 0.0f;
     }
 
-    if (!lockedTarget)
+    if ( not lockedTarget)
     {
         ClearFlagBit(STTingTarget);
 
-        if (mode != STT)
+        if (mode not_eq STT)
             ChangeMode(mode);
         else
             ChangeMode(prevMode);
@@ -1060,7 +1060,7 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
         //me123 gimbal check addet //Cobra 10/31/04 TJL
 
         // Drop lock if the guy is outside our radar cone
-        if ((fabs(lockedTarget->localData->az) > radarData->ScanHalfAngle) ||
+        if ((fabs(lockedTarget->localData->az) > radarData->ScanHalfAngle) or
             (fabs(lockedTarget->localData->el) > radarData->ScanHalfAngle))
         {
             // MD -- 20040911: according to Mirv, ACM with a lock losing track at the
@@ -1071,8 +1071,8 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
             // with STTingTarget use dropTrackCmd as before.  May not be pretty but
             // it seems to work how Mirv wants it ;)
 
-            if (mode == RadarClass::ACM_30x20 || mode == RadarClass::ACM_SLEW ||
-                mode == RadarClass::ACM_BORE || mode == RadarClass::ACM_10x60)
+            if (mode == RadarClass::ACM_30x20 or mode == RadarClass::ACM_SLEW or
+                mode == RadarClass::ACM_BORE or mode == RadarClass::ACM_10x60)
             {
                 ClearSensorTarget();
                 ChangeMode(mode);
@@ -1085,11 +1085,11 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
         }
     }
 
-    if (!lockedTargetData)
+    if ( not lockedTargetData)
         return;
 
-    if (!g_bMLU && (dropTrackCmd && !didDesignate && mode == SAM) ||
-        g_bMLU && dropTrackCmd && !diddroptrack)//me123
+    if ( not g_bMLU and (dropTrackCmd and not didDesignate and mode == SAM) or
+        g_bMLU and dropTrackCmd and not diddroptrack)//me123
     {
         reacqFlag = (int)(ReacqusitionCount / SEC_TO_MSEC * SimLibMajorFrameRate);
         reacqEl = lockedTargetData->el;
@@ -1109,7 +1109,7 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
 
     diddroptrack = FALSE;
 
-    if (!oldseekerElCenter)
+    if ( not oldseekerElCenter)
         oldseekerElCenter = seekerElCenter;//me123
 
     seekerAzCenter = max(min(lockedTargetData->az, MAX_ANT_EL), -MAX_ANT_EL);
@@ -1124,7 +1124,7 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
     // MD -- 20031222: use a helper function
     totHits = HitsOnTrack(lockedTargetData);
 
-    if (lockedTargetData->painted && totHits > HITS_FOR_TRACK)
+    if (lockedTargetData->painted and totHits > HITS_FOR_TRACK)
     {
         AddToHistory(lockedTarget, Track);
         lockedTargetData->sensorState[Radar] = SensorTrack;
@@ -1133,30 +1133,30 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
     /*------------------*/
     /* Auto Range Scale */
     /*------------------*/
-    if (mode != VS)
+    if (mode not_eq VS)
     {
-        if (lockedTargetData->range > 0.9F * tdisplayRange && curRangeIdx < NUM_RANGES - 1)
+        if (lockedTargetData->range > 0.9F * tdisplayRange and curRangeIdx < NUM_RANGES - 1)
             rangeChangeCmd = 1;
-        else if (lockedTargetData->range < 0.4F * tdisplayRange && curRangeIdx > 0)
+        else if (lockedTargetData->range < 0.4F * tdisplayRange and curRangeIdx > 0)
             rangeChangeCmd = -1;
     }
 
-    if (totHits < HITS_FOR_TRACK || dropTrackCmd)
+    if (totHits < HITS_FOR_TRACK or dropTrackCmd)
     {
         ExtrapolateHistory(lockedTarget);
 
-        if (((SimLibElapsedTime - lockedTarget->localData->rdrLastHit) > radarData->CoastTime) || dropTrackCmd)
+        if (((SimLibElapsedTime - lockedTarget->localData->rdrLastHit) > radarData->CoastTime) or dropTrackCmd)
         {
             //me123 rangeChangeCmd = 0;
             reacqFlag = (int)(ReacqusitionCount / SEC_TO_MSEC * SimLibMajorFrameRate);
             reacqEl = lockedTargetData->el;
 
             // MD -- 20040125: add new TWS mode processing: still show a bug after STT
-            if (mode != TWS)
+            if (mode not_eq TWS)
                 ClearHistory(lockedTarget);
 
-            if (mode == ACM_30x20 || mode == ACM_SLEW
-                || mode == ACM_BORE || mode == ACM_10x60 || mode == VS)
+            if (mode == ACM_30x20 or mode == ACM_SLEW
+                or mode == ACM_BORE or mode == ACM_10x60 or mode == VS)
             {
                 lockedTarget->localData->rdrDetect = 0;
                 ClearSensorTarget();
@@ -1181,7 +1181,7 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
                 oldseekerElCenter = elhack;
 
                 // MD -- 20031223: antenna should go back to where the knob was set for all but TWS with a bug.
-                if (!g_bAntElevKnobFix)
+                if ( not g_bAntElevKnobFix)
                     seekerElCenter = elhack;
             }
 
@@ -1247,8 +1247,8 @@ void RadarDopplerClass::ACMMode(void)
             // MD -- 20031222: use a helper function
             totHits = HitsOnTrack(rdrObj->localData);
 
-            if (totHits > HITS_FOR_LOCK / 2 &&
-                rdrObj->localData->range < tdisplayRange && IsEmitting() &&
+            if (totHits > HITS_FOR_LOCK / 2 and 
+                rdrObj->localData->range < tdisplayRange and IsEmitting() and 
                 rdrObj->localData->painted
                )
             {
@@ -1303,7 +1303,7 @@ void RadarDopplerClass::ACMMode(void)
 
 
     //Cobra
-    if (!lockedTarget && islck)
+    if ( not lockedTarget and islck)
     {
         ClearSensorTarget();
         ChangeMode(mode);
@@ -1319,17 +1319,17 @@ void RadarDopplerClass::ACMMode(void)
     // and drop target command returns to search if we have a lock, if we dont have a lock  it changes
     /*-------------------------*/// to 20/30 from all acm modes exept in 20/30 it goes to 10/60
 
-    if (designateCmd && !lockedTarget)
+    if (designateCmd and not lockedTarget)
     {
         // don't drop the targer if it's locked me123
         ChangeMode(ACM_BORE);
         SetScan();
     }
     else if (
-        !lockedTarget && mode != ACM_SLEW &&
-        SimDriver.GetPlayerAircraft() && // JB 010113 CTD fix
-        (SimDriver.GetPlayerAircraft()->FCC->cursorYCmd != 0 ||
-         SimDriver.GetPlayerAircraft()->FCC->cursorXCmd != 0)
+ not lockedTarget and mode not_eq ACM_SLEW and 
+        SimDriver.GetPlayerAircraft() and // JB 010113 CTD fix
+        (SimDriver.GetPlayerAircraft()->FCC->cursorYCmd not_eq 0 or
+         SimDriver.GetPlayerAircraft()->FCC->cursorXCmd not_eq 0)
     )
     {
         ChangeMode(ACM_SLEW);
@@ -1340,10 +1340,10 @@ void RadarDopplerClass::ACMMode(void)
     // as the previous implementation of the key commands which did this job.  Looks like
     // if should have been here all along really.
     else if (
-        lockedTarget && mode != ACM_SLEW &&
-        SimDriver.GetPlayerAircraft() &&
-        (SimDriver.GetPlayerAircraft()->FCC->cursorYCmd != 0 ||
-         SimDriver.GetPlayerAircraft()->FCC->cursorXCmd != 0)
+        lockedTarget and mode not_eq ACM_SLEW and 
+        SimDriver.GetPlayerAircraft() and 
+        (SimDriver.GetPlayerAircraft()->FCC->cursorYCmd not_eq 0 or
+         SimDriver.GetPlayerAircraft()->FCC->cursorXCmd not_eq 0)
     )
     {
         //ClearSensorTarget();  //JPG 28 - This no longer applies w/ one-switch TMS aft to ACM NO RAD condition
@@ -1397,12 +1397,12 @@ void RadarDopplerClass::VSMode(void)
         /*-----------------------*/
         /* Spotlight / Designate */
         /*-----------------------*/
-        if (IsSet(Spotlight) && !designateCmd)
+        if (IsSet(Spotlight) and not designateCmd)
             SetFlagBit(Designating);
         else
             ClearFlagBit(Designating);
 
-        if (!IsSet(Spotlight) && designateCmd)
+        if ( not IsSet(Spotlight) and designateCmd)
         {
             lastAzScan = azScan;
             lastBars = bars;
@@ -1433,7 +1433,7 @@ void RadarDopplerClass::VSMode(void)
                 /*----------------------*/
                 /* detection this frame */
                 /*----------------------*/
-                if (rdrData->rdrDetect & 0x10 && rdrData->rangedot < 0.0F)
+                if (rdrData->rdrDetect bitand 0x10 and rdrData->rangedot < 0.0F)
                 {
                     tmpRange = rdrData->range;
                     rdrData->range = -rdrData->rangedot * FTPSEC_TO_KNOTS;
@@ -1455,7 +1455,7 @@ void RadarDopplerClass::VSMode(void)
                 // MD -- 20031222: use a helper function
                 totHits = HitsOnTrack(rdrData);
 
-                if (totHits >= HITS_FOR_LOCK &&
+                if (totHits >= HITS_FOR_LOCK and 
                     IsUnderVSCursor(rdrObj, platform->Yaw()))
                 {
                     SetSensorTarget(rdrObj);
@@ -1518,7 +1518,7 @@ void RadarDopplerClass::AddToHistory(SimObjectType* ptr, int sy)
     rdrData->rdrY[0]  = rdrData->range;
 
     // if its jamming and we can't burn through - its a guess where it is.
-    if (ptr->BaseData()->IsSPJamming() && ReturnStrength(ptr) < 1.0f)
+    if (ptr->BaseData()->IsSPJamming() and ReturnStrength(ptr) < 1.0f)
     {
         float delta = rdrData->range / 10.0f; // range may be out by up to 1/10th
         rdrData->rdrY[0] += delta * PRANDFloat(); // +/- the delta
@@ -1530,7 +1530,7 @@ void RadarDopplerClass::AddToHistory(SimObjectType* ptr, int sy)
     rdrData->rdrHd[0] = platform->Yaw();
     //rdrData->rdrSy[0] = sy; Cobra removed from here and moved up
 
-    if (sy != None)
+    if (sy not_eq None)
     {
         rdrData->rdrLastHit  = SimLibElapsedTime;
         //      UpdateObjectData(ptr);
@@ -1634,7 +1634,7 @@ void RadarDopplerClass::SetHistory(SimObjectType* ptr, int sy)
     rdrData->rdrHd[0] = platform->Yaw();
     rdrData->rdrSy[0] = sy;
 
-    if (sy != None)
+    if (sy not_eq None)
     {
         //   UpdateObjectData(ptr);
     }
@@ -1648,12 +1648,12 @@ int RadarDopplerClass::HitsOnTrack(SimObjectLocalData* rdrData)
     int totHits = 0, i = 0;
     unsigned long detect = rdrData->rdrDetect;
 
-    if (!rdrData)
+    if ( not rdrData)
         return 0;
 
     for (i = 0; i < 5; i++)
     {
-        totHits += detect & 0x0001;
+        totHits += detect bitand 0x0001;
         detect = detect >> 1;
     }
 
@@ -1678,10 +1678,10 @@ RadarDopplerClass::TWSTrackList::TWSTrackList(SimObjectType* tgt)
 RadarDopplerClass::TWSTrackList* RadarDopplerClass::TWSTrackList::Insert(SimObjectType* tgt, int depth)
 {
 
-    if (!(depth < MAX_TWS_TRACKS))  // keep the list from growing needlessly
+    if ( not (depth < MAX_TWS_TRACKS))  // keep the list from growing needlessly
         return NULL;
 
-    if (tgt != track)
+    if (tgt not_eq track)
     {
         if (tgt->localData->range < track->localData->range)
         {
@@ -1704,11 +1704,11 @@ RadarDopplerClass::TWSTrackList* RadarDopplerClass::TWSTrackList::ForceInsert(Si
     // This function does the same as an insert but first it checks to see if there's room in
     // the directory and if not, it will remove the longest ranged track file.
 
-    if (this && ((CountTracks() - depth) >= MAX_TWS_TRACKS))
+    if (this and ((CountTracks() - depth) >= MAX_TWS_TRACKS))
     {
         TWSTrackList* tmp = this, *last = (TWSTrackList *) NULL;
 
-        for (int i = 1; ((i < (MAX_TWS_TRACKS - depth)) && tmp); i++)
+        for (int i = 1; ((i < (MAX_TWS_TRACKS - depth)) and tmp); i++)
         {
             last = tmp;
             tmp = tmp->Next();
@@ -1793,7 +1793,7 @@ void RadarDopplerClass::TWSTrackList::Clip(int depth)
     {
         depth++;
 
-        if ((depth == MAX_TWS_TRACKS) && tmp->Next())
+        if ((depth == MAX_TWS_TRACKS) and tmp->Next())
         {
             tmp->Next()->Purge();
             tmp->SetNext((TWSTrackList *)NULL);
@@ -1821,18 +1821,18 @@ RadarDopplerClass::TWSTrackList* RadarDopplerClass::UpdateTWSDirectory(SimObject
     if (tgtList)
     {
         // Don't waste the time to check if the directory is already full
-        if (!directory || (directory && (directory->CountTracks() < MAX_TWS_TRACKS)))
+        if ( not directory or (directory and (directory->CountTracks() < MAX_TWS_TRACKS)))
         {
             while (rdrObj)
             {
                 SimObjectLocalData* rdrData = rdrObj->localData;
 
                 // pick up directory entries for targets with multiple hits that are in the scan cone
-                if ((HitsOnTrack(rdrData) > HITS_FOR_LOCK) &&
-                    ((fabs(rdrData->az) < radarData->ScanHalfAngle) &&
+                if ((HitsOnTrack(rdrData) > HITS_FOR_LOCK) and 
+                    ((fabs(rdrData->az) < radarData->ScanHalfAngle) and 
                      (fabs(rdrData->el) < radarData->ScanHalfAngle)))
                 {
-                    if (!rdrData->TWSTrackFileOpen) // insert new tracks only
+                    if ( not rdrData->TWSTrackFileOpen) // insert new tracks only
                         if (directory)
                             directory = directory->Insert(rdrObj);
                         else

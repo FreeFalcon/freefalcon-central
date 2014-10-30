@@ -1,4 +1,4 @@
-// Routines to export the Selected Font into Targa format... with rectangles & kerning pairs?
+// Routines to export the Selected Font into Targa format... with rectangles bitand kerning pairs?
 
 #include <windows.h>
 #include "chandler.h"
@@ -93,7 +93,7 @@ long SearchList(long val, long list[])
 {
     int i;
 
-    for (i = 1; list[i] != -5551212; i++)
+    for (i = 1; list[i] not_eq -5551212; i++)
         if (list[i] == val)
             return(i);
 
@@ -106,7 +106,7 @@ void SetWindowLOGFONT(LOGFONT *log)
     C_EditBox *ebox;
     C_ListBox *lbox;
 
-    if (!log)
+    if ( not log)
         return;
 
     win = gMainHandler->FindWindow(LOGFONT_WIN);
@@ -201,14 +201,14 @@ void SetWindowLOGFONT(LOGFONT *log)
 
         if (lbox)
         {
-            lbox->SetValue(SearchList(log->lfPitchAndFamily & 3, LF_PITCH));
+            lbox->SetValue(SearchList(log->lfPitchAndFamily bitand 3, LF_PITCH));
         }
 
         lbox = (C_ListBox*)win->FindControl(LB_FAMILY);
 
         if (lbox)
         {
-            lbox->SetValue(SearchList(log->lfPitchAndFamily & 0xfc, LF_FAMILY));
+            lbox->SetValue(SearchList(log->lfPitchAndFamily bitand 0xfc, LF_FAMILY));
         }
 
         ebox = (C_EditBox*)win->FindControl(EB_FACENAME);
@@ -218,7 +218,7 @@ void SetWindowLOGFONT(LOGFONT *log)
             ebox->SetText(log->lfFaceName);
         }
 
-        win->update_ |= C_DRAW_REFRESHALL;
+        win->update_ or_eq C_DRAW_REFRESHALL;
         win->RefreshWindow();
     }
 }
@@ -229,7 +229,7 @@ void GetWindowLOGFONT(LOGFONT *log)
     C_EditBox *ebox;
     C_ListBox *lbox;
 
-    if (!log)
+    if ( not log)
         return;
 
     win = gMainHandler->FindWindow(LOGFONT_WIN);
@@ -325,14 +325,14 @@ void GetWindowLOGFONT(LOGFONT *log)
 
         if (lbox)
         {
-            log->lfPitchAndFamily |= LF_PITCH[lbox->GetTextID()];
+            log->lfPitchAndFamily or_eq LF_PITCH[lbox->GetTextID()];
         }
 
         lbox = (C_ListBox*)win->FindControl(LB_FAMILY);
 
         if (lbox)
         {
-            log->lfPitchAndFamily |= LF_FAMILY[lbox->GetTextID()];
+            log->lfPitchAndFamily or_eq LF_FAMILY[lbox->GetTextID()];
         }
 
         ebox = (C_EditBox*)win->FindControl(EB_FACENAME);
@@ -349,7 +349,7 @@ int CALLBACK testme(CONST LOGFONTA *logfnt, CONST TEXTMETRICA *metrics, DWORD, L
 {
     if (ItemID < 200)
     {
-        if (metrics->tmPitchAndFamily & TMPF_TRUETYPE)
+        if (metrics->tmPitchAndFamily bitand TMPF_TRUETYPE)
         {
             memcpy(&fontlog[ItemID], logfnt, sizeof(LOGFONT));
             strcpy(FontList[ItemID], logfnt->lfFaceName);
@@ -389,7 +389,7 @@ C_Fontmgr *FontToBFT(long ID, LOGFONT *logfont)
     C_Fontmgr *newfont;
 
     // surface=UI95_CreateDDSurface(gMainDDraw,SCREEN_SIZE,SCREEN_SIZE);
-    // if(!surface)
+    // if( not surface)
     // {
     // MonoPrint("Can't create DDSurface for Font conversion to BFT\n");
     // return(NULL);
@@ -494,7 +494,7 @@ C_Fontmgr *FontToBFT(long ID, LOGFONT *logfont)
 
         buffer[0] = static_cast<char>(firstchar + i);
 
-        if (!TextOut(hdc, xoff, yoff, buffer, 1))
+        if ( not TextOut(hdc, xoff, yoff, buffer, 1))
             MonoPrint("Failed to display character (%1d)\n", buffer[0]);
 
         xoff += MyChars[i].lead;
@@ -507,7 +507,7 @@ C_Fontmgr *FontToBFT(long ID, LOGFONT *logfont)
             for (x = 0; x < charw; x++)
                 if (GetPixel(hdc, xoff + x, yoff + y))
                 {
-                    CharPtr[y * bytesperline + x / 8] |= 1 << (x % 8);
+                    CharPtr[y * bytesperline + x / 8] or_eq 1 << (x % 8);
                     SetPixel(hdc, xoff + x, yoff + y, 0);
                 }
 
@@ -521,7 +521,7 @@ C_Fontmgr *FontToBFT(long ID, LOGFONT *logfont)
 
 void ChoosePairCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     control->Refresh();
@@ -538,7 +538,7 @@ void PrintPairs(C_Window *win, long FontID)
 
     curfont = gFontList->Find(FontID);
 
-    if (!curfont)
+    if ( not curfont)
         return;
 
     startchar = curfont->First();
@@ -595,14 +595,14 @@ void IncreaseLead(long, short hittype, C_Base *control)
     C_Text *txt;
     char buffer[10];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     cur = gFontList->Find(CurrentFontID);
 
     if (cur)
     {
-        if (CurrentChar >= cur->First() && CurrentChar <= cur->Last())
+        if (CurrentChar >= cur->First() and CurrentChar <= cur->Last())
         {
             txt = (C_Text*)control->Parent_->FindControl(REFUEL_1);
 
@@ -615,7 +615,7 @@ void IncreaseLead(long, short hittype, C_Base *control)
                 txt->Refresh();
             }
 
-            control->Parent_->update_ |= C_DRAW_REFRESHALL;
+            control->Parent_->update_ or_eq C_DRAW_REFRESHALL;
             control->Parent_->RefreshWindow();
         }
     }
@@ -628,14 +628,14 @@ void DecreaseLead(long , short hittype, C_Base *control)
     C_Text *txt;
     char buffer[10];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     cur = gFontList->Find(CurrentFontID);
 
     if (cur)
     {
-        if (CurrentChar >= cur->First() && CurrentChar <= cur->Last())
+        if (CurrentChar >= cur->First() and CurrentChar <= cur->Last())
         {
             txt = (C_Text*)control->Parent_->FindControl(REFUEL_1);
 
@@ -648,7 +648,7 @@ void DecreaseLead(long , short hittype, C_Base *control)
                 txt->Refresh();
             }
 
-            control->Parent_->update_ |= C_DRAW_REFRESHALL;
+            control->Parent_->update_ or_eq C_DRAW_REFRESHALL;
             control->Parent_->RefreshWindow();
         }
     }
@@ -661,14 +661,14 @@ void IncreaseTrail(long, short hittype, C_Base *control)
     C_Text *txt;
     char buffer[10];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     cur = gFontList->Find(CurrentFontID);
 
     if (cur)
     {
-        if (CurrentChar >= cur->First() && CurrentChar <= cur->Last())
+        if (CurrentChar >= cur->First() and CurrentChar <= cur->Last())
         {
             txt = (C_Text*)control->Parent_->FindControl(REFUEL_3);
 
@@ -681,7 +681,7 @@ void IncreaseTrail(long, short hittype, C_Base *control)
                 txt->Refresh();
             }
 
-            control->Parent_->update_ |= C_DRAW_REFRESHALL;
+            control->Parent_->update_ or_eq C_DRAW_REFRESHALL;
             control->Parent_->RefreshWindow();
         }
     }
@@ -694,14 +694,14 @@ void DecreaseTrail(long, short hittype, C_Base *control)
     C_Text *txt;
     char buffer[10];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     cur = gFontList->Find(CurrentFontID);
 
     if (cur)
     {
-        if (CurrentChar >= cur->First() && CurrentChar <= cur->Last())
+        if (CurrentChar >= cur->First() and CurrentChar <= cur->Last())
         {
             txt = (C_Text*)control->Parent_->FindControl(REFUEL_3);
 
@@ -714,7 +714,7 @@ void DecreaseTrail(long, short hittype, C_Base *control)
                 txt->Refresh();
             }
 
-            control->Parent_->update_ |= C_DRAW_REFRESHALL;
+            control->Parent_->update_ or_eq C_DRAW_REFRESHALL;
             control->Parent_->RefreshWindow();
         }
     }
@@ -727,14 +727,14 @@ void IncreaseWidth(long, short hittype, C_Base *control)
     C_Text *txt;
     char buffer[10];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     cur = gFontList->Find(CurrentFontID);
 
     if (cur)
     {
-        if (CurrentChar >= cur->First() && CurrentChar <= cur->Last())
+        if (CurrentChar >= cur->First() and CurrentChar <= cur->Last())
         {
             txt = (C_Text*)control->Parent_->FindControl(REFUEL_2);
 
@@ -747,7 +747,7 @@ void IncreaseWidth(long, short hittype, C_Base *control)
                 txt->Refresh();
             }
 
-            control->Parent_->update_ |= C_DRAW_REFRESHALL;
+            control->Parent_->update_ or_eq C_DRAW_REFRESHALL;
             control->Parent_->RefreshWindow();
         }
     }
@@ -760,14 +760,14 @@ void DecreaseWidth(long, short hittype, C_Base *control)
     C_Text *txt;
     char buffer[10];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     cur = gFontList->Find(CurrentFontID);
 
     if (cur)
     {
-        if (CurrentChar >= cur->First() && CurrentChar <= cur->Last())
+        if (CurrentChar >= cur->First() and CurrentChar <= cur->Last())
         {
             txt = (C_Text*)control->Parent_->FindControl(REFUEL_2);
 
@@ -780,7 +780,7 @@ void DecreaseWidth(long, short hittype, C_Base *control)
                 txt->Refresh();
             }
 
-            control->Parent_->update_ |= C_DRAW_REFRESHALL;
+            control->Parent_->update_ or_eq C_DRAW_REFRESHALL;
             control->Parent_->RefreshWindow();
         }
     }
@@ -788,13 +788,13 @@ void DecreaseWidth(long, short hittype, C_Base *control)
 
 void IncreaseKern(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 }
 
 void DecreaseKern(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 }
 
@@ -805,7 +805,7 @@ void ChooseCharCB(long ID, short hittype, C_Base *control)
     C_Text *txt;
     char buffer[10];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     CurrentChar = ID - FONT_CHAR_BASE;
@@ -813,7 +813,7 @@ void ChooseCharCB(long ID, short hittype, C_Base *control)
     control->Refresh();
     fnt = gFontList->Find(CurrentFontID);
 
-    if (fnt && CurrentChar  > 0)
+    if (fnt and CurrentChar  > 0)
     {
         chr = fnt->GetChar(static_cast<short>(CurrentChar));
 
@@ -920,12 +920,12 @@ void MakeFontList(long FontID)
 
     win = gMainHandler->FindWindow(FONT_ED_WIN);
 
-    if (!win || !FontID)
+    if ( not win or not FontID)
         return;
 
     curfont = gFontList->Find(FontID);
 
-    if (!curfont)
+    if ( not curfont)
         return;
 
     Leave = UI_Enter(win);
@@ -1008,13 +1008,13 @@ void MakeFontList(long FontID)
 
     UI_Leave(Leave);
     win->ScanClientAreas();
-    win->update_ |= C_DRAW_REFRESHALL;
+    win->update_ or_eq C_DRAW_REFRESHALL;
     win->RefreshWindow();
 }
 
 void CreateTheFontCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (CreatedFont)
@@ -1037,7 +1037,7 @@ void CreateTheFontCB(long, short hittype, C_Base *)
 
 void CreateFontCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->EnableWindowGroup(-200);
@@ -1045,13 +1045,13 @@ void CreateFontCB(long, short hittype, C_Base *)
 
 void SaveFontCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     C_Window *win;
     C_EditBox *ebox;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = control->Parent_;
@@ -1072,7 +1072,7 @@ void ChooseFontCB(long ID, short hittype, C_Base *control)
 {
     C_ListBox *lbox;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     if (control)
@@ -1090,7 +1090,7 @@ void ChooseAvailableFontCB(long, short hittype, C_Base *control)
 {
     int idx;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     idx = ((C_ListBox*)control)->GetTextID();
@@ -1108,7 +1108,7 @@ void InitFontTool()
     static char FontWinName[] = "Font Window";
 
     myclass.cbSize = sizeof(myclass);
-    myclass.style = CS_HREDRAW | CS_VREDRAW;
+    myclass.style = CS_HREDRAW bitor CS_VREDRAW;
     myclass.lpfnWndProc = NULL;
     myclass.cbClsExtra = 0;
     myclass.cbWndExtra = 0;

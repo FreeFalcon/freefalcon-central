@@ -45,10 +45,10 @@ extern SensorClass* FindLaserPod(SimMoverClass* theObject);
 BombClass *FireControlComputer::GetTheBomb()
 {
 
-    if (Sms &&
-        Sms->CurHardpoint() >= 0 &&
-        Sms->hardPoint[Sms->CurHardpoint()] &&
-        Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer &&
+    if (Sms and 
+        Sms->CurHardpoint() >= 0 and 
+        Sms->hardPoint[Sms->CurHardpoint()] and 
+        Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer and 
         Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer->IsBomb()) //be EXTRA careful
         return (BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer.get();
     else
@@ -84,12 +84,12 @@ void FireControlComputer::AirGroundMode(void)
                     airGroundDelayTime = 0.0F;
                 }
             }
-            else if (!releaseConsent)
+            else if ( not releaseConsent)
             {
                 preDesignate = TRUE;
             }
 
-            if (!preDesignate && !postDrop)
+            if ( not preDesignate and not postDrop)
             {
                 FindTargetError();
                 CheckForBombRelease();
@@ -105,11 +105,11 @@ void FireControlComputer::AirGroundMode(void)
             dz = platform->ZPos() - groundImpactZ;
             airGroundRange = (float)sqrt(dx * dx + dy * dy);
 
-            if (!releaseConsent)
+            if ( not releaseConsent)
             {
                 preDesignate = TRUE;
             }
-            else if (!postDrop && Sms->curWeapon)
+            else if ( not postDrop and Sms->curWeapon)
             {
                 bombPickle = TRUE;
             }
@@ -152,16 +152,16 @@ void FireControlComputer::AirGroundMode(void)
             break;
 
         case MAN:
-            if (releaseConsent && !Released)
+            if (releaseConsent and not Released)
             {
                 // Cobra - Check for JDAM/JSOW ready to be dropped
                 BombClass *theBomb;
                 theBomb = GetTheBomb();
 
-                if (theBomb && ((AircraftClass*)platform->IsPlayer() && ((AircraftClass *)platform)->AutopilotType() != AircraftClass::CombatAP) &&
-                    ((theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS) ||
-                     (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)) &&
-                    (!Sms->JDAMPowered))
+                if (theBomb and ((AircraftClass*)platform->IsPlayer() and ((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP) and 
+                    ((theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS) or
+                     (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)) and 
+                    ( not Sms->JDAMPowered))
                 {
                     releaseConsent = FALSE;
                     Released = TRUE;
@@ -173,13 +173,13 @@ void FireControlComputer::AirGroundMode(void)
                     bombPickle = TRUE;
                 }
             }
-            else if (!releaseConsent && Released)
+            else if ( not releaseConsent and Released)
                 Released = FALSE;
 
             break;
     }
 
-    if (!releaseConsent)
+    if ( not releaseConsent)
     {
         postDrop = FALSE;
     }
@@ -198,7 +198,7 @@ void FireControlComputer::CalculateRocketImpactPoint(void)
     {
         if (fccWeaponPtr->IsMissile())
         {
-            noSolution = !((MissileClass *)fccWeaponPtr.get())->FindRocketGroundImpact(
+            noSolution = not ((MissileClass *)fccWeaponPtr.get())->FindRocketGroundImpact(
                              &ImpactX,
                              &ImpactY,
                              &ImpactZ,
@@ -221,7 +221,7 @@ void FireControlComputer::CalculateRocketImpactPoint(void)
                 // WeaponId does not match rocketWeaponId
 
                 /* MLR 5/29/2004 - Handled in UpdateWeaponPointer()
-                if(lau->LauGetWeaponId() != rocketWeaponId)
+                if(lau->LauGetWeaponId() not_eq rocketWeaponId)
                 {
 
                  if(rocketPointer)
@@ -241,7 +241,7 @@ void FireControlComputer::CalculateRocketImpactPoint(void)
 
                 if (rocketPointer)
                 {
-                    noSolution = !rocketPointer->FindRocketGroundImpact(
+                    noSolution = not rocketPointer->FindRocketGroundImpact(
                                      &ImpactX,
                                      &ImpactY,
                                      &ImpactZ,
@@ -263,16 +263,16 @@ float calcgrav(FireControlComputer *FCC)
 {
     BombClass *theBomb;
 
-    if (FCC && FCC->PlayerFCC() && FCC->Sms && FCC->Sms->CurHardpoint() >= 0 &&
-        FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()] &&
-        FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()]->weaponPointer &&
+    if (FCC and FCC->PlayerFCC() and FCC->Sms and FCC->Sms->CurHardpoint() >= 0 and 
+        FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()] and 
+        FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()]->weaponPointer and 
         FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()]->weaponPointer->IsBomb()) //be EXTRA careful
     {
         theBomb = (BombClass *)FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()]->weaponPointer.get();
 
         if (
-            theBomb && !(F4IsBadReadPtr(theBomb, sizeof(BombClass))) && //be EXTRA EXTRA careful
-            (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS) ||
+            theBomb and not (F4IsBadReadPtr(theBomb, sizeof(BombClass))) and //be EXTRA EXTRA careful
+            (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS) or
             (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
         )
         {
@@ -322,14 +322,14 @@ void FireControlComputer::CalculateImpactPoint(void)
     maxTime = 120.0F;
     theBomb = GetTheBomb();
 
-    if (theBomb && theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
+    if (theBomb and theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
     {
         isJSOW = true;
         maxTime = ((theBomb->GetJSOWmaxRange() * NM_TO_FT) / platform->GetVt()) * 2.2f; // 1200.0F;
     }
 
 
-    if (!preDesignate && GetMasterMode() != AirGroundLaser) //MI added check for Laser
+    if ( not preDesignate and GetMasterMode() not_eq AirGroundLaser) //MI added check for Laser
     {
 
         a = 0.5F * grav;
@@ -419,7 +419,7 @@ void FireControlComputer::CalculateImpactPoint(void)
         // now calc the x and y times
         vdragx = dragCoeff * BombClass::dragConstant * ratx;
 
-        if (vdragx != 0.0f)
+        if (vdragx not_eq 0.0f)
         {
             xt = (float)fabs(xDot) / (vdragx);
 
@@ -429,7 +429,7 @@ void FireControlComputer::CalculateImpactPoint(void)
 
         vdragy = dragCoeff * BombClass::dragConstant * raty;
 
-        if (vdragy != 0.0f)
+        if (vdragy not_eq 0.0f)
         {
             yt = (float)fabs(yDot) / (vdragy);
 
@@ -491,7 +491,7 @@ void FireControlComputer::CalculateImpactPoint(void)
             groundImpactTime += timeStep;
 
         }
-        while (dz <= OTWDriver.GetGroundLevel(dx, dy) && groundImpactTime < maxTime);
+        while (dz <= OTWDriver.GetGroundLevel(dx, dy) and groundImpactTime < maxTime);
 
         if (groundImpactTime >= maxTime)
             noSolution = TRUE;
@@ -502,7 +502,7 @@ void FireControlComputer::CalculateImpactPoint(void)
 
         // 2002-03-28 MI make this configurable for better adjustments
         // 2001-06-17 ADDED BY S.G. ONLY IF IT'S NOT A GUN
-        if (Sms->curWeaponClass != wcGunWpn)
+        if (Sms->curWeaponClass not_eq wcGunWpn)
             // 2001-04-14 ADDED BY S.G. KLUDGE TO MAKE THE BOMBS HIT WHERE THEY ARE SUPPOSED TO HIT
             groundImpactZ -= g_fGroundImpactMod;
 
@@ -613,7 +613,7 @@ void FireControlComputer::FindRelativeImpactPoint(void)
         dz = groundImpactZ - platform->ZPos();
 
         // Cobra - Rocket calcs are screwed up (dx/dy instead of dy/dx)
-        if (subMode == OBSOLETERCKT || subMode == STRAF)
+        if (subMode == OBSOLETERCKT or subMode == STRAF)
         {
             //----------------------------------
             groundPipperAz = ((float)atan2(dx, dy) - platform->Yaw());
@@ -630,7 +630,7 @@ void FireControlComputer::FindRelativeImpactPoint(void)
         }
 
         //MI
-        if (g_bRealisticAvionics && TheHud)
+        if (g_bRealisticAvionics and TheHud)
         {
             TheHud->SlantRange = (float)sqrt(dx * dx + dy * dy + dz * dz);
         }
@@ -652,7 +652,7 @@ void FireControlComputer::FindRelativeImpactPoint(void)
         groundPipperEl = groundDesignateEl;
 
         //MI
-        if (g_bRealisticAvionics && TheHud)
+        if (g_bRealisticAvionics and TheHud)
         {
             TheHud->SlantRange = (float)sqrt(dx * dx + dy * dy + dz * dz);
         }
@@ -710,8 +710,8 @@ void FireControlComputer::DelayModePipperCorrection(void)
 #if 0
 
     // See if the pipper falls off screen
-    if (groundPipperEl >  5.0F * DTR || groundPipperEl < -13.0F * DTR ||
-        groundPipperAz > 10.0F * DTR || groundPipperAz < -10.0F * DTR)
+    if (groundPipperEl >  5.0F * DTR or groundPipperEl < -13.0F * DTR or
+        groundPipperAz > 10.0F * DTR or groundPipperAz < -10.0F * DTR)
     {
         // This computes a new az and el in the same direction with a 13 degree solid angle
         groundPipperEl = atan(tan(13.0f * DTR) * rollTrig.cos);
@@ -831,8 +831,8 @@ void FireControlComputer::CheckForBombRelease(void)
     // How long to null the impact point error assuming level flight toward the target?
     tmpTime = airGroundRange / platform->GetVt();
 
-    if ((tmpTime < 0.1F || (airGroundDelayTime > 0.0 &&
-                            airGroundDelayTime < 0.4F && tmpTime > airGroundDelayTime)) &&
+    if ((tmpTime < 0.1F or (airGroundDelayTime > 0.0 and 
+                            airGroundDelayTime < 0.4F and tmpTime > airGroundDelayTime)) and 
         Sms->curWeapon)
     {
         bombPickle = TRUE;
@@ -849,7 +849,7 @@ void FireControlComputer::SetDesignatedTarget(void)
     RadarClass* theRadar = (RadarClass*) FindSensor(platform, SensorClass::Radar);
     WayPointClass* curWaypoint = platform->curWaypoint;
 
-    if (targetPtr && targetPtr->BaseData()->OnGround())
+    if (targetPtr and targetPtr->BaseData()->OnGround())
     {
         groundDesignateX = targetPtr->BaseData()->XPos();
         groundDesignateY = targetPtr->BaseData()->YPos();
@@ -857,7 +857,7 @@ void FireControlComputer::SetDesignatedTarget(void)
         // groundDesignateZ = targetPtr->BaseData()->ZPos();
         groundDesignateZ = OTWDriver.GetGroundLevel(groundDesignateX, groundDesignateY);
     }
-    else if (theRadar && theRadar->CurrentTarget())
+    else if (theRadar and theRadar->CurrentTarget())
     {
         groundDesignateX = theRadar->CurrentTarget()->BaseData()->XPos();
         groundDesignateY = theRadar->CurrentTarget()->BaseData()->YPos();
@@ -865,7 +865,7 @@ void FireControlComputer::SetDesignatedTarget(void)
         // groundDesignateZ = targetPtr->BaseData()->ZPos();
         groundDesignateZ = OTWDriver.GetGroundLevel(groundDesignateX, groundDesignateY);
     }
-    else if (theRadar && theRadar->IsAG())
+    else if (theRadar and theRadar->IsAG())
     {
         theRadar->GetAGCenter(&groundDesignateX, &groundDesignateY);
         groundDesignateZ = OTWDriver.GetGroundLevel(groundDesignateX, groundDesignateY);
@@ -884,13 +884,13 @@ void FireControlComputer::SetDesignatedTarget(void)
     int bGPS = FALSE;
     BombClass *theBomb = GetTheBomb();
 
-    if (theBomb && (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS ||
+    if (theBomb and (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS or
                     theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW))
         bGPS = TRUE;
 
     // 2001-04-12 ADDED BY S.G. NEED TO MAKE A VARIABLE DESIGNATE BASED ON SKILL AND ALTITUDE
-    if (platform->IsAirplane() && !bGPS &&
-        (((AircraftClass *)platform)->IsDigital() ||
+    if (platform->IsAirplane() and not bGPS and 
+        (((AircraftClass *)platform)->IsDigital() or
          ((AircraftClass *)platform)->AutopilotType() == AircraftClass::CombatAP))
     {
         // Intentionnaly, I didn't play with the sign of ZPos because it will be 'below' groundDesignateZ and therefore - - will make it + and the end value will be positive
@@ -901,7 +901,7 @@ void FireControlComputer::SetDesignatedTarget(void)
     // END OF ADDED SECTION
 
     // Cobra - Make sure the current JSOW target is a target WP target.
-    if (theBomb && theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
+    if (theBomb and theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
     {
         curWaypoint->GetLocation(&groundDesignateX, &groundDesignateY, &groundDesignateZ);
         groundDesignateZ = OTWDriver.GetGroundLevel(groundDesignateX, groundDesignateY);
@@ -941,24 +941,24 @@ void FireControlComputer::CalculateReleaseRange(void)
 
     theBomb = GetTheBomb();
 
-    if (theBomb && theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
+    if (theBomb and theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
     {
         isJSOW = true;
     }
 
-    if (theBomb && theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS)
+    if (theBomb and theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS)
     {
         isJDAM = true;
     }
 
-    if (isJSOW || isJDAM)
+    if (isJSOW or isJDAM)
     {
         // RV - Biker - If we have a locked target on laser pod go to TOO
         LaserPodClass* laserPod = (LaserPodClass*)FindLaserPod(platform);
 
-        if (laserPod && laserPod->IsLocked() && Sms->JDAMtargeting == SMSBaseClass::TOO
-            && ((AircraftClass *)platform)->IsPlayer()
-            && (((AircraftClass *)platform)->AutopilotType() != AircraftClass::CombatAP))
+        if (laserPod and laserPod->IsLocked() and Sms->JDAMtargeting == SMSBaseClass::TOO
+           and ((AircraftClass *)platform)->IsPlayer()
+           and (((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP))
         {
             ((AircraftClass*)platform)->JDAMAllowAutoStep = false;
             float lpdX;
@@ -1010,10 +1010,10 @@ void FireControlComputer::CalculateReleaseRange(void)
                    (groundDesignateY - platform->YPos()) * (groundDesignateY - platform->YPos()));
 
     // Bomb Range w/ loft  Assume 45 Degree Toss.
-    if ((Sms->CurHardpoint() >= 0) && (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags & SMSClass::Loftable))
+    if ((Sms->CurHardpoint() >= 0) and (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags bitand SMSClass::Loftable))
     {
         //MI
-        if (!g_bRealisticAvionics || !playerFCC || (((AircraftClass *)platform)->AutopilotType() == AircraftClass::CombatAP))
+        if ( not g_bRealisticAvionics or not playerFCC or (((AircraftClass *)platform)->AutopilotType() == AircraftClass::CombatAP))
             tossAngle = 45.0F * DTR;
         else
         {
@@ -1031,7 +1031,7 @@ void FireControlComputer::CalculateReleaseRange(void)
 
     tossAnticipationCue = NoCue;
 
-    if ((Sms->CurHardpoint() >= 0) && (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags & SMSClass::Loftable))
+    if ((Sms->CurHardpoint() >= 0) and (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags bitand SMSClass::Loftable))
     {
         // 4 G pull-up to release
 
@@ -1057,7 +1057,7 @@ void FireControlComputer::CalculateReleaseRange(void)
         t = (float)SqrtF(FabsF(- 4 * a * c)) / (2.0F * a);
         airGroundMinRange = (float)SqrtF(xDot * t * xDot * t + yDot * t * yDot * t);
 
-        if (theBomb && isJSOW)
+        if (theBomb and isJSOW)
             missileWEZDisplayRange = theBomb->GetJSOWmaxRange() * NM_TO_FT;
         else
             missileWEZDisplayRange = 10.0F * NM_TO_FT;
@@ -1103,7 +1103,7 @@ void FireControlComputer::CalculateReleaseRange(void)
 
         t = (curRange - airGroundMaxRange) / platform->GetVt();
 
-        if (!isJSOW)
+        if ( not isJSOW)
         {
             if (t >= 10.0F)
             {
@@ -1154,12 +1154,12 @@ void FireControlComputer::CalculateReleaseRange(void)
         maxDelay = 0.5F;
     }
 
-    if (tossAnticipationCue == NoCue ||
-        (tossAnticipationCue == AwaitingRelease && tossAnticipationCue == lastCue)) // AwaitingRelease = lastCue
+    if (tossAnticipationCue == NoCue or
+        (tossAnticipationCue == AwaitingRelease and tossAnticipationCue == lastCue)) // AwaitingRelease = lastCue
     {
-        if (!wayTooFar && releaseConsent && !postDrop && ((tmpTime < 0.1F ||
-                (airGroundDelayTime > 0.0 && airGroundDelayTime < maxDelay && tmpTime > airGroundDelayTime)) ||
-                bombReleaseOverride) && Sms->curWeapon)
+        if ( not wayTooFar and releaseConsent and not postDrop and ((tmpTime < 0.1F or
+                (airGroundDelayTime > 0.0 and airGroundDelayTime < maxDelay and tmpTime > airGroundDelayTime)) or
+                bombReleaseOverride) and Sms->curWeapon)
         {
             bombPickle = TRUE;
         }
@@ -1168,7 +1168,7 @@ void FireControlComputer::CalculateReleaseRange(void)
     airGroundDelayTime = tmpTime;
 
     // RV - Biker - Launch JSOW
-    if (isJSOW && releaseConsent && !postDrop && Sms->curWeapon && Sms->JDAMPowered && Sms->JDAMInitTimer <= 4.0f && abs(groundDesignateAz) < 45.0f * DTR)
+    if (isJSOW and releaseConsent and not postDrop and Sms->curWeapon and Sms->JDAMPowered and Sms->JDAMInitTimer <= 4.0f and abs(groundDesignateAz) < 45.0f * DTR)
         bombPickle = TRUE;
 }
 
@@ -1193,8 +1193,8 @@ void FireControlComputer::DTOSMode(void)
     }
 
     // Move the cursors as needed
-    if ((cursorXCmd != 0) || (cursorYCmd != 0))
-        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+    if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
+        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
         {
             yMove = (float)cursorYCmd / 10000.0F;
             xMove = (float)cursorXCmd / 10000.0F;
@@ -1208,7 +1208,7 @@ void FireControlComputer::DTOSMode(void)
     groundPipperEl += yMove * g_fCursorSpeed * DTOS_SLEW_RATE * SimLibMajorFrameTime;
     groundPipperAz += xMove * g_fCursorSpeed * DTOS_SLEW_RATE * SimLibMajorFrameTime;
 
-    if (preDesignate || (cursorXCmd != 0) || (cursorYCmd != 0))
+    if (preDesignate or (cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
     {
         groundDesignateAz = -cockpitFlightData.beta * DTR + cockpitFlightData.windOffset * platform->platformAngles.cosphi;
         groundDesignateAz += groundPipperAz;
@@ -1216,7 +1216,7 @@ void FireControlComputer::DTOSMode(void)
         groundDesignateEl += groundPipperEl;
         groundDesignateDroll = (float)atan2(sin(groundDesignateAz), sin(groundDesignateEl));
 
-        if (releaseConsent || designateCmd || !preDesignate)
+        if (releaseConsent or designateCmd or not preDesignate)
         {
             // Convert from the body relative flight path marker angles to world space pitch/yaw
             mlSinCos(&trig, platform->Roll());
@@ -1236,7 +1236,7 @@ void FireControlComputer::DTOSMode(void)
     }
 
     // Do post designate work
-    if (!preDesignate)
+    if ( not preDesignate)
     {
         if (masterMode == AirGroundRocket)
             CalculateRocketImpactPoint();
@@ -1279,8 +1279,8 @@ void FireControlComputer::LADDMode(void)
     }
 
     // Move the cursors as needed
-    if (cursorXCmd != 0) || (cursorYCmd != 0)
-        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+    if (cursorXCmd not_eq 0) or (cursorYCmd not_eq 0)
+        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
         {
             yMove = (float)cursorYCmd / 10000.0F;
             xMove = (float)cursorXCmd / 10000.0F;
@@ -1294,7 +1294,7 @@ void FireControlComputer::LADDMode(void)
     groundPipperEl += yMove * g_fCursorSpeed * DTOS_SLEW_RATE * SimLibMajorFrameTime;
     groundPipperAz += xMove * g_fCursorSpeed * DTOS_SLEW_RATE * SimLibMajorFrameTime;
 
-    if (preDesignate || (cursorXCmd != 0) || (cursorYCmd != 0))
+    if (preDesignate or (cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
     {
         groundDesignateAz = -cockpitFlightData.beta * DTR + cockpitFlightData.windOffset * platform->platformAngles.cosphi;
         groundDesignateAz += groundPipperAz;
@@ -1302,7 +1302,7 @@ void FireControlComputer::LADDMode(void)
         groundDesignateEl += groundPipperEl;
         groundDesignateDroll = (float)atan2(sin(groundDesignateAz), sin(groundDesignateEl));
 
-        if (releaseConsent || designateCmd || !preDesignate)
+        if (releaseConsent or designateCmd or not preDesignate)
         {
             // Convert from the body relative flight path marker angles to world space pitch/yaw
             mlSinCos(&trig, platform->Roll());
@@ -1322,7 +1322,7 @@ void FireControlComputer::LADDMode(void)
     }
 
     // Do post designate work
-    if (!preDesignate)
+    if ( not preDesignate)
     {
         CalculateImpactPoint();
 
@@ -1390,7 +1390,7 @@ void FireControlComputer::CalculateLADDReleaseRange(void)
 
     laddAnticipationCue = NoLADDCue;
 
-    if ((Sms->CurHardpoint() >= 0) && (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags & SMSClass::Loftable))
+    if ((Sms->CurHardpoint() >= 0) and (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags bitand SMSClass::Loftable))
     {
 
         //OK, so it's loftable. Since we want to set a distance from the TGT where we want to make our
@@ -1476,12 +1476,12 @@ void FireControlComputer::CalculateLADDReleaseRange(void)
 
     maxDelay = 0.5F;
 
-    if (laddAnticipationCue == NoCue ||
-        (laddAnticipationCue == AwaitingRelease && laddAnticipationCue == lastCue))
+    if (laddAnticipationCue == NoCue or
+        (laddAnticipationCue == AwaitingRelease and laddAnticipationCue == lastCue))
     {
-        if (!wayTooFar && releaseConsent && !postDrop &&
-            ((tmpTime < 0.1F || (airGroundDelayTime > 0.0 && airGroundDelayTime < maxDelay &&
-                                 tmpTime > airGroundDelayTime)) || bombReleaseOverride) && Sms->curWeapon)
+        if ( not wayTooFar and releaseConsent and not postDrop and 
+            ((tmpTime < 0.1F or (airGroundDelayTime > 0.0 and airGroundDelayTime < maxDelay and 
+                                 tmpTime > airGroundDelayTime)) or bombReleaseOverride) and Sms->curWeapon)
         {
             bombPickle = TRUE;
         }

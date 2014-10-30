@@ -1,3 +1,4 @@
+#include <cISO646>
 #include <windows.h>    // includes basic windows functionality
 #include <commdlg.h>    // includes common dialog functionality
 #include <commctrl.h>
@@ -84,7 +85,7 @@ extern _TCHAR *NameStream;
 // Returns 1 if x,y is within rectangle
 int inButton(RECT *but, WORD xPos, WORD yPos)
 {
-    if (xPos >= but->left && xPos <= but->right && yPos >= but->top && yPos <= but->bottom)
+    if (xPos >= but->left and xPos <= but->right and yPos >= but->top and yPos <= but->bottom)
         return 1;
     else
         return 0;
@@ -116,7 +117,7 @@ BOOL WINAPI About(HWND hDlg, UINT message, /* type of message                 */
 
         case WM_COMMAND:                 /* message: received a command */
             if (LOWORD(wParam) == IDOK    /* "OK" box selected?        */
-                || LOWORD(wParam) == IDCANCEL)
+                or LOWORD(wParam) == IDCANCEL)
             {
                 /* System menu close command? */
                 EndDialog(hDlg, TRUE); /* Exits the dialog box        */
@@ -209,7 +210,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     static int editing = 0, unique = 0, renaming = 0, recalc = 0;
     int i, j;
 
-    if (!O)
+    if ( not O)
     {
         EndDialog(hDlg, TRUE);        /* Exits the dialog box        */
         return (FALSE);
@@ -266,7 +267,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             unique = 0;
 
             // Load the name stream into memory, so this stuff goes faster.
-            if (!NameStream)
+            if ( not NameStream)
                 LoadNameStream();
 
             // Fill Name Combo box
@@ -276,7 +277,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 sptr = ReadNameString(i, buffer, 79);
 
-                if (sptr[0] && sptr[0] != '<')
+                if (sptr[0] and sptr[0] not_eq '<')
                     SendMessage(GetDlgItem(hDlg, IDC_OBJ_NAMECOMBO), CB_ADDSTRING, 0, (LPARAM)ReadNameString(i, buffer, 79));
             }
 
@@ -347,7 +348,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             // Zero invalid features
             for (i = 0; i < O->GetTotalFeatures(); i++)
             {
-                if (O->GetFeatureStatus(i) > 0 && !O->GetFeatureID(i))
+                if (O->GetFeatureStatus(i) > 0 and not O->GetFeatureID(i))
                     O->SetFeatureStatus(i, VIS_DESTROYED);
             }
 
@@ -384,7 +385,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             PostMessage(GetDlgItem(hDlg, IDC_OBJ_OCCVAL), WM_PAINT, 0, 0);
             j = O->GetObjectiveNameID();
 
-            if (O->IsSecondary() && !j)
+            if (O->IsSecondary() and not j)
                 PostMessage(hDlg, WM_COMMAND, IDC_OBJ_RENAME, 0);
 
             if (GetUpdateRect(hDlg, &rect, FALSE))
@@ -431,11 +432,11 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         O->SetObjectiveNameID(0);
 
                     if (renaming)
-                        SendMessage(hDlg, WM_COMMAND, IDC_OBJ_NAMECOMBO | (CBN_KILLFOCUS << 16) , 0);
+                        SendMessage(hDlg, WM_COMMAND, IDC_OBJ_NAMECOMBO bitor (CBN_KILLFOCUS << 16) , 0);
 
                     renaming = 0;
 
-                    if (!recalc)
+                    if ( not recalc)
                         GlobObj = NULL;
 
                     recalc = 0;
@@ -506,7 +507,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     if (HIWORD(wParam) == CBN_EDITCHANGE)
                         renaming = 1;
 
-                    if (HIWORD(wParam) == CBN_KILLFOCUS && renaming)
+                    if (HIWORD(wParam) == CBN_KILLFOCUS and renaming)
                     {
                         GetDlgItemText(hDlg, IDC_OBJ_NAMECOMBO, buffer, 79);
                         SendMessage(GetDlgItem(hDlg, IDC_OBJ_NAMECOMBO), CB_ADDSTRING, 0, (LPARAM)buffer);
@@ -544,9 +545,9 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                         j = O->GetObjectiveNameID();
 
-                        if (O->IsSecondary() && !j)
+                        if (O->IsSecondary() and not j)
                             PostMessage(hDlg, WM_COMMAND, IDC_OBJ_RENAME, 0);
-                        else if (!O->IsSecondary() && j == 1)
+                        else if ( not O->IsSecondary() and j == 1)
                             O->SetObjectiveNameID(0);
 
                         UpdateNames(hDlg, O);
@@ -606,7 +607,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     GetDlgItemText(hDlg, IDC_OBJ_PRIVAL, buffer, 79);
                     i = atoi(buffer);
 
-                    if (HIWORD(wParam) == EN_KILLFOCUS || i > 0)
+                    if (HIWORD(wParam) == EN_KILLFOCUS or i > 0)
                     {
                         if (i > 0)
                             O->SetObjectivePriority(i);
@@ -620,7 +621,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 case IDC_OBJ_RENAME:
                     i = O->GetObjectiveNameID();
 
-                    if (!i)
+                    if ( not i)
                         O->SetObjectiveNameID(1);
 
                     UpdateNames(hDlg, O);
@@ -909,7 +910,7 @@ BOOL WINAPI MissionTriggerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
                     {
                         toteam = SendMessage(GetDlgItem(hDlg, IDC_MT_TEAMCOMBO), CB_GETCURSEL, 0, 0);
 
-                        if (!vsteam)
+                        if ( not vsteam)
                             vsteam = GetEnemyTeam(toteam);
                     }
 
@@ -1126,7 +1127,7 @@ BOOL WINAPI EditRelations(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 if (TeamInfo[i]->HasSatelites())
                     PostMessage(GetDlgItem(hDlg, (IDC_TEAM_SAT1 - 1 + i)), BM_SETCHECK, 1, 0);
 
-                if (TeamInfo[i]->flags & TEAM_ACTIVE)
+                if (TeamInfo[i]->flags bitand TEAM_ACTIVE)
                     PostMessage(GetDlgItem(hDlg, (IDC_TEAM_ACT1 - 1 + i)), BM_SETCHECK, 1, 0);
             }
 
@@ -1188,9 +1189,9 @@ BOOL WINAPI EditRelations(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     j = i - IDC_TEAM_SAT1 + 1;
 
                     if (TeamInfo[j]->HasSatelites())
-                        TeamInfo[j]->flags ^= TEAM_HASSATS;
+                        TeamInfo[j]->flags xor_eq TEAM_HASSATS;
                     else
-                        TeamInfo[j]->flags |= TEAM_HASSATS;
+                        TeamInfo[j]->flags or_eq TEAM_HASSATS;
 
                     break;
 
@@ -1202,7 +1203,7 @@ BOOL WINAPI EditRelations(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 case IDC_TEAM_ACT6:
                     j = i - IDC_TEAM_ACT1 + 1;
 
-                    if (TeamInfo[j]->flags & TEAM_ACTIVE)
+                    if (TeamInfo[j]->flags bitand TEAM_ACTIVE)
                         TeamInfo[j]->SetActive(0);
                     else
                         TeamInfo[j]->SetActive(1);
@@ -1395,7 +1396,7 @@ BOOL WINAPI EditTeams(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 else
                     PostMessage(GetDlgItem(hDlg, (IDC_SATS)), BM_SETCHECK, BST_UNCHECKED, 0);
 
-                if (tempTeam->flags & TEAM_ACTIVE)
+                if (tempTeam->flags bitand TEAM_ACTIVE)
                     PostMessage(GetDlgItem(hDlg, (IDC_ACTIVE)), BM_SETCHECK, 1, 0);
                 else
                     PostMessage(GetDlgItem(hDlg, (IDC_ACTIVE)), BM_SETCHECK, BST_UNCHECKED, 0);
@@ -1498,7 +1499,7 @@ BOOL WINAPI EditTeams(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     {
                         j = SendMessage(GetDlgItem(hDlg, i), CB_GETCURSEL, 0, 0);
 
-                        if (j != tempTeam->who)
+                        if (j not_eq tempTeam->who)
                         {
                             memcpy(TeamInfo[tempTeam->who], tempTeam, sizeof(TeamClass));
                             memcpy(tempTeam, TeamInfo[j], sizeof(TeamClass));
@@ -1774,7 +1775,7 @@ BOOL WINAPI MapDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 case IDC_MAP_SAMS3:
                     map_data = TheCampaign.SamMapData;
 
-                    if (!map_data)
+                    if ( not map_data)
                     {
                         TheCampaign.SamMapData = MakeCampMap(MAP_SAMCOVERAGE, TheCampaign.SamMapData, 0);
                         map_data = TheCampaign.SamMapData;
@@ -1789,7 +1790,7 @@ BOOL WINAPI MapDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 case IDC_MAP_RADAR3:
                     map_data = TheCampaign.RadarMapData;
 
-                    if (!map_data)
+                    if ( not map_data)
                     {
                         TheCampaign.RadarMapData = MakeCampMap(MAP_RADARCOVERAGE, TheCampaign.RadarMapData, 0);
                         map_data = TheCampaign.RadarMapData;
@@ -1802,7 +1803,7 @@ BOOL WINAPI MapDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 default:
                     map_data = TheCampaign.CampMapData;
 
-                    if (!map_data)
+                    if ( not map_data)
                     {
                         TheCampaign.MakeCampMap(MAP_OWNERSHIP);
                         map_data = TheCampaign.CampMapData;
@@ -1833,9 +1834,9 @@ BOOL WINAPI MapDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                             case IDC_MAP_SAMS1:
                             case IDC_MAP_SAMS2:
                             case IDC_MAP_SAMS3:
-                                dat = (map_data[i] >> s) & 0x03;
+                                dat = (map_data[i] >> s) bitand 0x03;
 
-                                if (!dat)
+                                if ( not dat)
                                     SetPixel(DC, x, y, RGB_BLACK);
                                 else if (dat == 1)
                                     SetPixel(DC, x, y, RGB_LIGHTBLUE);
@@ -1849,7 +1850,7 @@ BOOL WINAPI MapDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                             case IDC_MAP_OWNERSHIP:
                             default:
                                 hi = 4 * (i % 2);
-                                dat = (map_data[i / 2] >> hi) & 0xF;
+                                dat = (map_data[i / 2] >> hi) bitand 0xF;
 
                                 if (dat == 0xF)
                                     SetPixel(DC, x, y, RGB_GRAY);
@@ -1886,7 +1887,7 @@ BOOL WINAPI MapDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 case IDC_MAP_RADAR2:
                 case IDC_MAP_RADAR3:
                     type = LOWORD(wParam);
-                    RedrawWindow(hDlg, NULL, NULL, RDW_INTERNALPAINT | RDW_INVALIDATE);
+                    RedrawWindow(hDlg, NULL, NULL, RDW_INTERNALPAINT bitor RDW_INVALIDATE);
                     break;
 
                 default:
@@ -2021,7 +2022,7 @@ BOOL WINAPI CampClipperProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
                         {
                             ent->GetLocation(&x, &y);
 
-                            if (x >= left && x <= right && y >= bottom && y <= top)
+                            if (x >= left and x <= right and y >= bottom and y <= top)
                             {
                                 // It's a keeper
                                 x = x - left + newleft;
@@ -2036,7 +2037,7 @@ BOOL WINAPI CampClipperProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
                                         {
                                             k = Falcon4ClassTable[((ObjectiveClass*)ent)->GetFeatureID(i)].visType[j];
 
-                                            if (!count[k])
+                                            if ( not count[k])
                                             {
                                                 first[k] = ent->Type() - VU_LAST_ENTITY_TYPE;
                                                 fx[k] = x;
@@ -2128,7 +2129,7 @@ BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             target = FindEntity(TheCampaign.MissionEvaluator->player_element->target_id);
             SetWindowText(GetDlgItem(hDlg, IDC_FIST_TARGET_FEATURE), "None");
 
-            if (target && target->GetClass() == CLASS_OBJECTIVE)
+            if (target and target->GetClass() == CLASS_OBJECTIVE)
             {
                 i = TheCampaign.MissionEvaluator->player_element->target_building;
 
@@ -2202,12 +2203,12 @@ BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         {
                             uchar target_b = TheCampaign.MissionEvaluator->player_element->target_building;
 
-                            if (target_b >= ((Objective)target)->GetTotalFeatures() || ((Objective)target)->GetFeatureStatus(target_b) == VIS_DESTROYED)
+                            if (target_b >= ((Objective)target)->GetTotalFeatures() or ((Objective)target)->GetFeatureStatus(target_b) == VIS_DESTROYED)
                             {
                                 int count = 0;
                                 target_b = rand() % ((Objective)target)->GetTotalFeatures();
 
-                                while (count < 20 && (((Objective)target)->GetFeatureStatus(target_b) == VIS_DESTROYED || !((Objective)target)->GetFeatureValue(target_b)))
+                                while (count < 20 and (((Objective)target)->GetFeatureStatus(target_b) == VIS_DESTROYED or not ((Objective)target)->GetFeatureValue(target_b)))
                                 {
                                     count++;
                                     target_b = rand() % ((Objective)target)->GetTotalFeatures();
@@ -2224,7 +2225,7 @@ BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                                 int count = 0, veh, n;
                                 veh = rand() % VEHICLE_GROUPS_PER_UNIT;
 
-                                while (count < 20 && ((Unit)target)->GetNumVehicles(veh) == 0)
+                                while (count < 20 and ((Unit)target)->GetNumVehicles(veh) == 0)
                                 {
                                     count++;
                                     veh = rand() % VEHICLE_GROUPS_PER_UNIT;
@@ -2283,18 +2284,18 @@ int DoACheatFlight(void)
         VuListIterator flit(AllAirList);
         u = (Unit) flit.GetFirst();
 
-        while (u && !done)
+        while (u and not done)
         {
-            if (u->IsFlight() && ((Flight)u)->GetUnitSquadronID() == FalconLocalSession->GetPlayerSquadronID())
+            if (u->IsFlight() and ((Flight)u)->GetUnitSquadronID() == FalconLocalSession->GetPlayerSquadronID())
             {
                 flight = (Flight)u;
 
-                if (!best)
+                if ( not best)
                     best = flight;
 
-                if (gCheatPriority == 0 && flight->GetUnitPriority() > best->GetUnitPriority())
+                if (gCheatPriority == 0 and flight->GetUnitPriority() > best->GetUnitPriority())
                     best = flight;
-                else if (gCheatPriority == 1 && flight->GetUnitPriority() < best->GetUnitPriority())
+                else if (gCheatPriority == 1 and flight->GetUnitPriority() < best->GetUnitPriority())
                     best = flight;
                 else if (gCheatPriority == 2)
                     done = 1;
@@ -2328,7 +2329,7 @@ int DoACheatFlight(void)
 
 void CheckForCheatFlight(ulong time)
 {
-    if (gCheatingOn && time > gCheatNextTime)
+    if (gCheatingOn and time > gCheatNextTime)
     {
         if (DoACheatFlight())
             gCheatNextTime = time + gCheatTimeInterval;
@@ -2467,15 +2468,15 @@ BOOL OpenCampFile(HWND hWnd)
     CampFileName.nFileOffset       = 0;
     CampFileName.nFileExtension    = 0;
     CampFileName.lCustData         = 0;
-    CampFileName.Flags = OFN_SHOWHELP | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST |
-                         OFN_NOCHANGEDIR | OFN_HIDEREADONLY /* | OFN_ENABLEHOOK */ | OFN_LONGNAMES;
+    CampFileName.Flags = OFN_SHOWHELP bitor OFN_PATHMUSTEXIST bitor OFN_FILEMUSTEXIST |
+                         OFN_NOCHANGEDIR bitor OFN_HIDEREADONLY /* bitor OFN_ENABLEHOOK */ bitor OFN_LONGNAMES;
     // CampFileName.lpfnHook = (LPOFNHOOKPROC)MakeProcInstance(FileOpenHookProc, NULL);
     CampFileName.lpfnHook = NULL;
     CampFileName.lpstrFilter       = cmpFilter;
     CampFileName.lpstrTitle        = "Open a Campaign file";
     CampFileName.lpstrDefExt       = "*.cam";
 
-    if (!GetOpenFileName(&CampFileName))
+    if ( not GetOpenFileName(&CampFileName))
     {
         ProcessCDError(CommDlgExtendedError(), hWnd);
         return FALSE;
@@ -2502,7 +2503,7 @@ BOOL OpenCampFile(HWND hWnd)
     else
         strcpy(FalconCampUserSaveDirectory, FalconCampaignSaveDirectory);
 
-    if (!TheCampaign.LoadCampaign(game_Campaign, CampFile))
+    if ( not TheCampaign.LoadCampaign(game_Campaign, CampFile))
     {
         MonoPrint("Open Failed\n");
         return (FALSE);
@@ -2532,14 +2533,14 @@ BOOL OpenTheaterFile(HWND hWnd)
     TheaterFileName.nFileOffset       = 0;
     TheaterFileName.nFileExtension    = 0;
     TheaterFileName.lCustData         = 0;
-    TheaterFileName.Flags = OFN_SHOWHELP | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_ENABLEHOOK;
+    TheaterFileName.Flags = OFN_SHOWHELP bitor OFN_PATHMUSTEXIST bitor OFN_FILEMUSTEXIST bitor OFN_HIDEREADONLY bitor OFN_ENABLEHOOK;
     TheaterFileName.lpfnHook = (LPOFNHOOKPROC)MakeProcInstance(FileOpenHookProc, NULL);
 
     TheaterFileName.lpstrFilter       = thrFilter;
     TheaterFileName.lpstrTitle        = "Open a Theater file";
     TheaterFileName.lpstrDefExt       = "*.thr";
 
-    if (!GetOpenFileName(&TheaterFileName))
+    if ( not GetOpenFileName(&TheaterFileName))
     {
         ProcessCDError(CommDlgExtendedError(), hWnd);
         return FALSE;
@@ -2568,7 +2569,7 @@ BOOL OpenTheaterFile(HWND hWnd)
 
     TheCampaign.SetTheater(TheaterFile);
 
-    if (!LoadTheater(TheaterFile))
+    if ( not LoadTheater(TheaterFile))
     {
         MonoPrint("Open Failed.\n");
         return (FALSE);
@@ -2590,10 +2591,10 @@ BOOL CheckFile(HWND hWnd, OPENFILENAME file)
     WORD wStyle;
     CHAR buf[256];
 
-    if (file.Flags & OFN_FILEMUSTEXIST)
+    if (file.Flags bitand OFN_FILEMUSTEXIST)
         wStyle = OF_READWRITE;
     else
-        wStyle = OF_READWRITE | OF_CREATE;
+        wStyle = OF_READWRITE bitor OF_CREATE;
 
     if ((hFile = OpenFile(file.lpstrFile, &OfStruct, wStyle)) == -1)
     {
@@ -2614,7 +2615,7 @@ BOOL SaveCampFile(HWND hWnd, int mode)
     if (strlen(CampFileName.lpstrFile) < 1)
         return FALSE;
 
-    if (!CheckFile(hWnd, CampFileName))
+    if ( not CheckFile(hWnd, CampFileName))
         return FALSE;
 
     // write it's contents into a file
@@ -2635,7 +2636,7 @@ BOOL SaveCampFile(HWND hWnd, int mode)
     else
         strcpy(FalconCampUserSaveDirectory, FalconCampaignSaveDirectory);
 
-    if (mode == ID_CAMPAIGN_SAVE || mode == ID_CAMPAIGN_SAVEAS)
+    if (mode == ID_CAMPAIGN_SAVE or mode == ID_CAMPAIGN_SAVEAS)
         save_mode = 0;
     else if (mode == ID_CAMPAIGN_SAVEALLAS)
         save_mode = 1;
@@ -2645,7 +2646,7 @@ BOOL SaveCampFile(HWND hWnd, int mode)
         Camp_MakeInstantAction();
     }
 
-    if (!TheCampaign.SaveCampaign(game_Campaign, CampFile, save_mode))
+    if ( not TheCampaign.SaveCampaign(game_Campaign, CampFile, save_mode))
     {
         sprintf(buf, "Error writing file %s", CampFileName.lpstrFile);
         MessageBox(hWnd, buf, NULL, MB_OK);
@@ -2665,7 +2666,7 @@ BOOL SaveTheaterFile(HWND hWnd)
     if (strlen(TheaterFileName.lpstrFile) < 1)
         return FALSE;
 
-    if (!CheckFile(hWnd, TheaterFileName))
+    if ( not CheckFile(hWnd, TheaterFileName))
         return FALSE;
 
     // Set Current Campaign to use this theater
@@ -2686,7 +2687,7 @@ BOOL SaveTheaterFile(HWND hWnd)
     else
         strcpy(FalconCampUserSaveDirectory, FalconCampaignSaveDirectory);
 
-    if (!SaveTheater(TheaterFile))
+    if ( not SaveTheater(TheaterFile))
     {
         sprintf(buf, "Error writing theater file");
         MessageBox(hWnd, buf, NULL, MB_OK);
@@ -2706,12 +2707,12 @@ BOOL SaveScriptedUnitFile (HWND hWnd, OPENFILENAME file)
 
  if (strlen(file.lpstrFile) < 1)
  return FALSE;
- if (!CheckFile(hWnd,file))
+ if ( not CheckFile(hWnd,file))
  return FALSE;
  // Set Current Campaign to use this theater
  sprintf(filename,file.lpstrFile);
  fp = fopen(filename, "wb");
- if (GlobUnit != NULL)
+ if (GlobUnit not_eq NULL)
  GlobUnit->Save(fp);
  fclose(fp);
  MessageBox( hWnd, filename, "File Saved", MB_OK );
@@ -2776,7 +2777,7 @@ BOOL SaveAsCampFile(HWND hWnd, int mode)
     CampFileName.nFileOffset       = 0;
     CampFileName.nFileExtension    = 0;
     CampFileName.lCustData         = 0;
-    CampFileName.Flags = OFN_ENABLEHOOK | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
+    CampFileName.Flags = OFN_ENABLEHOOK bitor OFN_HIDEREADONLY bitor OFN_OVERWRITEPROMPT bitor OFN_NOCHANGEDIR;
     CampFileName.lpfnHook = (LPOFNHOOKPROC)MakeProcInstance(FileSaveHookProc, NULL);
     CampFileName.lpTemplateName = (LPSTR)NULL;
 
@@ -2817,7 +2818,7 @@ BOOL SaveAsTheaterFile(HWND hWnd)
     TheaterFileName.nFileOffset       = 0;
     TheaterFileName.nFileExtension    = 0;
     TheaterFileName.lCustData         = 0;
-    TheaterFileName.Flags = OFN_ENABLEHOOK | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
+    TheaterFileName.Flags = OFN_ENABLEHOOK bitor OFN_HIDEREADONLY bitor OFN_OVERWRITEPROMPT bitor OFN_NOCHANGEDIR;
     TheaterFileName.lpfnHook = (LPOFNHOOKPROC)MakeProcInstance(FileSaveHookProc, NULL);
     TheaterFileName.lpTemplateName = (LPSTR)NULL;
 
@@ -2860,7 +2861,7 @@ BOOL SaveAsScriptedUnitFile(HWND hWnd)
     this_file.nFileOffset       = 0;
     this_file.nFileExtension    = 0;
     this_file.lCustData         = 0;
-    this_file.Flags = OFN_ENABLEHOOK | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
+    this_file.Flags = OFN_ENABLEHOOK bitor OFN_HIDEREADONLY bitor OFN_OVERWRITEPROMPT bitor OFN_NOCHANGEDIR;
     this_file.lpfnHook = (LPOFNHOOKPROC)MakeProcInstance(FileSaveHookProc, NULL);
     this_file.lpTemplateName = (LPSTR)NULL;
 

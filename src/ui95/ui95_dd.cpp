@@ -44,7 +44,7 @@ void UIBuildColorTable()
             else
             {
                 UIColorTable[i][j] = WORD(j * color);
-                rUIColorTable[i][j] = static_cast<WORD>(WORD(j * color) << reds); //!
+                rUIColorTable[i][j] = static_cast<WORD>(WORD(j * color) << reds); 
                 gUIColorTable[i][j] = static_cast<WORD>(WORD(j * color) << greens);
                 bUIColorTable[i][j] = static_cast<WORD>(WORD(j * color) << blues);
             }
@@ -52,9 +52,9 @@ void UIBuildColorTable()
 
     for (i = 0; i < 32; i++)
     {
-        Grey_1[i] = static_cast<WORD>(FloatToInt32((float)i * 0.1f)); //!
-        Grey_3[i] = static_cast<WORD>(FloatToInt32((float)i * 0.3f)); //!
-        Grey_6[i] = static_cast<WORD>(FloatToInt32((float)i * 0.6f)); //!
+        Grey_1[i] = static_cast<WORD>(FloatToInt32((float)i * 0.1f)); 
+        Grey_3[i] = static_cast<WORD>(FloatToInt32((float)i * 0.3f)); 
+        Grey_6[i] = static_cast<WORD>(FloatToInt32((float)i * 0.6f)); 
         rShift[i] = static_cast<short>(i << reds);
         gShift[i] = static_cast<short>(i << greens);
         bShift[i] = static_cast<short>(i << blues);
@@ -64,7 +64,7 @@ void UIBuildColorTable()
 //XXvoid UI95_SetScreenColorInfo( WORD r_mask,WORD g_mask,WORD b_mask )
 void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
 {
-    ShiAssert(r_mask != 0 && g_mask != 0 && b_mask != 0); // this should never happen
+    ShiAssert(r_mask not_eq 0 and g_mask not_eq 0 and b_mask not_eq 0); // this should never happen
     // but I saw it once (JPO)
 
 
@@ -85,7 +85,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
     // RED
     reds = 0;
 
-    while (r_mask &&  !(r_mask & 1))   // JPO cater for no reds - weird!
+    while (r_mask and not (r_mask bitand 1))   // JPO cater for no reds - weird
     {
         r_mask >>= 1;
         reds++;
@@ -93,7 +93,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
 
     redc = 0;
 
-    while (r_mask & 1)
+    while (r_mask bitand 1)
     {
         r_mask >>= 1;
         redc++;
@@ -105,7 +105,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
     // GREEN
     greens = 0;
 
-    while (g_mask && !(g_mask & 1))
+    while (g_mask and not (g_mask bitand 1))
     {
         g_mask >>= 1;
         greens++;
@@ -113,7 +113,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
 
     greenc = 0;
 
-    while (g_mask & 1)
+    while (g_mask bitand 1)
     {
         g_mask >>= 1;
         greenc++;
@@ -125,7 +125,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
     // BLUE
     blues = 0;
 
-    while (b_mask && !(b_mask & 1))
+    while (b_mask and not (b_mask bitand 1))
     {
         b_mask >>= 1;
         blues++;
@@ -133,7 +133,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
 
     bluec = 0;
 
-    while (b_mask & 1)
+    while (b_mask bitand 1)
     {
         b_mask >>= 1;
         bluec++;
@@ -143,7 +143,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
         blues++;
 }
 
-/*  //!
+/*  
 void UI95_GetScreenColorInfo(WORD *r_mask,WORD *r_shift,WORD *g_mask,WORD *g_shift,WORD *b_mask,WORD *b_shift)
 {
  *r_mask = redm;
@@ -170,31 +170,31 @@ void UI95_GetScreenColorInfo(DWORD &r_mask, WORD &r_shift, DWORD &g_mask, WORD &
 
 WORD UI95_RGB15Bit(WORD rgb)
 {
-    return static_cast<WORD>(rShift[(rgb >> 10) & 0x1f] | gShift[(rgb >> 5) & 0x1f] | bShift[rgb & 0x1f]); //!
+    return static_cast<WORD>(rShift[(rgb >> 10) bitand 0x1f] bitor gShift[(rgb >> 5) bitand 0x1f] bitor bShift[rgb bitand 0x1f]); 
 }
 
 
 WORD UI95_RGB24Bit(unsigned long rgb)
 {
-    return static_cast<WORD>(rShift[(rgb >> 3) & 0x1f] | gShift[(rgb >> 11) & 0x1f] | bShift[(rgb >> 19) & 0x1f]);//!
+    return static_cast<WORD>(rShift[(rgb >> 3) bitand 0x1f] bitor gShift[(rgb >> 11) bitand 0x1f] bitor bShift[(rgb >> 19) bitand 0x1f]);
 }
 
 WORD UI95_ScreenToTga(WORD color)
 {
     long r, g, b;
 
-    r = ((color >> reds)   & 0x1f) << 10;
-    g = ((color >> greens) & 0x1f) << 5;
-    b = ((color >> blues)  & 0x1f);
+    r = ((color >> reds) bitand 0x1f) << 10;
+    g = ((color >> greens) bitand 0x1f) << 5;
+    b = ((color >> blues) bitand 0x1f);
 
-    return static_cast<WORD>(r | g | b); //!
+    return static_cast<WORD>(r bitor g bitor b); 
 }
 
 WORD UI95_ScreenToGrey(WORD color)
 {
-    long grey = Grey_3[(color  >> reds) & 0x1f] + Grey_6[(color  >> greens) & 0x1f] + Grey_1[(color  >> blues) & 0x1f];
+    long grey = Grey_3[(color  >> reds) bitand 0x1f] + Grey_6[(color  >> greens) bitand 0x1f] + Grey_1[(color  >> blues) bitand 0x1f];
 
-    return static_cast<WORD>(rShift[grey] | gShift[grey] | bShift[grey]); //!
+    return static_cast<WORD>(rShift[grey] bitor gShift[grey] bitor bShift[grey]); 
 }
 
 /*
@@ -206,12 +206,12 @@ void UI95_GetScreenFormat(DDSURFACEDESC *desc)
 
  mask = UI95_ScreenFormat.ddpfPixelFormat.dwRBitMask;
  reds = 0;
- while( !(mask & 1) ) {
+ while( not (mask bitand 1) ) {
  mask >>= 1;
  reds++;
  }
  redc=0;
- while( mask & 1 ) {
+ while( mask bitand 1 ) {
  mask >>= 1;
  redc++;
  }
@@ -221,12 +221,12 @@ void UI95_GetScreenFormat(DDSURFACEDESC *desc)
  // GREEN
  mask = UI95_ScreenFormat.ddpfPixelFormat.dwGBitMask;
  greens = 0;
- while( !(mask & 1) ) {
+ while( not (mask bitand 1) ) {
  mask >>= 1;
  greens++;
  }
  greenc=0;
- while( mask & 1 ) {
+ while( mask bitand 1 ) {
  mask >>= 1;
  greenc++;
  }
@@ -236,12 +236,12 @@ void UI95_GetScreenFormat(DDSURFACEDESC *desc)
  // BLUE
  mask = UI95_ScreenFormat.ddpfPixelFormat.dwBBitMask;
  blues = 0;
- while( !(mask & 1) ) {
+ while( not (mask bitand 1) ) {
  mask >>= 1;
  blues++;
  }
  bluec=0;
- while( mask & 1 ) {
+ while( mask bitand 1 ) {
  mask >>= 1;
  bluec++;
  }
@@ -262,8 +262,8 @@ IDirectDrawSurface *UI95_CreateDDSurface(IDirectDraw *DD,DWORD width,DWORD heigh
     ddDescription.dwSize = sizeof( ddDescription );
     ddDescription.dwFlags = DDSD_CAPS;
 
- ddDescription.ddsCaps.dwCaps |= DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN | DDSCAPS_3DDEVICE;
- ddDescription.dwFlags |= DDSD_WIDTH | DDSD_HEIGHT;
+ ddDescription.ddsCaps.dwCaps or_eq DDSCAPS_SYSTEMMEMORY bitor DDSCAPS_OFFSCREENPLAIN bitor DDSCAPS_3DDEVICE;
+ ddDescription.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
  ddDescription.dwWidth = width;
  ddDescription.dwHeight = height;
 
@@ -284,7 +284,7 @@ void *UI95_Lock(IDirectDrawSurface *ddSurface)
  memset( &UI95_ScreenFormat, 0, sizeof( UI95_ScreenFormat ) );
  UI95_ScreenFormat.dwSize = sizeof( UI95_ScreenFormat );
 
- result=ddSurface->Lock( NULL, &UI95_ScreenFormat, DDLOCK_SURFACEMEMORYPTR | DDLOCK_WAIT, NULL );
+ result=ddSurface->Lock( NULL, &UI95_ScreenFormat, DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_WAIT, NULL );
  if(result == DD_OK)
  return(UI95_ScreenFormat.lpSurface);
  UI95_DDErrorCheck( result );
@@ -304,7 +304,7 @@ GLImageInfo *LoadImageFile(char *filename)
  short result;
 
 
- if(!filename)
+ if( not filename)
  return(NULL);
 
  // Make sure we recognize this file type
@@ -314,13 +314,13 @@ GLImageInfo *LoadImageFile(char *filename)
 
  // Open the input file
  result = texFile.glOpenFileMem( (GLbyte*)filename );
- if ( result != 1 )
+ if ( result not_eq 1 )
  return(NULL);
 
  // Read the image data (note that ReadTextureImage will close texFile for us)
  texFile.glReadFileMem();
  result = ReadTextureImage( &texFile );
- if (result != GOOD_READ)
+ if (result not_eq GOOD_READ)
  return(NULL);
 
  // Store the image properties in our local storage
@@ -328,13 +328,13 @@ GLImageInfo *LoadImageFile(char *filename)
  height = texFile.image.height;
 
  // Do things differently for 8 bit and RGB images
- if (flags & MPR_TI_PALETTE) {
+ if (flags bitand MPR_TI_PALETTE) {
 
  imageData = texFile.image.image;
 
  // Create a palette object if we don't already have one
  ShiAssert( texFile.image.palette );
- if (!palette) {
+ if ( not palette) {
  palette = new Palette;
  palette->Setup32( (DWORD*)texFile.image.palette );
  } else {
@@ -363,7 +363,7 @@ IDirectDrawSurface *LoadImageFile(char *fname)
 /*
 BOOL UI95_DDErrorCheck( HRESULT result )
 {
- if(result != DD_OK) return(FALSE);
+ if(result not_eq DD_OK) return(FALSE);
  return(TRUE);
  switch ( result ) {
 

@@ -5,6 +5,7 @@
 
  - Begin Major Rewrite
 \***************************************************************************/
+#include <cISO646>
 #include "stdafx.h"
 #include <io.h>
 #include <fcntl.h>
@@ -176,14 +177,14 @@ void TextureBankClass::ReadPool(int file, char *basename)
         TexturePool[i].fileSize = TempTexturePool[i].fileSize;
 
         TexturePool[i].tex = TempTexturePool[i].tex;
-        TexturePool[i].tex.flags |= MPR_TI_INVALID;
+        TexturePool[i].tex.flags or_eq MPR_TI_INVALID;
         TexturePool[i].texN = TempTexturePool[i].tex;
-        TexturePool[i].texN.flags |= MPR_TI_INVALID;
+        TexturePool[i].texN.flags or_eq MPR_TI_INVALID;
 
         if (DisplayOptions.bMipmapping)
         {
-            TexturePool[i].tex.flags |= MPR_TI_MIPMAP;
-            TexturePool[i].texN.flags |= MPR_TI_MIPMAP;
+            TexturePool[i].tex.flags or_eq MPR_TI_MIPMAP;
+            TexturePool[i].texN.flags or_eq MPR_TI_MIPMAP;
         }
 
         TexturePool[i].palID = 0;//TempTexturePool[i].palID;
@@ -226,12 +227,12 @@ void TextureBankClass::OpenTextureFile()
 {
     char filename[_MAX_PATH];
 
-    ShiAssert(!TexFileMap.IsReady());
+    ShiAssert( not TexFileMap.IsReady());
 
     strcpy(filename, baseName);
     strcat(filename, ".TEX");
 
-    if (!TexFileMap.Open(filename, FALSE, !g_bUseMappedFiles))
+    if ( not TexFileMap.Open(filename, FALSE, not g_bUseMappedFiles))
     {
         char message[256];
         sprintf(message, "Failed to open object texture file %s\n", filename);
@@ -268,7 +269,7 @@ void TextureBankClass::Reference(int id)
     {
         ShiAssert(TexFileMap.IsReady());
         ShiAssert(CompressedBuffer);
-        if(TexturePool[id].tex.imageData != NULL)
+        if(TexturePool[id].tex.imageData not_eq NULL)
             return;
         ShiAssert(TexturePool[id].tex.TexHandle() == NULL);
 
@@ -282,7 +283,7 @@ void TextureBankClass::Reference(int id)
         TexturePool[id].tex.GetPalette()->Reference();
 
         // Mark for the request if not already marked
-        if (!TexFlags[id].OnOrder)
+        if ( not TexFlags[id].OnOrder)
         {
             TexFlags[id].OnOrder = true;
             // put into load cache
@@ -308,15 +309,15 @@ void TextureBankClass::Release(int id)
     ShiAssert(IsValidIndex(id));
     ShiAssert(TexturePool[id].refCount > 0);
 
-    // RED - no reference, no party... !!!!!
-    if (!TexturePool[id].refCount) 
+    // RED - no reference, no party... 
+    if ( not TexturePool[id].refCount) 
         return;
 
     TexturePool[id].refCount--;
 
     if (TexturePool[id].refCount == 0)
     {
-        if (!TexFlags[id].OnRelease)
+        if ( not TexFlags[id].OnRelease)
         {
             TexFlags[id].OnRelease = true;
             // put into load cache
@@ -342,7 +343,7 @@ void TextureBankClass::ReadImageData(int id, bool forceNoDDS)
 
     ShiAssert(TexturePool[id].refCount);
 
-    if (!forceNoDDS && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+    if ( not forceNoDDS and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
     {
         ReadImageDDS(id);
         ReadImageDDSN(id);
@@ -357,7 +358,7 @@ void TextureBankClass::ReadImageData(int id, bool forceNoDDS)
     }
     else
     {
-        if (!TexFileMap.ReadDataAt(TexturePool[id].fileOffset, CompressedBuffer, TexturePool[id].fileSize))
+        if ( not TexFileMap.ReadDataAt(TexturePool[id].fileOffset, CompressedBuffer, TexturePool[id].fileSize))
         {
             char message[120];
             sprintf(message, "%s: Bad object texture seek (%0d)", strerror(errno), TexturePool[id].fileOffset);
@@ -395,7 +396,7 @@ void TextureBankClass::SetDeferredLoad(BOOL state)
     // Allocate space for the async request
     request = new LoaderQ;
 
-    if (!request)
+    if ( not request)
         ShiError("Failed to allocate memory for a object texture load state change request");
 
     // Build the data transfer request to get the required object data
@@ -415,7 +416,7 @@ void TextureBankClass::LoaderCallBack(LoaderQ* request)
     //EnterCriticalSection(&ObjectLOD::cs_ObjectLOD);
 
     // If we're turning deferred loads off, go back and do all the loads we held up
-    if (deferredLoadState && !state)
+    if (deferredLoadState and not state)
     {
         DWORD Count = 5;
 
@@ -426,18 +427,18 @@ void TextureBankClass::LoaderCallBack(LoaderQ* request)
             if (TexturePool[id].refCount)
 
                 // This one is in use. Is it already loaded?
-                if (/*!TexturePool[id].tex.imageData &&*/ !TexturePool[id].tex.TexHandle())
+                if (/* not TexturePool[id].tex.imageData and */ not TexturePool[id].tex.TexHandle())
                 {
 
                     // Nope, go get it.
-                    if (!TexturePool[id].tex.imageData) ReadImageData(id);
+                    if ( not TexturePool[id].tex.imageData) ReadImageData(id);
 
                     TexturePool[id].tex.CreateTexture();
                     Count--;
                     //TexturePool[id].tex.FreeImage();
                 }
 
-            if (!Count) break;
+            if ( not Count) break;
         }
     }
 
@@ -480,7 +481,7 @@ void TextureBankClass::SelectHandle(DWORD TexHandle)
 
 BOOL TextureBankClass::IsValidIndex(int id)
 {
-    return((id >= 0) && (id < nTextures));
+    return((id >= 0) and (id < nTextures));
 }
 
 void TextureBankClass::RestoreAll()
@@ -501,7 +502,7 @@ void TextureBankClass::SyncDDSTextures(bool bForce)
         sprintf(szFile, "%s\\%d.dds", baseName, id);
         fp = fopen(szFile, "rb");
 
-        if (!fp || bForce)
+        if ( not fp or bForce)
         {
             if (fp)
                 fclose(fp);
@@ -511,10 +512,10 @@ void TextureBankClass::SyncDDSTextures(bool bForce)
         else
             fclose(fp);
 
-        TexturePool[id].tex.flags |= MPR_TI_DDS;
-        TexturePool[id].tex.flags &= ~MPR_TI_PALETTE;
-        TexturePool[id].texN.flags |= MPR_TI_DDS;
-        TexturePool[id].texN.flags &= ~MPR_TI_PALETTE;
+        TexturePool[id].tex.flags or_eq MPR_TI_DDS;
+        TexturePool[id].tex.flags and_eq compl MPR_TI_PALETTE;
+        TexturePool[id].texN.flags or_eq MPR_TI_DDS;
+        TexturePool[id].texN.flags and_eq compl MPR_TI_PALETTE;
     }
 }
 
@@ -554,13 +555,13 @@ void TextureBankClass::ReadImageDDS(DWORD id)
     FILE *fp;
 
     TexturePool[id].tex.flags = MPR_TI_DDS;
-    TexturePool[id].tex.flags &= ~MPR_TI_PALETTE;
+    TexturePool[id].tex.flags and_eq compl MPR_TI_PALETTE;
 
     sprintf(szFile, "%s\\%d.dds", baseName, id);
     fp = fopen(szFile, "rb");
 
     // RV - RED - Avoid CTD if a missing texture
-    if (!fp) return;
+    if ( not fp) return;
 
     fread(&dwMagic, 1, sizeof(DWORD), fp);
     ShiAssert(dwMagic == MAKEFOURCC('D', 'D', 'S', ' '));
@@ -571,35 +572,35 @@ void TextureBankClass::ReadImageDDS(DWORD id)
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
     {
-        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') ||
+        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') or
             ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '5'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth;
-            ddsd.dwFlags |= DDSD_LINEARSIZE;
+            ddsd.dwFlags or_eq DDSD_LINEARSIZE;
         }
 
         if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '1'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth / 2;
-            ddsd.dwFlags |= DDSD_LINEARSIZE;
+            ddsd.dwFlags or_eq DDSD_LINEARSIZE;
         }
     }
 
 
-    ShiAssert(ddsd.dwFlags & DDSD_LINEARSIZE)
+    ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE)
 
     switch (ddsd.ddpfPixelFormat.dwFourCC)
     {
         case MAKEFOURCC('D', 'X', 'T', '1'):
-            TexturePool[id].tex.flags |= MPR_TI_DXT1;
+            TexturePool[id].tex.flags or_eq MPR_TI_DXT1;
             break;
 
         case MAKEFOURCC('D', 'X', 'T', '3'):
-            TexturePool[id].tex.flags |= MPR_TI_DXT3;
+            TexturePool[id].tex.flags or_eq MPR_TI_DXT3;
             break;
 
         case MAKEFOURCC('D', 'X', 'T', '5'):
-            TexturePool[id].tex.flags |= MPR_TI_DXT5;
+            TexturePool[id].tex.flags or_eq MPR_TI_DXT5;
             break;
 
         default:
@@ -609,35 +610,35 @@ void TextureBankClass::ReadImageDDS(DWORD id)
     switch (ddsd.dwWidth)
     {
         case 16:
-            TexturePool[id].tex.flags |= MPR_TI_16;
+            TexturePool[id].tex.flags or_eq MPR_TI_16;
             break;
 
         case 32:
-            TexturePool[id].tex.flags |= MPR_TI_32;
+            TexturePool[id].tex.flags or_eq MPR_TI_32;
             break;
 
         case 64:
-            TexturePool[id].tex.flags |= MPR_TI_64;
+            TexturePool[id].tex.flags or_eq MPR_TI_64;
             break;
 
         case 128:
-            TexturePool[id].tex.flags |= MPR_TI_128;
+            TexturePool[id].tex.flags or_eq MPR_TI_128;
             break;
 
         case 256:
-            TexturePool[id].tex.flags |= MPR_TI_256;
+            TexturePool[id].tex.flags or_eq MPR_TI_256;
             break;
 
         case 512:
-            TexturePool[id].tex.flags |= MPR_TI_512;
+            TexturePool[id].tex.flags or_eq MPR_TI_512;
             break;
 
         case 1024:
-            TexturePool[id].tex.flags |= MPR_TI_1024;
+            TexturePool[id].tex.flags or_eq MPR_TI_1024;
             break;
 
         case 2048:
-            TexturePool[id].tex.flags |= MPR_TI_2048;
+            TexturePool[id].tex.flags or_eq MPR_TI_2048;
             break;
 
         default:
@@ -667,14 +668,14 @@ void TextureBankClass::ReadImageDDSN(DWORD id)
     sprintf(szFile, "%s\\%dN.dds", baseName, id);
     fp = fopen(szFile, "rb");
 
-    if (!fp)
+    if ( not fp)
     {
         return;
     }
 
-    TexturePool[id].texN.flags |= MPR_TI_DDS;
-    TexturePool[id].texN.flags &= ~MPR_TI_PALETTE;
-    TexturePool[id].texN.flags &= ~MPR_TI_INVALID;
+    TexturePool[id].texN.flags or_eq MPR_TI_DDS;
+    TexturePool[id].texN.flags and_eq compl MPR_TI_PALETTE;
+    TexturePool[id].texN.flags and_eq compl MPR_TI_INVALID;
 
     fread(&dwMagic, 1, sizeof(DWORD), fp);
     ShiAssert(dwMagic == MAKEFOURCC('D', 'D', 'S', ' '));
@@ -685,34 +686,34 @@ void TextureBankClass::ReadImageDDSN(DWORD id)
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
     {
-        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') ||
+        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') or
             ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '5'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth;
-            ddsd.dwFlags |= DDSD_LINEARSIZE;
+            ddsd.dwFlags or_eq DDSD_LINEARSIZE;
         }
 
         if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '1'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth / 2;
-            ddsd.dwFlags |= DDSD_LINEARSIZE;
+            ddsd.dwFlags or_eq DDSD_LINEARSIZE;
         }
     }
 
-    ShiAssert(ddsd.dwFlags & DDSD_LINEARSIZE)
+    ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE)
 
     switch (ddsd.ddpfPixelFormat.dwFourCC)
     {
         case MAKEFOURCC('D', 'X', 'T', '1'):
-            TexturePool[id].texN.flags |= MPR_TI_DXT1;
+            TexturePool[id].texN.flags or_eq MPR_TI_DXT1;
             break;
 
         case MAKEFOURCC('D', 'X', 'T', '3'):
-            TexturePool[id].tex.flags |= MPR_TI_DXT3;
+            TexturePool[id].tex.flags or_eq MPR_TI_DXT3;
             break;
 
         case MAKEFOURCC('D', 'X', 'T', '5'):
-            TexturePool[id].texN.flags |= MPR_TI_DXT5;
+            TexturePool[id].texN.flags or_eq MPR_TI_DXT5;
             break;
 
         default:
@@ -722,35 +723,35 @@ void TextureBankClass::ReadImageDDSN(DWORD id)
     switch (ddsd.dwWidth)
     {
         case 16:
-            TexturePool[id].texN.flags |= MPR_TI_16;
+            TexturePool[id].texN.flags or_eq MPR_TI_16;
             break;
 
         case 32:
-            TexturePool[id].texN.flags |= MPR_TI_32;
+            TexturePool[id].texN.flags or_eq MPR_TI_32;
             break;
 
         case 64:
-            TexturePool[id].texN.flags |= MPR_TI_64;
+            TexturePool[id].texN.flags or_eq MPR_TI_64;
             break;
 
         case 128:
-            TexturePool[id].texN.flags |= MPR_TI_128;
+            TexturePool[id].texN.flags or_eq MPR_TI_128;
             break;
 
         case 256:
-            TexturePool[id].texN.flags |= MPR_TI_256;
+            TexturePool[id].texN.flags or_eq MPR_TI_256;
             break;
 
         case 512:
-            TexturePool[id].texN.flags |= MPR_TI_512;
+            TexturePool[id].texN.flags or_eq MPR_TI_512;
             break;
 
         case 1024:
-            TexturePool[id].texN.flags |= MPR_TI_1024;
+            TexturePool[id].texN.flags or_eq MPR_TI_1024;
             break;
 
         case 2048:
-            TexturePool[id].texN.flags |= MPR_TI_2048;
+            TexturePool[id].texN.flags or_eq MPR_TI_2048;
             break;
 
         default:
@@ -791,7 +792,7 @@ DWORD TextureBankClass::GetHandle(DWORD id)
     if (TexFlags[id].OnRelease) return NULL;
 
     // if the Handle is prsent, return it
-    if (IsValidIndex(id) && TexturePool[id].tex.TexHandle()) return TexturePool[id].tex.TexHandle();
+    if (IsValidIndex(id) and TexturePool[id].tex.TexHandle()) return TexturePool[id].tex.TexHandle();
 
     // return  a null pointer that means BLANK SURFACE
     return NULL;
@@ -805,17 +806,17 @@ bool TextureBankClass::UpdateBank(void)
     DWORD id;
 
     // till when data to update into caches
-    while (LoadIn != LoadOut || ReleaseIn != ReleaseOut)
+    while (LoadIn not_eq LoadOut or ReleaseIn not_eq ReleaseOut)
     {
 
         // check for textures to be released
-        if (ReleaseIn != ReleaseOut)
+        if (ReleaseIn not_eq ReleaseOut)
         {
             // get the 1st texture Id from cache
             id = CacheRelease[ReleaseOut++];
 
             // if not an order again, and no Referenced, release it
-            if (!TexFlags[id].OnOrder && !TexturePool[id].refCount && TexFlags[id].OnRelease) TexturePool[id].tex.FreeAll();
+            if ( not TexFlags[id].OnOrder and not TexturePool[id].refCount and TexFlags[id].OnRelease) TexturePool[id].tex.FreeAll();
 
             // clear flag, in any case
             TexFlags[id].OnRelease = false;
@@ -828,16 +829,16 @@ bool TextureBankClass::UpdateBank(void)
         }
 
         // check for textures to be released
-        if (LoadIn != LoadOut)
+        if (LoadIn not_eq LoadOut)
         {
             // get the 1st texture Id from cache
             id = CacheLoad[LoadOut++];
 
             // if Texture not yet loaded, load it
-            if (!TexturePool[id].tex.imageData) ReadImageData(id);
+            if ( not TexturePool[id].tex.imageData) ReadImageData(id);
 
             // if Texture not yet crated, crate it
-            if (!TexturePool[id].tex.TexHandle()) TexturePool[id].tex.CreateTexture();
+            if ( not TexturePool[id].tex.TexHandle()) TexturePool[id].tex.CreateTexture();
 
             // clear flag, in any case
             TexFlags[id].OnOrder = false;
@@ -859,12 +860,12 @@ bool TextureBankClass::UpdateBank(void)
 void TextureBankClass::WaitUpdates(void)
 {
     // if no data to wait, exit here
-    if (LoadIn == LoadOut && ReleaseIn == ReleaseOut) return;
+    if (LoadIn == LoadOut and ReleaseIn == ReleaseOut) return;
 
     // Pause the Loader...
     TheLoader.SetPause(true);
 
-    while (!TheLoader.Paused());
+    while ( not TheLoader.Paused());
 
     // Not slow loading
     RatedLoad = false;

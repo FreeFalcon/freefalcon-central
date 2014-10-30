@@ -199,15 +199,15 @@ public:
     };
     int IsSet(int val)
     {
-        return simFlags & val;
+        return simFlags bitand val;
     };
     void Set(int val)
     {
-        simFlags |= val;
+        simFlags or_eq val;
     };
     void Clear(int val)
     {
-        simFlags &= ~val;
+        simFlags and_eq compl val;
     };
     float RadarShootShootPct(void)
     {
@@ -416,7 +416,7 @@ public:
     }
     int HasSatelites(void)
     {
-        return flags & TEAM_HASSATS;
+        return flags bitand TEAM_HASSATS;
     }
     ATM GetATM(void)
     {

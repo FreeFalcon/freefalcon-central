@@ -19,12 +19,12 @@ void ICPClass::ExecMARKMode(void)
 
     NavigationSystem::Point_Type pointType;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
-        if (mUpdateFlags & MARK_UPDATE)
+        if (mUpdateFlags bitand MARK_UPDATE)
         {
 
-            mUpdateFlags &= !MARK_UPDATE;
+            mUpdateFlags and_eq not MARK_UPDATE;
 
             gNavigationSys->GetMarkPoint(&pointType, mpLine2, mpLine3);
 
@@ -81,7 +81,7 @@ void ICPClass::ENTRUpdateMARKMode(void)
     if (playerAC)
     {
 
-        if (MfdDisplay[0]->mode == MFDClass::FCRMode && MfdDisplay[0]->GetDrawable() && ((RadarClass*)MfdDisplay[0]->GetDrawable())->IsAG())
+        if (MfdDisplay[0]->mode == MFDClass::FCRMode and MfdDisplay[0]->GetDrawable() and ((RadarClass*)MfdDisplay[0]->GetDrawable())->IsAG())
         {
 
             ((RadarClass*)MfdDisplay[0]->GetDrawable())->GetCursorPosition(&xprime, &yprime);
@@ -98,7 +98,7 @@ void ICPClass::ENTRUpdateMARKMode(void)
                                          z,
                                          SimLibElapsedTime);
         }
-        else if (MfdDisplay[1]->mode == MFDClass::FCRMode && MfdDisplay[1]->GetDrawable() && ((RadarClass*)MfdDisplay[1]->GetDrawable())->IsAG())
+        else if (MfdDisplay[1]->mode == MFDClass::FCRMode and MfdDisplay[1]->GetDrawable() and ((RadarClass*)MfdDisplay[1]->GetDrawable())->IsAG())
         {
 
             ((RadarClass*)MfdDisplay[0]->GetDrawable())->GetCursorPosition(&xprime, &yprime);
@@ -125,7 +125,7 @@ void ICPClass::ENTRUpdateMARKMode(void)
 
         }
 
-        mUpdateFlags |= MARK_UPDATE;
+        mUpdateFlags or_eq MARK_UPDATE;
     }
 }
 
@@ -143,6 +143,6 @@ void ICPClass::PNUpdateMARKMode(int button, int)
         playerAC->FCC->waypointStepCmd = 1;
     }
 
-    mUpdateFlags |= MARK_UPDATE;
-    mUpdateFlags |= CNI_UPDATE;
+    mUpdateFlags or_eq MARK_UPDATE;
+    mUpdateFlags or_eq CNI_UPDATE;
 }

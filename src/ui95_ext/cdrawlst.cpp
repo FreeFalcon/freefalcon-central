@@ -49,7 +49,7 @@ void C_DrawList::Cleanup(void)
 
 void C_DrawList::Add(MAPICONLIST *item)
 {
-    if (!Root_)
+    if ( not Root_)
         return;
 
     if (Root_->Find(item->ID))
@@ -60,7 +60,7 @@ void C_DrawList::Add(MAPICONLIST *item)
 
 void C_DrawList::Remove(long ID)
 {
-    if (!Root_)
+    if ( not Root_)
         return;
 
     Root_->Remove(ID);
@@ -73,7 +73,7 @@ long C_DrawList::CheckHotSpots(long relX, long relY)
     long curidx;
     long x, y, w, h;
 
-    if (Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return(0);
 
     Last_ = NULL;
@@ -82,14 +82,14 @@ long C_DrawList::CheckHotSpots(long relX, long relY)
 
     while (item)
     {
-        if (!(item->Flags & C_BIT_INVISIBLE) && item->Flags & C_BIT_ENABLED)
+        if ( not (item->Flags bitand C_BIT_INVISIBLE) and item->Flags bitand C_BIT_ENABLED)
         {
             x = item->x + item->Icon->GetX();
             y = item->y + item->Icon->GetY();
             w = item->Icon->GetW();
             h = item->Icon->GetH();
 
-            if (relX >= x && relY >= y && relX < (x + w) && relY < (y + h))
+            if (relX >= x and relY >= y and relX < (x + w) and relY < (y + h))
             {
                 Last_ = item;
                 SetMenu(Last_->Owner->GetMenu());
@@ -109,7 +109,7 @@ BOOL C_DrawList::Process(long ID, short HitType)
 {
     gSoundMgr->PlaySound(GetSound(HitType));
 
-    if (Last_ && Last_->Owner)
+    if (Last_ and Last_->Owner)
         return(Last_->Owner->Process(ID, HitType));
 
     return(FALSE);
@@ -121,21 +121,21 @@ void C_DrawList::Refresh()
     C_HASHNODE *me;
     long curidx;
 
-    if (Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     item = (MAPICONLIST*)Root_->GetFirst(&me, &curidx);
 
     while (item)
     {
-        if (!(item->Flags & C_BIT_INVISIBLE) && item->Flags & C_BIT_ENABLED)
+        if ( not (item->Flags bitand C_BIT_INVISIBLE) and item->Flags bitand C_BIT_ENABLED)
         {
             if (item->Icon)
             {
                 item->Owner->SetXY(item->x, item->y);
                 item->Icon->Refresh();
 
-                if (!(GetFlags() & C_BIT_NOLABEL))
+                if ( not (GetFlags() bitand C_BIT_NOLABEL))
                 {
                     if (item->Div)
                         item->Div->Refresh();
@@ -162,21 +162,21 @@ void C_DrawList::Draw(SCREEN *surface, UI95_RECT *cliprect)
     C_HASHNODE *me;
     long curidx;
 
-    if (Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     item = (MAPICONLIST*)Root_->GetFirst(&me, &curidx);
 
     while (item)
     {
-        if (!(item->Flags & C_BIT_INVISIBLE) && item->Flags & C_BIT_ENABLED)
+        if ( not (item->Flags bitand C_BIT_INVISIBLE) and item->Flags bitand C_BIT_ENABLED)
         {
             if (item->Icon)
             {
                 item->Owner->SetXY(item->x, item->y);
                 item->Icon->Draw(surface, cliprect);
 
-                if (!(GetFlags() & C_BIT_NOLABEL))
+                if ( not (GetFlags() bitand C_BIT_NOLABEL))
                 {
                     if (item->Div)
                         item->Div->Draw(surface, cliprect);
@@ -187,7 +187,7 @@ void C_DrawList::Draw(SCREEN *surface, UI95_RECT *cliprect)
                     if (item->Bat)
                         item->Bat->Draw(surface, cliprect);
 
-                    if (item->Label && !item->Div && !item->Brig && !item->Bat)
+                    if (item->Label and not item->Div and not item->Brig and not item->Bat)
                         item->Label->Draw(surface, cliprect);
                 }
             }

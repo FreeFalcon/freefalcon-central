@@ -28,7 +28,7 @@ VuEntity *VuHashIterator::GetFirst()
 {
     VuHashTable *h = static_cast<VuHashTable*>(collection_);
 
-    if (!h || h->capacity_ <= 0)
+    if ( not h or h->capacity_ <= 0)
     {
         return NULL;
     }
@@ -41,7 +41,7 @@ VuEntity *VuHashIterator::GetFirst()
         curr_ = VuListIterator(&h->table_[idx_]);
         ret = curr_.GetFirst();
     }
-    while (ret == NULL && ++idx_ < h->capacity_);
+    while (ret == NULL and ++idx_ < h->capacity_);
 
     return ret;
 
@@ -83,21 +83,21 @@ VuEntity *VuHashIterator::GetNext()
         // try next
         ret = curr_.GetNext();
 
-        while (ret == NULL && ++idx_ < h->capacity_)
+        while (ret == NULL and ++idx_ < h->capacity_)
         {
             // here we couldnt find a valid next, so try next entry until we find a valid one
             curr_ = VuListIterator(&h->table_[idx_]);
             ret = curr_.GetFirst();
         }
     }
-    while (ret == NULL && idx_ < h->capacity_);
+    while (ret == NULL and idx_ < h->capacity_);
 
     return ret;
 
 #if 0
     curr_ = curr_->next_;
 
-    if (curr_ != vuTailNode)
+    if (curr_ not_eq vuTailNode)
     {
         // sfr: smartpointer
         return curr_->entity_.get();
@@ -126,7 +126,7 @@ VuEntity *VuHashIterator::GetNext()
 
 VuEntity *VuHashIterator::GetFirst(VuFilter* filter)
 {
-    if (!filter)
+    if ( not filter)
     {
         return GetFirst();
     }
@@ -172,7 +172,7 @@ VuEntity *VuHashIterator::GetFirst(VuFilter* filter)
 
 VuEntity *VuHashIterator::GetNext(VuFilter* filter)
 {
-    if (!filter)
+    if ( not filter)
     {
         return GetNext();
     }
@@ -183,7 +183,7 @@ VuEntity *VuHashIterator::GetNext(VuFilter* filter)
     {
         ret = GetNext();
 
-        if (ret == NULL || filter->Test(ret))
+        if (ret == NULL or filter->Test(ret))
         {
             return ret;
         }
@@ -228,7 +228,7 @@ VuEntity *VuHashIterator::CurrEnt()
 // 2002-02-04 MODIFIED BY S.G. If ent is false, then it can't be a valid entity, right? That's what I think too :-)
 // if (curr_->entity_ == ent)
  // sfr: smartpointer
- if (ent && curr_->entity_.get() == ent)
+ if (ent and curr_->entity_.get() == ent)
  {
  return TRUE;
  }

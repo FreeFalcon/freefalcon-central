@@ -38,7 +38,7 @@ C_ATO_Flight::C_ATO_Flight() : C_Control()
     Planes_ = NULL;
     Airbase_ = NULL;
     Status_ = NULL;
-    Defaultflags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER;
+    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER;
 }
 
 C_ATO_Flight::C_ATO_Flight(char **stream) : C_Control(stream)
@@ -69,7 +69,7 @@ void C_ATO_Flight::InitFlight(C_Handler *Handler)
 {
     Icon_ = new O_Output;
     Icon_->SetOwner(this);
-    Icon_->SetFlags(Flags_ | C_BIT_HCENTER | C_BIT_VCENTER);
+    Icon_->SetFlags(Flags_ bitor C_BIT_HCENTER bitor C_BIT_VCENTER);
     Callsign_ = new O_Output;
     Callsign_->SetOwner(this);
     Callsign_->SetFlags(Flags_);
@@ -194,7 +194,7 @@ void C_ATO_Flight::SetSubParents(C_Window *)
 
 long C_ATO_Flight::CheckHotSpots(long relX, long relY)
 {
-    if (relX >= GetX() && relX <= (GetX() + GetW()) && relY >= GetY() && relY <= (GetY() + GetH()))
+    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))
     {
         if (Task_->CheckHotSpots(relX, relY))
             Section_ = 1;
@@ -232,7 +232,7 @@ BOOL C_ATO_Flight::Process(long ID, short HitType)
 
 void C_ATO_Flight::Refresh()
 {
-    if (!Ready() || Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
+    if ( not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
@@ -240,13 +240,13 @@ void C_ATO_Flight::Refresh()
 
 void C_ATO_Flight::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->BlitFill(surface, IconBgColor_[State_ & 1], GetX() + IconBg_.left, GetY() + IconBg_.top, IconBg_.right, IconBg_.bottom, Flags_, Client_, cliprect);
+    Parent_->BlitFill(surface, IconBgColor_[State_ bitand 1], GetX() + IconBg_.left, GetY() + IconBg_.top, IconBg_.right, IconBg_.bottom, Flags_, Client_, cliprect);
 
     if (State_)
-        Parent_->BlitFill(surface, FlightBgColor_[State_ & 1], GetX() + FlightBg_.left, GetY() + FlightBg_.top, FlightBg_.right, FlightBg_.bottom, Flags_, Client_, cliprect);
+        Parent_->BlitFill(surface, FlightBgColor_[State_ bitand 1], GetX() + FlightBg_.left, GetY() + FlightBg_.top, FlightBg_.right, FlightBg_.bottom, Flags_, Client_, cliprect);
 
     if (Icon_)
         Icon_->Draw(surface, cliprect);
@@ -266,6 +266,6 @@ void C_ATO_Flight::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (Status_)
         Status_->Draw(surface, cliprect);
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }

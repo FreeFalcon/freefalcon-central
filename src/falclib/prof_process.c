@@ -1,3 +1,4 @@
+#include <cISO646>
 #include <math.h>
 #include <assert.h>
 #include <stdlib.h>
@@ -242,7 +243,7 @@ Prof_extern_C void  Prof_dumpFile()
 
         for (j = 0; j < NUM_VALUES; ++j)
         {
-            if (r->value_flag & (1 << j))
+            if (r->value_flag bitand (1 << j))
             {
                 fprintf(fp, "%.4f,", r->values[j]);
             }
@@ -356,7 +357,7 @@ Prof_extern_C char** Prof_dumpOverlay()
         // now we create 3 char* with the self, hier and count values
         for (j = 0; j < NUM_VALUES; ++j)
         {
-            if (r->value_flag & (1 << j))
+            if (r->value_flag bitand (1 << j))
             {
                 char tmp[80];
                 sprintf(tmp, "%.6f", r->values[j]);
@@ -391,7 +392,7 @@ static void propogate_stack(Prof_Zone_Stack *c)
 
     while (p->zone)
     {
-        if (!p->zone->visited)
+        if ( not p->zone->visited)
         {
             p->total_hier_ticks += c->total_self_ticks;
             p->zone->visited = 1;
@@ -571,7 +572,7 @@ Prof_extern_C void Prof_update(int record_data)
         speedstep_warning = (ss_ratio > SPEEDSTEP_DETECTION_RATIO);
     }
 
-    if (!record_data)
+    if ( not record_data)
     {
         Prof_traverse(clear_stack);
         Prof_End
@@ -731,7 +732,7 @@ static void propogate_expanded(Prof_Zone_Stack *c)
         return;
     }
 
-    if (c->parent->zone && get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
+    if (c->parent->zone and get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
     {
         ((Prof_Report_Record *) c->parent->zone->highlevel)[0].prefix = '+';
         ((Prof_Report_Record *) c->parent->zone->highlevel)[1].prefix = '+';
@@ -746,7 +747,7 @@ static void propogate_expanded(Prof_Zone_Stack *c)
         r[2].values[1] += 1000 * get_value(&d->hierarchical_time);
         r[2].values[2] += get_value(&d->entry_count);
 
-        if (d->max_recursion > r[2].number && get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
+        if (d->max_recursion > r[2].number and get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
             r[2].number = d->max_recursion;
 
         // propogate it to the parents
@@ -758,7 +759,7 @@ static void propogate_expanded(Prof_Zone_Stack *c)
             r[1].values[2] += get_value(&d->entry_count);
             d = (Profile_Tracker_Data_Record *) c->parent->highlevel;
 
-            if (d->max_recursion > r[1].number && get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
+            if (d->max_recursion > r[1].number and get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
                 r[1].number = d->max_recursion;
         }
     }
@@ -770,7 +771,7 @@ static void propogate_expanded(Prof_Zone_Stack *c)
         r[0].values[1] += 1000 * get_value(&d->hierarchical_time);
         r[0].values[2] += get_value(&d->entry_count);
 
-        if (d->max_recursion > r[0].number && get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
+        if (d->max_recursion > r[0].number and get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
             r[0].number = d->max_recursion;
     }
 }
@@ -831,7 +832,7 @@ static int pob_expand_compare(const void *p, const void *q)
     Prof_Report_Record * a = (Prof_Report_Record *) p;
     Prof_Report_Record * b = (Prof_Report_Record *) q;
 
-    if (a->indent != b->indent)
+    if (a->indent not_eq b->indent)
     {
         if (a->indent == 5) return -1;
 
@@ -890,9 +891,9 @@ Prof_Report *Prof_create_report(void)
         if (displayed_quantity == Prof_CALL_GRAPH)
         {
             r[0].name = r[1].name = r[2].name = z->name;
-            r[0].value_flag = 1 | 2 | 4;
-            r[1].value_flag = 1 | 2 | 4;
-            r[2].value_flag = 1 | 2 | 4;
+            r[0].value_flag = 1 bitor 2 bitor 4;
+            r[1].value_flag = 1 bitor 2 bitor 4;
+            r[2].value_flag = 1 bitor 2 bitor 4;
             r[0].indent = 3;
             r[1].indent = 5;
             r[2].indent = 0;
@@ -901,7 +902,7 @@ Prof_Report *Prof_create_report(void)
         }
         else
         {
-            r->value_flag = 1 | 2 | 4;
+            r->value_flag = 1 bitor 2 bitor 4;
             r->name = z->name;
             r->zone = (void *) z;
             r->indent = 0;
@@ -952,7 +953,7 @@ Prof_Report *Prof_create_report(void)
 #endif
 
     if (speedstep_warning)
-        pob->title[1] = _strdup("WARNING: SpeedStep-like timer inconsistencies detected.  Results are unreliable!");
+        pob->title[1] = _strdup("WARNING: SpeedStep-like timer inconsistencies detected.  Results are unreliable");
 
     if (displayed_quantity == Prof_CALL_GRAPH)
     {
@@ -965,7 +966,7 @@ Prof_Report *Prof_create_report(void)
 
         for (i = 0; i < pob->num_record; ++i)
         {
-            if (pob->record[i].values[0] || pob->record[i].values[1] || pob->record[i].values[2])
+            if (pob->record[i].values[0] or pob->record[i].values[1] or pob->record[i].values[2])
             {
                 pob->record[j] = pob->record[i];
                 ++j;
@@ -1104,7 +1105,7 @@ Prof_extern_C void Prof_select(void)
     {
         void *z = b->record[b->hilight].zone;
 
-        if (z != NULL)
+        if (z not_eq NULL)
         {
             expand = (Prof_Zone *) z;
             displayed_quantity = Prof_CALL_GRAPH;
@@ -1232,7 +1233,7 @@ void Prof_graph(int num_frames, void (*callback)(int id, int x0, int x1, float *
     }
 
     // display frame "cursor"
-    if (display_frame != 0)
+    if (display_frame not_eq 0)
     {
         float value[2] = { 2.0, 0 };
         callback(0, NUM_FRAME_SLOTS - 1 - display_frame, NUM_FRAME_SLOTS - 1 - display_frame, value, data);

@@ -101,8 +101,8 @@ enum
 #define WAV_TO_RAW 0
 #define COMPRESS_RAW_FILES 1
 #define TLK_HEADER_INFO 12
-#define FLAG_SET(a,b) ((a) |= (b) )
-#define FLAG_UNSET(a,b) ((a) &= ~(b))
+#define FLAG_SET(a,b) ((a) or_eq (b) )
+#define FLAG_UNSET(a,b) ((a) and_eq compl (b))
 
 #ifndef BINARY_TOOL
 
@@ -189,7 +189,7 @@ class TlkFile : public FileMemMap
     long GetFragIndex(int tlkind)
     {
         BYTE *data = GetData(Index2Data(tlkind), sizeof(long));
-        ShiAssert(data != NULL);
+        ShiAssert(data not_eq NULL);
         return data ? *(long *)data : 0;
     };
     struct TlkBlock

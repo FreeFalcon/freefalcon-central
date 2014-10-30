@@ -213,24 +213,24 @@ public:
     void GotJoinData(void);
     int IsRunning(void)
     {
-        return Flags & CAMP_RUNNING;
+        return Flags bitand CAMP_RUNNING;
     }
     int IsLoaded(void)
     {
-        return Flags & CAMP_LOADED;
+        return Flags bitand CAMP_LOADED;
     }
     int IsPreLoaded(void)
     {
-        return Flags & CAMP_PRELOADED;
+        return Flags bitand CAMP_PRELOADED;
     }
     int IsSuspended(void)
     {
-        return Flags & CAMP_SUSPENDED;
+        return Flags bitand CAMP_SUSPENDED;
     }
     int IsMaster(void);
     int IsOnline(void)
     {
-        return Flags & CAMP_ONLINE;
+        return Flags bitand CAMP_ONLINE;
     }
 
     void ProcessEvents(void);

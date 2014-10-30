@@ -38,7 +38,7 @@ void SendOrder(FalconWingmanMsg* p_msg, AircraftClass* p_sender, FlightClass* p_
     {
         p_aircraft = (AircraftClass*) p_flight->GetComponentEntity(i);
 
-        if (p_aircraft && p_aircraft->IsLocal() && p_sender && p_aircraft != p_sender)
+        if (p_aircraft and p_aircraft->IsLocal() and p_sender and p_aircraft not_eq p_sender)
         {
             p_aircraft->ReceiveOrders(p_msg);
         }
@@ -60,7 +60,7 @@ int FalconWingmanMsg::Process(uchar autodisp)
         p_flight = (FlightClass*) vuDatabase->Find(EntityId());
         p_from = (AircraftClass*) vuDatabase->Find(dataBlock.from);
 
-        if (!p_flight || !p_from)
+        if ( not p_flight or not p_from)
         {
             return FALSE;
         }

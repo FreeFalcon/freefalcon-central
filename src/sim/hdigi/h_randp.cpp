@@ -47,7 +47,7 @@ void HeliBrain::RollAndPull(void)
             /*------------------------------------------*/
             /* if overshoot situation roll out of plane */
             /*------------------------------------------*/
-            //         if (FLIGHT_PATH_OVERSHOOT() && roop.losDiff > 25.0) ADD_MODE(ROOP);
+            //         if (FLIGHT_PATH_OVERSHOOT() and roop.losDiff > 25.0) ADD_MODE(ROOP);
             //         if (WING_LINE_OVERSHOOT()) ADD_MODE(ROOP);
 
             /*--------------------------------------------------*/
@@ -67,7 +67,7 @@ void HeliBrain::RollAndPull(void)
         /*-----------------------------*/
         /* inside of the control point */
         /*-----------------------------*/
-        if (targetData->range < CONTROL_POINT_DISTANCE &&
+        if (targetData->range < CONTROL_POINT_DISTANCE and 
             targetData->ataFrom > 90.0 * DTR) PullToCollisionPoint();
         /*-----------*/
         /* otherwise */
@@ -108,7 +108,7 @@ void HeliBrain::PullToCollisionPoint(void)
     /* If collision time is defined */
     /* extrapolate targets position */
     /*------------------------------*/
-    if (tc > 0.0 && targetData->range < 2.0 * NM_TO_FT)
+    if (tc > 0.0 and targetData->range < 2.0 * NM_TO_FT)
     {
         trackX = maxTargetPtr->BaseData()->XPos();
         trackY = maxTargetPtr->BaseData()->YPos();

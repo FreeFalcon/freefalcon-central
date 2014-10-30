@@ -31,7 +31,7 @@ void ThreadManager::start_campaign_thread(UFUNCTION function)
 {
     ShiAssert(campaign_thread.handle == NULL);
 
-    campaign_thread.status |= THREAD_STATUS_ACTIVE;
+    campaign_thread.status or_eq THREAD_STATUS_ACTIVE;
 
     campaign_thread.handle = (HANDLE) CreateThread(
                                  NULL,
@@ -49,11 +49,11 @@ void ThreadManager::start_campaign_thread(UFUNCTION function)
 
 bool ThreadManager::campaign_wait_for_sim(DWORD maxwait)
 {
-#if !NEW_SYNC
+#if not NEW_SYNC
     ResetEvent(campaign_wait_event);
 #endif
 
-    return WaitForSingleObject(campaign_wait_event, maxwait) != WAIT_TIMEOUT ? true : false;
+    return WaitForSingleObject(campaign_wait_event, maxwait) not_eq WAIT_TIMEOUT ? true : false;
 }
 
 
@@ -64,11 +64,11 @@ void ThreadManager::sim_signal_campaign()
 
 bool ThreadManager::sim_wait_for_campaign(DWORD maxwait)
 {
-#if !NEW_SYNC
+#if not NEW_SYNC
     ResetEvent(sim_wait_event);
 #endif
 
-    return WaitForSingleObject(sim_wait_event, maxwait) != WAIT_TIMEOUT ? true : false;
+    return WaitForSingleObject(sim_wait_event, maxwait) not_eq WAIT_TIMEOUT ? true : false;
 }
 
 
@@ -81,7 +81,7 @@ void ThreadManager::start_sim_thread(UFUNCTION function)
 {
     ShiAssert(sim_thread.handle == NULL);
 
-    sim_thread.status |= THREAD_STATUS_ACTIVE;
+    sim_thread.status or_eq THREAD_STATUS_ACTIVE;
 
     sim_thread.handle = (HANDLE)CreateThread(
                             NULL,
@@ -100,7 +100,7 @@ void ThreadManager::stop_campaign_thread()
 {
     ShiAssert(campaign_thread.handle);
 
-    campaign_thread.status &= ~THREAD_STATUS_ACTIVE;
+    campaign_thread.status and_eq compl THREAD_STATUS_ACTIVE;
 
     WaitForSingleObject(campaign_thread.handle, INFINITE);
 
@@ -114,7 +114,7 @@ void ThreadManager::stop_sim_thread()
 {
     ShiAssert(sim_thread.handle);
 
-    sim_thread.status &= ~THREAD_STATUS_ACTIVE;
+    sim_thread.status and_eq compl THREAD_STATUS_ACTIVE;
 
     WaitForSingleObject(sim_thread.handle, INFINITE);
 

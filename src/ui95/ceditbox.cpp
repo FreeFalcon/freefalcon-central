@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -72,7 +72,7 @@ C_EditBox::C_EditBox() : C_Control()
     UseCursor_ = 0;
     BgImage_ = NULL;
     OrigText_ = NULL;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_SELECTABLE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
 
     Font_ = NULL; // OW
     Text_ = NULL; // OW
@@ -144,7 +144,7 @@ void C_EditBox::SetFont(long Font)
 
 void C_EditBox::DeleteRange()
 {
-    int i, w; //!
+    int i, w; 
     _TCHAR *EditText_;
 
     NoChanges_ = 0;
@@ -165,17 +165,17 @@ void C_EditBox::DeleteRange()
 
         End_ = Start_;
         Cursor_ = Start_;
-        Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+        Text_->SetFlags(Text_->GetFlags() bitand compl C_BIT_OPAQUE);
         Refresh();
     }
 }
 
 long C_EditBox::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED))
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED))
         return(0);
 
-    if (relX >= GetX() && relX < (GetX() + GetW()) && relY >= GetY() && relY < (GetY() + GetH()))
+    if (relX >= GetX() and relX < (GetX() + GetW()) and relY >= GetY() and relY < (GetY() + GetH()))
     {
         SetRelXY(relX - GetX(), relY - GetY());
         return(GetID());
@@ -194,7 +194,7 @@ BOOL C_EditBox::CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii, uns
 
 BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
 {
-    int i; //!
+    int i; 
     _TCHAR *EditText_;
 
     if (Text_ == NULL)
@@ -209,9 +209,9 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
             NoChanges_ = 0;
             Start_ = Cursor_;
             End_ = Cursor_;
-            Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+            Text_->SetFlags(Text_->GetFlags() bitand compl C_BIT_OPAQUE);
 
-            if (Cursor_ < MaxLen_ && EditText_[Cursor_])
+            if (Cursor_ < MaxLen_ and EditText_[Cursor_])
             {
                 Cursor_++;
             }
@@ -225,7 +225,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
             NoChanges_ = 0;
             Start_ = Cursor_;
             End_ = Cursor_;
-            Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+            Text_->SetFlags(Text_->GetFlags() bitand compl C_BIT_OPAQUE);
 
             if (Cursor_ > 0)
             {
@@ -247,7 +247,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
             NoChanges_ = 0;
             Start_ = Cursor_;
             End_ = Cursor_;
-            Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+            Text_->SetFlags(Text_->GetFlags() bitand compl C_BIT_OPAQUE);
             Cursor_ = 0;
             Refresh();
             return(TRUE);
@@ -258,9 +258,9 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
             NoChanges_ = 0;
             Start_ = Cursor_;
             End_ = Cursor_;
-            Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+            Text_->SetFlags(Text_->GetFlags() bitand compl C_BIT_OPAQUE);
 
-            while (EditText_[Cursor_] && Cursor_ < (MaxLen_))
+            while (EditText_[Cursor_] and Cursor_ < (MaxLen_))
                 Cursor_++;
 
             Refresh();
@@ -286,7 +286,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
 
                 if (i <= MaxLen_)
                 {
-                    while (EditText_[i] && i < MaxLen_)
+                    while (EditText_[i] and i < MaxLen_)
                     {
                         EditText_[i - 1] = EditText_[i];
                         i++;
@@ -329,7 +329,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
         case DIK_RETURN:
             Cursor_ = 0;
             CopyFromText();
-            Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+            Text_->SetFlags(Text_->GetFlags() bitand compl C_BIT_OPAQUE);
 
             if (Callback_)
             {
@@ -337,7 +337,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
                 Callback_(GetID(), key, this);
             }
 
-            if (!NoChanges_)
+            if ( not NoChanges_)
             {
                 Activate();
                 return(TRUE);
@@ -350,7 +350,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
             Cursor_ = 0;
             CopyToText();
             Refresh();
-            Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+            Text_->SetFlags(Text_->GetFlags() bitand compl C_BIT_OPAQUE);
 
             if (Callback_)
             {
@@ -358,7 +358,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
                 Callback_(GetID(), key, this);
             }
 
-            if (!NoChanges_)
+            if ( not NoChanges_)
             {
                 Activate();
                 return(TRUE);
@@ -373,7 +373,7 @@ BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
 
 BOOL C_EditBox::CheckChar(unsigned char key)
 {
-    int i;//!
+    int i;
     _TCHAR *EditText_;
 
     if (Text_ == NULL)
@@ -387,9 +387,9 @@ BOOL C_EditBox::CheckChar(unsigned char key)
     switch (GetType())
     {
         case C_TYPE_IPADDRESS:
-            if (!isdigit(key))
+            if ( not isdigit(key))
             {
-                if (key == '.' && Parent_)
+                if (key == '.' and Parent_)
                     Parent_->SetNextControl();
 
                 return FALSE;
@@ -398,13 +398,13 @@ BOOL C_EditBox::CheckChar(unsigned char key)
             break;
 
         case C_TYPE_INTEGER:
-            if (!isdigit(key) && key != _T('-'))
+            if ( not isdigit(key) and key not_eq _T('-'))
                 return(FALSE);
 
             break;
 
         case C_TYPE_FILENAME:
-            for (i = 0; i < (short)_tcsclen(_FilenameExclude_); i++) //!
+            for (i = 0; i < (short)_tcsclen(_FilenameExclude_); i++) 
                 if (key == _FilenameExclude_[i])
                     return(FALSE);
 
@@ -427,7 +427,7 @@ BOOL C_EditBox::CheckChar(unsigned char key)
             EditText_[MaxLen_] = 0;
         }
 
-        if (!EditText_[Cursor_])
+        if ( not EditText_[Cursor_])
             EditText_[Cursor_ + 1] = 0;
 
         EditText_[Cursor_] = (_TCHAR)key;
@@ -447,7 +447,7 @@ BOOL C_EditBox::Process(long, short HitType)
     switch (HitType)
     {
         case C_TYPE_LMOUSEDOWN:
-            SelStart_ = (short)Text_->GetCursorPos(GetRelX() - Text_->GetX(), GetRelY() - Text_->GetY()); //!
+            SelStart_ = (short)Text_->GetCursorPos(GetRelX() - Text_->GetX(), GetRelY() - Text_->GetY()); 
             SelEnd_ = SelStart_;
             break;
 
@@ -459,10 +459,10 @@ BOOL C_EditBox::Process(long, short HitType)
             }
 
             NoChanges_ = 0;
-            Cursor_ = (short)Text_->GetCursorPos(GetRelX() - Text_->GetX(), GetRelY() - Text_->GetY()); //!
+            Cursor_ = (short)Text_->GetCursorPos(GetRelX() - Text_->GetX(), GetRelY() - Text_->GetY()); 
             Start_ = Cursor_;
             End_ = Cursor_;
-            Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+            Text_->SetFlags(Text_->GetFlags() bitand compl C_BIT_OPAQUE);
             Text_->SetOpaqueRange(Start_, End_);
             Refresh();
             break;
@@ -476,7 +476,7 @@ BOOL C_EditBox::Process(long, short HitType)
 
 void C_EditBox::Refresh()
 {
-    if (!Ready() || (Flags_ & C_BIT_INVISIBLE) || Parent_ == NULL)
+    if ( not Ready() or (Flags_ bitand C_BIT_INVISIBLE) or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -486,21 +486,21 @@ void C_EditBox::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     long x, y, h;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
-    if (GetFlags() & C_BIT_USEBGIMAGE)
+    if (GetFlags() bitand C_BIT_USEBGIMAGE)
         BgImage_->Draw(surface, cliprect);
 
 
     if (Text_)
     {
         if (GetType() == C_TYPE_PASSWORD)
-            Text_->SetFlags((Text_->GetFlags() | C_BIT_PASSWORD) & ~C_BIT_OPAQUE);
+            Text_->SetFlags((Text_->GetFlags() bitor C_BIT_PASSWORD) bitand compl C_BIT_OPAQUE);
 
         Text_->Draw(surface, cliprect);
 
-        if (UseCursor_ && (End_ <= Start_))
+        if (UseCursor_ and (End_ <= Start_))
         {
             h = gFontList->GetHeight(Font_);
             Text_->GetCharXY(Cursor_, &x, &y);
@@ -510,7 +510,7 @@ void C_EditBox::Draw(SCREEN *surface, UI95_RECT *cliprect)
             Parent_->BlitFill(surface, CursorColor_, x - 2, y + 2, 2, h - 3, GetFlags(), GetClient(), cliprect);
         }
 
-        if (GetFlags() & C_BIT_USEOUTLINE) // Kludge for outline
+        if (GetFlags() bitand C_BIT_USEOUTLINE) // Kludge for outline
         {
             Parent_->DrawHLine(surface, OutlineColor_, GetX(), GetY(), GetW(), GetFlags(), GetClient(), cliprect);
             Parent_->DrawHLine(surface, OutlineColor_, GetX(), GetY() + GetH() - 1, GetW(), GetFlags(), GetClient(), cliprect);
@@ -519,7 +519,7 @@ void C_EditBox::Draw(SCREEN *surface, UI95_RECT *cliprect)
         }
     }
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 
@@ -530,7 +530,7 @@ void C_EditBox::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     clip.left = GetX();
     clip.top = GetY();
 
-    if (!(Flags_ & C_BIT_ABSOLUTE))
+    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
     {
         clip.left += Parent_->VX_[Client_];
         clip.top += Parent_->VY_[Client_];
@@ -540,11 +540,11 @@ void C_EditBox::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     clip.bottom = clip.top + GetH();
     tmp = clip; // JPO - just so its initialised.
 
-    if (!Parent_->ClipToArea(&tmp, &clip, cliprect))
+    if ( not Parent_->ClipToArea(&tmp, &clip, cliprect))
         return;
 
-    if (!(Flags_ & C_BIT_ABSOLUTE))
-        if (!Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
+    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
+        if ( not Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
             return;
 
     Parent_->BlitTranslucent(surface, MouseOverColor_, MouseOverPercent_, &clip, C_BIT_ABSOLUTE, 0);
@@ -574,17 +574,17 @@ void C_EditBox::SetSubParents(C_Window *)
 
     if (Text_)
     {
-        if (GetType() == C_TYPE_INTEGER || GetType() == C_TYPE_FLOAT || GetType() == C_TYPE_IPADDRESS)
+        if (GetType() == C_TYPE_INTEGER or GetType() == C_TYPE_FLOAT or GetType() == C_TYPE_IPADDRESS)
             CopyToText();
 
-        Text_->SetFlags(GetFlags()&~C_BIT_OPAQUE);
+        Text_->SetFlags(GetFlags()& compl C_BIT_OPAQUE);
 
-        if (GetFlags() & C_BIT_VCENTER)
+        if (GetFlags() bitand C_BIT_VCENTER)
             Text_->SetY(GetH() / 2);
 
-        if (GetFlags() & C_BIT_RIGHT)
+        if (GetFlags() bitand C_BIT_RIGHT)
             Text_->SetX(GetW() - 2);
-        else if (GetFlags() & C_BIT_HCENTER)
+        else if (GetFlags() bitand C_BIT_HCENTER)
             Text_->SetX(GetW() / 2);
         else
             Text_->SetX(1);
@@ -609,11 +609,11 @@ void C_EditBox::SetMaxLen(short len)
                 delete [] OrigText_;
         }
 
-        SetFlags(GetFlags() | C_BIT_FIXEDSIZE);
+        SetFlags(GetFlags() bitor C_BIT_FIXEDSIZE);
         MaxLen_ = len;
-        Text_->SetFlags(GetFlags()&~C_BIT_OPAQUE);
+        Text_->SetFlags(GetFlags()& compl C_BIT_OPAQUE);
         Text_->SetFont(Font_);
-        Text_->SetTextWidth((short)(MaxLen_ + 1)); //!
+        Text_->SetTextWidth((short)(MaxLen_ + 1)); 
 
         if (GetType() == C_TYPE_TEXT)
         {
@@ -629,17 +629,17 @@ void C_EditBox::SetText(_TCHAR *str)
         Text_->SetText(str);
 
     Text_->SetFont(Font_);
-    Text_->SetFlags(GetFlags()&~C_BIT_OPAQUE);
+    Text_->SetFlags(GetFlags()& compl C_BIT_OPAQUE);
 
     if (GetType() == C_TYPE_TEXT)
     {
-        if (!OrigText_)
+        if ( not OrigText_)
             OrigText_ = new _TCHAR[MaxLen_ + 1];
 
         _tcsncpy(OrigText_, Text_->GetText(), MaxLen_);
     }
 
-    if (GetFlags() & C_BIT_VCENTER)
+    if (GetFlags() bitand C_BIT_VCENTER)
         Text_->SetY(GetH() / 2);
 }
 
@@ -658,7 +658,7 @@ _TCHAR *C_EditBox::GetText()
 
 void C_EditBox::SetInteger(long value)
 {
-    if (MinInteger_ != MaxInteger_)
+    if (MinInteger_ not_eq MaxInteger_)
     {
         if (value < MinInteger_)
             value = MinInteger_;
@@ -667,7 +667,7 @@ void C_EditBox::SetInteger(long value)
             value = MaxInteger_;
     }
 
-    if (Integer_ != value)
+    if (Integer_ not_eq value)
     {
         Integer_ = value;
         CopyToText();
@@ -676,7 +676,7 @@ void C_EditBox::SetInteger(long value)
 
 void C_EditBox::SetFloat(double value)
 {
-    if (MinFloat_ != MaxFloat_)
+    if (MinFloat_ not_eq MaxFloat_)
     {
         if (value < MinFloat_)
             value = MinFloat_;
@@ -685,7 +685,7 @@ void C_EditBox::SetFloat(double value)
             value = MaxFloat_;
     }
 
-    if (Float_ != value)
+    if (Float_ not_eq value)
     {
         Float_ = value;
         CopyToText();
@@ -714,7 +714,7 @@ void C_EditBox::CopyToText()
         case C_TYPE_IPADDRESS:
             Refresh();
 
-            if (GetFlags() & C_BIT_LEADINGZEROS)
+            if (GetFlags() bitand C_BIT_LEADINGZEROS)
                 _stprintf(buffer, "%0*ld", MaxLen_, Integer_);
             else
                 _stprintf(buffer, "%1ld", Integer_);
@@ -726,7 +726,7 @@ void C_EditBox::CopyToText()
         case C_TYPE_FLOAT:
             Refresh();
 
-            if (GetFlags() & C_BIT_LEADINGZEROS)
+            if (GetFlags() bitand C_BIT_LEADINGZEROS)
                 _stprintf(buffer, "%0*.*lf", MaxLen_, Decimal_, Float_);
             else
                 _stprintf(buffer, "%.*lf", Decimal_, Float_);
@@ -751,7 +751,7 @@ void C_EditBox::CopyFromText()
         case C_TYPE_IPADDRESS:
             Integer_ = atol(Text_->GetText());
 
-            if (MinInteger_ || MaxInteger_)
+            if (MinInteger_ or MaxInteger_)
             {
                 if (Integer_ < MinInteger_)
                 {
@@ -770,7 +770,7 @@ void C_EditBox::CopyFromText()
         case C_TYPE_FLOAT:
             Float_ = atof(Text_->GetText());
 
-            if (MinFloat_ || MaxFloat_)
+            if (MinFloat_ or MaxFloat_)
             {
                 if (Float_ < MinFloat_)
                 {
@@ -800,9 +800,9 @@ void C_EditBox::Activate()
     CopyToText();
     NoChanges_ = 1;
     Start_ = 0;
-    End_ = (short)_tcsclen(Text_->GetText()); //!
+    End_ = (short)_tcsclen(Text_->GetText()); 
     Text_->SetOpaqueRange(Start_, End_);
-    Text_->SetFlags(Text_->GetFlags() | C_BIT_OPAQUE);
+    Text_->SetFlags(Text_->GetFlags() bitor C_BIT_OPAQUE);
     Cursor_ = 0;
     JustActivated_ = TRUE;
     Refresh();
@@ -820,7 +820,7 @@ void C_EditBox::Deactivate()
     UseCursor_ = 0;
     Cursor_ = 0;
     CopyFromText();
-    Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+    Text_->SetFlags(Text_->GetFlags() bitand compl C_BIT_OPAQUE);
     Text_->SetInfo();
     Refresh();
 
@@ -845,11 +845,11 @@ BOOL C_EditBox::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
     relx = MouseX - Parent_->GetX() - GetX() - Text_->GetX();
     rely = MouseY - Parent_->GetY() - GetY() - Text_->GetY();
 
-    SelEnd_ = (short)Text_->GetCursorPos(relx, rely); //!
+    SelEnd_ = (short)Text_->GetCursorPos(relx, rely); 
 
-    if (SelStart_ != SelEnd_)
+    if (SelStart_ not_eq SelEnd_)
     {
-        Text_->SetFlags(Text_->GetFlags() | C_BIT_OPAQUE);
+        Text_->SetFlags(Text_->GetFlags() bitor C_BIT_OPAQUE);
 
         if (SelStart_ < SelEnd_)
             Text_->SetOpaqueRange(SelStart_, SelEnd_);
@@ -857,7 +857,7 @@ BOOL C_EditBox::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
             Text_->SetOpaqueRange(SelEnd_, SelStart_);
     }
     else
-        Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+        Text_->SetFlags(Text_->GetFlags() bitand compl C_BIT_OPAQUE);
 
     NoChanges_ = 0;
     Refresh();
@@ -880,10 +880,10 @@ BOOL C_EditBox::Drop(GRABBER *, WORD , WORD , C_Window *)
     if (Start_ < End_)
     {
         Text_->SetOpaqueRange(Start_, End_);
-        Text_->SetFlags(Text_->GetFlags() | C_BIT_OPAQUE);
+        Text_->SetFlags(Text_->GetFlags() bitor C_BIT_OPAQUE);
     }
     else
-        Text_->SetFlags(Text_->GetFlags() & ~C_BIT_OPAQUE);
+        Text_->SetFlags(Text_->GetFlags() bitand compl C_BIT_OPAQUE);
 
     NoChanges_ = 0;
     Refresh();
@@ -952,23 +952,23 @@ void C_EditBox::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CEB_SETFGCOLOR:
-            SetFgColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetFgColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CEB_SETBGCOLOR:
-            SetBgColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetBgColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CEB_SETCURSORCOLOR:
-            SetCursorColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetCursorColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CEB_SETDECIMALPLACES:
-            SetDecimalPlaces((short)P[0]);//!
+            SetDecimalPlaces((short)P[0]);
             break;
 
         case CEB_SETOUTLINECOLOR:
-            SetOutlineColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetOutlineColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
     }
 }

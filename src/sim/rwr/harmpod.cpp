@@ -158,9 +158,9 @@ void HarmTargetingPod::BoresightTarget(void)
         displayY *= FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
         displayY += HTS_Y_OFFSET;
 
-        //if ((fabs(displayX) > 1.0f) || (fabs(displayY) > 1.0f))
+        //if ((fabs(displayX) > 1.0f) or (fabs(displayY) > 1.0f))
         // RV - I-Hawk - Diplay only what's inside the ALIC video
-        if (!IsInsideALIC(displayX, displayY))
+        if ( not IsInsideALIC(displayX, displayY))
         {
             continue;
         }
@@ -227,9 +227,9 @@ void HarmTargetingPod::NextTarget(void)
         displayY *= FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
         displayY += HTS_Y_OFFSET;
 
-        //if ((fabs(displayX) > 1.0f) || (fabs(displayY) > 1.0f))
+        //if ((fabs(displayX) > 1.0f) or (fabs(displayY) > 1.0f))
         // RV - I-Hawk - Diplay only what's inside the ALIC video
-        if (!IsInsideALIC(displayX, displayY))
+        if ( not IsInsideALIC(displayX, displayY))
         {
             continue;
         }
@@ -246,7 +246,7 @@ void HarmTargetingPod::NextTarget(void)
         if (range < bestSoFar)
         {
             // Don't choose the same one we've already got
-            if (tmpElement != currentElement)
+            if (tmpElement not_eq currentElement)
             {
                 bestSoFar = range;
                 choice = tmpElement;
@@ -307,9 +307,9 @@ void HarmTargetingPod::PrevTarget(void)
         displayY *= FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
         displayY += HTS_Y_OFFSET;
 
-        //if ((fabs(displayX) > 1.0f) || (fabs(displayY) > 1.0f))
+        //if ((fabs(displayX) > 1.0f) or (fabs(displayY) > 1.0f))
         // RV - I-Hawk - Diplay only what's inside the ALIC video
-        if (!IsInsideALIC(displayX, displayY))
+        if ( not IsInsideALIC(displayX, displayY))
         {
             continue;
         }
@@ -326,7 +326,7 @@ void HarmTargetingPod::PrevTarget(void)
         if (range > bestSoFar)
         {
             // Don't choose the same one we've already got
-            if (tmpElement != currentElement)
+            if (tmpElement not_eq currentElement)
             {
                 bestSoFar = range;
                 choice = tmpElement;
@@ -356,8 +356,8 @@ void HarmTargetingPod::SetDesiredTarget(SimObjectType* newTarget)
         tmpElement = tmpElement->GetNext();
     }
 
-    // NOTE: when called from the AI ground attack routine this will create the element if not found !
-    if (!tmpElement)
+    // NOTE: when called from the AI ground attack routine this will create the element if not found 
+    if ( not tmpElement)
     {
         tmpElement = new GroundListElement(newTarget->BaseData());
         tmpElement->next = FCC->GetFirstGroundElement();
@@ -375,7 +375,7 @@ void HarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
     display = activeDisplay;
 
     // Do we draw flashing things this frame ?
-    flash = vuxRealTime & 0x200;
+    flash = vuxRealTime bitand 0x200;
 
     display->SetColor(0xFF00FF00);
 
@@ -420,7 +420,7 @@ void HarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
     // Display the missile effective footprint
     ShiAssert(platform->IsAirplane());
 
-    if (((AircraftClass*)platform)->Sms->curWeapon &&
+    if (((AircraftClass*)platform)->Sms->curWeapon and 
         ((AircraftClass*)platform)->Sms->curWeaponType == wtAgm88)
     {
         ShiAssert(((AircraftClass*)platform)->Sms->curWeapon->IsMissile());
@@ -462,7 +462,7 @@ void HarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
     //MI
     if (g_bRealisticAvionics)
     {
-        if (((AircraftClass*)platform)->Sms->curWeapon && ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
+        if (((AircraftClass*)platform)->Sms->curWeapon and ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
         {
             if (((AircraftClass*)SimDriver.GetPlayerAircraft())->GetSOI() == SimVehicleClass::SOI_WEAPON)
             {
@@ -482,7 +482,7 @@ void HarmTargetingPod::HADExpDisplay(VirtualDisplay* activeDisplay)
     display = activeDisplay;
 
     // Do we draw flashing things this frame ?
-    flash = vuxRealTime & 0x200;
+    flash = vuxRealTime bitand 0x200;
 
     display->SetColor(0xFF00FF00);
 
@@ -501,7 +501,7 @@ void HarmTargetingPod::HADExpDisplay(VirtualDisplay* activeDisplay)
     //MI
     if (g_bRealisticAvionics)
     {
-        if (((AircraftClass*)platform)->Sms->curWeapon && ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
+        if (((AircraftClass*)platform)->Sms->curWeapon and ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
         {
             if (((AircraftClass*)SimDriver.GetPlayerAircraft())->GetSOI() == SimVehicleClass::SOI_WEAPON)
             {
@@ -512,7 +512,7 @@ void HarmTargetingPod::HADExpDisplay(VirtualDisplay* activeDisplay)
     }
 }
 
-// RV - I-Hawk - HAS video display. Showing symbols azimuth/elevation (not range!)
+// RV - I-Hawk - HAS video display. Showing symbols azimuth/elevation (not range)
 void HarmTargetingPod::HASDisplay(VirtualDisplay* activeDisplay)
 {
     static const float arrowH = 0.0375f;
@@ -522,7 +522,7 @@ void HarmTargetingPod::HASDisplay(VirtualDisplay* activeDisplay)
     display = activeDisplay;
 
     // Do we draw flashing things this frame ?
-    flash = vuxRealTime & 0x200;
+    flash = vuxRealTime bitand 0x200;
 
     display->SetColor(0xFF00FF00);
 
@@ -608,7 +608,7 @@ void HarmTargetingPod::HASDisplay(VirtualDisplay* activeDisplay)
     //MI
     if (g_bRealisticAvionics)
     {
-        if (((AircraftClass*)platform)->Sms->curWeapon && ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
+        if (((AircraftClass*)platform)->Sms->curWeapon and ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
         {
             if (((AircraftClass*)SimDriver.GetPlayerAircraft())->GetSOI() == SimVehicleClass::SOI_WEAPON)
             {
@@ -624,7 +624,7 @@ void HarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
     display = activeDisplay;
 
     // Do we draw flashing things this frame ?
-    flash = vuxRealTime & 0x200;
+    flash = vuxRealTime bitand 0x200;
 
     display->SetColor(0xFF00FF00);
 
@@ -674,7 +674,7 @@ void HarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
     //MI
     if (g_bRealisticAvionics)
     {
-        if (((AircraftClass*)platform)->Sms->curWeapon && ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
+        if (((AircraftClass*)platform)->Sms->curWeapon and ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
         {
             if (((AircraftClass*)SimDriver.GetPlayerAircraft())->GetSOI() == SimVehicleClass::SOI_WEAPON)
             {
@@ -690,7 +690,7 @@ void HarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
     display = activeDisplay;
 
     // Do we draw flashing things this frame ?
-    flash = vuxRealTime & 0x200;
+    flash = vuxRealTime bitand 0x200;
 
     display->SetColor(0xFF00FF00);
 
@@ -716,7 +716,7 @@ void HarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
     //MI
     if (g_bRealisticAvionics)
     {
-        if (((AircraftClass*)platform)->Sms->curWeapon && ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
+        if (((AircraftClass*)platform)->Sms->curWeapon and ((AircraftClass*)platform)->Sms->curWeapon->IsMissile())
         {
             if (((AircraftClass*)SimDriver.GetPlayerAircraft())->GetSOI() == SimVehicleClass::SOI_WEAPON)
             {
@@ -733,7 +733,7 @@ void HarmTargetingPod::DrawWEZ(MissileClass *theMissile)
     float cur2X, cur2Y, next2X, next2Y, stepX, stepY;
 
     // If we don't have a missile, quit now
-    if (!theMissile)
+    if ( not theMissile)
     {
         return;
     }
@@ -790,7 +790,7 @@ void HarmTargetingPod::DrawWEZ(MissileClass *theMissile)
 
             for (int j = 0; j < 4; j++)
             {
-                int draw = j & 1;
+                int draw = j bitand 1;
 
                 if (draw)
                 {
@@ -857,8 +857,8 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
 
     float xMove = 0.0F, yMove = 0.0F;
 
-    if ((FCC->cursorXCmd != 0) || (FCC->cursorYCmd != 0))
-        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+    if ((FCC->cursorXCmd not_eq 0) or (FCC->cursorYCmd not_eq 0))
+        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
         {
             yMove = (float)FCC->cursorYCmd / 10000.0F;
             xMove = (float)FCC->cursorXCmd / 10000.0F;
@@ -874,7 +874,7 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
 
     // Cursor Control
     //MI
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         cursorX += xMove * g_fCursorSpeed * HTS_CURSOR_RATE * zoomFactor * SimLibMajorFrameTime;
         cursorY += yMove * g_fCursorSpeed * HTS_CURSOR_RATE * zoomFactor * SimLibMajorFrameTime;
@@ -882,7 +882,7 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
 
     else
     {
-        if (((AircraftClass*)SimDriver.GetPlayerAircraft()) && ((AircraftClass*)SimDriver.GetPlayerAircraft())->GetSOI() == SimVehicleClass::SOI_WEAPON)
+        if (((AircraftClass*)SimDriver.GetPlayerAircraft()) and ((AircraftClass*)SimDriver.GetPlayerAircraft())->GetSOI() == SimVehicleClass::SOI_WEAPON)
         {
             cursorX += xMove * g_fCursorSpeed * HTS_CURSOR_RATE * SimLibMajorFrameTime;
             cursorY += yMove * g_fCursorSpeed * HTS_CURSOR_RATE * SimLibMajorFrameTime;
@@ -911,7 +911,7 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
         tmpElement->HandoffBaseObject();
 
         // Removed?  (We really shouldn't do this -- once detected, things shouldn't disappear, just never emit)
-        if (!tmpElement->BaseObject())
+        if ( not tmpElement->BaseObject())
         {
             tmpElement = tmpElement->next;
             continue;
@@ -946,18 +946,18 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
     }
 
     // Check the target list for 'pings'
-    for (SimObjectType *curObj = platform->targetList, *next; curObj != NULL; curObj = next)
+    for (SimObjectType *curObj = platform->targetList, *next; curObj not_eq NULL; curObj = next)
     {
         next = curObj->next;
         // sfr: taking my chances
-        /*if (F4IsBadReadPtr(curObj, sizeof(SimObjectType)) || F4IsBadCodePtr((FARPROC) curObj->BaseData()))
+        /*if (F4IsBadReadPtr(curObj, sizeof(SimObjectType)) or F4IsBadCodePtr((FARPROC) curObj->BaseData()))
         {
          // JB 010318 CTD
          curObj = curObj->next;
          continue;
         } */
 
-        if (curObj->BaseData()->IsSim() && curObj->BaseData()->GetRadarType())
+        if (curObj->BaseData()->IsSim() and curObj->BaseData()->GetRadarType())
         {
             // Localize the info
             curSimObj = (SimBaseClass*)curObj->BaseData();
@@ -967,7 +967,7 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
             if (SimLibElapsedTime > localData->sensorLoopCount[HTS] + curSimObj->RdrCycleTime() * SEC_TO_MSEC)
             {
                 // Can we hear it?
-                if (BeingPainted(curObj) && CanDetectObject(curObj))
+                if (BeingPainted(curObj) and CanDetectObject(curObj))
                 {
                     ObjectDetected(curObj->BaseData(), Track_Ping);
                     localData->sensorLoopCount[HTS] = SimLibElapsedTime;
@@ -994,9 +994,9 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
 
         // Check if aggregated unit can detect
         if (
-            curEmitter->IsAggregate() &&                      // A campaign thing
-            curEmitter->CanDetect(platform) &&                // That has us spotted
-            curEmitter->GetRadarMode() != FEC_RADAR_OFF &&    // And is emmitting
+            curEmitter->IsAggregate() and // A campaign thing
+            curEmitter->CanDetect(platform) and // That has us spotted
+            curEmitter->GetRadarMode() not_eq FEC_RADAR_OFF and // And is emmitting
             // JB 011016 CanDetectObject (platform))          // And there is line of sight
             CanDetectObject(curEmitter)                       // And there is line of sight // JB 011016
         )
@@ -1033,9 +1033,9 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
     // Walk our list looking for unchecked Sim things
     for (tmpElement = FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
     {
-        if (tmpElement->BaseObject() &&
-            tmpElement->BaseObject()->IsSim() &&
-            (tmpElement->IsSet(GroundListElement::UnChecked)) &&
+        if (tmpElement->BaseObject() and 
+            tmpElement->BaseObject()->IsSim() and 
+            (tmpElement->IsSet(GroundListElement::UnChecked)) and 
             SimLibElapsedTime >
             tmpElement->lastHit + ((SimBaseClass*)(tmpElement->BaseObject()))->RdrCycleTime() * SEC_TO_MSEC
            )
@@ -1050,7 +1050,7 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
                 // See if the target is near the ground
                 OTWDriver.GetAreaFloorAndCeiling(&bottom, &top);
 
-                if (curSimObj->ZPos() < top || OTWDriver.CheckLOS(platform, curSimObj))
+                if (curSimObj->ZPos() < top or OTWDriver.CheckLOS(platform, curSimObj))
                 {
                     ObjectDetected(curSimObj, Track_Ping);
                 }
@@ -1066,7 +1066,7 @@ VU_ID HarmTargetingPod::FindIDUnderCursor(void)
     GroundListElement *choice = FindTargetUnderCursor();
     VU_ID tgtId = FalconNullId;
 
-    if (choice && choice->BaseObject())
+    if (choice and choice->BaseObject())
     {
         tgtId = choice->BaseObject()->Id();
     }
@@ -1090,7 +1090,7 @@ GroundListElement* HarmTargetingPod::FindTargetUnderCursor(void)
         mlSinCos(&trig, platform->Yaw());
     }
 
-    else if (HadZoomMode == EXP1 || HadZoomMode == EXP2)
+    else if (HadZoomMode == EXP1 or HadZoomMode == EXP2)
     {
         mlSinCos(&trig, yawBackup);
     }
@@ -1102,7 +1102,7 @@ GroundListElement* HarmTargetingPod::FindTargetUnderCursor(void)
     {
         if (tmpElement->BaseObject() == NULL) continue;
 
-        if (!IsInPriorityList(tmpElement->symbol))
+        if ( not IsInPriorityList(tmpElement->symbol))
         {
             continue;
         }
@@ -1204,7 +1204,7 @@ GroundListElement* HarmTargetingPod::FindHASTargetUnderCursor(void)
     {
         if (tmpElement->BaseObject() == NULL) continue;
 
-        if (!IsInPriorityList(tmpElement->symbol))
+        if ( not IsInPriorityList(tmpElement->symbol))
         {
             continue;
         }
@@ -1251,7 +1251,7 @@ GroundListElement* HarmTargetingPod::FindHASTargetUnderCursor(void)
 
 GroundListElement* HarmTargetingPod::FindPOSTarget()
 {
-    if (POSTargetIndex >= 0 && POSTargetIndex <= 3)
+    if (POSTargetIndex >= 0 and POSTargetIndex <= 3)
     {
         return POSTargets[POSTargetIndex];
     }
@@ -1284,7 +1284,7 @@ void HarmTargetingPod::BuildPOSTargets(void)
 
     curWaypoint = ((SimVehicleClass*)platform)->curWaypoint; // Get the current waypoint
 
-    if (!curWaypoint) return;   // Don't do anything if waypoint is NULL
+    if ( not curWaypoint) return;   // Don't do anything if waypoint is NULL
 
     if (POSTargets[MAX_POS_TARGETS - 1]) return;  // Don't bother if POS targets list already full
 
@@ -1305,7 +1305,7 @@ void HarmTargetingPod::BuildPOSTargets(void)
 
     else // Find the first waypoint
     {
-        while (curWaypoint->GetPrevWP() && (curWaypoint->GetPrevWP())->GetWPAction() != WP_TAKEOFF)
+        while (curWaypoint->GetPrevWP() and (curWaypoint->GetPrevWP())->GetWPAction() not_eq WP_TAKEOFF)
         {
             curWaypoint = curWaypoint->GetPrevWP();
         }
@@ -1316,7 +1316,7 @@ void HarmTargetingPod::BuildPOSTargets(void)
     tempWP = firstValidWP;
 
     // Now move on to find the last valid WP
-    while (tempWP->GetNextWP() && (tempWP->GetNextWP())->GetWPAction() != WP_LAND)
+    while (tempWP->GetNextWP() and (tempWP->GetNextWP())->GetWPAction() not_eq WP_LAND)
     {
         tempWP = tempWP->GetNextWP();
     }
@@ -1327,7 +1327,7 @@ void HarmTargetingPod::BuildPOSTargets(void)
 
     int tempIndex = firstFreeTargetIndex;
 
-    for (tempWP = firstValidWP; tempWP != lastValidWP->GetNextWP(); tempWP = tempWP->GetNextWP())
+    for (tempWP = firstValidWP; tempWP not_eq lastValidWP->GetNextWP(); tempWP = tempWP->GetNextWP())
     {
         mlSinCos(&trig, platform->Yaw());
 
@@ -1363,15 +1363,15 @@ void HarmTargetingPod::BuildPOSTargets(void)
                 choice = tmpElement;
             }
 
-            if (!curTargetFound && curTarget && curTarget->BaseObject())
+            if ( not curTargetFound and curTarget and curTarget->BaseObject())
             {
-                if (tmpElement == curTarget || tmpElement->BaseObject() == curTarget->BaseObject())
+                if (tmpElement == curTarget or tmpElement->BaseObject() == curTarget->BaseObject())
                 {
                     curTargetFound = true;
                 }
             }
 
-            if (lockedTarget && lockedTarget->BaseData() == tmpElement->BaseObject())
+            if (lockedTarget and lockedTarget->BaseData() == tmpElement->BaseObject())
             {
                 if (displayY < 0.0f)
                 {
@@ -1393,7 +1393,7 @@ void HarmTargetingPod::BuildPOSTargets(void)
             }
         }
 
-        if (!curTargetFound)   // If the cur target no longer alive, NULL the curTarget pointer
+        if ( not curTargetFound)   // If the cur target no longer alive, NULL the curTarget pointer
         {
             curTarget = NULL;
         }
@@ -1422,7 +1422,7 @@ void HarmTargetingPod::GetAGCenter(float* x, float* y)
 // ListElement* curElement = NULL;
 // FalconEntity* eHeader;
 //
-// if (SimDriver.RunningCampaignOrTactical() && theFlight)
+// if (SimDriver.RunningCampaignOrTactical() and theFlight)
 // knownEmmitters = theFlight->GetKnownEmitters();
 //
 // if (knownEmmitters)
@@ -1478,7 +1478,7 @@ int HarmTargetingPod::ObjectDetected(FalconEntity* newEmmitter, int trackType, i
         // See if this one is already in our list
         tmpElement = FindEmmitter(newEmmitter);
 
-        if (!tmpElement)
+        if ( not tmpElement)
         {
             FireControlComputer* FCC = ((SimVehicleClass*)platform)->GetFCC();
 
@@ -1535,14 +1535,14 @@ void HarmTargetingPod::LockListElement(GroundListElement *choice)
         {
             if (obj->BaseData() == choice->BaseObject())
             {
-                // We found a match!
+                // We found a match
                 SetSensorTarget(obj);
                 break;
             }
         }
 
         // If we didn't find it in the target list, force the issue anyway...
-        if (!obj)
+        if ( not obj)
         {
             SetSensorTargetHack(choice->BaseObject());
         }
@@ -1599,7 +1599,7 @@ void HarmTargetingPod::DecreaseRange()
 // Check if emitter is inside the ALIC video
 bool HarmTargetingPod::IsInsideALIC(float &displayX, float &displayY)
 {
-    if (fabs(displayX) > (0.75f * zoomFactor) || displayY > ((1.05f + HTS_Y_OFFSET) * zoomFactor) ||
+    if (fabs(displayX) > (0.75f * zoomFactor) or displayY > ((1.05f + HTS_Y_OFFSET) * zoomFactor) or
         displayY < ((-0.3f + HTS_Y_OFFSET) * zoomFactor))
     {
         return false;
@@ -1699,19 +1699,19 @@ void HarmTargetingPod::UpdateDTSB(int symbol, float &displayX, float &displayY)
     }
 
     // Get into list only a "worthy" symbol, SAM or search radar
-    if (!IsInPriorityList(symbol))
+    if ( not IsInPriorityList(symbol))
     {
         return;
     }
 
     // Do not draw unknown threats into DTSB
-    if (symbol == RWRSYM_UNKNOWN ||
-        symbol == RWRSYM_UNK1 ||
-        symbol == RWRSYM_UNK2 ||
-        symbol == RWRSYM_UNK3 ||
-        symbol == RWRSYM_MIB_F_U ||
-        symbol == RWRSYM_VS ||
-        symbol == RWRSYM_MIB_F_S ||
+    if (symbol == RWRSYM_UNKNOWN or
+        symbol == RWRSYM_UNK1 or
+        symbol == RWRSYM_UNK2 or
+        symbol == RWRSYM_UNK3 or
+        symbol == RWRSYM_MIB_F_U or
+        symbol == RWRSYM_VS or
+        symbol == RWRSYM_MIB_F_S or
         symbol == RWRSYM_MIB_BW_S
        )
     {
@@ -1761,19 +1761,19 @@ void HarmTargetingPod::BoxTargetDTSB(int symbol, float &displayX, float &display
     bool found = false;
 
     // Get into list only a "worthy" symbol, SAM or search radar
-    if (!IsInPriorityList(symbol))
+    if ( not IsInPriorityList(symbol))
     {
         return;
     }
 
     // Do not draw unknown threats into DTSB
-    if (symbol == RWRSYM_UNKNOWN ||
-        symbol == RWRSYM_UNK1 ||
-        symbol == RWRSYM_UNK2 ||
-        symbol == RWRSYM_UNK3 ||
-        symbol == RWRSYM_MIB_F_U ||
-        symbol == RWRSYM_VS ||
-        symbol == RWRSYM_MIB_F_S ||
+    if (symbol == RWRSYM_UNKNOWN or
+        symbol == RWRSYM_UNK1 or
+        symbol == RWRSYM_UNK2 or
+        symbol == RWRSYM_UNK3 or
+        symbol == RWRSYM_MIB_F_U or
+        symbol == RWRSYM_VS or
+        symbol == RWRSYM_MIB_F_S or
         symbol == RWRSYM_MIB_BW_S
        )
     {
@@ -1818,7 +1818,7 @@ void HarmTargetingPod::ClearPOSTargets(void)
 
 void HarmTargetingPod::SetPOSTargetIndex(int index)
 {
-    if (index < 0 || index > 3)
+    if (index < 0 or index > 3)
     {
         POSTargetIndex = -1;
         return;
@@ -1835,11 +1835,11 @@ int HarmTargetingPod::FindWaypointNum(WayPointClass* theWP)
 
     tempWaypoint = ((SimVehicleClass*)platform)->waypoint;
 
-    if (!tempWaypoint) return -1;
+    if ( not tempWaypoint) return -1;
 
     WPnum = 1;
 
-    while (tempWaypoint && tempWaypoint != theWP)
+    while (tempWaypoint and tempWaypoint not_eq theWP)
     {
         tempWaypoint = tempWaypoint->GetNextWP();
         WPnum++;
@@ -1861,10 +1861,10 @@ bool HarmTargetingPod::IsInPriorityList(int symbol)
             break;
 
         case HP: // Get only high priority threats, basically only SAMs and AAA radars
-            if (symbol < RWRSYM_HAWK ||
-                (symbol > 23 && symbol != 111 && symbol != 112 &&
-                 symbol != 117) &&
-                symbol != RWRSYM_KSAM ||
+            if (symbol < RWRSYM_HAWK or
+                (symbol > 23 and symbol not_eq 111 and symbol not_eq 112 and 
+                 symbol not_eq 117) and 
+                symbol not_eq RWRSYM_KSAM or
                 symbol == RWRSYM_SEARCH)
             {
                 return false;
@@ -1879,11 +1879,11 @@ bool HarmTargetingPod::IsInPriorityList(int symbol)
 
         case HA: // Get only high altitude threats, basically all large SAMs
 
-            if ((symbol >= RWRSYM_HAWK && symbol <= RWRSYM_SA6) ||
-                symbol == RWRSYM_SA10 ||
-                symbol == RWRSYM_NIKE ||
-                symbol == 111 ||
-                symbol == 112 ||
+            if ((symbol >= RWRSYM_HAWK and symbol <= RWRSYM_SA6) or
+                symbol == RWRSYM_SA10 or
+                symbol == RWRSYM_NIKE or
+                symbol == 111 or
+                symbol == 112 or
                 symbol == 117)
             {
                 return true;
@@ -1898,14 +1898,14 @@ bool HarmTargetingPod::IsInPriorityList(int symbol)
 
         case LA: // Get only low altitude threats, basically all small SAMs and AAA
 
-            if (symbol == RWRSYM_SA8 ||
-                symbol == RWRSYM_SA9 ||
-                symbol == RWRSYM_SA13 ||
-                symbol == RWRSYM_AAA ||
-                symbol == RWRSYM_CHAPARAL ||
-                symbol == RWRSYM_CHAPARAL ||
-                symbol == RWRSYM_SA15 ||
-                (symbol >= 21 && symbol <= 23) ||
+            if (symbol == RWRSYM_SA8 or
+                symbol == RWRSYM_SA9 or
+                symbol == RWRSYM_SA13 or
+                symbol == RWRSYM_AAA or
+                symbol == RWRSYM_CHAPARAL or
+                symbol == RWRSYM_CHAPARAL or
+                symbol == RWRSYM_SA15 or
+                (symbol >= 21 and symbol <= 23) or
                 symbol == RWRSYM_KSAM
                )
             {
@@ -2104,7 +2104,7 @@ void GetCurWezValue(int i, float &curX, float &curY, float &nextX, float &nextY)
 //
 // newBase = SimCampHandoff( baseObject, HANDOFF_RADAR );
 //
-// if (newBase != baseObject) {
+// if (newBase not_eq baseObject) {
 // VuDeReferenceEntity(baseObject);
 //
 // baseObject = newBase;

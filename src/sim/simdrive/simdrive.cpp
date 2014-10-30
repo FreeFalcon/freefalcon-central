@@ -333,7 +333,7 @@ void SimulationDriver::Startup(void)
     EndFlightFlag = FALSE;
 
 #ifndef NO_TIMER_THREAD
-#if MF_DONT_PROCESS_DELETE || VU_USE_ENUM_FOR_TYPES
+#if MF_DONT_PROCESS_DELETE or VU_USE_ENUM_FOR_TYPES
     FalconMessageFilter messageFilter(FalconEvent::SimThread, 0);
 #else
     FalconMessageFilter messageFilter(FalconEvent::SimThread, VU_DELETE_EVENT_BITS);
@@ -418,7 +418,7 @@ void SimulationDriver::Enter(void)
         F4EventFile = NULL;
     }
 
-    if (IO.Init((char *)"joy1.dat") != SIMLIB_OK)
+    if (IO.Init((char *)"joy1.dat") not_eq SIMLIB_OK)
     {
         MonoPrint("No Joystick Connected\n");
     }
@@ -431,14 +431,14 @@ void SimulationDriver::Exit(void)
 {
     // sfr: this cannot happen in MP
 #define NO_KILL_ON_EXIT 1
-#if !NO_KILL_ON_EXIT
+#if not NO_KILL_ON_EXIT
     SimBaseClass *theObject, *nextObject;
     VuListIterator objectWalker(objectList);
 
     // Kill All remaining awake sim Entities
     for (
         theObject = static_cast<SimBaseClass*>(objectWalker.GetFirst());
-        theObject != NULL;
+        theObject not_eq NULL;
         theObject = nextObject
     )
     {
@@ -484,10 +484,10 @@ void SimulationDriver::Cycle()
     curFlyState = FalconLocalSession->GetFlyState();
     RefreshVoiceFreqs();//me123
 
-    if ((elapsedTime >= 10) && (gameCompressionRatio))
+    if ((elapsedTime >= 10) and (gameCompressionRatio))
     {
         // Check if the graphics are runnning and read inputs, if so.
-        if (curFlyState == FLYSTATE_FLYING || curFlyState == FLYSTATE_DEAD)
+        if (curFlyState == FLYSTATE_FLYING or curFlyState == FLYSTATE_DEAD)
         {
             UserStickInputs.Update();
             runGraphics = true;
@@ -539,11 +539,11 @@ void SimulationDriver::Cycle()
         doFile = FALSE;
     }
 
-#if !NEW_SERVER_VIEWPOINT
+#if not NEW_SERVER_VIEWPOINT
 
     //me123 the following function is needed for host to send updates while in the ui
     //with the new mp code.
-    if (vuLocalSessionEntity && vuLocalGame && vuLocalGame->IsLocal())
+    if (vuLocalSessionEntity and vuLocalGame and vuLocalGame->IsLocal())
     {
         // we are hosting a game
         VuGameEntity *game = vuLocalSessionEntity->Game();
@@ -553,13 +553,13 @@ void SimulationDriver::Cycle()
         int flying = FALSE;
 
         //FLYSTATE_IN_UI
-        while (sess && !flying)
+        while (sess and not flying)
         {
             // sfr: why get from DB???
             // this is fucking hack. They get from DB because UI can be closing while this is runnig
             // definitely NOT SAFE
-            //if (((FalconSessionEntity*)vuDatabase->Find(sess->Id()))->GetFlyState () != FLYSTATE_IN_UI)
-            if (((FalconSessionEntity*)sess)->GetFlyState() != FLYSTATE_IN_UI)
+            //if (((FalconSessionEntity*)vuDatabase->Find(sess->Id()))->GetFlyState () not_eq FLYSTATE_IN_UI)
+            if (((FalconSessionEntity*)sess)->GetFlyState() not_eq FLYSTATE_IN_UI)
             {
                 flying = TRUE;
             }
@@ -570,18 +570,18 @@ void SimulationDriver::Cycle()
         }
 
         if (
-            flying && !OTWDriver.IsActive() && FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI &&
-            !curFlyState && !doGraphicsExit && !doExit && !TheCampaign.IsSuspended()
+            flying and not OTWDriver.IsActive() and FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI and 
+ not curFlyState and not doGraphicsExit and not doExit and not TheCampaign.IsSuspended()
         )
         {
             Enter();
         }
         else if (
-            flying && OTWDriver.IsActive() && FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI &&
-            !curFlyState && !doGraphicsExit && !doExit && !TheCampaign.IsSuspended()
+            flying and OTWDriver.IsActive() and FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI and 
+ not curFlyState and not doGraphicsExit and not doExit and not TheCampaign.IsSuspended()
         )
         {
-            if ((sess->CameraCount() > 0) && OTWDriver.GetViewpoint())
+            if ((sess->CameraCount() > 0) and OTWDriver.GetViewpoint())
             {
                 VuEntity *e = sess->GetCameraEntity(0);
                 OTWDriver.SetOwnshipPosition(e->XPos(), e->YPos(), e->ZPos());
@@ -600,7 +600,7 @@ void SimulationDriver::Cycle()
         // update all players viewpoints
         FalconGameEntity *game = FalconLocalGame;
 
-        if (game && game->IsLocal())
+        if (game and game->IsLocal())
         {
             OTWDriver.UpdateViewpoints();
         }
@@ -629,7 +629,7 @@ void SimulationDriver::Cycle()
 
             for (
                 SimBaseClass *theObject = (SimBaseClass*)objectWalker.GetFirst(), *next = NULL;
-                theObject != NULL;
+                theObject not_eq NULL;
                 theObject = next
             )
             {
@@ -640,7 +640,7 @@ void SimulationDriver::Cycle()
                 {
                     vuDatabase->Remove(theObject);
                 }
-                else if (!theObject->IsAwake())
+                else if ( not theObject->IsAwake())
                 {
                     SimDriver.RemoveFromObjectList(theObject);
                     continue;
@@ -648,24 +648,24 @@ void SimulationDriver::Cycle()
 
                 // MLR 1/2/2005 - Since objects are added to the DB during the cycle,
                 // some object miss thier initial Exec() call
-                // this causes things like bombs & missiles launching from behind the a/c.
+                // this causes things like bombs bitand missiles launching from behind the a/c.
                 // SimBaseObject (and derived) entities that are created during
                 // Cycle will be marked for "post processing" so
                 // that they are Exec()ed for the current frame.
                 // There is code in ::SimBaseClass that sets the flag FELF_ADDED_DURING_SIMDRIVER_CYCLE.
                 // We need to make sure we clear it here.
                 if (
-                    !processObjsAddedInCycle ||
-                    (processObjsAddedInCycle && theObject->IsSetFELocalFlag(FELF_ADDED_DURING_SIMDRIVER_CYCLE))
+ not processObjsAddedInCycle or
+                    (processObjsAddedInCycle and theObject->IsSetFELocalFlag(FELF_ADDED_DURING_SIMDRIVER_CYCLE))
                 )
                 {
                     theObject->UnSetFELocalFlag(FELF_ADDED_DURING_SIMDRIVER_CYCLE);
 
                     if (theObject->EntityDriver())
                     {
-                        if (!(
-                                (theObject->IsSetFalcFlag(FEC_PLAYER_ENTERING)) &&
-                                (theObject->IsLocal()) &&
+                        if ( not (
+                                (theObject->IsSetFalcFlag(FEC_PLAYER_ENTERING)) and 
+                                (theObject->IsLocal()) and 
                                 (RunningDogfight())
                             ))
                         {
@@ -673,7 +673,7 @@ void SimulationDriver::Cycle()
                         }
                     }
 
-                    if (!theObject->IsLocal())
+                    if ( not theObject->IsLocal())
                     {
                         CalcTransformMatrix(theObject);
                         //LRKLUDGE
@@ -714,7 +714,7 @@ void SimulationDriver::Cycle()
     if (runGraphics)
     {
         // if we're not in a cockpit view, play wind noise
-        if (!OTWDriver.DisplayInCockpit())
+        if ( not OTWDriver.DisplayInCockpit())
         {
             //edg note: since this was moved down here from above, the current
             // frame count is now beyond what the positional sound driver expects
@@ -814,7 +814,7 @@ void SimulationDriver::Pause(void)
     UPDATE_SIM_ELAPSED_SECONDS; // COBRA - RED - Scale Elapsed Seconds
 
 }
-// Retro attempt ends (hooray!)
+// Retro attempt ends (hooray)
 
 void SimulationDriver::NoPause(void)
 {
@@ -855,15 +855,15 @@ void SimulationDriver::SetPlayerEntity(SimMoverClass* newObject)
     }
 
     // 2002-02-11 MODIFIED BY S.G. A player can also be a EjectedPilotClass
-    if (newObject == NULL || newObject->IsAirplane() || newObject->IsEject())
+    if (newObject == NULL or newObject->IsAirplane() or newObject->IsEject())
     {
         // sfr: reference / derefence stuff
-        if (playerEntity != NULL)
+        if (playerEntity not_eq NULL)
         {
             VuDeReferenceEntity(playerEntity);
         }
 
-        if (newObject != NULL)
+        if (newObject not_eq NULL)
         {
             VuReferenceEntity(newObject);
         }
@@ -878,10 +878,10 @@ void SimulationDriver::SetPlayerEntity(SimMoverClass* newObject)
     ///VWF HACK: The following is a hack to make the Tac Eng Instrument
     // Landing Mission agree with the Manual
     if (
-        RunningTactical() &&
-        current_tactical_mission &&
-        current_tactical_mission->get_type() == tt_training &&
-        !strcmpi(current_tactical_mission->get_title(), "10 Instrument Landing") &&
+        RunningTactical() and 
+        current_tactical_mission and 
+        current_tactical_mission->get_type() == tt_training and 
+ not strcmpi(current_tactical_mission->get_title(), "10 Instrument Landing") and 
         gNavigationSys
     )
     {
@@ -895,7 +895,7 @@ void SimulationDriver::SetPlayerEntity(SimMoverClass* newObject)
             gTacanList->GetVUIDFromChannel(101, TacanList::X, TacanList::AG, &ATCId, &range, &type, &ilsf);
         }
 
-        if (ATCId != FalconNullId && playerEntity)
+        if (ATCId not_eq FalconNullId and playerEntity)
         {
             FalconATCMessage* atcMsg = new FalconATCMessage(ATCId, FalconLocalGame);
             atcMsg->dataBlock.type = 0;
@@ -905,7 +905,7 @@ void SimulationDriver::SetPlayerEntity(SimMoverClass* newObject)
     }
 
     // If there is no player vehicle, turn off force feedback
-    if (!playerEntity)
+    if ( not playerEntity)
     {
         JoystickStopAllEffects();
     }
@@ -913,7 +913,7 @@ void SimulationDriver::SetPlayerEntity(SimMoverClass* newObject)
 
 AircraftClass *SimulationDriver::GetPlayerAircraft() const
 {
-    return (playerEntity && playerEntity->IsAirplane()) ?
+    return (playerEntity and playerEntity->IsAirplane()) ?
            ((AircraftClass*)(playerEntity)) : NULL
            ;
 }
@@ -921,15 +921,15 @@ AircraftClass *SimulationDriver::GetPlayerAircraft() const
 
 void SimulationDriver::UpdateIAStats(SimBaseClass* oldEntity)
 {
-    if ((oldEntity->IsSetFlag(MOTION_MSL_AI)) ||
+    if ((oldEntity->IsSetFlag(MOTION_MSL_AI)) or
         (oldEntity->IsSetFlag(MOTION_BMB_AI)))
     {
         //InstantAction.ExpendWeapons(oldEntity);
         return;
     }
-    else if (!(oldEntity->IsSetFlag(MOTION_AIR_AI)) &&
-             !(oldEntity->IsSetFlag(MOTION_GND_AI)) &&
-             !(oldEntity->IsSetFlag(MOTION_HELO_AI)))
+    else if ( not (oldEntity->IsSetFlag(MOTION_AIR_AI)) and 
+ not (oldEntity->IsSetFlag(MOTION_GND_AI)) and 
+ not (oldEntity->IsSetFlag(MOTION_HELO_AI)))
     {
         return;
     }
@@ -993,7 +993,7 @@ void SimulationDriver::WakeCampaignBase(int isUnit, CampBaseClass* baseEntity, T
 
     for (
         theObject = static_cast<SimBaseClass*>(cit.GetFirst());
-        theObject != NULL;
+        theObject not_eq NULL;
         theObject = static_cast<SimBaseClass*>(cit.GetNext())
     )
     {
@@ -1002,7 +1002,7 @@ void SimulationDriver::WakeCampaignBase(int isUnit, CampBaseClass* baseEntity, T
         {
             // Wake vehicles by percentage
             if (
-                (woken <= last_to_add) ||
+                (woken <= last_to_add) or
                 (theObject->GetSlot() == ((Unit)baseEntity)->class_data->RadarVehicle)
             )
             {
@@ -1033,10 +1033,10 @@ void SimulationDriver::SleepCampaignFlight(TailInsertList *flightList)
 
     // Put all objects in this flight to sleep
     theObject = (SimBaseClass*)flit.GetFirst();
-    ShiAssert(theObject == NULL || FALSE == F4IsBadReadPtr(theObject, sizeof * theObject));
+    ShiAssert(theObject == NULL or FALSE == F4IsBadReadPtr(theObject, sizeof * theObject));
 
     //while (theObject) // JB 010306 CTD
-    while (theObject && !F4IsBadReadPtr(theObject, sizeof(SimBaseClass))) // JB 010306 CTD
+    while (theObject and not F4IsBadReadPtr(theObject, sizeof(SimBaseClass))) // JB 010306 CTD
     {
         theObject->Sleep();
         theObject = (SimBaseClass*)flit.GetNext();
@@ -1051,7 +1051,7 @@ void SimulationDriver::SleepCampaignFlight(TailInsertList *flightList)
 // This call makes the sim aware of this object
 void SimulationDriver::WakeObject(SimBaseClass* theObject)
 {
-    if (!theObject || theObject->IsAwake())
+    if ( not theObject or theObject->IsAwake())
     {
         return;
     }
@@ -1061,7 +1061,7 @@ void SimulationDriver::WakeObject(SimBaseClass* theObject)
     {
         GameManager.CheckPlayerStatus(theObject);
 
-        if (!theObject->IsSetFalcFlag(FEC_HASPLAYERS))
+        if ( not theObject->IsSetFalcFlag(FEC_HASPLAYERS))
         {
             return;
         }
@@ -1073,7 +1073,7 @@ void SimulationDriver::WakeObject(SimBaseClass* theObject)
 // This call makes the sim ignore this object
 void SimulationDriver::SleepObject(SimBaseClass* theObject)
 {
-    if (!theObject || !theObject->IsAwake())
+    if ( not theObject or not theObject->IsAwake())
         return;
 
     theObject->Sleep();
@@ -1088,7 +1088,7 @@ void SimulationDriver::UpdateRemoteData(void)
 
     while (theObject)
     {
-        if (!theObject->IsLocal())
+        if ( not theObject->IsLocal())
         {
             CalcTransformMatrix(theObject);
             theObject->Exec();
@@ -1112,7 +1112,7 @@ void SimulationDriver::UpdateRemoteData(void)
                 }
             }
 
-            if (requestList && requestList->requestId == theObject->Id())
+            if (requestList and requestList->requestId == theObject->Id())
             {
                 NewRequestList* tmpRequest;
                 //MonoPrint ("Clearing requested object %d\n", theObject->Id().num_);
@@ -1140,7 +1140,7 @@ SimBaseClass* SimulationDriver::FindNearestThreat(float* bearing, float* range, 
     float tmpRange;
     Team myTeam;
 
-    if (!playerEntity)
+    if ( not playerEntity)
         return NULL;
 
     myX = ((SimBaseClass*)playerEntity)->XPos();
@@ -1152,10 +1152,10 @@ SimBaseClass* SimulationDriver::FindNearestThreat(float* bearing, float* range, 
 
     while (theObject)
     {
-        if (theObject->IsAirplane() && !theObject->IsDead() && !theObject->OnGround() && !theObject->IsEject() && !theObject->IsDying() &&
-            GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile && theObject->GetCampaignObject()->GetSpotted(myTeam))
+        if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and not theObject->IsEject() and not theObject->IsDying() and 
+            GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile and theObject->GetCampaignObject()->GetSpotted(myTeam))
         {
-            if (theObject->GetSType() == STYPE_AIR_FIGHTER ||
+            if (theObject->GetSType() == STYPE_AIR_FIGHTER or
                 theObject->GetSType() == STYPE_AIR_FIGHTER_BOMBER)
             {
                 if (retval == NULL)
@@ -1200,7 +1200,7 @@ SimBaseClass* SimulationDriver::FindNearestThreat(short *x, short *y, float* alt
     float tmpRange = 0.0F, range = 0.0F;
     Team myTeam = 0;
 
-    if (!playerEntity)
+    if ( not playerEntity)
         return NULL;
 
     myX = ((SimBaseClass*)playerEntity)->XPos();
@@ -1212,10 +1212,10 @@ SimBaseClass* SimulationDriver::FindNearestThreat(short *x, short *y, float* alt
 
     while (theObject)
     {
-        if (theObject->IsAirplane() && !theObject->IsDead() && !theObject->OnGround() && !theObject->IsEject() && !theObject->IsDying() &&
-            GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile && theObject->GetCampaignObject()->GetSpotted(myTeam))
+        if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and not theObject->IsEject() and not theObject->IsDying() and 
+            GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile and theObject->GetCampaignObject()->GetSpotted(myTeam))
         {
-            if (theObject->GetSType() == STYPE_AIR_FIGHTER ||
+            if (theObject->GetSType() == STYPE_AIR_FIGHTER or
                 theObject->GetSType() == STYPE_AIR_FIGHTER_BOMBER)
             {
                 if (retval == NULL)
@@ -1262,7 +1262,7 @@ SimBaseClass* SimulationDriver::FindNearestThreat(AircraftClass* aircraft, short
     float tmpRange = 0.0F, range = 0.0F;
     Team myTeam = 0;
 
-    if (!playerEntity)
+    if ( not playerEntity)
         return NULL;
 
     myX = aircraft->XPos();
@@ -1274,10 +1274,10 @@ SimBaseClass* SimulationDriver::FindNearestThreat(AircraftClass* aircraft, short
 
     while (theObject)
     {
-        if (theObject->IsAirplane() && !theObject->IsDead() && !theObject->OnGround() && !theObject->IsEject() && !theObject->IsDying() &&
-            GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile && theObject->GetCampaignObject()->GetSpotted(myTeam))
+        if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and not theObject->IsEject() and not theObject->IsDying() and 
+            GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile and theObject->GetCampaignObject()->GetSpotted(myTeam))
         {
-            if (theObject->GetSType() == STYPE_AIR_FIGHTER ||
+            if (theObject->GetSType() == STYPE_AIR_FIGHTER or
                 theObject->GetSType() == STYPE_AIR_FIGHTER_BOMBER)
             {
                 if (retval == NULL)
@@ -1324,7 +1324,7 @@ SimBaseClass* SimulationDriver::FindNearestEnemyPlane(AircraftClass* aircraft, s
     float tmpRange = 0.0F, range = 0.0F;
     Team myTeam = 0;
 
-    if (!playerEntity)
+    if ( not playerEntity)
         return NULL;
 
     myX = aircraft->XPos();
@@ -1336,8 +1336,8 @@ SimBaseClass* SimulationDriver::FindNearestEnemyPlane(AircraftClass* aircraft, s
 
     while (theObject)
     {
-        if (theObject->IsAirplane() && !theObject->IsDead() && !theObject->OnGround() &&
-            GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile && theObject->GetCampaignObject()->GetSpotted(myTeam))
+        if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and 
+            GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile and theObject->GetCampaignObject()->GetSpotted(myTeam))
         {
             if (retval == NULL)
             {
@@ -1382,12 +1382,12 @@ CampBaseClass* SimulationDriver::FindNearestCampThreat(AircraftClass* aircraft, 
     float tmpRange = 0.0F, range = 0.0F;
     Team myTeam = 0;
 
-    if (!playerEntity)
+    if ( not playerEntity)
         return NULL;
 
     // Don't look for campaign threats in dogfight. Everything is deaggregated anyway, and
     // this often finds people who havn't entered the sim yet.
-    if (FalconLocalGame && FalconLocalGame->GetGameType() == game_Dogfight)
+    if (FalconLocalGame and FalconLocalGame->GetGameType() == game_Dogfight)
     {
         return NULL;
     }
@@ -1407,9 +1407,9 @@ CampBaseClass* SimulationDriver::FindNearestCampThreat(AircraftClass* aircraft, 
 
     while (theUnit)
     {
-        if (theUnit->IsFlight() && !theUnit->IsDead() && GetTTRelations((Team)theUnit->GetTeam(), myTeam) >= Hostile && theUnit->GetSpotted(myTeam))
+        if (theUnit->IsFlight() and not theUnit->IsDead() and GetTTRelations((Team)theUnit->GetTeam(), myTeam) >= Hostile and theUnit->GetSpotted(myTeam))
         {
-            if (theUnit->GetSType() == STYPE_UNIT_FIGHTER ||
+            if (theUnit->GetSType() == STYPE_UNIT_FIGHTER or
                 theUnit->GetSType() == STYPE_UNIT_FIGHTER_BOMBER)
             {
                 if (retval == NULL)
@@ -1456,12 +1456,12 @@ CampBaseClass* SimulationDriver::FindNearestCampEnemy(AircraftClass* aircraft, s
     float tmpRange = 0.0F, range = 0.0F;
     Team myTeam = 0;
 
-    if (!playerEntity)
+    if ( not playerEntity)
         return NULL;
 
     // Don't look for campaign threats in dogfight. Everything is deaggregated anyway, and
     // this often finds people who havn't entered the sim yet.
-    if (FalconLocalGame && FalconLocalGame->GetGameType() == game_Dogfight)
+    if (FalconLocalGame and FalconLocalGame->GetGameType() == game_Dogfight)
     {
         return NULL;
     }
@@ -1481,7 +1481,7 @@ CampBaseClass* SimulationDriver::FindNearestCampEnemy(AircraftClass* aircraft, s
 
     while (theUnit)
     {
-        if (theUnit->IsFlight() && !theUnit->IsDead() && GetTTRelations((Team)theUnit->GetTeam(), myTeam) >= Hostile && theUnit->GetSpotted(myTeam))
+        if (theUnit->IsFlight() and not theUnit->IsDead() and GetTTRelations((Team)theUnit->GetTeam(), myTeam) >= Hostile and theUnit->GetSpotted(myTeam))
         {
             if (retval == NULL)
             {
@@ -1537,7 +1537,7 @@ SimBaseClass* SimulationDriver::FindNearestTraffic(AircraftClass* aircraft, Obje
     int priTrafficDist = 5; // Priority traffic distance (not fully implimented)
 
 
-    if (!playerEntity)
+    if ( not playerEntity)
         return NULL;
 
     myX = aircraft->XPos(); // My X position
@@ -1554,7 +1554,7 @@ SimBaseClass* SimulationDriver::FindNearestTraffic(AircraftClass* aircraft, Obje
         // check it is an airplane and not dead
         // check that it is not on the ground
         // checks that it is not hostile
-        if (aircraft->GetCallsignIdx() != theObject->GetCallsignIdx() && theObject->IsAirplane() && !theObject->IsDead() && !theObject->OnGround() &&
+        if (aircraft->GetCallsignIdx() not_eq theObject->GetCallsignIdx() and theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and 
             GetTTRelations((Team)theObject->GetTeam(), myTeam) <= Neutral)
         {
             if (retval == NULL)
@@ -1595,7 +1595,7 @@ SimBaseClass* SimulationDriver::FindNearestTraffic(AircraftClass* aircraft, Obje
 
                 // if traffic is inside the priority traffic range set by priTrafficDist, find the
                 // aircraft closest to my altitude even if it's farther away
-                if (abs(tmpTrafficAlt - myAlt) < abs(trafficAlt - myAlt) && SimToGrid(sqrt(tmpRange))
+                if (abs(tmpTrafficAlt - myAlt) < abs(trafficAlt - myAlt) and SimToGrid(sqrt(tmpRange))
                     <= priTrafficDist)
                 {
                     FindTrafficConflict(theObject, aircraft, self); // Check for conflict
@@ -1740,9 +1740,9 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
 
 
     // In Sector I
-    if (relativeBearing >= 5 && relativeBearing <= 90)
+    if (relativeBearing >= 5 and relativeBearing <= 90)
     {
-        if ((normalizedTrafficHdg <= (parallelTrafficHdg - leadFwdOffset))  &&
+        if ((normalizedTrafficHdg <= (parallelTrafficHdg - leadFwdOffset))  and 
             (normalizedTrafficHdg >= pureFwdOffset))
         {
             self->brain->trafficCheck = conflictTraffic; //possible conflict
@@ -1755,9 +1755,9 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
 
 
     // In Sector II
-    if (relativeBearing >= 91 && relativeBearing <= 180)
+    if (relativeBearing >= 91 and relativeBearing <= 180)
     {
-        if ((normalizedTrafficHdg <= (parallelTrafficHdg - leadRearOffset))  &&
+        if ((normalizedTrafficHdg <= (parallelTrafficHdg - leadRearOffset))  and 
             (normalizedTrafficHdg >= pureRearOffset))
         {
             if (abs(trafficKIAS - myKIAS) > speedThreshold)
@@ -1771,9 +1771,9 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
 
 
     // In Sector III
-    if (relativeBearing >= 181 && relativeBearing <= 269)
+    if (relativeBearing >= 181 and relativeBearing <= 269)
     {
-        if ((normalizedTrafficHdg >= (parallelTrafficHdg + leadRearOffset))  &&
+        if ((normalizedTrafficHdg >= (parallelTrafficHdg + leadRearOffset))  and 
             (normalizedTrafficHdg <= 360 - pureRearOffset))
         {
             if (abs(trafficKIAS - myKIAS) >= speedThreshold)
@@ -1787,9 +1787,9 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
 
 
     // In Sector IV
-    if (relativeBearing >= 270 && relativeBearing <= 355)
+    if (relativeBearing >= 270 and relativeBearing <= 355)
     {
-        if ((normalizedTrafficHdg >= (parallelTrafficHdg + leadFwdOffset))  &&
+        if ((normalizedTrafficHdg >= (parallelTrafficHdg + leadFwdOffset))  and 
             (normalizedTrafficHdg <= 360 - pureFwdOffset))
         {
             self->brain->trafficCheck = conflictTraffic; //possible conflict
@@ -1802,12 +1802,12 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
 
 
     // In Forward Sector
-    if (relativeBearing >= 355 && relativeBearing <= 359
-        || relativeBearing >= 0 && relativeBearing <= 4)
+    if (relativeBearing >= 355 and relativeBearing <= 359
+        or relativeBearing >= 0 and relativeBearing <= 4)
     {
-        if (relativeBearing >= 355 && relativeBearing <= 360)
+        if (relativeBearing >= 355 and relativeBearing <= 360)
         {
-            if ((normalizedTrafficHdg >= parallelTrafficHdg)  &&
+            if ((normalizedTrafficHdg >= parallelTrafficHdg)  and 
                 (normalizedTrafficHdg <= 360))
             {
                 self->brain->trafficCheck = conflictTraffic; //possible conflict
@@ -1817,7 +1817,7 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
         }
         else
         {
-            if ((normalizedTrafficHdg <= parallelTrafficHdg)  &&
+            if ((normalizedTrafficHdg <= parallelTrafficHdg)  and 
                 (normalizedTrafficHdg >= 0))
             {
                 self->brain->trafficCheck = conflictTraffic; //possible conflict
@@ -1831,9 +1831,9 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
 
 
     // In Rear Sector
-    if (relativeBearing >= 176 && relativeBearing <= 184)
+    if (relativeBearing >= 176 and relativeBearing <= 184)
     {
-        if (relativeBearing >= 176 && relativeBearing <= 180)
+        if (relativeBearing >= 176 and relativeBearing <= 180)
         {
             if (normalizedTrafficHdg <= parallelTrafficHdg)
                 if (abs(trafficKIAS - myKIAS) >= speedThreshold)
@@ -1844,7 +1844,7 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
         }
         else
         {
-            if ((normalizedTrafficHdg >= parallelTrafficHdg)  &&
+            if ((normalizedTrafficHdg >= parallelTrafficHdg)  and 
                 (normalizedTrafficHdg <= 360))
                 if (abs(trafficKIAS - myKIAS) >= speedThreshold)
                     self->brain->trafficCheck = conflictTraffic; //possible conflict
@@ -1895,7 +1895,7 @@ void SimulationDriver::InitACMIRecord(void)
         airPos.data.type = theMover->Type();
 
         // sfr: remove JB check
-        if (!F4IsBadReadPtr((DrawableBSP*)(theMover->drawPointer), sizeof(DrawableBSP)) && theMover->GetTeam() >= 0 && !F4IsBadReadPtr(TeamInfo[theMover->GetTeam()], sizeof(TeamClass))) // JB 010326 CTD
+        if ( not F4IsBadReadPtr((DrawableBSP*)(theMover->drawPointer), sizeof(DrawableBSP)) and theMover->GetTeam() >= 0 and not F4IsBadReadPtr(TeamInfo[theMover->GetTeam()], sizeof(TeamClass))) // JB 010326 CTD
             airPos.data.uniqueID = ACMIIDTable->Add(theMover->Id(), (char*)((DrawableBSP*)(theMover->drawPointer))->Label(), TeamInfo[theMover->GetTeam()]->GetColor()); //.num_;
 
         airPos.data.x = theMover->XPos();
@@ -1907,19 +1907,19 @@ void SimulationDriver::InitACMIRecord(void)
         RadarClass *radar = (RadarClass*)FindSensor(theMover, SensorClass::Radar);
 #if NO_REMOTE_BUGGED_TARGET
 
-        if (radar && radar->CurrentTarget())
+        if (radar and radar->CurrentTarget())
         {
             airPos.RadarTarget = ACMIIDTable->Add(radar->CurrentTarget()->BaseData()->Id(), NULL, 0); //.num_;
         }
 
 #else
 
-        if (radar && radar->RemoteBuggedTarget)
+        if (radar and radar->RemoteBuggedTarget)
         {
             //me123 add record for online targets
             airPos.RadarTarget = ACMIIDTable->Add(radar->RemoteBuggedTarget->Id(), NULL, 0); //.num_;
         }
-        else if (radar && radar->CurrentTarget())
+        else if (radar and radar->CurrentTarget())
         {
             airPos.RadarTarget = ACMIIDTable->Add(radar->CurrentTarget()->BaseData()->Id(), NULL, 0); //.num_;
         }
@@ -2036,19 +2036,19 @@ void SimulationDriver::InitACMIRecord(void)
             RadarClass *radar = (RadarClass*)FindSensor(theMover, SensorClass::Radar);
 #if NO_REMOTE_BUGGED_TARGET
 
-            if (radar && radar->CurrentTarget())
+            if (radar and radar->CurrentTarget())
             {
                 airPos.RadarTarget = ACMIIDTable->Add(radar->CurrentTarget()->BaseData()->Id(), NULL, 0); //.num_;
             }
 
 #else
 
-            if (radar && radar->RemoteBuggedTarget)
+            if (radar and radar->RemoteBuggedTarget)
             {
                 //me123 add record for online targets
                 airPos.RadarTarget = ACMIIDTable->Add(radar->RemoteBuggedTarget->Id(), NULL, 0); //.num_;
             }
-            else if (radar && radar->CurrentTarget())
+            else if (radar and radar->CurrentTarget())
             {
                 airPos.RadarTarget = ACMIIDTable->Add(radar->CurrentTarget()->BaseData()->Id(), NULL, 0); //.num_;
             }
@@ -2128,7 +2128,7 @@ void SimulationDriver::InitACMIRecord(void)
         featPos.data.specialFlags = theObject->featureFlags;
         leadObject = theObject->GetCampaignObject()->GetComponentLead();
 
-        if (leadObject && leadObject->Id().num_ != theObject->Id().num_)
+        if (leadObject and leadObject->Id().num_ not_eq theObject->Id().num_)
             featPos.data.leadUniqueID = ACMIIDTable->Add(leadObject->Id(), NULL, 0); //.num_;
         else
             featPos.data.leadUniqueID = -1;
@@ -2139,8 +2139,8 @@ void SimulationDriver::InitACMIRecord(void)
         // once ACMI supports state change events
         featStat.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
         featStat.data.uniqueID = ACMIIDTable->Add(theObject->Id(), NULL, 0); //.num_;
-        featStat.data.newStatus = (theObject->Status() & VIS_TYPE_MASK);
-        featStat.data.prevStatus = (theObject->Status() & VIS_TYPE_MASK);
+        featStat.data.newStatus = (theObject->Status() bitand VIS_TYPE_MASK);
+        featStat.data.prevStatus = (theObject->Status() bitand VIS_TYPE_MASK);
         gACMIRec.FeatureStatusRecord(&featStat);
 
         // next one in the loop
@@ -2167,7 +2167,7 @@ void ProximityCheck(SimBaseClass* thisObj)
 
             while (theObject)
             {
-                if (fabs(thisObj->XPos() - theObject->XPos()) < 20.0F * NM_TO_FT &&
+                if (fabs(thisObj->XPos() - theObject->XPos()) < 20.0F * NM_TO_FT and 
                     fabs(thisObj->YPos() - theObject->YPos()) < 20.0F * NM_TO_FT)
                 {
                     isClose = TRUE;
@@ -2177,7 +2177,7 @@ void ProximityCheck(SimBaseClass* thisObj)
                 theObject = updateWalker.GetNext();
             }
 
-            if (!isClose)
+            if ( not isClose)
             {
                 theObject = updateWalker.GetFirst();
 
@@ -2200,14 +2200,14 @@ void SimulationDriver::POVKludgeFunction(DWORD povHatAngle)   // VWF POV Kludge 
 
     //static DWORD previousAngle = -1;
 
-    //if((povHatAngle == -1 && previousAngle != -1) ||
-    // (povHatAngle != -1 && previousAngle == -1)) {
+    //if((povHatAngle == -1 and previousAngle not_eq -1) or
+    // (povHatAngle not_eq -1 and previousAngle == -1)) {
 
-    if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit  ||
-        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockF3  || // 2002-02-17 MODIFIED BY S.G. Needed now for the 'break lock by POV' to work
-        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockEFOV || // 2002-02-17 MODIFIED BY S.G. Needed now for the 'break lock by POV' to work
-        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeOrbit  ||
-        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeChase  ||
+    if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit  or
+        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockF3  or // 2002-02-17 MODIFIED BY S.G. Needed now for the 'break lock by POV' to work
+        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockEFOV or // 2002-02-17 MODIFIED BY S.G. Needed now for the 'break lock by POV' to work
+        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeOrbit  or
+        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeChase  or
         OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeSatellite)
     {
         /*
@@ -2215,16 +2215,16 @@ void SimulationDriver::POVKludgeFunction(DWORD povHatAngle)   // VWF POV Kludge 
           OTWDriver.ViewTiltHold();
           OTWDriver.ViewSpinHold();
           }
-          else if((povHatAngle > POV_NW && povHatAngle < 36000) || povHatAngle < POV_NE) {
+          else if((povHatAngle > POV_NW and povHatAngle < 36000) or povHatAngle < POV_NE) {
           OTWViewUp(0, KEY_DOWN, NULL);
           }
-          else if(povHatAngle > POV_NE && povHatAngle < POV_SE) {
+          else if(povHatAngle > POV_NE and povHatAngle < POV_SE) {
           OTWViewRight(0, KEY_DOWN, NULL);
           }
-          else if(povHatAngle > POV_SE && povHatAngle < POV_SW) {
+          else if(povHatAngle > POV_SE and povHatAngle < POV_SW) {
           OTWViewDown(0, KEY_DOWN, NULL);
           }
-          else if(povHatAngle > POV_SW && povHatAngle < POV_NW) {
+          else if(povHatAngle > POV_SW and povHatAngle < POV_NW) {
           OTWViewLeft(0, KEY_DOWN, NULL);
           }*/
 
@@ -2233,102 +2233,102 @@ void SimulationDriver::POVKludgeFunction(DWORD povHatAngle)   // VWF POV Kludge 
             OTWDriver.ViewTiltHold();
             OTWDriver.ViewSpinHold();
         }
-        else if (((povHatAngle >= (POV_NW + POV_HALF_RANGE)) && (povHatAngle < 36000)) || (povHatAngle < POV_N + POV_HALF_RANGE))
+        else if (((povHatAngle >= (POV_NW + POV_HALF_RANGE)) and (povHatAngle < 36000)) or (povHatAngle < POV_N + POV_HALF_RANGE))
         {
             OTWViewUp(0, KEY_DOWN, NULL);
         }
-        else if ((povHatAngle >= (POV_NE - POV_HALF_RANGE)) && (povHatAngle < POV_NE + POV_HALF_RANGE))
+        else if ((povHatAngle >= (POV_NE - POV_HALF_RANGE)) and (povHatAngle < POV_NE + POV_HALF_RANGE))
         {
             OTWViewRight(0, KEY_DOWN, NULL);
             OTWViewUp(0, KEY_DOWN, NULL);
         }
-        else if ((povHatAngle >= (POV_E - POV_HALF_RANGE)) && (povHatAngle < POV_E + POV_HALF_RANGE))
+        else if ((povHatAngle >= (POV_E - POV_HALF_RANGE)) and (povHatAngle < POV_E + POV_HALF_RANGE))
         {
             OTWViewRight(0, KEY_DOWN, NULL);
         }
-        else if ((povHatAngle >= (POV_SE - POV_HALF_RANGE)) && (povHatAngle < POV_SE + POV_HALF_RANGE))
+        else if ((povHatAngle >= (POV_SE - POV_HALF_RANGE)) and (povHatAngle < POV_SE + POV_HALF_RANGE))
         {
             OTWViewRight(0, KEY_DOWN, NULL);
             OTWViewDown(0, KEY_DOWN, NULL);
         }
-        else if ((povHatAngle >= (POV_S - POV_HALF_RANGE)) && (povHatAngle < POV_S + POV_HALF_RANGE))
+        else if ((povHatAngle >= (POV_S - POV_HALF_RANGE)) and (povHatAngle < POV_S + POV_HALF_RANGE))
         {
             OTWViewDown(0, KEY_DOWN, NULL);
         }
-        else if ((povHatAngle >= (POV_SW - POV_HALF_RANGE)) && (povHatAngle < POV_SW + POV_HALF_RANGE))
+        else if ((povHatAngle >= (POV_SW - POV_HALF_RANGE)) and (povHatAngle < POV_SW + POV_HALF_RANGE))
         {
             OTWViewDown(0, KEY_DOWN, NULL);
             OTWViewLeft(0, KEY_DOWN, NULL);
         }
-        else if ((povHatAngle >= (POV_W - POV_HALF_RANGE)) && (povHatAngle < POV_W + POV_HALF_RANGE))
+        else if ((povHatAngle >= (POV_W - POV_HALF_RANGE)) and (povHatAngle < POV_W + POV_HALF_RANGE))
         {
             OTWViewLeft(0, KEY_DOWN, NULL);
         }
-        else if ((povHatAngle >= (POV_NW - POV_HALF_RANGE)) && (povHatAngle < POV_NW + POV_HALF_RANGE))
+        else if ((povHatAngle >= (POV_NW - POV_HALF_RANGE)) and (povHatAngle < POV_NW + POV_HALF_RANGE))
         {
             OTWViewLeft(0, KEY_DOWN, NULL);
             OTWViewUp(0, KEY_DOWN, NULL);
         }
     }
-    else if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode2DCockpit && povHatAngle != -1)
+    else if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode2DCockpit and povHatAngle not_eq -1)
     {
 
-        if (((povHatAngle >= (POV_NW + POV_HALF_RANGE)) && (povHatAngle < 36000)) || (povHatAngle < POV_N + POV_HALF_RANGE))
+        if (((povHatAngle >= (POV_NW + POV_HALF_RANGE)) and (povHatAngle < 36000)) or (povHatAngle < POV_N + POV_HALF_RANGE))
         {
             gSelectedCursor = OTWDriver.pCockpitManager->POVDispatch(POV_N, gxPos, gyPos);
         }
-        else if ((povHatAngle >= (POV_NE - POV_HALF_RANGE)) && (povHatAngle < POV_NE + POV_HALF_RANGE))
+        else if ((povHatAngle >= (POV_NE - POV_HALF_RANGE)) and (povHatAngle < POV_NE + POV_HALF_RANGE))
         {
             gSelectedCursor = OTWDriver.pCockpitManager->POVDispatch(POV_NE, gxPos, gyPos);
         }
-        else if ((povHatAngle >= (POV_E - POV_HALF_RANGE)) && (povHatAngle < POV_E + POV_HALF_RANGE))
+        else if ((povHatAngle >= (POV_E - POV_HALF_RANGE)) and (povHatAngle < POV_E + POV_HALF_RANGE))
         {
             gSelectedCursor = OTWDriver.pCockpitManager->POVDispatch(POV_E, gxPos, gyPos);
         }
-        else if ((povHatAngle >= (POV_SE - POV_HALF_RANGE)) && (povHatAngle < POV_SE + POV_HALF_RANGE))
+        else if ((povHatAngle >= (POV_SE - POV_HALF_RANGE)) and (povHatAngle < POV_SE + POV_HALF_RANGE))
         {
             gSelectedCursor = OTWDriver.pCockpitManager->POVDispatch(POV_SE, gxPos, gyPos);
         }
-        else if ((povHatAngle >= (POV_S - POV_HALF_RANGE)) && (povHatAngle < POV_S + POV_HALF_RANGE))
+        else if ((povHatAngle >= (POV_S - POV_HALF_RANGE)) and (povHatAngle < POV_S + POV_HALF_RANGE))
         {
             gSelectedCursor = OTWDriver.pCockpitManager->POVDispatch(POV_S, gxPos, gyPos);
         }
-        else if ((povHatAngle >= (POV_SW - POV_HALF_RANGE)) && (povHatAngle < POV_SW + POV_HALF_RANGE))
+        else if ((povHatAngle >= (POV_SW - POV_HALF_RANGE)) and (povHatAngle < POV_SW + POV_HALF_RANGE))
         {
             gSelectedCursor = OTWDriver.pCockpitManager->POVDispatch(POV_SW, gxPos, gyPos);
         }
-        else if ((povHatAngle >= (POV_W - POV_HALF_RANGE)) && (povHatAngle < POV_W + POV_HALF_RANGE))
+        else if ((povHatAngle >= (POV_W - POV_HALF_RANGE)) and (povHatAngle < POV_W + POV_HALF_RANGE))
         {
             gSelectedCursor = OTWDriver.pCockpitManager->POVDispatch(POV_W, gxPos, gyPos);
         }
-        else if ((povHatAngle >= (POV_NW - POV_HALF_RANGE)) && (povHatAngle < POV_NW + POV_HALF_RANGE))
+        else if ((povHatAngle >= (POV_NW - POV_HALF_RANGE)) and (povHatAngle < POV_NW + POV_HALF_RANGE))
         {
             gSelectedCursor = OTWDriver.pCockpitManager->POVDispatch(POV_NW, gxPos, gyPos);
         }
 
         /*
-         if(((povHatAngle >= (POV_NW + POV_HALF_RANGE)) && (povHatAngle < 65535)) || (povHatAngle < POV_N + POV_HALF_RANGE)) {
+         if(((povHatAngle >= (POV_NW + POV_HALF_RANGE)) and (povHatAngle < 65535)) or (povHatAngle < POV_N + POV_HALF_RANGE)) {
          gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, DisplayOptions.DispWidth / 2, 0);
          }
-         else if((povHatAngle >= (POV_NE - POV_HALF_RANGE)) && (povHatAngle < POV_NE + POV_HALF_RANGE)) {
+         else if((povHatAngle >= (POV_NE - POV_HALF_RANGE)) and (povHatAngle < POV_NE + POV_HALF_RANGE)) {
          gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, DisplayOptions.DispWidth, 0);
          }
-         else if((povHatAngle >= (POV_E - POV_HALF_RANGE)) && (povHatAngle < POV_E + POV_HALF_RANGE)) {
+         else if((povHatAngle >= (POV_E - POV_HALF_RANGE)) and (povHatAngle < POV_E + POV_HALF_RANGE)) {
          gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, DisplayOptions.DispWidth, DisplayOptions.DispHeight / 2);
          }
-         else if((povHatAngle >= (POV_SE - POV_HALF_RANGE)) && (povHatAngle < POV_SE + POV_HALF_RANGE)) {
+         else if((povHatAngle >= (POV_SE - POV_HALF_RANGE)) and (povHatAngle < POV_SE + POV_HALF_RANGE)) {
          gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, DisplayOptions.DispWidth, DisplayOptions.DispHeight);
          }
-         else if((povHatAngle >= (POV_S - POV_HALF_RANGE)) && (povHatAngle < POV_S + POV_HALF_RANGE)) {
+         else if((povHatAngle >= (POV_S - POV_HALF_RANGE)) and (povHatAngle < POV_S + POV_HALF_RANGE)) {
          gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, DisplayOptions.DispWidth / 2 + 2, DisplayOptions.DispHeight);
          }
-         else if((povHatAngle >= (POV_SW - POV_HALF_RANGE)) && (povHatAngle < POV_SW + POV_HALF_RANGE)) {
+         else if((povHatAngle >= (POV_SW - POV_HALF_RANGE)) and (povHatAngle < POV_SW + POV_HALF_RANGE)) {
          gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, 0, DisplayOptions.DispHeight);
          }
-         else if((povHatAngle >= (POV_W - POV_HALF_RANGE)) && (povHatAngle < POV_W + POV_HALF_RANGE)) {
+         else if((povHatAngle >= (POV_W - POV_HALF_RANGE)) and (povHatAngle < POV_W + POV_HALF_RANGE)) {
          gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, 0, DisplayOptions.DispHeight / 2);
          }
-         else if((povHatAngle >= (POV_NW - POV_HALF_RANGE)) && (povHatAngle < POV_NW + POV_HALF_RANGE)) {
+         else if((povHatAngle >= (POV_NW - POV_HALF_RANGE)) and (povHatAngle < POV_NW + POV_HALF_RANGE)) {
          gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, 0, 0);
          }
          */

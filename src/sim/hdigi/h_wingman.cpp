@@ -17,7 +17,7 @@ void HeliBrain::ReceiveOrders(FalconEvent* theEvent)
     FalconWingmanMsg *wingCommand = (FalconWingmanMsg *)theEvent;
     int goLead = FALSE;
 
-    if (!self->IsAwake())
+    if ( not self->IsAwake())
         return;
 
     switch (wingCommand->dataBlock.command)
@@ -67,7 +67,7 @@ void HeliBrain::ReceiveOrders(FalconEvent* theEvent)
         case FalconWingmanMsg::WMPromote:
             isWing --;
 
-            if (!isWing)
+            if ( not isWing)
             {
                 SetLead(TRUE);
                 self->flightLead = self;
@@ -84,7 +84,7 @@ void HeliBrain::ReceiveOrders(FalconEvent* theEvent)
             break;
     }
 
-    if (goLead && isWing)
+    if (goLead and isWing)
     {
         SetLead(TRUE);
     }
@@ -157,8 +157,8 @@ void HeliBrain::FollowLead(void)
     }
 
     // RV - Biker - Stay on ground if lead does also
-    if (self->flightLead->curWaypoint->GetWPFlags() & WPF_TAKEOFF  &&
-        self->flightLead->curWaypoint->GetWPDepartureTime() > SimLibElapsedTime &&
+    if (self->flightLead->curWaypoint->GetWPFlags() bitand WPF_TAKEOFF  and 
+        self->flightLead->curWaypoint->GetWPDepartureTime() > SimLibElapsedTime and 
         self->flightLead->curWaypoint->GetPrevWP() == NULL)
     {
         LevelTurn(0.0f, 0.0f, TRUE);
@@ -177,7 +177,7 @@ void HeliBrain::FollowLead(void)
     // maybe there is a variable with speed in XY plane already
     speedXY = sqrt(self->XDelta() * self->XDelta() + self->YDelta() * self->YDelta());
 
-    if ((self->flightLead->hBrain->onStation == Landed || self->flightLead->hBrain->onStation == Landing) && speedXY <= 20.0f)
+    if ((self->flightLead->hBrain->onStation == Landed or self->flightLead->hBrain->onStation == Landing) and speedXY <= 20.0f)
     {
         if (onStation < Arrived)
             onStation = Arrived;
@@ -204,7 +204,7 @@ void HeliBrain::FollowLead(void)
         trackZ = newpos.z + 100.0F;
         //MonoPrint ("AGM Formation\n");
     }
-    else if (self->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb ||
+    else if (self->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb or
              self->FCC->GetMasterMode() == FireControlComputer::AirGroundRocket)
     {
         self->GetFormationPos(&newpos.x, &newpos.y, &newpos.z);

@@ -45,22 +45,22 @@ int FalconFACMessage::Process(uchar autodisp)
 
     theEntity = (SimVehicleClass*)Entity();
 
-    if (!theEntity)
+    if ( not theEntity)
         theEntity = (SimVehicleClass*)(vuDatabase->Find(EntityId()));
 
     theFighter = (SimVehicleClass*)(vuDatabase->Find(dataBlock.caller));
 
-    if (!theFighter) // PJW: E3 Hack... make sure (theFighter) is valid
+    if ( not theFighter) // PJW: E3 Hack... make sure (theFighter) is valid
         return 0;
 
     switch (dataBlock.type)
     {
         case CheckIn:
-            if (theEntity && theEntity->IsLocal())
+            if (theEntity and theEntity->IsLocal())
                 ((FACBrain*)theEntity->Brain())->AddToQ(theFighter);
 
             // Play message here
-            if (theFighter != SimDriver.GetPlayerEntity())
+            if (theFighter not_eq SimDriver.GetPlayerEntity())
             {
             }
 
@@ -69,7 +69,7 @@ int FalconFACMessage::Process(uchar autodisp)
         case Wilco:
 
             // Play message here
-            if (theFighter != SimDriver.GetPlayerEntity())
+            if (theFighter not_eq SimDriver.GetPlayerEntity())
             {
             }
 
@@ -78,7 +78,7 @@ int FalconFACMessage::Process(uchar autodisp)
         case Unable:
 
             // Play message here
-            if (theFighter != SimDriver.GetPlayerEntity())
+            if (theFighter not_eq SimDriver.GetPlayerEntity())
             {
             }
 
@@ -87,7 +87,7 @@ int FalconFACMessage::Process(uchar autodisp)
         case In:
 
             // Play message here
-            if (theFighter != SimDriver.GetPlayerEntity())
+            if (theFighter not_eq SimDriver.GetPlayerEntity())
             {
             }
 
@@ -96,7 +96,7 @@ int FalconFACMessage::Process(uchar autodisp)
         case Out:
 
             // Play message here
-            if (theFighter != SimDriver.GetPlayerEntity())
+            if (theFighter not_eq SimDriver.GetPlayerEntity())
             {
             }
 
@@ -106,25 +106,25 @@ int FalconFACMessage::Process(uchar autodisp)
             break;
 
         case RequestTarget:
-            if (theEntity && theFighter && theEntity->IsLocal())
+            if (theEntity and theFighter and theEntity->IsLocal())
                 ((FACBrain*)theEntity->Brain())->RequestTarget(theFighter);
 
             break;
 
         case RequestBDA:
-            if (theEntity && theFighter && theEntity->IsLocal())
+            if (theEntity and theFighter and theEntity->IsLocal())
                 ((FACBrain*)theEntity->Brain())->RequestBDA(theFighter);
 
             break;
 
         case RequestLocation:
-            if (theEntity && theEntity->IsLocal())
+            if (theEntity and theEntity->IsLocal())
                 ((FACBrain*)theEntity->Brain())->RequestLocation();
 
             break;
 
         case RequestTACAN:
-            if (theEntity && theEntity->IsLocal())
+            if (theEntity and theEntity->IsLocal())
                 ((FACBrain*)theEntity->Brain())->RequestTACAN();
 
             break;
@@ -151,7 +151,7 @@ int FalconFACMessage::Process(uchar autodisp)
             break;
 
         case ReattackQuery:
-            if (theFighter && theFighter->IsLocal())
+            if (theFighter and theFighter->IsLocal())
             {
             }
 
@@ -161,7 +161,7 @@ int FalconFACMessage::Process(uchar autodisp)
             break;
 
         case HartsOpen:
-            if (theFighter && theFighter->IsLocal())
+            if (theFighter and theFighter->IsLocal())
             {
             }
 
@@ -174,7 +174,7 @@ int FalconFACMessage::Process(uchar autodisp)
             break;
 
         case AttackMyTarget:
-            if (theFighter && theFighter->IsLocal())
+            if (theFighter and theFighter->IsLocal())
             {
             }
 

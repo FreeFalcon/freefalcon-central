@@ -123,10 +123,10 @@ void DogfightClass::ApplySettings(void)
     int i;
 
     // KCK: Should this be done on the host only, or should everyone assume we have the same data?
-    // if (!FalconLocalGame || !FalconLocalGame->IsLocal())
+    // if ( not FalconLocalGame or not FalconLocalGame->IsLocal())
     // return;
 
-    if (!TheCampaign.IsLoaded())
+    if ( not TheCampaign.IsLoaded())
     {
         return;
     }
@@ -146,7 +146,7 @@ void DogfightClass::ApplySettings(void)
 
     SetTime(startTime);
 
-    if (FalconLocalGame && FalconLocalGame->IsLocal())
+    if (FalconLocalGame and FalconLocalGame->IsLocal())
     {
         VuListIterator flit(AllRealList);
         unit = (Unit)flit.GetFirst();
@@ -182,7 +182,7 @@ void DogfightClass::ApplySettings(void)
 
     lastUpdateTime = 0;
 
-    if (!regenerationQueue)
+    if ( not regenerationQueue)
     {
         ShiAssert(this == &SimDogfight);
         regenerationQueue = new TailInsertList();
@@ -209,7 +209,7 @@ void DogfightClass::ApplySettingsToFlight(Flight flight)
     x = startX + DFOffsetX[flight->GetTeam()] * startRange * 0.5F;
     y = startY + DFOffsetY[flight->GetTeam()] * startRange * 0.5F;
 
-    while (calltable[flight->GetTeam()][cid] != flight->callsign_id)
+    while (calltable[flight->GetTeam()][cid] not_eq flight->callsign_id)
     {
         cid++;
     }
@@ -217,7 +217,7 @@ void DogfightClass::ApplySettingsToFlight(Flight flight)
     z = startAltitude - 500.0F * cid - 2500.0F * (flight->callsign_num - 1);
     flight->SimSetLocation(x, y, z);
 
-    if (FalconLocalGame && FalconLocalGame->IsLocal())
+    if (FalconLocalGame and FalconLocalGame->IsLocal())
     {
         CampEnterCriticalSection();
         flight->DisposeWayPoints();
@@ -241,9 +241,9 @@ void DogfightClass::ApplySettingsToFlight(Flight flight)
         flight->UseFuel(1);
         flight->LoadWeapons(NULL, DefaultDamageMods, Air, numRadarMissiles, WEAP_FORCE_ON_ONE, WEAP_RADAR);
         flight->LoadWeapons(NULL, DefaultDamageMods, Air, numAllAspectMissiles, WEAP_FORCE_ON_ONE, WEAP_HEATSEEKER);
-        flight->LoadWeapons(NULL, DefaultDamageMods, Air, numRearAspectMissiles, WEAP_FORCE_ON_ONE, WEAP_HEATSEEKER | WEAP_REAR_ASPECT);
+        flight->LoadWeapons(NULL, DefaultDamageMods, Air, numRearAspectMissiles, WEAP_FORCE_ON_ONE, WEAP_HEATSEEKER bitor WEAP_REAR_ASPECT);
 
-        if (flags & DF_ECM_AVAIL)
+        if (flags bitand DF_ECM_AVAIL)
         {
             flight->LoadWeapons(NULL, DefaultDamageMods, Air, 1, WEAP_ECM, 0);
         }
@@ -259,7 +259,7 @@ void DogfightClass::ApplySettingsToFlight(Flight flight)
     // Check if there are any players in this flight
     for (i = 0, p = 0; i < PILOTS_PER_FLIGHT; i++)
     {
-        if (flight->player_slots[i] != NO_PILOT)
+        if (flight->player_slots[i] not_eq NO_PILOT)
         {
             p++;
         }
@@ -293,7 +293,7 @@ void DogfightClass::SendSettings(FalconSessionEntity *target)
 {
     UI_SendDogfightInfo *settings;
 
-    if (FalconLocalGame) //  && FalconLocalGame->IsLocal()) // We should send the settings even if we are a client and not a host - RH
+    if (FalconLocalGame) // and FalconLocalGame->IsLocal()) // We should send the settings even if we are a client and not a host - RH
     {
         if (target)
         {
@@ -330,7 +330,7 @@ void DogfightClass::SendSettings(FalconSessionEntity *target)
 
 void DogfightClass::ReceiveSettings(DogfightClass *tmpSettings)
 {
-    if (!tmpSettings)
+    if ( not tmpSettings)
     {
         return;
     }
@@ -381,7 +381,7 @@ int DogfightClass::ReadyToStart(void)
     int i, numTeams = 0;
 
     // Check if it's ok to hit the 'Fly' button
-    if (!(flags & DF_GAME_OVER))
+    if ( not (flags bitand DF_GAME_OVER))
     {
         VuListIterator flit(AllRealList);
         unit = (Unit)flit.GetFirst();
@@ -401,7 +401,7 @@ int DogfightClass::ReadyToStart(void)
         }
 
         // Check for more than one team in team play
-        if (gameType == dog_Furball || numTeams > 1)
+        if (gameType == dog_Furball or numTeams > 1)
         {
             retval = TRUE;
         }
@@ -429,7 +429,7 @@ void DogfightClass::LoadSettings(void)
 
     fp = fopen(settings_filename, "rb");
 
-    if (!fp)
+    if ( not fp)
     {
         return;
     }
@@ -472,7 +472,7 @@ void DogfightClass::SaveSettings(char *filename)
 
     fp = fopen(filename, "wb");
 
-    if (!fp)
+    if ( not fp)
     {
         return;
     }
@@ -512,7 +512,7 @@ void DogfightClass::UpdateDogfight(void)
         if (localGameStatus == dog_EndRound)
         {
             // Only Matchplay gets here :-)
-            if ((restart_matchplay_round) && (vuxRealTime > static_cast<VU_TIME>(restart_matchplay_round)))
+            if ((restart_matchplay_round) and (vuxRealTime > static_cast<VU_TIME>(restart_matchplay_round)))
             {
                 MonoPrint("Ending Round Now\n");
 
@@ -534,7 +534,7 @@ void DogfightClass::UpdateDogfight(void)
             {
                 MonoPrint("Still waiting to end round %d\n", restart_matchplay_round - vuxRealTime);
 
-                if ((gameType == dog_TeamMatchplay) && (CheckRoundOver() == 0))
+                if ((gameType == dog_TeamMatchplay) and (CheckRoundOver() == 0))
                 {
                     RoundOver();
 
@@ -554,7 +554,7 @@ void DogfightClass::UpdateDogfight(void)
         }
         else if (localGameStatus == dog_Flying)
         {
-            if ((gameType == dog_TeamMatchplay) && (CheckRoundOver() <= 1))
+            if ((gameType == dog_TeamMatchplay) and (CheckRoundOver() <= 1))
             {
                 MonoPrint("GameStatus: dog EndRound\n");
                 restart_matchplay_round = vuxRealTime + 10 * VU_TICS_PER_SECOND;
@@ -569,7 +569,7 @@ void DogfightClass::UpdateDogfight(void)
             {
                 EndGame();
             }
-            else if (gameType != dog_TeamMatchplay)
+            else if (gameType not_eq dog_TeamMatchplay)
             {
                 RegenerateAvailableAircraft();
             }
@@ -579,7 +579,7 @@ void DogfightClass::UpdateDogfight(void)
             if (gameType == dog_TeamMatchplay)
             {
                 // Wait until all players are no longer flying before resetting
-                if (gameStatus != dog_Flying)
+                if (gameStatus not_eq dog_Flying)
                 {
                     ResetRound();
                 }
@@ -605,12 +605,12 @@ void DogfightClass::UpdateDogfight(void)
         else
         {
             // Check for game restart
-            if ((localFlags & DF_VIEWED_SCORES) && (gameStatus == dog_Waiting))
+            if ((localFlags bitand DF_VIEWED_SCORES) and (gameStatus == dog_Waiting))
             {
                 RestartGame();
             }
 
-            if ((FalconLocalSession->GetFlyState() >= FLYSTATE_LOADING) && (FalconLocalSession->GetFlyState() <= FLYSTATE_FLYING))
+            if ((FalconLocalSession->GetFlyState() >= FLYSTATE_LOADING) and (FalconLocalSession->GetFlyState() <= FLYSTATE_FLYING))
             {
                 MonoPrint("GameStatus: dog Starting\n");
                 localGameStatus = dog_Starting;
@@ -619,14 +619,14 @@ void DogfightClass::UpdateDogfight(void)
 
         lastUpdateTime = vuxRealTime;
 
-        if ((!SimDriver.GetPlayerEntity()) && (!action_cam_started) && (!action_cam_time))
+        if (( not SimDriver.GetPlayerEntity()) and ( not action_cam_started) and ( not action_cam_time))
         {
             action_cam_time = vuxRealTime + 10 * VU_TICS_PER_SECOND;
 
             action_cam_started = TRUE;
         }
 
-        if ((action_cam_started) && (static_cast<VU_TIME>(action_cam_time) > vuxRealTime))
+        if ((action_cam_started) and (static_cast<VU_TIME>(action_cam_time) > vuxRealTime))
         {
             OTWDriver.ToggleActionCamera();
             action_cam_started = FALSE;
@@ -646,9 +646,9 @@ void DogfightClass::UpdateGameStatus(void)
 
     session = (FalconSessionEntity*)sessionWalker.GetFirst();
 
-    while (session && newStatus != dog_Flying)
+    while (session and newStatus not_eq dog_Flying)
     {
-        if (session->GetFlyState() != FLYSTATE_IN_UI)
+        if (session->GetFlyState() not_eq FLYSTATE_IN_UI)
         {
             newStatus = dog_Starting;
         }
@@ -671,7 +671,7 @@ void DogfightClass::UpdateGameStatus(void)
 void DogfightClass::RegenerateAircraft(AircraftClass *aircraft)
 {
     // Queue the aircraft for eventual regeneration
-    if (!aircraft)
+    if ( not aircraft)
         return;
 
     ShiAssert(aircraft->IsDead());
@@ -682,7 +682,7 @@ void DogfightClass::RegenerateAircraft(AircraftClass *aircraft)
     {
         // KCK: This was intended to eventually allow regen only on keypress. Set automatically here
         SetLocalFlag(DF_PLAYER_REQ_REGEN);
-        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() | SHOW_DOGFIGHT_SCORES);
+        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitor SHOW_DOGFIGHT_SCORES);
     }
 
     // Set the time of death to NOW for use in delaying the regeneration.
@@ -769,11 +769,11 @@ int DogfightClass::CheckRoundOver(void)
     {
         campEntity = theObject->GetCampaignObject();
 
-        if (campEntity && campEntity->IsFlight())
+        if (campEntity and campEntity->IsFlight())
         {
             team = campEntity->GetTeam();
 
-            if (!activeAC[team])
+            if ( not activeAC[team])
             {
                 activeTeams++;
             }
@@ -806,11 +806,11 @@ void DogfightClass::RoundOver(void)
         {
             campEntity = theObject->GetCampaignObject();
 
-            if (campEntity && campEntity->IsFlight())
+            if (campEntity and campEntity->IsFlight())
             {
                 team = campEntity->GetTeam();
 
-                if (!activeAC[team])
+                if ( not activeAC[team])
                 {
                     activeTeams++;
                 }
@@ -820,7 +820,7 @@ void DogfightClass::RoundOver(void)
             }
 
             // 2002-04-10 MN force a kill on all alive simlist objects
-            if (!(theObject->IsDead()) && (g_nDFRegenerateFix & 0x02))
+            if ( not (theObject->IsDead()) and (g_nDFRegenerateFix bitand 0x02))
                 theObject->SetDead(TRUE);
 
             theObject = (SimBaseClass*)updateWalker.GetNext();
@@ -853,7 +853,7 @@ void DogfightClass::EndGame(void)
     MonoPrint("Game has ended\n");
     MonoPrint("GameStatus: dog Waiting\n");
     localGameStatus = gameStatus = dog_Waiting;
-    flags |= DF_GAME_OVER;
+    flags or_eq DF_GAME_OVER;
     FalconLocalSession->SetFlyState(FLYSTATE_IN_UI);
 }
 
@@ -864,9 +864,9 @@ void DogfightClass::EndGame(void)
 void DogfightClass::RestartGame(void)
 {
     MonoPrint("Restarting Game\n");
-    // Reset game && mission evaluator after everyone has returned to the UI and viewed their scores
-    flags &= ~DF_GAME_OVER;
-    localFlags &= ~DF_VIEWED_SCORES;
+    // Reset game and mission evaluator after everyone has returned to the UI and viewed their scores
+    flags and_eq compl DF_GAME_OVER;
+    localFlags and_eq compl DF_VIEWED_SCORES;
     TheCampaign.MissionEvaluator->PreDogfightEval();
     ApplySettings();
 
@@ -876,7 +876,7 @@ void DogfightClass::RestartGame(void)
     }
 
     // Have the master resend the settings just to make sure everyone is in sync.
-    if (FalconLocalGame && FalconLocalGame->IsLocal())
+    if (FalconLocalGame and FalconLocalGame->IsLocal())
     {
         SendSettings(NULL);
     }
@@ -947,9 +947,9 @@ void DogfightClass::RegenerateAvailableAircraft(void)
             ShiAssert(theObject->IsLocal());
             restartIt = FALSE;
 
-            if (vuxGameTime > static_cast<VU_TIME>(theObject->timeOfDeath + REGEN_WAIT_TIME) || gameType == dog_TeamMatchplay)
+            if (vuxGameTime > static_cast<VU_TIME>(theObject->timeOfDeath + REGEN_WAIT_TIME) or gameType == dog_TeamMatchplay)
             {
-                if (theObject != FalconLocalSession->GetPlayerEntity() || IsSetLocalFlag(DF_PLAYER_REQ_REGEN) || gameType == dog_TeamMatchplay)
+                if (theObject not_eq FalconLocalSession->GetPlayerEntity() or IsSetLocalFlag(DF_PLAYER_REQ_REGEN) or gameType == dog_TeamMatchplay)
                 {
                     msg = new FalconRegenerationMessage(theObject->Id(), FalconLocalGame);
                     msg->dataBlock.newx = startX;
@@ -962,7 +962,7 @@ void DogfightClass::RegenerateAvailableAircraft(void)
                     if (theObject == FalconLocalSession->GetPlayerEntity())
                     {
                         UnSetLocalFlag(DF_PLAYER_REQ_REGEN);
-                        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() & ~SHOW_DOGFIGHT_SCORES);
+                        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitand compl SHOW_DOGFIGHT_SCORES);
                     }
 
 #ifdef DEBUG

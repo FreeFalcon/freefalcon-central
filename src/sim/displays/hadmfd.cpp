@@ -48,20 +48,20 @@ void HadMfdDrawable::Display(VirtualDisplay* newDisplay)
     Sms = playerAC->Sms;
     HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
 
-    if (!theRadar || !pFCC || !self || !Sms)
+    if ( not theRadar or not pFCC or not self or not Sms)
     {
         return;
     }
 
-    if (!harmPod || !self->af->GetIsHtsAble())  // offMode if no HTS pod or equivalent system on board
+    if ( not harmPod or not self->af->GetIsHtsAble())  // offMode if no HTS pod or equivalent system on board
     {
         OffMode(display);
         return;
     }
 
     // This makes sure we are in the correct FCC and Harmpod submodes
-    if (pFCC->GetSubMode() != FireControlComputer::HTS || (harmPod->GetSubMode() != HarmTargetingPod::FilterMode &&
-            harmPod->GetSubMode() != HarmTargetingPod::HAD))
+    if (pFCC->GetSubMode() not_eq FireControlComputer::HTS or (harmPod->GetSubMode() not_eq HarmTargetingPod::FilterMode and 
+            harmPod->GetSubMode() not_eq HarmTargetingPod::HAD))
     {
         if (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON)
         {
@@ -89,7 +89,7 @@ void HadMfdDrawable::Display(VirtualDisplay* newDisplay)
     // (works on all MFDs and not only here)
     for (int i = 0; i < 4; i++)
     {
-        if ((MfdDisplay[i])->GetTGPWarning() && (MfdDisplay[i])->CurMode() == MFDClass::TGPMode)
+        if ((MfdDisplay[i])->GetTGPWarning() and (MfdDisplay[i])->CurMode() == MFDClass::TGPMode)
         {
             TGPAttitudeWarning(display);
             break;
@@ -99,7 +99,7 @@ void HadMfdDrawable::Display(VirtualDisplay* newDisplay)
 
 void HadMfdDrawable::DrawDLZ(VirtualDisplay* display)
 {
-    if (!pFCC)
+    if ( not pFCC)
     {
         return;
     }
@@ -152,7 +152,7 @@ void HadMfdDrawable::PushButton(int whichButton, int whichMFD)
     FireControlComputer* pFCC = playerAC->Sms->Ownship()->GetFCC();
     HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
 
-    if (harmPod && harmPod->GetSubMode() == HarmTargetingPod::FilterMode)
+    if (harmPod and harmPod->GetSubMode() == HarmTargetingPod::FilterMode)
     {
         switch (whichButton)
         {
@@ -196,7 +196,7 @@ void HadMfdDrawable::PushButton(int whichButton, int whichMFD)
         }
     }
 
-    else if (harmPod && harmPod->GetSubMode() == HarmTargetingPod::HAD)   // HAD screen
+    else if (harmPod and harmPod->GetSubMode() == HarmTargetingPod::HAD)   // HAD screen
     {
         switch (whichButton)
         {
@@ -254,9 +254,9 @@ void HadMfdDrawable::PushButton(int whichButton, int whichMFD)
 
 void HadMfdDrawable::DrawRALT(VirtualDisplay* display)
 {
-    if (TheHud && !(self->mFaults && self->mFaults->GetFault(FaultClass::ralt_fault))
-        && self->af->platform->RaltReady() &&
-        TheHud->FindRollAngle(-TheHud->hat) && TheHud->FindPitchAngle(-TheHud->hat))
+    if (TheHud and not (self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
+       and self->af->platform->RaltReady() and 
+        TheHud->FindRollAngle(-TheHud->hat) and TheHud->FindPitchAngle(-TheHud->hat))
     {
         float x, y = 0;
         GetButtonPos(5, &x, &y);
@@ -349,7 +349,7 @@ void HadMfdDrawable::HARMWpnMode()
 
         BottomRow();
 
-        if (!(playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
+        if ( not (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
         {
             DWORD tempColor = display->Color();
             display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
@@ -360,7 +360,7 @@ void HadMfdDrawable::HARMWpnMode()
 
     else if (harmPod->GetSubMode() == HarmTargetingPod::HAD)
     {
-        flash = vuxRealTime & 0x80;
+        flash = vuxRealTime bitand 0x80;
 
         harmPod->SetIntensity(GetIntensity());
 
@@ -415,7 +415,7 @@ void HadMfdDrawable::HARMWpnMode()
         LabelButton(16,  "TD", "TM");
         BottomRow();
 
-        if (!(playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
+        if ( not (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
         {
             DWORD tempColor = display->Color();
             display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
@@ -435,7 +435,7 @@ void HadMfdDrawable::OffMode(VirtualDisplay* display)
     display->SetFont(ofont);
     theRadar->GetCursorPosition(&cX, &cY);
 
-    if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&  // JPG 14 Dec 03 - Added BE/ownship info
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and // JPG 14 Dec 03 - Added BE/ownship info
         OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
     {
         DrawBullseyeCircle(display, cX, cY);

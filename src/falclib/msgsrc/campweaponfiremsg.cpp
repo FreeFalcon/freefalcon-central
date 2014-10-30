@@ -172,10 +172,10 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
     //sfr: again we cant use datablock directly
     VU_BYTE *data = dataBlock.data;
 
-    if (autodisp || !shooter || !target || !shooter->IsUnit())
+    if (autodisp or not shooter or not target or not shooter->IsUnit())
         return -1;
 
-    if (!target->IsAggregate())
+    if ( not target->IsAggregate())
     {
         // Whoops, this thing deaggregated out from under us.
         // If we're the host, actually start firing the stuff.
@@ -206,7 +206,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
     if (shooter->IsAggregate())
     {
         // Send a radio chatter message to LOCAL MACHINE if shooter is a flight
-        if (shooter->IsFlight() && !SimDriver.InSim() && !(rand() % 20))
+        if (shooter->IsFlight() and not SimDriver.InSim() and not (rand() % 20))
         {
             // Send the chatter message;
             FalconRadioChatterMessage *msg = new FalconRadioChatterMessage(shooter->Id(), FalconLocalSession);
@@ -232,7 +232,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         }
 
         // Synthisize a shot message for flight shooters in our package
-        if (shooter->IsFlight() && (shooter->InPackage() || g_bLogEvents))
+        if (shooter->IsFlight() and (shooter->InPackage() or g_bLogEvents))
         {
             FalconWeaponsFire wfm(FalconNullId, FalconLocalSession);
             wfm.dataBlock.fCampID = shooter->GetCampID();
@@ -248,13 +248,13 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         // Do visual Effects (Aggregate shooters only)
         if (InterestingSFX(target->XPos(), target->YPos()))
         {
-            for (i = 0; i < MAX_TYPES_PER_CAMP_FIRE_MESSAGE && dataBlock.weapon[i] && dataBlock.shots[i]; i++)
+            for (i = 0; i < MAX_TYPES_PER_CAMP_FIRE_MESSAGE and dataBlock.weapon[i] and dataBlock.shots[i]; i++)
                 DoDistanceVisualEffects(shooter, target, dataBlock.weapon[i], dataBlock.shots[i]);
         }
     }
 
     // Synthisize a death message if either shooter or target is in our package
-    if (shooter->InPackage() || target->InPackage())
+    if (shooter->InPackage() or target->InPackage())
     {
         dtm = new FalconDeathMessage(FalconNullId, FalconLocalSession);
         dtm->dataBlock.damageType = 0;
@@ -277,8 +277,8 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
 
     // add some additional fire effects if losses were taken, the target is
     // a battalion and the target is in the sim lists
-    if (losses &&
-        target->InSimLists() &&
+    if (losses and 
+        target->InSimLists() and 
         OTWDriver.IsActive())
     {
         int i;
@@ -290,7 +290,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         PSvec.z = 0;
 
         // ground losses
-        if (target->IsBattalion() || target->IsObjective())
+        if (target->IsBattalion() or target->IsObjective())
         {
             pos.z = 40.0f;
 
@@ -346,7 +346,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         delete dtm;
 
     // Send a RadioChatter message to LOCAL MACHINE if shooter is a flight and scored a kill
-    if (losses && shooter->IsFlight())
+    if (losses and shooter->IsFlight())
     {
         FalconRadioChatterMessage *msg = new FalconRadioChatterMessage(target->Id(), FalconLocalSession);
         msg->dataBlock.from = shooter->Id();
@@ -431,7 +431,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
     if (shooter->GetDomain() == DOMAIN_AIR)
     {
         // 2002-02-21 ADDED BY S.G. If it's not spotted and it's NOT the player, use the 'Bandit' vehicle so we don't warn the player on the identity of the shooter
-        if (!shooter->GetIdentified(target->GetTeam()) && FalconLocalSession->GetTeam() != shooter->GetTeam())
+        if ( not shooter->GetIdentified(target->GetTeam()) and FalconLocalSession->GetTeam() not_eq shooter->GetTeam())
             newEvent->dataBlock.data.textIds[0] = (short)(-1 * BANDIT_VEH);
         else
             // END OF ADDED SECTION 2002-02-21
@@ -448,7 +448,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
             newEvent->dataBlock.data.formatId = 1805;
 
             // 2002-02-21 ADDED BY S.G. If it's not spotted and it's NOT the player, use the 'Bandit' vehicle so we don't warn the player on the identity of the shooter
-            if (!target->GetIdentified(shooter->GetTeam()) && FalconLocalSession->GetTeam() != target->GetTeam())
+            if ( not target->GetIdentified(shooter->GetTeam()) and FalconLocalSession->GetTeam() not_eq target->GetTeam())
                 newEvent->dataBlock.data.textIds[1] = (short)(-1 * BANDIT_VEH);
             else
                 // END OF ADDED SECTION 2002-02-21
@@ -480,7 +480,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         else
         {
             // Ground engagement (artillery or regular)
-            if (shooter->GetSType() == STYPE_UNIT_ROCKET || shooter->GetSType() == STYPE_UNIT_SP_ARTILLERY || shooter->GetSType() == STYPE_UNIT_TOWED_ARTILLERY)
+            if (shooter->GetSType() == STYPE_UNIT_ROCKET or shooter->GetSType() == STYPE_UNIT_SP_ARTILLERY or shooter->GetSType() == STYPE_UNIT_TOWED_ARTILLERY)
                 newEvent->dataBlock.data.formatId = 1807;
             else
                 newEvent->dataBlock.data.formatId = 1800;
@@ -490,7 +490,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
     SendCampUIMessage(newEvent);
 
     // Send a CampEvent message for losses to the LOCAL MACHINE
-    if (target->IsFlight() && losses)
+    if (target->IsFlight() and losses)
     {
         FalconCampEventMessage *newEvent = new FalconCampEventMessage(target->Id(), FalconLocalGame);
         newEvent->dataBlock.team = GetEnemyTeam(target->GetTeam());
@@ -499,7 +499,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         newEvent->dataBlock.data.formatId = 1825;
 
         // 2002-02-21 ADDED BY S.G. If it's not spotted and it's NOT the player, use the 'Bandit' vehicle so we don't warn the player on the identity of the shooter
-        if (!target->GetIdentified(shooter->GetTeam()) && FalconLocalSession->GetTeam() != target->GetTeam())
+        if ( not target->GetIdentified(shooter->GetTeam()) and FalconLocalSession->GetTeam() not_eq target->GetTeam())
             newEvent->dataBlock.data.textIds[0] = (short)(-1 * BANDIT_VEH);
         else
             // END OF ADDED SECTION 2002-02-21
@@ -509,7 +509,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         SendCampUIMessage(newEvent);
     }
 
-    if (gMainHandler && FalconLocalSession->GetPlayerSquadron() && target->Id() == FalconLocalSession->GetPlayerSquadron()->GetUnitAirbaseID())
+    if (gMainHandler and FalconLocalSession->GetPlayerSquadron() and target->Id() == FalconLocalSession->GetPlayerSquadron()->GetUnitAirbaseID())
         PostMessage(FalconDisplay.appWin, FM_AIRBASE_ATTACK, 0, 0);
 
     return 0;
@@ -531,10 +531,10 @@ SimBaseClass* GetSimTarget(CampEntity target, uchar targetId)
         return NULL;
 
     // Get a specific component
-    if (targetId != 255)
+    if (targetId not_eq 255)
         theObj = target->GetComponentNumber(targetId);
 
-    if (!theObj)
+    if ( not theObj)
     {
         // Fire at a random unit component, if campaign unit is deaggregated
         if (target->IsUnit())
@@ -564,7 +564,7 @@ void FireOnSimEntity(CampEntity shooter, CampEntity campTarg, short weapon[], uc
     int i;
 
     // don't run if OTWdrive not active
-    if (!OTWDriver.IsActive())
+    if ( not OTWDriver.IsActive())
         return;
 
     for (i = 0; i < shots[0]; i++)
@@ -608,10 +608,10 @@ void FireOnSimEntity(CampEntity shooter, SimBaseClass *simTarg, short weaponId)
     hitSomething = FALSE;
 
     // what have we got for a weapon?
-    if (classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_WEAPON &&
+    if (classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_WEAPON and 
         classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_GUN)
     {
-        if (wc->Flags & WEAP_TRACER)
+        if (wc->Flags bitand WEAP_TRACER)
         {
             // don't handle tracers
             // MonoPrint("Campaign unit unable to fire on sim entity due to gun code not existing.\n");
@@ -619,13 +619,13 @@ void FireOnSimEntity(CampEntity shooter, SimBaseClass *simTarg, short weaponId)
         }
 
         // ok, it's a shell
-        // MonoPrint( "Itsa Shell!\n" );
+        // MonoPrint( "Itsa Shell\n" );
 
         // damage stuff goes here....
         if (wc->BlastRadius == 0)
         {
-            // must be a direct hit!  1-8 fer now
-            if ((rand() & 7) == 7)
+            // must be a direct hit  1-8 fer now
+            if ((rand() bitand 7) == 7)
             {
                 hitSomething = TRUE;
                 damMessage = GetSimDamageMessage(shooter,
@@ -778,7 +778,7 @@ GetSimDamageMessage(CampEntity shooter,
 
     if (rangeSq < POINT_BLANK)
     {
-        // Direct hit!
+        // Direct hit
         message->dataBlock.damageType = damageType;
     }
     else
@@ -826,7 +826,7 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
 
 
     // make sure OTWDriver is ready
-    if (!OTWDriver.IsActive())
+    if ( not OTWDriver.IsActive())
         return;
 
     player = FalconLocalSession->GetCameraEntity(0);
@@ -849,7 +849,7 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
      ** better placement
 
      d = sqrt(vec.x*vec.x + vec.y*vec.y + vec.z*vec.z);
-     if ( d != 0.0f )
+     if ( d not_eq 0.0f )
      {
      vec.x /= d;
      vec.y /= d;
@@ -911,7 +911,7 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
                                               &pos,
                                               &PSvec);
     }
-    else if (stype == STYPE_ARTILLERY || stype == STYPE_MORTAR)
+    else if (stype == STYPE_ARTILLERY or stype == STYPE_MORTAR)
     {
         if (shortDist == FALSE)
             /*
@@ -935,7 +935,7 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
                                               &pos,
                                               &PSvec);
     }
-    else if (stype == STYPE_GUN || stype == STYPE_SMALLARMS)
+    else if (stype == STYPE_GUN or stype == STYPE_SMALLARMS)
     {
         if (shortDist == FALSE)
             /*
@@ -959,7 +959,7 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
                                               &pos,
                                               &PSvec);
     }
-    else if (stype == STYPE_ROCKET || stype == STYPE_MISSILE_SURF_SURF)
+    else if (stype == STYPE_ROCKET or stype == STYPE_MISSILE_SURF_SURF)
     {
         if (shortDist == FALSE)
             /*
@@ -983,7 +983,7 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
                                                   &pos,
                                                   &PSvec);
     }
-    else if (stype == STYPE_MISSILE_AIR_AIR || stype == STYPE_MISSILE_AIR_GROUND || stype == STYPE_MISSILE_ANTI_SHIP)
+    else if (stype == STYPE_MISSILE_AIR_AIR or stype == STYPE_MISSILE_AIR_GROUND or stype == STYPE_MISSILE_ANTI_SHIP)
     {
         // Add missile trail
         /*
@@ -1066,7 +1066,7 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
                                                   &pos,
                                                   &PSvec);
     }
-    else if (stype == STYPE_BOMB || stype == STYPE_BOMB_GUIDED || stype == STYPE_BOMB_IRON || stype == STYPE_ROCKET || stype == STYPE_BOMB_GPS) //MI added GPS
+    else if (stype == STYPE_BOMB or stype == STYPE_BOMB_GUIDED or stype == STYPE_BOMB_IRON or stype == STYPE_ROCKET or stype == STYPE_BOMB_GPS) //MI added GPS
     {
         /*
         OTWDriver.AddSfxRequest( new SfxClass( SFX_DIST_GROUNDBURSTS,
@@ -1099,30 +1099,30 @@ void DoShortDistanceVisualEffects(CampEntity shooter, CampEntity target, int wea
 
 
     // what have we got for a weapon?
-    if (classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_WEAPON &&
+    if (classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_WEAPON and 
         classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_GUN)
     {
-        if (wc->Flags & WEAP_TRACER)
+        if (wc->Flags bitand WEAP_TRACER)
         {
             // don't handle tracers
             return;
         }
 
         // ok, it's a shell
-        // MonoPrint( "Itsa Short Distance Shell Shell!\n" );
+        // MonoPrint( "Itsa Short Distance Shell Shell\n" );
 
     }
     // itsa missile
     else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_MISSILE)
     {
-        // MonoPrint( "Itsa Short Range Effect Missile!\n" );
+        // MonoPrint( "Itsa Short Range Effect Missile\n" );
 
 
     }
     // itsa missile
     else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_BOMB)
     {
-        // MonoPrint( "Itsa Short Range Effect Bomb!\n" );
+        // MonoPrint( "Itsa Short Range Effect Bomb\n" );
         itsaBomb = TRUE;
 
     }
@@ -1165,7 +1165,7 @@ void DoShortDistanceVisualEffects(CampEntity shooter, CampEntity target, int wea
         endMessage->dataBlock.zDelta = 0.0f;
 
         // if target is on the ground get ground level and type
-        if (target->IsBattalion() || itsaBomb)
+        if (target->IsBattalion() or itsaBomb)
         {
             endMessage->dataBlock.x = target->XPos() + 700.0f * PRANDFloat();
             endMessage->dataBlock.y = target->YPos() + 700.0f * PRANDFloat();
@@ -1205,15 +1205,15 @@ FireMissileAtSim(CampEntity shooter, SimBaseClass *simTarg, short weapId)
 
 
     // Need to give beam riders a pointer to the illuminating radar platform
-    if (theMissile->sensorArray && theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming)
+    if (theMissile->sensorArray and theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming)
     {
         // Shooter better have a radar to use this kind of weapon...
         // TODO:  Check to also ensure the radar vehicle is still alive...
         ShiAssert(shooter->GetRadarType());
 
-        // HACK!  This should never happen (hence Assert above), but since it happend tonight
+        // HACK  This should never happen (hence Assert above), but since it happend tonight
         // and the data fix may not thourough by tomorrow, I'll put in this bail out case...
-        if (!shooter->GetRadarType())
+        if ( not shooter->GetRadarType())
         {
             // For now lets leak the missile since that should be safe.
             // Could we just delete it and be happy?
@@ -1276,7 +1276,7 @@ FireMissileAtSim(CampEntity shooter, SimBaseClass *simTarg, short weapId)
         vec.z = 0.0f;
         /*
         OTWDriver.AddSfxRequest( new SfxClass( SFX_SAM_LAUNCH,
-         SFX_MOVES | SFX_NO_GROUND_CHECK,
+         SFX_MOVES bitor SFX_NO_GROUND_CHECK,
          &pos,
          &vec,
          2.0f,
@@ -1326,8 +1326,8 @@ FireMissileAtSim(CampEntity shooter, SimBaseClass *simTarg, short weapId)
 #if 0 // This is handled by the missile itself now...
     /*
     // Need to send a launch message if this missile is radar guided
-    if (theMissile->sensorArray &&
-    (theMissile->sensorArray[0]->Type() == SensorClass::Radar ||
+    if (theMissile->sensorArray and 
+    (theMissile->sensorArray[0]->Type() == SensorClass::Radar or
     theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming)) {
 
     // Create and fill in the message structure

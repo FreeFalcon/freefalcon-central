@@ -37,7 +37,7 @@ int F4GetRegistryString(char* keyName, char* dataPtr, int dataSize)
                           0, KEY_ALL_ACCESS, &theKey);
     retval = RegQueryValueEx(theKey, keyName, 0, &type, (LPBYTE)dataPtr, &size);
 
-    if (retval != ERROR_SUCCESS)
+    if (retval not_eq ERROR_SUCCESS)
     {
         memset(dataPtr, 0, dataSize);
         retval = FALSE;
@@ -92,17 +92,17 @@ FILE* F4CreateFile(char* filename, char* path, char* mode)
     // Strip the FalconDataDirectory off the path, if it's there
     ppath = path;
 
-    if (!strncmp(FalconDataDirectory, ppath, strlen(FalconDataDirectory)))
+    if ( not strncmp(FalconDataDirectory, ppath, strlen(FalconDataDirectory)))
         ppath += strlen(FalconDataDirectory) + 1;
 
     // Check if the file's already there
     sprintf(filedir, "%s\\sounds\\files.dir", FalconDataDirectory);
 
-    if (!GetPrivateProfileString("Files", filename, "", tmpStr, 1024, filedir))
+    if ( not GetPrivateProfileString("Files", filename, "", tmpStr, 1024, filedir))
     {
         sprintf(tmpStr, "%s\\%s,0,0", ppath, filename);
 
-        if (!WritePrivateProfileString("Files", filename, tmpStr, filedir))
+        if ( not WritePrivateProfileString("Files", filename, tmpStr, filedir))
             return NULL;
     }
 
@@ -123,7 +123,7 @@ FILE* F4OpenFile(char *filename, char *mode)
     int offset, length;
     FILE* fp;
 
-    if (!F4FindFile(filename, path, 256, &offset, &length))
+    if ( not F4FindFile(filename, path, 256, &offset, &length))
     {
         strcpy(path, filename);
         // Couldn't find this file. To create a file call F4CreateFile
@@ -144,7 +144,7 @@ int F4ReadFile(FILE *fp, void *buffer, int size)
 {
     char errstr[80];
 
-    if (!size || !fp)
+    if ( not size or not fp)
         return 0;
 
     if (fread(buffer, size, 1, fp) == 1)
@@ -159,7 +159,7 @@ int F4WriteFile(FILE *fp, void *buffer, int size)
 {
     char errstr[80];
 
-    if (!size || !fp)
+    if ( not size or not fp)
         return 0;
 
     if (fwrite(buffer, size, 1, fp) == 1)
@@ -192,7 +192,7 @@ int F4LoadData(char filename[], void* buffer, int length)
 
     if (F4FindFile(filename, path, 256, &offset, &len))
     {
-        if (len && len < length)
+        if (len and len < length)
         {
             sprintf(ebuf, "File %s has insufficient data\n", path);
             F4Warning(ebuf);
@@ -222,7 +222,7 @@ int F4LoadData(char path[], void* buffer, int offset, int length)
     if (offset)
         fseek(fp, offset, 0);
 
-    if (fread(buffer, length, 1, fp) != 1)
+    if (fread(buffer, length, 1, fp) not_eq 1)
     {
         sprintf(ebuf, "Failed to read file %s.\n", path);
         F4Warning(ebuf);
@@ -243,7 +243,7 @@ int F4SaveData(char filename[], void* buffer, int length)
 
     if (F4FindFile(filename, path, 256, &offset, &len))
     {
-        if (len && len < length)
+        if (len and len < length)
         {
             sprintf(ebuf, "Data block at %s has insufficient space\n", path);
             F4Warning(ebuf);
@@ -271,7 +271,7 @@ int F4SaveData(char path[], void* buffer, int offset, int length)
     if (offset)
         fseek(fp, offset, 0);
 
-    if (fwrite(buffer, length, 1, fp) != 1)
+    if (fwrite(buffer, length, 1, fp) not_eq 1)
     {
         sprintf(ebuf, "Failed to write file: %d\n", path);
         F4Warning(ebuf);
@@ -314,7 +314,7 @@ char* F4LoadDataID(char basicfile[], int dataID, char* buffer)
         fcheck = fseek(fhandle, offset, 0);
         fcheck = fread(buffer, sizeof(char), length, fhandle);
 
-        if (fcheck != length)
+        if (fcheck not_eq length)
         {
             sprintf(ebuf, "Failed to read data at offset %d in file %s.\n", offset, filename);
             F4Warning(ebuf);

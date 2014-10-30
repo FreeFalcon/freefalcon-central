@@ -56,7 +56,7 @@ GunClass::IsShell(void)
 BOOL
 GunClass::IsTracer(void)
 {
-    if (typeOfGun == GUN_TRACER || typeOfGun == GUN_TRACER_BALL)
+    if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
         return TRUE;
 
     return FALSE;
@@ -70,7 +70,7 @@ BOOL
 GunClass::ReadyToFire(void)
 {
     // tracers are always ready
-    if (typeOfGun == GUN_TRACER || typeOfGun == GUN_TRACER_BALL)
+    if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
         return TRUE;
 
     // any rounds left?
@@ -78,7 +78,7 @@ GunClass::ReadyToFire(void)
         return FALSE;
 
     // if we've got a target a shell is in the air
-    if (shellTargetPtr != NULL)
+    if (shellTargetPtr not_eq NULL)
         return FALSE;
 
     // ok to fire
@@ -97,15 +97,15 @@ GunClass::GetDamageAssessment(SimBaseClass *target, float range)
 {
     float zpos, zdelta;
 
-    if (range < minShellRange || range > maxShellRange)
+    if (range < minShellRange or range > maxShellRange)
         return 0.0f;
 
     // just random stuff for now....
     if (gunDomain == wdBoth)
     {
-        if (typeOfGun == GUN_TRACER || typeOfGun == GUN_TRACER_BALL)
+        if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
         {
-            if (!target->OnGround())
+            if ( not target->OnGround())
             {
                 // disallow tracers above 6000ft
                 zpos = target->ZPos();
@@ -120,7 +120,7 @@ GunClass::GetDamageAssessment(SimBaseClass *target, float range)
         }
         else
         {
-            if (!target->OnGround())
+            if ( not target->OnGround())
             {
                 // disallow shells below 1000ft?
                 // target z in 1.5 secs
@@ -136,17 +136,17 @@ GunClass::GetDamageAssessment(SimBaseClass *target, float range)
         }
     }
 
-    if (gunDomain == wdGround && target->OnGround())
+    if (gunDomain == wdGround and target->OnGround())
     {
-        if (typeOfGun == GUN_TRACER || typeOfGun == GUN_TRACER_BALL)
+        if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
             return 0.1f + PRANDFloatPos();
         else
             return 0.3f + PRANDFloatPos();
     }
 
-    if (gunDomain == wdAir && !target->OnGround())
+    if (gunDomain == wdAir and not target->OnGround())
     {
-        if (typeOfGun == GUN_TRACER || typeOfGun == GUN_TRACER_BALL)
+        if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
         {
             // disallow tracers above 6000ft
             // target z in 1.5 secs
@@ -189,7 +189,7 @@ GunClass::FireShell(SimObjectType *newTarget)
         return;
 
     // cannot set a new target if shell is flying
-    if (shellTargetPtr && newTarget)
+    if (shellTargetPtr and newTarget)
         return;
 
     // are we nulling out our target
@@ -236,11 +236,11 @@ GunClass::UpdateShell(void)
     // damage stuff goes here....
     if (wcPtr->BlastRadius == 0)
     {
-        // must be a direct hit!  1-8 fer now
+        // must be a direct hit  1-8 fer now
         // ground targets get much better chance of hit
         if (t->OnGround())
         {
-            if ((rand() & 0x7) == 0x7)
+            if ((rand() bitand 0x7) == 0x7)
             {
                 hitSomething = TRUE;
                 SendDamageMessage(t,
@@ -250,7 +250,7 @@ GunClass::UpdateShell(void)
         }
         // 2000-08-30 MODIFIED BY S.G. TO ACCOMODATE FOR ALTITUDE AND SPEED.
         // 2000-09-06 CHANGED AGAIN TO A NEW EQUATION (sqrt(speed / 100) * sqrt(range / 1000))
-        // else if ( (rand() & 0x1F ) == 0x1F )
+        // else if ( (rand() bitand 0x1F ) == 0x1F )
         // Marco Edit - tried to return back to 1.08i2 + RP4 values
         // else if (40.0f * (float)rand() / 32767.0f * (float)sqrt(shellTargetPtr->localData->range * ((SimMoverClass *)shellTargetPtr->BaseData())->GetKias() / 100000.0f) < 0.040625f)
         else if (31.0f * (float)rand() / 32767.0f * (float)sqrt(shellTargetPtr->localData->range * ((SimMoverClass *)shellTargetPtr->BaseData())->GetKias() / g_fBiasFactorForFlaks) < 0.0325f)
@@ -281,7 +281,7 @@ GunClass::UpdateShell(void)
             rangeSquare *= 40.0f * rand() / 32767.0f * (float)sqrt(shellTargetPtr->localData->range * ((SimMoverClass *)shellTargetPtr->BaseData())->GetKias() / g_fBiasFactorForFlaks);
 
             // 2002-03-12 ADDED BY S.G. Use the ground troop skill if requested
-            if (g_bUseSkillForFlaks && parent && parent->IsGroundVehicle())
+            if (g_bUseSkillForFlaks and parent and parent->IsGroundVehicle())
             {
                 GroundClass *gc = static_cast<GroundClass*>(parent.get());
                 rangeSquare *= static_cast<float>(

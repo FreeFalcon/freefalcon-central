@@ -106,7 +106,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
             // AircraftClass::Exec do the actual update of the targetSpots
 
             // If we have no timer count, act as if the player wants nothing to do with our little bubbles
-            if (!g_nTargetSpotTimeout)
+            if ( not g_nTargetSpotTimeout)
             {
                 break;
             }
@@ -119,7 +119,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                 case AiWingman:
 
                     // First lets create one if not done already
-                    if (!myBrain->targetSpotWing)
+                    if ( not myBrain->targetSpotWing)
                     {
                         myBrain->targetSpotWing = new SpotEntity(F4FlyingEyeType + VU_LAST_ENTITY_TYPE);
                         vuDatabase->/*Quick*/Insert(myBrain->targetSpotWing);
@@ -162,7 +162,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                 case AiElement:
 
                     // First lets create one if not done already
-                    if (!myBrain->targetSpotElement)
+                    if ( not myBrain->targetSpotElement)
                     {
                         myBrain->targetSpotElement = new SpotEntity(F4FlyingEyeType + VU_LAST_ENTITY_TYPE);
                         vuDatabase->/*Quick*/Insert(myBrain->targetSpotElement);
@@ -205,7 +205,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                 case AiFlight:
 
                     // First lets create one if not done already
-                    if (!myBrain->targetSpotFlight)
+                    if ( not myBrain->targetSpotFlight)
                     {
                         myBrain->targetSpotFlight = new SpotEntity(F4FlyingEyeType + VU_LAST_ENTITY_TYPE);
                         vuDatabase->/*Quick*/Insert(myBrain->targetSpotFlight);
@@ -306,7 +306,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
         case FalconWingmanMsg::WMWeaponsFree:
 
             // If we have no timer count, act as if the player wants nothing to do with our little bubbles
-            if (!g_nTargetSpotTimeout)
+            if ( not g_nTargetSpotTimeout)
             {
                 break;
             }
@@ -331,20 +331,20 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                         wingPlane = ((AircraftClass *)SimDriver.GetPlayerEntity()->GetCampaignObject()->GetComponentNumber(3));
 
                     // Our wing is not brain dead ;-)
-                    if (wingPlane && !wingPlane->IsDead())
+                    if (wingPlane and not wingPlane->IsDead())
                         wingBrain = wingPlane->DBrain();
 
                     // If our wing has a brain and a that brain has a target (priority to ground target)
-                    if (wingBrain && wingBrain->GetGroundTarget())
+                    if (wingBrain and wingBrain->GetGroundTarget())
                         wingTgt = wingBrain->GetGroundTarget()->BaseData();
-                    else if (wingBrain && wingBrain->targetPtr)
+                    else if (wingBrain and wingBrain->targetPtr)
                         wingTgt = wingBrain->targetPtr->BaseData();
 
                     // After all this, if we have a target, assign a 'bubble' around it
                     if (wingTgt)
                     {
                         // First lets create one if not done already
-                        if (!myBrain->targetSpotWing)
+                        if ( not myBrain->targetSpotWing)
                         {
                             myBrain->targetSpotWing = new SpotEntity(F4FlyingEyeType + VU_LAST_ENTITY_TYPE);
                             vuDatabase->/*Quick*/Insert(myBrain->targetSpotWing);
@@ -395,27 +395,27 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                     // choose the element lead target if avail otherwise choose his wing's target
                     wingPlane = ((AircraftClass *)SimDriver.GetPlayerEntity()->GetCampaignObject()->GetComponentNumber(2));
 
-                    if (wingPlane && !wingPlane->IsDead())
+                    if (wingPlane and not wingPlane->IsDead())
                         wingBrain = wingPlane->DBrain();
 
                     // If our wing has a brain and a that brain has a target (priority to ground target)
-                    if (wingBrain && wingBrain->GetGroundTarget())
+                    if (wingBrain and wingBrain->GetGroundTarget())
                         wingTgt = wingBrain->GetGroundTarget()->BaseData();
-                    else if (wingBrain && wingBrain->targetPtr)
+                    else if (wingBrain and wingBrain->targetPtr)
                         wingTgt = wingBrain->targetPtr->BaseData();
 
                     // If the element lead has none, check his wing
-                    if (!wingTgt)
+                    if ( not wingTgt)
                     {
                         wingPlane = ((AircraftClass *)SimDriver.GetPlayerEntity()->GetCampaignObject()->GetComponentNumber(3));
 
-                        if (wingPlane && !wingPlane->IsDead())
+                        if (wingPlane and not wingPlane->IsDead())
                             wingBrain = wingPlane->DBrain();
 
                         // If our wing has a brain and a that brain has a target (priority to ground target)
-                        if (wingBrain && wingBrain->GetGroundTarget())
+                        if (wingBrain and wingBrain->GetGroundTarget())
                             wingTgt = wingBrain->GetGroundTarget()->BaseData();
-                        else if (wingBrain && wingBrain->targetPtr)
+                        else if (wingBrain and wingBrain->targetPtr)
                             wingTgt = wingBrain->targetPtr->BaseData();
                     }
 
@@ -423,7 +423,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                     if (wingTgt)
                     {
                         // First lets create one if not done already
-                        if (!myBrain->targetSpotElement)
+                        if ( not myBrain->targetSpotElement)
                         {
                             myBrain->targetSpotElement = new SpotEntity(F4FlyingEyeType + VU_LAST_ENTITY_TYPE);
                             vuDatabase->/*Quick*/Insert(myBrain->targetSpotElement);
@@ -471,24 +471,24 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                         break;
 
                     // The whole flight, check all of the wing's target but only create one bubble, around the first target we find
-                    for (i = 0; !wingTgt && i < SimDriver.GetPlayerEntity()->GetCampaignObject()->NumberOfComponents(); i++)
+                    for (i = 0; not wingTgt and i < SimDriver.GetPlayerEntity()->GetCampaignObject()->NumberOfComponents(); i++)
                     {
                         wingPlane = ((AircraftClass *)SimDriver.GetPlayerEntity()->GetCampaignObject()->GetComponentNumber(i));
 
-                        if (wingPlane && !wingPlane->IsDead())
+                        if (wingPlane and not wingPlane->IsDead())
                             wingBrain = wingPlane->DBrain();
 
                         // If our wing has a brain and a that brain has a target (priority to ground target)
-                        if (wingBrain && wingBrain->GetGroundTarget())
+                        if (wingBrain and wingBrain->GetGroundTarget())
                             wingTgt = wingBrain->GetGroundTarget()->BaseData();
-                        else if (wingBrain && wingBrain->targetPtr)
+                        else if (wingBrain and wingBrain->targetPtr)
                             wingTgt = wingBrain->targetPtr->BaseData();
                     }
 
                     if (wingTgt)
                     {
                         // First lets create one if not done already
-                        if (!myBrain->targetSpotFlight)
+                        if ( not myBrain->targetSpotFlight)
                         {
                             myBrain->targetSpotFlight = new SpotEntity(F4FlyingEyeType + VU_LAST_ENTITY_TYPE);
                             vuDatabase->/*Quick*/Insert(myBrain->targetSpotFlight);
@@ -669,7 +669,7 @@ void AiMakeCommandMsg(SimBaseClass* p_sender, int command, int extent, VU_ID tar
 
 VU_ID AiDesignateTarget(AircraftClass* aircraft)
 {
-    return (aircraft != NULL) ?  FindAircraftTarget(aircraft) : vuNullId;
+    return (aircraft not_eq NULL) ?  FindAircraftTarget(aircraft) : vuNullId;
 }
 
 // --------------------------------------------------------------------
@@ -702,21 +702,21 @@ VU_ID AiCheckForThreat(AircraftClass* paircraft, char domain, int position, floa
         vuType = pclassPtr->classInfo_[VU_TYPE];
         vuSType = pclassPtr->classInfo_[VU_STYPE]; //JB 052701 (from MN)
 
-        if (position == 1 && pobjectPtr->localData->ata >= 90.0F * DTR)
+        if (position == 1 and pobjectPtr->localData->ata >= 90.0F * DTR)
         {
             inSideATA = TRUE; // if something is behind us and we are looking there
         }
-        else if (position == 0 && pobjectPtr->localData->ata <= 90.0F * DTR)
+        else if (position == 0 and pobjectPtr->localData->ata <= 90.0F * DTR)
         {
             inSideATA = TRUE;// if something is ahead of us and we are looking ther
         }
 
-        //////// Only change needed here for subtype check => AiCheckForThreat is called from both "Check" and "Clear my 6" !! //JB 052701 (from MN)
-        //if((vuDomain == DOMAIN_AIR && vuClass == CLASS_VEHICLE && (vuType == TYPE_AIRPLANE || vuType == TYPE_HELICOPTER))  //JB 052701 (from MN)
-        if ((vuDomain == DOMAIN_AIR && vuClass == CLASS_VEHICLE && (vuType == TYPE_AIRPLANE) && (vuSType == STYPE_AIR_FIGHTER_BOMBER || vuSType == STYPE_AIR_FIGHTER)) // Removed Helicopters as threat (|| vuType == TYPE_HELICOPTER), added subtype check //JB 052701 (from MN)
-            && inSideATA && pobjectPtr->localData->threatTime <= 60.0F)
+        //////// Only change needed here for subtype check => AiCheckForThreat is called from both "Check" and "Clear my 6"  //JB 052701 (from MN)
+        //if((vuDomain == DOMAIN_AIR and vuClass == CLASS_VEHICLE and (vuType == TYPE_AIRPLANE or vuType == TYPE_HELICOPTER))  //JB 052701 (from MN)
+        if ((vuDomain == DOMAIN_AIR and vuClass == CLASS_VEHICLE and (vuType == TYPE_AIRPLANE) and (vuSType == STYPE_AIR_FIGHTER_BOMBER or vuSType == STYPE_AIR_FIGHTER)) // Removed Helicopters as threat (or vuType == TYPE_HELICOPTER), added subtype check //JB 052701 (from MN)
+           and inSideATA and pobjectPtr->localData->threatTime <= 60.0F)
         {
-            if (pthreatPtr == NULL || pobjectPtr->localData->threatTime < pthreatPtr->localData->threatTime)
+            if (pthreatPtr == NULL or pobjectPtr->localData->threatTime < pthreatPtr->localData->threatTime)
             {
                 if (GetTTRelations(pobjectPtr->BaseData()->GetTeam(), paircraft->GetTeam()) >= Hostile)
                 {

@@ -23,7 +23,7 @@ void DigitalBrain::GunsEngageCheck(void)
 {
     float angleLimit;
 
-    if ((!mpActionFlags[AI_ENGAGE_TARGET] != AI_AIR_TARGET && missionClass != AAMission && !missionComplete) || curMode == RTBMode) // 2002-03-04 MODIFIED BY S.G. Use new enum type
+    if (( not mpActionFlags[AI_ENGAGE_TARGET] not_eq AI_AIR_TARGET and missionClass not_eq AAMission and not missionComplete) or curMode == RTBMode) // 2002-03-04 MODIFIED BY S.G. Use new enum type
         angleLimit = 15.0f * DTR;
     else
         angleLimit = 35.0f * DTR;
@@ -39,14 +39,14 @@ void DigitalBrain::GunsEngageCheck(void)
     /*-------*/
     /* entry */
     /*-------*/
-    if (curMode != GunsEngageMode)
+    if (curMode not_eq GunsEngageMode)
     {
-        if (targetPtr && targetData->range <= 3500.0F && //targetData->range >= 1000.0F &&//me123 let's bfm to 4000 before gunning changed from 10000
-            // JB !(self->YawDelta() > 0 && targetPtr->BaseData()->YawDelta() < 0 ||// not nose to nose
-            // JB self->YawDelta() < 0 && targetPtr->BaseData()->YawDelta() > 0) &&
-            ((AircraftClass *)self)->Guns &&
-            ((AircraftClass *)self)->Guns->numRoundsRemaining > 0 &&
-            targetData->ata < angleLimit && IsSetATC(AceGunsEngage))
+        if (targetPtr and targetData->range <= 3500.0F and //targetData->range >= 1000.0F and //me123 let's bfm to 4000 before gunning changed from 10000
+            // JB not (self->YawDelta() > 0 and targetPtr->BaseData()->YawDelta() < 0 or// not nose to nose
+            // JB self->YawDelta() < 0 and targetPtr->BaseData()->YawDelta() > 0) and 
+            ((AircraftClass *)self)->Guns and 
+            ((AircraftClass *)self)->Guns->numRoundsRemaining > 0 and 
+            targetData->ata < angleLimit and IsSetATC(AceGunsEngage))
         {
             AddMode(GunsEngageMode);
         }
@@ -56,13 +56,13 @@ void DigitalBrain::GunsEngageCheck(void)
     /*------*/
     else if (curMode == GunsEngageMode)
     {
-        if (targetData->range < 3500.0f && //targetData->range > 1000.0f &&
-            // JB !(self->YawDelta() > 0 && targetPtr->BaseData()->YawDelta() < 0 ||// not nose to nose
-            // JB self->YawDelta() < 0 && targetPtr->BaseData()->YawDelta() > 0) &&
-            ((AircraftClass *)self)->Guns->numRoundsRemaining > 0 &&
-            (targetPtr->BaseData()->IsAirplane() || targetPtr->BaseData()->IsHelicopter()) // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
-            //&& targetData->ata < 135.0f * DTR)
-            && targetData->ata < 1.25 * angleLimit)
+        if (targetData->range < 3500.0f and //targetData->range > 1000.0f and 
+            // JB not (self->YawDelta() > 0 and targetPtr->BaseData()->YawDelta() < 0 or// not nose to nose
+            // JB self->YawDelta() < 0 and targetPtr->BaseData()->YawDelta() > 0) and 
+            ((AircraftClass *)self)->Guns->numRoundsRemaining > 0 and 
+            (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsHelicopter()) // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
+            // and targetData->ata < 135.0f * DTR)
+           and targetData->ata < 1.25 * angleLimit)
         {
             AddMode(GunsEngageMode);
         }
@@ -247,7 +247,7 @@ void DigitalBrain::FineGunsTrack(float speed, float *lagAngle)
 
     tf = rangeEst / (self->Guns->initBulletVelocity + self->GetVt());
 
-    if (localTarget && localTarget->localData)
+    if (localTarget and localTarget->localData)
         tf = rangeEst / (self->Guns->initBulletVelocity + self->GetVt() - localTarget->localData->rangedot); // JB 010211
     else
         tf = rangeEst / (self->Guns->initBulletVelocity + self->GetVt());
@@ -304,7 +304,7 @@ void DigitalBrain::FineGunsTrack(float speed, float *lagAngle)
     if (ata > 60.0F * DTR)
         speed = cornerSpeed;
 
-    if (!waitingForShot)
+    if ( not waitingForShot)
     {
         //      leadTime = 1.5F + 5.0F * targetData->ataFrom / (180.0F * DTR);
         // MODIFIED TO ACCOUNT FOR DIFFERENT PULL OF THE TARGET
@@ -313,10 +313,10 @@ void DigitalBrain::FineGunsTrack(float speed, float *lagAngle)
         CoarseGunsTrack(speed, leadTime, &cata);
 
         // MODIFIED BY S.G. TO MAKE IT MORE PRECISE AND WE NEED TO TAKE THE abs OF elerr
-        //      if( fabs (azerr) < 1.5 * DTR && elerr < 1.0F * DTR)
-        //me123      if( fabs (azerr) < 0.3 * DTR && elerr < 0.5F * DTR && elerr > -0.5F * DTR)      {
-        // JB      if( fabs (azerr) < 3.5 * DTR && fabs(elerr) < 3.5F * DTR)      {
-        if (fabs(azerr) < 2.0 * DTR && elerr < .5F * DTR && elerr > -2.0F * DTR)
+        //      if( fabs (azerr) < 1.5 * DTR and elerr < 1.0F * DTR)
+        //me123      if( fabs (azerr) < 0.3 * DTR and elerr < 0.5F * DTR and elerr > -0.5F * DTR)      {
+        // JB      if( fabs (azerr) < 3.5 * DTR and fabs(elerr) < 3.5F * DTR)      {
+        if (fabs(azerr) < 2.0 * DTR and elerr < .5F * DTR and elerr > -2.0F * DTR)
         {
             waitingForShot = TRUE;
             pastPstick = af->nzcgb;
@@ -325,11 +325,11 @@ void DigitalBrain::FineGunsTrack(float speed, float *lagAngle)
     else
     {
         // MODIFIED BY S.G. TO MAKE IT MORE PRECISE
-        //      if (elerr < 10.0F * DTR && elerr > -15.0F * DTR && fabs(azerr) < 10.0F /* ADDED BY S.G. - IT'S IN RADIAN! */ * DTR &&
-        //ajusted by me123      if (elerr < 1.0F * DTR && elerr > -1.5F * DTR && fabs(azerr) < 1.0F /* ADDED BY S.G. - IT'S IN RADIAN! */ * DTR &&
-        // JB     if (elerr < 3.0F * DTR && fabs(elerr) < 2.5F * DTR && fabs(azerr) < 3.0F /* ADDED BY S.G. - IT'S IN RADIAN! */ * DTR &&
-        if (fabs(azerr) < 1.5 * DTR && elerr < .5F * DTR && elerr > -1.5F * DTR &&
-            atadot < 50.0F * DTR && targetData->range < 2.0F * self->Guns->initBulletVelocity) //ME123 FROM 0.1 TO 0.2
+        //      if (elerr < 10.0F * DTR and elerr > -15.0F * DTR and fabs(azerr) < 10.0F /* ADDED BY S.G. - IT'S IN RADIAN */ * DTR and 
+        //ajusted by me123      if (elerr < 1.0F * DTR and elerr > -1.5F * DTR and fabs(azerr) < 1.0F /* ADDED BY S.G. - IT'S IN RADIAN */ * DTR and 
+        // JB     if (elerr < 3.0F * DTR and fabs(elerr) < 2.5F * DTR and fabs(azerr) < 3.0F /* ADDED BY S.G. - IT'S IN RADIAN */ * DTR and 
+        if (fabs(azerr) < 1.5 * DTR and elerr < .5F * DTR and elerr > -1.5F * DTR and 
+            atadot < 50.0F * DTR and targetData->range < 2.0F * self->Guns->initBulletVelocity) //ME123 FROM 0.1 TO 0.2
         {
             SetFlag(GunFireFlag);
             //MonoPrint ("Digi Firing %8ld   %4d -> %4d\n", SimLibElapsedTime,
@@ -342,8 +342,8 @@ void DigitalBrain::FineGunsTrack(float speed, float *lagAngle)
         SetPstick(max(pastPstick - 1.0F, 0.0F), maxGs, AirframeClass::GCommand);
         SetRstick(0.0F);
 
-        if (fabs(azerr) < 3.5 * DTR  && elerr < .5F * DTR && elerr > -1.5F * DTR &&
-            fabs(pipperRate) < 10.0F * DTR && targetData->range < 3000.0F)//me123 from 6000
+        if (fabs(azerr) < 3.5 * DTR and elerr < .5F * DTR and elerr > -1.5F * DTR and 
+            fabs(pipperRate) < 10.0F * DTR and targetData->range < 3000.0F)//me123 from 6000
         {
             waitingForShot = (ataDot < 0.01F ? TRUE : FALSE);
         }
@@ -355,7 +355,7 @@ void DigitalBrain::FineGunsTrack(float speed, float *lagAngle)
     MachHold(speed, self->GetKias(), FALSE);//me123 true
 
     // Check for full pull
-    if (!waitingForShot && cata < 5.0F * DTR * (af->GsAvail() - af->nzcgb))
+    if ( not waitingForShot and cata < 5.0F * DTR * (af->GsAvail() - af->nzcgb))
         pStick = lastStick;
 }
 
@@ -384,7 +384,7 @@ float DigitalBrain::GunsAutoTrack(float trackGs)
     realRange = (float)sqrt(xft * xft + yft * yft + zft * zft);
 
     // Guess TOF
-    if (localTarget && localTarget->localData)
+    if (localTarget and localTarget->localData)
         tof = realRange / (self->Guns->initBulletVelocity + self->GetVt() - localTarget->localData->rangedot);
     else
         tof = realRange / (self->Guns->initBulletVelocity + self->GetVt());
@@ -455,12 +455,12 @@ void DigitalBrain::TrainableGunsEngage(void)
     // Find the trainable gun
     for (i = 0; i < self->Sms->NumHardpoints(); i++)
     {
-        //!
-        if ((self->Sms->hardPoint[i]->GetWeaponData()->flags & SMSClass::Trainable) &&
+        //
+        if ((self->Sms->hardPoint[i]->GetWeaponData()->flags bitand SMSClass::Trainable) and 
             (theGun = self->Sms->hardPoint[i]->GetGun()))
         {
             // Tail guns point out the rear (obviously)
-            if (theGun->EntityType()->classInfo_[VU_STYPE] == STYPE_TAIL_GUN && !localTarget->BaseData()->OnGround())
+            if (theGun->EntityType()->classInfo_[VU_STYPE] == STYPE_TAIL_GUN and not localTarget->BaseData()->OnGround())
             {
                 theGun->unlimitedAmmo = TRUE;
 
@@ -470,7 +470,7 @@ void DigitalBrain::TrainableGunsEngage(void)
                     azErr = -180.0F * DTR - localTarget->localData->az;
 
                 // Within 30 degree box and 2 NM, fire that weapon
-                if (fabs(azErr) < 30.0F * DTR && fabs(localTarget->localData->el) < 30.0F * DTR &&
+                if (fabs(azErr) < 30.0F * DTR and fabs(localTarget->localData->el) < 30.0F * DTR and 
                     localTarget->localData->range < 2.0F * NM_TO_FT)
                 {
                     angles = TRUE;
@@ -481,14 +481,14 @@ void DigitalBrain::TrainableGunsEngage(void)
                 // For now assume all other guns point out the left side
 
                 // Within 15 degree box and 2 NM, fire that weapon
-                if (fabs(-90.0F * DTR - localTarget->localData->az) < 15.0F * DTR &&
+                if (fabs(-90.0F * DTR - localTarget->localData->az) < 15.0F * DTR and 
                     localTarget->localData->range < 2.0F * NM_TO_FT)
                 {
                     angles = TRUE;
                 }
             }
 
-            if (angles && SimLibElapsedTime % 2000 < 500)
+            if (angles and SimLibElapsedTime % 2000 < 500)
             {
                 // JB 010210 Start
                 FalconEntity *target;
@@ -555,7 +555,7 @@ void DigitalBrain::TrainableGunsEngage(void)
 
                 fireFlag = TRUE;
 
-                if (!IsSetATC(FireTrainable))
+                if ( not IsSetATC(FireTrainable))
                 {
                     self->SendFireMessage(theGun, FalconWeaponsFire::GUN, TRUE, localTarget);
                     SetATCFlag(FireTrainable);

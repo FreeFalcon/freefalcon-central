@@ -2,6 +2,7 @@
 // Map.cpp deals with the various modes of coloring the small theater map
 //
 
+#include <cISO646>
 #include <stdio.h>
 #include <tchar.h>
 #include "CmpGlobl.h"
@@ -86,7 +87,7 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
             break;
     }
 
-    if (size != csize || !map_data)
+    if (size not_eq csize or not map_data)
     {
         // better resize it
         CampEnterCriticalSection();
@@ -124,7 +125,7 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
 
             while (e)
             {
-                if (!e->Moving())
+                if ( not e->Moving())
                 {
                     AddToThreatMap(e, map_data, team);
                 }
@@ -175,21 +176,21 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
                     own = GetOwner(TheCampaign.CampMapData, rx, ry);
 
                     // Let the ownership map decide if we're over water or not
-                    //if (GetCover(rx,ry) != Water || GetCover(rx+PAK_MAP_RATIO-1,ry) != Water ||
-                    // GetCover(rx,ry+PAK_MAP_RATIO-1) != Water)
+                    //if (GetCover(rx,ry) not_eq Water or GetCover(rx+PAK_MAP_RATIO-1,ry) not_eq Water or
+                    // GetCover(rx,ry+PAK_MAP_RATIO-1) not_eq Water)
                     if (own)
                     {
                         float last = -1.0F;
                         o = FindNearestObjective(POList, rx, ry, &last);
 
-                        while (o && o->GetTeam() != own)
+                        while (o and o->GetTeam() not_eq own)
                         {
                             o = FindNearestObjective(POList, rx, ry, &last);
                         }
 
                         if (o)
                         {
-                            for (p = 1, done = 0; p < 50 && !done && o; p++)
+                            for (p = 1, done = 0; p < 50 and not done and o; p++)
                             {
                                 if (o->Id() == pakTable[p])
                                 {
@@ -220,26 +221,26 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
                     ry = y * MAP_RATIO;
 
                     if (
-                        GetCover(rx, ry) != Water ||
-                        GetCover(rx + MAP_RATIO - 1, ry) != Water ||
-                        GetCover(rx, ry + MAP_RATIO - 1) != Water
+                        GetCover(rx, ry) not_eq Water or
+                        GetCover(rx + MAP_RATIO - 1, ry) not_eq Water or
+                        GetCover(rx, ry + MAP_RATIO - 1) not_eq Water
                     )
                     {
                         // KCK: Search a small area first, then if I don't find something, search a larger area
                         o = FindNearestObjective(rx, ry, NULL, 10);
 
-                        if (!o)
+                        if ( not o)
                         {
                             o = FindNearestObjective(rx, ry, NULL, 80);
                         }
 
                         if (o)
                         {
-                            map_data[i / 2] |= o->GetTeam() << hi;
+                            map_data[i / 2] or_eq o->GetTeam() << hi;
                         }
                         else
                         {
-                            map_data[i / 2] |= 0xF << hi;
+                            map_data[i / 2] or_eq 0xF << hi;
                         }
                     }
                 }
@@ -259,7 +260,7 @@ uchar* UpdateCampMap(int type, uchar* map_data, GridIndex cx, GridIndex cy)
     int i, hi;
     Objective o;
 
-    if (!map_data)
+    if ( not map_data)
         return NULL;
 
     fx = cx - MAP_RADIUS;
@@ -302,26 +303,26 @@ uchar* UpdateCampMap(int type, uchar* map_data, GridIndex cx, GridIndex cy)
                     ry = y * MAP_RATIO;
 
                     if (
-                        GetCover(rx, ry) != Water ||
-                        GetCover(rx + MAP_RATIO - 1, ry) != Water ||
-                        GetCover(rx, ry + MAP_RATIO - 1) != Water
+                        GetCover(rx, ry) not_eq Water or
+                        GetCover(rx + MAP_RATIO - 1, ry) not_eq Water or
+                        GetCover(rx, ry + MAP_RATIO - 1) not_eq Water
                     )
                     {
                         // KCK: Searh a small area first, then if I don't find something, search a larger area
                         o = FindNearestObjective(rx, ry, NULL, 10);
 
-                        if (!o)
+                        if ( not o)
                         {
                             o = FindNearestObjective(rx, ry, NULL, 80);
                         }
 
                         if (o)
                         {
-                            map_data[i / 2] |= o->GetTeam() << hi;
+                            map_data[i / 2] or_eq o->GetTeam() << hi;
                         }
                         else
                         {
-                            map_data[i / 2] |= 0xF << hi;
+                            map_data[i / 2] or_eq 0xF << hi;
                         }
                     }
                 }
@@ -340,16 +341,16 @@ uchar GetOwner(uchar* map_data, GridIndex x, GridIndex y)
 {
     int i, hi;
 
-    if (!map_data)
+    if ( not map_data)
         return 0;
 
     i = (y / MAP_RATIO) * MRX + (x / MAP_RATIO);
 
-    if (i < 0 || i > MAXOI)
+    if (i < 0 or i > MAXOI)
         return 0;
 
-    hi = 4 * (i & 1);
-    return ((map_data[i / 2] >> hi) & 0x0F);
+    hi = 4 * (i bitand 1);
+    return ((map_data[i / 2] >> hi) bitand 0x0F);
 }
 
 int FriendlyTerritory(GridIndex x, GridIndex y, int team)
@@ -367,7 +368,7 @@ int GetAproxDetection(Team who, GridIndex x, GridIndex y)
     // Find our indexes
     i = (y / MAP_RATIO) * MRX + (x / MAP_RATIO);
 
-    if (i < 0 || i > TheCampaign.RadarMapSize)
+    if (i < 0 or i > TheCampaign.RadarMapSize)
         return 0; // Off the map
 
     if (who == FalconLocalSession->GetTeam())
@@ -375,7 +376,7 @@ int GetAproxDetection(Team who, GridIndex x, GridIndex y)
     else
         ix = 0;
 
-    return (TheCampaign.RadarMapData[i] >> ix) & 0x03;
+    return (TheCampaign.RadarMapData[i] >> ix) bitand 0x03;
 }
 
 int GetAproxThreat(Team who, GridIndex x, GridIndex y)
@@ -385,7 +386,7 @@ int GetAproxThreat(Team who, GridIndex x, GridIndex y)
     // Find our indexes
     i = (y / MAP_RATIO) * MRX + (x / MAP_RATIO);
 
-    if (i < 0 || i > TheCampaign.RadarMapSize)
+    if (i < 0 or i > TheCampaign.RadarMapSize)
         return 0; // Off the map
 
     if (who == FalconLocalSession->GetTeam())
@@ -393,7 +394,7 @@ int GetAproxThreat(Team who, GridIndex x, GridIndex y)
     else
         ix = 0;
 
-    return (TheCampaign.SamMapData[i] >> ix) & 0x03;
+    return (TheCampaign.SamMapData[i] >> ix) bitand 0x03;
 }
 
 
@@ -441,20 +442,20 @@ int AddToThreatMap(CampEntity e, uchar* map_data, int who)
         {
             i = y * MRX + x;
             d = Distance(x, y, X, Y) - 1.0F;
-            c = (map_data[i] >> li) & 0x03;
+            c = (map_data[i] >> li) bitand 0x03;
 
-            if (ld >= d && c < 3 && e->GetAproxHitChance(LowAir, FloatToInt32(d * MAP_RATIO)))
+            if (ld >= d and c < 3 and e->GetAproxHitChance(LowAir, FloatToInt32(d * MAP_RATIO)))
             {
-                map_data[i] ^= (c << li);
-                map_data[i] |= ((c + 1) << li);
+                map_data[i] xor_eq (c << li);
+                map_data[i] or_eq ((c + 1) << li);
             }
 
-            c = (map_data[i] >> hi) & 0x03;
+            c = (map_data[i] >> hi) bitand 0x03;
 
-            if (hd >= d && c < 3 && e->GetAproxHitChance(Air, FloatToInt32(d * MAP_RATIO)))
+            if (hd >= d and c < 3 and e->GetAproxHitChance(Air, FloatToInt32(d * MAP_RATIO)))
             {
-                map_data[i] ^= (c << hi);
-                map_data[i] |= ((c + 1) << hi);
+                map_data[i] xor_eq (c << hi);
+                map_data[i] or_eq ((c + 1) << hi);
             }
         }
     }
@@ -468,7 +469,7 @@ int AddToDetectionMap(CampEntity e, uchar* map_data, int who)
     int fx, lx, fy, ly, li, hi, i, c, oct, bdi;
     float d, hd, bd, ld[NUM_RADAR_ARCS] /* 2001-03-13 S.G. */, ld0;
 
-    if (!e->GetNumberOfArcs())
+    if ( not e->GetNumberOfArcs())
         return 0;
 
     bd = 0.0F;
@@ -482,7 +483,7 @@ int AddToDetectionMap(CampEntity e, uchar* map_data, int who)
 
     for (i = 0; i < NUM_RADAR_ARCS; i++)
     {
-        // 2001-03-09 MODIFIEDED BY S.G. e->GetArcRatio(i) CAN BE ZERO! IF THAT HAPPENS, The for (x=... LOOP BELOW IS SQUIPPED SO HIGH ALTITUDE IS NOT MAPPED!
+        // 2001-03-09 MODIFIEDED BY S.G. e->GetArcRatio(i) CAN BE ZERO IF THAT HAPPENS, The for (x=... LOOP BELOW IS SQUIPPED SO HIGH ALTITUDE IS NOT MAPPED
         // ld[i] = (float) (((ALT_TO_BUILD_RANGES_TO / e->GetArcRatio(i)) * FT_TO_KM)/MAP_RATIO);
         if (float arcRatio = e->GetArcRatio(i))
         {
@@ -528,21 +529,21 @@ int AddToDetectionMap(CampEntity e, uchar* map_data, int who)
         {
             i = y * MRX + x;
             d = Distance(x, y, X, Y) - 1.0F;
-            c = (map_data[i] >> li) & 0x03;
+            c = (map_data[i] >> li) bitand 0x03;
             oct = OctantTo(X, Y, x, y);
 
-            if (ld[oct] >= d && c < 3)
+            if (ld[oct] >= d and c < 3)
             {
-                map_data[i] ^= (c << li);
-                map_data[i] |= ((c + 1) << li);
+                map_data[i] xor_eq (c << li);
+                map_data[i] or_eq ((c + 1) << li);
             }
 
-            c = (map_data[i] >> hi) & 0x03;
+            c = (map_data[i] >> hi) bitand 0x03;
 
-            if (hd >= d && c < 3)
+            if (hd >= d and c < 3)
             {
-                map_data[i] ^= (c << hi);
-                map_data[i] |= ((c + 1) << hi);
+                map_data[i] xor_eq (c << hi);
+                map_data[i] or_eq ((c + 1) << hi);
             }
         }
     }

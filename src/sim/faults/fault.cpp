@@ -36,16 +36,16 @@ const struct FaultClass::InitFaultData FaultClass::mpFaultData[FaultClass::Total
     FDATA("BLKR", bus, 0.2f, parray1),
     FDATA("BMUX", bus, 0.1f, parray1),
     FDATA("CADC", bus, 0.1f, parray1),
-    FDATA("CMDS", chaf | flar | bus, 0.15f, cmds_array),
+    FDATA("CMDS", chaf bitor flar bitor bus, 0.15f, cmds_array),
     FDATA("DLNK", bus, 0.5f, parray1),
     FDATA("DMUX", bus, 0.05, parray1),
     FDATA("DTE",  bus, 0.2f, parray1),
-    FDATA("ENG",  a_i | a_b | pfl | efire | hydr | fl_out, 0.4f, eng_array),
-    FDATA("ENG2",  a_i | a_b | pfl | efire | hydr | fl_out, 0.4f, eng_array2),
+    FDATA("ENG",  a_i bitor a_b bitor pfl bitor efire bitor hydr bitor fl_out, 0.4f, eng_array),
+    FDATA("ENG2",  a_i bitor a_b bitor pfl bitor efire bitor hydr bitor fl_out, 0.4f, eng_array2),
     FDATA("EPOD", slnt, 0.2f, parray1),
     FDATA("FCC",  bus, 0.2f, parray1),
-    FDATA("FCR",  bus | sngl | xmtr, 0.2f, fcr_array),
-    FDATA("FLCS", dmux | dual | sngl | a_p, 0.3f, flcs_array),
+    FDATA("FCR",  bus bitor sngl bitor xmtr, 0.2f, fcr_array),
+    FDATA("FLCS", dmux bitor dual bitor sngl bitor a_p, 0.3f, flcs_array),
     FDATA("FMS",  bus, 0.1f, parray1),
     FDATA("GEAR", ldgr, 0.5f, parray1),
     FDATA("GPS",  bus, 0.5f, parray1),
@@ -53,12 +53,12 @@ const struct FaultClass::InitFaultData FaultClass::mpFaultData[FaultClass::Total
     FDATA("HUD",  bus, 0.4f, parray1),
     FDATA("IFF",  bus, 0.2f, parray1),
     FDATA("INS",  bus, 0.2f, parray1),
-    FDATA("ISA",  all | rudr, 0.2f, rudr_array),
-    FDATA("MFDS", lfwd | rfwd, 0.3f, mfds_array),
+    FDATA("ISA",  all bitor rudr, 0.2f, rudr_array),
+    FDATA("MFDS", lfwd bitor rfwd, 0.3f, mfds_array),
     FDATA("MSL",  bus, 0.0f, parray1),
     FDATA("RALT", xmtr, 0.3f, parray1),
     FDATA("RWR",  bus, 0.2f, parray1),
-    FDATA("SMS",  bus | sta1 | sta2 | sta3 | sta4 | sta5 | sta6 | sta7 | sta8 | sta9,
+    FDATA("SMS",  bus bitor sta1 bitor sta2 bitor sta3 bitor sta4 bitor sta5 bitor sta6 bitor sta7 bitor sta8 bitor sta9,
     0.1f, sms_array),
     FDATA("TCN",  bus, 0.2f, parray1),
     FDATA("UFC",  bus, 0.2f, parray1),
@@ -169,7 +169,7 @@ FaultClass::type_FSubSystem FaultClass::PickSubSystem(int subsystemBits)
 
     for (i = 0; i < FaultClass::NumFaultListSubSystems; i++)
     {
-        if (subsystemBits & (1 << i))
+        if (subsystemBits bitand (1 << i))
         {
             failedThings[j] = i;
             j++;
@@ -210,7 +210,7 @@ FaultClass::type_FFunction FaultClass::PickFunction(FaultClass::type_FSubSystem 
     {
         counter ++;
 
-        if (breakable & (1 << counter))
+        if (breakable bitand (1 << counter))
             i --;
     }
 
@@ -241,7 +241,7 @@ void FaultClass::SetFault(type_FSubSystem subsystem,
         }
     }
 
-    mpFaultList[subsystem].elFunction |= function;
+    mpFaultList[subsystem].elFunction or_eq function;
     mpFaultList[subsystem].elSeverity = severity;
     AddMflList(SimLibElapsedTime, subsystem, (int)severity);
 }
@@ -253,7 +253,7 @@ void FaultClass::SetFault(type_FSubSystem subsystem,
 void FaultClass::ClearFault(type_FSubSystem subsystem)
 {
 
-    if (mpFaultList[subsystem].elFunction != nofault)
+    if (mpFaultList[subsystem].elFunction not_eq nofault)
     {
         mFaultCount--;
 
@@ -268,7 +268,7 @@ void FaultClass::ClearFault(type_FSubSystem subsystem)
 // JPO clear individual fault bit
 void FaultClass::ClearFault(type_FSubSystem subsystem, type_FFunction function)
 {
-    mpFaultList[subsystem].elFunction &= ~ function;
+    mpFaultList[subsystem].elFunction and_eq compl function;
 
     if (mpFaultList[subsystem].elFunction == nofault)
     {
@@ -325,7 +325,7 @@ BOOL FaultClass::GetFirstFault(type_FSubSystem *subsystemp, int *functionp)
 {
     for (int i = 0; i < FaultClass::NumFaultListSubSystems; i++)
     {
-        if (mpFaultList[i].elFunction != nofault)
+        if (mpFaultList[i].elFunction not_eq nofault)
         {
             *subsystemp = (type_FSubSystem)i;
             return FindFirstFunction((type_FSubSystem)i, functionp); // this should be true
@@ -343,7 +343,7 @@ BOOL FaultClass::GetNextFault(type_FSubSystem *subsystemp, int *functionp)
 
     for (int i = (*subsystemp) + 1; i < FaultClass::NumFaultListSubSystems; i++)
     {
-        if (mpFaultList[i].elFunction != nofault)
+        if (mpFaultList[i].elFunction not_eq nofault)
         {
             *subsystemp = (type_FSubSystem)i;
             return FindFirstFunction((type_FSubSystem)i, functionp);
@@ -357,7 +357,7 @@ BOOL FaultClass::FindFirstFunction(type_FSubSystem sys, int *functionp)
 {
     for (int i = 0; i < NumFaultFunctions - 1; i++)
     {
-        if (mpFaultList[sys].elFunction & (1U << i))
+        if (mpFaultList[sys].elFunction bitand (1U << i))
         {
             *functionp = i + 1;
             return TRUE;
@@ -371,7 +371,7 @@ BOOL FaultClass::FindNextFunction(type_FSubSystem sys, int *functionp)
 {
     for (int i = *functionp; i < NumFaultFunctions - 1; i++)
     {
-        if (mpFaultList[sys].elFunction & (1U << i))
+        if (mpFaultList[sys].elFunction bitand (1U << i))
         {
             *functionp = i + 1;
             return TRUE;
@@ -398,7 +398,7 @@ void FaultClass::TotalPowerFailure() // JPO
                     break;
 
                 default:
-                    if (mpFaultData[i].mBreakable & (1 << j))
+                    if (mpFaultData[i].mBreakable bitand (1 << j))
                     {
                         SetFault((type_FSubSystem)i, (type_FFunction)(1 << j), fail, TRUE);
                     }
@@ -425,7 +425,7 @@ void FaultClass::RandomFailure() // THW 2003-11-20 Make up some random failures,
                     //case ldgr: // skip landing gear
                     //break;
                     //default:
-                    if (mpFaultData[i].mBreakable & (1 << j))
+                    if (mpFaultData[i].mBreakable bitand (1 << j))
                     {
                         SetFault((type_FSubSystem)i, (type_FFunction)(1 << j), fail, TRUE);
                     }
@@ -439,7 +439,7 @@ void FaultClass::AddMflList(VU_TIME thetime, FaultClass::type_FSubSystem type, i
 {
     for (int i = 0; i < mLastMfl; i++)
     {
-        if (mMflList[i].type == type &&
+        if (mMflList[i].type == type and 
             mMflList[i].subtype == subtype)
         {
             mMflList[i].no ++;
@@ -459,12 +459,12 @@ void FaultClass::AddMflList(VU_TIME thetime, FaultClass::type_FSubSystem type, i
 
 bool FaultClass::GetMflEntry(int n, const char **name, int *subsys, int *count, char timestr[])
 {
-    ShiAssert(n >= 0 && n < mLastMfl);
+    ShiAssert(n >= 0 and n < mLastMfl);
 
-    if (n < 0 || n >= mLastMfl)
+    if (n < 0 or n >= mLastMfl)
         return false;
 
-    ShiAssert(mMflList[n].type >= 0 && mMflList[n].type < TotalFaultStrings);
+    ShiAssert(mMflList[n].type >= 0 and mMflList[n].type < TotalFaultStrings);
     *name = mpFaultData[mMflList[n].type].mpFSSName;
     *subsys = mMflList[n].subtype;
     *count = mMflList[n].no;

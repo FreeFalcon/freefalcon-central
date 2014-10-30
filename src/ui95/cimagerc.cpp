@@ -74,7 +74,7 @@ C_Image::~C_Image()
 
 void C_Image::Setup()
 {
-    if (Root_ || Finder_)
+    if (Root_ or Finder_)
         Cleanup();
 
     Root_ = new C_Hash;
@@ -131,10 +131,10 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, UI95_RECT *rect, short x, shor
     WORD *dptr16 = NULL;
     WORD *sptr16 = NULL;
     WORD *Palette = NULL;
-    int neww = 0, newh = 0; //!
-    int i = 0, j = 0; //!
+    int neww = 0, newh = 0; 
+    int i = 0, j = 0; 
 
-    if (Root_->Find(ID) || Finder_->Find(ID))
+    if (Root_->Find(ID) or Finder_->Find(ID))
     {
         MonoPrint("cimagerc error: [ID %1ld] Already used (AddImage)\n", ID);
         return(NULL);
@@ -142,19 +142,19 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, UI95_RECT *rect, short x, shor
 
     prior = (IMAGE_RSC*)Finder_->Find(LastID);
 
-    if (!prior)
+    if ( not prior)
     {
         MonoPrint("NO prior image to reference (%1ld)\n", ID);
         return(NULL);
     }
 
-    if (prior->Header->Type != _RSC_IS_IMAGE_)
+    if (prior->Header->Type not_eq _RSC_IS_IMAGE_)
     {
         MonoPrint("(%1ld) is NOT an IMAGE_RSC (type=%1d)\n", ID, prior->Header->Type);
         return(NULL);
     }
 
-    if (rect->left >= prior->Header->w || rect->top >= prior->Header->h)
+    if (rect->left >= prior->Header->w or rect->top >= prior->Header->h)
     {
         MonoPrint("AddImage [ID %1ld] is outside of prior image's [ID %1ld] area\n", ID, LastID);
         return(NULL);
@@ -169,7 +169,7 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, UI95_RECT *rect, short x, shor
     neww = rect->right  - rect->left;
     newh = rect->bottom - rect->top;
 
-    if (prior->Header->flags & _RSC_8_BIT_)
+    if (prior->Header->flags bitand _RSC_8_BIT_)
     {
 #ifdef USE_SH_POOLS
         data8 = (char*)MemAllocPtr(UI_Pools[UI_ART_POOL], sizeof(char) * (neww * newh + (prior->Header->palettesize * 2)), FALSE);
@@ -225,14 +225,14 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, UI95_RECT *rect, short x, shor
     newentry->Header = new ImageHeader;
     newentry->Header->Type = _RSC_IS_IMAGE_;
     newentry->Header->ID[0] = 0;
-    newentry->Header->flags = prior->Header->flags | _RSC_USECOLORKEY_;
+    newentry->Header->flags = prior->Header->flags bitor _RSC_USECOLORKEY_;
     newentry->Header->centerx = x;
     newentry->Header->centery = y;
-    newentry->Header->w = (short)neww; //!
-    newentry->Header->h = (short)newh; //!
+    newentry->Header->w = (short)neww; 
+    newentry->Header->h = (short)newh; 
     newentry->Header->imageoffset = 0;
 
-    if (newentry->Header->flags & _RSC_8_BIT_)
+    if (newentry->Header->flags bitand _RSC_8_BIT_)
     {
         newres->SetData(data8);
         newentry->Header->palettesize = prior->Header->palettesize;
@@ -267,10 +267,10 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, short x, short y, short w, sho
     WORD *dptr16 = NULL;
     WORD *sptr16 = NULL;
     WORD *Palette = NULL;
-    int neww = 0, newh = 0; //!
-    int i = 0, j = 0; //!
+    int neww = 0, newh = 0; 
+    int i = 0, j = 0; 
 
-    if (Root_->Find(ID) || Finder_->Find(ID))
+    if (Root_->Find(ID) or Finder_->Find(ID))
     {
         MonoPrint("cimagerc error: [ID %1ld] Already used (AddImage)\n", ID);
         return(NULL);
@@ -278,40 +278,40 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, short x, short y, short w, sho
 
     prior = (IMAGE_RSC*)Finder_->Find(LastID);
 
-    if (!prior)
+    if ( not prior)
     {
         MonoPrint("NO prior image to reference (%1ld)\n", ID);
         return(NULL);
     }
 
-    if (prior->Header->Type != _RSC_IS_IMAGE_)
+    if (prior->Header->Type not_eq _RSC_IS_IMAGE_)
     {
         MonoPrint("(%1ld) is NOT an IMAGE_RSC (type=%1d)\n", ID, prior->Header->Type);
         return(NULL);
     }
 
-    if (!prior->Owner)
+    if ( not prior->Owner)
     {
         MonoPrint("(%1ld) Data_ not loaded\n", ID, prior->Header->Type);
         return(NULL);
     }
 
-    if (x >= prior->Header->w || y >= prior->Header->h)
+    if (x >= prior->Header->w or y >= prior->Header->h)
     {
         MonoPrint("AddImage [ID %1ld] is outside of prior image's [ID %1ld] area\n", ID, LastID);
         return(NULL);
     }
 
     if ((x + w) > prior->Header->w)
-        w = (short)(prior->Header->w - x); //!
+        w = (short)(prior->Header->w - x); 
 
     if ((y + h) > prior->Header->h)
-        h = (short)(prior->Header->h - y); //!
+        h = (short)(prior->Header->h - y); 
 
     neww = w;
     newh = h;
 
-    if (prior->Header->flags & _RSC_8_BIT_)
+    if (prior->Header->flags bitand _RSC_8_BIT_)
     {
 #ifdef USE_SH_POOLS
         data8 = (char*)MemAllocPtr(UI_Pools[UI_ART_POOL], sizeof(char) * (neww * newh + (prior->Header->palettesize * 2)), FALSE);
@@ -367,14 +367,14 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, short x, short y, short w, sho
     newentry->Header = new ImageHeader;
     newentry->Header->Type = _RSC_IS_IMAGE_;
     newentry->Header->ID[0] = 0;
-    newentry->Header->flags = prior->Header->flags | _RSC_USECOLORKEY_;
+    newentry->Header->flags = prior->Header->flags bitor _RSC_USECOLORKEY_;
     newentry->Header->centerx = cx;
     newentry->Header->centery = cy;
-    newentry->Header->w = (short)neww; //!
-    newentry->Header->h = (short)newh; //!
+    newentry->Header->w = (short)neww; 
+    newentry->Header->h = (short)newh; 
     newentry->Header->imageoffset = 0;
 
-    if (newentry->Header->flags & _RSC_8_BIT_)
+    if (newentry->Header->flags bitand _RSC_8_BIT_)
     {
         newres->SetData(data8);
         newentry->Header->palettesize = prior->Header->palettesize;
@@ -401,7 +401,7 @@ long C_Image::BuildColorTable(WORD *, long , long , long)
     long sidx;
     long count;
 
-    if (!img || !w || !h)
+    if ( not img or not w or not h)
         return(0);
 
     if (ColorOrder_)
@@ -435,7 +435,7 @@ long C_Image::BuildColorTable(WORD *, long , long , long)
 
     while (sidx)
     {
-        if (!ColorOrder_->Find(img[sidx]))
+        if ( not ColorOrder_->Find(img[sidx]))
         {
             ColorOrder_->Add(img[sidx], (void*)(count + 1));
             IDOrder_->Add(count, (void*)img[sidx]);
@@ -455,7 +455,7 @@ void C_Image::MakePalette(WORD *, long)
 #if 0
     long i;
 
-    if (!dest || !entries)
+    if ( not dest or not entries)
         return;
 
     for (i = 0; i < entries; i++)
@@ -470,7 +470,7 @@ void C_Image::ConvertTo8Bit(WORD *, unsigned char *, long, long)
 #if 0
     long i, j, didx, start, sidx;
 
-    if (!src || !w || !h || !dest)
+    if ( not src or not w or not h or not dest)
         return;
 
     if (dest)
@@ -496,7 +496,7 @@ void C_Image::CopyArea(WORD *src, WORD *dest, long w, long h)
 {
     long i, j, didx, start, sidx;
 
-    if (!src || !w || !h || !dest)
+    if ( not src or not w or not h or not dest)
         return;
 
     if (dest)
@@ -529,7 +529,7 @@ C_Resmgr *C_Image::LoadImage(long ID, char *file, short x, short y)
     C_Resmgr *newres;
     IMAGE_RSC *newentry;
 
-    if (Root_->Find(ID) || Finder_->Find(ID))
+    if (Root_->Find(ID) or Finder_->Find(ID))
     {
         MonoPrint("cimagerc error: [ID %1ld] Already used (LoadFile [%s])\n", ID, file);
         return(NULL);
@@ -537,7 +537,7 @@ C_Resmgr *C_Image::LoadImage(long ID, char *file, short x, short y)
 
     retval = LoadTargaFile(file, &cptr, &bmi);
 
-    if (!retval)
+    if ( not retval)
     {
         MonoPrint("Failed to load %s\n", file);
         return(NULL);
@@ -555,23 +555,23 @@ C_Resmgr *C_Image::LoadImage(long ID, char *file, short x, short y)
     newentry->Header->Type = _RSC_IS_IMAGE_;
     newentry->Header->ID[0] = 0;
 
-    if (x == -1 && y == -1)
+    if (x == -1 and y == -1)
     {
-        x = (short)(bmi.bmiHeader.biWidth  / 2);//!
-        y = (short)(bmi.bmiHeader.biHeight / 2);//!
+        x = (short)(bmi.bmiHeader.biWidth  / 2);
+        y = (short)(bmi.bmiHeader.biHeight / 2);
     }
 
     newentry->Header->centerx = x;
     newentry->Header->centery = y;
-    newentry->Header->w = (short)bmi.bmiHeader.biWidth; //!
-    newentry->Header->h = (short)bmi.bmiHeader.biHeight; //!
+    newentry->Header->w = (short)bmi.bmiHeader.biWidth; 
+    newentry->Header->h = (short)bmi.bmiHeader.biHeight; 
     newentry->Header->imageoffset = 0;
     newentry->Header->palettesize = 0;
     newentry->Header->paletteoffset = 0;
 #if 0
     colors = BuildColorTable((WORD*)cptr, bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 0);
 
-    if (colors && colors <= 256)
+    if (colors and colors <= 256)
     {
 #ifdef USE_SH_POOLS
         Image8 = (unsigned char*)MemAllocPtr(UI_Pools[UI_ART_POOL], sizeof(unsigned char) * (bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight + colors * 2), FALSE);
@@ -589,7 +589,7 @@ C_Resmgr *C_Image::LoadImage(long ID, char *file, short x, short y)
     else
     {
 #endif
-        newentry->Header->flags = _RSC_16_BIT_ | _RSC_USECOLORKEY_;
+        newentry->Header->flags = _RSC_16_BIT_ bitor _RSC_USECOLORKEY_;
 #ifdef USE_SH_POOLS
         Image16 = (WORD*)MemAllocPtr(UI_Pools[UI_ART_POOL], sizeof(WORD) * (bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight), FALSE);
 #else
@@ -627,7 +627,7 @@ C_Resmgr *C_Image::LoadFile(long ID, char *file, short x, short y)
     C_Resmgr *newres;
     IMAGE_RSC *newentry;
 
-    if (Root_->Find(ID) || Finder_->Find(ID))
+    if (Root_->Find(ID) or Finder_->Find(ID))
     {
         MonoPrint("cimagerc error: [ID %1ld] Already used (LoadFile [%s])\n", ID, file);
         return(NULL);
@@ -635,7 +635,7 @@ C_Resmgr *C_Image::LoadFile(long ID, char *file, short x, short y)
 
     retval = LoadTargaFile(file, &cptr, &bmi);
 
-    if (!retval)
+    if ( not retval)
     {
         MonoPrint("Failed to load %s\n", file);
         return(NULL);
@@ -653,7 +653,7 @@ C_Resmgr *C_Image::LoadFile(long ID, char *file, short x, short y)
     newentry->Header->Type = _RSC_IS_IMAGE_;
     newentry->Header->ID[0] = 0;
 
-    if (x == -1 && y == -1)
+    if (x == -1 and y == -1)
     {
         x = (short)(bmi.bmiHeader.biWidth  / 2);
         y = (short)(bmi.bmiHeader.biHeight / 2);
@@ -661,15 +661,15 @@ C_Resmgr *C_Image::LoadFile(long ID, char *file, short x, short y)
 
     newentry->Header->centerx = x;
     newentry->Header->centery = y;
-    newentry->Header->w = (short)bmi.bmiHeader.biWidth; //!
-    newentry->Header->h = (short)bmi.bmiHeader.biHeight; //!
+    newentry->Header->w = (short)bmi.bmiHeader.biWidth; 
+    newentry->Header->h = (short)bmi.bmiHeader.biHeight; 
     newentry->Header->imageoffset = 0;
     newentry->Header->palettesize = 0;
     newentry->Header->paletteoffset = 0;
 #if 0
     colors = BuildColorTable((WORD*)cptr, bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 0);
 
-    if (colors && colors <= 256)
+    if (colors and colors <= 256)
     {
         Image8 = new unsigned char[bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight + colors * 2];
         ConvertTo8Bit((WORD*)cptr, Image8, bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight);
@@ -712,7 +712,7 @@ C_Resmgr *C_Image::LoadPrivateRes(long ID, char *filename)
 {
     C_Resmgr *res;
 
-    if (!ID || !filename || !Root_)
+    if ( not ID or not filename or not Root_)
         return(NULL);
 
     if (Root_->Find(ID))
@@ -720,7 +720,7 @@ C_Resmgr *C_Image::LoadPrivateRes(long ID, char *filename)
 
     res = new C_Resmgr;
 
-    if (!res)
+    if ( not res)
         return(NULL);
 
     res->Setup(ID, filename, gMainParser->GetTokenHash());
@@ -769,7 +769,7 @@ IMAGE_RSC *C_Image::GetImage(long ID)
 
     tmp = (IMAGE_RSC *)Finder_->Find(ID);
 
-    if (tmp && tmp->Header->Type == _RSC_IS_IMAGE_)
+    if (tmp and tmp->Header->Type == _RSC_IS_IMAGE_)
         return(tmp);
 
     return(NULL);

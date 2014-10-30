@@ -54,7 +54,7 @@ public:
         IsGPS =         0x00000100, //MI GPS
         IsJSOW =        0x00000200, //Cobra GPS-JSOW
     };
-#define GUIDED_BOMB ( IsLGB | IsGPS | IsJSOW ) // RED 
+#define GUIDED_BOMB ( IsLGB bitor IsGPS bitor IsJSOW ) // RED 
 
     static float dragConstant;
 
@@ -119,15 +119,15 @@ public:
     };
     void SetBombFlag(int newFlag)
     {
-        flags |= newFlag;
+        flags or_eq newFlag;
     };
     void ClearBombFlag(int newFlag)
     {
-        flags &= ~newFlag;
+        flags and_eq compl newFlag;
     };
     int IsSetBombFlag(int newFlag)
     {
-        return flags & newFlag ? TRUE : FALSE;
+        return flags bitand newFlag ? TRUE : FALSE;
     };
     void ReadInput(int idx);
 

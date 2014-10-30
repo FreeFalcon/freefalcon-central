@@ -41,7 +41,7 @@ CPButtonObject::CPButtonObject(ButtonObjectInitStr *pInitStr)
     mSound2 = pInitStr->sound2;
 
     // JPO - lets be careful out there
-    if (mCallbackSlot >= 0 && mCallbackSlot < TOTAL_BUTTONCALLBACK_SLOTS)
+    if (mCallbackSlot >= 0 and mCallbackSlot < TOTAL_BUTTONCALLBACK_SLOTS)
     {
 
         mTransStateToAero = ButtonCallbackArray[mCallbackSlot].TransStateToAero;
@@ -96,12 +96,12 @@ void CPButtonObject::HandleEvent(int event)
 void CPButtonObject::HandleMouseEvent(int event)
 {
 
-    if (event == CP_MOUSE_BUTTON0 ||
+    if (event == CP_MOUSE_BUTTON0 or
         event == CP_MOUSE_BUTTON1)
     {
 
         //Wombat778 3-09-04 Check if this function is being blocked by the training script
-        //if( mTransStateToAero && !TrainingScript->IsBlocked(NULL,mCallbackSlot) )
+        //if( mTransStateToAero and not TrainingScript->IsBlocked(NULL,mCallbackSlot) )
         if (mTransStateToAero)
         {
             mTransStateToAero(this, event);     //translate button click to aero
@@ -119,7 +119,7 @@ int CPButtonObject::GetSound(int which) const
 
     int returnVal = -1;
 
-    F4Assert(which == 1 || which == 2); //values for which can only be 1 or 2;
+    F4Assert(which == 1 or which == 2); //values for which can only be 1 or 2;
 
     if (which == 1)
     {
@@ -214,7 +214,7 @@ void CPButtonObject::AddView(CPButtonView* pCPButtonView)
 BOOL CPButtonObject::DoBlit(void)
 {
 
-    return(mCurrentState != mNormalState);
+    return(mCurrentState not_eq mNormalState);
 }
 
 //------------------------------------------------------------------
@@ -283,7 +283,7 @@ int CPButtonObject::GetCursorIndex() {
 void CPButtonObject::SetCurrentState(int newState)
 {
     // sfr: @todo should we change the state if its bad? wouldnt it be safer to keep the old one?
-    if (newState < 0 || newState >= mTotalStates)
+    if (newState < 0 or newState >= mTotalStates)
     {
         // If getting passed a bad state
         mCurrentState = mNormalState;
@@ -401,7 +401,7 @@ void CPButtonView::DisplayBlit(void)
     mDirtyFlag = TRUE;
 #endif
 
-    if (!mDirtyFlag)
+    if ( not mDirtyFlag)
     {
         return;
     }
@@ -409,7 +409,7 @@ void CPButtonView::DisplayBlit(void)
     if (DisplayOptions.bRender2DCockpit) //Handle these in displayblit3d
         return;
 
-    if (mpButtonObject->DoBlit() && mStates)
+    if (mpButtonObject->DoBlit() and mStates)
     {
         if (mTransparencyType == CPTRANSPARENT)
         {
@@ -465,7 +465,7 @@ void RenderButtonViewPoly(SourceButtonViewType *sb, tagRECT *destrect, GLint alp
     OTWDriver.pCockpitManager->AddTurbulence(pVtx);
     OTWDriver.renderer->context.RestoreState(alpha);
     OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
-    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
+    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
 
 }
 
@@ -476,15 +476,15 @@ void CPButtonView::DisplayBlit3D(void)
     mDirtyFlag = TRUE;
 #endif
 
-    if (!mDirtyFlag)
+    if ( not mDirtyFlag)
     {
         return;
     }
 
-    if (!DisplayOptions.bRender2DCockpit) //Handle these in displayblit
+    if ( not DisplayOptions.bRender2DCockpit) //Handle these in displayblit
         return;
 
-    if (mpButtonObject->DoBlit() && mStates)
+    if (mpButtonObject->DoBlit() and mStates)
     {
 
         if (mTransparencyType == CPTRANSPARENT)
@@ -523,25 +523,25 @@ void CPButtonView::CreateLit(void)
             const DWORD dwMaxTextureHeight = mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
             m_pPalette = new PaletteHandle(mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
 
-            if (!m_pPalette)
+            if ( not m_pPalette)
                 throw _com_error(E_OUTOFMEMORY);
 
             for (int i = 0; i < mStates; i++)
             {
                 // Check if we can use a single texture
-                if ((int)dwMaxTextureWidth >= mpSourceBuffer[i].mWidth && (int)dwMaxTextureHeight >= mpSourceBuffer[i].mHeight)
+                if ((int)dwMaxTextureWidth >= mpSourceBuffer[i].mWidth and (int)dwMaxTextureHeight >= mpSourceBuffer[i].mHeight)
                 {
                     TextureHandle *pTex = new TextureHandle;
 
-                    if (!pTex)
+                    if ( not pTex)
                         throw _com_error(E_OUTOFMEMORY);
 
                     m_pPalette->AttachToTexture(pTex);
 
-                    if (!pTex->Create("CPButtonView", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, mpSourceBuffer[i].mWidth, mpSourceBuffer[i].mHeight))
+                    if ( not pTex->Create("CPButtonView", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8, mpSourceBuffer[i].mWidth, mpSourceBuffer[i].mHeight))
                         throw _com_error(E_FAIL);
 
-                    if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer[i].buttonview, true, true)) // soon to be re-loaded by CPSurface::Translate3D
+                    if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer[i].buttonview, true, true)) // soon to be re-loaded by CPSurface::Translate3D
                         throw _com_error(E_FAIL);
 
                     mpSourceBuffer[i].m_arrTex.push_back(pTex);
@@ -640,9 +640,9 @@ BOOL CPButtonView::HandleEvent(int* cursorIndex, int event, int xpos, int ypos)
 
     BOOL isTarget = FALSE;
 
-    if (xpos >= mDestRect.left &&
-        xpos <= mDestRect.right &&
-        ypos >= mDestRect.top &&
+    if (xpos >= mDestRect.left and 
+        xpos <= mDestRect.right and 
+        ypos >= mDestRect.top and 
         ypos <= mDestRect.bottom)
     {
 

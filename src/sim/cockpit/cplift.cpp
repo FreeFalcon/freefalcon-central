@@ -67,7 +67,7 @@ CPLiftLine::CPLiftLine(ObjectInitStr* pobjectInitStr, LiftInitStr* liftInitStr) 
 #endif
     }
 
-    if (PlayerOptions.SimVisualCueMode == VCLiftLine || PlayerOptions.SimVisualCueMode == VCBoth)
+    if (PlayerOptions.SimVisualCueMode == VCLiftLine or PlayerOptions.SimVisualCueMode == VCBoth)
     {
 
         if (tilt == -30.0F)
@@ -233,7 +233,7 @@ CPLiftLine::CPLiftLine(ObjectInitStr* pobjectInitStr, LiftInitStr* liftInitStr) 
             mCheveron[7][1] = y2 + spacing;
         }
 
-        if (pan != 0.0F)
+        if (pan not_eq 0.0F)
         {
 
             mlSinCos(&trig, pan * DTR);
@@ -275,7 +275,7 @@ void CPLiftLine::DisplayDraw(void)
     // OTWDriver.renderer->SetColor(0xFF0096FF);
     OTWDriver.renderer->SetColor(OTWDriver.GetLiftLineColor()); // from 3D pit readin
 
-    if (PlayerOptions.SimVisualCueMode == VCLiftLine || PlayerOptions.SimVisualCueMode == VCBoth)
+    if (PlayerOptions.SimVisualCueMode == VCLiftLine or PlayerOptions.SimVisualCueMode == VCBoth)
     {
         OTWDriver.renderer->SetViewport(-1.0F, 1.0F, 1.0F, -1.0F);
 

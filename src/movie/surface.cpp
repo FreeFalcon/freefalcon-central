@@ -12,6 +12,7 @@
    Programmed by Kuswara Pranawahadi               September 5, 1996
 */
 
+#include <cISO646>
 #include "surface.h"
 
 // OW
@@ -55,7 +56,7 @@ void surfaceGetPointer(LPVOID surface,
     ZeroMemory(&ddsd, sizeof(ddsd));
     ddsd.dwSize = sizeof(ddsd);
 
-    HRESULT hr = pDS->Lock(NULL, &ddsd, DDLOCK_WAIT | DDLOCK_WRITEONLY | DDLOCK_SURFACEMEMORYPTR, NULL);
+    HRESULT hr = pDS->Lock(NULL, &ddsd, DDLOCK_WAIT bitor DDLOCK_WRITEONLY bitor DDLOCK_SURFACEMEMORYPTR, NULL);
 
     if (SUCCEEDED(hr))
     {
@@ -140,7 +141,7 @@ void surfaceGetDescription(LPVOID surface, SURFACEDESCRIPTION *sd)
     ddsd.dwSize = sizeof(DDSURFACEDESC2);
     HRESULT hr = -1; // JB 010220 CTD
 
-    if (pDS && !F4IsBadReadPtr(pDS, sizeof(IDirectDrawSurface7))) // JB 010220 CTD
+    if (pDS and not F4IsBadReadPtr(pDS, sizeof(IDirectDrawSurface7))) // JB 010220 CTD
         hr = pDS->GetSurfaceDesc(&ddsd);
 
     if (SUCCEEDED(hr))
@@ -192,14 +193,14 @@ LPVOID surfaceCreate(LPVOID ddPointer, int dibWidth, int dibHeight)
     {
         DDSURFACEDESC2 ddsd;
         ZeroMemory(&ddsd, sizeof(ddsd));
-        ddsd.dwFlags = DDSD_CAPS | DDSD_PIXELFORMAT;
+        ddsd.dwFlags = DDSD_CAPS bitor DDSD_PIXELFORMAT;
         ddsd.dwSize = sizeof(ddsd);
         ddsd.ddpfPixelFormat = ddsdMode.ddpfPixelFormat;
 
-        ddsd.dwFlags |= DDSD_WIDTH | DDSD_HEIGHT;
+        ddsd.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
         ddsd.dwWidth  = dibWidth;
         ddsd.dwHeight = dibHeight;
-        ddsd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;
+        ddsd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY bitor DDSCAPS_OFFSCREENPLAIN;
         hr = pDD->CreateSurface(&ddsd, &pDS, NULL);
     }
 

@@ -31,7 +31,7 @@ C_Squadron::C_Squadron() : C_Control()
     Planes_ = NULL;
     Pilots_ = NULL;
     Players_ = NULL;
-    Defaultflags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER;
+    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER;
 }
 
 C_Squadron::C_Squadron(char **stream) : C_Control(stream)
@@ -62,7 +62,7 @@ void C_Squadron::InitSquadron()
 {
     Icon_ = new O_Output;
     Icon_->SetOwner(this);
-    Icon_->SetFlags(Flags_ | C_BIT_HCENTER | C_BIT_VCENTER);
+    Icon_->SetFlags(Flags_ bitor C_BIT_HCENTER bitor C_BIT_VCENTER);
     Name_ = new O_Output;
     Name_->SetOwner(this);
     Name_->SetFlags(Flags_);
@@ -146,7 +146,7 @@ void C_Squadron::SetFont(long ID)
 
 long C_Squadron::CheckHotSpots(long relX, long relY)
 {
-    if (relX >= GetX() && relX <= (GetX() + GetW()) && relY >= GetY() && relY <= (GetY() + GetH()))
+    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))
         return(GetID());
 
     return(0);
@@ -174,7 +174,7 @@ BOOL C_Squadron::Process(long ID, short HitType)
 
 void C_Squadron::Refresh()
 {
-    if (!Ready() || Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
+    if ( not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
@@ -182,13 +182,13 @@ void C_Squadron::Refresh()
 
 void C_Squadron::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->BlitFill(surface, IconBgColor_[State_ & 1], GetX() + IconBg_.left, GetY() + IconBg_.top, IconBg_.right, IconBg_.bottom, Flags_, Client_, cliprect);
+    Parent_->BlitFill(surface, IconBgColor_[State_ bitand 1], GetX() + IconBg_.left, GetY() + IconBg_.top, IconBg_.right, IconBg_.bottom, Flags_, Client_, cliprect);
 
     if (State_)
-        Parent_->BlitFill(surface, InfoBgColor_[State_ & 1], GetX() + InfoBg_.left, GetY() + InfoBg_.top, InfoBg_.right, InfoBg_.bottom, Flags_, Client_, cliprect);
+        Parent_->BlitFill(surface, InfoBgColor_[State_ bitand 1], GetX() + InfoBg_.left, GetY() + InfoBg_.top, InfoBg_.right, InfoBg_.bottom, Flags_, Client_, cliprect);
 
     if (Icon_)
         Icon_->Draw(surface, cliprect);
@@ -205,6 +205,6 @@ void C_Squadron::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (Players_)
         Players_->Draw(surface, cliprect);
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }

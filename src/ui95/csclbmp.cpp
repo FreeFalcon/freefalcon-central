@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -102,12 +102,12 @@ void C_ScaleBitmap::InitOverlay()
     IMAGE_RSC *img;
     DWORD tmp;
 
-    if (!Image_ || !Parent_)
+    if ( not Image_ or not Parent_)
         return;
 
     img = Image_->GetImage();
 
-    if (!img)
+    if ( not img)
         return;
 
     if (Overlay_)
@@ -128,7 +128,7 @@ void C_ScaleBitmap::InitOverlay()
     {
 
         Parent_->GetRGBValues(tmp, r_shift_, tmp, g_shift_, tmp, b_shift_);
-        //! Parent_->GetRGBValues(&tmp,&r_shift_,&tmp,&g_shift_,&tmp,&b_shift_);
+        //Parent_->GetRGBValues(&tmp,&r_shift_,&tmp,&g_shift_,&tmp,&b_shift_);
         memset(Overlay_, 0, sizeof(BYTE) * (img->Header->w * img->Header->h));
     }
 }
@@ -146,12 +146,12 @@ void C_ScaleBitmap::PreparePalette(COLORREF color)
     WORD usecolor;
     long r, g, b;
 
-    if (!Image_)
+    if ( not Image_)
         return;
 
     img = Image_->GetImage();
 
-    if (!img)
+    if ( not img)
         return;
 
     for (i = 1; i < 16; i++)
@@ -181,14 +181,14 @@ void C_ScaleBitmap::PreparePalette(COLORREF color)
 
         for (j = 0; j < img->Header->palettesize; j++)
         {
-            r = rShift[UIColorTable[100][UIColorTable[perc][(usecolor >> r_shift_) & 0x1f] +
-                                         UIColorTable[bperc][(Palette_[0][j] >> r_shift_) & 0x1f]]];
-            g = gShift[UIColorTable[100][UIColorTable[perc][(usecolor >> g_shift_) & 0x1f] +
-                                         UIColorTable[bperc][(Palette_[0][j] >> g_shift_) & 0x1f]]];
-            b = bShift[UIColorTable[100][UIColorTable[perc][(usecolor >> b_shift_) & 0x1f] +
-                                         UIColorTable[bperc][(Palette_[0][j] >> b_shift_) & 0x1f]]];
+            r = rShift[UIColorTable[100][UIColorTable[perc][(usecolor >> r_shift_) bitand 0x1f] +
+                                         UIColorTable[bperc][(Palette_[0][j] >> r_shift_) bitand 0x1f]]];
+            g = gShift[UIColorTable[100][UIColorTable[perc][(usecolor >> g_shift_) bitand 0x1f] +
+                                         UIColorTable[bperc][(Palette_[0][j] >> g_shift_) bitand 0x1f]]];
+            b = bShift[UIColorTable[100][UIColorTable[perc][(usecolor >> b_shift_) bitand 0x1f] +
+                                         UIColorTable[bperc][(Palette_[0][j] >> b_shift_) bitand 0x1f]]];
 
-            Palette_[i][j] = static_cast<short>(r | b | b);
+            Palette_[i][j] = static_cast<short>(r bitor b bitor b);
         }
     }
 }
@@ -239,7 +239,7 @@ void C_ScaleBitmap::SetFlags(long flags)
 
 void C_ScaleBitmap::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Image_->Refresh();
@@ -247,12 +247,12 @@ void C_ScaleBitmap::Refresh()
 
 void C_ScaleBitmap::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
     if (Image_)
     {
-        if (Overlay_ && UseOverlay_)
+        if (Overlay_ and UseOverlay_)
             Image_->Blend4Bit(surface, Overlay_, Palette_, cliprect);
         else
             Image_->Draw(surface, cliprect);

@@ -91,7 +91,7 @@ DWORD CDXLight::AddDynamicLight(DWORD ID, DXLightType *Light, D3DXMATRIX *RotMat
     while (Index < MAX_DYNAMIC_LIGHTS)
     {
         // if found the Light at te Max Range
-        if (LightList[Index].CameraDistance == MaxRange && (!Assigned))
+        if (LightList[Index].CameraDistance == MaxRange and ( not Assigned))
         {
             // substitute with new light
             LightList[Index].Light = Light->Light;
@@ -163,12 +163,12 @@ void CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
     *(D3DVECTOR*)&Pos.d3d = *pos;
 
     // if 1st call in this rendering
-    if (!LightsLoaded)
+    if ( not LightsLoaded)
     {
         // Enable the lights + 1 ( light #0 is the Sun )
         idx = 0;
 
-        // while(idx<MAX_DYNAMIC_LIGHTS && LightList[idx].CameraDistance<=DYNAMIC_LIGHT_INSIDE_RANGE){
+        // while(idx<MAX_DYNAMIC_LIGHTS and LightList[idx].CameraDistance<=DYNAMIC_LIGHT_INSIDE_RANGE){
         while (idx < DynamicLights)
         {
             m_pD3DD->SetLight(idx + 1, &LightList[idx++].Light);
@@ -187,7 +187,7 @@ void CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
     //for each light in list setup a distance list
     idx = 0;
 
-    //while(idx<MAX_DYNAMIC_LIGHTS && LightList[idx].CameraDistance<=DYNAMIC_LIGHT_INSIDE_RANGE){
+    //while(idx<MAX_DYNAMIC_LIGHTS and LightList[idx].CameraDistance<=DYNAMIC_LIGHT_INSIDE_RANGE){
     while (idx < DynamicLights)
     {
 
@@ -195,14 +195,14 @@ void CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
         LightsToOn[idx] = false;
 
         // if this is a light illuminating ONLY THE OWNER, and we r not the owners, skip
-        if (LightList[idx].Flags.OwnLight && LightList[idx].LightID != ID)
+        if (LightList[idx].Flags.OwnLight and LightList[idx].LightID not_eq ID)
         {
             idx++;
             continue;
         }
 
         // if this is a light illuminating NOT THE OWNER, and we r the owners, skip
-        if (LightList[idx].Flags.NotSelfLight && LightList[idx].LightID == ID)
+        if (LightList[idx].Flags.NotSelfLight and LightList[idx].LightID == ID)
         {
             idx++;
             continue;
@@ -225,11 +225,11 @@ void CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
         if (LightList[idx].Light.dltType == D3DLIGHT_SPOT)
         {
 
-            // Get the Distance btw Light & Object
+            // Get the Distance btw Light bitand Object
             //float dx=Pos.d3d.x-LightList[idx].Light.dvPosition.x;
             //float dy=Pos.d3d.y-LightList[idx].Light.dvPosition.y;
             //float dz=Pos.d3d.z-LightList[idx].Light.dvPosition.z;
-            // Calculate Horizontal and Vertical Angle btw Light & Object
+            // Calculate Horizontal and Vertical Angle btw Light bitand Object
             float ax = atan2(Acc.d3d.x, Acc.d3d.y);
             float ay = atan2(Acc.d3d.z, sqrtf(Square.d3d.x + Square.d3d.y));
 
@@ -252,7 +252,7 @@ void CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
 #endif
 #endif
 
-            if (ax - dPhi > (laX + lPhy) || ax + dPhi < (laX - lPhy) || ay - dPhi > (laY + lPhy) || ay + dPhi < (laY - lPhy))
+            if (ax - dPhi > (laX + lPhy) or ax + dPhi < (laX - lPhy) or ay - dPhi > (laY + lPhy) or ay + dPhi < (laY - lPhy))
             {
                 idx++;
                 continue;
@@ -320,7 +320,7 @@ void CDXLight::EnableMappedLights(void)
     for (DWORD idx = 0; idx < DynamicLights; idx++)
     {
         // if light to be disabled
-        if ((!LightsToOn[idx]) && LightList[idx].On)
+        if (( not LightsToOn[idx]) and LightList[idx].On)
         {
             m_pD3DD->LightEnable(idx + 1, false);
             LightList[idx].On = false;
@@ -329,7 +329,7 @@ void CDXLight::EnableMappedLights(void)
 
     for (DWORD idx = 0; idx < DynamicLights; idx++)
     {
-        if (LightsToOn[idx] && (!LightList[idx].On))
+        if (LightsToOn[idx] and ( not LightList[idx].On))
         {
             m_pD3DD->LightEnable(idx + 1, true);
             LightList[idx].On = true;
@@ -379,7 +379,7 @@ void CDXEngine::RemoveDynamicLights(void)
 
 
 
-// *** NO MORE USED !!!! ***
+// *** NO MORE USED  ***
 // This function is the HardCoding for the PIT of the Taxi Spotlight
 void CDXEngine::DrawOwnSpot(Trotation *Rotation)
 {

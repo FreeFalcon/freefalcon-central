@@ -26,7 +26,7 @@
 #include "digi.h"
 
 extern float gSpeedyGonzales;
-// hack for making sure simple model STAYS SET!!!!!!
+// hack for making sure simple model STAYS SET
 extern BOOL playerFlightModelHack;
 
 extern bool g_bSimpleFMUpdates; // JB 010805
@@ -56,7 +56,7 @@ AirframeClass::SetSimpleMode(int mode)
     if (mode == simpleMode)
         return;
 
-    if (simpleMode != SIMPLE_MODE_OFF && mode == SIMPLE_MODE_OFF)
+    if (simpleMode not_eq SIMPLE_MODE_OFF and mode == SIMPLE_MODE_OFF)
     {
         Reinit();
         // MonoPrint("Reinit() Called \n");
@@ -117,8 +117,8 @@ AirframeClass::SimpleModel(void)
 
         // pitch rate
         // Modify pitch rate if going really slow
-        if (qsom * cnalpha < 1.5F && !(playerFlightModelHack &&
-                                       platform == SimDriver.GetPlayerEntity() &&
+        if (qsom * cnalpha < 1.5F and not (playerFlightModelHack and 
+                                       platform == SimDriver.GetPlayerEntity() and 
                                        platform->AutopilotType() == AircraftClass::APOff))
         {
             gmmaDes = (1.0F - qsom * cnalpha / 1.5F) * -45.0F * DTR;
@@ -150,7 +150,7 @@ AirframeClass::SimpleModel(void)
             maxBank = min(MAX_AF_ROLL, aeroDataset[vehicleIndex].inputData[AeroDataSet::MaxRoll]);
 
             //me123 dont bank more then you can keep the nose up with your max gs availeble
-            if (g_bSimpleFMUpdates && gearPos < 0.7F && platform->DBrain()->GetCurrentMode() != DigitalBrain::LandingMode && platform->DBrain()->GetCurrentMode() != DigitalBrain::RefuelingMode)
+            if (g_bSimpleFMUpdates and gearPos < 0.7F and platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::LandingMode and platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::RefuelingMode)
                 maxBank = min(maxBank, acos(1 / (max(min(curMaxGs, gsAvail), 1.5f))));
 
             tmp = ctlroll * maxBank * 1.2F;
@@ -171,12 +171,12 @@ AirframeClass::SimpleModel(void)
             // JPG 15 Jan 04 - Fixed major crackhead tanker turns...what a big pile of goo
             // We want tankers to turn smooth ALL the time (except when landing) so in MP we aren't chasing them when they turn back like an F-15 to the first
             // track point.
-            if ((g_bTankerFMFix && platform->DBrain() && platform->DBrain()->IsTanker() &&
-                 platform->TBrain() /* && platform->TBrain()->IsSet(TankerBrain::IsRefueling)  &&
- platform->TBrain()->ReachedFirstTrackPoint() */) ||
-                (g_bSimpleFMUpdates && vt > 1 && gearPos < 0.7F &&
-                 platform->DBrain()->GetCurrentMode() != DigitalBrain::LandingMode &&
-                 platform->DBrain()->GetCurrentMode() != DigitalBrain::RefuelingMode))
+            if ((g_bTankerFMFix and platform->DBrain() and platform->DBrain()->IsTanker() and 
+                 platform->TBrain() /* and platform->TBrain()->IsSet(TankerBrain::IsRefueling)  and 
+ platform->TBrain()->ReachedFirstTrackPoint() */) or
+                (g_bSimpleFMUpdates and vt > 1 and gearPos < 0.7F and 
+                 platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::LandingMode and 
+                 platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::RefuelingMode))
                 r = (360.0f * GRAVITY * tan(turnangle) / (2 * PI * vt)) * DTR;
             else
                 r = (ctlroll * MAX_AF_YAWRATE);
@@ -193,8 +193,8 @@ AirframeClass::SimpleModel(void)
                 r = 0.0F;
         }
 
-        if (!(playerFlightModelHack &&
-              platform == SimDriver.GetPlayerEntity() &&
+        if ( not (playerFlightModelHack and 
+              platform == SimDriver.GetPlayerEntity() and 
               platform->AutopilotType() == AircraftClass::APOff))
         {
 
@@ -215,7 +215,7 @@ AirframeClass::SimpleModel(void)
         // only can pull back on ground when we can achieve 1G with 10 degrees AOA
         //note: we want to make sure the plane takes off, so even if we couldn't
         //get off the ground, we lift off
-        //if ( ctlpitch > 0.0f && (-zaero > GRAVITY || oldp03[2] == 13.0F) ) Cobra old rotation code
+        //if ( ctlpitch > 0.0f and (-zaero > GRAVITY or oldp03[2] == 13.0F) ) Cobra old rotation code
         float cltakeoff = Math.TwodInterp(mach, 12.0f, aeroData->mach, aeroData->alpha,
                                           aeroData->clift, aeroData->numMach,
                                           aeroData->numAlpha, &curMachBreak, &curAlphaBreak) *
@@ -225,7 +225,7 @@ AirframeClass::SimpleModel(void)
         ctlpitch += 0.1f;
         int tstatusf = platform->DBrain()->ATCStatus();
 
-        if (vcas > rotate && tstatusf > tTaxi)  //cobra
+        if (vcas > rotate and tstatusf > tTaxi)  //cobra
         {
             // pitch where we want to be
             tmp = ctlpitch * MAX_AF_PITCH;
@@ -278,7 +278,7 @@ AirframeClass::SimpleModel(void)
     // Assume 1 G for wings level, max at 7 gs at +/- 90 degrees roll
     float desiredGs = 1.0F;
 
-    if (!IsSet(InAir))
+    if ( not IsSet(InAir))
     {
         //nzcgs = nzcgb = max(0.0F, (15.0F - weight/liftO_alp)*0.25F);
         if (ctlpitch > 0.0F)
@@ -298,17 +298,17 @@ AirframeClass::SimpleModel(void)
         //nzcgs = nzcgb = min (nzcgb, maxGs);
     }
 
-    //this needs to always be calculated, otherwise it is impossible to taxi or takeoff!
+    //this needs to always be calculated, otherwise it is impossible to taxi or takeoff
     // Find new velocity
     vtDot = xwaero + xwprop - GRAVITY * platform->platformAngles.singam;
 
     float netAccel = CalculateVt(dT);
 
-    // edg: my mr steen mode to allow hovering!
+    // edg: my mr steen mode to allow hovering
     // speed is directly based on throtl
     // speed up yawrate
-    if (playerFlightModelHack &&
-        platform == SimDriver.GetPlayerEntity() &&
+    if (playerFlightModelHack and 
+        platform == SimDriver.GetPlayerEntity() and 
         platform->AutopilotType() == AircraftClass::APOff)
     {
         float oldvt;
@@ -341,13 +341,13 @@ AirframeClass::SimpleModel(void)
 
 
 
-    if (vt && !(playerFlightModelHack &&
-                platform == SimDriver.GetPlayerEntity() &&
+    if (vt and not (playerFlightModelHack and 
+                platform == SimDriver.GetPlayerEntity() and 
                 platform->AutopilotType() == AircraftClass::APOff))
     {
         Gains();
 
-        if (!IsSet(InAir))
+        if ( not IsSet(InAir))
         {
             if (desiredGs)
                 tmp = CalcDesAlpha(desiredGs);
@@ -387,9 +387,9 @@ AirframeClass::SimpleModel(void)
         ydot =   vt * platform->platformAngles.cosgam *
                  platform->platformAngles.sinsig;
         zdot =  -vt * platform->platformAngles.singam;
-        ShiAssert(!_isnan(xdot));
-        ShiAssert(!_isnan(ydot));
-        ShiAssert(!_isnan(zdot));
+        ShiAssert( not _isnan(xdot));
+        ShiAssert( not _isnan(ydot));
+        ShiAssert( not _isnan(zdot));
     }
     else
     {
@@ -401,7 +401,7 @@ AirframeClass::SimpleModel(void)
 
     //RunLandingGear(); // MLR 2003-10-15
 
-    if (!IsSet(InAir))
+    if ( not IsSet(InAir))
     {
         groundDeltaX += dT * xdot * gSpeedyGonzales;
         groundDeltaY += dT * ydot * gSpeedyGonzales;
@@ -422,9 +422,9 @@ AirframeClass::SimpleModel(void)
         groundDeltaY = 0.0f;
     }
 
-    ShiAssert(!_isnan(x));
-    ShiAssert(!_isnan(y));
-    ShiAssert(!_isnan(z));
+    ShiAssert( not _isnan(x));
+    ShiAssert( not _isnan(y));
+    ShiAssert( not _isnan(z));
 
     groundZ = OTWDriver.GetGroundLevel(x, y, &gndNormal);
     // Normalize terrain normal
@@ -436,7 +436,7 @@ AirframeClass::SimpleModel(void)
     /*----------------------*/
     /* set flight status
     /*----------------------*/
-    if (!IsSet(InAir))
+    if ( not IsSet(InAir))
     {
         float gndGmma, relMu;
 
@@ -451,13 +451,13 @@ AirframeClass::SimpleModel(void)
         {
             ClearFlag(Planted);
             //Cobra test
-            //if ((-zaero > GRAVITY || oldp03[2] == 13.0F) && gmma - gndGmma > 0.0F && ctlpitch > 0.0f)
+            //if ((-zaero > GRAVITY or oldp03[2] == 13.0F) and gmma - gndGmma > 0.0F and ctlpitch > 0.0f)
             int tstatus = platform->DBrain()->ATCStatus();
 
-            if (vcas > rotate && tstatus > tTaxi) //Cobra
+            if (vcas > rotate and tstatus > tTaxi) //Cobra
             {
 #ifdef DEBUG
-                ShiAssert(platform->DBrain()->ATCStatus() != lLanded);
+                ShiAssert(platform->DBrain()->ATCStatus() not_eq lLanded);
 #endif
                 SetFlag(InAir);
                 platform->UnSetFlag(ON_GROUND);

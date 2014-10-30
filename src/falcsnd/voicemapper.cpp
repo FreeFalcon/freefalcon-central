@@ -17,20 +17,20 @@ VoiceMapper g_voicemap;
 
 const unsigned int  VoiceMapper::default_voices[] =
 {
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 0
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 1
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 2
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 3
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 4
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 5
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 6
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 7
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 8
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 9
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 10
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 11
-    VOICE_ATC | VOICE_SIDE_ALL, // 12
-    VOICE_ATC | VOICE_SIDE_ALL, // 13
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 0
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 1
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 2
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 3
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 4
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 5
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 6
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 7
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 8
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 9
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 10
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 11
+    VOICE_ATC bitor VOICE_SIDE_ALL, // 12
+    VOICE_ATC bitor VOICE_SIDE_ALL, // 13
 };
 const int  VoiceMapper::max_default_voices = sizeof(default_voices) / sizeof(default_voices[0]);
 
@@ -41,7 +41,7 @@ static VoiceMapper::namemap Names[] =
     { "awacs", VoiceMapper::VOICE_AWACS},
     { "fac", VoiceMapper::VOICE_FAC},
     { "pilot", VoiceMapper::VOICE_PILOT},
-    { "all", VoiceMapper::VOICE_PILOT | VoiceMapper::VOICE_ATC | VoiceMapper::VOICE_AWACS | VoiceMapper::VOICE_FAC},
+    { "all", VoiceMapper::VOICE_PILOT bitor VoiceMapper::VOICE_ATC bitor VoiceMapper::VOICE_AWACS bitor VoiceMapper::VOICE_FAC},
     { "any", VoiceMapper::VOICE_SIDE_ALL},
     { "1", VoiceMapper::VOICE_SIDE1},
     { "2", VoiceMapper::VOICE_SIDE2},
@@ -107,10 +107,10 @@ void VoiceMapper::LoadVoices()
 
     while (fgets(buf, sizeof buf, fp))
     {
-        if (buf[0] == '\n' || buf[0] == '#' || buf[0] == ';')
+        if (buf[0] == '\n' or buf[0] == '#' or buf[0] == ';')
             continue; // comment
 
-        if (sscanf(buf, "%d %99s %99s", &voice, &type, &side) != 3)
+        if (sscanf(buf, "%d %99s %99s", &voice, &type, &side) not_eq 3)
             continue;
 
         ShiAssert(voice < totalvoices);
@@ -119,8 +119,8 @@ void VoiceMapper::LoadVoices()
             continue;
 
         int vtype = LookupName(type);
-        vtype |= LookupName(side);
-        voiceflags[voice] |= vtype;
+        vtype or_eq LookupName(side);
+        voiceflags[voice] or_eq vtype;
     }
 
     CloseCampFile(fp);
@@ -130,7 +130,7 @@ unsigned int VoiceMapper::LookupName(const char *name)
 {
     const struct namemap *mp;
 
-    for (mp = Names; mp->name != NULL; mp ++)
+    for (mp = Names; mp->name not_eq NULL; mp ++)
     {
         if (stricmp(mp->name, name) == 0)
             return mp->id;
@@ -160,12 +160,12 @@ void VoiceMapper::SetMyVoice(int n)
 // choose a voice at random that has the right attributes
 int VoiceMapper::PickVoice(int type, int side)
 {
-    ShiAssert(type > 0 && type < VOICE_SIDE_BASE);
-    ShiAssert((side >= 0 && side <= 7) || side == VOICE_SIDE_UNK);
+    ShiAssert(type > 0 and type < VOICE_SIDE_BASE);
+    ShiAssert((side >= 0 and side <= 7) or side == VOICE_SIDE_UNK);
     unsigned int match = type;
 
-    if (side != VOICE_SIDE_UNK)
-        match |= (VOICE_SIDE_BASE << side);
+    if (side not_eq VOICE_SIDE_UNK)
+        match or_eq (VOICE_SIDE_BASE << side);
 
     float chance;
     int selected = 0;
@@ -173,7 +173,7 @@ int VoiceMapper::PickVoice(int type, int side)
 
     for (int i = 0; i < totalvoices; i++)
     {
-        if ((voiceflags[i] & match) != match)
+        if ((voiceflags[i] bitand match) not_eq match)
             continue;
 
         recno ++;
@@ -188,9 +188,9 @@ int VoiceMapper::PickVoice(int type, int side)
 
 int VoiceMapper::GetNextVoice(int start, int type, int side)
 {
-    ShiAssert(type > 0 && type < VOICE_SIDE_BASE);
-    ShiAssert(side >= 0 && side <= 7);
-    unsigned int match = type | (VOICE_SIDE_BASE << side);
+    ShiAssert(type > 0 and type < VOICE_SIDE_BASE);
+    ShiAssert(side >= 0 and side <= 7);
+    unsigned int match = type bitor (VOICE_SIDE_BASE << side);
     int selected = 0;
     int recno = 0;
 
@@ -198,7 +198,7 @@ int VoiceMapper::GetNextVoice(int start, int type, int side)
     {
         start = (start + 1) % totalvoices;
 
-        if ((voiceflags[start] & match) == match)
+        if ((voiceflags[start] bitand match) == match)
             return start;
     }
 

@@ -25,7 +25,7 @@ void MissileClass::Init2(void)
     e40 = trigPsi.cos * trigTheta.cos * trigPhi.sin
           - trigPsi.sin * trigTheta.sin * trigPhi.cos;
 
-    if (!ifd)
+    if ( not ifd)
         return; // JB 010803
 
     ifd->e1 = e10;

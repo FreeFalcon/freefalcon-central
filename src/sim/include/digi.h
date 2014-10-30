@@ -770,15 +770,15 @@ public:
     void ResetTimer(int delta);
     void SetATCFlag(int flag)
     {
-        atcFlags |= flag;
+        atcFlags or_eq flag;
     }
     void ClearATCFlag(int flag)
     {
-        atcFlags &= ~flag;
+        atcFlags and_eq compl flag;
     }
     int IsSetATC(int flag)
     {
-        return (atcFlags & flag) && TRUE;
+        return (atcFlags bitand flag) and TRUE;
     }
     void ResetATC(void);
     void FlightMemberWantsFuel(int state);
@@ -795,7 +795,7 @@ public:
         RequestTakeoff    = 0x80,
         Refueling         = 0x100,
         NeedToRefuel      = 0x200,
-        ClearToLand       = 0x400,
+        ClearToLand = 0x400,
         PermitTakeRunway  = 0x800,
         WingmanReady      = 0x1000,
         AceGunsEngage     = 0x2000,

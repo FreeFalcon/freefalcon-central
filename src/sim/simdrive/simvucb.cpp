@@ -55,7 +55,7 @@ VuEntity* SimVUCreateVehicle(ushort type, ushort sizeShort, VU_BYTE* data)
         else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_BOMB)
         {
             // JB 010220
-            if (classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_CHAFF &&
+            if (classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_CHAFF and 
                 classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_CHAFF1)
             {
                 theVehicle = new ChaffClass(&data, &size);
@@ -67,7 +67,7 @@ VuEntity* SimVUCreateVehicle(ushort type, ushort sizeShort, VU_BYTE* data)
                     return NULL;
                 }
             }
-            else if (classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_FLARE1 &&
+            else if (classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_FLARE1 and 
                      classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_CHAFF1 + 1)
             {
                 theVehicle = new FlareClass(&data, &size);
@@ -99,7 +99,7 @@ VuEntity* SimVUCreateVehicle(ushort type, ushort sizeShort, VU_BYTE* data)
         }
         else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_EJECT)
         {
-            // TODO: remote creation for ejected pilots!!!
+            // TODO: remote creation for ejected pilots
             theVehicle = new EjectedPilotClass(&data, &size);
         }
     }
@@ -122,7 +122,7 @@ VuEntity* SimVUCreateVehicle(ushort type, ushort sizeShort, VU_BYTE* data)
         //theVehicle->SetDelta(0.0F, 0.0F, 0.0F);
         //theVehicle->SetYPRDelta(0.0F, 0.0F, 0.0F);
         theVehicle->SetDriver(NULL);
-        // MonoPrint("Got remote creation event! Inserting object %08x\n", theVehicle);
+        // MonoPrint("Got remote creation event Inserting object %08x\n", theVehicle);
 
         theVehicle->Init(NULL);
     }

@@ -2,7 +2,7 @@
 #define _ATC_BRAIN_H
 
 #ifdef DEBUG
-//#define TEST_HACK_THAT_LEAKS // This is a BAD thing, but might help track down a bug -- remove soon!
+//#define TEST_HACK_THAT_LEAKS // This is a BAD thing, but might help track down a bug -- remove soon
 #endif
 
 class AircraftClass;
@@ -89,7 +89,7 @@ public:
     };
     ~runwayQueueStruct()
     {
-        ShiAssert(!"We don't want to do this while testing (except for shutdown)");
+        ShiAssert( not "We don't want to do this while testing (except for shutdown)");
     };
 #else
 typedef struct runwayQueueStruct

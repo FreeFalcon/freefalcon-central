@@ -68,7 +68,7 @@ static void TallyUnitVehicles(Unit un)
 {
     int i, j, ID;
 
-    if (!un)
+    if ( not un)
         return;
 
     for (i = 0; i < 16; i++)
@@ -77,7 +77,7 @@ static void TallyUnitVehicles(Unit un)
 
         if (ID)
         {
-            for (j = 0; j < Count && Count < 256; j++)
+            for (j = 0; j < Count and Count < 256; j++)
                 if (VehList[j][0] == ID)
                 {
                     VehList[j][1] += un->GetNumVehicles(i);
@@ -102,7 +102,7 @@ void AddVehiclesToWindow(C_Window *win, long client)
 
     for (i = 0; i < 16; i++)
     {
-        if (VehList[i][0] && VehList[i][1])
+        if (VehList[i][0] and VehList[i][1])
         {
             vc = GetVehicleClassData(VehList[i][0]);
 
@@ -172,20 +172,20 @@ void SetupUnitInfoWindow(VU_ID unitID)
 
     win = gMainHandler->FindWindow(UNIT_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     un = (Unit)vuDatabase->Find(unitID);
 
-    if (!un)
+    if ( not un)
         return;
 
-    if (!un->IsBattalion() && !un->IsBrigade())
+    if ( not un->IsBattalion() and not un->IsBrigade())
         return;
 
     urec = (UI_Refresher*)gGps->Find(un->GetCampID());
 
-    if (!urec)
+    if ( not urec)
         return;
 
     Leave = UI_Enter(win);
@@ -250,7 +250,7 @@ void SetupUnitInfoWindow(VU_ID unitID)
     {
         bmp->Refresh();
 
-        if (urec->MapItem_ && urec->MapItem_->Icon)
+        if (urec->MapItem_ and urec->MapItem_->Icon)
         {
             bmp->SetImage(urec->MapItem_->Icon->GetImage());
             bmp->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -489,20 +489,20 @@ void SetupDivisionInfoWindow(long DivID, short owner)
 
     win = gMainHandler->FindWindow(UNIT_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     div = GetFirstDivisionByCountry(owner);
 
-    while (div && div->nid != (DivID))
+    while (div and div->nid not_eq (DivID))
         div = GetNextDivisionByCountry(div, owner);
 
-    if (!div)
+    if ( not div)
         return;
 
-    urec = (UI_Refresher*)gGps->Find(div->nid | UR_DIVISION);
+    urec = (UI_Refresher*)gGps->Find(div->nid bitor UR_DIVISION);
 
-    if (!urec)
+    if ( not urec)
         return;
 
     Leave = UI_Enter(win);
@@ -562,7 +562,7 @@ void SetupDivisionInfoWindow(long DivID, short owner)
     {
         bmp->Refresh();
 
-        if (urec->MapItem_ && urec->MapItem_->Icon)
+        if (urec->MapItem_ and urec->MapItem_->Icon)
         {
             bmp->SetImage(urec->MapItem_->Icon->GetImage());
             bmp->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -767,7 +767,7 @@ void PickPilotCB(long, short hittype, C_Base *control)
     _TCHAR buffer[10];
     F4CSECTIONHANDLE *Leave;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     Leave = UI_Enter(control->Parent_);
@@ -874,7 +874,7 @@ long GetRank(_TCHAR *str)
 
         if (rnk)
         {
-            if (!_tcsncicmp(rnk, str, _tcsclen(rnk)))
+            if ( not _tcsncicmp(rnk, str, _tcsclen(rnk)))
                 return(i);
         }
 
@@ -930,7 +930,7 @@ void BuildPilotList(C_TreeList *tree, Squadron sqd)
                 {
                     lbptr = (RemoteLB*)gCommsMgr->GetRemoteLB(session->Id().creator_);
 
-                    if (lbptr && lbptr->Pilot_.PictureResource)
+                    if (lbptr and lbptr->Pilot_.PictureResource)
                     {
                         btn->SetUserNumber(C_STATE_0, lbptr->Pilot_.PictureResource); // Image ID goes here
                     }
@@ -959,8 +959,8 @@ void BuildPilotList(C_TreeList *tree, Squadron sqd)
 
     for (i = 0; i < PILOTS_PER_SQUADRON; i++)
     {
-        // if(sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE || sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
-        if (sqd->GetPilotData(i)->pilot_status != PILOT_KIA)
+        // if(sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE or sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
+        if (sqd->GetPilotData(i)->pilot_status not_eq PILOT_KIA)
         {
             GetPilotName(sqd->GetPilotData(i)->pilot_id, buffer, 25);
             btn = new C_Button;
@@ -1014,7 +1014,7 @@ void PickSquadronStatsCB(long, short hittype, C_Base *control)
 
     F4CSECTIONHANDLE *Leave;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     Leave = UI_Enter(control->Parent_);
@@ -1089,7 +1089,7 @@ void PickSquadronStatsCB(long, short hittype, C_Base *control)
 
 void SquadronAirUnitCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (control)
@@ -1106,7 +1106,7 @@ void PilotAirUnitCB(long, short hittype, C_Base *control)
     C_TreeList *tree = NULL;
     C_Button *btn = NULL;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (control)
@@ -1137,12 +1137,12 @@ void SquadronFindCB(long, short hittype, C_Base *)
 {
     Squadron sqd;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     sqd = (Squadron)vuDatabase->Find(gLastSquadron);
 
-    if (sqd && sqd->IsSquadron())
+    if (sqd and sqd->IsSquadron())
     {
         FindMapIcon(sqd->GetCampID());
     }
@@ -1152,10 +1152,10 @@ BOOL SortPilotByNameCB(TREELIST *list, TREELIST *newitem)
 {
     C_Button *btn1, *btn2;
 
-    if (!list || !newitem)
+    if ( not list or not newitem)
         return(FALSE);
 
-    if (!list->Item_ || !newitem->Item_)
+    if ( not list->Item_ or not newitem->Item_)
         return(FALSE);
 
     btn1 = (C_Button *)list->Item_;
@@ -1197,7 +1197,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
 
     ent = (CampEntity)vuDatabase->Find(TheID);
 
-    if (!ent)
+    if ( not ent)
         return;
 
     gLastSquadron = TheID;
@@ -1208,7 +1208,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
         sqdID = flt->GetUnitSquadronID();
         sqd = (Squadron)vuDatabase->Find(sqdID);
 
-        if (!sqd)
+        if ( not sqd)
             return;
 
         pilots = sqd->NumActivePilots();
@@ -1223,7 +1223,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
 
     urec = (UI_Refresher *)gGps->Find(sqd->GetCampID());
 
-    if (!urec)
+    if ( not urec)
         return;
 
     win = gMainHandler->FindWindow(AIR_UNIT_WIN);
@@ -1254,7 +1254,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
         {
             bmp->Refresh();
 
-            if (urec->MapItem_ && urec->MapItem_->Icon)
+            if (urec->MapItem_ and urec->MapItem_->Icon)
             {
                 bmp->SetImage(urec->MapItem_->Icon->GetImage());
                 bmp->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -1404,7 +1404,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
 
             for (i = 0; i < PILOTS_PER_SQUADRON; i++)
             {
-                if (sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE || sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
+                if (sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE or sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
                 {
                     total += sqd->GetPilotData(i)->GetPilotSkill();
                     count++;
@@ -1565,7 +1565,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL CampHotelSortCB(TREELIST *list, TREELIST *newitem)
 {
-    if (!list || !newitem)
+    if ( not list or not newitem)
         return(FALSE);
 
     if (((C_Custom*)newitem->Item_)->GetValue(1) > ((C_Custom*)list->Item_)->GetValue(1))
@@ -1597,14 +1597,14 @@ void UpdateSierraHotel()
     {
         sqd = FalconLocalSession->GetPlayerSquadron();
 
-        if (!sqd)
+        if ( not sqd)
             return;
 
         Leave = UI_Enter(win);
 
         tree = (C_TreeList*)win->FindControl(SH_PILOT_LIST);
 
-        if (!tree)
+        if ( not tree)
             return;
 
         tree->SetSortCallback(CampHotelSortCB);
@@ -1624,7 +1624,7 @@ void UpdateSierraHotel()
                 {
                     kills = 0;
                     kills = session->GetKill(FalconSessionEntity::_AIR_KILLS_);
-                    // if(kills || 1)
+                    // if(kills or 1)
                     {
                         ctrl = new C_Custom;
                         ctrl->Setup(C_DONT_CARE, FalconSessionEntity::_VS_HUMAN_, 2);
@@ -1643,7 +1643,7 @@ void UpdateSierraHotel()
                         {
                             lbptr = (RemoteLB*)gCommsMgr->GetRemoteLB(session->Id().creator_);
 
-                            if (lbptr && lbptr->Pilot_.PictureResource)
+                            if (lbptr and lbptr->Pilot_.PictureResource)
                             {
                                 ctrl->SetUserNumber(C_STATE_0, lbptr->Pilot_.PictureResource); // Image ID goes here
                             }
@@ -1677,7 +1677,7 @@ void UpdateSierraHotel()
                         output->SetText(buffer);
                         output->SetXY(tree->GetUserNumber(C_STATE_1), 0);
                         output->SetFgColor(0xeeeeee);
-                        output->SetFlags(output->GetFlags() | C_BIT_RIGHT);
+                        output->SetFlags(output->GetFlags() bitor C_BIT_RIGHT);
                         output->SetInfo();
 
                         item = tree->CreateItem(ItemID, C_TYPE_ITEM, ctrl);
@@ -1696,11 +1696,11 @@ void UpdateSierraHotel()
 
         for (i = 0; i < PILOTS_PER_SQUADRON; i++)
         {
-            if (sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE || sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
+            if (sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE or sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
             {
                 kills = sqd->GetPilotData(i)->aa_kills;
 
-                // if(kills || 1)
+                // if(kills or 1)
                 {
                     GetPilotName(sqd->GetPilotData(i)->pilot_id, buffer, 25);
                     ctrl = new C_Custom;
@@ -1737,7 +1737,7 @@ void UpdateSierraHotel()
                     output->SetText(buffer);
                     output->SetXY(tree->GetUserNumber(C_STATE_1), 0);
                     output->SetFgColor(0xeeeeee);
-                    output->SetFlags(output->GetFlags() | C_BIT_RIGHT);
+                    output->SetFlags(output->GetFlags() bitor C_BIT_RIGHT);
                     output->SetInfo();
 
                     item = tree->CreateItem(ItemID, C_TYPE_ITEM, ctrl);
@@ -1990,7 +1990,7 @@ WayPointClass* GetWayPointUnder(Unit unit)
     unit->GetLocation(&x, &y);
     gDragWPNum = 0;
 
-    if (!w)
+    if ( not w)
         return NULL;
 
     while (w)
@@ -1998,7 +1998,7 @@ WayPointClass* GetWayPointUnder(Unit unit)
         gDragWPNum++;
         w->GetWPLocation(&wx, &wy);
 
-        if (wx == x && wy == y)
+        if (wx == x and wy == y)
             return w;
 
         w = w->GetNextWP();
@@ -2024,7 +2024,7 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
     {
         entity = GetEntityByCampID(ID);
 
-        if (entity && entity->IsUnit())
+        if (entity and entity->IsUnit())
         {
             unit = (UnitClass *) entity;
 
@@ -2058,11 +2058,11 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
     {
         entity = GetEntityByCampID(ID);
 
-        if (entity && entity->IsUnit())
+        if (entity and entity->IsUnit())
         {
             unit = (UnitClass *) entity;
 
-            if ((TheCampaign.Flags & CAMP_TACTICAL_EDIT) || (GetTeam(unit->GetOwner()) == FalconLocalSession->GetTeam()))
+            if ((TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) or (GetTeam(unit->GetOwner()) == FalconLocalSession->GetTeam()))
             {
                 gMapMgr->SetCurrentWaypointList(unit->Id());
 
@@ -2082,7 +2082,7 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
     {
         entity = GetEntityByCampID(ID);
 
-        if (entity && entity->IsUnit())
+        if (entity and entity->IsUnit())
         {
             unit = (UnitClass *) entity;
 
@@ -2110,7 +2110,7 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
                 // Change our location
                 unit->SetLocation(bx, by);
 
-                if (!unit->IsFlight())
+                if ( not unit->IsFlight())
                     return;
 
                 // Add a new waypoint at current location or move the one we were sitting on
@@ -2121,7 +2121,7 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
                     gDragWPNum = 1;
                     wp = unit->GetFirstUnitWP();
 
-                    while (wp && wp != unit->GetCurrentUnitWP())
+                    while (wp and wp not_eq unit->GetCurrentUnitWP())
                     {
                         gDragWPNum++;
                         wp = wp->GetNextWP();
@@ -2168,7 +2168,7 @@ void fixup_unit(Unit unit)
 
     wp = unit->GetFirstUnitWP();
 
-    while (wp && (wp->GetWPDepartureTime() < current_time) && wp->GetWPAction() != WP_LAND)
+    while (wp and (wp->GetWPDepartureTime() < current_time) and wp->GetWPAction() not_eq WP_LAND)
     {
         // Some special case stuff for air mobile
         if (wp->GetWPAction() == WP_PICKUP)
@@ -2212,7 +2212,7 @@ void fixup_unit(Unit unit)
         {
             wp->GetWPLocation(&wx, &wy);
 
-            if (wp->GetWPFlags() & WPF_HOLDCURRENT)
+            if (wp->GetWPFlags() bitand WPF_HOLDCURRENT)
                 z = pwp->GetWPAltitude();
             else
                 z = wp->GetWPAltitude();

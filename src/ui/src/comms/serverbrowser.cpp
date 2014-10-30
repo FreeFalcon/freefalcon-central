@@ -258,13 +258,13 @@ static void OnDeleteItemServerList(TREELIST *item)
 
 static void LocalCloseWindowCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (m_bCloseWindowPending)
         return;
 
-    if (m_pUpdater && m_pUpdater->IsUpdating())
+    if (m_pUpdater and m_pUpdater->IsUpdating())
     {
         m_bCloseWindowPending = true;
         m_pUpdater->CancelUpdate();
@@ -282,7 +282,7 @@ static void LocalCloseWindowCB(long, short hittype, C_Base *control)
 
 static void OnClickedBack(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     C_Base *wndClose = control->GetParent()->FindControl(CLOSE_WINDOW);
@@ -293,19 +293,19 @@ static void OnClickedBack(long, short hittype, C_Base *control)
 /*  This crashes, removed from the UI
 static void OnClickedSettings(long, short hittype,C_Base *control)
 {
- if(hittype != C_TYPE_LMOUSEUP)
+ if(hittype not_eq C_TYPE_LMOUSEUP)
  return;
 
  C_Window *win;
  C_Button *button;
 
  win=gMainHandler->FindWindow(JETNET_WIN);
- if(!win) return;
+ if( not win) return;
 
  button = (C_Button*)win->FindControl(SETUP_JETNET_ENABLEUPLINK);
  if (button)
  {
- g_bEnableUplink = !g_bEnableUplink;
+ g_bEnableUplink = not g_bEnableUplink;
  if (g_bEnableUplink) // now we switched from off to on, set up the uplink
  {
  // Make sure all objects are registered
@@ -335,7 +335,7 @@ static void OnClickedSettings(long, short hittype,C_Base *control)
 
 static void OnClickedRefresh(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     Update();
@@ -343,10 +343,10 @@ static void OnClickedRefresh(long, short hittype, C_Base *control)
 
 static void OnClickedPlay(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (!m_pSelectedItem || m_bConnectPending)
+    if ( not m_pSelectedItem or m_bConnectPending)
         return;
 
     C_Base *wndClose = control->GetParent()->FindControl(CLOSE_WINDOW);
@@ -363,7 +363,7 @@ static void OnClickedPlay(long, short hittype, C_Base *control)
 
 static void OnClickedFilter_All(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetFilterMode(FILTER_MODE_ALL);
@@ -371,7 +371,7 @@ static void OnClickedFilter_All(long, short hittype, C_Base *control)
 
 static void OnClickedFilter_Campaign(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetFilterMode(FILTER_MODE_CAMPAIGN);
@@ -379,7 +379,7 @@ static void OnClickedFilter_Campaign(long, short hittype, C_Base *control)
 
 static void OnClickedFilter_TE(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetFilterMode(FILTER_MODE_TE);
@@ -387,7 +387,7 @@ static void OnClickedFilter_TE(long, short hittype, C_Base *control)
 
 static void OnClickedFilter_Dogfight(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetFilterMode(FILTER_MODE_DOGFIGHT);
@@ -395,7 +395,7 @@ static void OnClickedFilter_Dogfight(long, short hittype, C_Base *control)
 
 static void OnClickedFilter_Favorites(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetFilterMode(FILTER_MODE_FAVORITES);
@@ -403,7 +403,7 @@ static void OnClickedFilter_Favorites(long, short hittype, C_Base *control)
 
 static void OnClickedFilter_Populated(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetFilterMode(FILTER_MODE_POPULATED);
@@ -411,7 +411,7 @@ static void OnClickedFilter_Populated(long, short hittype, C_Base *control)
 
 static void OnClickedSort_ServerName(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // F4CSECTIONHANDLE *Leave = UI_Enter(control->Parent_);
@@ -423,7 +423,7 @@ static void OnClickedSort_ServerName(long, short hittype, C_Base *control)
 
 static void OnClickedSort_Ping(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // F4CSECTIONHANDLE *Leave = UI_Enter(control->Parent_);
@@ -438,7 +438,7 @@ static void OnClickedSort_Ping(long, short hittype, C_Base *control)
 
 static void OnClickedSort_Mode(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // F4CSECTIONHANDLE *Leave = UI_Enter(control->Parent_);
@@ -453,7 +453,7 @@ static void OnClickedSort_Mode(long, short hittype, C_Base *control)
 
 static void OnClickedSort_Players(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // F4CSECTIONHANDLE *Leave = UI_Enter(control->Parent_);
@@ -468,7 +468,7 @@ static void OnClickedSort_Players(long, short hittype, C_Base *control)
 
 static void OnClickedSort_Location(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // F4CSECTIONHANDLE *Leave = UI_Enter(control->Parent_);
@@ -491,12 +491,12 @@ static void OnSelchangeServerList(long n, short hittype, C_Base *control)
             // F4CSECTIONHANDLE *Leave = UI_Enter(control->Parent_);
             if (m_pSelectedItem)
             {
-                m_pSelectedItem->SetState(static_cast<short>(control->GetState() & ~1));
+                m_pSelectedItem->SetState(static_cast<short>(control->GetState() bitand compl 1));
                 m_pSelectedItem->Refresh();
             }
 
             m_pSelectedItem = (C_ServerItem *) control;
-            m_pSelectedItem->SetState(static_cast<short>(control->GetState() | 1));
+            m_pSelectedItem->SetState(static_cast<short>(control->GetState() bitor 1));
             m_pSelectedItem->Refresh();
 
             // UI_Leave(Leave);
@@ -519,7 +519,7 @@ static void OnSelchangeServerList(long n, short hittype, C_Base *control)
 /*
 static void OnClickedSetup(long,short hittype,C_Base *control)
 {
-    if(hittype != C_TYPE_LMOUSEUP)
+    if(hittype not_eq C_TYPE_LMOUSEUP)
  return;
     C_Window *win;
     win=gMainHandler->FindWindow(SETUP_JETNET_OPTIONS_WIN);
@@ -537,7 +537,7 @@ static BOOL MainKBCallback(unsigned char DKScanCode, unsigned char Ascii, unsign
         case DIK_RETURN:
         case DIK_NUMPADENTER:
         {
-            if (RepeatCount == 1 && m_pSelectedItem)
+            if (RepeatCount == 1 and m_pSelectedItem)
             {
                 OnClickedPlay(0, C_TYPE_LMOUSEUP, m_pWnd->FindControl(JETNET_BROWSER_PLAY));
                 return TRUE;
@@ -675,19 +675,19 @@ C_ServerItem *MakeServerItem(C_TreeList *pTree, IGame *p)
     C_Window *pWindow;
 	TREELIST* pTreeItem = NULL;
 
-    if (!pTree || !p)
+    if ( not pTree or not p)
         return NULL;
 
     try
     {
         pServerItem = new C_ServerItem;
 
-        if (!pServerItem)
+        if ( not pServerItem)
             return(NULL);
 
         pWindow = pTree->GetParent();
 
-        if (!pWindow)
+        if ( not pWindow)
             return(NULL);
 
         pServerItem->SetFont(pTree->GetFont());
@@ -720,7 +720,7 @@ static void ClearServerList()
 {
     GAMEARRAY::iterator it;
 
-    for (it = m_arrGames.begin(); it != m_arrGames.end(); it++)
+    for (it = m_arrGames.begin(); it not_eq m_arrGames.end(); it++)
         if (*it)
             (*it)->Release();
 
@@ -731,11 +731,11 @@ static void Update()
 {
     try
     {
-        if (!m_pUpdater)
+        if ( not m_pUpdater)
         {
             m_pUpdater = new GNetUpdater;
 
-            if (!m_pUpdater)
+            if ( not m_pUpdater)
                 throw _com_error(E_OUTOFMEMORY);
 
             m_pUpdater->Init();
@@ -861,7 +861,7 @@ static void UpdateDisplay()
         GAMEARRAY::iterator it;
         GNETCORELib::IGamePtr p;
 
-        for (it = m_arrGames.begin(); it != m_arrGames.end(); it++)
+        for (it = m_arrGames.begin(); it not_eq m_arrGames.end(); it++)
             if (FilterGame(*it))
                 MakeServerItem(m_pListServers, *it);
 
@@ -880,7 +880,7 @@ static void ServerListReceived(int nServers)
 {
     m_bConnectedToMaster = false;
 
-    if (nServers != 0)
+    if (nServers not_eq 0)
         UpdateStatus("Connected .. getting server information");
 }
 
@@ -918,7 +918,7 @@ static void UpdateComplete(BOOL bSuccess)
 
     else
     {
-        if (!m_bConnectedToMaster)
+        if ( not m_bConnectedToMaster)
             UpdateStatus("Failed to connect to master server");
 
         else
@@ -971,7 +971,7 @@ static void UpdateServerStatus()
 {
     int nServerCount;
 
-    if (!m_pUpdater || m_pUpdater->m_nServerCount == 0)
+    if ( not m_pUpdater or m_pUpdater->m_nServerCount == 0)
         nServerCount = 1;
     else
         nServerCount = m_pUpdater->m_nServerCount;
@@ -991,11 +991,11 @@ C_ServerItem::C_ServerItem() : C_Control()
     Color_[0] = 0xd0d0d0; // Not Selected
     Color_[1] = 0xC8; // Selected
     Color_[2] = 0xffff00; // Player is in this mission
-    Color_[3] = 0x00ff00; // Player is in this mission & current mission
+    Color_[3] = 0x00ff00; // Player is in this mission bitand current mission
 
     ZeroMemory(m_arrOutput, sizeof(m_arrOutput));
     Owner_ = NULL;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER;
 
     // cached properties
     m_nPing = 0;
@@ -1022,7 +1022,7 @@ long C_ServerItem::Size()
 
 void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
 {
-    if (!_pGame || !pParent)
+    if ( not _pGame or not pParent)
         return;
 
     GNETCORELib::IGamePtr pGame(_pGame);
@@ -1042,7 +1042,7 @@ void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
 
     m_arrOutput[0] = new O_Output;
 
-    if (!m_arrOutput[0]) throw _com_error(E_OUTOFMEMORY);
+    if ( not m_arrOutput[0]) throw _com_error(E_OUTOFMEMORY);
 
     m_arrOutput[0]->SetOwner(this);
     m_arrOutput[0]->SetFont(Font_);
@@ -1054,7 +1054,7 @@ void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
 
     m_arrOutput[1] = new O_Output;
 
-    if (!m_arrOutput[1]) throw _com_error(E_OUTOFMEMORY);
+    if ( not m_arrOutput[1]) throw _com_error(E_OUTOFMEMORY);
 
     m_arrOutput[1]->SetOwner(this);
     m_arrOutput[1]->SetFont(Font_);
@@ -1067,7 +1067,7 @@ void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
 
     m_arrOutput[2] = new O_Output;
 
-    if (!m_arrOutput[2]) throw _com_error(E_OUTOFMEMORY);
+    if ( not m_arrOutput[2]) throw _com_error(E_OUTOFMEMORY);
 
     m_arrOutput[2]->SetOwner(this);
     m_arrOutput[2]->SetFont(Font_);
@@ -1079,7 +1079,7 @@ void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
 
     m_arrOutput[3] = new O_Output;
 
-    if (!m_arrOutput[3]) throw _com_error(E_OUTOFMEMORY);
+    if ( not m_arrOutput[3]) throw _com_error(E_OUTOFMEMORY);
 
     m_arrOutput[3]->SetOwner(this);
     m_arrOutput[3]->SetFont(Font_);
@@ -1092,7 +1092,7 @@ void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
 
     m_arrOutput[4] = new O_Output;
 
-    if (!m_arrOutput[4]) throw _com_error(E_OUTOFMEMORY);
+    if ( not m_arrOutput[4]) throw _com_error(E_OUTOFMEMORY);
 
     m_arrOutput[4]->SetOwner(this);
     m_arrOutput[4]->SetFont(Font_);
@@ -1109,7 +1109,7 @@ int C_ServerItem::TrimString(char *str, int nMaxPixelWidth)
 
     int nLength = strlen(str);
 
-    while (nLength && gFontList->StrWidth(Font_, str, nLength) > nMaxPixelWidth)
+    while (nLength and gFontList->StrWidth(Font_, str, nLength) > nMaxPixelWidth)
         nLength--;
 
     return nLength;
@@ -1141,10 +1141,10 @@ void C_ServerItem::SetFont(long id)
 
 long C_ServerItem::CheckHotSpots(long relx, long rely)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
         return(0);
 
-    if (relx >= GetX() && rely >= GetY() && relx <= (GetX() + GetW()) && rely <= (GetY() + GetH()))
+    if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= (GetY() + GetH()))
         return(GetID());
 
     return(0);
@@ -1156,7 +1156,7 @@ BOOL C_ServerItem::Process(long ID, short HitType)
 
     if (HitType == C_TYPE_LMOUSEUP)
     {
-        SetState(static_cast<short>(GetState() | 1));
+        SetState(static_cast<short>(GetState() bitor 1));
         Refresh();
     }
 
@@ -1168,7 +1168,7 @@ BOOL C_ServerItem::Process(long ID, short HitType)
 
 void C_ServerItem::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -1176,7 +1176,7 @@ void C_ServerItem::Refresh()
 
 void C_ServerItem::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL || !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL or not Ready())
         return;
 
     short x = GetState();
@@ -1193,7 +1193,7 @@ void C_ServerItem::Draw(SCREEN *surface, UI95_RECT *cliprect)
         }
     }
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 
@@ -1222,7 +1222,7 @@ void C_ServerItem::Save(FILE *)
 
 void C_ServerItem::SetState(short state)
 {
-    State_ = static_cast<short>(state & 3);
+    State_ = static_cast<short>(state bitand 3);
 }
 
 short C_ServerItem::GetState()
@@ -1300,7 +1300,7 @@ void CGNetUpdater::Cleanup()
 void CGNetUpdater::CancelUpdate()
 {
     // Abort now
-    if (m_pMasterServer != NULL)
+    if (m_pMasterServer not_eq NULL)
     {
         m_pMasterServer->raw_CancelUpdate();
         return;
@@ -1354,7 +1354,7 @@ void CGNetUpdater::UpdateGame(IGame *p, bool bSuccess)
 #ifndef _DEBUG
             BSTR _bstr;
 
-            if (SUCCEEDED(p->get_Name(&_bstr) || _bstr_t(_bstr) == _bstr_t("Falcon4")))
+            if (SUCCEEDED(p->get_Name(&_bstr) or _bstr_t(_bstr) == _bstr_t("Falcon4")))
 #endif
             {
                 p->AddRef();

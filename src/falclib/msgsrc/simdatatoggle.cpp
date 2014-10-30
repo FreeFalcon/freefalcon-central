@@ -34,7 +34,7 @@ int FalconSimDataToggle::Process(uchar autodisp)
 
     theEntity = (SimMoverClass*)(vuDatabase->Find(dataBlock.entityID));
 
-    if (theEntity && IsLocal())
+    if (theEntity and IsLocal())
     {
         theEntity->AddDataRequest(dataBlock.flag);
     }

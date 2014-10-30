@@ -113,7 +113,7 @@ int BasePathClass::GetNextDirection(void)
 
     int i = current_location / PATH_DIV;
     int o = current_location % PATH_DIV;
-    return (path[i] >> (o * PATH_BITS)) & PATH_MASK;
+    return (path[i] >> (o * PATH_BITS)) bitand PATH_MASK;
 }
 
 int BasePathClass::GetPreviousDirection(int num)
@@ -125,7 +125,7 @@ int BasePathClass::GetPreviousDirection(int num)
 
     int i = l / PATH_DIV;
     int o = l % PATH_DIV;
-    return (path[i] >> (o * PATH_BITS)) & PATH_MASK;
+    return (path[i] >> (o * PATH_BITS)) bitand PATH_MASK;
 }
 
 int BasePathClass::GetDirection(int num)
@@ -135,7 +135,7 @@ int BasePathClass::GetDirection(int num)
 
     int i = num / PATH_DIV;
     int o = num % PATH_DIV;
-    return (path[i] >> (o * PATH_BITS)) & PATH_MASK;
+    return (path[i] >> (o * PATH_BITS)) bitand PATH_MASK;
 }
 
 void BasePathClass::SetDirection(int num, int d)
@@ -146,8 +146,8 @@ void BasePathClass::SetDirection(int num, int d)
     int i = num / PATH_DIV;
     int o = num % PATH_DIV;
     uchar temp = (unsigned char)(PATH_MASK << (o * PATH_BITS));
-    path[i] &= ~temp;
-    path[i] |= d << (o * PATH_BITS);
+    path[i] and_eq compl temp;
+    path[i] or_eq d << (o * PATH_BITS);
 }
 
 void BasePathClass::StepPath(void)
@@ -312,7 +312,7 @@ int AS_DataClass::ASSearch(Path p, void* origin, void* target, void (*extend)(AS
     p->ClearPath();
     max_length = p->GetMaxLength();
 
-    while (count < maxSearch && waste)
+    while (count < maxSearch and waste)
     {
         (*extend)(this, location->where, target);
         AS_merge(count);
@@ -349,7 +349,7 @@ int AS_DataClass::ASSearch(Path p, void* origin, void* target, void (*extend)(AS
         // Check for exceeding the passed path's length
         if (location->path.GetLength() >= max_length)
         {
-            if (flags & RETURN_PARTIAL_ON_MAX)
+            if (flags bitand RETURN_PARTIAL_ON_MAX)
             {
                 // return a partial path
                 p->CopyPath(&location->path);
@@ -363,22 +363,22 @@ int AS_DataClass::ASSearch(Path p, void* origin, void* target, void (*extend)(AS
         }
 
         // Check for exceeding max cost and abort if so
-        if (maxCost && location->cost > maxCost)
+        if (maxCost and location->cost > maxCost)
             count = maxSearch;
 
         count++;
     }
 
     // No solution found (timed out).
-    if (flags & RETURN_PARTIAL_ON_FAIL)
+    if (flags bitand RETURN_PARTIAL_ON_FAIL)
     {
         // Return a path to the best location so far
         T = queue;
         best = 99999.0F;
 
-        while (T != NULL)
+        while (T not_eq NULL)
         {
-            if (T->cost > 0 && T->to_go < best)
+            if (T->cost > 0 and T->to_go < best)
             {
                 best = T->to_go;
                 p->CopyPath(&T->path);
@@ -389,9 +389,9 @@ int AS_DataClass::ASSearch(Path p, void* origin, void* target, void (*extend)(AS
 
         T = tried;
 
-        while (T != NULL)
+        while (T not_eq NULL)
         {
-            if (T->cost > 0 && T->to_go < best)
+            if (T->cost > 0 and T->to_go < best)
             {
                 best = T->to_go;
                 p->CopyPath(&T->path);
@@ -433,7 +433,7 @@ void AS_DataClass::AS_dispose_queue(ASNode N)
 {
     ASNode   T;
 
-    while (N != NULL)
+    while (N not_eq NULL)
     {
         T = N->next;
         delete N;
@@ -446,11 +446,11 @@ void AS_DataClass::AS_attach_queues(void)
 {
     ASNode   N;
 
-    if (queue != NULL)
+    if (queue not_eq NULL)
     {
         N = queue;
 
-        while (N->next != NULL)
+        while (N->next not_eq NULL)
             N = N->next;
 
         N->next = waste;
@@ -458,11 +458,11 @@ void AS_DataClass::AS_attach_queues(void)
         queue = NULL;
     }
 
-    if (tried != NULL)
+    if (tried not_eq NULL)
     {
         N = tried;
 
-        while (N->next != NULL)
+        while (N->next not_eq NULL)
             N = N->next;
 
         N->next = waste;
@@ -486,14 +486,14 @@ void AS_DataClass::AS_merge(int)
 
     for (n = 0; n < MAX_NEIGHBORS; n++)
     {
-        if (!neighbors[n].where)
+        if ( not neighbors[n].where)
             continue;
 
-        if (queue == NULL || neighbors[n].cost + neighbors[n].to_go < queue->cost + queue->to_go)
+        if (queue == NULL or neighbors[n].cost + neighbors[n].to_go < queue->cost + queue->to_go)
         {
             new_node = AS_get_new_node(n);
 
-            if (!new_node)
+            if ( not new_node)
                 continue;
 
             new_node->next = queue;
@@ -519,13 +519,13 @@ void AS_DataClass::AS_merge(int)
                 // Either way, quit searching
                 break;
             }
-            else if (!insert_after && neighbors[n].cost + neighbors[n].to_go < T->next->cost + T->next->to_go)
+            else if ( not insert_after and neighbors[n].cost + neighbors[n].to_go < T->next->cost + T->next->to_go)
                 insert_after = T;
 
             T = T->next;
         }
 
-        if (T && !insert_after && !T->next)
+        if (T and not insert_after and not T->next)
             // Insert at end of the queue
             insert_after = T;
 
@@ -533,7 +533,7 @@ void AS_DataClass::AS_merge(int)
         {
             new_node = AS_get_new_node(n);
 
-            if (!new_node)
+            if ( not new_node)
                 continue;
 
             new_node->next = insert_after->next;
@@ -549,11 +549,11 @@ ASNode AS_DataClass::AS_get_new_node(int n)
     // Ignore this neighbor if already tried
     T = tried;
 
-    while (T != NULL)
+    while (T not_eq NULL)
     {
         // KCK: The following line is only usefull if the user's huristic overestimates -
         // And even then, it only gets slightly better answers for a moderate cost.
-        // if (T->where == neighbors[n].where && neighbors[n].cost+neighbors[n].to_go > T->cost + T->to_go)
+        // if (T->where == neighbors[n].where and neighbors[n].cost+neighbors[n].to_go > T->cost + T->to_go)
         if (T->where == neighbors[n].where)
             return NULL;
 

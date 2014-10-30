@@ -11,7 +11,7 @@
 ** the threat pointer.   The threat is presumed to be not our primary
 ** target and was notified to us either thru a spike on radar, missile
 ** or gun fire at us.
-&& Return TRUE if handling a threat
+ and Return TRUE if handling a threat
 */
 BOOL DigitalBrain::HandleThreat(void)
 {
@@ -27,11 +27,11 @@ BOOL DigitalBrain::HandleThreat(void)
     {
         // base it on range and threat's ata
         // NOTE: the current targetPtr should be the threat at this point
-        if (!targetPtr ||
-            (targetPtr != threatPtr) ||
-            (targetPtr->BaseData()->IsSim() && !((SimBaseClass*)targetPtr->BaseData())->IsAwake()) ||
-            targetData->range > 8.0F * NM_TO_FT || //me123 changes here
-            (targetData->range > 5.0F * NM_TO_FT && targetData->ataFrom > 90.0f * DTR))
+        if ( not targetPtr or
+            (targetPtr not_eq threatPtr) or
+            (targetPtr->BaseData()->IsSim() and not ((SimBaseClass*)targetPtr->BaseData())->IsAwake()) or
+            targetData->range > 8.0F * NM_TO_FT or //me123 changes here
+            (targetData->range > 5.0F * NM_TO_FT and targetData->ataFrom > 90.0f * DTR))
         {
             // we drop concern of this threat
             SetThreat(NULL);

@@ -23,7 +23,7 @@ C_ATO_Package::C_ATO_Package() : C_Control()
     vuID = FalconNullId;
     Title_ = NULL;
     ShowWP_ = NULL;
-    Defaultflags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER;
+    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER;
 }
 
 C_ATO_Package::C_ATO_Package(char **stream) : C_Control(stream)
@@ -89,14 +89,14 @@ void C_ATO_Package::SetCheckBox(short x, short y, long off, long on)
 
 void C_ATO_Package::SetState(short state)
 {
-    State_ = static_cast<short>(state & 1);
+    State_ = static_cast<short>(state bitand 1);
 
     Title_->SetFgColor(Color_[State_]);
 }
 
 void C_ATO_Package::SetWPState(short state)
 {
-    WPState_ = static_cast<short>(state & 1);
+    WPState_ = static_cast<short>(state bitand 1);
 
     ShowWP_->SetImage(Image_[WPState_]);
     ShowWP_->Refresh();
@@ -113,10 +113,10 @@ void C_ATO_Package::SetFont(long ID)
 
 long C_ATO_Package::CheckHotSpots(long relX, long relY)
 {
-    if (relX >= GetX() && relX <= (GetX() + GetW()) && relY >= GetY() && relY <= (GetY() + GetH()))
+    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))
     {
-        if (relX >= (GetX() + ShowWP_->GetX()) && relX <= (GetX() + ShowWP_->GetX() + ShowWP_->GetW())
-            && relY >= (GetY() + ShowWP_->GetY()) && relY <= (GetY() + ShowWP_->GetY() + ShowWP_->GetH()))
+        if (relX >= (GetX() + ShowWP_->GetX()) and relX <= (GetX() + ShowWP_->GetX() + ShowWP_->GetW())
+           and relY >= (GetY() + ShowWP_->GetY()) and relY <= (GetY() + ShowWP_->GetY() + ShowWP_->GetH()))
             Section_ = 1;
         else
             Section_ = 0;
@@ -144,7 +144,7 @@ BOOL C_ATO_Package::Process(long ID, short HitType)
     if (HitType == C_TYPE_LMOUSEUP)
     {
         if (Section_)
-            SetWPState(static_cast<short>(WPState_ ^ 1));
+            SetWPState(static_cast<short>(WPState_ xor 1));
     }
 
     if (Callback_)
@@ -155,7 +155,7 @@ BOOL C_ATO_Package::Process(long ID, short HitType)
 
 void C_ATO_Package::Refresh()
 {
-    if (!Ready() || Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
+    if ( not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
@@ -163,7 +163,7 @@ void C_ATO_Package::Refresh()
 
 void C_ATO_Package::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Title_)
@@ -172,6 +172,6 @@ void C_ATO_Package::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (ShowWP_)
         ShowWP_->Draw(surface, cliprect);
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }

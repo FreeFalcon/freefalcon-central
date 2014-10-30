@@ -24,9 +24,9 @@ char *RadioStrings[8] =
 void ICPClass::ExecCOMMMode(void)
 {
 
-    if (mUpdateFlags & COMM_UPDATE)
+    if (mUpdateFlags bitand COMM_UPDATE)
     {
-        mUpdateFlags &= !COMM_UPDATE;
+        mUpdateFlags and_eq not COMM_UPDATE;
 
         FormatRadioString();
     }
@@ -276,7 +276,7 @@ void ICPClass::ExecCOMM2Mode(void)
 }
 void ICPClass::PNUpdateCOMMMode(int button, int)
 {
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI Original Code
         if (button == PREV_BUTTON)
@@ -309,7 +309,7 @@ void ICPClass::PNUpdateCOMMMode(int button, int)
             }
         }
 
-        mUpdateFlags |= CNI_UPDATE;
+        mUpdateFlags or_eq CNI_UPDATE;
     }
     else
     {

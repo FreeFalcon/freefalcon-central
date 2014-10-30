@@ -54,7 +54,7 @@ int DisplayOptionsClass::LoadOptions(char *filename)
     sprintf(path, "%s\\config\\%s.dsp", FalconDataDirectory, filename);
     fp = fopen(path, "rb");
 
-    if (!fp)
+    if ( not fp)
     {
         MonoPrint("Couldn't open display options\n");
         Initialize();
@@ -67,7 +67,7 @@ int DisplayOptionsClass::LoadOptions(char *filename)
     size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    if (size != sizeof(class DisplayOptionsClass))
+    if (size not_eq sizeof(class DisplayOptionsClass))
     {
         MonoPrint("Old display options format detected\n");
         Initialize();
@@ -78,7 +78,7 @@ int DisplayOptionsClass::LoadOptions(char *filename)
     success = fread(this, 1, size, fp);
     fclose(fp);
 
-    if (success != size)
+    if (success not_eq size)
     {
         MonoPrint("Failed to read display options\n", filename);
         Initialize();

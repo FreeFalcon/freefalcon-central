@@ -34,7 +34,7 @@ C_String::C_String()
 
 C_String::~C_String()
 {
-    if (Root_ || IDTable_)
+    if (Root_ or IDTable_)
         Cleanup();
 }
 
@@ -94,7 +94,7 @@ BOOL C_String::AddString(long ID, _TCHAR *str)
         return(FALSE);
 
     if (ID < IDSize_)
-        IDTable_[ID] = HashID | 0x40000000;
+        IDTable_[ID] = HashID bitor 0x40000000;
 
     return(TRUE);
 }
@@ -106,10 +106,10 @@ _TCHAR *C_String::GetString(long ID)
     if (ID < IDSize_)
     {
         if (IDTable_[ID] >= 0)
-            return(Root_->FindText(IDTable_[ID] & 0x3fffffff));
+            return(Root_->FindText(IDTable_[ID] bitand 0x3fffffff));
     }
     else if (ID > 0)
-        return(Root_->FindText(ID & 0x3fffffff));
+        return(Root_->FindText(ID bitand 0x3fffffff));
 
     return(NULL);
 }
@@ -117,13 +117,13 @@ _TCHAR *C_String::GetString(long ID)
 
 long C_String::AddText(const _TCHAR *str)
 {
-    return(Root_->AddText(str) | 0x40000000);
+    return(Root_->AddText(str) bitor 0x40000000);
 }
 
 _TCHAR *C_String::GetText(long ID)
 {
     if (ID > 0)
-        return(Root_->FindText(ID & 0x3fffffff));
+        return(Root_->FindText(ID bitand 0x3fffffff));
 
     return(NULL);
 }

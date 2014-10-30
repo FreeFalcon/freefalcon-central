@@ -87,7 +87,7 @@ int SendEvalMessage::Process(uchar autodisp)
     uchar d1, d5[MAX_DOGFIGHT_TEAMS];
     short d2, d3, d4;
 
-    if (autodisp || Entity() == FalconLocalSession)
+    if (autodisp or Entity() == FalconLocalSession)
         return 0;
 
     switch (dataBlock.message)

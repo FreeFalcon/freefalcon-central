@@ -54,11 +54,11 @@ void ICPClass::ExecCRUSMode(void)
     WayPointClass* pwaypoint = NULL;
     int fos = 0;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
-        if (mUpdateFlags & CRUS_UPDATE)
+        if (mUpdateFlags bitand CRUS_UPDATE)
         {
-            mUpdateFlags &= !CRUS_UPDATE;
+            mUpdateFlags and_eq not CRUS_UPDATE;
 
             sprintf(mpLine1, "CRUISE");
 
@@ -72,12 +72,12 @@ void ICPClass::ExecCRUSMode(void)
 
                     //check the steerpoint list
                     //get current steerpoint
-                    if (action == WP_LAND && !(wpflags & WPF_ALTERNATE))
+                    if (action == WP_LAND and not (wpflags bitand WPF_ALTERNATE))
                     {
 
                         sprintf(mpLine1, "CRUISE HOME");
                     }
-                    else if (action == WP_LAND && wpflags & WPF_ALTERNATE)
+                    else if (action == WP_LAND and wpflags bitand WPF_ALTERNATE)
                     {
 
                         sprintf(mpLine1, "CRUISE ALTERNATE %d", mCruiseWPIndex + 1);
@@ -226,7 +226,7 @@ void ICPClass::PNUpdateCRUSMode(int button, int)
 
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC)
+    if ( not playerAC)
     {
         return;
     }
@@ -289,7 +289,7 @@ void ICPClass::PNUpdateCRUSMode(int button, int)
 
                     mpCruiseWP = playerAC->waypoint;
 
-                    while (mpCruiseWP && mpCruiseWP->GetNextWP())
+                    while (mpCruiseWP and mpCruiseWP->GetNextWP())
                     {
                         mpCruiseWP = mpCruiseWP->GetNextWP();
                         mCruiseWPIndex++;
@@ -343,7 +343,7 @@ void ICPClass::PNUpdateCRUSMode(int button, int)
             //#endif
     }
 
-    mUpdateFlags |= CRUS_UPDATE;
+    mUpdateFlags or_eq CRUS_UPDATE;
 }
 
 void ICPClass::CruiseRNG(void)
@@ -351,7 +351,7 @@ void ICPClass::CruiseRNG(void)
     //Check if this is valid. (Cause of CTD's?)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC)
+    if ( not playerAC)
         return;
 
     //WayPointClass *wp = playerAC->GetWayPointNo(RangeWP);
@@ -394,7 +394,7 @@ void ICPClass::CruiseRNG(void)
     FillDEDMatrix(4, 8, "WIND");
     GetWind();
 
-    if (windSpeed > 1 && windSpeed < 9)
+    if (windSpeed > 1 and windSpeed < 9)
         sprintf(tempstr, "%d*   %dKTS", heading, (int)windSpeed);
     else if (windSpeed > 9)
         sprintf(tempstr, "%d*  %dKTS", heading, (int)windSpeed);
@@ -414,7 +414,7 @@ void ICPClass::CruiseHOME(void)
     //Check if this is valid. (Cause of CTD's?)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC)
+    if ( not playerAC)
         return;
 
     WayPointClass *wp = playerAC->GetWayPointNo(HomeWP);
@@ -483,7 +483,7 @@ void ICPClass::CruiseHOME(void)
     FillDEDMatrix(4, 8, "WIND");
     GetWind();
 
-    if (windSpeed > 1 && windSpeed < 9)
+    if (windSpeed > 1 and windSpeed < 9)
         sprintf(tempstr, "%d*   %dKTS", heading, (int)windSpeed);
     else if (windSpeed > 9)
         sprintf(tempstr, "%d*  %dKTS", heading, (int)windSpeed);
@@ -503,7 +503,7 @@ void ICPClass::CruiseEDR(void)
     //Check if this is valid. (Cause of CTD's?)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC)
+    if ( not playerAC)
         return;
 
     ClearStrings();
@@ -553,7 +553,7 @@ void ICPClass::CruiseEDR(void)
     FillDEDMatrix(4, 8, "WIND");
     GetWind();
 
-    if (windSpeed > 1 && windSpeed < 9)
+    if (windSpeed > 1 and windSpeed < 9)
         sprintf(tempstr, "%d*   %dKTS", heading, (int)windSpeed);
     else if (windSpeed > 9)
         sprintf(tempstr, "%d*  %dKTS", heading, (int)windSpeed);
@@ -573,7 +573,7 @@ void ICPClass::CruiseTOS(void)
     //Check if this is valid. (Cause of CTD's?)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC)
+    if ( not playerAC)
         return;
 
     //WayPointClass *wp = playerAC->GetWayPointNo(TOSWP);
@@ -635,7 +635,7 @@ void ICPClass::CruiseTOS(void)
     ttg -= minute * 60.0F;
     sec = FloatToInt32(ttg);
 
-    if (hr != 0)
+    if (hr not_eq 0)
         sprintf(tempstr, "%02d:%02d:%02d", hr, abs(minute), abs(sec));
     else if (sec >= 0)
         sprintf(tempstr, "   %02d:%02d", abs(minute), sec);
@@ -660,7 +660,7 @@ void ICPClass::CruiseTOS(void)
     ETA = SimLibElapsedTime / SEC_TO_MSEC + FloatToInt32(Distance(playerAC->XPos(),
             playerAC->YPos(), xCurr, yCurr) / playerAC->af->vt);
 
-    if (!playerAC->OnGround())
+    if ( not playerAC->OnGround())
         FormatTime(ETA, timeStr);
 
     if (playerAC->INSState(AircraftClass::INS_HUD_FPM)) //28 Jul 04 - If INS off/failed, we lose all cruise info
@@ -723,7 +723,7 @@ int ICPClass::GetHOMERNGSTPTNum(int var, int mode)
     {
         curWaypoint = playerAC->GetWayPointNo(tempvar);
 
-        if (curWaypoint && curWaypoint->GetNextWP()) // OW
+        if (curWaypoint and curWaypoint->GetNextWP()) // OW
             nextWaypoint = curWaypoint->GetNextWP();
         else
             nextWaypoint = NULL;
@@ -737,7 +737,7 @@ int ICPClass::GetHOMERNGSTPTNum(int var, int mode)
     {
         curWaypoint = playerAC->GetWayPointNo(tempvar);
 
-        if (curWaypoint && curWaypoint->GetPrevWP())
+        if (curWaypoint and curWaypoint->GetPrevWP())
             nextWaypoint = curWaypoint->GetPrevWP();
         else
             nextWaypoint = NULL;
@@ -746,7 +746,7 @@ int ICPClass::GetHOMERNGSTPTNum(int var, int mode)
             tempvar--;
         else
         {
-            while (curWaypoint && curWaypoint->GetNextWP())
+            while (curWaypoint and curWaypoint->GetNextWP())
             {
                 curWaypoint = curWaypoint->GetNextWP();
                 tempvar++;

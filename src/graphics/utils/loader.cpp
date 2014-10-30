@@ -6,6 +6,7 @@
     Asynchronus loader module.  This class is designed to be run on its
     own thread and respond to requests for data off the disk.
 ***************************************************************************/
+#include <cISO646>
 #include <io.h>
 #include <fcntl.h>
 #include <process.h>
@@ -67,7 +68,7 @@ void Loader::Setup()
     strcpy(WakeEventName, "LoaderWakeupCall");
     WakeEventHandle = CreateEvent(NULL, FALSE, FALSE, WakeEventName);
 
-    if (!WakeEventHandle)
+    if ( not WakeEventHandle)
     {
         ShiError("Failed to create the loader wake up event");
     }
@@ -80,7 +81,7 @@ void Loader::Setup()
                        NULL, 0, (unsigned int (__stdcall *)(void*))MainLoopWrapper, this, 0, (unsigned *) &threadID
                    );
 
-    if (!threadHandle)
+    if ( not threadHandle)
     {
         ShiError("Failed to spawn loader");
     }
@@ -99,7 +100,7 @@ void Loader::Cleanup()
 
     //WakeUp();
     // RED - Need to wait it is off
-    while (!stopped);
+    while ( not stopped);
 
     LeaveCriticalSection(&cs_loaderQ);
     SetEvent(WakeEventHandle);
@@ -136,7 +137,7 @@ DWORD Loader::MainLoop()
     LoaderQ *Active;
     actionDone = false;
 
-    while (!shutDown)
+    while ( not shutDown)
     {
 
         // Process everything in our queue
@@ -144,17 +145,17 @@ DWORD Loader::MainLoop()
         {
             actionDone = false;
             // The LOD updating run
-            actionDone |= ObjectLOD::UpdateLods();
-            actionDone |= TheTextureBank.UpdateBank();
+            actionDone or_eq ObjectLOD::UpdateLods();
+            actionDone or_eq TheTextureBank.UpdateBank();
 
-            while ((Active = GetNextRequest()) && (!shutDown))
+            while ((Active = GetNextRequest()) and ( not shutDown))
             {
                 // Check queue status
                 if (queueStatus == QUEUE_FIFO)
                 {
                     // Make the callback to notify the requestor
-                    // NOTE:  The callback is responsible for deleting the queue entry!
-                    ShiAssert((Active->callback != NULL));
+                    // NOTE:  The callback is responsible for deleting the queue entry
+                    ShiAssert((Active->callback not_eq NULL));
                     Active->callback(Active);
                 }
                 else if (queueStatus == QUEUE_SORTING)
@@ -171,7 +172,7 @@ DWORD Loader::MainLoop()
             // the queue is empty
             EnterCriticalSection(&cs_loaderQ);
 
-            if (!head)
+            if ( not head)
             {
                 queueIsEmpty = TRUE;
             }
@@ -194,7 +195,7 @@ DWORD Loader::MainLoop()
 
     }
 
-    // We've been asked to quit, so off we go!
+    // We've been asked to quit, so off we go
     stopped = TRUE;
 
     return 0;
@@ -230,7 +231,7 @@ void Loader::Dequeue(LoaderQ *Old)
     lastDequeueAt = GetTickCount();
 #endif
 
-    if (!head)
+    if ( not head)
     {
         // Wake the main loop to ensure it sets the queueIsEmpty flag as appropriate
         SetEvent(WakeEventHandle);
@@ -249,14 +250,14 @@ void Loader::Enqueue(LoaderQ *New)
     {
 
         // See if this is a duplicate
-        if ((p->fileoffset == New->fileoffset) &&
-            (p->filename == New->filename) &&
-            (p->parameter == New->parameter) &&
+        if ((p->fileoffset == New->fileoffset) and 
+            (p->filename == New->filename) and 
+            (p->parameter == New->parameter) and 
             (p->callback == New->callback))
         {
 
             return;
-            ShiAssert(!"Caught trying to add duplicate request");
+            ShiAssert( not "Caught trying to add duplicate request");
         }
 
         p = p->next;
@@ -268,7 +269,7 @@ void Loader::Enqueue(LoaderQ *New)
     New->next = NULL;
     New->prev = tail;
 
-    if (!tail)
+    if ( not tail)
     {
         head = New;
         queueIsEmpty = FALSE;
@@ -295,7 +296,7 @@ void Loader::EnqueueRequest(LoaderQ *New)
     EnterCriticalSection(&cs_loaderQ);
 
     // Link the new queue entry to the end of the Q
-    if (!shutDown)
+    if ( not shutDown)
     {
         Enqueue(New);
     }
@@ -315,7 +316,7 @@ void Loader::ReplaceHeadEntry(LoaderQ *New)
     if (head)
         head->prev = New;
 
-    if (!tail)
+    if ( not tail)
         tail = New;
 
     LeaveCriticalSection(&cs_loaderQ);
@@ -358,9 +359,9 @@ BOOL Loader::CancelRequest(void(*callback)(LoaderQ*), void *parameter, char *fil
     {
 
         // See if this is the one we want to cancel
-        if ((p->filename == filename) &&
-            (p->fileoffset == fileoffset) &&
-            (p->parameter == parameter) &&
+        if ((p->filename == filename) and 
+            (p->fileoffset == fileoffset) and 
+            (p->parameter == parameter) and 
             (p->callback == callback))
         {
 
@@ -378,7 +379,7 @@ BOOL Loader::CancelRequest(void(*callback)(LoaderQ*), void *parameter, char *fil
 
     LeaveCriticalSection(&cs_loaderQ);
 
-    return (p != NULL);
+    return (p not_eq NULL);
 }
 
 
@@ -403,7 +404,7 @@ void Loader::SetPause(BOOL state)
 
 // **** COBRA - RED - THIS FUNCTION IS NO MORE USED, SUBSTITUTED FROM FOLOWING ONE
 //                    JUST KEPT TO LEAVE CALLS STILL THERE, FUNCTION NEEDING SUCH FEATURE MUST CALL
-//                    THE FOLLOWING FUNCTION ...!!!!
+//                    THE FOLLOWING FUNCTION ...
 // This call will block until the Loader queue becomes empty
 void Loader::WaitForLoader(void)
 {
@@ -416,7 +417,7 @@ void Loader::WaitForLoader(void)
     // Use of this function could lock up the Engine/System
     /*if(g_bUse_DX_Engine) return;
 
-    while ( !queueIsEmpty ) {
+    while ( not queueIsEmpty ) {
 
     #ifdef LOADER_INSTRUMENT
      if (forceWakeEvent > 0) {
@@ -432,7 +433,7 @@ void Loader::WaitForLoader(void)
 void Loader::WaitLoader(void)
 {
 
-    while (!queueIsEmpty)
+    while ( not queueIsEmpty)
     {
 
 #ifdef LOADER_INSTRUMENT

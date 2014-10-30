@@ -76,7 +76,7 @@ void AirframeClass::Aerodynamics(void)
 
     ShiAssert(aeroData);
 
-    if (!aeroData)
+    if ( not aeroData)
         return;
 
     // make the tef's and lef's useful
@@ -147,7 +147,7 @@ void AirframeClass::Aerodynamics(void)
     float addTurb = 0.0f;
     float turb = 0.0f;
 
-    if (g_bTurb && (gameCompressionRatio == 1))
+    if (g_bTurb and (gameCompressionRatio == 1))
     {
         addTurb = Turbulence(turb);
     }
@@ -224,17 +224,17 @@ void AirframeClass::Aerodynamics(void)
                           aeroData->cdrag, aeroData->numMach,
                           aeroData->numAlpha, &curMachBreak, &i);
 
-    if (cl2 - cl1 != 0.0F)
+    if (cl2 - cl1 not_eq 0.0F)
     {
         clalpha = (cl2 - cl1) * 0.25F  * (1 + tefFactor * auxaeroData->CLtefFactor);
         cnalpha = ((cl2 - cl1) * platform->platformAngles.cosalp +
                    (cd2 - cd1) * platform->platformAngles.sinalp) * 0.25F * (1 + tefFactor * auxaeroData->CDtefFactor);
     }
 
-    F4Assert(!_isnan(cnalpha));
+    F4Assert( not _isnan(cnalpha));
 
-    //F4Assert (!IsSet(Trimming) && cnalpha != 0.0F);
-    //F4Assert (!IsSet(Trimming) && clalpha != 0.0F);
+    //F4Assert ( not IsSet(Trimming) and cnalpha not_eq 0.0F);
+    //F4Assert ( not IsSet(Trimming) and clalpha not_eq 0.0F);
 
     /*------------------*/
     /* lift curve slope */
@@ -264,7 +264,7 @@ void AirframeClass::Aerodynamics(void)
     //Ground Effect
     BIG_SCALAR pz = platform->ZPos();
 
-    if (!IsSet(IsDigital) && pz > -groundZ - 200.0F)
+    if ( not IsSet(IsDigital) and pz > -groundZ - 200.0F)
     {
         float span, factor;
 
@@ -292,7 +292,7 @@ void AirframeClass::Aerodynamics(void)
 
     //TJL 09/05/04 Stall Model
     //Equation to determine stall: VI = 17.16 * SQRT ((W/S)/CL)
-    if (auxaeroData->criticalAOA > 0.0f && IsSet(InAir) && platform->IsPlayer())
+    if (auxaeroData->criticalAOA > 0.0f and IsSet(InAir) and platform->IsPlayer())
     {
         float stallSpeed = 0.0f;
 
@@ -306,7 +306,7 @@ void AirframeClass::Aerodynamics(void)
         }
 
         //Stall Horn
-        if ((vcas - stallSpeed) < 3.0f || (auxaeroData->criticalAOA - alpha) < 3.0f)
+        if ((vcas - stallSpeed) < 3.0f or (auxaeroData->criticalAOA - alpha) < 3.0f)
         {
             SetFlag(LowSpdHorn);
             platform->SoundPos.Sfx(auxaeroData->sndLowSpeed);
@@ -316,12 +316,12 @@ void AirframeClass::Aerodynamics(void)
             ClearFlag(LowSpdHorn);
         }
 
-        if (stallMode == FlatSpin || vt == 0.0f)
+        if (stallMode == FlatSpin or vt == 0.0f)
         {
             lift = 0.0f;
         }
 
-        else if (vcas < stallSpeed || alpha > auxaeroData->criticalAOA)
+        else if (vcas < stallSpeed or alpha > auxaeroData->criticalAOA)
         {
             float pscmd = 0.0f;
             lift = min(0.0f, cl * 0.5f) * (vcas / stallSpeed);
@@ -345,7 +345,7 @@ void AirframeClass::Aerodynamics(void)
     //MPS Old stuff
     else
     {
-        if (stallMode == FlatSpin || vt == 0.0F)
+        if (stallMode == FlatSpin or vt == 0.0F)
         {
             lift = 0.0F;
         }
@@ -370,10 +370,10 @@ void AirframeClass::Aerodynamics(void)
     zaero = -lift * platform->platformAngles.cosalp -
             drag * platform->platformAngles.sinalp;
 
-    ShiAssert(!_isnan(platform->platformAngles.sinalp));
-    ShiAssert(!_isnan(platform->platformAngles.cosalp));
-    ShiAssert(!_isnan(xaero));
-    ShiAssert(!_isnan(zaero));
+    ShiAssert( not _isnan(platform->platformAngles.sinalp));
+    ShiAssert( not _isnan(platform->platformAngles.cosalp));
+    ShiAssert( not _isnan(xaero));
+    ShiAssert( not _isnan(zaero));
 
     /*-----------------------*/
     /* stability axis accels */

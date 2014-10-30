@@ -285,7 +285,7 @@ static void AddSquadronToAirbaseCB(long ID, short hittype, C_Base *ctrl)
     UI_Refresher *urec;
     VU_ID id;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     icon = (C_MapIcon*)ctrl;
@@ -306,7 +306,7 @@ void SelectTargetCB(long ID, short hittype, C_Base *ctrl)
     UI_Refresher *urec;
     VU_ID id;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         // We're either dragging or mouse down - check to see if we should drag a unit
         UnitCB(ID, hittype, ctrl);
@@ -401,7 +401,7 @@ static void SetToolbarDirections(long textid)
 
 void SelectToolTypeCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMapMgr->SetAllObjCallbacks(NULL);
@@ -409,14 +409,14 @@ void SelectToolTypeCB(long, short hittype, C_Base *control)
     gMapMgr->SetAllGroundUnitCallbacks(UnitCB);
     gMapMgr->SetAllNavalUnitCallbacks(UnitCB);
 
-    if (CurMapTool && CurMapTool == control)
+    if (CurMapTool and CurMapTool == control)
     {
         CurMapTool->SetState(0);
         CurMapTool->Refresh();
         CurMapTool = NULL;
         SetToolbarDirections(TXT_SPACE);
     }
-    else if (!control)
+    else if ( not control)
     {
         if (CurMapTool)
         {
@@ -434,7 +434,7 @@ void SelectToolTypeCB(long, short hittype, C_Base *control)
         switch (CurMapTool->GetID())
         {
             case ADD_FLIGHT:
-                if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                 {
                     gMapMgr->SetAllObjCallbacks(SelectTargetCB);
                     gMapMgr->SetAllAirUnitCallbacks(SelectTargetCB);
@@ -454,7 +454,7 @@ void SelectToolTypeCB(long, short hittype, C_Base *control)
                 break;
 
             case ADD_BATTALION: // Click anywhere on the map to add a unit
-                if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                 {
                     gMapMgr->SetAllObjCallbacks(SelectTargetCB);
                     SetToolbarDirections(control->GetUserNumber(1));
@@ -463,7 +463,7 @@ void SelectToolTypeCB(long, short hittype, C_Base *control)
                 break;
 
             case ADD_NAVAL: // Click anywhere on the map to add a unit
-                if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                 {
                     gMapMgr->SetAllObjCallbacks(SelectTargetCB);
                     SetToolbarDirections(control->GetUserNumber(1));
@@ -472,7 +472,7 @@ void SelectToolTypeCB(long, short hittype, C_Base *control)
                 break;
 
             case ADD_SQUADRON: // Click on an airbase to add a squadron
-                if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                 {
                     gMapMgr->SetAllObjCallbacks(SelectTargetCB);
                     SetToolbarDirections(control->GetUserNumber(1));
@@ -482,7 +482,7 @@ void SelectToolTypeCB(long, short hittype, C_Base *control)
                 break;
 
             case COPY_UNIT: // Pick a unit to copy
-                if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                 {
                     SetToolbarDirections(control->GetUserNumber(1));
                 }
@@ -490,7 +490,7 @@ void SelectToolTypeCB(long, short hittype, C_Base *control)
                 break;
 
             case DELETE_UNIT: // Pick a unit to delete
-                if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                 {
                     SetToolbarDirections(control->GetUserNumber(1));
                 }
@@ -498,7 +498,7 @@ void SelectToolTypeCB(long, short hittype, C_Base *control)
                 break;
 
             case EDIT_UNIT: // Pick a unit to edit
-                if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                 {
                     SetToolbarDirections(control->GetUserNumber(1));
                 }
@@ -539,14 +539,14 @@ static void tactical_maximize_map(long, short hittype, C_Base *control)
     C_Window
     *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
 
     win = gMainHandler->FindWindow(TAC_FULLMAP_WIN);
 
-    if (win != NULL)
+    if (win not_eq NULL)
     {
         gMapMgr->SetWindow(win);
         gMapMgr->DrawMap();
@@ -554,7 +554,7 @@ static void tactical_maximize_map(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(TAC_PUA_MAP);
 
-    if (win != NULL)
+    if (win not_eq NULL)
     {
         gMainHandler->HideWindow(win);
     }
@@ -571,7 +571,7 @@ static void tactical_minimize_map(long, short hittype, C_Base *control)
     C_Window
     *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -580,7 +580,7 @@ static void tactical_minimize_map(long, short hittype, C_Base *control)
 
     //MonoPrint ("Minimize %d %08x\n", control->GetGroup (), win);
 
-    if (win != NULL)
+    if (win not_eq NULL)
     {
         gMapMgr->SetWindow(win);
         gMapMgr->DrawMap();
@@ -588,7 +588,7 @@ static void tactical_minimize_map(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(TAC_PUA_MAP);
 
-    if (win != NULL)
+    if (win not_eq NULL)
     {
         gMainHandler->ShowWindow(win);
     }
@@ -693,7 +693,7 @@ void gMapMgr_TACmover(long, short hittype, C_Base *control)
 
         case (C_TYPE_MOUSEWHEEL):
         {
-            if (!control->IsControl())
+            if ( not control->IsControl())
             {
                 break;
             }
@@ -722,7 +722,7 @@ static void gMapMgr_zoom_in(long, short hittype, C_Base *ctrl)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((hittype != C_TYPE_LMOUSEUP) && (hittype != C_TYPE_REPEAT))
+    if ((hittype not_eq C_TYPE_LMOUSEUP) and (hittype not_eq C_TYPE_REPEAT))
         return;
 
     Leave = UI_Enter(ctrl->Parent_);
@@ -739,7 +739,7 @@ static void gMapMgr_zoom_out(long, short hittype, C_Base *ctrl)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((hittype != C_TYPE_LMOUSEUP) && (hittype != C_TYPE_REPEAT))
+    if ((hittype not_eq C_TYPE_LMOUSEUP) and (hittype not_eq C_TYPE_REPEAT))
         return;
 
     Leave = UI_Enter(ctrl->Parent_);
@@ -758,7 +758,7 @@ void gMapMgr_menu(long ID, short hittype, C_Base *control)
     objective = -1,
     zoom;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }

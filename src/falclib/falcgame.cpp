@@ -25,17 +25,17 @@ extern int F4GameType;
 
 void INFOSetupRulesControls(void);
 
-static char PasswordKey1[] = "Coming soon to Stores Everywhere... FreeFalcon!!";
-static char PasswordKey2[] = "This is another stupid advertisement... hehehe!!";
+static char PasswordKey1[] = "Coming soon to Stores Everywhere... FreeFalcon";
+static char PasswordKey2[] = "This is another stupid advertisement... hehehe";
 
-// constructors & destructor
+// constructors bitand destructor
 FalconGameEntity::FalconGameEntity(ulong domainMask, char *gameName) : VuGameEntity(domainMask, gameName)
 {
     gameType = game_PlayerPool;
 
     // KCK: To keep this from conflicting with entities we plan to load, force
     // the creater to something non-zero for single player games.
-    if (!share_.id_.creator_)
+    if ( not share_.id_.creator_)
     {
         share_.id_.creator_ = 1;
         // Make a new collection with a filter to match
@@ -223,7 +223,7 @@ void FalconGameEntity::EncipherPassword(char *data, long size)
     int i;
 
     for (i = 0; i < size; i++)
-        data[i] = (char)((data[i] ^ PasswordKey1[i]) ^ PasswordKey2[i]);
+        data[i] = (char)((data[i] xor PasswordKey1[i]) xor PasswordKey2[i]);
 }
 
 long FalconGameEntity::CheckPassword(_TCHAR *passwd)
@@ -258,8 +258,8 @@ void FalconGameEntity::DoFullUpdate(void)
 
 FalconGameType FalconGameEntity::GetGameType(void)
 {
-    // KCK Hack to avoid having to type "if (FalconLocalGame && FalconLocalGame->GetGameType ...)"
-    if (!this)
+    // KCK Hack to avoid having to type "if (FalconLocalGame and FalconLocalGame->GetGameType ...)"
+    if ( not this)
         return game_PlayerPool;
 
     return gameType;
@@ -276,7 +276,7 @@ VU_ERRCODE FalconGameEntity::Handle(VuFullUpdateEvent *event)
 
     int dirty = FALSE;
 
-    if (FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI && gMainHandler)
+    if (FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI and gMainHandler)
         if (memcmp(&rules, &tmpGame->rules, sizeof(class RulesClass)))
             dirty = TRUE;
 
@@ -291,14 +291,14 @@ VU_ERRCODE FalconGameEntity::Handle(VuFullUpdateEvent *event)
     {
 #if VU_ALL_FILTERED
 
-        if (!sessionCollection_->Find(ent))
+        if ( not sessionCollection_->Find(ent))
         {
             AddSession(ent);
         }
 
 #else
 
-        if (!sessionCollection_->Find(ent->Id()))
+        if ( not sessionCollection_->Find(ent->Id()))
         {
             AddSession(ent);
         }
@@ -327,7 +327,7 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
     else
         MonoPrint("- distribute all.\n");
 
-    // KCK: Try using association to let VU do the distribution for us!
+    // KCK: Try using association to let VU do the distribution for us
     VuGameEntity::Distribute(sess);
 
     new_host = (FalconSessionEntity*)vuDatabase->Find(OwnerId());
@@ -337,7 +337,7 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
     else
         MonoPrint("No new host - shutting game down\n");
 
-    /* if (!sess || Id() == sess->GameId())
+    /* if ( not sess or Id() == sess->GameId())
      {
      // All Features get transfered to nearest session.
      // All Non-player transferable vehicles (i.e. non-dogfight) get transfered to nearest session.
@@ -352,13 +352,13 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
      {
      VuSessionsIterator siter(this);
      FalconSessionEntity *cs;
-     ulong best = ~0;
+     ulong best = compl 0;
 
      new_host = NULL;
      cs = (FalconSessionEntity*) siter.GetFirst();
      while (cs)
      {
-     if ((!sess || sess->Id() != cs->Id()) && cs->GameId() == Id() && (ulong)cs->Id().creator_ < best)
+     if (( not sess or sess->Id() not_eq cs->Id()) and cs->GameId() == Id() and (ulong)cs->Id().creator_ < best)
      {
      best = cs->Id().creator_;
      new_host = cs;
@@ -368,7 +368,7 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
      }
 
      // We must be loaded in order to take over this game
-     if (new_host == FalconLocalSession && !TheCampaign.IsLoaded())
+     if (new_host == FalconLocalSession and not TheCampaign.IsLoaded())
      CampaignJoinFail(TRUE);
 
      if (new_host)
@@ -388,24 +388,24 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
      ent = dbiter.GetFirst();
      while (ent)
      {
-     if ((!sess || ent->OwnerId() == sess->Id()) && ent != sess)
+     if (( not sess or ent->OwnerId() == sess->Id()) and ent not_eq sess)
      {
      ent_class = ent->EntityType()->classInfo_[VU_CLASS];
-     if (!new_host || (sess && !ent->IsTransferrable()))
+     if ( not new_host or (sess and not ent->IsTransferrable()))
      {
      vuDatabase->Remove(ent);
      }
-     else if (ent_class == CLASS_OBJECTIVE || ent_class == CLASS_UNIT || ent_class == CLASS_MANAGER || ent_class == CLASS_GAME || ent_class == CLASS_GROUP)
+     else if (ent_class == CLASS_OBJECTIVE or ent_class == CLASS_UNIT or ent_class == CLASS_MANAGER or ent_class == CLASS_GAME or ent_class == CLASS_GROUP)
      {
      ((FalconEntity*)ent)->SetOwner(new_host);
      ((CampEntity)ent)->SendMessage(sess->Id(), FalconCampMessage.campReaggregate, 0, 0, 0, 0);
      }
-     else if (ent_class == CLASS_FEATURE || ent_class == CLASS_VEHICLE)
+     else if (ent_class == CLASS_FEATURE or ent_class == CLASS_VEHICLE)
      {
      // KCK: If there's a valid deaggregate owner, set owner to that..
-     if ((int)((SimBaseClass*)ent)->campaignObject > MAX_IA_CAMP_UNIT && ((CampBaseClass*)((SimBaseClass*)ent)->campaignObject)->deag_owner != sess->Id())
+     if ((int)((SimBaseClass*)ent)->campaignObject > MAX_IA_CAMP_UNIT and ((CampBaseClass*)((SimBaseClass*)ent)->campaignObject)->deag_owner not_eq sess->Id())
      ((SimBaseClass*)ent)->ChangeOwner(((CampBaseClass*)((SimBaseClass*)ent)->campaignObject)->GetDeaggregateOwner());
-     // Otherwise, change ownership to the host (let campaign entity know too!)
+     // Otherwise, change ownership to the host (let campaign entity know too)
      else
      {
      ((SimBaseClass*)ent)->ChangeOwner(new_host);
@@ -422,9 +422,9 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
      VuExitCriticalSection();
      }
     */
-    if (FalconLocalGame && FalconLocalSession && \
-        FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI && \
-        FalconLocalGame->OwnerId() == FalconLocalSession->Id() && \
+    if (FalconLocalGame and FalconLocalSession and \
+        FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI and \
+        FalconLocalGame->OwnerId() == FalconLocalSession->Id() and \
         gMainHandler)
     {
         INFOSetupRulesControls();

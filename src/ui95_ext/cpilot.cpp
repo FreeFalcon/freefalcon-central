@@ -14,7 +14,7 @@ C_Pilot::C_Pilot() : C_Control()
     Callsign_ = NULL;
     vuID = FalconNullId;
 
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER;
 }
 
 C_Pilot::C_Pilot(char **stream) : C_Control(stream)
@@ -65,17 +65,17 @@ void C_Pilot::SetCallsign(short x, short y, _TCHAR *text)
 
 void C_Pilot::SetState(short state)
 {
-    state_ = static_cast<short>(state & 1);
+    state_ = static_cast<short>(state bitand 1);
     Callsign_->SetFgColor(Color_[state_]);
     Refresh();
 }
 
 long C_Pilot::CheckHotSpots(long relx, long rely)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
         return(0);
 
-    if (relx >= GetX() && rely >= GetY() && relx <= (GetX() + GetW()) && rely <= GetY() + GetH())
+    if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= GetY() + GetH())
         return(GetID());
 
     return(0);
@@ -93,7 +93,7 @@ BOOL C_Pilot::Process(long ID, short HitType)
 
 void C_Pilot::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -101,13 +101,13 @@ void C_Pilot::Refresh()
 
 void C_Pilot::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Callsign_)
         Callsign_->Draw(surface, cliprect);
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 

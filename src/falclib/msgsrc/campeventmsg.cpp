@@ -80,7 +80,7 @@ int FalconCampEventMessage::Process(uchar autodisp)
     // dispatching messages during an EndCampaign() call
     CampEnterCriticalSection();
 
-    if (autodisp || !TheCampaign.IsLoaded())
+    if (autodisp or not TheCampaign.IsLoaded())
     {
         CampLeaveCriticalSection();
         return -1;
@@ -93,12 +93,12 @@ int FalconCampEventMessage::Process(uchar autodisp)
 #endif
 
     // Do Visual effects here (only air explosion on losses, right now)
-    if (dataBlock.eventType == campLosses && InterestingSFX(GridToSim(dataBlock.data.yLoc), GridToSim(dataBlock.data.xLoc)))
+    if (dataBlock.eventType == campLosses and InterestingSFX(GridToSim(dataBlock.data.yLoc), GridToSim(dataBlock.data.xLoc)))
     {
         VehicleClassDataType *vc;
         vc = GetVehicleClassData(-1 * dataBlock.data.textIds[2]);
 
-        if (vc && Falcon4ClassTable[vc->Index].vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_AIR)
+        if (vc and Falcon4ClassTable[vc->Index].vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_AIR)
         {
             Tpoint    pos;
             pos.x = GridToSim(dataBlock.data.xLoc);

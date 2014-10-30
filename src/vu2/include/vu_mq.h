@@ -16,7 +16,7 @@ public:
     /** creates and register the mq. */
     VuMessageQueue(int queueSize, VuMessageFilter *filter = 0);
 
-    /** unregister the mq and destroys it. @TODO why dont dispatch messages!! */
+    /** unregister the mq and destroys it. @TODO why dont dispatch messages */
     ~VuMessageQueue();
 
     /** returns next message to be read. */

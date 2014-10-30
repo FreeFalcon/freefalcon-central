@@ -122,7 +122,7 @@ void DigitalBrain::LantirnAP(void)
         //SetYpedal( headingErr * 0.05F * RTD * self->GetVt()/cornerSpeed);
         SetYpedal(0.0F);
 
-        //quick and dirty fix to level the wings! -NEES WORK, and possibly hold holdPsi!
+        //quick and dirty fix to level the wings -NEES WORK, and possibly hold holdPsi
         theLantirn->roll = self->Roll();
         float roll_multiply = 0.0F;
 
@@ -158,7 +158,7 @@ void DigitalBrain::LantirnAP(void)
         if (theLantirn->evasize > 0)
             desGamma += af->GetEVA_Gain() * (theLantirn->evasize) * (theLantirn->evasize);
 
-        if (!g_bCalibrateTFR_PitchCtrl)
+        if ( not g_bCalibrateTFR_PitchCtrl)
             theLantirn->PID_error = desGamma - af->gmma * RTD;
         else
             theLantirn->PID_error = (theLantirn->GetTFRAlt() - 300.0F) / 100 - af->gmma * RTD;
@@ -271,13 +271,13 @@ void DigitalBrain::RealisticAP(void)
     //Right switch
     if (self->IsOn(AircraftClass::AltHold)) //up
         AltHold();
-    else if (self->IsOn(AircraftClass::AttHold) && self->IsOn(AircraftClass::RollHold)) //down
+    else if (self->IsOn(AircraftClass::AttHold) and self->IsOn(AircraftClass::RollHold)) //down
         PitchRollHold();
     else
         AcceptManual();
 
     //Left switch
-    if (!self->IsOn(AircraftClass::AttHold)) //does nothing in ATT HOLD position
+    if ( not self->IsOn(AircraftClass::AttHold)) //does nothing in ATT HOLD position
     {
         if (self->IsOn(AircraftClass::RollHold))
             RollHold();
@@ -293,7 +293,7 @@ void DigitalBrain::RealisticAP(void)
     // want pitch hold and STRG SEL for example, you should be allowed to do that.  Old SP3
     // code would only allow fixed pitch and fixed roll hold mode.
 
-    if (self->IsOn(AircraftClass::AttHold) || self->IsOn(AircraftClass::AltHold))
+    if (self->IsOn(AircraftClass::AttHold) or self->IsOn(AircraftClass::AltHold))
     {
 
         //Right switch
@@ -324,7 +324,7 @@ void DigitalBrain::AltHold(void)
 {
     if (CheckAPParameters())
     {
-        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
+        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one
         self->SetAutopilot(AircraftClass::APOff);
         return;
     }
@@ -346,7 +346,7 @@ void DigitalBrain::AltHold(void)
         // at small deltas from desired altitude so as to lead to the porpoising
         // effect we all love to hate.
         //  All that said, if you can do better than this, with a more scientific
-        // approach, please go ahead!
+        // approach, please go ahead
         // The F-16 dash one says the autopilot holds alt +/- 100 feet.  The old
         // algorithm did that too but with a lot more gyration around the desired
         // altitude reference.
@@ -381,7 +381,7 @@ void DigitalBrain::PitchRollHold(void)
 {
     if (CheckAPParameters())
     {
-        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
+        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one
         self->SetAutopilot(AircraftClass::APOff);
         return;
     }
@@ -393,7 +393,7 @@ void DigitalBrain::PitchRollHold(void)
         CurrentPitch *= -1;
 
     //anything to do?
-    if (self->Pitch() * RTD > destPitch + 0.5F ||  self->Pitch() * RTD < destPitch - 0.5F)
+    if (self->Pitch() * RTD > destPitch + 0.5F or  self->Pitch() * RTD < destPitch - 0.5F)
     {
         if (CurrentPitch > destPitch)
         {
@@ -434,7 +434,7 @@ void DigitalBrain::PitchRollHold(void)
         CurrentRoll *= -1;
 
     //anything to do?
-    if (self->Roll() * RTD > destRoll + 1.0F ||  self->Roll() * RTD < destRoll - 1.0F)
+    if (self->Roll() * RTD > destRoll + 1.0F or  self->Roll() * RTD < destRoll - 1.0F)
     {
         if (CurrentRoll > destRoll)
         {
@@ -472,7 +472,7 @@ void DigitalBrain::FollowWP(void)
 {
     if (CheckAPParameters())
     {
-        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
+        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one
         self->SetAutopilot(AircraftClass::APOff);
         return;
     }
@@ -480,15 +480,15 @@ void DigitalBrain::FollowWP(void)
     float wpX, wpY, wpZ;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (self == playerAC && playerAC->FCC->GetStptMode() != FireControlComputer::FCCWaypoint &&
-        playerAC->FCC->GetStptMode() != FireControlComputer::FCCMarkpoint &&
-        playerAC->FCC->GetStptMode() != FireControlComputer::FCCDLinkpoint)
+    if (self == playerAC and playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCWaypoint and 
+        playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCMarkpoint and 
+        playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCDLinkpoint)
     {
         AcceptManual();
         return;
     }
 
-    if (self && self->curWaypoint)
+    if (self and self->curWaypoint)
         self->curWaypoint->GetLocation(&wpX, &wpY, &wpZ);
     else
     {
@@ -497,9 +497,9 @@ void DigitalBrain::FollowWP(void)
     }
 
     //MI add in INS Drift
-    if (g_bINS && g_bRealisticAvionics)
+    if (g_bINS and g_bRealisticAvionics)
     {
-        if (playerAC != NULL)
+        if (playerAC not_eq NULL)
         {
             wpX += playerAC->GetINSLatDrift();
             wpY += playerAC->GetINSLongDrift();
@@ -524,7 +524,7 @@ void DigitalBrain::HDGSel(void)
 {
     if (CheckAPParameters())
     {
-        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
+        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one
         self->SetAutopilot(AircraftClass::APOff);
         return;
     }
@@ -552,7 +552,7 @@ void DigitalBrain::RollHold(void)
 {
     if (CheckAPParameters())
     {
-        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
+        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one
         self->SetAutopilot(AircraftClass::APOff);
         return;
     }
@@ -564,7 +564,7 @@ void DigitalBrain::RollHold(void)
         CurrentRoll *= -1;
 
     //anything to do?
-    if (self->Roll() * RTD > destRoll + 1.0F ||  self->Roll() * RTD < destRoll - 1.0F)
+    if (self->Roll() * RTD > destRoll + 1.0F or  self->Roll() * RTD < destRoll - 1.0F)
     {
         if (CurrentRoll > destRoll)
         {
@@ -608,7 +608,7 @@ void DigitalBrain::PitchHold(void)
 {
     if (CheckAPParameters())
     {
-        // pitch switch will remain in selected pitch mode according to the dash one!
+        // pitch switch will remain in selected pitch mode according to the dash one
         self->SetAutopilot(AircraftClass::APOff);
         return;
     }
@@ -616,14 +616,14 @@ void DigitalBrain::PitchHold(void)
     // Use the Gamma (pitch angle) hold command here since it seems to work right
     // and the pitch/roll hold code above in earlier versions of this file don't seem to
     // hold pitch at all to speak of.
-    if (!self->IsOn(AircraftClass::StickStrng))
+    if ( not self->IsOn(AircraftClass::StickStrng))
         GammaHold(destPitch);
 
     // Now grab any user input to emulate stick steering during autopilot operation.
     // AP just holds the set reference.  Pressure on the stick will change the reference
     // provided the pitch and other parameters that would disconnect the AP stay within limits.
-    // Be careful to take this input only if there is some pressure on the stick though!
-    if ((UserStickInputs.pstick > 0.05F) || (UserStickInputs.pstick < -0.05F))
+    // Be careful to take this input only if there is some pressure on the stick though
+    if ((UserStickInputs.pstick > 0.05F) or (UserStickInputs.pstick < -0.05F))
     {
         self->SetAPFlag(AircraftClass::StickStrng);
         pStick = 0.0F * af->pstick + 0.5F * UserStickInputs.pstick;
@@ -641,10 +641,10 @@ void DigitalBrain::PitchHold(void)
 void DigitalBrain::CheckForTurn(void)
 {
     //anything to do for us?
-    if (HeadingDifference < -1.0F || HeadingDifference > 1.0F)
+    if (HeadingDifference < -1.0F or HeadingDifference > 1.0F)
     {
-        //MI DON'T TOUCH THIS CODE!!!!
-        //my brain was smoking after I got this down! It seems to work just fine.
+        //MI DON'T TOUCH THIS CODE
+        //my brain was smoking after I got this down It seems to work just fine.
         if (HeadingDifference < 0)
         {
             //turn left
@@ -668,7 +668,7 @@ void DigitalBrain::CheckForTurn(void)
     }
     else
     {
-        if (self->Roll() * RTD > 0.5F || self->Roll() *RTD < -0.5F)
+        if (self->Roll() * RTD > 0.5F or self->Roll() *RTD < -0.5F)
         {
             if (self->Roll() * RTD > 0.5F)
                 bank = (self->Roll() * RTD) - 1;
@@ -703,7 +703,7 @@ bool DigitalBrain::APAutoDisconnect(void)
     if (af->IsEngineFlag(AirframeClass::FuelDoorOpen))
         return TRUE;
 
-    if (!self->HasPower(AircraftClass::APPower))
+    if ( not self->HasPower(AircraftClass::APPower))
         return TRUE;
 
     if (self->TrimAPDisc)
@@ -724,11 +724,11 @@ bool DigitalBrain::APAutoDisconnect(void)
 int DigitalBrain::CheckAPParameters(void)
 {
     //dont do anything if not within parameters
-    if ((self->Pitch() * RTD > 60.2F) || (self->Pitch() * RTD < -60.2F))
+    if ((self->Pitch() * RTD > 60.2F) or (self->Pitch() * RTD < -60.2F))
         return TRUE;
-    else if ((self->Roll() * RTD > 60.2F) || (self->Roll() * RTD < -60.2F))
+    else if ((self->Roll() * RTD > 60.2F) or (self->Roll() * RTD < -60.2F))
         return TRUE;
-    else if (self->af->mach > 0.95 || -self->ZPos() > 40000)
+    else if (self->af->mach > 0.95 or -self->ZPos() > 40000)
         return TRUE;
     else
         return FALSE;

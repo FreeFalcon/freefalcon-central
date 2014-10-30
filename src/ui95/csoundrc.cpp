@@ -93,7 +93,7 @@ C_Sound::~C_Sound()
 
 void C_Sound::Setup()
 {
-    if (SoundList_ || ResList_)
+    if (SoundList_ or ResList_)
         Cleanup();
 
     if (gSoundDriver)
@@ -105,13 +105,13 @@ void C_Sound::Setup()
 
 void C_Sound::Cleanup()
 {
-    if (Stereo_ != SND_NO_HANDLE)
+    if (Stereo_ not_eq SND_NO_HANDLE)
     {
         gSoundDriver->RemoveStream(Stereo_);
         Stereo_ = SND_NO_HANDLE;
     }
 
-    if (Mono_ != SND_NO_HANDLE)
+    if (Mono_ not_eq SND_NO_HANDLE)
     {
         gSoundDriver->RemoveStream(Mono_);
         Mono_ = SND_NO_HANDLE;
@@ -140,15 +140,15 @@ void C_Sound::AddResSound(C_Resmgr *res)
     long curidx;
     SOUND_RSC *snd;
 
-    if (!res)
+    if ( not res)
         return;
 
     Index = res->GetIDList();
 
-    if (!Index)
+    if ( not Index)
         return;
 
-    if (!SoundList_)
+    if ( not SoundList_)
     {
         SoundList_ = new C_Hash;
         SoundList_->Setup(20);
@@ -165,7 +165,7 @@ void C_Sound::AddResSound(C_Resmgr *res)
             newentry = new SOUND_RES;
             newentry->ID = IDTable_->FindTextID(snd->Header->ID);
             newentry->SoundID = SND_NO_HANDLE;
-            newentry->flags = snd->Header->flags | SOUND_IN_RES;
+            newentry->flags = snd->Header->flags bitor SOUND_IN_RES;
             newentry->Volume = 0;
             newentry->LoopPoint = 0;
             newentry->Count = 0;
@@ -187,15 +187,15 @@ void C_Sound::AddResStream(C_Resmgr *res)
     long curidx;
     SOUND_RSC *snd;
 
-    if (!res)
+    if ( not res)
         return;
 
     Index = res->GetIDList();
 
-    if (!Index)
+    if ( not Index)
         return;
 
-    if (!SoundList_)
+    if ( not SoundList_)
     {
         SoundList_ = new C_Hash;
         SoundList_->Setup(20);
@@ -213,7 +213,7 @@ void C_Sound::AddResStream(C_Resmgr *res)
             newentry = new SOUND_RES;
             newentry->ID = IDTable_->FindTextID(snd->Header->ID);
             newentry->SoundID = SND_NO_HANDLE;
-            newentry->flags = snd->Header->flags | SOUND_IN_RES | SOUND_RES_STREAM;
+            newentry->flags = snd->Header->flags bitor SOUND_IN_RES bitor SOUND_RES_STREAM;
             newentry->Volume = 0;
             newentry->LoopPoint = 0;
             newentry->Count = 0;
@@ -234,7 +234,7 @@ BOOL C_Sound::LoadResource(long ID, char *filename)
     res = new C_Resmgr;
     res->Setup(ID, filename, IDTable_);
 
-    if (!res->Status())
+    if ( not res->Status())
     {
         res->Cleanup();
         delete res;
@@ -243,7 +243,7 @@ BOOL C_Sound::LoadResource(long ID, char *filename)
 
     res->LoadData();
 
-    if (!ResList_)
+    if ( not ResList_)
     {
         ResList_ = new C_Hash;
         ResList_->Setup(1);
@@ -264,14 +264,14 @@ BOOL C_Sound::LoadStreamResource(long ID, char *filename)
     res = new C_Resmgr;
     res->Setup(ID, filename, IDTable_);
 
-    if (!res->Status())
+    if ( not res->Status())
     {
         res->Cleanup();
         delete res;
         return(FALSE);
     }
 
-    if (!ResList_)
+    if ( not ResList_)
     {
         ResList_ = new C_Hash;
         ResList_->Setup(1);
@@ -293,7 +293,7 @@ BOOL C_Sound::LoadSound(long ID, char *file, long flags)
     if (GetSound(ID))
         return(FALSE);
 
-    snd = F4LoadSound(file, flags/* & SND_EXCLUSIVE */); // MLR 12/6/2003 - SND_ flags are obsolete
+    snd = F4LoadSound(file, flags/* bitand SND_EXCLUSIVE */); // MLR 12/6/2003 - SND_ flags are obsolete
 
     if (snd == NULL)
         return(FALSE);
@@ -313,7 +313,7 @@ BOOL C_Sound::LoadSound(long ID, char *file, long flags)
 #endif
     strcpy(newentry->filename, file);
 
-    if (!SoundList_)
+    if ( not SoundList_)
     {
         SoundList_ = new C_Hash;
         SoundList_->Setup(20);
@@ -335,7 +335,7 @@ BOOL C_Sound::StreamSound(long ID, char *file, long flags)
     newentry = new SOUND_RES;
     newentry->ID = ID;
     newentry->SoundID = SND_NO_HANDLE;
-    newentry->flags = SOUND_STREAM | flags;
+    newentry->flags = SOUND_STREAM bitor flags;
     newentry->Volume = 0;
     newentry->LoopPoint = 0;
     newentry->Sound = NULL;
@@ -346,7 +346,7 @@ BOOL C_Sound::StreamSound(long ID, char *file, long flags)
 #endif
     strcpy(newentry->filename, file);
 
-    if (!SoundList_)
+    if ( not SoundList_)
     {
         SoundList_ = new C_Hash;
         SoundList_->Setup(20);
@@ -362,7 +362,7 @@ SOUND_RES *C_Sound::GetSound(long ID)
 {
     SOUND_RES *cur;
 
-    if (!SoundList_)
+    if ( not SoundList_)
         return(NULL);
 
     cur = (SOUND_RES*)SoundList_->Find(ID);
@@ -401,11 +401,11 @@ BOOL C_Sound::PlaySound(SOUND_RES *Snd)
     gSoundDriver->StopStream(Mono_);
     gSoundDriver->StopStream(Stereo_);
 
-    if (Snd->flags & SOUND_IN_RES)
+    if (Snd->flags bitand SOUND_IN_RES)
     {
         if (Snd->Sound)
         {
-            if (Snd->flags & SOUND_RES_STREAM)
+            if (Snd->flags bitand SOUND_RES_STREAM)
             {
                 if (Snd->Sound->Header->Channels == 2) // Stereo
                     Snd->Sound->Stream(Stereo_);
@@ -421,13 +421,13 @@ BOOL C_Sound::PlaySound(SOUND_RES *Snd)
             }
         }
     }
-    else if (Snd->flags & SOUND_STREAM)
+    else if (Snd->flags bitand SOUND_STREAM)
     {
         // Get header... stream in Mono_ or Stereo_ stream
         SND_FLAGS = 0;
 
-        if (Snd->flags & SOUND_LOOP)
-            SND_FLAGS |= SND_STREAM_LOOP;
+        if (Snd->flags bitand SOUND_LOOP)
+            SND_FLAGS or_eq SND_STREAM_LOOP;
 
         Snd->SoundID = F4StartStream(Snd->filename, SND_FLAGS);
         F4SetStreamVolume(Snd->SoundID, Snd->Volume);
@@ -451,7 +451,7 @@ BOOL C_Sound::LoopSound(SOUND_RES *Snd)
     gSoundDriver->StopStream(Mono_);
     gSoundDriver->StopStream(Stereo_);
 
-    if (Snd->flags & SOUND_IN_RES)
+    if (Snd->flags bitand SOUND_IN_RES)
     {
         if (Snd->Sound)
         {
@@ -461,7 +461,7 @@ BOOL C_Sound::LoopSound(SOUND_RES *Snd)
                 Snd->Sound->Loop(Mono_);
         }
     }
-    else if (Snd->flags & SOUND_STREAM)
+    else if (Snd->flags bitand SOUND_STREAM)
     {
         // Get header... stream in Mono_ or Stereo_ stream
         SND_FLAGS = SND_STREAM_LOOP;
@@ -511,10 +511,10 @@ long C_Sound::SetVolume(long Volume)
 void C_Sound::SetAllVolumes(long Volume)
 {
     /* cur=Root_;
-     while(cur != NULL)
+     while(cur not_eq NULL)
      {
      cur->Volume=Volume;
-     if(cur->flags & SOUND_STREAM)
+     if(cur->flags bitand SOUND_STREAM)
      F4SetStreamVolume(cur->SoundID,Volume);
      else
      F4SetVolume(cur->SoundID,Volume);
@@ -547,11 +547,11 @@ void C_Sound::LocalFunction(short ID, long P[], _TCHAR *str, C_Handler *)
     switch (ID)
     {
         case CSND_LOADSOUND:
-            LoadSound(P[0], str, P[1] | P[2] | P[3] | P[4] | P[5] | P[6]);
+            LoadSound(P[0], str, P[1] bitor P[2] bitor P[3] bitor P[4] bitor P[5] bitor P[6]);
             break;
 
         case CSND_STREAMSOUND:
-            StreamSound(P[0], str, P[1] | P[2] | P[3] | P[4] | P[5] | P[6]);
+            StreamSound(P[0], str, P[1] bitor P[2] bitor P[3] bitor P[4] bitor P[5] bitor P[6]);
             break;
 
         case CSND_SETLOOPBACK:
@@ -566,7 +566,7 @@ void C_Sound::LocalFunction(short ID, long P[], _TCHAR *str, C_Handler *)
             snd = GetSound(P[0]);
 
             if (snd)
-                snd->Count = static_cast<short>(P[1]); //!
+                snd->Count = static_cast<short>(P[1]); 
 
             break;
 

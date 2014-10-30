@@ -19,7 +19,7 @@ void ICPClass::CNIBackup(void)
     //else //COMM2 is active
     // FillDEDMatrix(0,0,"VHF");
     //WAYPOINT INFO
-    if (!MAN) //Auto Waypoint
+    if ( not MAN) //Auto Waypoint
     {
         if (IsICPSet(ICPClass::EDIT_STPT))
             sprintf(tempstr, "\x01%2dA", mWPIndex + 1);
@@ -44,7 +44,7 @@ void ICPClass::CNIBackup(void)
     {
         GetWind();
 
-        if (windSpeed > 1 && windSpeed < 9)
+        if (windSpeed > 1 and windSpeed < 9)
             sprintf(tempstr, "%d*00%d", heading, (int)windSpeed);
         else if (windSpeed > 9)
             sprintf(tempstr, "%d*0%d", heading, (int)windSpeed);
@@ -109,8 +109,8 @@ void ICPClass::ILSBackup(void)
     //Line1
     FillDEDMatrix(0, 1, "TCN ON");
 
-    if (gNavigationSys && gNavigationSys->GetTacanBand(NavigationSystem::AUXCOMM) == TacanList::X &&
-        id != FalconNullId)
+    if (gNavigationSys and gNavigationSys->GetTacanBand(NavigationSystem::AUXCOMM) == TacanList::X and 
+        id not_eq FalconNullId)
         FillDEDMatrix(0, 18, "ILS ON");
     else
         FillDEDMatrix(0, 18, "ILS OFF");

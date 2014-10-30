@@ -57,7 +57,7 @@ int FalconPrivateOrderedList::PrivateInsert(VuEntity *entity)
 
 int FalconPrivateOrderedList::ForcedInsert(VuEntity *entity)
 {
-    for (list<VuEntityBin>::iterator it = l_.begin(); it != l_.end(); ++it)
+    for (list<VuEntityBin>::iterator it = l_.begin(); it not_eq l_.end(); ++it)
     {
         VuEntityBin &eb = *it;
 
@@ -103,7 +103,7 @@ VuEntity *TailInsertList::PopHead()
 {
     VuScopeLock l(GetMutex());
 
-    while (!l_.empty())
+    while ( not l_.empty())
     {
         VuEntityBin eb = l_.front();
         l_.pop_front();
@@ -178,7 +178,7 @@ int FalconPrivateOrderedList::Insert(VuEntity *entity)
 
 int FalconPrivateOrderedList::ForcedInsert(VuEntity *entity)
 {
-    for (list<VuEntityBin>::iterator it = l_.begin(); it != l_.end(); ++it)
+    for (list<VuEntityBin>::iterator it = l_.begin(); it not_eq l_.end(); ++it)
     {
         VuEntityBin &eb = *it;
 
@@ -226,7 +226,7 @@ VuEntity *TailInsertList::PopHead()
 {
     VuScopeLock l(GetMutex());
 
-    while (!l_.empty())
+    while ( not l_.empty())
     {
         VuEntityBin eb = l_.front();
         l_.pop_front();

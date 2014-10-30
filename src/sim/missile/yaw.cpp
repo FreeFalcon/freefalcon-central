@@ -6,7 +6,7 @@ void MissileClass::Yaw(void)
     float eintg, eprop, error, error1, eintg1, betdt1, betcmd;
     float nycmd;
 
-    if (!ifd)
+    if ( not ifd)
         return; // JB 010720
 
     //me123 added the /1.41 which is approimatly sqrt(2)
@@ -15,7 +15,7 @@ void MissileClass::Yaw(void)
     // this is still not totaly true since it will be limited to less then max g only in the yaw direction, but better imo
     nycmd = -ifd->augCommand.yaw;
 
-    if (!(flags & EndGame))
+    if ( not (flags bitand EndGame))
         nycmd = min(max(nycmd, -auxData->maxGNormal / 1.41f), auxData->maxGNormal / 1.41f);
     else
         nycmd = min(max(nycmd, -auxData->maxGTerminal / 1.41f), auxData->maxGTerminal / 1.41f);

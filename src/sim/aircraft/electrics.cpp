@@ -14,23 +14,23 @@ const unsigned long AircraftClass::systemStates[PowerMaxState] =
     systemStates[0], //  PowerFlcs,
     systemStates[1], //   PowerBattery,
     systemStates[2] |
-    HUDPower | InteriorLightPower, // PowerEmergencyBus,
+    HUDPower bitor InteriorLightPower, // PowerEmergencyBus,
     systemStates[3] |
-    RaltPower | MFDPower | UFCPower | APPower | IFFPower, // PowerEssentialBus,
+    RaltPower bitor MFDPower bitor UFCPower bitor APPower bitor IFFPower, // PowerEssentialBus,
     systemStates[4] |
     SMSPower |
-    FCCPower | GPSPower | FCRPower | EWSRWRPower | MAPPower | DLPower | TISLPower |
-    LeftHptPower | RightHptPower | RwrPower |
-    InstrumentLightPower | InteriorLightPower | SpotLightPower |
-    EWSJammerPower | EWSChaffPower | EWSFlarePower | ChaffFlareCount | PFDPower, // PowerNonEssentialBus,
+    FCCPower bitor GPSPower bitor FCRPower bitor EWSRWRPower bitor MAPPower bitor DLPower bitor TISLPower |
+    LeftHptPower bitor RightHptPower bitor RwrPower |
+    InstrumentLightPower bitor InteriorLightPower bitor SpotLightPower |
+    EWSJammerPower bitor EWSChaffPower bitor EWSFlarePower bitor ChaffFlareCount bitor PFDPower, // PowerNonEssentialBus,
 };
 
 BOOL AircraftClass::HasPower(AvionicsPowerFlags fl)
 {
-    ShiAssert(currentPower >= 0 && currentPower < PowerMaxState);
-    return (powerFlags & systemStates[currentPower] & fl) == (unsigned int)fl ? 1 : 0;
+    ShiAssert(currentPower >= 0 and currentPower < PowerMaxState);
+    return (powerFlags bitand systemStates[currentPower] bitand fl) == (unsigned int)fl ? 1 : 0;
 #if 0
-    return (powerFlags & fl) == (unsigned int)fl ? 1 : 0;
+    return (powerFlags bitand fl) == (unsigned int)fl ? 1 : 0;
 #endif
 }
 
@@ -75,7 +75,7 @@ void AircraftClass::DoElectrics()
             currentPower = PowerBattery;
     }
 
-    if (currentPower != PowerNonEssentialBus)
+    if (currentPower not_eq PowerNonEssentialBus)
         elecfault = true;
 
     ElecClear(ElecToFlcs);
@@ -93,12 +93,12 @@ void AircraftClass::DoElectrics()
         }
     }
 
-    if (!isDigital)
+    if ( not isDigital)
     {
         if (elecfault)
         {
             //MI
-            if (!g_bRealisticAvionics)
+            if ( not g_bRealisticAvionics)
                 mFaults->SetFault(elec_fault);
             else
                 mFaults->SetCaution(elec_fault);

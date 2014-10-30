@@ -1086,9 +1086,9 @@ HeliMMClass::SetControls(float pstick, float rstick, float throttle, float pedal
 
     ctlcpitch = throttle;
 
-    // for pedals & stick, put in a centered dead zone
+    // for pedals bitand stick, put in a centered dead zone
     // when human controlled
-    if (!isDigital)
+    if ( not isDigital)
     {
         if (pedals > 0.30F)
             ctltpitch = (pedals - 0.30F) / 0.70F  ;
@@ -1452,7 +1452,7 @@ HeliMMClass::Fuselage(void)
         wa_fus = VA.z - vi_mr;
 
         // calc position on fuselage
-        if (wa_fus != 0)
+        if (wa_fus not_eq 0)
             wa_fus_pos =
                 (VA.x / (-wa_fus) * (ma_hub.y - ma_fus.y)) -
                 (ma_fus.x - ma_hub.x);
@@ -1651,7 +1651,7 @@ HeliMMClass::Wing(void)
         vta_wn = (float)sqrt(va_x_sq + wa_wn * wa_wn);
 
         // induced drag
-        if (vta_wn != 0)
+        if (vta_wn not_eq 0)
             wn6d.x =
                 -(rh02) / PI / vta_wn / vta_wn *
                 (md->wn.zuu * va_x_sq +
@@ -1716,7 +1716,7 @@ HeliMMClass::HorizTail(void)
         }
 
         // trianglur downwash field
-        if (dw_ht_pos > 0 && dw_ht_pos < md->mr.radius)
+        if (dw_ht_pos > 0 and dw_ht_pos < md->mr.radius)
             eps_ht = 2.0F * (1 - dw_ht_pos / md->mr.radius);
         else
             eps_ht = 0.0F;

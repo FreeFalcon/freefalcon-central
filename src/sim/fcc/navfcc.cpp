@@ -94,7 +94,7 @@ void FireControlComputer::NavMode(void)
     WayPointClass* curWaypoint = platform->curWaypoint;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!IsHsdState(HSDCPL))
+    if ( not IsHsdState(HSDCPL))
     {
         if (HSDRangeStepCmd > 0)
             HsdRangeIndex ++;
@@ -119,7 +119,7 @@ void FireControlComputer::NavMode(void)
         {
             HSDRange = theRadar->GetRange();
 
-            if (!IsHsdState(HSDCEN))
+            if ( not IsHsdState(HSDCEN))
             {
                 HSDRange *= 1.5;
             }
@@ -132,7 +132,7 @@ void FireControlComputer::NavMode(void)
 
     HSDRangeStepCmd = 0;
 
-    if (platform == (SimBaseClass*)(playerAC) && TheHud)
+    if (platform == (SimBaseClass*)(playerAC) and TheHud)
     {
         //evaluate_flight_vc (platform->curWaypoint, platform->XPos (), platform->YPos (), platform->ZPos (), 0); // need speed at the end of here...
 
@@ -142,7 +142,7 @@ void FireControlComputer::NavMode(void)
             curWaypoint->GetLocation(&wpX, &wpY, &wpZ);
 
             //MI add in INS Drift
-            if (g_bINS && g_bRealisticAvionics)
+            if (g_bINS and g_bRealisticAvionics)
             {
                 if (playerAC)
                 {
@@ -160,7 +160,7 @@ void FireControlComputer::NavMode(void)
             dz = OTWDriver.GetApproxGroundLevel(wpX, wpY) - platform->ZPos();
 
             //MI add in INS Offset
-            if (g_bINS && g_bRealisticAvionics)
+            if (g_bINS and g_bRealisticAvionics)
             {
                 if (playerAC)
                     dz -= playerAC->GetINSAltOffset();
@@ -184,11 +184,11 @@ void FireControlComputer::NavMode(void)
             // Time to go
 
             // MD -- 20040219: add concept of pseudo waypoint tracking for GM SP ground stabilized
-            if (playerAC && g_bRealisticAvionics)  // MLR 7/17/2004 - Added realistic check
+            if (playerAC and g_bRealisticAvionics)  // MLR 7/17/2004 - Added realistic check
             {
                 RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
 
-                if (theRadar && theRadar->IsSet(RadarDopplerClass::SP) && theRadar->IsSet(RadarDopplerClass::SP_STAB) && theRadar->GMSPWaypt())
+                if (theRadar and theRadar->IsSet(RadarDopplerClass::SP) and theRadar->IsSet(RadarDopplerClass::SP_STAB) and theRadar->GMSPWaypt())
                 {
                     float x, y, z, dx, dy;
                     theRadar->GMSPWaypt()->GetLocation(&x, &y, &z);
@@ -220,7 +220,7 @@ void FireControlComputer::NavMode(void)
                 case Aim120:
                 case Aim9:
 
-                    //case Gun: // MLR 2/8/2004 - this is not a valid submode!
+                    //case Gun: // MLR 2/8/2004 - this is not a valid submode
                     // ETE - delta Time to reach waypoint at current speed
                     if (platform->GetVt() > 2.0F)
                         TheHud->waypointArrival = TheHud->waypointRange / platform->GetVt();
@@ -305,7 +305,7 @@ void FireControlComputer::NavMode(void)
         }
 
         //MI send our OA's to the HUD
-        if (g_bRealisticAvionics && platform->curWaypoint && platform->curWaypoint->GetWPFlags() & WPF_TARGET)
+        if (g_bRealisticAvionics and platform->curWaypoint and platform->curWaypoint->GetWPFlags() bitand WPF_TARGET)
         {
             WayPointClass* curOA = NULL;
             WayPointClass* curVIP = NULL;
@@ -315,7 +315,7 @@ void FireControlComputer::NavMode(void)
             float OAYPos;
             float OAZPos;
 
-            ShiAssert(platform->curWaypoint != NULL || !F4IsBadReadPtr(platform->curWaypoint, sizeof(WayPointClass)));
+            ShiAssert(platform->curWaypoint not_eq NULL or not F4IsBadReadPtr(platform->curWaypoint, sizeof(WayPointClass)));
 
             for (i = 0; i < MAX_DESTOA; i++)
             {
@@ -327,7 +327,7 @@ void FireControlComputer::NavMode(void)
                         if (curOA)
                         {
                             //Limit it to the TargetWP for the moment
-                            if (!F4IsBadReadPtr(curOA, sizeof(WayPointClass)))
+                            if ( not F4IsBadReadPtr(curOA, sizeof(WayPointClass)))
                             {
                                 curOA->GetLocation(&OAXPos, &OAYPos, &OAZPos);
                                 float dx, dy, dz;
@@ -356,7 +356,7 @@ void FireControlComputer::NavMode(void)
                         if (curOA)
                         {
                             //Limit it to the TargetWP for the moment
-                            if (!F4IsBadReadPtr(curOA, sizeof(WayPointClass)))
+                            if ( not F4IsBadReadPtr(curOA, sizeof(WayPointClass)))
                             {
                                 curOA->GetLocation(&OAXPos, &OAYPos, &OAZPos);
                                 float dx, dy, dz;
@@ -388,7 +388,7 @@ void FireControlComputer::NavMode(void)
 
             if (curVIP)
             {
-                if (!F4IsBadReadPtr(curVIP, sizeof(WayPointClass)))
+                if ( not F4IsBadReadPtr(curVIP, sizeof(WayPointClass)))
                 {
                     //valid, draw VIP
                     curVIP->GetLocation(&OAXPos, &OAYPos, &OAZPos);
@@ -414,7 +414,7 @@ void FireControlComputer::NavMode(void)
 
             if (curVRP)
             {
-                if (!F4IsBadReadPtr(curVRP, sizeof(WayPointClass)))
+                if ( not F4IsBadReadPtr(curVRP, sizeof(WayPointClass)))
                 {
                     //valid, draw VRP
                     curVRP->GetLocation(&OAXPos, &OAYPos, &OAZPos);
@@ -465,7 +465,7 @@ void FireControlComputer::InitNewStptMode(void)
     if (platform == (SimVehicleClass*) playerAC)
     {
 
-        if (mNewStptMode != mStptMode)
+        if (mNewStptMode not_eq mStptMode)
         {
             // Save the current
             if (mStptMode == FCCWaypoint)
@@ -479,7 +479,7 @@ void FireControlComputer::InitNewStptMode(void)
             {
                 RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(platform, SensorClass::Radar);
 
-                if (theRadar->IsSet(RadarDopplerClass::SP) && theRadar->IsSet(RadarDopplerClass::SP_STAB))
+                if (theRadar->IsSet(RadarDopplerClass::SP) and theRadar->IsSet(RadarDopplerClass::SP_STAB))
                 {
                     theRadar->SetGMSPWaypt(NULL);  // clear any existing point data
                     theRadar->ClearFlagBit(RadarDopplerClass::SP_STAB);
@@ -493,7 +493,7 @@ void FireControlComputer::InitNewStptMode(void)
 
                 case FCCWaypoint:
 
-                    if (!mpSavedWaypoint)
+                    if ( not mpSavedWaypoint)
                     {
                         platform->curWaypoint = platform->waypoint;
                     }
@@ -586,17 +586,17 @@ void FireControlComputer::SetWaypointNum(int num)
         curWaypoint = curWaypoint->GetPrevWP();
 
     //find the corect waypoint
-    for (i = 0; i < num && curWaypoint; i++)
+    for (i = 0; i < num and curWaypoint; i++)
 
-        // 2001-07-28 MODIFIED BY S.G. ITS THE *NEXT* WAYPOINT, NOT THE PREVIOUS!!! NOT CHECKED SO COMMENTED OUT
+        // 2001-07-28 MODIFIED BY S.G. ITS THE *NEXT* WAYPOINT, NOT THE PREVIOUS NOT CHECKED SO COMMENTED OUT
         // 2002-04-18 MN let's add a config file variable to test that later - AI uses this function, too,
         // so we need to be sure it works...
-        if (!g_bSetWaypointNumFix)
+        if ( not g_bSetWaypointNumFix)
             curWaypoint = curWaypoint->GetPrevWP();
         else
             curWaypoint = curWaypoint->GetNextWP();
 
-    if (theRadar && curWaypoint)
+    if (theRadar and curWaypoint)
     {
         platform->curWaypoint->GetLocation(&rx, &ry, &rz);
         theRadar->SetGroundPoint(rx, ry, rz);
@@ -629,7 +629,7 @@ void FireControlComputer::StepPrevWayPoint(void)
             nextWaypoint = platform->waypoint;
             TheHud->waypointNum = 0;
 
-            while (nextWaypoint && nextWaypoint->GetNextWP())
+            while (nextWaypoint and nextWaypoint->GetNextWP())
             {
                 nextWaypoint = nextWaypoint->GetNextWP();
                 TheHud->waypointNum ++;
@@ -654,7 +654,7 @@ void FireControlComputer::StepPoint(void)
     RadarClass* theRadar;
     float rx, ry, rz;
 
-    if (waypointStepCmd == 1 || waypointStepCmd == -1 || waypointStepCmd == 127)
+    if (waypointStepCmd == 1 or waypointStepCmd == -1 or waypointStepCmd == 127)
     {
 
         switch (mStptMode)
@@ -663,7 +663,7 @@ void FireControlComputer::StepPoint(void)
             case FCCWaypoint:
 
                 //MI 10/02/02 Why?
-                //if (!platform->OnGround())
+                //if ( not platform->OnGround())
             {
                 if (waypointStepCmd == 1)
                 {
@@ -769,21 +769,21 @@ void FireControlComputer::NavDisplay(void)
         y = (frz_x - platform->XPos()) * FT_TO_NM / HSDRange;
         x = (frz_y - platform->YPos()) * FT_TO_NM / HSDRange;
 
-        if (!IsHsdState(HSDCEN))
+        if ( not IsHsdState(HSDCEN))
             y -= 0.4f;
 
         display->AdjustOriginInViewport(x, y);
         basedir = platform->Yaw() - frz_dir;
         display->AdjustRotationAboutOrigin(basedir);
     }
-    else if (!IsHsdState(HSDCEN)) // JPO depressed view
+    else if ( not IsHsdState(HSDCEN)) // JPO depressed view
         display->AdjustOriginInViewport(0.0F, -0.4F);
 
     //Wombat778 11-10-2003 Added to center on cursor in EXP modes
 
-    if ((HSDZoom > 0) && IsSOI)
+    if ((HSDZoom > 0) and IsSOI)
     {
-        if (!IsHsdState(HSDCEN))
+        if ( not IsHsdState(HSDCEN))
         {
             if (HSDZoom == 2)
                 display->AdjustOriginInViewport(-HSDXPos, (-HSDYPos) - 0.4F); //Adjust to the previously set HSDXPos and HSDYPos (set when zooming)
@@ -797,7 +797,7 @@ void FireControlComputer::NavDisplay(void)
     //Wombat778 11-10-2003 End of added code
 
 
-    // RV - RED - WARNING...!!!!
+    // RV - RED - WARNING...
     // THIS IS KINDA A HACK - The 2D MFDs may be stretched by pit scaling
     // Rings would became ovals ( as it should be ) but later they r turned by AC Yaw...
     // This make the Oval to physically turn...
@@ -819,9 +819,9 @@ void FireControlComputer::NavDisplay(void)
     display->AdjustRotationAboutOrigin(-platform->Yaw());
 
     //MI changed for Zoom
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
-        if (!IsHsdState(HSDNORINGS) && !IsHsdState(HSDFRZ))
+        if ( not IsHsdState(HSDNORINGS) and not IsHsdState(HSDFRZ))
         {
             display->SetColor(GetMfdColor(MFD_LINES));
             // Add Cardinal Headings
@@ -846,9 +846,9 @@ void FireControlComputer::NavDisplay(void)
 
             // Add North Arrow
             //MI
-            if (g_bRealisticAvionics && g_bINS)
+            if (g_bRealisticAvionics and g_bINS)
             {
-                if (playerAC && playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+                if (playerAC and playerAC->INSState(AircraftClass::INS_HSD_STUFF))
                     display->Tri(-0.05F, 1.0f / maxrings, 0.05F, 1.0f / maxrings, 0.0F, 1.0f / maxrings + 0.1f);
             }
             else
@@ -858,7 +858,7 @@ void FireControlComputer::NavDisplay(void)
     else
     {
         //MI this is not here if we have it expanded
-        if (!IsHsdState(HSDNORINGS) && !IsHsdState(HSDFRZ) && HSDZoom == 0)
+        if ( not IsHsdState(HSDNORINGS) and not IsHsdState(HSDFRZ) and HSDZoom == 0)
         {
             display->SetColor(GetMfdColor(MFD_LINES));
             // Add Cardinal Headings
@@ -883,9 +883,9 @@ void FireControlComputer::NavDisplay(void)
 
             // Add North Arrow
             //MI
-            if (g_bRealisticAvionics && g_bINS)
+            if (g_bRealisticAvionics and g_bINS)
             {
-                if (playerAC && playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+                if (playerAC and playerAC->INSState(AircraftClass::INS_HSD_STUFF))
                     display->Tri(-0.05F, 1.0f / maxrings, 0.05F, 1.0f / maxrings, 0.0F, 1.0f / maxrings + 0.1f);
             }
             else
@@ -895,21 +895,21 @@ void FireControlComputer::NavDisplay(void)
 
     display->SetColor(GetMfdColor(MFD_ROUTES));
 
-    if (!IsHsdState(HSDNONAV1))
+    if ( not IsHsdState(HSDNONAV1))
         DrawNavPoints();
 
-    if (!IsHsdState(HSDNOPRE) && g_bRealisticAvionics)
+    if ( not IsHsdState(HSDNOPRE) and g_bRealisticAvionics)
         DrawPPThreats();
 
-    if (PlayerOptions.GetAvionicsType() != ATEasy)
+    if (PlayerOptions.GetAvionicsType() not_eq ATEasy)
     {
         display->SetColor(GetMfdColor(MFD_LINES));
 
-        if (!IsHsdState(HSDNOLINE2))
+        if ( not IsHsdState(HSDNOLINE2))
             DrawFLOT();
 
         // Draw additional data
-        if (!IsHsdState(HSDNOFCR))
+        if ( not IsHsdState(HSDNOFCR))
         {
             display->ZeroRotationAboutOrigin();
             display->AdjustRotationAboutOrigin(basedir);
@@ -917,7 +917,7 @@ void FireControlComputer::NavDisplay(void)
 
             if (g_bRealisticAvionics) //MI changed
             {
-                if (HSDZoom == 0 && !IsSOI)
+                if (HSDZoom == 0 and not IsSOI)
                 {
                     DrawGhostCursor();
                     display->SetColor(GetMfdColor(MFD_SWEEP));
@@ -939,7 +939,7 @@ void FireControlComputer::NavDisplay(void)
             display->AdjustRotationAboutOrigin(basedir);
 
             DrawBuggedTarget();
-            //if (!IsHsdState(HSDNOADLNK)) Cobra not needed we do this below in DrawWingmen
+            //if ( not IsHsdState(HSDNOADLNK)) Cobra not needed we do this below in DrawWingmen
             // {
             display->ZeroRotationAboutOrigin();
             display->AdjustRotationAboutOrigin(basedir);
@@ -947,7 +947,7 @@ void FireControlComputer::NavDisplay(void)
             //}
 
             //Cobra 11/27/04 AIFF
-            if (!IsHsdState(HSDNOAIFF))
+            if ( not IsHsdState(HSDNOAIFF))
             {
                 display->SetColor(GetMfdColor(MFD_IFFFREIENDLY));
                 display->ZeroRotationAboutOrigin();
@@ -967,7 +967,7 @@ void FireControlComputer::NavDisplay(void)
         display->CenterOriginInViewport();
     }
 
-    // RV - RED - WARNING...!!!!
+    // RV - RED - WARNING...
     // THIS IS KINDA A HACK - The 2D MFDs may be stretched by pit scaling
     // Restore here the ORIGINAL MFDs Scaling
     display->scaleX = OldScaleX;
@@ -983,12 +983,12 @@ void FireControlComputer::NavDisplay(void)
         {
             for (i = 0; i < 20; i ++)
             {
-                if (hsdcntlcfg[i].mode != HSDNONE)
+                if (hsdcntlcfg[i].mode not_eq HSDNONE)
                 {
                     if (hsdcntlcfg[i].mode == HSDCNTL)
                         LabelButton(i, hsdcntlcfg[i].label, NULL, TRUE);
                     else
-                        LabelButton(i, hsdcntlcfg[i].label, NULL, !IsHsdState(hsdcntlcfg[i].mode));
+                        LabelButton(i, hsdcntlcfg[i].label, NULL, not IsHsdState(hsdcntlcfg[i].mode));
                 }
             }
         }
@@ -1035,7 +1035,7 @@ void FireControlComputer::NavDisplay(void)
             HSDDisplay();
         }
 
-        if (HSDZoom != 0)
+        if (HSDZoom not_eq 0)
             return;
     }
 
@@ -1048,7 +1048,7 @@ void FireControlComputer::NavDisplay(void)
     float ymid = y18 + (y19 - y18) / 2;
     display->TextLeftVertical(x18, ymid, tmpStr);
 
-    if (!IsHsdState(HSDCPL) && !IsHsdState(HSDCNTL) && !IsHsdState(HSDFRZ))
+    if ( not IsHsdState(HSDCPL) and not IsHsdState(HSDCNTL) and not IsHsdState(HSDFRZ))
     {
         /*----------*/
         /* up arrow */
@@ -1087,9 +1087,9 @@ void FireControlComputer::DrawNavPoints(void)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1162,9 +1162,9 @@ void FireControlComputer::DrawWayPoints()
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1207,9 +1207,9 @@ void FireControlComputer::DrawMarkPoints(void)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1247,9 +1247,9 @@ void FireControlComputer::DrawLinkPoints(void)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1297,9 +1297,9 @@ void FireControlComputer::DrawDESTOAPoints(void)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1315,7 +1315,7 @@ void FireControlComputer::DrawDESTOAPoints(void)
         if (curWaypoint)
         {
             //only do this is this is our target
-            if (platform->curWaypoint->GetWPFlags() & WPF_TARGET)
+            if (platform->curWaypoint->GetWPFlags() bitand WPF_TARGET)
             {
                 MapWaypointToDisplay(curWaypoint, &displayX, &displayY);
 
@@ -1328,9 +1328,9 @@ void FireControlComputer::DrawDESTOAPoints(void)
 void FireControlComputer::DrawVIPOAPoints(void)
 {
     //MI
-    /*if(g_bRealisticAvionics && g_bINS)
+    /*if(g_bRealisticAvionics and g_bINS)
     {
-     if(playerAC && !playerAC->INSState(AircraftClass::INS_HSD_NAV))
+     if(playerAC and not playerAC->INSState(AircraftClass::INS_HSD_NAV))
      return;
     }*/
 
@@ -1346,7 +1346,7 @@ void FireControlComputer::DrawVIPOAPoints(void)
         if (curWaypoint)
         {
             //only do this is this is our target
-            if (platform->curWaypoint->GetWPFlags() & WPF_TARGET)
+            if (platform->curWaypoint->GetWPFlags() bitand WPF_TARGET)
             {
                 MapWaypointToDisplay(curWaypoint, &displayX, &displayY);
 
@@ -1359,9 +1359,9 @@ void FireControlComputer::DrawVIPOAPoints(void)
 void FireControlComputer::DrawVRPOAPoints(void)
 {
     //MI
-    /*if(g_bRealisticAvionics && g_bINS)
+    /*if(g_bRealisticAvionics and g_bINS)
     {
-     if(playerAC && !playerAC->INSState(AircraftClass::INS_HSD_NAV))
+     if(playerAC and not playerAC->INSState(AircraftClass::INS_HSD_NAV))
      return;
     }*/
 
@@ -1377,7 +1377,7 @@ void FireControlComputer::DrawVRPOAPoints(void)
         if (curWaypoint)
         {
             //only do this is this is our target
-            if (platform->curWaypoint->GetWPFlags() & WPF_TARGET)
+            if (platform->curWaypoint->GetWPFlags() bitand WPF_TARGET)
             {
                 MapWaypointToDisplay(curWaypoint, &displayX, &displayY);
 
@@ -1405,7 +1405,7 @@ void FireControlComputer::MapWaypointToDisplay(WayPointClass* pwaypoint, float* 
     pwaypoint->GetLocation(&wpX, &wpY, &wpZ);
 
     //MI
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         *v = (wpX - platform->XPos()) * FT_TO_NM / HSDRange;
         *h = (wpY - platform->YPos()) * FT_TO_NM / HSDRange;
@@ -1445,7 +1445,7 @@ void FireControlComputer::MapWaypointToDisplay(WayPointClass* pwaypoint, float* 
 
 void FireControlComputer::DrawPointPair(WayPointClass* curWaypoint, float x2, float y2, float displayX, float displayY)
 {
-    if (!(curWaypoint->GetWPFlags() & WPF_ALTERNATE))
+    if ( not (curWaypoint->GetWPFlags() bitand WPF_ALTERNATE))
         display->Line(x2, y2, displayX, displayY);
 
     DrawPointSymbol(curWaypoint, displayX, displayY);
@@ -1461,7 +1461,7 @@ void FireControlComputer::DrawPointPair(WayPointClass* curWaypoint, float x2, fl
 
 void FireControlComputer::DrawPointSymbol(WayPointClass* curWaypoint, float displayX, float displayY)
 {
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
         return;
 
     int wpFlags;
@@ -1469,21 +1469,21 @@ void FireControlComputer::DrawPointSymbol(WayPointClass* curWaypoint, float disp
 
     RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(platform, SensorClass::Radar);
 
-    if (theRadar && theRadar->IsSet(RadarDopplerClass::SP) && theRadar->IsSet(RadarDopplerClass::SP_STAB))
+    if (theRadar and theRadar->IsSet(RadarDopplerClass::SP) and theRadar->IsSet(RadarDopplerClass::SP_STAB))
         theWaypt = mpSavedWaypoint;
     else
         theWaypt = ((SimVehicleClass*)platform)->curWaypoint;
 
-    if ((curWaypoint != theWaypt) || (vuxRealTime & 0x200))
+    if ((curWaypoint not_eq theWaypt) or (vuxRealTime bitand 0x200))
     {
 
         wpFlags = curWaypoint->GetWPFlags();
 
-        if (wpFlags & WPF_TARGET)
+        if (wpFlags bitand WPF_TARGET)
         {
             DrawTGTSymbol(displayX, displayY);
         }
-        else if (wpFlags & WPF_IP)
+        else if (wpFlags bitand WPF_IP)
         {
             DrawIPSymbol(displayX, displayY);
         }
@@ -1509,9 +1509,9 @@ void FireControlComputer::DrawTGTSymbol(float displayX, float displayY)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1534,9 +1534,9 @@ void FireControlComputer::DrawIPSymbol(float displayX, float displayY)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1558,9 +1558,9 @@ void FireControlComputer::DrawMarkSymbol(float displayX, float displayY, int typ
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1576,9 +1576,9 @@ void FireControlComputer::DrawDESTOASymbol(float displayX, float displayY)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1596,9 +1596,9 @@ void FireControlComputer::DrawVIPOASymbol(float displayX, float displayY)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1609,9 +1609,9 @@ void FireControlComputer::DrawVRPOASymbol(float displayX, float displayY)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1623,9 +1623,9 @@ void FireControlComputer::DrawFLOT(void)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1682,7 +1682,7 @@ void FireControlComputer::DrawFLOT(void)
         {
             tmpColor = display->Color();
 
-            if (!g_bEnableColorMfd)
+            if ( not g_bEnableColorMfd)
                 display->SetColor(0xFF008000);
             else
                 display->SetColor(GetMfdColor(MFD_GREY));
@@ -1764,9 +1764,9 @@ void FireControlComputer::DrawBullseye(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
     //MI
-    /*if(g_bRealisticAvionics && g_bINS)
+    /*if(g_bRealisticAvionics and g_bINS)
     {
-     if(playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+     if(playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
      return;
     }*/
 
@@ -1780,11 +1780,11 @@ void FireControlComputer::DrawBullseye(void)
         theRadar->GetCursorPosition(&cursorX, &cursorY);
 
         //MI
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
             DrawBullseyeData(display, cursorX, cursorY);
         else
         {
-            if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+            if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
                 OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
             {
                 DrawBullseyeCircle(display, cursorX, cursorY);
@@ -1805,7 +1805,7 @@ void FireControlComputer::DrawBullseye(void)
             // (works on all MFDs and not only here)
             for (int i = 0; i < 4; i++)
             {
-                if ((MfdDisplay[i])->GetTGPWarning() && (MfdDisplay[i])->CurMode() == MFDClass::TGPMode)
+                if ((MfdDisplay[i])->GetTGPWarning() and (MfdDisplay[i])->CurMode() == MFDClass::TGPMode)
                 {
                     TGPAttitudeWarning(display);
                     break;
@@ -1821,9 +1821,9 @@ void FireControlComputer::DrawPPThreats(void)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -1897,13 +1897,13 @@ void FireControlComputer::DrawPPThreats(void)
         displayY = trig.sin * x2 + trig.cos * y2;
         display->AdjustOriginInViewport(displayX, displayY);
 
-        if (fabs(displayY) < 1 && fabs(displayX) < 1)   // JPO - don't bother if its off screen
+        if (fabs(displayY) < 1 and fabs(displayX) < 1)   // JPO - don't bother if its off screen
         {
             DisplayMatrix savem;
             display->SaveDisplayMatrix(&savem);
 
             // JB 010730 Advanced and basic symbols are drawn sometimes on the HSD. This is an attempt to fix that.
-            if (gp->symbol != RWRSYM_ADVANCED_INTERCEPTOR && gp->symbol != RWRSYM_BASIC_INTERCEPTOR)
+            if (gp->symbol not_eq RWRSYM_ADVANCED_INTERCEPTOR and gp->symbol not_eq RWRSYM_BASIC_INTERCEPTOR)
                 RwrClass::DrawSymbol(display, gp->symbol);  // This zeros display rotation, caused bad FLOT and bullseye drawing (now fixed I hope JPO)
 
             display->RestoreDisplayMatrix(&savem);
@@ -1968,12 +1968,12 @@ void FireControlComputer::DrawGhostCursor(void)
     {
         if (g_bINS)
         {
-            if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+            if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
                 return;
         }
 
         // MD -- 20040113: supress ghost cursors with STT mode; we'll draw the cursor latched on to the bugged target instead
-        if (theRadar && ((theRadar->GetRadarMode() == RadarClass::STBY) || theRadar->IsSet(RadarDopplerClass::STTingTarget)))
+        if (theRadar and ((theRadar->GetRadarMode() == RadarClass::STBY) or theRadar->IsSet(RadarDopplerClass::STTingTarget)))
             return;
     }
 
@@ -1989,7 +1989,7 @@ void FireControlComputer::DrawGhostCursor(void)
         cursorY /= HSDRange;
 
         //MI add in INS Drift
-        /*if(g_bINS && g_bRealisticAvionics)
+        /*if(g_bINS and g_bRealisticAvionics)
         {
           if(playerAC)
           {
@@ -2010,15 +2010,15 @@ void FireControlComputer::DrawScanVolume(void)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
     RadarClass* theRadar = (RadarClass*)FindSensor(platform, SensorClass::Radar);
 
-    if (theRadar && theRadar->IsOn())
+    if (theRadar and theRadar->IsOn())
     {
         float cone = theRadar->GetVolume();
         float scale = theRadar->GetRange() / HSDRange;
@@ -2049,9 +2049,9 @@ void FireControlComputer::DrawBuggedTarget()
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -2061,10 +2061,10 @@ void FireControlComputer::DrawBuggedTarget()
     // MD -- 20040113: need RadarDopplerClass ptr to check flags for STT
     RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(platform, SensorClass::Radar);
 
-    if (theRadar && theRadar->GetBuggedData(&xPos, &yPos, &dir, &speed))
+    if (theRadar and theRadar->GetBuggedData(&xPos, &yPos, &dir, &speed))
     {
         //MI add in INS Drift
-        if (g_bINS && g_bRealisticAvionics)
+        if (g_bINS and g_bRealisticAvionics)
         {
             if (playerAC)
             {
@@ -2136,14 +2136,14 @@ void FireControlComputer::DrawWingmen()
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
-    if (((AircraftClass*)platform)->mFaults->GetFault(FaultClass::dlnk_fault) ||
-        !((AircraftClass*)platform)->HasPower(AircraftClass::DLPower))
+    if (((AircraftClass*)platform)->mFaults->GetFault(FaultClass::dlnk_fault) or
+ not ((AircraftClass*)platform)->HasPower(AircraftClass::DLPower))
         return;
 
     //Cobra
@@ -2153,12 +2153,12 @@ void FireControlComputer::DrawWingmen()
 
         AircraftClass *wingman = (AircraftClass *)platform->GetCampaignObject()->GetComponentNumber(i);
 
-        if (wingman && !IsHsdState(HSDNOADLNK))
+        if (wingman and not IsHsdState(HSDNOADLNK))
         {
             Draw1Wingman(wingman);//Cobra added HSDNOADLINK here
         }
 
-        if (wingman && !IsHsdState(HSDNOGNDLNK))
+        if (wingman and not IsHsdState(HSDNOGNDLNK))
         {
             Draw1WingmanGnd(wingman);//Cobra
         }
@@ -2170,9 +2170,9 @@ void FireControlComputer::Draw1WingmanGnd(AircraftClass *wing)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -2195,19 +2195,19 @@ void FireControlComputer::Draw1WingmanGnd(AircraftClass *wing)
     RadarClass* theRadar = (RadarClass*)FindSensor(wing, SensorClass::Radar);
 #if NO_REMOTE_BUGGED_TARGET
 
-    if (theRadar == NULL || ((locked = theRadar->CurrentTarget()) == NULL))
+    if (theRadar == NULL or ((locked = theRadar->CurrentTarget()) == NULL))
     {
         return;
     }
 
 #else
 
-    if (((SimVehicleClass*)wing)->sensorArray[1]->RemoteBuggedTarget == NULL &&
-        (theRadar == NULL || (locked = theRadar->CurrentTarget()) == NULL)) return;
+    if (((SimVehicleClass*)wing)->sensorArray[1]->RemoteBuggedTarget == NULL and 
+        (theRadar == NULL or (locked = theRadar->CurrentTarget()) == NULL)) return;
 
 #endif
 
-    if (theRadar->GetRadarModeR() != RadarClass::GM && theRadar->GetRadarModeR() != RadarClass::GMT)
+    if (theRadar->GetRadarModeR() not_eq RadarClass::GM and theRadar->GetRadarModeR() not_eq RadarClass::GMT)
     {
         return;
     }
@@ -2221,7 +2221,7 @@ void FireControlComputer::Draw1WingmanGnd(AircraftClass *wing)
     speed = lockedData->GetVt();
 #else
 
-    if (!((SimVehicleClass*)wing)->sensorArray[1]->RemoteBuggedTarget)
+    if ( not ((SimVehicleClass*)wing)->sensorArray[1]->RemoteBuggedTarget)
     {
         xPos = locked->BaseData()->XPos();
         yPos = locked->BaseData()->YPos();
@@ -2316,15 +2316,15 @@ void FireControlComputer::Draw1Wingman(AircraftClass *wing)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
         {
             return;
         }
     }
 
-    ShiAssert(wing != NULL);
+    ShiAssert(wing not_eq NULL);
     char no[10], thealt[20];
     mlTrig trig;
     static const float wingBugX = 0.05f;
@@ -2412,10 +2412,10 @@ void FireControlComputer::Draw1Wingman(AircraftClass *wing)
     SimObjectType *locked = (theRadar == NULL) ? NULL :  theRadar->CurrentTarget();
 
     if (
-#if !NO_REMOTE_BUGGED_TARGET
-        static_cast<SimVehicleClass*>(wing)->sensorArray[1]->RemoteBuggedTarget == NULL &&
+#if not NO_REMOTE_BUGGED_TARGET
+        static_cast<SimVehicleClass*>(wing)->sensorArray[1]->RemoteBuggedTarget == NULL and 
 #endif
-        (theRadar == NULL || locked == NULL)
+        (theRadar == NULL or locked == NULL)
     )
     {
         return;
@@ -2464,7 +2464,7 @@ void FireControlComputer::Draw1Wingman(AircraftClass *wing)
 
 #else
 
-    if (!((SimVehicleClass*)wing)->sensorArray[1]->RemoteBuggedTarget)
+    if ( not ((SimVehicleClass*)wing)->sensorArray[1]->RemoteBuggedTarget)
     {
         xPos = locked->BaseData()->XPos();
         yPos = locked->BaseData()->YPos();
@@ -2484,7 +2484,7 @@ void FireControlComputer::Draw1Wingman(AircraftClass *wing)
 #endif
 
     //Cobra we don't want to draw A/G stuff and certainly not with A/A symbology
-    if ((theRadar->GetRadarModeR() != RadarClass::AA) || (abs(alt) <= 1))
+    if ((theRadar->GetRadarModeR() not_eq RadarClass::AA) or (abs(alt) <= 1))
     {
         return;
     }
@@ -2624,9 +2624,9 @@ void FireControlComputer::HSDDisplay(void)
 //MI
 void FireControlComputer::MoveCursor(void)
 {
-    if (HSDCursorXCmd != 0.0F || HSDCursorYCmd != 0.0F)
+    if (HSDCursorXCmd not_eq 0.0F or HSDCursorYCmd not_eq 0.0F)
     {
-        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
         {
             xPos += (HSDCursorXCmd / 10000.0F) * g_fCursorSpeed * (6.5F * CursorRate) * SimLibMajorFrameTime;
             yPos += (HSDCursorYCmd / 10000.0F) * g_fCursorSpeed * (6.5F * CursorRate) * SimLibMajorFrameTime;
@@ -2646,7 +2646,7 @@ void FireControlComputer::MoveCursor(void)
         if (HSDZoom == 0)
         {
             //if we bump it' we decouple automatically
-            if (yPos > 0.9F && HsdRangeTbl[HsdRangeIndex] < 240)
+            if (yPos > 0.9F and HsdRangeTbl[HsdRangeIndex] < 240)
             {
                 HSDRangeStepCmd = 1;
                 yPos = 0.0F;
@@ -2654,7 +2654,7 @@ void FireControlComputer::MoveCursor(void)
                 if (IsHsdState(HSDCPL))
                     ToggleHsdState(HSDCPL);
             }
-            else if (yPos < -0.9F && HsdRangeTbl[HsdRangeIndex] > 15)
+            else if (yPos < -0.9F and HsdRangeTbl[HsdRangeIndex] > 15)
             {
                 HSDRangeStepCmd = -1;
                 yPos = 0.0F;
@@ -2668,7 +2668,7 @@ void FireControlComputer::MoveCursor(void)
         curCursorRate = CursorRate;
 
     //check if our cursor is over a waypoint, only if their not decluttered
-    if (!IsHsdState(HSDNONAV1))
+    if ( not IsHsdState(HSDNONAV1))
     {
         WayPointClass *tmpWp = platform->waypoint;
 
@@ -2682,20 +2682,20 @@ void FireControlComputer::MoveCursor(void)
                 //cursor position
                 MapWaypointToXY(tmpWp);
 
-                if (!IsHsdState(HSDCEN))
+                if ( not IsHsdState(HSDCEN))
                     DispY -= 0.4F;
 
                 float tolerance = 0.05F; //just about the size of the circle
                 float CursWPRange = (float)sqrt((DispX - xPos) * (DispX - xPos) + (DispY - yPos) * (DispY - yPos));
 
                 //CursWPRange;
-                if (CursWPRange < tolerance && CursWPRange > -tolerance)
+                if (CursWPRange < tolerance and CursWPRange > -tolerance)
                 {
                     //did we designate?
                     if (HSDDesignate == 1)
                     {
                         //need to find which waypoint our cursor is over now
-                        if (platform->curWaypoint != tmpWp)
+                        if (platform->curWaypoint not_eq tmpWp)
                         {
                             ChangeSTPT(tmpWp);
                         }
@@ -2710,13 +2710,13 @@ void FireControlComputer::MoveCursor(void)
     }
 
     //check for preplanned threads, only if not decluttered
-    if (!IsHsdState(HSDNOPRE))
+    if ( not IsHsdState(HSDNOPRE))
         CheckPP();
 }
 //MI
 void FireControlComputer::ChangeSTPT(WayPointClass *tmpWp)
 {
-    while (platform->curWaypoint && platform->curWaypoint != tmpWp)
+    while (platform->curWaypoint and platform->curWaypoint not_eq tmpWp)
     {
         waypointStepCmd = 1;
         StepPoint();
@@ -2809,14 +2809,14 @@ void FireControlComputer::CheckPP(void)
         displayX = trig.cos * x2 - trig.sin * y2;
         displayY = trig.sin * x2 + trig.cos * y2;
 
-        if (!IsHsdState(HSDCEN))
+        if ( not IsHsdState(HSDCEN))
             displayY -= 0.4F;
 
         float CursGPRange = (float)sqrt((displayX - xPos) * (displayX - xPos) +
                                         (displayY - yPos) * (displayY - yPos));
         float tolerance = 0.03F;
 
-        if (CursGPRange < tolerance && CursGPRange > -tolerance)
+        if (CursGPRange < tolerance and CursGPRange > -tolerance)
         {
             if (HSDDesignate < 0)
             {
@@ -2835,9 +2835,9 @@ void FireControlComputer::DrawAIFF(void)//Cobra 11/27/04
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             return;
     }
 
@@ -2856,7 +2856,7 @@ void FireControlComputer::DrawAIFF(void)//Cobra 11/27/04
             float x = rdrObj->BaseData()->XPos();
             float y = rdrObj->BaseData()->YPos();
 
-            if (g_bINS && g_bRealisticAvionics)
+            if (g_bINS and g_bRealisticAvionics)
             {
                 if (playerAC)
                 {
@@ -2887,9 +2887,9 @@ void FireControlComputer::DrawAIFF(void)//Cobra 11/27/04
 
 
 
-            if (dsq < 1.0f && rdrData->ata <= 60.0f * DTR)//Cobra ATA constraints 60 degrees
+            if (dsq < 1.0f and rdrData->ata <= 60.0f * DTR)//Cobra ATA constraints 60 degrees
             {
-                if (rdrData->interrogated && TeamInfo[platform->GetTeam()]->TStance(rdrObj->BaseData()->GetTeam()) == Allied)
+                if (rdrData->interrogated and TeamInfo[platform->GetTeam()]->TStance(rdrObj->BaseData()->GetTeam()) == Allied)
                 {
                     display->AdjustOriginInViewport(displayX, displayY);
                     display->Circle(0, 0, 0.03f);

@@ -1,6 +1,7 @@
 #ifndef FALCENT_H
 #define FALCENT_H
 
+#include <cISO646>
 //#include "shi/shierror.h"
 #include "dirtybits.h"
 #include "../../mathlib/math.h"
@@ -39,8 +40,8 @@ typedef enum { NoMove = 0,
 #define FEC_INVULNERABLE 0x20 // This thing can't be destroyed
 
 // localFlags
-#define FELF_ON_PLAYERS_GM_CONTACT_LIST      0x1 // This object is listed in the players Ground Radar target list // MLR 4/19/2004 - new!
-#define FELF_ON_PLAYERS_GMT_CONTACT_LIST     0x2 // This object is listed in the players Ground Radar target list // MLR 4/19/2004 - new!
+#define FELF_ON_PLAYERS_GM_CONTACT_LIST      0x1 // This object is listed in the players Ground Radar target list // MLR 4/19/2004 - new
+#define FELF_ON_PLAYERS_GMT_CONTACT_LIST     0x2 // This object is listed in the players Ground Radar target list // MLR 4/19/2004 - new
 #define FELF_UPDATE_TARGET_LIST_TEMP         0x4 // temporary marker for UpdateTargetList()      
 #define FELF_ADDED_DURING_SIMDRIVER_CYCLE  0x8 // Object was created during SimDriver::Cycle() and did missed having EntityDriver() called (due to hash table)
 
@@ -107,47 +108,47 @@ public:
     }
     int IsCampaign(void)
     {
-        return (falconType & FalconCampaignEntity) ? TRUE : FALSE;
+        return (falconType bitand FalconCampaignEntity) ? TRUE : FALSE;
     };
     int IsSim(void)
     {
-        return (falconType & FalconSimEntity) ? TRUE : FALSE;
+        return (falconType bitand FalconSimEntity) ? TRUE : FALSE;
     };
     int IsSimObjective(void)
     {
-        return (falconType & FalconSimObjective) ? TRUE : FALSE;
+        return (falconType bitand FalconSimObjective) ? TRUE : FALSE;
     };
     int IsPersistant(void)
     {
-        return (falconType & FalconPersistantEntity) ? TRUE : FALSE;
+        return (falconType bitand FalconPersistantEntity) ? TRUE : FALSE;
     };
     void SetTypeFlag(int flag)
     {
-        falconType |= flag;
+        falconType or_eq flag;
     };
     void UnSetTypeFlag(int flag)
     {
-        falconType &= ~flag;
+        falconType and_eq compl flag;
     };
     void SetFalcFlag(int flag)
     {
-        if (!(falconFlags & flag))
+        if ( not (falconFlags bitand flag))
         {
-            falconFlags |= flag;
+            falconFlags or_eq flag;
             MakeFlagsDirty();
         }
     };
     void UnSetFalcFlag(int flag)
     {
-        if (falconFlags & flag)
+        if (falconFlags bitand flag)
         {
-            falconFlags &= ~flag;
+            falconFlags and_eq compl flag;
             MakeFlagsDirty();
         }
     };
     int IsSetFalcFlag(int flag)
     {
-        return falconFlags & flag;
+        return falconFlags bitand flag;
     };
     int IsPlayer(void)
     {
@@ -364,15 +365,15 @@ public:
 
     void SetFELocalFlag(int flag)
     {
-        feLocalFlags |= flag;
+        feLocalFlags or_eq flag;
     };
     void UnSetFELocalFlag(int flag)
     {
-        feLocalFlags &= ~flag;
+        feLocalFlags and_eq compl flag;
     };
     int IsSetFELocalFlag(int flag)
     {
-        return feLocalFlags & flag;
+        return feLocalFlags bitand flag;
     };
 };
 // sfr: FalconEntity container

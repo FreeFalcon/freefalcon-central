@@ -42,13 +42,13 @@ SimObjectType* HarmSeekerClass::Exec(SimObjectType* missileTarget)
     theParent = (SimMoverClass*)(((MissileClass*)platform)->parent.get());
 
     // FRB - CTD fix?
-    if (!theParent)
+    if ( not theParent)
         return NULL;
 
     FCC = ((SimVehicleClass*)theParent)->GetFCC();
     HTS = (HarmTargetingPod*)FindSensor(theParent, SensorClass::HTS);
 
-    if (HTS && ((MissileClass*)platform)->launchState != MissileClass::PreLaunch && !launched)
+    if (HTS and ((MissileClass*)platform)->launchState not_eq MissileClass::PreLaunch and not launched)
     {
         launched = true;
         launchedInPOS = (HTS->GetPreHandoffMode() == HarmTargetingPod::Pos);
@@ -59,7 +59,7 @@ SimObjectType* HarmSeekerClass::Exec(SimObjectType* missileTarget)
     // Adopt the missile's target if it is providing one and it is not the missile itself
     if (missileTarget)
     {
-        if (!platform->IsMissile() || ((MissileClass*)platform)->parent.get() != missileTarget->BaseData())
+        if ( not platform->IsMissile() or ((MissileClass*)platform)->parent.get() not_eq missileTarget->BaseData())
             SetDesiredTarget(missileTarget);
     }
 
@@ -81,7 +81,7 @@ SimObjectType* HarmSeekerClass::Exec(SimObjectType* missileTarget)
             if (CanSeeObject(lockedTarget))
             {
                 // Can't guide if the signal is too weak or in the air
-                if (CanDetectObject(lockedTarget) && lockedTarget->BaseData()->OnGround())
+                if (CanDetectObject(lockedTarget) and lockedTarget->BaseData()->OnGround())
                 {
                     canGuide = handedoff; // make sure target was already handedoff
                 }

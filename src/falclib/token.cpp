@@ -1,3 +1,4 @@
+#include <cISO646>
 #include <string.h>
 #include <stdlib.h>
 #include "token.h"
@@ -67,11 +68,11 @@ int TokenFlags(char *str, int def, char *flagstr)
         {
             int l;
 
-            for (l = 0; l < 32 && flagstr[l]; l++)
+            for (l = 0; l < 32 and flagstr[l]; l++)
             {
                 if (*arg == flagstr[l])
                 {
-                    flags |= 1 << l;
+                    flags or_eq 1 << l;
                 }
             }
 

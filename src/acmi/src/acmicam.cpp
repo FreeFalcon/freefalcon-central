@@ -12,6 +12,7 @@
 
    ------------------------------------------------------------------------ */
 
+#include <cISO646>
 #include <windows.h>
 #include <conio.h>
 #include <stdio.h>
@@ -496,7 +497,7 @@ void ACMICamera::TrackPoint(const Tpoint &trackingPt)
             )
         );
 
-    if (deltaRange != 0.0F)
+    if (deltaRange not_eq 0.0F)
     {
         deltaRange = (deltaZ / deltaRange);
     }
@@ -592,11 +593,11 @@ void ACMICamera::UpdateChasePosition(float dT)
     dPos.z = -_pos.z;
 
     // get new camera roll
-    if (_objectRoll < -0.5f * PI && _chaseRoll > 0.5f * PI)
+    if (_objectRoll < -0.5f * PI and _chaseRoll > 0.5f * PI)
     {
         dRoll = _objectRoll + (2.0f * PI) - _chaseRoll;
     }
-    else if (_objectRoll > 0.5f * PI && _chaseRoll < -0.5f * PI)
+    else if (_objectRoll > 0.5f * PI and _chaseRoll < -0.5f * PI)
     {
         dRoll = _objectRoll - (0.5f * PI) - _chaseRoll;
     }

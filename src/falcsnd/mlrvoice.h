@@ -9,7 +9,7 @@
 VuEntity
    |
    +-F4SoundPos - positional data
-        |                 API interface
+        bitor                 API interface
  +-mlrVoiceHandle -> mlrVoice -> mlrBuffer
  +-SoundHandleNode -> mlrVoice
 
@@ -80,7 +80,7 @@ private:
 class mlrVoice : public ANode
 {
     friend class CSoundMgr;
-    friend class mlrVoiceManager; // we're buddies!
+    friend class mlrVoiceManager; // we're buddies
 public:
 
     mlrVoice(mlrVoiceHandle *owner);

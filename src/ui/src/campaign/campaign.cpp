@@ -252,7 +252,7 @@ _TCHAR *CampExcludeList[] =
 
 void OpenHistoryWindowCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     LoadTroopMovementHistory();
@@ -261,7 +261,7 @@ void OpenHistoryWindowCB(long, short hittype, C_Base *control)
 
 void OpenForceLevelsWindowCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     LoadForceLevelHistory();
@@ -286,12 +286,12 @@ void ActivateCampMissionSchedule()
 
 void OpenOOBWindowCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetCursor(gCursors[CRSR_WAIT]);
     gMainHandler->EnableWindowGroup(control->GetGroup());
-    gGps->SetAllowed(gGps->GetAllowed() | UR_OOB);
+    gGps->SetAllowed(gGps->GetAllowed() bitor UR_OOB);
     long curtime = GetCurrentTime();
     gGps->Update();
     MonoPrint("GPS: OOB Allow time = %1ld\n", GetCurrentTime() - curtime);
@@ -299,7 +299,7 @@ void OpenOOBWindowCB(long, short hittype, C_Base *control)
 }
 void OpenSquadronWindowCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetupSquadronInfoWindow(FalconLocalSession->GetPlayerSquadronID());
@@ -307,7 +307,7 @@ void OpenSquadronWindowCB(long, short hittype, C_Base *)
 
 void OpenSierraHotelCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     UpdateSierraHotel();
@@ -372,7 +372,7 @@ static BOOL NewEvents = FALSE;
 
 void ViewTimerCB(long, short, C_Base *control)
 {
-    if (control->GetFlags() & C_BIT_ABSOLUTE)
+    if (control->GetFlags() bitand C_BIT_ABSOLUTE)
     {
         control->Parent_->RefreshWindow();
     }
@@ -384,7 +384,7 @@ void ViewTimerAnimCB(long, short, C_Base *control)
 {
     if (control->GetUserNumber(_UI95_TIMER_COUNTER_) < 1)
     {
-        if (control->GetFlags() & C_BIT_ABSOLUTE)
+        if (control->GetFlags() bitand C_BIT_ABSOLUTE)
         {
             control->Parent_->RefreshWindow();
         }
@@ -405,14 +405,14 @@ void UI_UpdateEventList()
 
 void StartMovieQ()
 {
-    if (gMainHandler && ReadyToPlayMovie && !MovieQInUse)
+    if (gMainHandler and ReadyToPlayMovie and not MovieQInUse)
         if (MovieCount > 0)
             PostMessage(gMainHandler->GetAppWnd(), FM_PLAY_UI_MOVIE, 0, 0);
 }
 
 void StartAMovieCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     PostMessage(gMainHandler->GetAppWnd(), FM_REPLAY_UI_MOVIE, 0, control->GetUserNumber(0));
@@ -444,7 +444,7 @@ void AddToNewsWindow(long timestamp, _TCHAR *desc, long MovieID)
     C_Window *win;
     C_Button *btn;
 
-    if (!gMainHandler)
+    if ( not gMainHandler)
         return;
 
     win = gMainHandler->FindWindow(NEWS_FLASH_WIN);
@@ -489,7 +489,7 @@ void PlayUIMovieQ()
 {
     int i;
 
-    if (gMainHandler && ReadyToPlayMovie && !MovieQInUse)
+    if (gMainHandler and ReadyToPlayMovie and not MovieQInUse)
     {
         MovieQInUse = 1;
 
@@ -523,7 +523,7 @@ void PlayUIMovieQ()
 
 void ReplayUIMovie(long MovieID)
 {
-    if (gMainHandler && ReadyToPlayMovie && !MovieQInUse)
+    if (gMainHandler and ReadyToPlayMovie and not MovieQInUse)
     {
         MovieQInUse = 1;
         TheCampaign.Suspend();
@@ -540,7 +540,7 @@ void CloseAWWWindowTimer(void)
     Flight interceptors = (Flight) vuDatabase->Find(gInterceptersId);
 
     // KCK: Close the window on timeout, interceptor death, or interceptor takeoff
-    if (gAWWTimeout < 0 || !interceptors) // || interceptors->Moving())
+    if (gAWWTimeout < 0 or not interceptors) // or interceptors->Moving())
     {
         Cancel_Scramble_CB(0, C_TYPE_LMOUSEUP, NULL);
     }
@@ -607,7 +607,7 @@ void UIScramblePlayerFlight(void)
 {
     C_Window *win;
 
-    if (!gMainHandler)
+    if ( not gMainHandler)
         return;
 
     gSoundMgr->PlaySound(500017); // Airraid sound?
@@ -649,7 +649,7 @@ void Cancel_Scramble_CB(long, short hittype, C_Base *)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP || gOldCompressionRatio < 0)
+    if (hittype not_eq C_TYPE_LMOUSEUP or gOldCompressionRatio < 0)
         return;
 
     win = gMainHandler->FindWindow(SCRAMBLE_WIN);
@@ -681,7 +681,7 @@ void Scramble_Intercept_CB(long ID, short hittype, C_Base *control)
     C_Window *win;
     Flight flight = (Flight)vuDatabase->Find(gInterceptersId);
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // Try to find the correct list item
@@ -725,13 +725,13 @@ void UI_AddMovieToList(long ID, long timestamp, _TCHAR *Description)
         MovieCount++;
     }
 
-    if (gMainHandler && ReadyToPlayMovie)
+    if (gMainHandler and ReadyToPlayMovie)
         StartMovieQ();
 }
 
 void UI_UpdateOccupationMap()
 {
-    if (gOccupationMap && gMainHandler)
+    if (gOccupationMap and gMainHandler)
     {
         C_Window *win;
         C_Bitmap *bmp;
@@ -763,7 +763,7 @@ void UI_UpdateOccupationMap()
 void AircraftLaunch(Flight f)
 {
     // TJL 10/26/03 Added Config variable to turn off this sound
-    if (f && gMainHandler && FalconLocalSession->GetPlayerSquadronID() && g_bTakeoffSound)
+    if (f and gMainHandler and FalconLocalSession->GetPlayerSquadronID() and g_bTakeoffSound)
     {
         if (f->GetUnitSquadronID() == FalconLocalSession->GetPlayerSquadronID())
             CampEventSoundID = SND_TAKEOFF;
@@ -806,14 +806,14 @@ void SetupMapMgr(bool noawacsmap)
     long i, j, idx;
     C_Window *win;
 
-    if (!gMapMgr)
+    if ( not gMapMgr)
     {
         gMapMgr = new C_Map;
         gMapMgr->SetMapCenter(1536 / 2, 2048 / 2);
 
         // 2002-01-30 MN special AWACS map background, e.g. black with country outlines
         // 2002-03-06 MN don't display Awacsmap in TE edit mode
-        if (g_bAWACSSupport && g_bAWACSBackground && !noawacsmap)
+        if (g_bAWACSSupport and g_bAWACSBackground and not noawacsmap)
         {
             if (gImageMgr->GetImage(BIG_AWACS_MAP_ID))
                 gMapMgr->SetMapImage(BIG_AWACS_MAP_ID);
@@ -824,14 +824,14 @@ void SetupMapMgr(bool noawacsmap)
             gMapMgr->SetMapImage(BIG_MAP_ID);
 
         gMapMgr->SetZoomLevel(1);
-        gMapMgr->SetTeamFlags(0, _MAP_OBJECTIVES_ | _MAP_UNITS_);
+        gMapMgr->SetTeamFlags(0, _MAP_OBJECTIVES_ bitor _MAP_UNITS_);
         gMapMgr->SetLogRanges(0.0f, 0.0f, 740.0f, 70.0f);
         gMapMgr->SetStrtRanges(0.0f, 0.0f, 740.0f, 1000.0f);
 
         // Set Icon Image IDs (Really the C_Resmgr ID)
         for (i = 0; i < NUM_TEAMS; i++)
         {
-            if (TeamInfo[i] && (TeamInfo[i]->flags & TEAM_ACTIVE))
+            if (TeamInfo[i] and (TeamInfo[i]->flags bitand TEAM_ACTIVE))
                 idx = TeamInfo[i]->GetColor();
             else
                 idx = 0;
@@ -847,7 +847,7 @@ void SetupMapMgr(bool noawacsmap)
         }
     }
 
-    if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
         win = gMainHandler->FindWindow(MB_CSECT_WIN);
     else
         win = gMainHandler->FindWindow(CSECT_WIN);
@@ -857,7 +857,7 @@ void SetupMapMgr(bool noawacsmap)
 
 void SetupGPS(C_TreeList *MissionTree)
 {
-    if (!gGps)
+    if ( not gGps)
     {
         gGps = new GlobalPositioningSystem;
         gGps->Setup();
@@ -867,7 +867,7 @@ void SetupGPS(C_TreeList *MissionTree)
     gGps->SetMissionTree(MissionTree);
     gGps->SetATOTree(gATOAll);
     gGps->SetOOBTree(gOOBTree);
-    gGps->SetAllowed(UR_MISSION | UR_MAP);
+    gGps->SetAllowed(UR_MISSION bitor UR_MAP);
     gGps->SetObjectiveMenu(OBJECTIVE_POP);
     gGps->SetUnitMenu(UNIT_POP);
     gGps->SetMissionMenu(0); // Don't know what these are yet
@@ -876,7 +876,7 @@ void SetupGPS(C_TreeList *MissionTree)
 
 void CampBriefPrintCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     _TCHAR string[8192];
@@ -886,7 +886,7 @@ void CampBriefPrintCB(long, short hittype, C_Base *control)
 
 void CampDeBriefPrintCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     _TCHAR string[8192];
@@ -902,12 +902,12 @@ static void CampSaveFileCB(long, short hittype, C_Base *control)
 
     char buffer[MAX_PATH];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(SAVE_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     gMainHandler->HideWindow(control->Parent_); // verify window...
@@ -930,7 +930,7 @@ static void CampSaveFileCB(long, short hittype, C_Base *control)
         if (gCommsMgr->Online())
         {
             // Send messages to remote players with new Iter Number
-            // So they can save their stats & update Iter in their campaign
+            // So they can save their stats bitand update Iter in their campaign
             gCommsMgr->UpdateGameIter();
         }
     }
@@ -957,7 +957,7 @@ static void CampVerifySaveFileCB(long ID, short hittype, C_Base *control)
     FILE *fp;
     char buffer[MAX_PATH];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     edit_box = (C_EditBox*) control->Parent_->FindControl(FILE_NAME);
@@ -1003,7 +1003,7 @@ void CampSaveAsCB(long, short hittype, C_Base *)
     C_EditBox *ebox;
     _TCHAR buffer[MAX_PATH];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     sprintf(buffer, "%s\\*.cam", FalconCampUserSaveDirectory);
@@ -1107,7 +1107,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
 
         if (btn)
         {
-            if (!gCommsMgr->Online())
+            if ( not gCommsMgr->Online())
                 btn->SetFlagBitOff(C_BIT_ENABLED);
             else
                 btn->SetFlagBitOn(C_BIT_ENABLED);
@@ -1160,7 +1160,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
         {
             for (i = 0; i < 8; i++)
             {
-                if (TeamInfo[i] && TeamInfo[i]->flags & TEAM_ACTIVE)
+                if (TeamInfo[i] and TeamInfo[i]->flags bitand TEAM_ACTIVE)
                 {
                     for (j = 0; j < 8; j++)
                         blip->SetImage(BLIP_IDS[TeamInfo[i]->GetColor()][j], static_cast<uchar>(i), static_cast<uchar>(j));
@@ -1182,8 +1182,8 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
     // If we have a local game, so we are host in a multiplayer environment and start a new campaign,
     // stop the time and let the camp priorities window pop up (in CAMPUI/CampJoin.cpp)
 
-    if (FalconLocalGame->IsLocal() &&
-        (strcmp(gUI_CampaignFile, "save0") == 0 || strcmp(gUI_CampaignFile, "save1") == 0 || strcmp(gUI_CampaignFile, "save2") == 0) &&
+    if (FalconLocalGame->IsLocal() and 
+        (strcmp(gUI_CampaignFile, "save0") == 0 or strcmp(gUI_CampaignFile, "save1") == 0 or strcmp(gUI_CampaignFile, "save2") == 0) and 
         campaignStart) // fixes clock being set to "STOP" after a campaign mission
     {
         SetTimeCompression(0);
@@ -1202,7 +1202,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
 
         // KCK: Added the check for a pilot list so that we don't debrief after a
         // discarded mission
-        if (win && TheCampaign.MissionEvaluator && TheCampaign.MissionEvaluator->flight_data)
+        if (win and TheCampaign.MissionEvaluator and TheCampaign.MissionEvaluator->flight_data)
         {
             BuildCampDebrief(win);
             gMainHandler->EnableWindowGroup(win->GetGroup());
@@ -1218,7 +1218,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
     gMainHandler->AddUserCallback(CampaignSoundEventCB);
 
     // Choose our next mission (default)
-    if (!gTimeModeServer && !g_bServer)
+    if ( not gTimeModeServer and not g_bServer)
     {
         FindMissionInBriefing(CB_MISSION_SCREEN);
     }
@@ -1268,7 +1268,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
     TallyPlayerSquadrons();
 
     // Mode 0=Play,1=Edit)
-    if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
     {
         SetupTacEngMenus(1);
         win = gMainHandler->FindWindow(TAC_VC_WIN);
@@ -1406,7 +1406,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
 
         if (btn)
         {
-            if (!gCommsMgr->Online())
+            if ( not gCommsMgr->Online())
                 btn->SetFlagBitOff(C_BIT_ENABLED);
             else
                 btn->SetFlagBitOn(C_BIT_ENABLED);
@@ -1422,7 +1422,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
 
         if (btn)
         {
-            if (!gCommsMgr->Online())
+            if ( not gCommsMgr->Online())
                 btn->SetFlagBitOff(C_BIT_ENABLED);
             else
                 btn->SetFlagBitOn(C_BIT_ENABLED);
@@ -1452,7 +1452,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
         {
             for (i = 0; i < 8; i++)
             {
-                if (TeamInfo[i] && TeamInfo[i]->flags & TEAM_ACTIVE)
+                if (TeamInfo[i] and TeamInfo[i]->flags bitand TEAM_ACTIVE)
                 {
                     for (j = 0; j < 8; j++)
                         blip->SetImage(BLIP_IDS[TeamInfo[i]->GetColor()][j], static_cast<uchar>(i), static_cast<uchar>(j));
@@ -1483,7 +1483,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
     gLastUpdateGround = 0l;
     gLastUpdateAir = 0l;
 
-    if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
     {
         gMoveBattalion = TRUE;
         gGps->SetTeamNo(-1); // Perfect Intel
@@ -1510,7 +1510,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
 
     CheckCampaignFlyButton();
 
-    if (!gTimeModeServer && !g_bServer)
+    if ( not gTimeModeServer and not g_bServer)
     {
         FindMissionInBriefing(TAC_AIRCRAFT);
     }
@@ -1610,9 +1610,9 @@ void CampaignListCB()
 
             if (flt)
             {
-                if (flt->GetTotalVehicles() < 1 || flt->IsDead())
+                if (flt->GetTotalVehicles() < 1 or flt->IsDead())
                 {
-                    if (!gTimeModeServer && !g_bServer)
+                    if ( not gTimeModeServer and not g_bServer)
                     {
                         FindMissionInBriefing(CB_MISSION_SCREEN);
                     }
@@ -1622,7 +1622,7 @@ void CampaignListCB()
             }
             else
             {
-                if (!gTimeModeServer && !g_bServer)
+                if ( not gTimeModeServer and not g_bServer)
                 {
                     FindMissionInBriefing(CB_MISSION_SCREEN);
                     UpdateMissionWindow(CB_MISSION_SCREEN);
@@ -1658,9 +1658,9 @@ void TacEngListCB()
 
             if (flt)
             {
-                if (flt->GetTotalVehicles() < 1 || flt->IsDead())
+                if (flt->GetTotalVehicles() < 1 or flt->IsDead())
                 {
-                    if (!gTimeModeServer && !g_bServer)
+                    if ( not gTimeModeServer and not g_bServer)
                     {
                         FindMissionInBriefing(TAC_AIRCRAFT);
                     }
@@ -1670,7 +1670,7 @@ void TacEngListCB()
             }
             else
             {
-                if (!gTimeModeServer && !g_bServer)
+                if ( not gTimeModeServer and not g_bServer)
                 {
                     FindMissionInBriefing(TAC_AIRCRAFT);
                     UpdateMissionWindow(TAC_AIRCRAFT);
@@ -1702,19 +1702,19 @@ static void OpenFlightPlanWindowCB(long, short hittype, C_Base *control)
     WayPoint wp;
     Flight flt;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     flt = (Flight)vuDatabase->Find(gActiveFlightID);
 
-    if (!flt)
+    if ( not flt)
         return;
 
     win = gMainHandler->FindWindow(FLIGHT_PLAN_WIN);
 
     if (win)
     {
-        if (!(gMainHandler->GetWindowFlags(FLIGHT_PLAN_WIN) & C_BIT_ENABLED))
+        if ( not (gMainHandler->GetWindowFlags(FLIGHT_PLAN_WIN) bitand C_BIT_ENABLED))
         {
             wp = flt->GetFirstUnitWP();
 
@@ -1739,7 +1739,7 @@ void CampaignButtonCB(long, short hittype, C_Base *)
     C_Button *btn;
 
     // Check for correct mouse click and campaign over state
-    if (hittype != C_TYPE_LMOUSEUP || TheCampaign.EndgameResult)
+    if (hittype not_eq C_TYPE_LMOUSEUP or TheCampaign.EndgameResult)
         return;
 
     if (TheCampaign.EndgameResult)
@@ -1751,9 +1751,9 @@ void CampaignButtonCB(long, short hittype, C_Base *)
     fl = FalconLocalSession->GetPlayerFlight();
     pilotSlot = FalconLocalSession->GetPilotSlot();
 
-    if (!fl || pilotSlot == 255)
+    if ( not fl or pilotSlot == 255)
     {
-        // PETER TODO: Clear mission window's selection TOO!
+        // PETER TODO: Clear mission window's selection TOO
         FalconLocalSession->SetPlayerFlight(NULL);
         FalconLocalSession->SetPilotSlot(255);
         return;
@@ -1764,7 +1764,7 @@ void CampaignButtonCB(long, short hittype, C_Base *)
     TheCampaign.MissionEvaluator->PreMissionEval(fl, static_cast<uchar>(pilotSlot));
 
     // KCK HACK TO ISOLATE KNEEBOARD CRASH BUG
-    // if (!TheCampaign.MissionEvaluator->player_pilot)
+    // if ( not TheCampaign.MissionEvaluator->player_pilot)
     // *((unsigned int *) 0x00) = 0;
     // END HACK
 
@@ -1803,13 +1803,13 @@ void CampaignButtonCB(long, short hittype, C_Base *)
             if (fl)
                 ent = fl->GetUnitAirbase();
 
-            if (ent && ent->IsTaskForce())
+            if (ent and ent->IsTaskForce())
                 PlayerOptions.SetStartFlag(PlayerOptionsClass::START_RUNWAY);
 
             // Open Countdown window if we're waiting for takeoff
             win = gMainHandler->FindWindow(CP_COUNTDOWN_WIN);
 
-            if (win && entryType < 0)
+            if (win and entryType < 0)
             {
                 gMainHandler->EnterCritical();
 
@@ -1817,7 +1817,7 @@ void CampaignButtonCB(long, short hittype, C_Base *)
 
                 if (btn)
                 {
-                    if (0)//(gCommsMgr) && (gCommsMgr->Online ()))
+                    if (0)//(gCommsMgr) and (gCommsMgr->Online ()))
                     {
                         btn->SetFlagBitOn(C_BIT_INVISIBLE);
                     }
@@ -1838,7 +1838,7 @@ void CampaignButtonCB(long, short hittype, C_Base *)
 
                 if (btn)
                 {
-                    if (g_bMPStartRestricted && gCommsMgr && gCommsMgr->Online())
+                    if (g_bMPStartRestricted and gCommsMgr and gCommsMgr->Online())
                     {
                         btn->SetFlagBitOn(C_BIT_INVISIBLE);
                     }
@@ -1859,7 +1859,7 @@ void CampaignButtonCB(long, short hittype, C_Base *)
 
                 if (btn)
                 {
-                    if (g_bMPStartRestricted && gCommsMgr && gCommsMgr->Online())
+                    if (g_bMPStartRestricted and gCommsMgr and gCommsMgr->Online())
                     {
                         btn->SetFlagBitOn(C_BIT_INVISIBLE);
                     }
@@ -1890,7 +1890,7 @@ void CampaignButtonCB(long, short hittype, C_Base *)
     gMusic->FadeOut_Stop();
 
     // Force Compliance... since they already agreed before
-    if (gCommsMgr && gCommsMgr->Online())
+    if (gCommsMgr and gCommsMgr->Online())
     {
         PlayerOptions.ComplyWRules(CurrRules.GetRules());
         PlayerOptions.SaveOptions();
@@ -1901,7 +1901,7 @@ static void CloseCampaignWindowCB(long, short hittype, C_Base *)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (CampaignLastGroup)
@@ -1918,7 +1918,7 @@ static void CloseCampaignWindowCB(long, short hittype, C_Base *)
 
 static void GenericCloseCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->DisableWindowGroup(control->GetGroup());
@@ -1933,7 +1933,7 @@ static void MapMgrDrawCB(long, short, C_Base *)
 // CA map callback function for move events
 static void MapMgrMoveCB(long, short hittype, C_Base *control)
 {
-    if (!control)
+    if ( not control)
     {
         return;
     }
@@ -1966,7 +1966,7 @@ static void OpenFullMapCB(long, short hittype, C_Base *control)
     F4CSECTIONHANDLE *Leave;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     Leave = UI_Enter(control->Parent_);
@@ -1992,7 +1992,7 @@ static void CloseFullMapCB(long, short hittype, C_Base *control)
     F4CSECTIONHANDLE *Leave;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     Leave = UI_Enter(control->Parent_);
@@ -2016,12 +2016,12 @@ static void OpenCampaignCB(long, short hittype, C_Base *control)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(CP_TOOLBAR);
 
-    if (CampaignLastGroup != 0 && CampaignLastGroup != control->GetGroup())
+    if (CampaignLastGroup not_eq 0 and CampaignLastGroup not_eq control->GetGroup())
     {
         gMainHandler->DisableWindowGroup(CampaignLastGroup);
 
@@ -2029,7 +2029,7 @@ static void OpenCampaignCB(long, short hittype, C_Base *control)
             win->HideCluster(CampaignLastGroup);
     }
 
-    if (CampaignLastGroup != control->GetGroup())
+    if (CampaignLastGroup not_eq control->GetGroup())
     {
         gMainHandler->EnableWindowGroup(control->GetGroup());
         CampaignLastGroup = control->GetGroup();
@@ -2050,7 +2050,7 @@ BOOL CampaignClockCB(C_Base *me)
     // curtime=TheCampaign.CurrentTime/VU_TICS_PER_SECOND;
     curtime = vuxGameTime / VU_TICS_PER_SECOND;
 
-    if (((C_Clock*)me)->GetTime() != curtime)
+    if (((C_Clock*)me)->GetTime() not_eq curtime)
     {
         ((C_Clock*)me)->SetTime(curtime);
         me->Refresh();
@@ -2271,7 +2271,7 @@ void EndCommitCB(long, short hittype, C_Base *)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     CampaignAutoSave(FalconLocalGame->GetGameType());
@@ -2316,7 +2316,7 @@ static void SmallMapZoomInCB(long, short hittype, C_Base *control)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((hittype != C_TYPE_LMOUSEUP) && (hittype != C_TYPE_REPEAT))
+    if ((hittype not_eq C_TYPE_LMOUSEUP) and (hittype not_eq C_TYPE_REPEAT))
         return;
 
     Leave = UI_Enter(control->Parent_);
@@ -2329,7 +2329,7 @@ static void SmallMapZoomOutCB(long, short hittype, C_Base *control)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((hittype != C_TYPE_LMOUSEUP) && (hittype != C_TYPE_REPEAT))
+    if ((hittype not_eq C_TYPE_LMOUSEUP) and (hittype not_eq C_TYPE_REPEAT))
         return;
 
     Leave = UI_Enter(control->Parent_);
@@ -2340,7 +2340,7 @@ static void SmallMapZoomOutCB(long, short hittype, C_Base *control)
 
 void OpenPlannerWindowCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->EnableWindowGroup(control->GetGroup());
@@ -2348,10 +2348,10 @@ void OpenPlannerWindowCB(long, short hittype, C_Base *control)
 
 static void OpenATOWindowCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    gGps->SetAllowed(gGps->GetAllowed() | UR_ATO | UR_SQUADRON);
+    gGps->SetAllowed(gGps->GetAllowed() bitor UR_ATO bitor UR_SQUADRON);
     gGps->Update();
 
     gMainHandler->EnableWindowGroup(control->GetGroup());
@@ -2361,7 +2361,7 @@ static void OpenBriefingWindowCB(long, short hittype, C_Base *control)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gSelectedFlightID == FalconNullId)
@@ -2385,7 +2385,7 @@ static void OpenBriefingWindowCB(long, short hittype, C_Base *control)
 
 void CheckPlayersFlight(FalconSessionEntity *session)
 {
-    if (!session)
+    if ( not session)
         return;
 
     UpdateMissionWindow(CB_MISSION_SCREEN);
@@ -2398,7 +2398,7 @@ void PickCampaignPlaneCB(long ID, short hittype, C_Base *)
     int playerPlane;
     Flight flight;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -2408,7 +2408,7 @@ void PickCampaignPlaneCB(long ID, short hittype, C_Base *)
         return;
     }
 
-    if ((gCommsMgr) && (gCommsMgr->Online()))
+    if ((gCommsMgr) and (gCommsMgr->Online()))
     {
         // Don't care about restricting access when online
     }
@@ -2447,7 +2447,7 @@ void PickCampaignPlaneCB(long ID, short hittype, C_Base *)
     }
 
     // playerPlane = flight->GetAdjustedAircraftSlot(playerPlane);
-    if (!gTimeModeServer && !g_bServer)
+    if ( not gTimeModeServer and not g_bServer)
     {
         RequestACSlot(flight, 0, static_cast<uchar>(playerPlane), 0, 0, 1);
     }
@@ -2470,7 +2470,7 @@ void UpdateEventBlipsCB(long, short, C_Base *control)
         {
             Leave = UI_Enter(win);
 
-            if (control->GetUserNumber(_UI95_TIMER_COUNTER_) & 1)
+            if (control->GetUserNumber(_UI95_TIMER_COUNTER_) bitand 1)
                 Blip->BlinkLast();
 
             if (control->GetUserNumber(_UI95_TIMER_COUNTER_) < 1)
@@ -2488,10 +2488,10 @@ void UpdateEventBlipsCB(long, short, C_Base *control)
 
 void OpenCampaignCommsCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (!gCommsMgr->Online())
+    if ( not gCommsMgr->Online())
         gMainHandler->EnableWindowGroup(control->GetUserNumber(1));
     else
     {
@@ -2502,7 +2502,7 @@ void OpenCampaignCommsCB(long, short hittype, C_Base *control)
 
 void HistoryPlayForward(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     JStarsDirection = 1;
@@ -2513,7 +2513,7 @@ void HistoryPlayForward(long, short hittype, C_Base *control)
 
 void HistoryPlayReverse(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     JStarsDirection = -1;
@@ -2524,7 +2524,7 @@ void HistoryPlayReverse(long, short hittype, C_Base *control)
 
 void HistoryStepForward(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     JStarsDirection = 0;
@@ -2537,7 +2537,7 @@ void HistoryStepForward(long, short hittype, C_Base *control)
 
 void HistoryStepReverse(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     JStarsDirection = 0;
@@ -2550,7 +2550,7 @@ void HistoryStepReverse(long, short hittype, C_Base *control)
 
 void HistoryFastForward(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     JStarsDirection = 1;
@@ -2561,7 +2561,7 @@ void HistoryFastForward(long, short hittype, C_Base *control)
 
 void HistoryFastReverse(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     JStarsDirection = -1;
@@ -2572,7 +2572,7 @@ void HistoryFastReverse(long, short hittype, C_Base *control)
 
 void HistoryStop(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     JStarsDirection = 0;
@@ -2584,7 +2584,7 @@ void HistoryDragBallCB(long, short hittype, C_Base *control)
     C_Slider *sldr;
     long Offset, step, Range;
 
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
     JStarsDirection = 0;
@@ -2616,7 +2616,7 @@ void HistoryTimerCB(long, short, C_Base *control)
     _TCHAR buffer[15];
     F4CSECTIONHANDLE *Leave;
 
-    if (JStarsCurrent != JStarsPrevious)
+    if (JStarsCurrent not_eq JStarsPrevious)
     {
         Leave = UI_Enter(control->Parent_);
         control->Parent_->HideGroup(JStarsPrevious);
@@ -2647,7 +2647,7 @@ void HistoryTimerCB(long, short, C_Base *control)
         UI_Leave(Leave);
     }
 
-    if (!JStarsDirection)
+    if ( not JStarsDirection)
         return;
 
     if (control->GetUserNumber(_UI95_TIMER_COUNTER_) < 1)
@@ -2678,7 +2678,7 @@ void FitFlightPlanCB(long, short hittype, C_Base *control)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gMapMgr)
@@ -2700,7 +2700,7 @@ void OpenCrossSectionCB(long, short hittype, C_Base *control)
     _TCHAR buffer[30];
     F4CSECTIONHANDLE *Leave;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMapMgr->GetZWindow();
@@ -2709,7 +2709,7 @@ void OpenCrossSectionCB(long, short hittype, C_Base *control)
     {
         Leave = UI_Enter(win);
 
-        if (StupidHackToCloseCSECT != control->GetUserNumber(0))
+        if (StupidHackToCloseCSECT not_eq control->GetUserNumber(0))
         {
             StupidHackToCloseCSECT = control->GetUserNumber(0);
             gMapMgr->RecalcWaypointZs(StupidHackToCloseCSECT / 100);
@@ -2802,7 +2802,7 @@ void LoadTroopMovementHistory()
     {
         fp = OpenCampFile("tmp", "his", "rb");
 
-        if (!fp)
+        if ( not fp)
             return;
 
         CampEnterCriticalSection();
@@ -2924,7 +2924,7 @@ void SelectForceCategoryCB(long, short hittype, C_Base *control)
     C_Text *txt;
     C_Level *lvl;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     win = gMainHandler->FindWindow(FORCE_WIN);
@@ -3006,7 +3006,7 @@ void LoadForceLevelHistory()
     {
         fp = OpenCampFile("tmp", "frc", "rb");
 
-        if (!fp)
+        if ( not fp)
             return;
 
         for (i = 0; i < _MAX_CATEGORIES_; i++)
@@ -3044,12 +3044,12 @@ void LoadForceLevelHistory()
 
                 end = TimeID;
 
-                if (!fread(&numteams, sizeof(short), 1, fp))
+                if ( not fread(&numteams, sizeof(short), 1, fp))
                     MonoPrint("Error Reading Force Level\n");
 
                 for (i = 0; i < numteams; i++)
                 {
-                    if (!fread(&teamstats[i], sizeof(TeamStatusType), 1, fp))
+                    if ( not fread(&teamstats[i], sizeof(TeamStatusType), 1, fp))
                         MonoPrint("Error Reading Force Level\n");
                 }
 
@@ -3176,19 +3176,19 @@ void UpdateRemoteCompression()
     long color, remreq;
 
 
-    if (!gMainHandler)
+    if ( not gMainHandler)
         return;
 
     remreq = 1;
 
-    if (remoteCompressionRequests & REMOTE_REQUEST_2)
+    if (remoteCompressionRequests bitand REMOTE_REQUEST_2)
         remreq = 2;
-    else if (remoteCompressionRequests & REMOTE_REQUEST_4)
+    else if (remoteCompressionRequests bitand REMOTE_REQUEST_4)
         remreq = 4;
-    else if (remoteCompressionRequests & REMOTE_REQUEST_PAUSE)
+    else if (remoteCompressionRequests bitand REMOTE_REQUEST_PAUSE)
         remreq = 0;
 
-    if (!gCommsMgr->Online())
+    if ( not gCommsMgr->Online())
         color = 0x00ff00;
     else
     {
@@ -3276,7 +3276,7 @@ void InitTimeCompressionBox(long compression)
 
 void TimeCompressionCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     if (((C_ListBox *)control)->GetTextID() == ACCEL_0)
@@ -3293,7 +3293,7 @@ void TimeCompressionCB(long, short hittype, C_Base *control)
 
 void OpenNewsWindowCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->EnableWindowGroup(control->GetGroup());
@@ -3771,7 +3771,7 @@ static void HookupCampaignControls(long ID)
 
     winme = gMainHandler->FindWindow(STARTCAMP_WIN);
 
-    if (!winme)
+    if ( not winme)
         return;
 
     ctrl = (C_Button*)winme->FindControl(START_CAMP);
@@ -3783,7 +3783,7 @@ static void HookupCampaignControls(long ID)
 
 void StartCampaignCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetTimeCompression(1);

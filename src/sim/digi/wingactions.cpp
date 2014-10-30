@@ -86,9 +86,9 @@ void DigitalBrain::AiPerformManeuver(void)
 
 #ifdef MANEUVER_DEBUG
 
-    if ((g_nShowDebugLabels & 0x08) || (g_nShowDebugLabels & 0x400000))
+    if ((g_nShowDebugLabels bitand 0x08) or (g_nShowDebugLabels bitand 0x400000))
     {
-        if (g_nShowDebugLabels & 0x40)
+        if (g_nShowDebugLabels bitand 0x40)
         {
             RadarClass* theRadar = (RadarClass*)FindSensor(self, SensorClass::Radar);
 
@@ -108,7 +108,7 @@ void DigitalBrain::AiPerformManeuver(void)
             }
         }
 
-        if (g_nShowDebugLabels & 0x8000)
+        if (g_nShowDebugLabels bitand 0x8000)
         {
             if (((AircraftClass*) self)->af->GetSimpleMode())
                 strcat(tmpchr, " SIMP");
@@ -134,11 +134,11 @@ void DigitalBrain::AiMonitorTargets()
     FalconEntity* pbaseData;
     int campX, campY;
 
-    // 2000-09-13 MODIFIED BY S.G. HOW STUPID CAN YOU BE! WHO PROGRAMMED THIS HAS NO IDEA HOW ARRAY WORKS! NOT IN RP4
-    // Cobra - The pot calling the kettle black!
+    // 2000-09-13 MODIFIED BY S.G. HOW STUPID CAN YOU BE WHO PROGRAMMED THIS HAS NO IDEA HOW ARRAY WORKS NOT IN RP4
+    // Cobra - The pot calling the kettle black
     // mpSearchFlags array is AI_TOTAL_SEARCH_TYPES (3) long, thus mpSearchFlags[AI_TOTAL_SEARCH_TYPES] is referencing
     // memory outside of the array (mpSearchFlags[3]). AI_FIXATE_ON_TARGET is an index into mpSearchFlags[], not the value (true or false).
-    // so, whatever the value is in mpSearchFlags[AI_TOTAL_SEARCH_TYPES] must equal AI_FIXATE_ON_TARGET (2)...not likely!
+    // so, whatever the value is in mpSearchFlags[AI_TOTAL_SEARCH_TYPES] must equal AI_FIXATE_ON_TARGET (2)...not likely
     // The same is true for the other 2 if(mpSearchFlags[AI_TOTAL_SEARCH_TYPES] == AI_xxxxxx_TARGET) logic statements.
     //if(mpSearchFlags[AI_TOTAL_SEARCH_TYPES] == AI_FIXATE_ON_TARGET) {
     if (mpSearchFlags[AI_FIXATE_ON_TARGET])
@@ -150,8 +150,8 @@ void DigitalBrain::AiMonitorTargets()
     // else if(mpSearchFlags[AI_TOTAL_SEARCH_TYPES] == AI_MONITOR_TARGET) {
     else if (mpSearchFlags[AI_MONITOR_TARGET])
     {
-        // else if(mpSearchFlags[AI_MONITOR_TARGET] && flightLead->IsSetFlag(MOTION_OWNSHIP)) {
-        if (targetPtr && vuxGameTime > mLastReportTime + 120000)
+        // else if(mpSearchFlags[AI_MONITOR_TARGET] and flightLead->IsSetFlag(MOTION_OWNSHIP)) {
+        if (targetPtr and vuxGameTime > mLastReportTime + 120000)
         {
 
             mLastReportTime = vuxGameTime;
@@ -183,12 +183,12 @@ void DigitalBrain::AiMonitorTargets()
             */
         }
     }
-    // 2000-09-13 MODIFIED BY S.G. HOW STUPID CAN YOU BE! WHO PROGRAMMED THIS HAS NO IDEA HOW ARRAY WORKS! NOT IN RP4
+    // 2000-09-13 MODIFIED BY S.G. HOW STUPID CAN YOU BE WHO PROGRAMMED THIS HAS NO IDEA HOW ARRAY WORKS NOT IN RP4
     // Cobra - see above
     //else if(mpSearchFlags[AI_TOTAL_SEARCH_TYPES] == AI_SEARCH_FOR_TARGET) {
     else if (mpSearchFlags[AI_SEARCH_FOR_TARGET])
     {
-        if (targetPtr && targetPtr != mpLastTargetPtr && vuxGameTime > (mLastReportTime + 120000))
+        if (targetPtr and targetPtr not_eq mpLastTargetPtr and vuxGameTime > (mLastReportTime + 120000))
         {
 
             mLastReportTime = vuxGameTime;
@@ -213,7 +213,7 @@ void DigitalBrain::AiSetInPosition(void)
     vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
     flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
 
-    if (flightIdx == AiElementLead && vehInFlight == 4)
+    if (flightIdx == AiElementLead and vehInFlight == 4)
     {
         mInPositionFlag = FALSE;
     }
@@ -241,7 +241,7 @@ void DigitalBrain::AiCheckPlayerInPosition(void)
     vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
     flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
 
-    if (flightIdx == AiElementLead && vehInFlight == 4)
+    if (flightIdx == AiElementLead and vehInFlight == 4)
     {
         curPosition = &(acFormationData->positionData[mFormation][flightIdx - 1]);
         paircraft = (AircraftClass*) flightLead;
@@ -275,12 +275,12 @@ void DigitalBrain::AiCheckPlayerInPosition(void)
         ydiff = trkY - self->YPos();
         zdiff = trkZ - self->ZPos();
 
-        if ((xdiff * xdiff + ydiff + ydiff <  2000.0F * 2000.0F) && fabs(zdiff) < 500.0F && mInPositionFlag == FALSE)
+        if ((xdiff * xdiff + ydiff + ydiff <  2000.0F * 2000.0F) and fabs(zdiff) < 500.0F and mInPositionFlag == FALSE)
         {
             mInPositionFlag = TRUE;
             AiMakeCommandMsg((SimBaseClass*) self, FalconWingmanMsg::WMGlue, AiWingman, FalconNullId);
         }
-        else if (((xdiff * xdiff + ydiff + ydiff >  2500.0F * 2500.0F) || fabs(zdiff) > 3000.0F) && mInPositionFlag == TRUE)
+        else if (((xdiff * xdiff + ydiff + ydiff >  2500.0F * 2500.0F) or fabs(zdiff) > 3000.0F) and mInPositionFlag == TRUE)
         {
             mInPositionFlag = FALSE;
             AiMakeCommandMsg((SimBaseClass*) self, FalconWingmanMsg::WMSplit, AiWingman, FalconNullId);
@@ -301,7 +301,7 @@ void DigitalBrain::AiFollowLead(void)
     int flightIdx;
     AircraftClass* paircraft;
 
-    if (flightLead == self || isWing == 0 || !flightLead)
+    if (flightLead == self or isWing == 0 or not flightLead)
     {
 
         Loiter();
@@ -313,12 +313,12 @@ void DigitalBrain::AiFollowLead(void)
         vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
         flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
 
-        if (flightIdx == AiFirstWing && vehInFlight == 2)
+        if (flightIdx == AiFirstWing and vehInFlight == 2)
         {
             curPosition = &(acFormationData->twoposData[mFormation]); // The four ship #2 slot position is copied in to the 2 ship formation array.
             paircraft = (AircraftClass*) flightLead;
         }
-        else if (flightIdx == AiSecondWing && mSplitFlight)
+        else if (flightIdx == AiSecondWing and mSplitFlight)
         {
             curPosition = &(acFormationData->twoposData[mFormation]);
             paircraft = (AircraftClass*)((FlightClass*)self->GetCampaignObject())->GetComponentEntity(AiElementLead);
@@ -355,7 +355,7 @@ void DigitalBrain::AiFollowLead(void)
 
             AiCheckInPositionCall(trackX, trackY, trackZ);
 
-            // add relative formation altitude - after check in position call !
+            // add relative formation altitude - after check in position call 
             if (isWing) // only wingmen
                 trackZ = trackZ + mFormRelativeAltitude;
 
@@ -396,7 +396,7 @@ void DigitalBrain::AiFollowLead(void)
 
         // This will set our current waypoint to the leads waypoint
         // 2001-10-20 M.N. Added ->GetNextWP() to while (...) to assure a valid WP is chosen
-        while (wlistUs->GetNextWP() && wlistLead && wlistLead->GetNextWP() && wlistLead != ((AircraftClass *)flightLead)->curWaypoint)
+        while (wlistUs->GetNextWP() and wlistLead and wlistLead->GetNextWP() and wlistLead not_eq ((AircraftClass *)flightLead)->curWaypoint)
         {
             wlistUs   = wlistUs->GetNextWP();
             wlistLead = wlistLead->GetNextWP();
@@ -404,7 +404,7 @@ void DigitalBrain::AiFollowLead(void)
         }
 
         // 2001-07-28 S.G. Only do it if it changed and I need to update our ICP wp index as well or it will get screwed up if we change it manually.
-        if (self->curWaypoint != wlistUs)
+        if (self->curWaypoint not_eq wlistUs)
         {
             self->curWaypoint = wlistUs;
 
@@ -421,7 +421,7 @@ void DigitalBrain::AiFollowLead(void)
             if (campUnit)   // sanity check
 
                 // Only do this if our waypoint has changed
-                if (campUnit->GetCurrentWaypoint() != waypointIndex)
+                if (campUnit->GetCurrentWaypoint() not_eq waypointIndex)
                     campUnit->SetCurrentWaypoint(waypointIndex);
         }
 
@@ -455,7 +455,7 @@ void DigitalBrain::AiExecBreakRL(void)
     {
 
         // Anounce that I'm ending the maneuver
-        if (mCurrentManeuver == FalconWingmanMsg::WMBreakRight ||
+        if (mCurrentManeuver == FalconWingmanMsg::WMBreakRight or
             mCurrentManeuver == FalconWingmanMsg::WMBreakLeft)
         {
 
@@ -521,7 +521,7 @@ void DigitalBrain::AiExecPosthole(void)
 // ----------------------------------------------------
 void DigitalBrain::AiExecChainsaw(void)
 {
-    if (targetPtr && curMissile)
+    if (targetPtr and curMissile)
     {
         mpActionFlags[AI_USE_COMPLEX] = TRUE;
         FireControl();

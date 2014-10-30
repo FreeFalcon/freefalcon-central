@@ -15,7 +15,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //ILS page
-    if (IsICPSet(ICPClass::MODE_CNI) && mICPSecondaryMode == ONE_BUTTON)
+    if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == ONE_BUTTON)
     {
         if (Manual_Input)
         {
@@ -43,9 +43,9 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
         }
     }
     //Bingo Page
-    else if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == TWO_BUTTON)
+    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == TWO_BUTTON)
     {
-        if (!Manual_Input)
+        if ( not Manual_Input)
         {
             level = (long)((AircraftClass*)(playerAC))->GetBingoFuel();
 
@@ -88,9 +88,9 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
 
         InputString[8] = '\0';
     }
-    else if (IsICPSet(ICPClass::MODE_CNI) && mICPSecondaryMode == TWO_BUTTON)
+    else if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == TWO_BUTTON)
     {
-        if (!Manual_Input)
+        if ( not Manual_Input)
         {
             if (EDITMSLFLOOR)
                 sprintf(InputString, "%dFT", TheHud->MSLFloor);
@@ -162,7 +162,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
                 InputString[0] = ' ';
         }
     }
-    else if ((IsICPSet(ICPClass::EDIT_LAT) || IsICPSet(ICPClass::EDIT_LONG)) && Manual_Input)
+    else if ((IsICPSet(ICPClass::EDIT_LAT) or IsICPSet(ICPClass::EDIT_LONG)) and Manual_Input)
     {
         InputString[10] = '\0';
         InputString[9] = '\'';
@@ -201,7 +201,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
         else
             InputString[1] = '0';
 
-        if (IsICPSet(ICPClass::EDIT_LAT) && Manual_Input)
+        if (IsICPSet(ICPClass::EDIT_LAT) and Manual_Input)
         {
             if (Input_Digit1 < 10)
                 InputString[0] = '0' + Input_Digit1;
@@ -211,7 +211,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
         else
             InputString[0] = ' ';
     }
-    else if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == FIFE_BUTTON)
+    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == FIFE_BUTTON)
     {
         if (Manual_Input)
         {
@@ -239,7 +239,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
             sprintf(InputString, "%3.0fFT", ManualWSpan);
     }
     //INS page
-    else if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == SIX_BUTTON && Manual_Input)
+    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == SIX_BUTTON and Manual_Input)
     {
         if (INSLine == 0)
         {
@@ -425,7 +425,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
         else
             sprintf(InputString, "%d", FlareBingo);
     }
-    else if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == EIGHT_BUTTON)
+    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == EIGHT_BUTTON)
     {
         if (IN_AA)
         {
@@ -606,11 +606,11 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
                 sprintf(InputString, "%3.2f", fFLARE_SI[FPI]);
         }
     }
-    else if (OA1 || OA2)
+    else if (OA1 or OA2)
     {
         if (Manual_Input)
         {
-            if (OA_RNG || OA_ALT)
+            if (OA_RNG or OA_ALT)
             {
                 InputString[7] = 'T';
                 InputString[6] = 'F';
@@ -703,12 +703,12 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
         }
     }
     //VIP and VRP
-    else if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == THREE_BUTTON  ||
-             IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == NINE_BUTTON)
+    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == THREE_BUTTON  or
+             IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == NINE_BUTTON)
     {
         if (Manual_Input)
         {
-            if (VIP_RNG || VRP_RNG)
+            if (VIP_RNG or VRP_RNG)
             {
                 InputString[7] = 'T';
                 InputString[6] = 'F';
@@ -745,7 +745,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
 
                 InputString[8] = '\0';
             }
-            else if (VIP_BRG || VRP_BRG)
+            else if (VIP_BRG or VRP_BRG)
             {
                 InputString[5] = '\'';
 
@@ -773,7 +773,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
 
                 InputString[6] = '\0';
             }
-            else if (VIP_ALT || VRP_ALT)
+            else if (VIP_ALT or VRP_ALT)
             {
                 InputString[7] = 'T';
                 InputString[6] = 'F';
@@ -839,7 +839,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
             }
         }
     }
-    else if ((IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == 100) ||
+    else if ((IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == 100) or
              IsICPSet(ICPClass::MODE_IFF)) //INTG and IFF
     {
         if (Input_Digit7 < 10)
@@ -870,7 +870,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
         InputString[5] = '\0';
     }
     //Laser Page
-    else if (IsICPSet(ICPClass::MISC_MODE) && mICPSecondaryMode == FIFE_BUTTON)
+    else if (IsICPSet(ICPClass::MISC_MODE) and mICPSecondaryMode == FIFE_BUTTON)
     {
         if (LaserLine == 1)
         {
@@ -961,7 +961,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
         FillDEDMatrix(Line, Start, "\x02", 2);
         FillDEDMatrix(Line, End, "\x02", 2);
 
-        if (Manual_Input ||  IsSelected)
+        if (Manual_Input or  IsSelected)
         {
             MakeInverted(Line, Start, End);
         }

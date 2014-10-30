@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -24,7 +24,7 @@ C_Box::C_Box() : C_Base()
 {
     _SetCType_(_CNTL_BOX_);
     Color_ = 0;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE;
 }
 
 C_Box::C_Box(char **stream) : C_Base(stream)
@@ -63,7 +63,7 @@ void C_Box::SetColor(COLORREF color)
 }
 void C_Box::Refresh()
 {
-    if (Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW() + 1, GetY() + GetH() + 1, GetFlags(), GetClient());
@@ -71,7 +71,7 @@ void C_Box::Refresh()
 
 void C_Box::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->DrawHLine(surface, Color_, GetX(), GetY(), GetW() + 1, GetFlags(), GetClient(), cliprect);
@@ -106,7 +106,7 @@ void C_Box::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CBOX_SETCOLOR:
-            SetColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
     }
 }

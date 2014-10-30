@@ -8,6 +8,7 @@
  It is assumed that all 3D coordinates have been transformed such
  that the clipping volume is z >= 1 and -z <= x <= z and -z <= y <= z.
 \***************************************************************************/
+#include <cISO646>
 #include "Render3D.h"
 
 
@@ -48,7 +49,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 
     for (nextOut = outList; vertPointers < lastIn; nextOut++)
     {
-        clipTest |= (*vertPointers)->clipFlag;
+        clipTest or_eq (*vertPointers)->clipFlag;
         *nextOut = (*vertPointers++);
     }
 
@@ -58,7 +59,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 
 
     // Clip to the near plane
-    if (clipTest & CLIP_NEAR)
+    if (clipTest bitand CLIP_NEAR)
     {
         temp = inList;
         inList = outList;
@@ -70,18 +71,18 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
         {
 
             // If the edge between this vert and the previous one crosses the line, trim it
-            if (((*p)->clipFlag ^ (*v)->clipFlag) & CLIP_NEAR)
+            if (((*p)->clipFlag xor (*v)->clipFlag) bitand CLIP_NEAR)
             {
                 ShiAssert(extraVertCount < MAX_EXTRA_VERTS);
                 *nextOut = &extraVerts[extraVertCount];
                 extraVertCount++;
                 IntersectNear(*p, *v, *nextOut);
-                clipTest |= (*nextOut)->clipFlag;
+                clipTest or_eq (*nextOut)->clipFlag;
                 nextOut++;
             }
 
             // If this vert isn't clipped, use it
-            if (!((*v)->clipFlag & CLIP_NEAR))
+            if ( not ((*v)->clipFlag bitand CLIP_NEAR))
             {
                 *nextOut++ = *v;
             }
@@ -129,7 +130,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             if ((((*(v + 1))->y - (*v)->y)) * (((*p)->x - (*v)->x)) <
                 (((*(v + 1))->x - (*v)->x)) * (((*p)->y - (*v)->y)))
             {
-                // Accept!
+                // Accept
                 break;
             }
         }
@@ -142,7 +143,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             if ((((*(v + 1))->y - (*v)->y)) * (((*p)->x - (*v)->x)) >=
                 (((*(v + 1))->x - (*v)->x)) * (((*p)->y - (*v)->y)))
             {
-                // Reject!
+                // Reject
                 break;
             }
 
@@ -159,12 +160,12 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
     // 2002-04-06 MN if gifPicture is false, then do the other clippings (for terrain and stuff).
     // GifPicture is only locally set to true in the case we draw a celestial object.
     // Sun and Moon GIF's are displayed bad when being clipped by below code.
-    if (!gifPicture)
+    if ( not gifPicture)
     {
 #ifndef DO_NEAR_CLIP_ONLY
 
         // Clip to the bottom plane
-        if (clipTest & CLIP_BOTTOM)
+        if (clipTest bitand CLIP_BOTTOM)
         {
             temp = inList;
             inList = outList;
@@ -176,7 +177,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag ^ (*v)->clipFlag) & CLIP_BOTTOM)
+                if (((*p)->clipFlag xor (*v)->clipFlag) bitand CLIP_BOTTOM)
                 {
                     ShiAssert(extraVertCount < MAX_EXTRA_VERTS);
                     *nextOut = &extraVerts[extraVertCount];
@@ -185,7 +186,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
                 }
 
                 // If this vert isn't clipped, use it
-                if (!((*v)->clipFlag & CLIP_BOTTOM))
+                if ( not ((*v)->clipFlag bitand CLIP_BOTTOM))
                 {
                     *nextOut++ = *v;
                 }
@@ -200,7 +201,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 
 
         // Clip to the top plane
-        if (clipTest & CLIP_TOP)
+        if (clipTest bitand CLIP_TOP)
         {
             temp = inList;
             inList = outList;
@@ -212,7 +213,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag ^ (*v)->clipFlag) & CLIP_TOP)
+                if (((*p)->clipFlag xor (*v)->clipFlag) bitand CLIP_TOP)
                 {
                     ShiAssert(extraVertCount < MAX_EXTRA_VERTS);
                     *nextOut = &extraVerts[extraVertCount];
@@ -221,7 +222,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
                 }
 
                 // If this vert isn't clipped, use it
-                if (!((*v)->clipFlag & CLIP_TOP))
+                if ( not ((*v)->clipFlag bitand CLIP_TOP))
                 {
                     *nextOut++ = *v;
                 }
@@ -236,7 +237,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 
 
         // Clip to the right plane
-        if (clipTest & CLIP_RIGHT)
+        if (clipTest bitand CLIP_RIGHT)
         {
             temp = inList;
             inList = outList;
@@ -248,7 +249,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag ^ (*v)->clipFlag) & CLIP_RIGHT)
+                if (((*p)->clipFlag xor (*v)->clipFlag) bitand CLIP_RIGHT)
                 {
                     ShiAssert(extraVertCount < MAX_EXTRA_VERTS);
                     *nextOut = &extraVerts[extraVertCount];
@@ -257,7 +258,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
                 }
 
                 // If this vert isn't clipped, use it
-                if (!((*v)->clipFlag & CLIP_RIGHT))
+                if ( not ((*v)->clipFlag bitand CLIP_RIGHT))
                 {
                     *nextOut++ = *v;
                 }
@@ -272,7 +273,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 
 
         // Clip to the left plane
-        if (clipTest & CLIP_LEFT)
+        if (clipTest bitand CLIP_LEFT)
         {
             temp = inList;
             inList = outList;
@@ -284,7 +285,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             {
 
                 // If the edge between this vert and the previous one crosses the line, trim it
-                if (((*p)->clipFlag ^ (*v)->clipFlag) & CLIP_LEFT)
+                if (((*p)->clipFlag xor (*v)->clipFlag) bitand CLIP_LEFT)
                 {
                     ShiAssert(extraVertCount < MAX_EXTRA_VERTS);
                     *nextOut = &extraVerts[extraVertCount];
@@ -293,7 +294,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
                 }
 
                 // If this vert isn't clipped, use it
-                if (!((*v)->clipFlag & CLIP_LEFT))
+                if ( not ((*v)->clipFlag bitand CLIP_LEFT))
                 {
                     *nextOut++ = *v;
                 }
@@ -313,7 +314,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
     // OW
 #if 0
     context.Primitive(MPR_PRM_TRIFAN,
-                      MPR_VI_COLOR | MPR_VI_TEXTURE,
+                      MPR_VI_COLOR bitor MPR_VI_TEXTURE,
                       (unsigned short)(nextOut - outList), sizeof(MPRVtxTexClr_t));
 
     for (v = outList; v < nextOut; v++)
@@ -324,7 +325,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
     }
 
 #else
-    context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE,
+    context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE,
                           (unsigned short)(nextOut - outList), (MPRVtxTexClr_t **)outList, terrain); //JAM 14Sep03
 #endif
 }
@@ -352,7 +353,7 @@ void Render3D::IntersectNear(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v
 
     // Compute the parametric location of the intersection of the edge and the clip plane
     t = (NEAR_CLIP - v1->csZ) / (v2->csZ - v1->csZ);
-    ShiAssert((t >= -0.001f) && (t <= 1.001f));
+    ShiAssert((t >= -0.001f) and (t <= 1.001f));
 
     // Compute the camera space intersection point
     v->csZ = z = NEAR_CLIP;
@@ -365,7 +366,7 @@ void Render3D::IntersectNear(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v
 
     // Now determine if the point is out to the sides
     v->clipFlag  = GetHorizontalClipFlags(x, z);
-    v->clipFlag |= GetVerticalClipFlags(y, z);
+    v->clipFlag or_eq GetVerticalClipFlags(y, z);
 
     // Compute the screen space coordinates of the new point
     register float OneOverZ = 1.0f / z;
@@ -387,7 +388,7 @@ void Render3D::IntersectBottom(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex 
     dy = v2->csY - v1->csY;
     dz = v2->csZ - v1->csZ;
     t = (v1->csY - v1->csZ) / (dz - dy);
-    ShiAssert((t >= -0.001f) && (t <= 1.001f));
+    ShiAssert((t >= -0.001f) and (t <= 1.001f));
 
     // Compute the camera space intersection point
     v->csZ = z = v1->csZ + t * (dz);
@@ -421,7 +422,7 @@ void Render3D::IntersectTop(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v)
     dy = v2->csY - v1->csY;
     dz = v2->csZ - v1->csZ;
     t = (v1->csZ + v1->csY) / (-dz - dy);
-    ShiAssert((t >= -0.001f) && (t <= 1.001f));
+    ShiAssert((t >= -0.001f) and (t <= 1.001f));
 
     // Compute the camera space intersection point
     v->csZ = z = v1->csZ + t * (dz);
@@ -455,7 +456,7 @@ void Render3D::IntersectRight(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *
     dy = v2->csY - v1->csY;
     dz = v2->csZ - v1->csZ;
     t = (v1->csX - v1->csZ) / (dz - dx);
-    ShiAssert((t >= -0.001f) && (t <= 1.001f));
+    ShiAssert((t >= -0.001f) and (t <= 1.001f));
 
     // Compute the camera space intersection point
     v->csZ = z = v1->csZ + t * (dz);
@@ -491,7 +492,7 @@ void Render3D::IntersectLeft(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v
     dy = v2->csY - v1->csY;
     dz = v2->csZ - v1->csZ;
     t = (v1->csZ + v1->csX) / (-dz - dx);
-    ShiAssert((t >= -0.001f) && (t <= 1.001f));
+    ShiAssert((t >= -0.001f) and (t <= 1.001f));
 
     // Compute the camera space intersection point
     v->csZ = z = v1->csZ + t * (dz);

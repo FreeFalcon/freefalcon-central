@@ -37,7 +37,7 @@ int FalconUnitMessage::Process(uchar autodisp)
     Unit u = FindUnit(EntityId());
     int i;
 
-    if (autodisp || !u)
+    if (autodisp or not u)
         return 0;
 
     switch (dataBlock.message)
@@ -53,7 +53,7 @@ int FalconUnitMessage::Process(uchar autodisp)
         case unitSchedulePilots:
             ShiAssert(dataBlock.data1 < PILOTS_PER_SQUADRON);
 
-            if (u->GetType() == TYPE_SQUADRON && u->GetDomain() == DOMAIN_AIR)
+            if (u->GetType() == TYPE_SQUADRON and u->GetDomain() == DOMAIN_AIR)
             {
                 ((Squadron)u)->SetPilotStatus(dataBlock.data1, (uchar)dataBlock.data2);
 
@@ -66,8 +66,8 @@ int FalconUnitMessage::Process(uchar autodisp)
         case unitScheduleAC:
             ShiAssert(dataBlock.data1 < VEHICLE_GROUPS_PER_UNIT);
 
-            if (u->GetType() == TYPE_SQUADRON && u->GetDomain() == DOMAIN_AIR)
-                ((Squadron)u)->SetSchedule(dataBlock.data1, dataBlock.data2 | dataBlock.data3);
+            if (u->GetType() == TYPE_SQUADRON and u->GetDomain() == DOMAIN_AIR)
+                ((Squadron)u)->SetSchedule(dataBlock.data1, dataBlock.data2 bitor dataBlock.data3);
 
             break;
 
@@ -77,7 +77,7 @@ int FalconUnitMessage::Process(uchar autodisp)
             else if (dataBlock.data1 == UMSG_FROM_RESERVE)
             {
                 // if this is a squadron, we need to increment our losses
-                if (u->GetType() == TYPE_SQUADRON && u->GetDomain() == DOMAIN_AIR)
+                if (u->GetType() == TYPE_SQUADRON and u->GetDomain() == DOMAIN_AIR)
                 {
                     // KCK HACK: Fake # of losses to make them look more like what you'd expect
                     // in real life..
@@ -91,9 +91,9 @@ int FalconUnitMessage::Process(uchar autodisp)
                         dataBlock.data2 = (short)losses;
                 }
 
-                for (i = VEHICLE_GROUPS_PER_UNIT - 1; i >= 0 && dataBlock.data2; i--)
+                for (i = VEHICLE_GROUPS_PER_UNIT - 1; i >= 0 and dataBlock.data2; i--)
                 {
-                    while (u->GetNumVehicles(i) && dataBlock.data2)
+                    while (u->GetNumVehicles(i) and dataBlock.data2)
                     {
                         u->SetNumVehicles(i, u->GetNumVehicles(i) - 1);
                         dataBlock.data2--;
@@ -102,11 +102,11 @@ int FalconUnitMessage::Process(uchar autodisp)
             }
 
             // If this is a flight, set the slot data.
-            if (u->GetType() == TYPE_FLIGHT && u->GetDomain() == DOMAIN_AIR)
+            if (u->GetType() == TYPE_FLIGHT and u->GetDomain() == DOMAIN_AIR)
             {
                 for (i = 0; i < PILOTS_PER_FLIGHT; i++)
                 {
-                    if (((Flight)u)->slots[i] > VEHICLE_GROUPS_PER_UNIT || ((Flight)u)->slots[i] == dataBlock.data1)
+                    if (((Flight)u)->slots[i] > VEHICLE_GROUPS_PER_UNIT or ((Flight)u)->slots[i] == dataBlock.data1)
                     {
                         ((Flight)u)->slots[i] = (uchar)dataBlock.data1;
                         i = PILOTS_PER_FLIGHT;
@@ -124,7 +124,7 @@ int FalconUnitMessage::Process(uchar autodisp)
         {
             Unit tar = FindUnit(dataBlock.from);
 
-            if (!tar)
+            if ( not tar)
                 return 0;
 
             u->SetTargeted(1);
@@ -141,7 +141,7 @@ int FalconUnitMessage::Process(uchar autodisp)
         case unitStatistics:
         {
             // This should only happen for squadrons
-            if (!u->IsSquadron())
+            if ( not u->IsSquadron())
                 return 0;
 
             // Get Flight from the from data.
@@ -163,23 +163,23 @@ int FalconUnitMessage::Process(uchar autodisp)
                 }
             }
             else
-                MonoPrint("This is an obsolete use of this function!\n");
+                MonoPrint("This is an obsolete use of this function\n");
         }
         break;
 
         case unitScramble:
         {
             // Converts an alert flight to a scramble flight
-            if (!u->IsFlight())
+            if ( not u->IsFlight())
                 return 0;
 
-            if (((Flight)u)->GetUnitMission() != AMIS_ALERT)
+            if (((Flight)u)->GetUnitMission() not_eq AMIS_ALERT)
                 return 0;
 
             Flight enemy = (Flight) FindUnit(dataBlock.from);
             Squadron squadron = (Squadron)((Flight)u)->GetUnitSquadron();
 
-            if (!squadron || !enemy)
+            if ( not squadron or not enemy)
                 return 0;
 
             MissionRequest mis = new MissionRequestClass;

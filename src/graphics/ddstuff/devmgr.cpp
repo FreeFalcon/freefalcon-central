@@ -71,7 +71,7 @@ void DeviceManager::Cleanup(void)
 
 const char * DeviceManager::GetDriverName(int driverNum)
 {
-    if (driverNum < 0 || driverNum >= (int) m_arrDDDrivers.size())
+    if (driverNum < 0 or driverNum >= (int) m_arrDDDrivers.size())
         return NULL;
 
     return m_arrDDDrivers[driverNum].GetName();
@@ -80,7 +80,7 @@ const char * DeviceManager::GetDriverName(int driverNum)
 
 const char * DeviceManager::GetDeviceName(int driverNum, int devNum)
 {
-    if (driverNum < 0 || driverNum >= (int) m_arrDDDrivers.size())
+    if (driverNum < 0 or driverNum >= (int) m_arrDDDrivers.size())
         return NULL;
 
     return m_arrDDDrivers[driverNum].GetDeviceName(devNum);
@@ -99,7 +99,7 @@ const char *DeviceManager::GetModeName(int driverNum, int devNum, int modeNum)
     static char buffer[80];
     int i = 0;
 
-    if (driverNum < 0 || driverNum >= (int) m_arrDDDrivers.size())
+    if (driverNum < 0 or driverNum >= (int) m_arrDDDrivers.size())
         return NULL;
 
     DDDriverInfo &DI = m_arrDDDrivers[driverNum];
@@ -110,8 +110,8 @@ const char *DeviceManager::GetModeName(int driverNum, int devNum, int modeNum)
     {
         // For now we only allow 640x480, 800x600, 1280x960, 1600x1200
         // (MPR already does the 4:3 aspect ratio check for us)
-        if (pddsd->ddpfPixelFormat.dwRGBBitCount >= 16 && (pddsd->dwWidth == 640 || pddsd->dwWidth == 800 || pddsd->dwWidth == 1024 ||
-                (pddsd->dwWidth == 1280 && pddsd->dwHeight == 960) || pddsd->dwWidth == 1600 || HighResolutionHackFlag))
+        if (pddsd->ddpfPixelFormat.dwRGBBitCount >= 16 and (pddsd->dwWidth == 640 or pddsd->dwWidth == 800 or pddsd->dwWidth == 1024 or
+                (pddsd->dwWidth == 1280 and pddsd->dwHeight == 960) or pddsd->dwWidth == 1600 or HighResolutionHackFlag))
         {
             if (modeNum == 0)
             {
@@ -140,13 +140,13 @@ bool DeviceManager::GetMode(int driverNum, int devNum, int modeNum, UINT *pWidth
     static char buffer[80];
     int i = 0;
 
-    if (driverNum < 0 || driverNum >= (int) m_arrDDDrivers.size())
+    if (driverNum < 0 or driverNum >= (int) m_arrDDDrivers.size())
         return false;
 
     DDDriverInfo &DI = m_arrDDDrivers[driverNum];
     LPDDSURFACEDESC2 pddsd = DI.GetDisplayMode(modeNum);
 
-    if (!pddsd) return false;
+    if ( not pddsd) return false;
 
     *pWidth = pddsd->dwWidth;
     *pHeight = pddsd->dwHeight;
@@ -191,7 +191,7 @@ BOOL DeviceManager::ChooseDevice(int *usrDrvNum, int *usrDevNum, int *usrWidth)
                   NULL /* create parms */
               );
 
-    if (!listWin)
+    if ( not listWin)
     {
         ShiError("Failed to construct list box window");
     }
@@ -212,7 +212,7 @@ BOOL DeviceManager::ChooseDevice(int *usrDrvNum, int *usrDevNum, int *usrWidth)
             while (modeName = GetModeName(drvNum, devNum, modeNum))
             {
 
-                packedNum = (devNum << 24) | (drvNum << 8) | (modeNum);
+                packedNum = (devNum << 24) bitor (drvNum << 8) bitor (modeNum);
                 strcpy(name, drvName);
                 strcat(name, ":  ");
                 strcat(name, devName);
@@ -246,11 +246,11 @@ BOOL DeviceManager::ChooseDevice(int *usrDrvNum, int *usrDevNum, int *usrWidth)
     MessageBox(NULL, "Click OK when you've made your device choice", "", MB_OK);
 
     listSlot = SendMessage(listWin, LB_GETCURSEL, 0, 0);
-    ShiAssert(listSlot != LB_ERR);
+    ShiAssert(listSlot not_eq LB_ERR);
     packedNum = SendMessage(listWin, LB_GETITEMDATA, listSlot, 0);
-    devNum  = (packedNum >> 24) & 0xFF;
-    drvNum  = (packedNum >> 8)  & 0xFFFF;
-    modeNum = (packedNum >> 0)  & 0xFF;
+    devNum  = (packedNum >> 24) bitand 0xFF;
+    drvNum  = (packedNum >> 8) bitand 0xFFFF;
+    modeNum = (packedNum >> 0) bitand 0xFF;
 
     modeName = GetModeName(drvNum, devNum, modeNum);
     ShiAssert(modeName);
@@ -277,15 +277,15 @@ DXContext *DeviceManager::CreateContext(int driverNum, int devNum, int resNum, B
     {
         DDDriverInfo *pDDI = GetDriver(driverNum);
 
-        if (!pDDI) return NULL;
+        if ( not pDDI) return NULL;
 
         DDDriverInfo::D3DDeviceInfo *pD3DDI = pDDI->GetDevice(devNum);
 
-        if (!pD3DDI) return NULL;
+        if ( not pD3DDI) return NULL;
 
         LPDDSURFACEDESC2 pddsd = pDDI->GetDisplayMode(resNum);
 
-        if (!pddsd) return NULL;
+        if ( not pddsd) return NULL;
 
         DXContext *pCtx = new DXContext;
 
@@ -298,7 +298,7 @@ DXContext *DeviceManager::CreateContext(int driverNum, int devNum, int resNum, B
 
 #ifdef _DEBUG
 
-        if (!bFullscreen) ShiAssert(pDDI->CanRenderWindowed());
+        if ( not bFullscreen) ShiAssert(pDDI->CanRenderWindowed());
 
 #endif
 
@@ -318,7 +318,7 @@ void DeviceManager::EnumDDDrivers(DeviceManager *pThis)
 {
     HINSTANCE h = LoadLibrary("ddraw.dll");
 
-    if (!h) return;
+    if ( not h) return;
 
     m_arrDDDrivers.clear();
 
@@ -350,7 +350,7 @@ BOOL WINAPI DeviceManager::EnumDDCallbackEx(GUID FAR *lpGUID, LPSTR lpDriverDesc
 
 DeviceManager::DDDriverInfo *DeviceManager::GetDriver(int driverNum)
 {
-    if (driverNum < 0 || driverNum >= (int) m_arrDDDrivers.size())
+    if (driverNum < 0 or driverNum >= (int) m_arrDDDrivers.size())
         return false;
 
     return &m_arrDDDrivers[driverNum];
@@ -408,8 +408,8 @@ HRESULT CALLBACK DeviceManager::DDDriverInfo::EnumD3DDriversCallback(LPSTR lpDev
     {
         // COBRA - DX - Consider only Drivers making HW T&L
         // sfr: this causes notebooks to stop working
-        //if (lpD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT ){
-        if (lpD3DHWDeviceDesc->dwDevCaps & DisplayOptionsClass::GetDevCaps())
+        //if (lpD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_HWTRANSFORMANDLIGHT ){
+        if (lpD3DHWDeviceDesc->dwDevCaps bitand DisplayOptionsClass::GetDevCaps())
         {
             pThis->m_arrD3DDevices.push_back(D3DDeviceInfo(*lpD3DHWDeviceDesc, lpDeviceName, lpDeviceDescription));
         }
@@ -428,7 +428,7 @@ HRESULT WINAPI DeviceManager::DDDriverInfo::EnumModesCallback(LPDDSURFACEDESC2 l
 
 const char *DeviceManager::DDDriverInfo::GetDeviceName(int n)
 {
-    if (n < 0 || n >= (int) m_arrD3DDevices.size())
+    if (n < 0 or n >= (int) m_arrD3DDevices.size())
         return NULL;
 
     return m_arrD3DDevices[n].GetName();
@@ -438,7 +438,7 @@ int DeviceManager::DDDriverInfo::FindDisplayMode(int nWidth, int nHeight, int nB
 {
     for (int i = 0; i < (int) m_arrModes.size(); i++)
     {
-        if (m_arrModes[i].dwWidth == nWidth && m_arrModes[i].dwHeight == nHeight &&
+        if (m_arrModes[i].dwWidth == nWidth and m_arrModes[i].dwHeight == nHeight and 
             m_arrModes[i].ddpfPixelFormat.dwRGBBitCount == nBPP)
             return i;
     }
@@ -448,7 +448,7 @@ int DeviceManager::DDDriverInfo::FindDisplayMode(int nWidth, int nHeight, int nB
 
 LPDDSURFACEDESC2 DeviceManager::DDDriverInfo::GetDisplayMode(int n)
 {
-    if (n < 0 || n >= (int) m_arrModes.size())
+    if (n < 0 or n >= (int) m_arrModes.size())
         return NULL;
 
     return &m_arrModes[n];
@@ -456,7 +456,7 @@ LPDDSURFACEDESC2 DeviceManager::DDDriverInfo::GetDisplayMode(int n)
 
 bool DeviceManager::DDDriverInfo::CanRenderWindowed()
 {
-    return m_caps.dwCaps2 & DDCAPS2_CANRENDERWINDOWED ? true : false;
+    return m_caps.dwCaps2 bitand DDCAPS2_CANRENDERWINDOWED ? true : false;
 }
 
 bool DeviceManager::DDDriverInfo::Is3dfx()
@@ -468,7 +468,7 @@ bool DeviceManager::DDDriverInfo::SupportsSRT()
 {
     if (devID.dwVendorId == 4634) // 3dfx
     {
-        if (devID.dwDeviceId == 1 || devID.dwDeviceId == 2) // Voodoo 1 & 2
+        if (devID.dwDeviceId == 1 or devID.dwDeviceId == 2) // Voodoo 1 bitand 2
             return false;
     }
 
@@ -477,7 +477,7 @@ bool DeviceManager::DDDriverInfo::SupportsSRT()
 
 DeviceManager::DDDriverInfo::D3DDeviceInfo *DeviceManager::DDDriverInfo::GetDevice(int n)
 {
-    if (n < 0 || n >= (int) m_arrD3DDevices.size())
+    if (n < 0 or n >= (int) m_arrD3DDevices.size())
         return NULL;
 
     return &m_arrD3DDevices[n];
@@ -503,8 +503,8 @@ DeviceManager::DDDriverInfo::D3DDeviceInfo::D3DDeviceInfo(D3DDEVICEDESC7 &devDes
 
 bool DeviceManager::DDDriverInfo::D3DDeviceInfo::IsHardware()
 {
-    if (IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRGBDevice) || IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRefDevice) ||
-        IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRampDevice) || IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DMMXDevice))
+    if (IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRGBDevice) or IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRefDevice) or
+        IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRampDevice) or IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DMMXDevice))
         return false;
     else if (IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DHALDevice))
         return true;
@@ -519,8 +519,8 @@ bool DeviceManager::DDDriverInfo::D3DDeviceInfo::IsHardware()
 
 bool DeviceManager::DDDriverInfo::D3DDeviceInfo::CanFilterAnisotropic()
 {
-    bool bCanDoAnisotropic = (m_devDesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MAGFANISOTROPIC) &&
-                             (m_devDesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MINFANISOTROPIC);
+    bool bCanDoAnisotropic = (m_devDesc.dpcTriCaps.dwTextureFilterCaps bitand D3DPTFILTERCAPS_MAGFANISOTROPIC) and 
+                             (m_devDesc.dpcTriCaps.dwTextureFilterCaps bitand D3DPTFILTERCAPS_MINFANISOTROPIC);
     return bCanDoAnisotropic;
 }
 
@@ -651,12 +651,12 @@ bool DXContext::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFulls
         MonoPrint("%s", g_CardDetails);  // JB 010215
 
         DWORD m_dwCoopFlags = NULL;
-        m_dwCoopFlags |= DDSCL_FPUPRESERVE; // OW FIXME: check if this can be eliminated by eliminating ALL controlfp calls in all files
+        m_dwCoopFlags or_eq DDSCL_FPUPRESERVE; // OW FIXME: check if this can be eliminated by eliminating ALL controlfp calls in all files
 
-        if (g_bForceDXMultiThreadedCoopLevel) m_dwCoopFlags |= DDSCL_MULTITHREADED;
+        if (g_bForceDXMultiThreadedCoopLevel) m_dwCoopFlags or_eq DDSCL_MULTITHREADED;
 
-        if (bFullscreen) m_dwCoopFlags |= DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN | DDSCL_ALLOWREBOOT;
-        else m_dwCoopFlags |= DDSCL_NORMAL;
+        if (bFullscreen) m_dwCoopFlags or_eq DDSCL_EXCLUSIVE bitor DDSCL_FULLSCREEN bitor DDSCL_ALLOWREBOOT;
+        else m_dwCoopFlags or_eq DDSCL_NORMAL;
 
         CheckHR(m_pDD->SetCooperativeLevel(m_hWnd, m_dwCoopFlags));
 
@@ -664,7 +664,7 @@ bool DXContext::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFulls
 
         /*
          // Vendor specific workarounds
-         if(IsEqualGUID(m_pDevID->guidDeviceIdentifier, __uuidof(DEVGUID_3DFX_VOODOO2)) && !bFlip)
+         if(IsEqualGUID(m_pDevID->guidDeviceIdentifier, __uuidof(DEVGUID_3DFX_VOODOO2)) and not bFlip)
          {
          // The V2 (Beta 1.0 DX Driver) cannot render to offscreen plain surfaces only to flipping primary surfaces
          m_guidD3D = IID_IDirect3DRGBDevice; // force software renderer
@@ -672,8 +672,8 @@ bool DXContext::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFulls
         */
 
         //JAM 25Oct03 - Let's avoid user error and disable these.
-        // if(IsEqualIID(m_guidD3D, IID_IDirect3DRGBDevice) || IsEqualIID(m_guidD3D, IID_IDirect3DRefDevice) ||
-        // IsEqualIID(m_guidD3D, IID_IDirect3DRampDevice) || IsEqualIID(m_guidD3D, IID_IDirect3DMMXDevice))
+        // if(IsEqualIID(m_guidD3D, IID_IDirect3DRGBDevice) or IsEqualIID(m_guidD3D, IID_IDirect3DRefDevice) or
+        // IsEqualIID(m_guidD3D, IID_IDirect3DRampDevice) or IsEqualIID(m_guidD3D, IID_IDirect3DMMXDevice))
         // m_eDeviceCategory = D3DDeviceCategory_Software;
         // if(IsEqualIID(m_guidD3D, IID_IDirect3DHALDevice))
         m_eDeviceCategory = D3DDeviceCategory_Hardware;
@@ -704,7 +704,7 @@ bool DXContext::SetRenderTarget(IDirectDrawSurface7 *pRenderTarget)
     // ASSO: may remove this try catch block from the loop
     try
     {
-        if (!m_pD3DD)
+        if ( not m_pD3DD)
         {
             // Check the display mode, and
             DDSURFACEDESC2 ddsd_disp;
@@ -720,7 +720,7 @@ bool DXContext::SetRenderTarget(IDirectDrawSurface7 *pRenderTarget)
 
             // RV - RED - VISTA FIX, seems Vista is returning false to the check for zBuffer availability
             // we go enumerating them and eventually use them directly
-            /* if(m_pcapsDD->dwCaps & DDSCAPS_ZBUFFER)
+            /* if(m_pcapsDD->dwCaps bitand DDSCAPS_ZBUFFER)
              {*/
             // Get the attached Z buffer surface
             IDirectDrawSurface7Ptr pDDSZB;
@@ -733,7 +733,7 @@ bool DXContext::SetRenderTarget(IDirectDrawSurface7 *pRenderTarget)
 
             /* }
 
-             else MonoPrint("DXContext::AttachDepthBuffer() - Warning: No Z-Buffer support !!!\n");*/
+             else MonoPrint("DXContext::AttachDepthBuffer() - Warning: No Z-Buffer support \n");*/
 
             CheckHR(m_pD3D->CreateDevice(m_guidD3D, pRenderTarget, &m_pD3DD));
             CheckHR(m_pD3DD->GetCaps(m_pD3DHWDeviceDesc));
@@ -750,7 +750,7 @@ bool DXContext::SetRenderTarget(IDirectDrawSurface7 *pRenderTarget)
 
             // CheckCaps();
 
-            return true; // render target changed & succeeded
+            return true; // render target changed bitand succeeded
         }
 
         else
@@ -758,7 +758,7 @@ bool DXContext::SetRenderTarget(IDirectDrawSurface7 *pRenderTarget)
             //JAM 17Dec03
             IDirectDrawSurface7Ptr pDDS;
 
-            if (FAILED(m_pD3DD->GetRenderTarget(&pDDS)) || pDDS.GetInterfacePtr() != pRenderTarget)
+            if (FAILED(m_pD3DD->GetRenderTarget(&pDDS)) or pDDS.GetInterfacePtr() not_eq pRenderTarget)
             {
                 IDirectDrawSurface7Ptr pRenderTargetOld;
                 CheckHR(m_pD3DD->GetRenderTarget(&pRenderTargetOld));
@@ -778,7 +778,7 @@ bool DXContext::SetRenderTarget(IDirectDrawSurface7 *pRenderTarget)
                     }
                 }
 
-                // DX - RED - U CAN CHANGE TARGET IN A SCENE...!!!
+                // DX - RED - U CAN CHANGE TARGET IN A SCENE...
                 //if( bInBeginScene ) INT3; // ASSO: break if still in BeginScene
                 //JAM
 
@@ -807,7 +807,7 @@ void DXContext::EnumZBufferFormats(void *parr)
 
 HRESULT CALLBACK DXContext::EnumZBufferFormatsCallback(LPDDPIXELFORMAT lpDDPixFmt, LPVOID lpContext)
 {
-    if (lpDDPixFmt->dwFlags & DDPF_ZBUFFER)
+    if (lpDDPixFmt->dwFlags bitand DDPF_ZBUFFER)
     {
         PIXELFMT_ARRAY *pThis = (PIXELFMT_ARRAY *)lpContext;
         pThis->push_back(*lpDDPixFmt);
@@ -832,18 +832,18 @@ void DXContext::AttachDepthBuffer(IDirectDrawSurface7 *p)
 
     EnumZBufferFormats(&arrZBFmts);
 
-    if (!arrZBFmts.empty())
+    if ( not arrZBFmts.empty())
     {
         // Match Z Buffer depth to the display depth
         DDPIXELFORMAT pixfmt;
 
         PIXELFMT_ARRAY::iterator it;
 
-        for (it = arrZBFmts.begin(); it != arrZBFmts.end(); it++)
+        for (it = arrZBFmts.begin(); it not_eq arrZBFmts.end(); it++)
         {
             // RV - RED - OK, Restored old original Code, seems the Stencil search causes a 25% FPS drop, dunno why
             // as we use the setncil on a surface not having it now
-            // if(it->dwZBufferBitDepth >= ddsd_disp.ddpfPixelFormat.dwRGBBitCount && it->dwStencilBitDepth>=8)
+            // if(it->dwZBufferBitDepth >= ddsd_disp.ddpfPixelFormat.dwRGBBitCount and it->dwStencilBitDepth>=8)
             if (it->dwZBufferBitDepth == ddsd_disp.ddpfPixelFormat.dwRGBBitCount)
             {
                 pixfmt = *it;
@@ -854,7 +854,7 @@ void DXContext::AttachDepthBuffer(IDirectDrawSurface7 *p)
         DDSURFACEDESC2 ddsd;
         ZeroMemory(&ddsd, sizeof(ddsd));
         ddsd.dwSize = sizeof(ddsd);
-        ddsd.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
+        ddsd.dwFlags = DDSD_CAPS bitor DDSD_WIDTH bitor DDSD_HEIGHT bitor DDSD_PIXELFORMAT;
         ddsd.ddsCaps.dwCaps = DDSCAPS_ZBUFFER;
         ddsd.dwWidth = m_nWidth;
         ddsd.dwHeight = m_nHeight;
@@ -862,7 +862,7 @@ void DXContext::AttachDepthBuffer(IDirectDrawSurface7 *p)
 
         // Software devices require system-memory depth buffers.
         if (m_eDeviceCategory == D3DDeviceCategory_Software)
-            ddsd.ddsCaps.dwCaps |= DDSCAPS_SYSTEMMEMORY;
+            ddsd.ddsCaps.dwCaps or_eq DDSCAPS_SYSTEMMEMORY;
 
         CheckHR(m_pDD->CreateSurface(&ddsd, &pDDSZB, NULL));
 
@@ -870,7 +870,7 @@ void DXContext::AttachDepthBuffer(IDirectDrawSurface7 *p)
         CheckHR(p->AddAttachedSurface(pDDSZB));
     }
 
-    else MonoPrint("DXContext::AttachDepthBuffer() - Warning: No Z-Buffer formats !!!\n");
+    else MonoPrint("DXContext::AttachDepthBuffer() - Warning: No Z-Buffer formats \n");
 }
 
 void DXContext::CheckCaps()
@@ -878,82 +878,82 @@ void DXContext::CheckCaps()
 #ifdef _DEBUG
     MonoPrint("-- DXContext - Start of Caps report\n");
 
-    if (m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_SEPARATETEXTUREMEMORIES)
-        MonoPrint(" Device has separate texture memories per stage!. \n");
+    if (m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_SEPARATETEXTUREMEMORIES)
+        MonoPrint(" Device has separate texture memories per stage. \n");
 
-    if (m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_TEXTURENONLOCALVIDMEM)
+    if (m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_TEXTURENONLOCALVIDMEM)
         MonoPrint(" Device supports AGP texturing\n");
 
-    if (!(m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_FLOATTLVERTEX))
+    if ( not (m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_FLOATTLVERTEX))
         MonoPrint(" Device does not accepts floating point for post-transform vertex data. \n");
 
-    if (!(m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_TLVERTEXSYSTEMMEMORY))
+    if ( not (m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_TLVERTEXSYSTEMMEMORY))
         MonoPrint(" Device does not accept TL VBs in system memory.\n");
 
-    if (!(m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_TLVERTEXVIDEOMEMORY))
+    if ( not (m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_TLVERTEXVIDEOMEMORY))
         MonoPrint(" Device does not accept TL VBs in video memory.\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_DITHER))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps bitand D3DPRASTERCAPS_DITHER))
         MonoPrint(" No dithering\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGRANGE))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps bitand D3DPRASTERCAPS_FOGRANGE))
         MonoPrint(" No range based fog\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGVERTEX))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps bitand D3DPRASTERCAPS_FOGVERTEX))
         MonoPrint(" No vertex fog\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ZTEST))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps bitand D3DPRASTERCAPS_ZTEST))
         MonoPrint(" No Z Test support\n");
 
-    if (m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps == D3DPCMPCAPS_ALWAYS ||
+    if (m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps == D3DPCMPCAPS_ALWAYS or
         m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps == D3DPCMPCAPS_NEVER)
         MonoPrint(" No Alpha Test support\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwSrcBlendCaps & D3DPBLENDCAPS_SRCALPHA))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwSrcBlendCaps bitand D3DPBLENDCAPS_SRCALPHA))
         MonoPrint(" SrcBlend SRCALPHA not supported\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwDestBlendCaps & D3DPBLENDCAPS_INVSRCALPHA))
-        MonoPrint(" DestBlend INVSRCALPHA  not supported\n");
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwDestBlendCaps bitand D3DPBLENDCAPS_INVSRCALPHA))
+        MonoPrint(" DestBlend INVSRCALPHA not supported\n");
 
-    if (!(m_pcapsDD->dwCaps & DDCAPS_COLORKEY &&
-          m_pcapsDD->dwCKeyCaps & DDCKEYCAPS_DESTBLT &&
-          m_pD3DHWDeviceDesc->dwDevCaps & D3DDEVCAPS_DRAWPRIMTLVERTEX))
+    if ( not (m_pcapsDD->dwCaps bitand DDCAPS_COLORKEY and 
+          m_pcapsDD->dwCKeyCaps bitand DDCKEYCAPS_DESTBLT and 
+          m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_DRAWPRIMTLVERTEX))
         MonoPrint(" Insufficient color key support\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_ALPHAFLATBLEND))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps bitand D3DPSHADECAPS_ALPHAFLATBLEND))
         MonoPrint(" No alpha blending with flat shading\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_COLORGOURAUDRGB))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps bitand D3DPSHADECAPS_COLORGOURAUDRGB))
         MonoPrint(" No gouraud shading\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_SPECULARFLATRGB))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps bitand D3DPSHADECAPS_SPECULARFLATRGB))
         MonoPrint(" No specular flat shading\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_SPECULARGOURAUDRGB))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps bitand D3DPSHADECAPS_SPECULARGOURAUDRGB))
         MonoPrint(" No specular gouraud shading\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_FOGGOURAUD))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps bitand D3DPSHADECAPS_FOGGOURAUD))
         MonoPrint(" No gouraud fog\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_ALPHA))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_ALPHA))
         MonoPrint(" No alpha textures\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_ALPHAPALETTE))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_ALPHAPALETTE))
         MonoPrint(" No palettized alpha textures\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_COLORKEYBLEND))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_COLORKEYBLEND))
         MonoPrint(" No color key blending support\n");
 
-    if (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_POW2)
+    if (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_POW2)
         MonoPrint(" Textures must be power of 2\n");
 
-    if (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_SQUAREONLY)
+    if (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_SQUAREONLY)
         MonoPrint(" Textures must be square\n");
 
-    if (!(m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_TRANSPARENCY))
+    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_TRANSPARENCY))
         MonoPrint(" No texture transparency\n");
 
-    if (!(m_pD3DHWDeviceDesc->dwTextureOpCaps & D3DTEXOPCAPS_BLENDDIFFUSEALPHA)) // required for MPR_TF_ALPHA
+    if ( not (m_pD3DHWDeviceDesc->dwTextureOpCaps bitand D3DTEXOPCAPS_BLENDDIFFUSEALPHA)) // required for MPR_TF_ALPHA
         MonoPrint(" No D3DTOP_BLENDDIFFUSEALPHA (MPR_TF_ALPHA wont work ie. smoke trails)\n");
 
     MonoPrint("-- DXContext - End of Caps report\n");
@@ -1035,14 +1035,14 @@ DWORD DXContext::TestCooperativeLevel()
 {
     HRESULT hr = m_pDD->TestCooperativeLevel();
 
-    if (hr != DD_OK)
+    if (hr not_eq DD_OK)
     {
         do
         {
             Sleep(100);
             hr = m_pDD->TestCooperativeLevel();
         }
-        while (hr != DD_OK);
+        while (hr not_eq DD_OK);
 
         return S_FALSE; // surface were lost
     }

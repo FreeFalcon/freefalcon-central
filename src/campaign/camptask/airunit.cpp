@@ -127,14 +127,14 @@ int AirUnitClass::GetUnitSpeed() const
 
 int AirUnitClass::IsHelicopter() const
 {
-    if (!(class_data->Flags & VEH_VTOL))
+    if ( not (class_data->Flags bitand VEH_VTOL))
     {
         return 0;
     }
 
     if (
-        GetSType() == STYPE_UNIT_ATTACK_HELO ||
-        GetSType() == STYPE_UNIT_TRANSPORT_HELO ||
+        GetSType() == STYPE_UNIT_ATTACK_HELO or
+        GetSType() == STYPE_UNIT_TRANSPORT_HELO or
         GetSType() == STYPE_UNIT_RECON_HELO
     )
     {
@@ -157,9 +157,9 @@ int AirUnitClass::OnGround(void)
 
 int GetUnitScore(Unit u, MoveType mt)
 {
-    if (!u)
+    if ( not u)
         return 0;
-    else if (u->IsPackage() || u->IsBrigade())
+    else if (u->IsPackage() or u->IsBrigade())
     {
         Unit e;
         int score = 0;
@@ -177,12 +177,12 @@ int GetUnitScore(Unit u, MoveType mt)
     {
         if (u->GetUnitCurrentRole() == ARO_CA)
         {
-            // return u->GetUnitRoleScore(ARO_CA, CALC_TOTAL, USE_EXP | USE_VEH_COUNT);
+            // return u->GetUnitRoleScore(ARO_CA, CALC_TOTAL, USE_EXP bitor USE_VEH_COUNT);
             return u->class_data->HitChance[mt] * u->GetTotalVehicles();
         }
         else
         {
-            // return u->GetUnitRoleScore(ARO_CA, CALC_TOTAL, USE_EXP | USE_VEH_COUNT)/3;
+            // return u->GetUnitRoleScore(ARO_CA, CALC_TOTAL, USE_EXP bitor USE_VEH_COUNT)/3;
             return u->class_data->HitChance[mt] * u->GetTotalVehicles() / 3;
         }
     }

@@ -102,7 +102,7 @@ private:
 };
 
 // virtual constructors (factories)
-// these invoke appropriate NEW func with VU_BYTE stream, & return pointer
+// these invoke appropriate NEW func with VU_BYTE stream, bitand return pointer
 extern VuEntity *VuxCreateEntity(ushort type, ushort size, VU_BYTE *data);
 extern VuMessage *VuxCreateMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID targetid);
 extern void VuxRetireEntity(VuEntity *ent);

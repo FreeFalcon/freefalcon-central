@@ -13,7 +13,7 @@ C_Player::C_Player() : C_Control()
     Color_[0] = 0;
     Color_[1] = 0;
     Color_[2] = 0;
-    Defaultflags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER | C_BIT_USEBGFILL;
+    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER bitor C_BIT_USEBGFILL;
 }
 
 C_Player::C_Player(char **stream) : C_Control(stream)
@@ -44,14 +44,14 @@ void C_Player::InitEntity()
 {
     Icon_ = new O_Output;
     Icon_->SetOwner(this);
-    Icon_->SetFlags(Flags_ | C_BIT_HCENTER | C_BIT_VCENTER);
+    Icon_->SetFlags(Flags_ bitor C_BIT_HCENTER bitor C_BIT_VCENTER);
     Name_ = new O_Output;
     Name_->SetOwner(this);
     Name_->SetFlags(Flags_);
     Name_->SetTextWidth(20);
     Status_ = new O_Output;
     Status_->SetOwner(this);
-    Status_->SetFlags(Flags_ | C_BIT_HCENTER | C_BIT_VCENTER);
+    Status_->SetFlags(Flags_ bitor C_BIT_HCENTER bitor C_BIT_VCENTER);
 
     SetReady(1);
 }
@@ -91,7 +91,7 @@ void C_Player::SetFont(long ID)
 
 long C_Player::CheckHotSpots(long relX, long relY)
 {
-    if (relX >= GetX() && relX <= (GetX() + GetW()) && relY >= GetY() && relY <= (GetY() + GetH()))
+    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))
         return(GetID());
 
     return(0);
@@ -119,7 +119,7 @@ BOOL C_Player::Process(long ID, short HitType)
 
 void C_Player::Refresh()
 {
-    if (!Ready() || Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
+    if ( not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
@@ -127,7 +127,7 @@ void C_Player::Refresh()
 
 void C_Player::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Icon_)
@@ -136,16 +136,16 @@ void C_Player::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (Name_)
         Name_->Draw(surface, cliprect);
 
-    if (Status_ && muted_)
+    if (Status_ and muted_)
         Status_->Draw(surface, cliprect);
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 
 void C_Player::SetState(short newstate)
 {
-    State_ = static_cast<short>(newstate & 1);
+    State_ = static_cast<short>(newstate bitand 1);
 
     if (Name_)
     {
@@ -160,7 +160,7 @@ void C_Player::SetState(short newstate)
 
 void C_Player::SetMute(short mute)
 {
-    muted_ = static_cast<short>(mute & 1);
+    muted_ = static_cast<short>(mute bitand 1);
 
     if (Status_)
         Status_->Refresh();
@@ -168,7 +168,7 @@ void C_Player::SetMute(short mute)
 
 void C_Player::SetIgnore(short ignore)
 {
-    ignored_ = static_cast<short>(ignore & 1);
+    ignored_ = static_cast<short>(ignore bitand 1);
 
     if (Name_)
     {

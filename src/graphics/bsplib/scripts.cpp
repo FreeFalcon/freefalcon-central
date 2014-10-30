@@ -5,6 +5,7 @@
 
     Provides custom code for use by specific BSPlib objects.
 \***************************************************************************/
+#include <cISO646>
 #include "stdafx.h"
 #include <math.h>
 #include "TimeMgr.h"
@@ -158,24 +159,24 @@ static void Beacon(void)
 
     if (fabs(da) > 5.0f * Degrees)
     {
-        sw &= 0xFFFFFFF8; // All off
+        sw and_eq 0xFFFFFFF8; // All off
     }
     else
     {
         if (da < 0.0f)
         {
-            if ((sw & 0x4) == 0)
+            if ((sw bitand 0x4) == 0)
             {
-                sw |= 0x7; // Flash on, has flashed, visible
+                sw or_eq 0x7; // Flash on, has flashed, visible
             }
             else
             {
-                sw &= 0xFFFFFFFD; // Flash off
+                sw and_eq 0xFFFFFFFD; // Flash off
             }
         }
         else
         {
-            sw |= 0x1; // Visible
+            sw or_eq 0x1; // Visible
         }
     }
 
@@ -187,24 +188,24 @@ static void Beacon(void)
 
     if (fabs(da) > 5.0f * Degrees)
     {
-        sw &= 0xFFFFFF8F; // All off
+        sw and_eq 0xFFFFFF8F; // All off
     }
     else
     {
         if (da < 0.0f)
         {
-            if ((sw & 0x40) == 0)
+            if ((sw bitand 0x40) == 0)
             {
-                sw |= 0x70; // Flash on, has flashed, visible
+                sw or_eq 0x70; // Flash on, has flashed, visible
             }
             else
             {
-                sw &= 0xFFFFFFDF; // Flash off
+                sw and_eq 0xFFFFFFDF; // Flash off
             }
         }
         else
         {
-            sw |= 0x10; // Visible
+            sw or_eq 0x10; // Visible
         }
     }
 
@@ -216,24 +217,24 @@ static void Beacon(void)
 
     if (fabs(da) > 5.0f * Degrees)
     {
-        sw &= 0xFFFFF8FF; // All off
+        sw and_eq 0xFFFFF8FF; // All off
     }
     else
     {
         if (da < 0.0f)
         {
-            if ((sw & 0x400) == 0)
+            if ((sw bitand 0x400) == 0)
             {
-                sw |= 0x700; // Flash on, has flashed, visible
+                sw or_eq 0x700; // Flash on, has flashed, visible
             }
             else
             {
-                sw &= 0xFFFFFDFF; // Flash off
+                sw and_eq 0xFFFFFDFF; // Flash off
             }
         }
         else
         {
-            sw |= 0x100; // Visible
+            sw or_eq 0x100; // Visible
         }
     }
 
@@ -456,7 +457,7 @@ static void MeatBall(void)
 
     for (int i = 0; i < NANGLES - 1; i++)
     {
-        if (angle < angles[i] && angle > angles[i + 1])
+        if (angle < angles[i] and angle > angles[i + 1])
             TheStateStack.CurrentInstance->SetSwitch(i, 1);
         else
             TheStateStack.CurrentInstance->SetSwitch(i, 0);

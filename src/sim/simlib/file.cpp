@@ -104,7 +104,7 @@ SimlibFileClass::SimlibFileClass(void)
 /*            (char *, SIM_INT)                                     */
 /*                                                                  */
 /* Description:                                                     */
-/*    Open the named file with the desired permissions and          */
+/*    Open the named file with the desired permissions and */
 /*    attributes.                                                   */
 /*                                                                  */
 /* Inputs:                                                          */
@@ -128,34 +128,34 @@ SimlibFileClass* SimlibFileClass::Open(char *fName, int flags)
     int offset, len;
 
     // What do we want to do with the file ?
-    if (flags & SIMLIB_UPDATE)
+    if (flags bitand SIMLIB_UPDATE)
     {
-        if (flags & SIMLIB_READWRITE)
+        if (flags bitand SIMLIB_READWRITE)
             strcpy(access, "r+\0");
-        else if (flags & SIMLIB_WRITE)
+        else if (flags bitand SIMLIB_WRITE)
             strcpy(access, "a+\0");
     }
-    else if (flags & SIMLIB_READ)
+    else if (flags bitand SIMLIB_READ)
     {
         strcpy(access, "r\0");
     }
-    else if (flags & SIMLIB_READWRITE)
+    else if (flags bitand SIMLIB_READWRITE)
     {
         strcpy(access, "w+\0");
     }
-    else if (flags & SIMLIB_WRITE)
+    else if (flags bitand SIMLIB_WRITE)
     {
         strcpy(access, "w\0");
     }
 
     // Is this a binary file ?
-    if (flags & SIMLIB_BINARY)
+    if (flags bitand SIMLIB_BINARY)
         strcat(access, "b\0");
     else
         strcat(access, "t\0");
 
     // Find the file in the database
-    if (flags & SIMLIB_READ)
+    if (flags bitand SIMLIB_READ)
     {
         if (F4FindFile(fName, fileName, _MAX_PATH, &offset, &len) == NULL)
             strcpy(fileName, fName);
@@ -223,18 +223,18 @@ int SimlibFileClass::ReadLine(char *buf, int max_len)
     int retval = SIMLIB_ERR;
 
     F4Assert(fptr);
-    F4Assert(rights & SIMLIB_READ);
+    F4Assert(rights bitand SIMLIB_READ);
 
     char *cp;
 
     // Skip Comments
-    while ((cp = fgets(buf, max_len, fptr)) != NULL)
+    while ((cp = fgets(buf, max_len, fptr)) not_eq NULL)
     {
         //RESMANAGER KLUDGE
         SwapCRLF(buf);
 
-        //            if (buf[0] != ';' && buf[0] != '\r')
-        if (buf[0] != ';' && buf[0] != '\n')
+        //            if (buf[0] not_eq ';' and buf[0] not_eq '\r')
+        if (buf[0] not_eq ';' and buf[0] not_eq '\n')
             break;
     }
 
@@ -249,7 +249,7 @@ int SimlibFileClass::ReadLine(char *buf, int max_len)
         *(strchr(buf, '\r')) = 0;
 
     // Strip the trailing new-line
-    if (!feof(fptr))
+    if ( not feof(fptr))
     {
         if (buf[strlen(buf) - 1] == '\n')
             buf[strlen(buf) - 1] = 0;
@@ -288,7 +288,7 @@ int SimlibFileClass::WriteLine(char *buf)
 
     // Can we write
     F4Assert(fptr);
-    F4Assert(rights & SIMLIB_WRITE);
+    F4Assert(rights bitand SIMLIB_WRITE);
 
     if (fprintf(fptr, "%s\n", buf) < 0)
         SimLibErrno = EOUTPUT;
@@ -326,7 +326,7 @@ int SimlibFileClass::Read(void* buffer, unsigned int max_len)
     int retval = SIMLIB_ERR;
 
     F4Assert(fptr);
-    F4Assert(rights & SIMLIB_READ);
+    F4Assert(rights bitand SIMLIB_READ);
 
     if (fread(buffer, 1, max_len, fptr) < max_len)
         SimLibErrno = EEOF;
@@ -364,7 +364,7 @@ int SimlibFileClass::Write(void* buffer, int max_len)
     SIM_INT retval = SIMLIB_ERR;
 
     F4Assert(fptr);
-    F4Assert(rights & SIMLIB_WRITE);
+    F4Assert(rights bitand SIMLIB_WRITE);
 
     if (fwrite(buffer, 1, max_len, fptr) < (unsigned int)max_len)
         SimLibErrno = EOUTPUT;
@@ -403,14 +403,14 @@ char *SimlibFileClass::GetNext(void)
 
     // Can we read
     F4Assert(fptr);
-    F4Assert(rights & SIMLIB_READ);
+    F4Assert(rights bitand SIMLIB_READ);
 
     do
     {
         fscanf(fptr, "%s", aline);
         SwapCRLF(aline);
 
-        if (aline[0] == ';' || aline[0] == '#')
+        if (aline[0] == ';' or aline[0] == '#')
         {
             if (fgets(aline, 160, fptr) == NULL)
             {

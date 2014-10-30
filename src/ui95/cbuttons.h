@@ -88,7 +88,7 @@ public:
     {
         HotSpot_ = hotspot;
 
-        if (hotspot.left == -1 && hotspot.right == -1) UseHotSpot_ = 0;
+        if (hotspot.left == -1 and hotspot.right == -1) UseHotSpot_ = 0;
         else UseHotSpot_ = 1;
     }
     void SetHotSpot(long x, long y, long x2, long y2)
@@ -98,7 +98,7 @@ public:
         HotSpot_.right = x2;
         HotSpot_.bottom = y2;
 
-        if (x == -1 && x2 == -1) UseHotSpot_ = 0;
+        if (x == -1 and x2 == -1) UseHotSpot_ = 0;
         else UseHotSpot_ = 1;
     }
     UI95_RECT GetHotSpot(void)
@@ -108,8 +108,8 @@ public:
     void SetBackImage(long ImageID);
     void SetLabel(long ID, _TCHAR *txt);
     void SetLabel(long ID, long txtID);
-    //! void SetLabel(short ID,_TCHAR *txt);
-    //! void SetLabel(short ID,long txtID);
+    //void SetLabel(short ID,_TCHAR *txt);
+    //void SetLabel(short ID,long txtID);
     _TCHAR *GetLabel(short ID);
     void SetAllLabel(_TCHAR *txt);
     void SetAllLabel(long txtID);
@@ -177,14 +177,14 @@ public:
     long CheckHotSpots(long relx, long rely);
     BOOL CheckKeyboard(unsigned char DKScanCode, unsigned char , unsigned char ShiftStates, long)
     {
-        if ((DKScanCode | (ShiftStates << 8)) == GetHotKey()) return(TRUE);
+        if ((DKScanCode bitor (ShiftStates << 8)) == GetHotKey()) return(TRUE);
 
         return(FALSE);
     }
     BOOL Process(long ID, short ButtonHitType);
     BOOL Dragable(long)
     {
-        return(GetFlags() & C_BIT_DRAGABLE);
+        return(GetFlags() bitand C_BIT_DRAGABLE);
     }
     void Refresh();
     void Draw(SCREEN *surface, UI95_RECT *cliprect);

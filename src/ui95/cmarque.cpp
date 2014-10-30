@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -36,7 +36,7 @@ C_Marque::C_Marque() : C_Base()
     MarqueLen_ = -1;
     Text_ = NULL;
     BgImage_ = NULL;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_TIMER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_TIMER;
 }
 
 C_Marque::C_Marque(char **stream) : C_Base(stream)
@@ -161,7 +161,7 @@ void C_Marque::SetBGImage(long ImageID)
 
 void C_Marque::Refresh()
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -171,12 +171,12 @@ void C_Marque::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     UI95_RECT dummy, rect;
 
-    if (!Ready()) return;
+    if ( not Ready()) return;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
-    if (!(GetFlags() & C_BIT_ENABLED))
+    if ( not (GetFlags() bitand C_BIT_ENABLED))
         return;
 
     rect.left = GetX();
@@ -186,7 +186,7 @@ void C_Marque::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     if (Parent_->ClipToArea(&dummy, &rect, cliprect))
     {
-        if (GetFlags() & C_BIT_USEBGIMAGE)
+        if (GetFlags() bitand C_BIT_USEBGIMAGE)
             BgImage_->Draw(surface, &rect);
 
         if (Text_)
@@ -241,7 +241,7 @@ void C_Marque::SetSubParents(C_Window *)
         }
     }
 
-    if (!GetW() || !GetH())
+    if ( not GetW() or not GetH())
         SetWH(Parent_->GetW(), Parent_->GetH());
 }
 
@@ -270,11 +270,11 @@ void C_Marque::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CMRQ_SETFGCOLOR:
-            SetFGColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetFGColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CMRQ_SETBGCOLOR:
-            SetBGColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetBGColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CMRQ_SETFONT:

@@ -63,7 +63,7 @@ int GameManagerClass::AllPlayersReady(VuGameEntity *game)
 
         MonoPrint("APR %s %d\n", session->GetPlayerCallsign(), session->GetFlyState());
 
-        if ((session->GetFlyState() != FLYSTATE_WAITING) && (session->GetFlyState() != FLYSTATE_FLYING))
+        if ((session->GetFlyState() not_eq FLYSTATE_WAITING) and (session->GetFlyState() not_eq FLYSTATE_FLYING))
         {
             ok = FALSE;
         }
@@ -93,7 +93,7 @@ int GameManagerClass::NoMorePlayers(VuGameEntity *game)
     {
         // MonoPrint ("NMP %s %d\n", session->GetPlayerCallsign (), session->GetFlyState ());
 
-        if (session->GetFlyState() != FLYSTATE_IN_UI)
+        if (session->GetFlyState() not_eq FLYSTATE_IN_UI)
         {
             ok = FALSE;
         }
@@ -116,23 +116,23 @@ int GameManagerClass::CheckPlayerStatus(FalconEntity *entity)
     FalconSessionEntity *session;
     int player = 0;
 
-    if (!entity)
+    if ( not entity)
     {
         return 0;
     }
 
     session = (FalconSessionEntity*)sessionWalker.GetFirst();
 
-    while (session && !player)
+    while (session and not player)
     {
-        if (entity->IsSim() && entity == session->GetPlayerEntity())
+        if (entity->IsSim() and entity == session->GetPlayerEntity())
         {
             player = 1;
         }
         else if (
-            (entity->IsCampaign()) &&
+            (entity->IsCampaign()) and 
             (
-                (entity == session->GetPlayerFlight()) ||
+                (entity == session->GetPlayerFlight()) or
                 (entity == session->GetPlayerSquadron())
             )
         )
@@ -259,7 +259,7 @@ SimMoverClass* GameManagerClass::FindPlayerVehicle(UnitClass *campEntity, int ve
 {
     SimMoverClass* simEntity = NULL;
 
-    if ((!campEntity) || (!campEntity->GetComponents()))
+    if (( not campEntity) or ( not campEntity->GetComponents()))
     {
         return NULL;
     }
@@ -271,7 +271,7 @@ SimMoverClass* GameManagerClass::FindPlayerVehicle(UnitClass *campEntity, int ve
         return NULL;
     }
 
-    while (simEntity->vehicleInUnit != vehSlot)
+    while (simEntity->vehicleInUnit not_eq vehSlot)
     {
         simEntity = (SimMoverClass*) flit.GetNext();
     }
@@ -282,7 +282,7 @@ SimMoverClass* GameManagerClass::FindPlayerVehicle(UnitClass *campEntity, int ve
 
      SimMoverClass* simEntity = NULL;
 
-     if (!campEntity)
+     if ( not campEntity)
      return NULL;
 
      if (campEntity->GetComponents())
@@ -292,11 +292,11 @@ SimMoverClass* GameManagerClass::FindPlayerVehicle(UnitClass *campEntity, int ve
      // Hack Hack Hack Hack HACK - This is a HACK - RH
      count = 0;
 
-     while ((!simEntity) && (count < 100))
+     while (( not simEntity) and (count < 100))
      {
      simEntity = (SimMoverClass*) flit.GetFirst();
 
-     while (simEntity && simEntity->vehicleInUnit != vehSlot)
+     while (simEntity and simEntity->vehicleInUnit not_eq vehSlot)
      {
      simEntity = (SimMoverClass*) flit.GetNext();
      }
@@ -336,7 +336,7 @@ SimMoverClass* GameManagerClass::AttachPlayerToVehicle(FalconSessionEntity *play
 #endif
         // sfr: this will need changing if one day players are not aircraft anymore
         SimDriver.SetPlayerEntity(static_cast<AircraftClass*>(simEntity));
-#if !NEW_ATTACH_ORDER
+#if not NEW_ATTACH_ORDER
         // sfr: set it here, since start loop calls this too
         OTWDriver.SetGraphicsOwnship(simEntity);
 #endif
@@ -447,7 +447,7 @@ void GameManagerClass::ReleasePlayer(FalconSessionEntity *player)
 {
     SimMoverClass* simEntity = (SimMoverClass*) player->GetPlayerEntity();
 
-    ShiAssert(player != FalconLocalSession || simEntity);
+    ShiAssert(player not_eq FalconLocalSession or simEntity);
 
     if (simEntity)
     {
@@ -455,7 +455,7 @@ void GameManagerClass::ReleasePlayer(FalconSessionEntity *player)
         simEntity->UnSetFalcFlag(FEC_HOLDSHORT);
         MonoPrint("Releasing the player\n");
 
-        if (!PlayerOptions.InvulnerableOn())
+        if ( not PlayerOptions.InvulnerableOn())
         {
             MonoPrint("Releasing the hounds %08x - not invulnerable\n", simEntity);
             simEntity->UnSetFalcFlag(FEC_INVULNERABLE);
@@ -478,7 +478,7 @@ void GameManagerClass::ReleasePlayer(FalconSessionEntity *player)
         // sfr: why OnGround its not disabled ???
         // this is causing players to begin with AP on.
         // commentted out
-        if (simEntity->IsAirplane()/* && !simEntity->OnGround()*/)
+        if (simEntity->IsAirplane()/* and not simEntity->OnGround()*/)
         {
             ((AircraftClass *)simEntity)->SetAutopilot(AircraftClass::APOff);
         }
@@ -487,7 +487,7 @@ void GameManagerClass::ReleasePlayer(FalconSessionEntity *player)
         TheCampaign.Resume();
         OTWDriver.SetOTWDisplayMode(OTWDriverClass::Mode2DCockpit);
 
-        if (simEntity->OnGround() && simEntity->IsAirplane())
+        if (simEntity->OnGround() and simEntity->IsAirplane())
         {
             gBumpFlag = TRUE;
             gBumpTime = SimLibElapsedTime + FalconLocalGame->GetRules()->BumpTimer;

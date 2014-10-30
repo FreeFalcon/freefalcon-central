@@ -12,7 +12,7 @@ C_Hash::C_Hash()
 
 C_Hash::~C_Hash()
 {
-    if (TableSize_ || Table_)
+    if (TableSize_ or Table_)
         Cleanup();
 }
 
@@ -22,7 +22,7 @@ void C_Hash::Setup(long Size)
     TableSize_ = Size;
 
     //edg note: even if new is overloaded to use specific pool, when alloc'ing
-    // and array of things, SH seems to still put into default pool(!?)
+    // and array of things, SH seems to still put into default pool( not ?)
 #ifdef USE_SH_POOLS
     Table_ = (C_HASHROOT *)MemAllocPtr(UI_Pools[UI_GENERAL_POOL], sizeof(C_HASHROOT) * TableSize_, FALSE);
 #else
@@ -38,7 +38,7 @@ void C_Hash::Cleanup()
     long i;
     C_HASHNODE *cur, *prev;
 
-    if (TableSize_ || Table_)
+    if (TableSize_ or Table_)
     {
         for (i = 0; i < TableSize_; i++)
         {
@@ -49,7 +49,7 @@ void C_Hash::Cleanup()
                 prev = cur;
                 cur = cur->Next;
 
-                if (flags_ & C_BIT_REMOVE)
+                if (flags_ bitand C_BIT_REMOVE)
                 {
                     if (Callback_)
                         (*Callback_)(prev->Record);
@@ -77,7 +77,7 @@ void *C_Hash::Find(long ID)
     long idx;
     C_HASHNODE *cur;
 
-    if (!TableSize_ || !Table_ || ID < 0) return(NULL);
+    if ( not TableSize_ or not Table_ or ID < 0) return(NULL);
 
     idx = ID % TableSize_;
     cur = Table_[idx].Root_;
@@ -101,7 +101,7 @@ void C_Hash::Add(long ID, void *rec)
     long idx;
     C_HASHNODE *cur, *newhash;
 
-    if (!TableSize_ || !Table_ || !rec || ID < 0)
+    if ( not TableSize_ or not Table_ or not rec or ID < 0)
         return;
 
     if (Find(ID))
@@ -115,7 +115,7 @@ void C_Hash::Add(long ID, void *rec)
 
     idx = ID % TableSize_;
 
-    if (!Table_[idx].Root_)
+    if ( not Table_[idx].Root_)
     {
         Table_[idx].Root_ = newhash;
     }
@@ -136,7 +136,7 @@ long C_Hash::AddText(const _TCHAR *string)
     C_HASHNODE *cur, *newhash;
     _TCHAR *data;
 
-    if (!TableSize_ || !Table_ || !string) return(-1);
+    if ( not TableSize_ or not Table_ or not string) return(-1);
 
     ID = 0;
     idx = _tcsclen(string);
@@ -171,7 +171,7 @@ long C_Hash::AddText(const _TCHAR *string)
 
     ID = idx << 16;
 
-    if (!Table_[idx].Root_)
+    if ( not Table_[idx].Root_)
     {
         Table_[idx].Root_ = newhash;
         newhash->ID = idx << 16;
@@ -200,7 +200,7 @@ long C_Hash::AddTextID(long TextID, _TCHAR *string)
     C_HASHNODE *cur, *newhash;
     _TCHAR *data;
 
-    if (!TableSize_ || !Table_ || !string) return(-1);
+    if ( not TableSize_ or not Table_ or not string) return(-1);
 
     ID = 0;
     idx = _tcsclen(string);
@@ -236,7 +236,7 @@ long C_Hash::AddTextID(long TextID, _TCHAR *string)
 
     ID = idx << 16;
 
-    if (!Table_[idx].Root_)
+    if ( not Table_[idx].Root_)
     {
         Table_[idx].Root_ = newhash;
     }
@@ -262,17 +262,17 @@ _TCHAR *C_Hash::FindText(long ID)
     unsigned long idx, i;
     C_HASHNODE *cur;
 
-    if (!TableSize_ || !Table_ || (ID < 0)) return(NULL);
+    if ( not TableSize_ or not Table_ or (ID < 0)) return(NULL);
 
     idx = ID >> 16;
-    i = ID & 0x0000ffff;
+    i = ID bitand 0x0000ffff;
 
-    if (idx >= (unsigned long)TableSize_) //!
+    if (idx >= (unsigned long)TableSize_) 
         return(NULL);
 
     cur = Table_[idx].Root_;
 
-    for (i = 0; i < (unsigned long)(ID & 0x0000ffff) && cur; i++)
+    for (i = 0; i < (unsigned long)(ID bitand 0x0000ffff) and cur; i++)
         cur = cur->Next;
 
     if (cur)
@@ -287,7 +287,7 @@ long C_Hash::FindTextID(_TCHAR *string)
     unsigned long ID;
     C_HASHNODE *cur;
 
-    if (!TableSize_ || !Table_ || !string) return(-1);
+    if ( not TableSize_ or not Table_ or not string) return(-1);
 
     ID = 0;
     idx = _tcsclen(string);
@@ -315,17 +315,17 @@ long C_Hash::FindTextID(long ID)
     long idx, i;
     C_HASHNODE *cur;
 
-    if (!TableSize_ || !Table_ || (ID < 0)) return(NULL);
+    if ( not TableSize_ or not Table_ or (ID < 0)) return(NULL);
 
     idx = ID >> 16;
-    i = ID & 0x0000ffff;
+    i = ID bitand 0x0000ffff;
 
     if (idx >= TableSize_)
         return(-1);
 
     cur = Table_[idx].Root_;
 
-    for (i = 0; i < (ID & 0x0000ffff) && cur; i++)
+    for (i = 0; i < (ID bitand 0x0000ffff) and cur; i++)
         cur = cur->Next;
 
     if (cur)
@@ -339,11 +339,11 @@ void C_Hash::Remove(long ID)
     long idx;
     C_HASHNODE *cur, *prev;
 
-    if (!TableSize_ || !Table_ || (ID < 0)) return;
+    if ( not TableSize_ or not Table_ or (ID < 0)) return;
 
     idx = ID % TableSize_;
 
-    if (!Table_[idx].Root_) return;
+    if ( not Table_[idx].Root_) return;
 
     Table_[idx].Root_;
 
@@ -352,7 +352,7 @@ void C_Hash::Remove(long ID)
         prev = Table_[idx].Root_;
         Table_[idx].Root_ = Table_[idx].Root_->Next;
 
-        if (flags_ & C_BIT_REMOVE)
+        if (flags_ bitand C_BIT_REMOVE)
         {
             if (Callback_)
                 (*Callback_)(prev->Record);
@@ -378,7 +378,7 @@ void C_Hash::Remove(long ID)
                 prev = cur->Next;
                 cur->Next = cur->Next->Next;
 
-                if (flags_ & C_BIT_REMOVE)
+                if (flags_ bitand C_BIT_REMOVE)
                 {
                     if (Callback_)
                         (*Callback_)(prev->Record);
@@ -405,16 +405,16 @@ void C_Hash::RemoveOld()
     long i;
     C_HASHNODE *cur, *prev;
 
-    if (!TableSize_ || !Table_) return;
+    if ( not TableSize_ or not Table_) return;
 
     for (i = 0; i < TableSize_; i++)
     {
-        while (Table_[i].Root_ && Table_[i].Root_->Check != Check_)
+        while (Table_[i].Root_ and Table_[i].Root_->Check not_eq Check_)
         {
             prev = Table_[i].Root_;
             Table_[i].Root_ = Table_[i].Root_->Next;
 
-            if (flags_ & C_BIT_REMOVE)
+            if (flags_ bitand C_BIT_REMOVE)
             {
                 if (Callback_)
                     (*Callback_)(prev->Record);
@@ -436,12 +436,12 @@ void C_Hash::RemoveOld()
         {
             while (cur->Next)
             {
-                if (cur->Next->Check != Check_)
+                if (cur->Next->Check not_eq Check_)
                 {
                     prev = cur->Next;
                     cur->Next = cur->Next->Next;
 
-                    if (flags_ & C_BIT_REMOVE)
+                    if (flags_ bitand C_BIT_REMOVE)
                     {
                         if (Callback_)
                             (*Callback_)(prev->Record);
@@ -474,7 +474,7 @@ void *C_Hash::GetFirstOld(C_HASHNODE **current, long *curidx)
 
     while (cur)
     {
-        if (cur->Record && cur->Check != Check_)
+        if (cur->Record and cur->Check not_eq Check_)
         {
             *current = cur;
             return(cur->Record);
@@ -482,7 +482,7 @@ void *C_Hash::GetFirstOld(C_HASHNODE **current, long *curidx)
 
         cur = cur->Next;
 
-        while (!cur && *curidx < (TableSize_ - 1))
+        while ( not cur and *curidx < (TableSize_ - 1))
         {
             (*curidx)++;
             cur = Table_[*curidx].Root_;
@@ -496,22 +496,22 @@ void *C_Hash::GetNextOld(C_HASHNODE **current, long *curidx)
 {
     C_HASHNODE *cur;
 
-    if (!(*current))
+    if ( not (*current))
         return(NULL);
 
     cur = (*current)->Next;
 
-    while (!cur && *curidx < (TableSize_ - 1))
+    while ( not cur and *curidx < (TableSize_ - 1))
     {
         (*curidx)++;
         cur = Table_[*curidx].Root_;
     }
 
-    while (cur && cur->Check == Check_ && cur->Record)
+    while (cur and cur->Check == Check_ and cur->Record)
     {
         cur = cur->Next;
 
-        while (!cur && *curidx < (TableSize_ - 1))
+        while ( not cur and *curidx < (TableSize_ - 1))
         {
             (*curidx)++;
             cur = Table_[*curidx].Root_;
@@ -535,12 +535,12 @@ void *C_Hash::GetFirst(C_HASHNODE **current, long *curidx)
 
     ShiAssert(curidx);
 
-    if (!curidx)
+    if ( not curidx)
         return NULL;
 
     cur = Table_[*curidx].Root_;
 
-    while (!cur && *curidx < (TableSize_ - 1))
+    while ( not cur and *curidx < (TableSize_ - 1))
     {
         (*curidx)++;
         cur = Table_[*curidx].Root_;
@@ -562,12 +562,12 @@ void *C_Hash::GetNext(C_HASHNODE **current, long *curidx)
 {
     C_HASHNODE *cur;
 
-    if (!*current)
+    if ( not *current)
         return(NULL);
 
     cur = (*current)->Next;
 
-    while (!cur && *curidx < (TableSize_ - 1))
+    while ( not cur and *curidx < (TableSize_ - 1))
     {
         (*curidx)++;
         cur = Table_[*curidx].Root_;

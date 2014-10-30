@@ -1,5 +1,6 @@
 #ifndef _VUTYPES_H_
 #define _VUTYPES_H_
+#include <cISO646>
 
 // vutypes.h
 // sfr: vu base types
@@ -58,9 +59,9 @@ public:
         return (value_ == rhs.value_ ? TRUE : FALSE);
     }
 
-    int operator != (const VU_SESSION_ID &rhs) const
+    int operator not_eq (const VU_SESSION_ID &rhs) const
     {
-        return (value_ != rhs.value_ ? TRUE : FALSE);
+        return (value_ not_eq rhs.value_ ? TRUE : FALSE);
     }
 
     int operator > (const VU_SESSION_ID &rhs) const
@@ -91,7 +92,7 @@ public:
     // note: these are private to prevent (mis)use
 private:
     int operator == (unsigned long &rhs) const ;
-    int operator != (unsigned long &rhs) const ;
+    int operator not_eq (unsigned long &rhs) const ;
     int operator > (unsigned long &rhs) const ;
     int operator >= (unsigned long &rhs) const ;
     int operator < (unsigned long &rhs) const ;
@@ -118,7 +119,7 @@ public:
                        false
                    );
     }
-    bool operator != (const VU_ID &rhs) const
+    bool operator not_eq (const VU_ID &rhs) const
 {
         return (
                    num_ == rhs.num_ ?
@@ -196,13 +197,13 @@ public:
     }
     operator VU_KEY() const
     {
-        return (VU_KEY)(((unsigned short)creator_ << 16) | ((unsigned short)num_));
+        return (VU_KEY)(((unsigned short)creator_ << 16) bitor ((unsigned short)num_));
     }
 
     // note: these are private to prevent (mis)use
 private:
     int operator == (const VU_KEY &rhs) const ;
-    int operator != (VU_KEY &rhs) const ;
+    int operator not_eq (VU_KEY &rhs) const ;
     int operator > (VU_KEY &rhs) const ;
     int operator >= (VU_KEY &rhs) const ;
     int operator < (VU_KEY &rhs) const ;
@@ -242,11 +243,11 @@ public:
     }
 
     // equality: everything equal
-    bool operator==(const VU_ADDRESS & rhs) const
+    bool operator==(const VU_ADDRESS bitand rhs) const
     {
         return (
-                   (this->ip == rhs.ip) &&
-                   (this->recvPort == rhs.recvPort) &&
+                   (this->ip == rhs.ip) and 
+                   (this->recvPort == rhs.recvPort) and 
                    (this->reliableRecvPort == rhs.reliableRecvPort)
                );
     }

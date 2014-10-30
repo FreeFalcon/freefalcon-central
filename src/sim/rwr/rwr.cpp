@@ -79,11 +79,11 @@ void RwrClass::DrawSymbol(VirtualDisplay *display, int symbolID, int boxed)
 {
     static int flash = false;
     // Do we draw flashing things this frame?
-    flash = vuxRealTime & 0x200;
+    flash = vuxRealTime bitand 0x200;
     static int show = 0;
     static bool oldcount = false;
 
-    if (flash && ((oldcount && show != 0) || (!oldcount && show == 0)))
+    if (flash and ((oldcount and show not_eq 0) or ( not oldcount and show == 0)))
     {
         ++show;
 
@@ -91,10 +91,10 @@ void RwrClass::DrawSymbol(VirtualDisplay *display, int symbolID, int boxed)
             show = oldcount = 0;
     }
 
-    if (!flash && ((oldcount && show == 0) || (!oldcount && show != 0)))
+    if ( not flash and ((oldcount and show == 0) or ( not oldcount and show not_eq 0)))
     {
         ++show;
-        oldcount = show != 0;
+        oldcount = show not_eq 0;
     }
 
     display->ZeroRotationAboutOrigin(); // me123 make sure we are not rotated
@@ -402,14 +402,14 @@ void RwrClass::DrawSymbol(VirtualDisplay *display, int symbolID, int boxed)
             break;
 
         case RWRSYM_MIB_F_S:
-            if (!show)
+            if ( not show)
                 display->TextCenter(0.0F, verticalTextCenter, "F", boxed);
             else
                 display->TextCenter(0.0F, verticalTextCenter, "S", boxed);
 
             break;
 
-        case RWRSYM_MIB_F_A||66:
+        case RWRSYM_MIB_F_A or 66:
             if (show)
                 display->TextCenter(0.0F, verticalTextCenter, "F", boxed);
             else
@@ -418,7 +418,7 @@ void RwrClass::DrawSymbol(VirtualDisplay *display, int symbolID, int boxed)
             break;
 
         case RWRSYM_MIB_F_M:
-            if (!show)
+            if ( not show)
                 display->TextCenter(0.0F, verticalTextCenter, "F", boxed);
             else
                 display->TextCenter(0.0F, verticalTextCenter, "M", boxed);
@@ -434,7 +434,7 @@ void RwrClass::DrawSymbol(VirtualDisplay *display, int symbolID, int boxed)
             break;
 
         case RWRSYM_MIB_F_BW:
-            if (!show)
+            if ( not show)
                 display->TextCenter(0.0F, verticalTextCenter, "F", boxed);
             else
 
@@ -456,7 +456,7 @@ void RwrClass::DrawSymbol(VirtualDisplay *display, int symbolID, int boxed)
             break;
 
         case RWRSYM_MIB_BW_A:
-            if (!show)
+            if ( not show)
                 display->TextCenter(0.0F, verticalTextCenter, "A", boxed);
             else
 
@@ -467,7 +467,7 @@ void RwrClass::DrawSymbol(VirtualDisplay *display, int symbolID, int boxed)
             break;
 
         case RWRSYM_MIB_BW_M:
-            if (!show)
+            if ( not show)
                 display->TextCenter(0.0F, verticalTextCenter, "M", boxed);
             else
 
@@ -505,7 +505,7 @@ void RwrClass::DrawHat(VirtualDisplay *display)
 {
     static const float  HAT_SIZE = 0.06f;
 
-    if (!display)
+    if ( not display)
         return;
 
     // FRB - CTD's here

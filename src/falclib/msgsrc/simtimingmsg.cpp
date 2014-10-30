@@ -36,7 +36,7 @@ FalconSimTiming::~FalconSimTiming(void)
 
 int FalconSimTiming::Process(uchar autodisp)
 {
-   if (SimDriver.IsRunning() && SimDriver.isPaused != dataBlock.paused)
+   if (SimDriver.IsRunning() and SimDriver.isPaused not_eq dataBlock.paused)
       ToggleSimPause();
    // Your Code Goes Here
    return 0;

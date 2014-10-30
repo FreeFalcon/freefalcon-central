@@ -46,7 +46,7 @@ void C_BullsEye::SetPos(float x, float y)
     WorldX_ = x;
     WorldY_ = y;
 
-    SetXY(static_cast<long>(WorldX_ * Scale_), static_cast<long>(WorldY_ * Scale_)); //!
+    SetXY(static_cast<long>(WorldX_ * Scale_), static_cast<long>(WorldY_ * Scale_)); //
 }
 
 void C_BullsEye::SetScale(float scl)
@@ -58,7 +58,7 @@ void C_BullsEye::SetScale(float scl)
 
 void C_BullsEye::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX() - GetW() / 2, GetY() - GetH() / 2, GetX() + GetW() / 2 + 1, GetY() + GetH() / 2 + 1, GetFlags(), GetClient());
@@ -69,7 +69,7 @@ void C_BullsEye::Draw(SCREEN *surface, UI95_RECT *cliprect)
     long i;
     long x1, y1, x2, y2;
 
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     for (i = 0; i < NUM_BE_CIRCLES; i++)

@@ -18,11 +18,11 @@ extern bool g_bMachAsiDial; //Wombat778 7-9-04
 
 void CBEMachAsi(void * pObject)
 {
-    if (!pObject) return;
+    if ( not pObject) return;
 
     //Wombat778 7-09-04 treat machasi as a dial
 
-    if (!g_bMachAsiDial)
+    if ( not g_bMachAsiDial)
     {
 
         CPMachAsi* pCPMachAsi;
@@ -50,7 +50,7 @@ void CBEMachAsi(void * pObject)
 
         pCPDial = (CPDial*) pObject;
 
-        if (!pCPDial || !pCPDial->mpOwnship) return;
+        if ( not pCPDial or not pCPDial->mpOwnship) return;
 
         if (F4IsBadReadPtr(pCPDial->mpOwnship, sizeof(pCPDial->mpOwnship))) return;
 

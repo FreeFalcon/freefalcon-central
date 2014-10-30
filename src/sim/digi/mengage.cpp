@@ -50,14 +50,14 @@ void DigitalBrain::MissileEngageCheck(void)
     // To enter Missile engage you need a target, a missile within its dlz,
     // you need to be pointeing 'close' to the target, and outside of one
     // mile or be out of guns
-    if (curMode != MissileEngageMode)
+    if (curMode not_eq MissileEngageMode)
     {
-        if (targetPtr && curMissile &&
-            targetData->range <= maxAAWpnRange * 1.05f  &&
-            (targetData->range >= 3000.0f || !(((AircraftClass *)self)->Guns)) &&
-            targetData->ata < angLimit * 1.05f && self->CombatClass() <= 7/*CanEngage (self, self->CombatClass(), targetPtr, BVRManeuver | BVRManeuver*/) // 2002-03-11 MODIFIED BY S.G. Added parameter "BVRManeuver | BVRManeuver"
+        if (targetPtr and curMissile and 
+            targetData->range <= maxAAWpnRange * 1.05f  and 
+            (targetData->range >= 3000.0f or not (((AircraftClass *)self)->Guns)) and 
+            targetData->ata < angLimit * 1.05f and self->CombatClass() <= 7/*CanEngage (self, self->CombatClass(), targetPtr, BVRManeuver bitor BVRManeuver*/) // 2002-03-11 MODIFIED BY S.G. Added parameter "BVRManeuver bitor BVRManeuver"
         {
-            if (targetPtr->BaseData()->IsSim() && ((SimBaseClass *)targetPtr->BaseData())->pctStrength <= 0.0f)
+            if (targetPtr->BaseData()->IsSim() and ((SimBaseClass *)targetPtr->BaseData())->pctStrength <= 0.0f)
             {
                 return;
             }
@@ -72,13 +72,13 @@ void DigitalBrain::MissileEngageCheck(void)
     /*------*/
     else
     {
-        if (targetData && targetData->range > 2000.0f) // JB 010208
+        if (targetData and targetData->range > 2000.0f) // JB 010208
         {
-            if (!targetPtr ||
-                !curMissile ||
-                targetData->range > maxAAWpnRange * 1.09F ||
-                // (targetData->range < 3000.0f * NM_TO_FT && (((AircraftClass *)self)->Guns)) && // Cobra - < 3000 NM??!!
-                (targetData->range < 3000.0f && (((AircraftClass *)self)->Guns)) &&
+            if ( not targetPtr or
+ not curMissile or
+                targetData->range > maxAAWpnRange * 1.09F or
+                // (targetData->range < 3000.0f * NM_TO_FT and (((AircraftClass *)self)->Guns)) and // Cobra - < 3000 NM??
+                (targetData->range < 3000.0f and (((AircraftClass *)self)->Guns)) and 
                 targetData->ata > angLimit * 1.09F)//me123 from 1.5
             {
                 self->FCC->SetTarget(NULL);
@@ -93,7 +93,7 @@ void DigitalBrain::MissileEngageCheck(void)
                 AddMode(MissileEngageMode);
             }
         }
-        else if (targetPtr && targetData && ((AircraftClass *)self)->Guns && ((AircraftClass *)self)->Guns->numRoundsRemaining > 0) // JB 010208
+        else if (targetPtr and targetData and ((AircraftClass *)self)->Guns and ((AircraftClass *)self)->Guns->numRoundsRemaining > 0) // JB 010208
             AddMode(GunsEngageMode); // JB 010208
     }
 }
@@ -105,13 +105,13 @@ void DigitalBrain::MissileEngage(void)
     float tof, rMax;
 
     // check for exit condition
-    if (!targetPtr || !curMissile)
+    if ( not targetPtr or not curMissile)
     {
         return;
     }
 
     // Set up for missile engage
-    if (curMode != lastMode)//only go into missile mode the first time
+    if (curMode not_eq lastMode)//only go into missile mode the first time
     {
         FireControlComputer::FCCSubMode newSubMode;
 
@@ -132,7 +132,7 @@ void DigitalBrain::MissileEngage(void)
                 break;
         }
 
-        if (newSubMode != self->FCC->GetSubMode())
+        if (newSubMode not_eq self->FCC->GetSubMode())
             self->FCC->SetSubMode(newSubMode);
     }
 
@@ -145,7 +145,7 @@ void DigitalBrain::MissileEngage(void)
        theRadar->digiRadarMode = RadarClass::DigiSTT;
        else if (SpikeCheck(self, targetPtr->BaseData())) // If our target is locked onto us, do the same to him
        theRadar->digiRadarMode = RadarClass::DigiSTT;
-       else if (self->GetCampaignObject()->GetSpotted(self->GetTeam()) || (curMissile && curMissile && curMissile->sensorArray &&curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming))
+       else if (self->GetCampaignObject()->GetSpotted(self->GetTeam()) or (curMissile and curMissile and curMissile->sensorArray and curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming))
        theRadar->digiRadarMode = RadarClass::DigiSTT;
        else
        theRadar->digiRadarMode = RadarClass::DigiTWS;
@@ -158,7 +158,7 @@ void DigitalBrain::MissileEngage(void)
     if (targetData->range <= g_fRAPDistance * NM_TO_FT)//me123 bwrengage will fly the jet outside g_fRAPDistance
         RollAndPull();
     // 2002-03-15 MODIFIED BY S.G. If asked to perform maneuver like chainsaw, do this without doing the BVR stuff. Added the 'mpActionFlags[AI_EXECUTE_MANEUVER] == TRUE+1' condition
-    else if ((self->Sms->curWeaponType == wtAim120 && !missileFiredEntity) ||
+    else if ((self->Sms->curWeaponType == wtAim120 and not missileFiredEntity) or
              mpActionFlags[AI_EXECUTE_MANEUVER] == TRUE + 1)
     {
         SetYpedal(0.0F);
@@ -313,7 +313,7 @@ void DigitalBrain::WeaponSelection(void)
     // as we select missiles we're going to determine what our max
     // range is.  This will be usefull for determining other tactics
     // start off by checking guns availability
-    if (((AircraftClass *)self)->Guns &&
+    if (((AircraftClass *)self)->Guns and 
         ((AircraftClass *)self)->Guns->numRoundsRemaining > 0)
         maxAAWpnRange = 6000.0f;
     else
@@ -332,7 +332,7 @@ void DigitalBrain::WeaponSelection(void)
         // 2002-03-26 MN A data bug (weapon type = Guns, weapon Class = wcAimWpn) caused a crash in GetRMax below.
         // Just make sure this doesn't happen again
 #ifdef DEBUG
-        if (self->Sms->hardPoint[i]->GetWeaponType() == wtGuns && !(self->Sms->hardPoint[i]->GetWeaponClass() == wcGunWpn || self->Sms->hardPoint[i]->GetWeaponClass() == wcTank))
+        if (self->Sms->hardPoint[i]->GetWeaponType() == wtGuns and not (self->Sms->hardPoint[i]->GetWeaponClass() == wcGunWpn or self->Sms->hardPoint[i]->GetWeaponClass() == wcTank))
             ShiAssert(false);
 
 #endif
@@ -341,11 +341,11 @@ void DigitalBrain::WeaponSelection(void)
             continue;
 
         // Is this an aim missile?
-        if (self->Sms->hardPoint[i]->GetWeaponClass() != wcAimWpn)
+        if (self->Sms->hardPoint[i]->GetWeaponClass() not_eq wcAimWpn)
             continue;
 
-        if (targetPtr->BaseData()->IsHelicopter() &&
-            self->Sms->hardPoint[i]->GetWeaponType() != wtAim9)
+        if (targetPtr->BaseData()->IsHelicopter() and 
+            self->Sms->hardPoint[i]->GetWeaponType() not_eq wtAim9)
             continue;
 
         self->Sms->curWeapon.reset();// = NULL;
@@ -398,9 +398,9 @@ void DigitalBrain::WeaponSelection(void)
                 thisRmin = 2000;//me123 0.01F * rmax;
 
                 //me123 if ir missile pick the missile with greatest range becourse it also also best seeker)
-                if (theMissile->sensorArray && theMissile->sensorArray[0]->Type() == SensorClass::IRST &&
-                     curMissile && curMissile->sensorArray[0]->Type() == SensorClass::IRST &&
-                     thisPctRange > pctRange && thisPctRange > 0.0F
+                if (theMissile->sensorArray and theMissile->sensorArray[0]->Type() == SensorClass::IRST and 
+                     curMissile and curMissile->sensorArray[0]->Type() == SensorClass::IRST and 
+                     thisPctRange > pctRange and thisPctRange > 0.0F
                    )
                 {
                     pctRange = thisPctRange;
@@ -412,14 +412,14 @@ void DigitalBrain::WeaponSelection(void)
                 //we have a radar or radarhoming missile but this one has father range or
                 // outside 3nm and curmissile is a irmissile
                 else if (
-                    theMissile->sensorArray && theMissile->sensorArray[0]->Type() != SensorClass::IRST && !curMissile
-                    ||
-                    (curMissile &&
-                     (curMissile->sensorArray[0]->Type() == SensorClass::Radar ||
-                      curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming) &&
-                     thisPctRange > pctRange && thisPctRange > 0.0F)
-                    ||
-                    curMissile && curMissile->sensorArray[0]->Type() == SensorClass::IRST &&
+                    theMissile->sensorArray and theMissile->sensorArray[0]->Type() not_eq SensorClass::IRST and not curMissile
+                    or
+                    (curMissile and 
+                     (curMissile->sensorArray[0]->Type() == SensorClass::Radar or
+                      curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming) and 
+                     thisPctRange > pctRange and thisPctRange > 0.0F)
+                    or
+                    curMissile and curMissile->sensorArray[0]->Type() == SensorClass::IRST and 
                     targetPtr->localData->range > 3 * NM_TO_FT)
                 {
                     pctRange = thisPctRange;
@@ -428,8 +428,8 @@ void DigitalBrain::WeaponSelection(void)
                     curMissileNum     = self->Sms->curWpnNum;
                 }
                 //me123 pick a ir missile if no cur missile.
-                else if (!curMissile &&
-                         theMissile->sensorArray &&
+                else if ( not curMissile and 
+                         theMissile->sensorArray and 
                          theMissile->sensorArray[0]->Type() == SensorClass::IRST)
                 {
                     pctRange = thisPctRange;
@@ -453,25 +453,25 @@ void DigitalBrain::WeaponSelection(void)
         F4Assert(self->Sms->curWeapon);
     }
 
-    if (lastMissile && lastMissile->launchState == MissileClass::PreLaunch)
+    if (lastMissile and lastMissile->launchState == MissileClass::PreLaunch)
         lastMissile->SetTarget(NULL);
 
     // Guns only check
     // MODIFIED BY S.G. SO ACES ARE NOT SCARY CATS (A2A ABORTS)
-    // THE REAL A2A ABORT TAKES PLACE IN Separate.cpp (if (missionClass == AAMission && !IsSetATC(AceGunsEngage)) aaAbort = TRUE;) BUT THIS IS THE SOURCE OF THE PROBLEM
+    // THE REAL A2A ABORT TAKES PLACE IN Separate.cpp (if (missionClass == AAMission and not IsSetATC(AceGunsEngage)) aaAbort = TRUE;) BUT THIS IS THE SOURCE OF THE PROBLEM
     // Same as before (ie. ace and missile can't reach) but we adds more condition.
     // 1. Must be out of everything (maxAAWpnRange == 0)
     // 2. Range to target needs to be more than 7 NM (otherwise we're too close so we commit)
     // 3. There are less than 2 vehicles in our flight (ie, by ourself)
-    //   if (SkillLevel() == 4 && ((AircraftClass *)self)->Guns && !curMissile)
-    if (SkillLevel() == 4 && ((AircraftClass *)self)->Guns && !curMissile &&
-        maxAAWpnRange == 0.0f && targetData->range > 7.0f * NM_TO_FT && ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles() < 2)
+    //   if (SkillLevel() == 4 and ((AircraftClass *)self)->Guns and not curMissile)
+    if (SkillLevel() == 4 and ((AircraftClass *)self)->Guns and not curMissile and 
+        maxAAWpnRange == 0.0f and targetData->range > 7.0f * NM_TO_FT and ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles() < 2)
     {
         if (SimDriver.RunningCampaign())
         {
             ClearATCFlag(AceGunsEngage);
         }
-        else if (SimDriver.RunningTactical() && current_tactical_mission &&
+        else if (SimDriver.RunningTactical() and current_tactical_mission and 
                  current_tactical_mission->get_type() == tt_engagement)
         {
             ClearATCFlag(AceGunsEngage);

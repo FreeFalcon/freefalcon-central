@@ -20,10 +20,10 @@
 
 FalconTimingMessage::FalconTimingMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(TimingMsg, FalconEvent::CampaignThread, entityId, target, loopback)
 {
-    if (!target)
+    if ( not target)
         return;
 
-    ShiAssert(target->IsGame() && target->IsLocal());
+    ShiAssert(target->IsGame() and target->IsLocal());
 
     // MonoPrint ("TargetCompressionRatio %d\n", targetCompressionRatio);
 
@@ -31,7 +31,7 @@ FalconTimingMessage::FalconTimingMessage(VU_ID entityId, VuTargetEntity *target,
     dataBlock.targetTime = vuxGameTime;
     dataBlock.compressionRatio = (char)targetCompressionRatio;
 
-    if (gCompressTillTime && dataBlock.targetTime > gCompressTillTime)
+    if (gCompressTillTime and dataBlock.targetTime > gCompressTillTime)
     {
         if (vuxGameTime < gCompressTillTime)
         {
@@ -82,7 +82,7 @@ int FalconTimingMessage::Decode(VU_BYTE **buf, long *rem)
     FalconEvent::Decode(buf, rem);
     memcpychk(&dataBlock, buf, sizeof(dataBlock), rem);
 
-    if (!FalconLocalGame->IsLocal())
+    if ( not FalconLocalGame->IsLocal())
     {
         // MonoPrint
         // (
@@ -101,7 +101,7 @@ int FalconTimingMessage::Decode(VU_BYTE **buf, long *rem)
 
             diff = vuxTargetGameTime - dataBlock.targetTime;
 
-            if ((diff < -5000) || (diff > 5000))
+            if ((diff < -5000) or (diff > 5000))
             {
                 MonoPrint("Update vuxTargetGameTime %08x %d\n", dataBlock.targetTime, diff);
                 vuxTargetGameTime = dataBlock.targetTime;

@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -64,7 +64,7 @@ C_ScrollBar::C_ScrollBar() : C_Control()
     SliderRect_.right = 0;
     SliderRect_.bottom = 0;
 
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_SELECTABLE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
 }
 
 C_ScrollBar::C_ScrollBar(char **stream) : C_Control(stream)
@@ -139,7 +139,7 @@ void C_ScrollBar::Cleanup()
 
 void C_ScrollBar::SetBgImage(long ImageID)
 {
-    if (!BgImage_)
+    if ( not BgImage_)
     {
         BgImage_ = new O_Output;
         BgImage_->SetOwner(this);
@@ -299,7 +299,7 @@ void C_ScrollBar::CalcRanges()
             if (SY_ > MaxPos_)
                 SY_ = MaxPos_;
 
-            if (GetFlags() & C_BIT_USELINE)
+            if (GetFlags() bitand C_BIT_USELINE)
             {
                 BGX_ = GetW() / 2;
                 BGY_ = rect.top;
@@ -336,7 +336,7 @@ void C_ScrollBar::CalcRanges()
             if (SX_ > MaxPos_)
                 SX_ = MaxPos_;
 
-            if (GetFlags() & C_BIT_USELINE)
+            if (GetFlags() bitand C_BIT_USELINE)
             {
                 BGY_ = rect.left;
                 BGX_ = GetH() / 2;
@@ -357,7 +357,7 @@ void C_ScrollBar::UpdatePosition()
     {
         vl = (VirtualH_ + Parent_->ClientArea_[GetClient()].bottom - Parent_->ClientArea_[GetClient()].top);
 
-        if (!vl) vl = 1;
+        if ( not vl) vl = 1;
 
         SY_ = ((Parent_->VY_[GetClient()] - Parent_->ClientArea_[GetClient()].top) * (MaxPos_ - MinPos_) / vl) + MinPos_;
 
@@ -371,7 +371,7 @@ void C_ScrollBar::UpdatePosition()
     {
         vl = (VirtualW_ + Parent_->ClientArea_[GetClient()].right - Parent_->ClientArea_[GetClient()].left);
 
-        if (!vl) vl = 1;
+        if ( not vl) vl = 1;
 
         SX_ = ((Parent_->VX_[GetClient()] - Parent_->ClientArea_[GetClient()].left) * (MaxPos_ - MinPos_) / vl) + MinPos_;
 
@@ -385,15 +385,15 @@ void C_ScrollBar::UpdatePosition()
 
 long C_ScrollBar::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
         return(0);
 
-    if (relX < GetX() || relX > (GetX() + GetW()) || relY < GetY() || relY > (GetY() + GetH()))
+    if (relX < GetX() or relX > (GetX() + GetW()) or relY < GetY() or relY > (GetY() + GetH()))
         return(0);
 
     if (Minus_)
     {
-        ControlPressed_ = static_cast<short>(Minus_->CheckHotSpots(relX, relY)); //!
+        ControlPressed_ = static_cast<short>(Minus_->CheckHotSpots(relX, relY)); 
 
         if (ControlPressed_)
         {
@@ -404,7 +404,7 @@ long C_ScrollBar::CheckHotSpots(long relX, long relY)
 
     if (Plus_)
     {
-        ControlPressed_ = static_cast<short>(Plus_->CheckHotSpots(relX, relY)); //!
+        ControlPressed_ = static_cast<short>(Plus_->CheckHotSpots(relX, relY)); 
 
         if (ControlPressed_)
         {
@@ -469,7 +469,7 @@ long C_ScrollBar::CheckHotSpots(long relX, long relY)
 
 BOOL C_ScrollBar::Process(long, short HitType)
 {
-    if (!Ready()) return(FALSE);
+    if ( not Ready()) return(FALSE);
 
     gSoundMgr->PlaySound(GetSound(HitType));
 
@@ -491,7 +491,7 @@ BOOL C_ScrollBar::Process(long, short HitType)
     switch (ControlPressed_)
     {
         case 1: // Bar Minus side
-            if (HitType != C_TYPE_LMOUSEUP)
+            if (HitType not_eq C_TYPE_LMOUSEUP)
                 break;
 
             switch (GetType())
@@ -522,7 +522,7 @@ BOOL C_ScrollBar::Process(long, short HitType)
             break;
 
         case 2: // Bar Plus Side
-            if (HitType != C_TYPE_LMOUSEUP)
+            if (HitType not_eq C_TYPE_LMOUSEUP)
                 break;
 
             switch (GetType())
@@ -558,7 +558,7 @@ BOOL C_ScrollBar::Process(long, short HitType)
         case 4: // Minus Button
             Minus_->Process(4, HitType);
 
-            if (HitType != C_TYPE_LMOUSEUP && HitType != C_TYPE_REPEAT)
+            if (HitType not_eq C_TYPE_LMOUSEUP and HitType not_eq C_TYPE_REPEAT)
                 break;
 
             switch (GetType())
@@ -591,7 +591,7 @@ BOOL C_ScrollBar::Process(long, short HitType)
         case 5: // Plus Button
             Plus_->Process(5, HitType);
 
-            if (HitType != C_TYPE_LMOUSEUP && HitType != C_TYPE_REPEAT)
+            if (HitType not_eq C_TYPE_LMOUSEUP and HitType not_eq C_TYPE_REPEAT)
                 break;
 
             switch (GetType())
@@ -647,7 +647,7 @@ BOOL C_ScrollBar::Dragable(long)
 
 void C_ScrollBar::Refresh()
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -657,15 +657,15 @@ void C_ScrollBar::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     UI95_RECT s, rect;
 
-    if (!Ready()) return;
+    if ( not Ready()) return;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
-    if (GetFlags() & C_BIT_USEBGIMAGE)
+    if (GetFlags() bitand C_BIT_USEBGIMAGE)
         BgImage_->Draw(surface, cliprect);
 
-    if (GetFlags() & C_BIT_USELINE)
+    if (GetFlags() bitand C_BIT_USELINE)
     {
         if (GetType() == C_TYPE_HORIZONTAL)
             Parent_->DrawHLine(surface, LineColor_, GetX() + BGX_, GetY() + BGY_, BGW_, C_BIT_ABSOLUTE, 0, cliprect);
@@ -692,10 +692,10 @@ void C_ScrollBar::Draw(SCREEN *surface, UI95_RECT *cliprect)
         rect.right = rect.left + Slider_->Header->w;
         rect.bottom = rect.top + Slider_->Header->h;
 
-        if (!Parent_->ClipToArea(&s, &rect, &Parent_->Area_))
+        if ( not Parent_->ClipToArea(&s, &rect, &Parent_->Area_))
             return;
 
-        if (!Parent_->ClipToArea(&s, &rect, cliprect))
+        if ( not Parent_->ClipToArea(&s, &rect, cliprect))
             return;
 
         rect.left += Parent_->GetX();
@@ -706,7 +706,7 @@ void C_ScrollBar::Draw(SCREEN *surface, UI95_RECT *cliprect)
         Slider_->Blit(surface, s.left, s.top, s.right - s.left, s.bottom - s.top, rect.left, rect.top);
     }
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 
@@ -715,7 +715,7 @@ BOOL C_ScrollBar::Wheel(int increment, WORD MouseX, WORD MouseY)
     // long x,y;
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
     {
         return(FALSE);
     }
@@ -771,7 +771,7 @@ BOOL C_ScrollBar::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
     long x, y;
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return(FALSE);
 
     Leave = UI_Enter(Parent_);
@@ -894,7 +894,7 @@ void C_ScrollBar::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CSCR_SETCOLORS:
-            SetColors(P[0] | (P[1] << 8) | (P[2] << 16), P[3] | (P[4] << 8) | (P[5] << 16), P[6] | (P[7] << 8) | (P[8] << 16));
+            SetColors(P[0] bitor (P[1] << 8) bitor (P[2] << 16), P[3] bitor (P[4] << 8) bitor (P[5] << 16), P[6] bitor (P[7] << 8) bitor (P[8] << 16));
             break;
 
         case CSCR_SETBUTTONIMAGES:
@@ -902,13 +902,13 @@ void C_ScrollBar::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CSCR_SETDISTANCE:
-            if (P[0] >= 1 && P[0] < 50)
+            if (P[0] >= 1 and P[0] < 50)
                 SetDistance(P[0]);
 
             break;
 
         case CSCR_SETBGLINE:
-            SetLineColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetLineColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             SetFlagBitOn(C_BIT_USELINE);
             break;
     }

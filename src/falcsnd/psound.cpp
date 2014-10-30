@@ -1,3 +1,4 @@
+#include <cISO646>
 #include <windows.h>
 #include <mmreg.h>
 #include <process.h>
@@ -78,7 +79,7 @@ CSoundMgr::CSoundMgr()
     Ds3dListener = NULL;
     // to notify the thread thigns have changed
     signalEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-    ShiAssert(signalEvent != NULL);
+    ShiAssert(signalEvent not_eq NULL);
     CamPos.x = 0;
     CamPos.y = 0;
     CamPos.z = 0;
@@ -95,7 +96,7 @@ CSoundMgr::~CSoundMgr()
     signalEvent = NULL;
 #ifdef USE_SH_POOLS
 
-    if (gSoundMemPool != NULL)
+    if (gSoundMemPool not_eq NULL)
     {
         MemPoolFree(gSoundMemPool);
         gSoundMemPool = NULL;
@@ -121,12 +122,12 @@ BOOL CSoundMgr::InstallDSound(HWND hwnd, DWORD Priority, WAVEFORMATEX *fmt)
 
     if (gSoundDriver)
     {
-        if (DSound != NULL)
+        if (DSound not_eq NULL)
             return(FALSE);
 
         res = DirectSoundCreate(NULL, &DSound, NULL);
 
-        if (res != DS_OK)
+        if (res not_eq DS_OK)
         {
             DSoundCheck(res);
             return(FALSE);
@@ -134,7 +135,7 @@ BOOL CSoundMgr::InstallDSound(HWND hwnd, DWORD Priority, WAVEFORMATEX *fmt)
 
         res = DSound->SetCooperativeLevel(hwnd, DSSCL_EXCLUSIVE);
 
-        if (res != DS_OK)
+        if (res not_eq DS_OK)
         {
             DSound->Release();
             DSound = NULL;
@@ -145,11 +146,11 @@ BOOL CSoundMgr::InstallDSound(HWND hwnd, DWORD Priority, WAVEFORMATEX *fmt)
         // Set up DSBUFFERDESC structure.
         memset(&dsbdesc, 0, sizeof(DSBUFFERDESC)); // Zero it out.
         dsbdesc.dwSize = sizeof(DSBUFFERDESC);
-        dsbdesc.dwFlags = DSBCAPS_PRIMARYBUFFER | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN;
+        dsbdesc.dwFlags = DSBCAPS_PRIMARYBUFFER bitor DSBCAPS_CTRLVOLUME bitor DSBCAPS_CTRLPAN;
 
         if (g_bUse3dSound)
         {
-            dsbdesc.dwFlags |= DSBCAPS_CTRL3D | DSBCAPS_MUTE3DATMAXDISTANCE;
+            dsbdesc.dwFlags or_eq DSBCAPS_CTRL3D bitor DSBCAPS_MUTE3DATMAXDISTANCE;
         }
 
         // Buffer size is determined by sound hardware.
@@ -158,7 +159,7 @@ BOOL CSoundMgr::InstallDSound(HWND hwnd, DWORD Priority, WAVEFORMATEX *fmt)
 
         res = DSound->CreateSoundBuffer(&dsbdesc, &Primary, NULL);
 
-        if (res != DS_OK)  // JPO - no primary buffer, must mean no sound
+        if (res not_eq DS_OK)  // JPO - no primary buffer, must mean no sound
         {
             DSoundCheck(res);
             DSound->Release();
@@ -193,21 +194,21 @@ BOOL CSoundMgr::InstallDSound(HWND hwnd, DWORD Priority, WAVEFORMATEX *fmt)
         }
 
 
-        if (!F4IsBadCodePtr((FARPROC) Primary)) // JB 010305 CTD
+        if ( not F4IsBadCodePtr((FARPROC) Primary)) // JB 010305 CTD
             res = Primary->SetFormat(fmt);
 
-        if (res != DS_OK)
+        if (res not_eq DS_OK)
             DSoundCheck(res);
 
         /*
          memset(&dscaps,0,sizeof(DSCAPS));
          dscaps.dwSize=sizeof(DSCAPS);
          res=DSound->GetCaps(&dscaps);
-         if(res != DS_OK)
+         if(res not_eq DS_OK)
          DSoundCheck(res);
 
          res=lpNewDSBuf->GetFormat(fmt,sizeof(WAVEFORMATEX),&size);
-         if(res != DS_OK)
+         if(res not_eq DS_OK)
          DSoundCheck(res);
 
          DSound->GetSpeakerConfig(&Speakers);
@@ -235,9 +236,9 @@ BOOL CSoundMgr::InstallDSound(HWND hwnd, DWORD Priority, WAVEFORMATEX *fmt)
         res = DSound->SetCooperativeLevel(hwnd, Priority);
 
         //Primary->Play(0,0,DSBPLAY_LOOPING);
-        if (res != DS_OK)
+        if (res not_eq DS_OK)
         {
-            if (!F4IsBadCodePtr((FARPROC) Primary)) // JB 010305 CTD
+            if ( not F4IsBadCodePtr((FARPROC) Primary)) // JB 010305 CTD
                 Primary->Release();
 
             Primary = NULL;
@@ -256,12 +257,12 @@ BOOL CSoundMgr::InstallDSound(HWND hwnd, DWORD Priority, WAVEFORMATEX *fmt)
 
 void CSoundMgr::RemoveDSound()
 {
-    if (this != NULL)
+    if (this not_eq NULL)
     {
         if (DSound == NULL)
             return;
 
-        if (StreamList != NULL)
+        if (StreamList not_eq NULL)
         {
             RemoveAllStreams();
         }
@@ -277,7 +278,7 @@ void CSoundMgr::RemoveDSound()
             CloseHandle(StreamThreadID);
         }
 
-        if (SampleList != NULL)
+        if (SampleList not_eq NULL)
         {
             RemoveAllSamples();
             SampleList = NULL;
@@ -322,7 +323,7 @@ long CSoundMgr::FillRiffInfo(char *memory, RIFF_FILE *riff)
     char *ptr, *hdr;
     long size, datasize;
 
-    if (!memory)
+    if ( not memory)
         return(0);
 
     ptr = memory;
@@ -339,22 +340,22 @@ long CSoundMgr::FillRiffInfo(char *memory, RIFF_FILE *riff)
 
     riff->data = ptr;
 
-    if (ptr && !strncmp(ptr, "WAVE", 4))
+    if (ptr and not strncmp(ptr, "WAVE", 4))
     {
         ptr += 4;
 
-        while (ptr && !riff->Start && ptr < (riff->data + datasize))
+        while (ptr and not riff->Start and ptr < (riff->data + datasize))
         {
             hdr = ptr;
             ptr += 4;
             size = *(long*)ptr;
             ptr += 4;
 
-            if (!strncmp(hdr, "fmt ", 4))
+            if ( not strncmp(hdr, "fmt ", 4))
                 riff->Format = (WAVEFORMATEX*)ptr;
-            else if (!strncmp(hdr, "fact", 4))
+            else if ( not strncmp(hdr, "fact", 4))
                 riff->NumSamples = *(long*)ptr;
-            else if (!strncmp(hdr, "data", 4))
+            else if ( not strncmp(hdr, "data", 4))
             {
                 riff->Start = ptr;
                 riff->SampleLen = size;
@@ -374,7 +375,7 @@ long CSoundMgr::FillRiffInfo(char *memory, RIFF_FILE *riff)
 // and Handles ALL types
 // doesn't handle anything special...(because I don't know how
 // to handle the special stuff, it does however skip it)
-// but can load _PCM & _ADPCM format files properly
+// but can load _PCM bitand _ADPCM format files properly
 //
 RIFF_FILE *CSoundMgr::LoadRiff(char *filename)
 {
@@ -386,7 +387,7 @@ RIFF_FILE *CSoundMgr::LoadRiff(char *filename)
 
     fp = fopen(filename, "rb");
 
-    if (!fp)
+    if ( not fp)
         return(NULL);
 
     fread(buffer, 4, 1, fp);
@@ -414,22 +415,22 @@ RIFF_FILE *CSoundMgr::LoadRiff(char *filename)
 
     ptr = filedata->data;
 
-    if (ptr && !strncmp(ptr, "WAVE", 4))
+    if (ptr and not strncmp(ptr, "WAVE", 4))
     {
         ptr += 4;
 
-        while (ptr && !filedata->Start && ptr < (filedata->data + datasize))
+        while (ptr and not filedata->Start and ptr < (filedata->data + datasize))
         {
             hdr = ptr;
             ptr += 4;
             size = *(long*)ptr;
             ptr += 4;
 
-            if (!strncmp(hdr, "fmt ", 4))
+            if ( not strncmp(hdr, "fmt ", 4))
                 filedata->Format = (WAVEFORMATEX*)ptr;
-            else if (!strncmp(hdr, "fact", 4))
+            else if ( not strncmp(hdr, "fact", 4))
                 filedata->NumSamples = *(long*)ptr;
-            else if (!strncmp(hdr, "data", 4))
+            else if ( not strncmp(hdr, "data", 4))
             {
                 filedata->Start = ptr;
                 filedata->SampleLen = size;
@@ -477,7 +478,7 @@ long CSoundMgr::SkipRiffHeader(FILE *fp)
     bytesread += 4 + sizeof(long);
     totalsize -= 8;
 
-    while (totalsize > 0 && strncmp(buffer, "data", 4))
+    while (totalsize > 0 and strncmp(buffer, "data", 4))
     {
         while (size > 256)
         {
@@ -496,7 +497,7 @@ long CSoundMgr::SkipRiffHeader(FILE *fp)
         totalsize -= 8;
     }
 
-    if (!strncmp(buffer, "data", 4))
+    if ( not strncmp(buffer, "data", 4))
         return(bytesread);
 
     return(0);
@@ -530,7 +531,7 @@ long CSoundMgr::SkipRiffHeader(HANDLE fp)
     bytesread += 4 + sizeof(long);
     totalsize -= 8;
 
-    while (totalsize > 0 && strncmp(buffer, "data", 4))
+    while (totalsize > 0 and strncmp(buffer, "data", 4))
     {
         while (size > 256)
         {
@@ -549,7 +550,7 @@ long CSoundMgr::SkipRiffHeader(HANDLE fp)
         totalsize -= 8;
     }
 
-    if (!strncmp(buffer, "data", 4))
+    if ( not strncmp(buffer, "data", 4))
         return(bytesread);
 
     return(0);
@@ -601,16 +602,16 @@ long CSoundMgr::LoadRiffFormat(HANDLE fp, WAVEFORMATEX *Format, long *HeaderSize
     ReadFile(fp, &size, sizeof(long), &br, NULL);
     bytesread += br;
 
-    while (bytesread < totalsize && strncmp(buffer, "data", 4))
+    while (bytesread < totalsize and strncmp(buffer, "data", 4))
     {
-        if (!strncmp(buffer, "fmt ", 4))
+        if ( not strncmp(buffer, "fmt ", 4))
         {
             ReadFile(fp, Format, min(sizeof(WAVEFORMATEX), size), &br, NULL);
             size -= br;
             bytesread += br;
         }
 
-        if (!strncmp(buffer, "fact", 4))
+        if ( not strncmp(buffer, "fact", 4))
         {
             ReadFile(fp, SampleCount, sizeof(long), &br, NULL);
             size -= br;
@@ -667,7 +668,7 @@ long CSoundMgr::LoadWaveFile(char *Filename, long Flags, SFX_DEF_ENTRY *sfx)
 
         if (newsnd)
         {
-            if (!newsnd->Format)
+            if ( not newsnd->Format)
             {
                 if (newsnd->data)
                     delete newsnd->data;
@@ -688,23 +689,23 @@ long CSoundMgr::LoadWaveFile(char *Filename, long Flags, SFX_DEF_ENTRY *sfx)
                                       DSBCAPS_GETCURRENTPOSITION2;
 
                     if (g_bOldSoundAlg == false)
-                        dsbdesc.dwFlags |= DSBCAPS_CTRLPOSITIONNOTIFY;
+                        dsbdesc.dwFlags or_eq DSBCAPS_CTRLPOSITIONNOTIFY;
 
-                    if (g_bUse3dSound && (sfx->flags & SFX_FLAGS_3D))
+                    if (g_bUse3dSound and (sfx->flags bitand SFX_FLAGS_3D))
                     {
-                        dsbdesc.dwFlags |= DSBCAPS_CTRL3D | DSBCAPS_MUTE3DATMAXDISTANCE;
+                        dsbdesc.dwFlags or_eq DSBCAPS_CTRL3D bitor DSBCAPS_MUTE3DATMAXDISTANCE;
                     }
                     else
                     {
-                        if (sfx->flags & SFX_FLAGS_PAN)
-                            dsbdesc.dwFlags |= DSBCAPS_CTRLPAN;
+                        if (sfx->flags bitand SFX_FLAGS_PAN)
+                            dsbdesc.dwFlags or_eq DSBCAPS_CTRLPAN;
                     }
 
-                    if (sfx->flags & (SFX_FLAGS_FREQ | SFX_POS_EXTERN))  // MLR 12/22/2003 - External sounds must have the Freq cap so doppler effects can be applied.
-                        dsbdesc.dwFlags |= DSBCAPS_CTRLFREQUENCY;
+                    if (sfx->flags bitand (SFX_FLAGS_FREQ bitor SFX_POS_EXTERN))  // MLR 12/22/2003 - External sounds must have the Freq cap so doppler effects can be applied.
+                        dsbdesc.dwFlags or_eq DSBCAPS_CTRLFREQUENCY;
 
-                    if ((sfx->flags & SFX_FLAGS_HIGH) == 0) // low priority sound
-                        dsbdesc.dwFlags |= DSBCAPS_LOCDEFER;
+                    if ((sfx->flags bitand SFX_FLAGS_HIGH) == 0) // low priority sound
+                        dsbdesc.dwFlags or_eq DSBCAPS_LOCDEFER;
 
 
                 }
@@ -717,7 +718,7 @@ long CSoundMgr::LoadWaveFile(char *Filename, long Flags, SFX_DEF_ENTRY *sfx)
                                         DSBCAPS_GETCURRENTPOSITION2 ; // Need default controls (pan, volume, frequency).
 
                     if (g_bOldSoundAlg == false)
-                        dsbdesc.dwFlags |= DSBCAPS_CTRLPOSITIONNOTIFY;
+                        dsbdesc.dwFlags or_eq DSBCAPS_CTRLPOSITIONNOTIFY;
                 }
 
                 dsbdesc.dwBufferBytes = newsnd->SampleLen;
@@ -769,12 +770,12 @@ long CSoundMgr::AddRawSample(WAVEFORMATEX *Header, char *Data, long size, long F
         // Set up DSBUFFERDESC structure.
         memset(&dsbdesc, 0, sizeof(DSBUFFERDESC)); // Zero it out.
         dsbdesc.dwSize = sizeof(DSBUFFERDESC);
-        dsbdesc.dwFlags = DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME |
+        dsbdesc.dwFlags = DSBCAPS_CTRLPAN bitor DSBCAPS_CTRLVOLUME |
                           DSBCAPS_CTRLFREQUENCY |
                           DSBCAPS_GETCURRENTPOSITION2 ; // Need default controls (pan, volume, frequency).
 
         if (g_bOldSoundAlg == false)
-            dsbdesc.dwFlags |= DSBCAPS_CTRLPOSITIONNOTIFY;
+            dsbdesc.dwFlags or_eq DSBCAPS_CTRLPOSITIONNOTIFY;
 
         dsbdesc.dwBufferBytes = size;
         dsbdesc.lpwfxFormat = Header;
@@ -807,7 +808,7 @@ void CSoundMgr::RemoveSample(long ID)
 
         Cur = SampleList;
 
-        while (Cur != NULL)
+        while (Cur not_eq NULL)
         {
             if (Cur->ID == ID)
             {
@@ -821,7 +822,7 @@ void CSoundMgr::RemoveSample(long ID)
 
         Last = Cur;
 
-        while (Cur != NULL)
+        while (Cur not_eq NULL)
         {
             if (Cur->ID == ID)
             {
@@ -847,7 +848,7 @@ void CSoundMgr::RemoveDuplicateSample(long ID)
 
         Cur = DuplicateList;
 
-        while (Cur != NULL)
+        while (Cur not_eq NULL)
         {
             if (Cur->ID == ID)
             {
@@ -861,7 +862,7 @@ void CSoundMgr::RemoveDuplicateSample(long ID)
 
         Last = Cur;
 
-        while (Cur != NULL)
+        while (Cur not_eq NULL)
         {
             if (Cur->ID == ID)
             {
@@ -887,7 +888,7 @@ void CSoundMgr::RemoveAllSamples()
 
     Cur = SampleList;
 
-    while (Cur != NULL)
+    while (Cur not_eq NULL)
     {
         Last = Cur;
         Cur = Cur->Next;
@@ -903,7 +904,7 @@ void CSoundMgr::RemoveAllSamples()
 
     Cur = DuplicateList;
 
-    while (Cur != NULL)
+    while (Cur not_eq NULL)
     {
         Last = Cur;
         Cur = Cur->Next;
@@ -926,12 +927,12 @@ BOOL CSoundMgr::PlaySample(long ID, long Flags)
         {
             Sample = FindSample(ID);
 
-            if (Sample != NULL)
+            if (Sample not_eq NULL)
             {
                 /*
-                if(IsSamplePlaying(ID,0) && !(Flags & SND_OVERRIDE))
+                if(IsSamplePlaying(ID,0) and not (Flags bitand SND_OVERRIDE))
                 {
-                 if(Sample->Flags & SND_EXCLUSIVE)
+                 if(Sample->Flags bitand SND_EXCLUSIVE)
                  return(FALSE);
 
                  //Sample=AddDuplicateSample(Sample);
@@ -943,7 +944,7 @@ BOOL CSoundMgr::PlaySample(long ID, long Flags)
                  {
                  Sample->Buf[i].DSoundBuffer->SetCurrentPosition(0);
 
-                 if(Flags & SND_LOOP_SAMPLE)
+                 if(Flags bitand SND_LOOP_SAMPLE)
                  hr = Sample->Buf[i].DSoundBuffer->Play(0,0,DSBPLAY_LOOPING);
                  else
                  hr = Sample->Buf[i].DSoundBuffer->Play(0,0,0);
@@ -956,7 +957,7 @@ BOOL CSoundMgr::PlaySample(long ID, long Flags)
                 }
                 else */
                 {
-                    //if(Flags & SND_EXCLUSIVE)
+                    //if(Flags bitand SND_EXCLUSIVE)
                     // Sample->Flags = SND_EXCLUSIVE;
                     // only play 1st sample
                     int i = 0; //for(int i=0;i<Sample->DS3DBufferCount;i++)
@@ -965,8 +966,8 @@ BOOL CSoundMgr::PlaySample(long ID, long Flags)
                         {
                             Sample->Buf[i].DSoundBuffer->SetCurrentPosition(0);
 
-                            //if(Flags & SND_LOOP_SAMPLE)
-                            if (Flags & SFX_POS_LOOPED)
+                            //if(Flags bitand SND_LOOP_SAMPLE)
+                            if (Flags bitand SFX_POS_LOOPED)
                                 hr = Sample->Buf[i].DSoundBuffer->Play(0, 0, DSBPLAY_LOOPING);
                             else
                                 hr = Sample->Buf[i].DSoundBuffer->Play(0, 0, 0);
@@ -995,7 +996,7 @@ BOOL CSoundMgr::StopSample(long ID)
         {
             Sample = FindSample(ID);
 
-            if (Sample != NULL)
+            if (Sample not_eq NULL)
             {
                 for (int i = 0; i < Sample->DS3DBufferCount; i++)
                 {
@@ -1017,7 +1018,7 @@ BOOL CSoundMgr::StopAllSamples(void)
 
     Cur = SampleList;
 
-    while (Cur != NULL)
+    while (Cur not_eq NULL)
     {
         StopSample(Cur->ID);
         Cur = Cur->Next;
@@ -1025,7 +1026,7 @@ BOOL CSoundMgr::StopAllSamples(void)
 
     Cur = DuplicateList;
 
-    while (Cur != NULL)
+    while (Cur not_eq NULL)
     {
         StopSample(Cur->ID);
         Cur = Cur->Next;
@@ -1045,7 +1046,7 @@ BOOL CSoundMgr::SetSamplePitch(long ID, float NewPitch)
      if(DSound)
      {
      Sample=FindSample(ID);
-     if(Sample != NULL)
+     if(Sample not_eq NULL)
      {
      Frequency=(long)(Sample->Frequency * NewPitch);
             Frequency = min ( max (DSBFREQUENCY_MIN, Frequency), DSBFREQUENCY_MAX);
@@ -1070,7 +1071,7 @@ BOOL CSoundMgr::IsSamplePlaying(long ID, int UID)
         {
             Sample = FindSample(ID);
 
-            if (Sample != NULL)
+            if (Sample not_eq NULL)
             {
                 int i;
 
@@ -1080,7 +1081,7 @@ BOOL CSoundMgr::IsSamplePlaying(long ID, int UID)
                     {
                         Sample->Buf[i].DSoundBuffer->GetStatus(&status);
 
-                        if (status & DSBSTATUS_PLAYING)
+                        if (status bitand DSBSTATUS_PLAYING)
                             return(TRUE);
                     }
                 }
@@ -1101,7 +1102,7 @@ int CSoundMgr::GetSampleVolume(long ID)
         {
             Sample = FindSample(ID);
 
-            if (Sample != NULL)
+            if (Sample not_eq NULL)
                 Sample->Buf[0].DSoundBuffer->GetVolume(&Volume);
         }
     }
@@ -1120,13 +1121,13 @@ BOOL CSoundMgr::SetSampleVolume(long ID, long Volume)
         {
             Sample = FindSample(ID);
 
-            if (Sample != NULL)
+            if (Sample not_eq NULL)
             {
                 //Sample->Volume=Volume;
                 //if (Sample->is3d == FALSE) {
                 hr = Sample->Buf[0].DSoundBuffer->SetVolume(Volume);
 
-                if (hr != DS_OK)
+                if (hr not_eq DS_OK)
                     DSoundCheck(hr);
 
                 //}
@@ -1145,17 +1146,17 @@ BOOL CSoundMgr::SetSamplePosition(long ID, float x, float y, float z, float vx, 
     SoundList * Sample;
     HRESULT hr;
 
-    if (gSoundDriver && DSound)
+    if (gSoundDriver and DSound)
     {
         Sample = FindSample(ID);
 
-        if (Sample != NULL && Sample->DSound3dBuffer)
+        if (Sample not_eq NULL and Sample->DSound3dBuffer)
         {
             if (Sample->is3d == FALSE)
             {
                 hr = Sample->DSound3dBuffer->SetMode(DS3DMODE_NORMAL, DS3D_DEFERRED);
 
-                if (hr != DS_OK)
+                if (hr not_eq DS_OK)
                     DSoundCheck(hr);
             }
 
@@ -1176,7 +1177,7 @@ BOOL CSoundMgr::SetSamplePosition(long ID, float x, float y, float z, float vx, 
                 }
             }
 
-            if (hr != DS_OK)
+            if (hr not_eq DS_OK)
                 DSoundCheck(hr);
 
             return(TRUE);
@@ -1229,7 +1230,7 @@ BOOL CSoundMgr::SetSamplePosition(long ID, float x, float y, float z, float pitc
     {
 #endif
 
-        if (gSoundDriver && DSound)
+        if (gSoundDriver and DSound)
         {
             if (Sample = FindSample(ID))
             {
@@ -1243,8 +1244,8 @@ BOOL CSoundMgr::SetSamplePosition(long ID, float x, float y, float z, float pitc
 
 
                 // we have to handle looped and non looped sounds a little differently
-                //if(Sample->Flags & SND_LOOP_SAMPLE)
-                if (Sample->Flags & SFX_POS_LOOPED)
+                //if(Sample->Flags bitand SND_LOOP_SAMPLE)
+                if (Sample->Flags bitand SFX_POS_LOOPED)
                 {
                     for (i = 0; i < Sample->DS3DBufferCount; i++)
                     {
@@ -1273,7 +1274,7 @@ BOOL CSoundMgr::SetSamplePosition(long ID, float x, float y, float z, float pitc
                         }
                     }
 
-                    if (!rv) // didn't match a uid
+                    if ( not rv) // didn't match a uid
                     {
                         int i, best = -1;
                         float  bestdist = (float)0;
@@ -1377,7 +1378,7 @@ BOOL CSoundMgr::SetSamplePosition(long ID, float x, float y, float z, float pitc
 
 /**************************************************************
  This assigns the buffered sound calls to the DSoundBuffers,
- Plays & Stops the buffers as needed and marks the buffers as
+ Plays bitand Stops the buffers as needed and marks the buffers as
  unused for the next update.
 ***************************************************************/
 void CSoundMgr::AssignSamples(void)
@@ -1403,7 +1404,7 @@ void CSoundMgr::AssignSamples(void)
         MonoPrint("AssignSamples()=========================================\n");
 #endif
 
-        if (gSoundDriver && DSound)
+        if (gSoundDriver and DSound)
         {
             S = SampleList;
 
@@ -1419,7 +1420,7 @@ void CSoundMgr::AssignSamples(void)
                             if (S->Buf[i].distsq >= 0)
                             {
 #ifdef SNDLOG
-                                fprintf(fp, "  Sample ID(%d %s) Buf[%d]  xyz(%.4f %.4f %.4f) | vxyz(%.4f %.4f %.4f) | Pitch(%f) | Vol(%.4f) | UID(%d) | Flags(%08x)\n",
+                                fprintf(fp, "  Sample ID(%d %s) Buf[%d]  xyz(%.4f %.4f %.4f) bitor vxyz(%.4f %.4f %.4f) bitor Pitch(%f) bitor Vol(%.4f) bitor UID(%d) bitor Flags(%08x)\n",
                                         S->ID,
                                         (S->Sfx ? S->Sfx->fileName : "none"),
                                         i,
@@ -1444,8 +1445,8 @@ void CSoundMgr::AssignSamples(void)
 
 #ifdef CUSTOM_DOPPLER
 
-                                if (g_bEnableDopplerSound &&
-                                    S->Flags & SFX_POS_EXTERN)
+                                if (g_bEnableDopplerSound and 
+                                    S->Flags bitand SFX_POS_EXTERN)
                                 {
                                     float d1, d2, xx, yy, zz, m;
 
@@ -1463,7 +1464,7 @@ void CSoundMgr::AssignSamples(void)
 
                                     m = ((d1 - d2) / (1100)) * g_fSoundDopplerFactor;
 
-                                    if (S->Flags & SFX_FLAGS_REVDOP)
+                                    if (S->Flags bitand SFX_FLAGS_REVDOP)
                                         m = -m;
 
                                     // constrain to +/- mach 1
@@ -1495,15 +1496,15 @@ void CSoundMgr::AssignSamples(void)
 #endif
 
 
-                                if (S->Buf[i].DSound3dBuffer && S->Buf[i].Is3d)
+                                if (S->Buf[i].DSound3dBuffer and S->Buf[i].Is3d)
                                 {
                                     // sound is 3d
                                     S->Buf[i].DSound3dBuffer->SetMode(DS3DMODE_NORMAL, DS3D_DEFERRED);
 #define DISTEFF_THRESHOLD (100 * 100)
 
-                                    if (g_bSoundDistanceEffect                &&
-                                        S->Buf[i].distsq > DISTEFF_THRESHOLD   &&
-                                        S->Flags & SFX_POS_LOOPED)  // MLR 12/3/2003 - Only applied to looping sounds
+                                    if (g_bSoundDistanceEffect                and 
+                                        S->Buf[i].distsq > DISTEFF_THRESHOLD   and 
+                                        S->Flags bitand SFX_POS_LOOPED)  // MLR 12/3/2003 - Only applied to looping sounds
                                     {
                                         // sounds lag behind high speed objects
                                         // only applied to external sounds
@@ -1528,7 +1529,7 @@ void CSoundMgr::AssignSamples(void)
 
                                     if (g_bEnableDopplerSound)
                                     {
-                                        if (S->Flags & SFX_FLAGS_REVDOP)
+                                        if (S->Flags bitand SFX_FLAGS_REVDOP)
                                         {
                                             S->Buf[i].DSound3dBuffer->SetVelocity(-S->Buf[i].vx, -S->Buf[i].vy, -S->Buf[i].vz, DS3D_DEFERRED);
                                         }
@@ -1552,7 +1553,7 @@ void CSoundMgr::AssignSamples(void)
                                     }
 
                                     // MLR 12/4/2003 - We shouldn't be messing with internal volume sounds
-                                    if (S->Flags & SFX_POS_EXTERN &&
+                                    if (S->Flags bitand SFX_POS_EXTERN and 
                                         S->Buf[i].Is3d)
                                     {
                                         // we're here because there's on 3d buffer allocated.
@@ -1561,7 +1562,7 @@ void CSoundMgr::AssignSamples(void)
 
                                         float v;
 
-                                        // scale v from 0 to 1 between min & max dist
+                                        // scale v from 0 to 1 between min bitand max dist
                                         v = (S->Buf[i].distsq - S->Sfx->min3ddist) / (S->Sfx->maxDistSq - S->Sfx->min3ddist);
 
                                         // clamp result
@@ -1604,7 +1605,7 @@ void CSoundMgr::AssignSamples(void)
                                 long Frequency;
 
                                 // set up dsoundbuffer
-                                if (S->Flags & SFX_FLAGS_FREQ)
+                                if (S->Flags bitand SFX_FLAGS_FREQ)
                                 {
                                     Frequency = (long)(S->Frequency * S->Buf[i].pitch);
 
@@ -1617,7 +1618,7 @@ void CSoundMgr::AssignSamples(void)
                                 }
 
                                 // Play the sample
-                                if (S->Flags & SFX_POS_LOOPED)
+                                if (S->Flags bitand SFX_POS_LOOPED)
                                 {
 #ifdef SNDLOG
                                     fprintf(fp, "  Playing Looped\n");
@@ -1627,7 +1628,7 @@ void CSoundMgr::AssignSamples(void)
                                     MonoPrint("    Playing Looped - Vol:%f  Freq:%f", S->Buf[i].vol, Frequency);
 #endif
 
-                                    S->Buf[i].DSoundBuffer->SetFrequency(Frequency); // MLR 12/7/2003 - The freq & vol code was moved here
+                                    S->Buf[i].DSoundBuffer->SetFrequency(Frequency); // MLR 12/7/2003 - The freq bitand vol code was moved here
                                     S->Buf[i].DSoundBuffer->SetVolume((long)S->Buf[i].vol);
                                     S->Buf[i].DSoundBuffer->Play(0, 0, DSBPLAY_LOOPING);
                                     S->Buf[i].distsq = -1; // mark buffer as unused for the next go around.
@@ -1635,7 +1636,7 @@ void CSoundMgr::AssignSamples(void)
                                 else
                                 {
                                     // NON Looped sounds
-                                    if (g_bSoundDistanceEffect && (S->Flags & SFX_POS_EXTERN))
+                                    if (g_bSoundDistanceEffect and (S->Flags bitand SFX_POS_EXTERN))
                                     {
                                         // delay external sounds
                                         float time,     // Elapsed time since sound was created.
@@ -1665,7 +1666,7 @@ void CSoundMgr::AssignSamples(void)
                                             MonoPrint("    Playing NonLooped - Vol:%f  Freq:%f", S->Buf[i].vol, Frequency);
 #endif
 
-                                            S->Buf[i].DSoundBuffer->SetFrequency(Frequency); // MLR 12/7/2003 - The freq & vol code was moved here
+                                            S->Buf[i].DSoundBuffer->SetFrequency(Frequency); // MLR 12/7/2003 - The freq bitand vol code was moved here
                                             S->Buf[i].DSoundBuffer->SetVolume((long)S->Buf[i].vol);
                                             S->Buf[i].DSoundBuffer->SetCurrentPosition(0);
                                             S->Buf[i].DSoundBuffer->Play(0, 0, 0);
@@ -1720,7 +1721,7 @@ void CSoundMgr::AssignSamples(void)
                             }
                             else
                             {
-                                if (S->Flags & SFX_POS_LOOPED && S->Buf[i].distsq == -1) // don't stop non-looping sounds, let them finish on thier own.
+                                if (S->Flags bitand SFX_POS_LOOPED and S->Buf[i].distsq == -1) // don't stop non-looping sounds, let them finish on thier own.
                                 {
                                     // MLR 1/21/2004 - Changed so that the sound is Stop()ed only if distsq is -1
                                     //                 which may have been causeing trouble with Direct Sound.
@@ -1759,11 +1760,11 @@ BOOL CSoundMgr::Disable3dSample(long ID)
 {
     SoundList * Sample;
 
-    if (gSoundDriver && DSound)
+    if (gSoundDriver and DSound)
     {
         Sample = FindSample(ID);
 
-        if (Sample != NULL)
+        if (Sample not_eq NULL)
         {
             if (Sample->is3d == TRUE)
             {
@@ -1794,11 +1795,11 @@ BOOL CSoundMgr::SetSamplePan(long ID, long Direction)
         {
             Sample = FindSample(ID);
 
-            if (Sample != NULL)
+            if (Sample not_eq NULL)
             {
                 hr = Sample->Buf[0].DSoundBuffer->SetPan(Direction);
 
-                if (hr != DS_OK)
+                if (hr not_eq DS_OK)
                     DSoundCheck(hr);
 
                 return(TRUE);
@@ -1849,7 +1850,7 @@ DWORD CSoundMgr::SampleStatus(SoundList *Sample)
 
     if (gSoundDriver)
     {
-        if (Sample != NULL)
+        if (Sample not_eq NULL)
         {
             // if [0] aint playing, then none of them are playing.
             Sample->Buf[0].DSoundBuffer->GetStatus(&status);
@@ -1889,14 +1890,14 @@ SoundList *CSoundMgr::AddDuplicateSample(SoundList *Sample)
         Cur = DuplicateList;
 
         if (Cur->ID == Sample->ID)
-            if (!(SampleStatus(Cur) & DSBSTATUS_PLAYING))
+            if ( not (SampleStatus(Cur) bitand DSBSTATUS_PLAYING))
                 return(Cur);
 
-        while (Cur->Next != NULL)
+        while (Cur->Next not_eq NULL)
         {
             if (Cur->Next->ID == Sample->ID)
             {
-                if (!(SampleStatus(Cur->Next) & DSBSTATUS_PLAYING))
+                if ( not (SampleStatus(Cur->Next) bitand DSBSTATUS_PLAYING))
                     return(Cur->Next);
             }
 
@@ -1949,7 +1950,7 @@ long CSoundMgr::AddSampleToMgr(long Volume, long Frequency, long Direction, IDir
     New->Sfx   = sfx;
     New->Flags = sfx->flags;
 
-    if (New->Flags & (SFX_FLAGS_VMS | SFX_POS_INSIDE)) // only allocate 1 soundobject for these types
+    if (New->Flags bitand (SFX_FLAGS_VMS bitor SFX_POS_INSIDE)) // only allocate 1 soundobject for these types
     {
         New->DS3DBufferCount = 1;
     }
@@ -1964,8 +1965,8 @@ long CSoundMgr::AddSampleToMgr(long Volume, long Frequency, long Direction, IDir
             hr = DSound->DuplicateSoundBuffer(NewSound, &New->Buf[i].DSoundBuffer);
 
         /*  MLR 5/6/2004 - No need to allocate a 3D buffer
-        if (g_bUse3dSound &&
-         New->Flags & SFX_FLAGS_3D)
+        if (g_bUse3dSound and 
+         New->Flags bitand SFX_FLAGS_3D)
         {
          // create buffer here
          //if (FAILED(hr))
@@ -1981,9 +1982,9 @@ long CSoundMgr::AddSampleToMgr(long Volume, long Frequency, long Direction, IDir
          hr = New->Buf[i].DSound3dBuffer->SetMode(DS3DMODE_DISABLE, DS3D_DEFERRED);
          if (FAILED(hr))
          DSoundCheck(hr);
-         if ( sfx &&
-         (sfx->flags & SFX_POS_EXTERN) &&
-         (sfx->flags & SFX_FLAGS_3D)) // only make external 3d sounds 3d
+         if ( sfx and 
+         (sfx->flags bitand SFX_POS_EXTERN) and 
+         (sfx->flags bitand SFX_FLAGS_3D)) // only make external 3d sounds 3d
          {
          float maxdist = (float)  sqrt(sfx->maxDistSq);
          hr = New->Buf[i].DSound3dBuffer->SetMaxDistance(maxdist, DS3D_DEFERRED);
@@ -1997,7 +1998,7 @@ long CSoundMgr::AddSampleToMgr(long Volume, long Frequency, long Direction, IDir
          DSoundCheck(hr);
 
 
-         if(New->Flags & SFX_FLAGS_3D)
+         if(New->Flags bitand SFX_FLAGS_3D)
          {
          New->Buf[i].DSound3dBuffer->SetMode(DS3DMODE_NORMAL, DS3D_DEFERRED);
          }
@@ -2008,12 +2009,12 @@ long CSoundMgr::AddSampleToMgr(long Volume, long Frequency, long Direction, IDir
     }
 
     New->Next = NULL;
-    // if(Flags & SND_EXCLUSIVE)
-    // New->Flags |= SND_EXCLUSIVE;
-    // if(Flags & SFX_POSITIONAL)
-    // New->Flags |= SND_USE_3D;
-    // if(Flags & SFX_POS_LOOPED) // MLR 12/6/2003 - commented out
-    // New->Flags |= SND_LOOP_SAMPLE; // MLR 12/6/2003 -
+    // if(Flags bitand SND_EXCLUSIVE)
+    // New->Flags or_eq SND_EXCLUSIVE;
+    // if(Flags bitand SFX_POSITIONAL)
+    // New->Flags or_eq SND_USE_3D;
+    // if(Flags bitand SFX_POS_LOOPED) // MLR 12/6/2003 - commented out
+    // New->Flags or_eq SND_LOOP_SAMPLE; // MLR 12/6/2003 -
 
 
 
@@ -2026,7 +2027,7 @@ long CSoundMgr::AddSampleToMgr(long Volume, long Frequency, long Direction, IDir
     {
         Cur = SampleList;
 
-        while (Cur->Next != NULL)
+        while (Cur->Next not_eq NULL)
             Cur = Cur->Next;
 
         Cur->Next = New;
@@ -2044,7 +2045,7 @@ SoundList * CSoundMgr::FindSample(long ID)
     {
         Cur = SampleList;
 
-        while (Cur != NULL)
+        while (Cur not_eq NULL)
         {
             if (Cur->ID == ID)
                 return(Cur);
@@ -2065,7 +2066,7 @@ long CSoundMgr::CreateStream(WAVEFORMATEX *Format, float StreamSeconds) // Quesi
     HRESULT hr;
     long Size;
 
-    if (gSoundDriver && DSound)
+    if (gSoundDriver and DSound)
     {
         Size = (long)(StreamSeconds * (float)(Format->nSamplesPerSec * (Format->wBitsPerSample / 8) * Format->nChannels));
 
@@ -2074,25 +2075,25 @@ long CSoundMgr::CreateStream(WAVEFORMATEX *Format, float StreamSeconds) // Quesi
         // Set up DSBUFFERDESC structure.
         memset(&dsbdesc, 0, sizeof(DSBUFFERDESC)); // Zero it out.
         dsbdesc.dwSize = sizeof(DSBUFFERDESC);
-        dsbdesc.dwFlags = DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME |
+        dsbdesc.dwFlags = DSBCAPS_CTRLPAN bitor DSBCAPS_CTRLVOLUME |
                           DSBCAPS_CTRLFREQUENCY |
                           DSBCAPS_GETCURRENTPOSITION2 ; // Need default controls (pan, volume, frequency).
 
         if (g_bOldSoundAlg == false)
-            dsbdesc.dwFlags |= DSBCAPS_CTRLPOSITIONNOTIFY;
+            dsbdesc.dwFlags or_eq DSBCAPS_CTRLPOSITIONNOTIFY;
 
         dsbdesc.dwBufferBytes = Size;
         dsbdesc.lpwfxFormat = Format;
 
         // OW just to have some music during debugging hehe
 #ifdef _DEBUG
-        dsbdesc.dwFlags |= DSBCAPS_GLOBALFOCUS;
+        dsbdesc.dwFlags or_eq DSBCAPS_GLOBALFOCUS;
 #endif
 
         // Create buffer.
         hr = DSound->CreateSoundBuffer(&dsbdesc, &lpNewDSBuf, NULL);
 
-        if (hr != DS_OK)
+        if (hr not_eq DS_OK)
             DSoundCheck(hr);
 
         if (hr == DS_OK)
@@ -2100,7 +2101,7 @@ long CSoundMgr::CreateStream(WAVEFORMATEX *Format, float StreamSeconds) // Quesi
             NewID = AddStreamToMgr(0, Format, Size, lpNewDSBuf);
             hr = lpNewDSBuf->SetVolume(DSBVOLUME_MIN);
 
-            if (hr != DS_OK)
+            if (hr not_eq DS_OK)
                 DSoundCheck(hr);
         }
 
@@ -2116,7 +2117,7 @@ DWORD CSoundMgr::StreamStatus(SoundStream *Stream)
 
     if (gSoundDriver)
     {
-        if (Stream != NULL)
+        if (Stream not_eq NULL)
         {
             Stream->DSoundBuffer->GetStatus(&status);
             return(status);
@@ -2134,7 +2135,7 @@ long CSoundMgr::GetStreamPlayTime(long ID)
     {
         Stream = FindStream(ID);
 
-        if (Stream != NULL)
+        if (Stream not_eq NULL)
             return(Stream->BytesProcessed);//*1000/Stream->BytesPerSecond);
     }
 
@@ -2152,11 +2153,11 @@ BOOL CSoundMgr::IsStreamPlaying(long ID)
         {
             Stream = FindStream(ID);
 
-            if (Stream != NULL)
+            if (Stream not_eq NULL)
             {
                 status = StreamStatus(Stream);
 
-                if (status & DSBSTATUS_PLAYING)
+                if (status bitand DSBSTATUS_PLAYING)
                     return(TRUE);
             }
         }
@@ -2178,16 +2179,16 @@ long CSoundMgr::SetStreamVolume(long ID, long Volume)
         {
             Stream = FindStream(ID);
 
-            if (Stream != NULL)
+            if (Stream not_eq NULL)
             {
                 oldvol = Stream->Volume;
                 Stream->Volume = Volume;
 
-                if (!(Stream->Status & (SND_STREAM_FADE_IN | SND_STREAM_FADE_OUT | SND_STREAM_FADEDOUT)))
+                if ( not (Stream->Status bitand (SND_STREAM_FADE_IN bitor SND_STREAM_FADE_OUT bitor SND_STREAM_FADEDOUT)))
                 {
                     hr = Stream->DSoundBuffer->SetVolume(Volume);
 
-                    if (hr != DS_OK)
+                    if (hr not_eq DS_OK)
                         DSoundCheck(hr);
                 }
 
@@ -2215,7 +2216,7 @@ void CSoundMgr::SetCameraPostion(Tpoint *campos, Trotation *camrot, Tpoint *camv
     CamVelocity.z = camvel->z;
 
 
-    if (use3d == FALSE || Ds3dListener == NULL || StreamCSection == NULL || campos == NULL || camrot == NULL)
+    if (use3d == FALSE or Ds3dListener == NULL or StreamCSection == NULL or campos == NULL or camrot == NULL)
         return;
 
     F4EnterCriticalSection(StreamCSection);
@@ -2245,7 +2246,7 @@ void CSoundMgr::SetCameraPostion(Tpoint *campos, Trotation *camrot, Tpoint *camv
         // we don't need this with the custom doppler code.
         Ds3dListener->SetVelocity(CamVelocity.x, CamVelocity.y, CamVelocity.z, DS3D_DEFERRED);
 
-        if (g_fSoundDopplerFactor != olddoppler)
+        if (g_fSoundDopplerFactor not_eq olddoppler)
         {
             Ds3dListener->SetDopplerFactor(g_fSoundDopplerFactor, DS3D_DEFERRED);
             olddoppler = g_fSoundDopplerFactor;
@@ -2253,7 +2254,7 @@ void CSoundMgr::SetCameraPostion(Tpoint *campos, Trotation *camrot, Tpoint *camv
 
 #endif
 
-        if (g_fSoundRolloffFactor != oldrolloff)
+        if (g_fSoundRolloffFactor not_eq oldrolloff)
         {
             Ds3dListener->SetRolloffFactor(g_fSoundRolloffFactor, DS3D_DEFERRED);
             oldrolloff = g_fSoundRolloffFactor;
@@ -2291,12 +2292,12 @@ void CSoundMgr::SetNotification(SoundStream *Stream)
 {
     if (g_bOldSoundAlg) return;
 
-    ShiAssert(Stream->notif != NULL);
-    ShiAssert(Stream->lpDsNotify != NULL);
-    ShiAssert((Stream->Status & SND_USE_THREAD) != 0);
+    ShiAssert(Stream->notif not_eq NULL);
+    ShiAssert(Stream->lpDsNotify not_eq NULL);
+    ShiAssert((Stream->Status bitand SND_USE_THREAD) not_eq 0);
 
-    if ((Stream->Status & SND_USE_THREAD) == 0 ||
-        Stream->notif == NULL ||
+    if ((Stream->Status bitand SND_USE_THREAD) == 0 or
+        Stream->notif == NULL or
         Stream->lpDsNotify == NULL) return;
 
     // set up notifications so we can refill buffers - we'll use the same event for now
@@ -2311,7 +2312,7 @@ void CSoundMgr::SetNotification(SoundStream *Stream)
 
     HRESULT hr = Stream->lpDsNotify->SetNotificationPositions(2, PositionNotify);
 
-    if (hr != S_OK)
+    if (hr not_eq S_OK)
         DSoundCheck(hr);
 }
 
@@ -2319,7 +2320,7 @@ long CSoundMgr::AddStreamToMgr(long Volume, WAVEFORMATEX *Header, long StreamSiz
 {
     SoundStream *Cur, *New;
     SECURITY_ATTRIBUTES ps;
-    ShiAssert(NewSound != NULL);
+    ShiAssert(NewSound not_eq NULL);
 
 #ifdef USE_SH_POOLS
     New = (SoundStream *)MemAllocPtr(gSoundMemPool, sizeof(SoundStream), 0);
@@ -2403,7 +2404,7 @@ long CSoundMgr::AddStreamToMgr(long Volume, WAVEFORMATEX *Header, long StreamSiz
     {
         Cur = StreamList;
 
-        while (Cur->Next != NULL)
+        while (Cur->Next not_eq NULL)
             Cur = Cur->Next;
 
         Cur->Next = New;
@@ -2472,7 +2473,7 @@ SoundStream *CSoundMgr::FindStream(long ID)
     {
         Cur = StreamList;
 
-        while (Cur != NULL)
+        while (Cur not_eq NULL)
         {
             if (Cur->ID == ID)
                 return(Cur);
@@ -2486,9 +2487,9 @@ SoundStream *CSoundMgr::FindStream(long ID)
 
 void CSoundMgr::RestartStream(SoundStream *Stream)
 {
-    if (Stream->Status & SND_STREAM_FILE)
+    if (Stream->Status bitand SND_STREAM_FILE)
     {
-        if (Stream->LoopOffset && Stream->LoopOffset < Stream->OriginalSize) // NOT supported for IMA_ADPCM
+        if (Stream->LoopOffset and Stream->LoopOffset < Stream->OriginalSize) // NOT supported for IMA_ADPCM
         {
             SetFilePointer(Stream->fp, Stream->HeaderOffset + Stream->LoopOffset, NULL, FILE_BEGIN);
             Stream->StreamSize = Stream->LoopOffset;
@@ -2509,7 +2510,7 @@ void CSoundMgr::RestartStream(SoundStream *Stream)
             Stream->StreamSize = 0;
         }
     }
-    else if (Stream->Status & SND_STREAM_MEMORY)
+    else if (Stream->Status bitand SND_STREAM_MEMORY)
     {
         Stream->memptr = Stream->startptr;
         Stream->StreamSize = 0;
@@ -2546,7 +2547,7 @@ void CSoundMgr::SilenceStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
                 hr = Stream->DSoundBuffer->Lock(Buffer, Length, (void**)&mem, &Len, NULL, NULL, NULL);
             }
 
-            if (Len && hr == DS_OK)
+            if (Len and hr == DS_OK)
             {
                 memset((char *)mem, 0, Length);
                 Stream->DSoundBuffer->Unlock(mem, Length, NULL, NULL);
@@ -2577,11 +2578,11 @@ DWORD CSoundMgr::ReadStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
                 Stream->DSoundBuffer->Lock(Buffer, Length, (void**)&mem, &Len, NULL, NULL, NULL);
             }
 
-            if (Len && hr == DS_OK)
+            if (Len and hr == DS_OK)
             {
-                if (Stream->Status & SND_STREAM_FILE)
+                if (Stream->Status bitand SND_STREAM_FILE)
                 {
-                    if (Stream->Status & SND_IS_IMAADPCM)
+                    if (Stream->Status bitand SND_IS_IMAADPCM)
                     {
                         bytesread = StreamIMAADPCM(Stream, mem, Len);
                     }
@@ -2592,11 +2593,11 @@ DWORD CSoundMgr::ReadStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
 
                     if (bytesread < Length)
                     {
-                        if (Stream->Status & SND_STREAM_LOOP && (Stream->LoopCount > 0 || Stream->LoopCount == -1))
+                        if (Stream->Status bitand SND_STREAM_LOOP and (Stream->LoopCount > 0 or Stream->LoopCount == -1))
                         {
                             RestartStream(Stream);
 
-                            if (Stream->Status & SND_IS_IMAADPCM)
+                            if (Stream->Status bitand SND_IS_IMAADPCM)
                             {
                                 bytesread = StreamIMAADPCM(Stream, ((char *)(mem) + bytesread), Length - bytesread);
                             }
@@ -2608,12 +2609,12 @@ DWORD CSoundMgr::ReadStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
                             if (Stream->LoopCount > 0)
                                 Stream->LoopCount--;
 
-                            if (!Stream->LoopCount && Stream->FadeOut < Stream->Volume) // Do fade out
+                            if ( not Stream->LoopCount and Stream->FadeOut < Stream->Volume) // Do fade out
                             {
                                 if (Stream->StreamMessage)
                                     (*Stream->StreamMessage)(Stream, SND_MSG_START_FADE);
 
-                                Stream->Status |= SND_STREAM_FADE_OUT;
+                                Stream->Status or_eq SND_STREAM_FADE_OUT;
                             }
                         }
                         else
@@ -2621,13 +2622,13 @@ DWORD CSoundMgr::ReadStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
                             if (Stream->StreamMessage)
                                 (*Stream->StreamMessage)(Stream, SND_MSG_STREAM_EOF);
 
-                            if (Stream->Status & SND_STREAM_CONTINUE) // Set in callback to pass another stream
+                            if (Stream->Status bitand SND_STREAM_CONTINUE) // Set in callback to pass another stream
                             {
                                 // Kludge code used to string multiple files together
-                                Stream->Status ^= SND_STREAM_CONTINUE;
+                                Stream->Status xor_eq SND_STREAM_CONTINUE;
                                 RestartStream(Stream);
 
-                                if (Stream->Status & SND_IS_IMAADPCM)
+                                if (Stream->Status bitand SND_IS_IMAADPCM)
                                 {
                                     bytesread = StreamIMAADPCM(Stream, ((char *)(mem) + bytesread), Length - bytesread);
                                 }
@@ -2641,9 +2642,9 @@ DWORD CSoundMgr::ReadStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
                         }
                     }
                 }
-                else if (Stream->Status & SND_STREAM_MEMORY)
+                else if (Stream->Status bitand SND_STREAM_MEMORY)
                 {
-                    if (Stream->Status & SND_IS_IMAADPCM)
+                    if (Stream->Status bitand SND_IS_IMAADPCM)
                     {
                         bytesread = MemStreamIMAADPCM(Stream, mem, Len);
                     }
@@ -2670,11 +2671,11 @@ DWORD CSoundMgr::ReadStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
 
                     if (bytesread < Length)
                     {
-                        if (Stream->Status & SND_STREAM_LOOP && (Stream->LoopCount > 0 || Stream->LoopCount == -1))
+                        if (Stream->Status bitand SND_STREAM_LOOP and (Stream->LoopCount > 0 or Stream->LoopCount == -1))
                         {
                             RestartStream(Stream);
 
-                            if (Stream->Status & SND_IS_IMAADPCM)
+                            if (Stream->Status bitand SND_IS_IMAADPCM)
                             {
                                 bytesread = MemStreamIMAADPCM(Stream, ((char *)(mem) + bytesread), Length - bytesread);
                             }
@@ -2699,22 +2700,22 @@ DWORD CSoundMgr::ReadStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
                             if (Stream->LoopCount > 0)
                                 Stream->LoopCount--;
 
-                            if (!Stream->LoopCount && Stream->FadeOut < Stream->Volume) // Do fade out
+                            if ( not Stream->LoopCount and Stream->FadeOut < Stream->Volume) // Do fade out
                             {
                                 if (Stream->StreamMessage)
                                     (*Stream->StreamMessage)(Stream, SND_MSG_START_FADE);
 
-                                Stream->Status |= SND_STREAM_FADE_OUT;
+                                Stream->Status or_eq SND_STREAM_FADE_OUT;
                             }
                         }
                         else
                             memset(((char *)(mem) + bytesread), 0, Length - bytesread);
                     }
 
-                    if (!(Stream->Status & SND_IS_IMAADPCM))
+                    if ( not (Stream->Status bitand SND_IS_IMAADPCM))
                         Stream->memptr = ((char *)(Stream->startptr) + Stream->StreamSize);
                 }
-                else if (Stream->Status & SND_STREAM_CALLBACK)
+                else if (Stream->Status bitand SND_STREAM_CALLBACK)
                 {
                     bytesread = Stream->Callback(Stream->me, mem, Length);
                     Stream->StreamSize += bytesread;
@@ -2775,7 +2776,7 @@ void CSoundMgr::StopAllStreams()
     {
         cur = StreamList;
 
-        while (cur != NULL)
+        while (cur not_eq NULL)
         {
             StreamStop(cur);
             cur = cur->Next;
@@ -2785,77 +2786,77 @@ void CSoundMgr::StopAllStreams()
 
 void CSoundMgr::StreamPause(SoundStream *Stream)
 {
-    if (!Stream)
+    if ( not Stream)
         return;
 
     if (gSoundDriver)
     {
         Stream->DSoundBuffer->Stop();
-        Stream->Status &= ~SND_USE_THREAD;
+        Stream->Status and_eq compl SND_USE_THREAD;
         NotifyThread();
     }
 }
 
 void CSoundMgr::StreamFadeOut(SoundStream *Stream)
 {
-    if (!Stream)
+    if ( not Stream)
         return;
 
     if (gSoundDriver)
     {
         Stream->FadeOut = DSBVOLUME_MIN;
-        Stream->Status |= SND_STREAM_FADE_OUT;
-        Stream->Status &= ~SND_STREAM_FADE_IN;
+        Stream->Status or_eq SND_STREAM_FADE_OUT;
+        Stream->Status and_eq compl SND_STREAM_FADE_IN;
         NotifyThread();
     }
 }
 
 void CSoundMgr::StreamResume(SoundStream *Stream)
 {
-    if (!Stream)
+    if ( not Stream)
         return;
 
     if (gSoundDriver)
     {
         HRESULT hr;
-        Stream->Status |= SND_USE_THREAD;
+        Stream->Status or_eq SND_USE_THREAD;
         SetNotification(Stream);
         hr = Stream->DSoundBuffer->Play(0, 0, DSBPLAY_LOOPING);
 
         if (FAILED(hr))
             DSoundCheck(hr);
 
-        Stream->Status &= ~SND_STREAM_FADEDOUT;
+        Stream->Status and_eq compl SND_STREAM_FADEDOUT;
         NotifyThread();
     }
 }
 
 void CSoundMgr::StreamResumeFadeIn(SoundStream *Stream)
 {
-    if (!Stream)
+    if ( not Stream)
         return;
 
-    Stream->Status |= SND_STREAM_FADE_IN;
-    Stream->Status &= ~(SND_STREAM_FADEDOUT | SND_STREAM_FADE_OUT);
+    Stream->Status or_eq SND_STREAM_FADE_IN;
+    Stream->Status and_eq compl (SND_STREAM_FADEDOUT bitor SND_STREAM_FADE_OUT);
     StreamResume(Stream);
 }
 
 void CSoundMgr::StreamStop(SoundStream *Stream)
 {
-    if (!Stream)
+    if ( not Stream)
         return;
 
     if (gSoundDriver)
     {
-        if (Stream->Status & SND_STREAM_FILE)
+        if (Stream->Status bitand SND_STREAM_FILE)
         {
-            if (Stream->fp != INVALID_HANDLE_VALUE)
+            if (Stream->fp not_eq INVALID_HANDLE_VALUE)
                 CloseHandle(Stream->fp);
 
             Stream->fp = INVALID_HANDLE_VALUE;
         }
 
-        Stream->Status &= ~SND_USE_THREAD;
+        Stream->Status and_eq compl SND_USE_THREAD;
         Stream->DSoundBuffer->Stop();
         NotifyThread();
     }
@@ -2863,14 +2864,14 @@ void CSoundMgr::StreamStop(SoundStream *Stream)
 
 void CSoundMgr::StreamStopWithFade(SoundStream *Stream)
 {
-    if (!Stream)
+    if ( not Stream)
         return;
 
     if (gSoundDriver)
     {
-        if (Stream->Status & SND_STREAM_FILE)
+        if (Stream->Status bitand SND_STREAM_FILE)
         {
-            Stream->Status |= SND_STREAM_FADE_OUT;
+            Stream->Status or_eq SND_STREAM_FADE_OUT;
             Stream->FadeOut = DSBVOLUME_MIN;
             NotifyThread();
         }
@@ -2890,7 +2891,7 @@ BOOL CSoundMgr::StartFileStream(long StreamID, char *filename, long Flags, long 
         return(FALSE);
 
     // Stop previous Stream in Stream
-    if (StreamStatus(Stream) & DSBSTATUS_PLAYING)
+    if (StreamStatus(Stream) bitand DSBSTATUS_PLAYING)
     {
         StreamStop(Stream);
     }
@@ -2905,7 +2906,7 @@ BOOL CSoundMgr::StartFileStream(long StreamID, char *filename, long Flags, long 
     size = LoadRiffFormat(Stream->fp, &Header, &Stream->HeaderOffset, &NumSamples);
     Stream->HeaderOffset += startoffset;
 
-    if (!size)
+    if ( not size)
     {
         CloseHandle(Stream->fp);
         Stream->fp = INVALID_HANDLE_VALUE;
@@ -2918,13 +2919,13 @@ BOOL CSoundMgr::StartFileStream(long StreamID, char *filename, long Flags, long 
     Stream->LastPos = 0;
     Stream->memptr = NULL;
     Stream->startptr = NULL;
-    Stream->Status = 1 | SND_STREAM_FILE;
+    Stream->Status = 1 bitor SND_STREAM_FILE;
 
     if (Header.wFormatTag == WAVE_FORMAT_IMA_ADPCM)
     {
-        Stream->Status |= SND_IS_IMAADPCM;
+        Stream->Status or_eq SND_IS_IMAADPCM;
 
-        if (!Stream->ImaInfo)
+        if ( not Stream->ImaInfo)
             return(FALSE);
 
         Stream->ImaInfo->sidx = 0;
@@ -2938,42 +2939,42 @@ BOOL CSoundMgr::StartFileStream(long StreamID, char *filename, long Flags, long 
         Stream->ImaInfo->srcsize = Stream->ImaInfo->bufsize;
     }
     else
-        Stream->Status &= ~SND_IS_IMAADPCM;
+        Stream->Status and_eq compl SND_IS_IMAADPCM;
 
-    if (Flags & SND_STREAM_LOOP)
-        Stream->Status |= SND_STREAM_LOOP;
+    if (Flags bitand SND_STREAM_LOOP)
+        Stream->Status or_eq SND_STREAM_LOOP;
 
-    if (Flags & SND_STREAM_FADE_IN)
+    if (Flags bitand SND_STREAM_FADE_IN)
     {
-        Stream->Status |= SND_STREAM_FADE_IN;
+        Stream->Status or_eq SND_STREAM_FADE_IN;
         Stream->CurFade = Stream->FadeIn;
     }
     else
         Stream->CurFade = Stream->Volume;
 
-    if (Flags & SND_STREAM_FADE_OUT)
+    if (Flags bitand SND_STREAM_FADE_OUT)
         Stream->FadeOut = DSBVOLUME_MIN;
     else
         Stream->FadeOut = Stream->Volume;
 
     hr = Stream->DSoundBuffer->SetCurrentPosition(0);
 
-    if (hr != DS_OK)
+    if (hr not_eq DS_OK)
         DSoundCheck(hr);
 
     SilenceStream(Stream, 0, Stream->Size);
     hr = Stream->DSoundBuffer->SetVolume(Stream->CurFade);
 
-    if (hr != DS_OK)
+    if (hr not_eq DS_OK)
         DSoundCheck(hr);
 
     Stream->StreamSize = 0;
     ReadStream(Stream, 0, Stream->Size);
-    Stream->Status |= SND_USE_THREAD;
+    Stream->Status or_eq SND_USE_THREAD;
     SetNotification(Stream);
     hr = Stream->DSoundBuffer->Play(0, 0, DSBPLAY_LOOPING);
 
-    if (hr != DS_OK)
+    if (hr not_eq DS_OK)
         DSoundCheck(hr);
 
     NotifyThread();
@@ -2993,7 +2994,7 @@ BOOL CSoundMgr::StartMemoryStream(long StreamID, RIFF_FILE *wave, long Flags)
         return(FALSE);
 
     // Stop previous Stream in Stream
-    if (StreamStatus(Stream) & DSBSTATUS_PLAYING)
+    if (StreamStatus(Stream) bitand DSBSTATUS_PLAYING)
     {
         StreamStop(Stream);
     }
@@ -3007,11 +3008,11 @@ BOOL CSoundMgr::StartMemoryStream(long StreamID, RIFF_FILE *wave, long Flags)
     Stream->LastPos = 0;
     Stream->memptr = NULL;
     Stream->startptr = NULL;
-    Stream->Status = 1 | SND_STREAM_MEMORY;
+    Stream->Status = 1 bitor SND_STREAM_MEMORY;
 
     if (wave->Format->wFormatTag == WAVE_FORMAT_IMA_ADPCM)
     {
-        Stream->Status |= SND_IS_IMAADPCM;
+        Stream->Status or_eq SND_IS_IMAADPCM;
         Stream->ImaInfo->sidx = 0;
         Stream->ImaInfo->count = 0;
         Stream->ImaInfo->blockLength = 0;
@@ -3023,42 +3024,42 @@ BOOL CSoundMgr::StartMemoryStream(long StreamID, RIFF_FILE *wave, long Flags)
         Stream->ImaInfo->srcsize = size;
     }
     else
-        Stream->Status &= ~SND_IS_IMAADPCM;
+        Stream->Status and_eq compl SND_IS_IMAADPCM;
 
-    if (Flags & SND_STREAM_LOOP)
-        Stream->Status |= SND_STREAM_LOOP;
+    if (Flags bitand SND_STREAM_LOOP)
+        Stream->Status or_eq SND_STREAM_LOOP;
 
-    if (Flags & SND_STREAM_FADE_IN)
+    if (Flags bitand SND_STREAM_FADE_IN)
     {
-        Stream->Status |= SND_STREAM_FADE_IN;
+        Stream->Status or_eq SND_STREAM_FADE_IN;
         Stream->CurFade = Stream->FadeIn;
     }
     else
         Stream->CurFade = Stream->Volume;
 
-    if (Flags & SND_STREAM_FADE_OUT)
+    if (Flags bitand SND_STREAM_FADE_OUT)
         Stream->FadeOut = DSBVOLUME_MIN;
     else
         Stream->FadeOut = DSBVOLUME_MAX;
 
     hr = Stream->DSoundBuffer->SetCurrentPosition(0);
 
-    if (hr != DS_OK)
+    if (hr not_eq DS_OK)
         DSoundCheck(hr);
 
     SilenceStream(Stream, 0, Stream->Size);
     hr = Stream->DSoundBuffer->SetVolume(Stream->CurFade);
 
-    if (hr != DS_OK)
+    if (hr not_eq DS_OK)
         DSoundCheck(hr);
 
     Stream->StreamSize = 0;
     ReadStream(Stream, 0, Stream->Size);
-    Stream->Status |= SND_USE_THREAD;
+    Stream->Status or_eq SND_USE_THREAD;
     SetNotification(Stream);
     hr = Stream->DSoundBuffer->Play(0, 0, DSBPLAY_LOOPING);
 
-    if (hr != DS_OK)
+    if (hr not_eq DS_OK)
         DSoundCheck(hr);
 
     NotifyThread();
@@ -3076,7 +3077,7 @@ BOOL CSoundMgr::StartMemoryStream(long StreamID, char *Data, long size)
         return(FALSE);
 
     // Stop previous Stream in Stream
-    if (StreamStatus(Stream) & DSBSTATUS_PLAYING)
+    if (StreamStatus(Stream) bitand DSBSTATUS_PLAYING)
     {
         StreamStop(Stream);
     }
@@ -3087,10 +3088,10 @@ BOOL CSoundMgr::StartMemoryStream(long StreamID, char *Data, long size)
     Stream->LastPos = 0;
     Stream->memptr = Data;
     Stream->startptr = Data;
-    Stream->Status = 1 | SND_STREAM_MEMORY;
+    Stream->Status = 1 bitor SND_STREAM_MEMORY;
     ReadStream(Stream, 0, Stream->Size);
     Stream->DSoundBuffer->SetCurrentPosition(0);
-    Stream->Status |= SND_USE_THREAD;
+    Stream->Status or_eq SND_USE_THREAD;
     SetNotification(Stream);
     Stream->DSoundBuffer->Play(0, 0, DSBPLAY_LOOPING);
     NotifyThread();
@@ -3108,7 +3109,7 @@ BOOL CSoundMgr::StartCallbackStream(long StreamID, void *classptr, DWORD (*cb)(v
         return(FALSE);
 
     // Stop previous Stream in Stream
-    if (StreamStatus(Stream) & DSBSTATUS_PLAYING)
+    if (StreamStatus(Stream) bitand DSBSTATUS_PLAYING)
     {
         StreamStop(Stream);
     }
@@ -3121,10 +3122,10 @@ BOOL CSoundMgr::StartCallbackStream(long StreamID, void *classptr, DWORD (*cb)(v
     Stream->startptr = NULL;
     Stream->me = classptr;
     Stream->Callback = cb;
-    Stream->Status = 1 | SND_STREAM_CALLBACK;
+    Stream->Status = 1 bitor SND_STREAM_CALLBACK;
     ReadStream(Stream, 0, Stream->Size);
     Stream->DSoundBuffer->SetCurrentPosition(0);
-    Stream->Status |= SND_USE_THREAD;
+    Stream->Status or_eq SND_USE_THREAD;
     SetNotification(Stream);
     Stream->DSoundBuffer->Play(0, 0, DSBPLAY_LOOPING);
     NotifyThread();
@@ -3139,7 +3140,7 @@ void CSoundMgr::RemoveStream(long ID)
     if (gSoundDriver == NULL)
         return;
 
-    F4EnterCriticalSection(StreamCSection); // JPO - lock before test!
+    F4EnterCriticalSection(StreamCSection); // JPO - lock before test
 
     if (StreamList == NULL)
     {
@@ -3189,7 +3190,7 @@ void CSoundMgr::RemoveAllStreams()
 
     Cur = StreamList;
 
-    while (Cur != NULL)
+    while (Cur not_eq NULL)
     {
         Last = Cur;
         Cur = Cur->Next;
@@ -3214,29 +3215,29 @@ unsigned int __stdcall CSoundMgr::StreamThread(void *myself)
 //    of constraints on whats going on.
 BOOL CSoundMgr::BuildObjectList(HANDLE hArray[], int *nHandles, SoundStream *slist[])
 {
-    ShiAssert(signalEvent != NULL);
+    ShiAssert(signalEvent not_eq NULL);
     SoundStream *Stream;
     int count = 0;
     slist[count] = NULL;
     hArray[count++] = signalEvent;
     *nHandles = 1; // set here in case we have to exit in a rush
 
-    for (Stream = StreamList; Stream != NULL; Stream = Stream->Next)
+    for (Stream = StreamList; Stream not_eq NULL; Stream = Stream->Next)
     {
-        if ((Stream->Status & SND_USE_THREAD) == 0)
+        if ((Stream->Status bitand SND_USE_THREAD) == 0)
         {
             // not played on a thread
             continue;
         }
 
-        if (Stream->Status & SND_STREAM_DONE)
+        if (Stream->Status bitand SND_STREAM_DONE)
         {
             // we just don't care
             continue;
         }
 
         // any of the following we have to do more carefully.
-        if (Stream->Status & (SND_STREAM_PAN_LT | SND_STREAM_PAN_RT | SND_STREAM_FADE_IN | SND_STREAM_FADE_OUT))
+        if (Stream->Status bitand (SND_STREAM_PAN_LT bitor SND_STREAM_PAN_RT bitor SND_STREAM_FADE_IN bitor SND_STREAM_FADE_OUT))
         {
             return FALSE;
         }
@@ -3284,7 +3285,7 @@ void CSoundMgr::ThreadHandler()
         //else {
         Sleep(dtime);
 
-        if (!g_bOldSoundAlg)
+        if ( not g_bOldSoundAlg)
         {
             F4EnterCriticalSection(StreamCSection);
 
@@ -3308,7 +3309,7 @@ void CSoundMgr::ThreadHandler()
                     break;
 
                 default:
-                    if (result > WAIT_OBJECT_0 && result < (WAIT_OBJECT_0 + nHandles))
+                    if (result > WAIT_OBJECT_0 and result < (WAIT_OBJECT_0 + nHandles))
                     {
                         Stream = sstreams[result - WAIT_OBJECT_0];
                         //MonoPrint("Sound triggered on stream %x\n", Stream);
@@ -3336,11 +3337,11 @@ void CSoundMgr::ThreadHandler()
             F4EnterCriticalSection(StreamCSection);
 
             // ok - so we loop through all streams, looking for things to do.
-            for (Stream = StreamList; Stream != NULL; Stream = Stream->Next)
+            for (Stream = StreamList; Stream not_eq NULL; Stream = Stream->Next)
             {
-                if ((Stream->Status & SND_USE_THREAD) == 0) continue; // not played on a thread
+                if ((Stream->Status bitand SND_USE_THREAD) == 0) continue; // not played on a thread
 
-                if (Stream->Status & SND_STREAM_DONE)
+                if (Stream->Status bitand SND_STREAM_DONE)
                 {
                     StreamStop(Stream);
 
@@ -3368,7 +3369,7 @@ void CSoundMgr::ProcessStream(SoundStream *Stream)
     // either we are in the 1st or 2nd half of the buffer.
     HRESULT hr = Stream->DSoundBuffer->GetCurrentPosition(&Pos, &Dummy);
 
-    if (!(Stream->Status & SND_STREAM_PART2))
+    if ( not (Stream->Status bitand SND_STREAM_PART2))
     {
         // if we have moved beyond the half way stage, we fill up
         // the first half of the buffer.
@@ -3377,20 +3378,20 @@ void CSoundMgr::ProcessStream(SoundStream *Stream)
         {
             bytesread = ReadStream(Stream, 0, Stream->HalfSize);
 
-            if (!bytesread)
+            if ( not bytesread)
             {
-                if (Stream->Status & SND_STREAM_FINAL)
+                if (Stream->Status bitand SND_STREAM_FINAL)
                 {
-                    Stream->Status &= ~SND_STREAM_FINAL;
-                    Stream->Status |= SND_STREAM_DONE;
+                    Stream->Status and_eq compl SND_STREAM_FINAL;
+                    Stream->Status or_eq SND_STREAM_DONE;
                 }
                 else
                 {
-                    Stream->Status |= SND_STREAM_FINAL;
+                    Stream->Status or_eq SND_STREAM_FINAL;
                 }
             }
 
-            Stream->Status ^= SND_STREAM_PART2;
+            Stream->Status xor_eq SND_STREAM_PART2;
         }
     }
     else
@@ -3400,20 +3401,20 @@ void CSoundMgr::ProcessStream(SoundStream *Stream)
         {
             bytesread = ReadStream(Stream, Stream->HalfSize, Stream->HalfSize);
 
-            if (!bytesread)
+            if ( not bytesread)
             {
-                if (Stream->Status & SND_STREAM_FINAL)
+                if (Stream->Status bitand SND_STREAM_FINAL)
                 {
-                    Stream->Status &= ~SND_STREAM_FINAL;
-                    Stream->Status |= SND_STREAM_DONE;
+                    Stream->Status and_eq compl SND_STREAM_FINAL;
+                    Stream->Status or_eq SND_STREAM_DONE;
                 }
                 else
                 {
-                    Stream->Status |= SND_STREAM_FINAL;
+                    Stream->Status or_eq SND_STREAM_FINAL;
                 }
             }
 
-            Stream->Status ^= SND_STREAM_PART2;
+            Stream->Status xor_eq SND_STREAM_PART2;
         }
     }
 
@@ -3429,38 +3430,38 @@ void CSoundMgr::ProcessStream(SoundStream *Stream)
     Stream->LastPos = Pos;
 
 
-    if (Stream->Status & SND_STREAM_PAN_LT)
+    if (Stream->Status bitand SND_STREAM_PAN_LT)
     {
         Stream->Direction -= FADE_OUT_STEP;
 
         if (Stream->Direction <= -10000)
         {
             Stream->Direction = -10000;
-            Stream->Status ^= SND_STREAM_PAN_LT;
+            Stream->Status xor_eq SND_STREAM_PAN_LT;
 
-            if (Stream->Status & SND_STREAM_PAN_CIR)
-                Stream->Status |= SND_STREAM_PAN_RT;
+            if (Stream->Status bitand SND_STREAM_PAN_CIR)
+                Stream->Status or_eq SND_STREAM_PAN_RT;
         }
 
         Stream->DSoundBuffer->SetPan(Stream->Direction);
     }
-    else if (Stream->Status & SND_STREAM_PAN_RT)
+    else if (Stream->Status bitand SND_STREAM_PAN_RT)
     {
         Stream->Direction += FADE_OUT_STEP;
 
         if (Stream->Direction >= 10000)
         {
             Stream->Direction = 10000;
-            Stream->Status ^= SND_STREAM_PAN_RT;
+            Stream->Status xor_eq SND_STREAM_PAN_RT;
 
-            if (Stream->Status & SND_STREAM_PAN_CIR)
-                Stream->Status |= SND_STREAM_PAN_LT;
+            if (Stream->Status bitand SND_STREAM_PAN_CIR)
+                Stream->Status or_eq SND_STREAM_PAN_LT;
         }
 
         Stream->DSoundBuffer->SetPan(Stream->Direction);
     }
 
-    if (Stream->Status & SND_STREAM_FADE_IN)
+    if (Stream->Status bitand SND_STREAM_FADE_IN)
     {
         if (Stream->CurFade < SND_MIN_VOLUME)
             Stream->CurFade = SND_MIN_VOLUME;
@@ -3470,7 +3471,7 @@ void CSoundMgr::ProcessStream(SoundStream *Stream)
         if (Stream->CurFade >= Stream->Volume)
         {
             Stream->CurFade = Stream->Volume;
-            Stream->Status ^= SND_STREAM_FADE_IN;
+            Stream->Status xor_eq SND_STREAM_FADE_IN;
 
             if (Stream->StreamMessage)
                 (*Stream->StreamMessage)(Stream, SND_MSG_FADE_IN_DONE);
@@ -3478,7 +3479,7 @@ void CSoundMgr::ProcessStream(SoundStream *Stream)
 
         Stream->DSoundBuffer->SetVolume(Stream->CurFade);
     }
-    else if (Stream->Status & SND_STREAM_FADE_OUT)
+    else if (Stream->Status bitand SND_STREAM_FADE_OUT)
     {
         if (Stream->CurFade > SND_MIN_VOLUME)
             Stream->CurFade -= FADE_OUT_STEP;
@@ -3488,7 +3489,7 @@ void CSoundMgr::ProcessStream(SoundStream *Stream)
         if (Stream->CurFade <= Stream->FadeOut)
         {
             Stream->CurFade = Stream->FadeOut;
-            Stream->Status ^= SND_STREAM_FADE_OUT;
+            Stream->Status xor_eq SND_STREAM_FADE_OUT;
 
             if (Stream->StreamMessage)
                 (*Stream->StreamMessage)(Stream, SND_MSG_FADE_OUT_DONE);
@@ -3615,7 +3616,7 @@ void CSoundMgr::DSoundCheck(HRESULT hr)
 SoundStream::SoundStream()
 {
     DSoundBuffer = NULL;
-    notif = NULL;
+ notif = NULL;
     lpDsNotify = NULL;
     ImaInfo = NULL;
 }
@@ -3628,7 +3629,7 @@ SoundStream::~SoundStream()
     if (DSoundBuffer)
         DSoundBuffer->Release();
 
-    if (notif != NULL)
+    if (notif not_eq NULL)
         CloseHandle(notif);
 
     if (ImaInfo)
@@ -3665,7 +3666,7 @@ SoundList::SoundList()
 
 }
 
-// MLR: doesn't copy 3d sound buffer!
+// MLR: doesn't copy 3d sound buffer
 SoundList::SoundList(SoundList *copy, IDirectSound *DSound)
 {
     ShiAssert(FALSE == F4IsBadReadPtr(DSound, sizeof * DSound));
@@ -3685,7 +3686,7 @@ SoundList::SoundList(SoundList *copy, IDirectSound *DSound)
         HRESULT hr = DSound->DuplicateSoundBuffer(copy->Buf[0].DSoundBuffer, &Buf[i].DSoundBuffer);
         Buf[i].DSound3dBuffer = 0;
 
-        if (hr != S_OK)
+        if (hr not_eq S_OK)
             CSoundMgr::DSoundCheck(hr);
     }
 
@@ -3729,7 +3730,7 @@ LPDIRECTSOUNDBUFFER CSoundMgr::LoadWaveFile(char *Filename, SFX_DEF_ENTRY *sfx)
 
         if (newsnd)
         {
-            if (!newsnd->Format)
+            if ( not newsnd->Format)
             {
                 if (newsnd->data)
                     delete newsnd->data;
@@ -3747,23 +3748,23 @@ LPDIRECTSOUNDBUFFER CSoundMgr::LoadWaveFile(char *Filename, SFX_DEF_ENTRY *sfx)
                                   DSBCAPS_GETCURRENTPOSITION2;
 
                 //if (g_bOldSoundAlg == false)
-                //  dsbdesc.dwFlags |= DSBCAPS_CTRLPOSITIONNOTIFY;
+                //  dsbdesc.dwFlags or_eq DSBCAPS_CTRLPOSITIONNOTIFY;
 
-                if (g_bUse3dSound && (sfx->flags & SFX_FLAGS_3D))
+                if (g_bUse3dSound and (sfx->flags bitand SFX_FLAGS_3D))
                 {
-                    dsbdesc.dwFlags |= DSBCAPS_CTRL3D | DSBCAPS_MUTE3DATMAXDISTANCE;
+                    dsbdesc.dwFlags or_eq DSBCAPS_CTRL3D bitor DSBCAPS_MUTE3DATMAXDISTANCE;
                 }
                 else
                 {
-                    if (sfx->flags & SFX_FLAGS_PAN)
-                        dsbdesc.dwFlags |= DSBCAPS_CTRLPAN;
+                    if (sfx->flags bitand SFX_FLAGS_PAN)
+                        dsbdesc.dwFlags or_eq DSBCAPS_CTRLPAN;
                 }
 
-                if (sfx->flags & SFX_FLAGS_FREQ)
-                    dsbdesc.dwFlags |= DSBCAPS_CTRLFREQUENCY;
+                if (sfx->flags bitand SFX_FLAGS_FREQ)
+                    dsbdesc.dwFlags or_eq DSBCAPS_CTRLFREQUENCY;
 
-                if ((sfx->flags & SFX_FLAGS_HIGH) == 0) // low priority sound
-                    dsbdesc.dwFlags |= DSBCAPS_LOCDEFER;
+                if ((sfx->flags bitand SFX_FLAGS_HIGH) == 0) // low priority sound
+                    dsbdesc.dwFlags or_eq DSBCAPS_LOCDEFER;
 
                 dsbdesc.dwBufferBytes = newsnd->SampleLen;
                 dsbdesc.lpwfxFormat = newsnd->Format;

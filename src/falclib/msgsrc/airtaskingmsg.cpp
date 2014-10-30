@@ -39,13 +39,13 @@ FalconAirTaskingMessage::~FalconAirTaskingMessage(void)
 
 int FalconAirTaskingMessage::Process(uchar autodisp)
 {
-    // I shouldn't really be getting messages if we're not loaded!?!
-    if (autodisp || !TheCampaign.IsLoaded())
+    // I shouldn't really be getting messages if we're not loaded?
+    if (autodisp or not TheCampaign.IsLoaded())
     {
         return -1;
     }
 
-    if (!TeamInfo[dataBlock.team]->atm || !TeamInfo[dataBlock.team]->atm->IsLocal())
+    if ( not TeamInfo[dataBlock.team]->atm or not TeamInfo[dataBlock.team]->atm->IsLocal())
     {
         return -1;
     }
@@ -68,7 +68,7 @@ int FalconAirTaskingMessage::Process(uchar autodisp)
         break;
 
         case atmNewACAvail:
-            TeamInfo[dataBlock.team]->atm->flags |= ATM_NEW_PLANES;
+            TeamInfo[dataBlock.team]->atm->flags or_eq ATM_NEW_PLANES;
             break;
 
         case atmCompleteMission:

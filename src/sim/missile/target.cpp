@@ -25,10 +25,10 @@ void MissileClass::UpdateTargetData(void)
             // This ensures that everybody agrees about where ground objects are even as they move
             // with terrain LOD changes.
             /* JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
-            if (targetPtr->BaseData()->GetDomain() != DOMAIN_SEA) // JB carrier (otherwise ships stop when you fire a missile at them)
+            if (targetPtr->BaseData()->GetDomain() not_eq DOMAIN_SEA) // JB carrier (otherwise ships stop when you fire a missile at them)
             {
-             if (targetPtr->BaseData()->IsSim() &&
-             ((SimBaseClass*)targetPtr->BaseData())->OnGround() &&
+             if (targetPtr->BaseData()->IsSim() and 
+             ((SimBaseClass*)targetPtr->BaseData())->OnGround() and 
              ((SimBaseClass*)targetPtr->BaseData())->drawPointer)
              {
              Tpoint pos;
@@ -54,8 +54,8 @@ void MissileClass::SetTarget(SimObjectType* newTarget)
         return;
 
 
-    ShiAssert(!newTarget || newTarget->BaseData() != (FalconEntity*)0xDDDDDDDD);
-    ShiAssert(!targetPtr || targetPtr->BaseData() != (FalconEntity*)0xDDDDDDDD);
+    ShiAssert( not newTarget or newTarget->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
+    ShiAssert( not targetPtr or targetPtr->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
 
 
     if (targetPtr)
@@ -65,13 +65,13 @@ void MissileClass::SetTarget(SimObjectType* newTarget)
     }
 
 
-    ShiAssert(!newTarget || newTarget->BaseData() != (FalconEntity*)0xDDDDDDDD);
-    ShiAssert(!targetPtr || targetPtr->BaseData() != (FalconEntity*)0xDDDDDDDD);
+    ShiAssert( not newTarget or newTarget->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
+    ShiAssert( not targetPtr or targetPtr->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
 
 
     if (newTarget)
     {
-        if (launchState == Launching || launchState == InFlight)
+        if (launchState == Launching or launchState == InFlight)
         {
             // We need to copy the data if this missile is on it's own.
             rdrDetect = newTarget->localData->rdrDetect;
@@ -102,7 +102,7 @@ void MissileClass::SetTarget(SimObjectType* newTarget)
 
     // If we're still on the rail, update our seeker as well -- otherwise let it do its thing
     // TODO:  Might be nice if the missile always used the seeker's target instead of keeping its own.
-    if (sensorArray && launchState != InFlight)
+    if (sensorArray and launchState not_eq InFlight)
     {
         ShiAssert(sensorArray[0]);
 

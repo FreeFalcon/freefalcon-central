@@ -31,13 +31,13 @@ void TgpMfdDrawable::DisplayInit(ImageBuffer* image)
 {
     DisplayExit();
 
-    if (!g_bGreyScaleMFD)
+    if ( not g_bGreyScaleMFD)
         g_bGreyMFD = false;
 
     privateDisplay = new RenderIR;
     ((RenderIR*)privateDisplay)->Setup(image, OTWDriver.GetViewpoint());
 
-    if ((g_bGreyMFD) && (!bNVGmode))
+    if ((g_bGreyMFD) and ( not bNVGmode))
         privateDisplay->SetColor(GetMfdColor(MFD_WHITE));
     else
         privateDisplay->SetColor(0xff00ff00);
@@ -57,7 +57,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
     float cX, cY = 0;
     sprintf(Str, "");
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         display = privateDisplay;
         OffMode(display);
@@ -71,18 +71,18 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
     Sms = playerAC->Sms;
     display = newDisplay;
 
-    if (!theRadar || !pFCC || !self || !Sms)
+    if ( not theRadar or not pFCC or not self or not Sms)
     {
-        ShiWarning("Oh Oh shouldn't be here without a radar or FCC or player or SMS!");
+        ShiWarning("Oh Oh shouldn't be here without a radar or FCC or player or SMS");
         return;
     }
-    else if (!laserPod)
+    else if ( not laserPod)
     {
         //display = privateDisplay; //Wombat778 3-24-04  CTD Fix in virtual cockpit.
         OffMode(display);
         return;
     }
-    else if (!self->HasPower(AircraftClass::RightHptPower))
+    else if ( not self->HasPower(AircraftClass::RightHptPower))
     {
         OffMode(display);
         BottomRow();
@@ -90,7 +90,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
         return;
     }
 
-    flash = (vuxRealTime & 0x200);
+    flash = (vuxRealTime bitand 0x200);
 
     //Check if we're in standby
     if (self->PodCooling > 0.0F) //always stby
@@ -105,7 +105,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
     laserPod->MenuMode = MenuMode;
 
     //pod image
-    if (laserPod && self->PodCooling <= 0.0F)
+    if (laserPod and self->PodCooling <= 0.0F)
     {
         laserPod->SetIntensity(GetIntensity());
         laserPod->Display(display);
@@ -119,7 +119,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
     }
 
     // FRB - B&W display
-    if ((g_bGreyMFD) && (!bNVGmode))
+    if ((g_bGreyMFD) and ( not bNVGmode))
         display->SetColor(GetMfdColor(MFD_WHITE));
     else
         display->SetColor(0xff00ff00);
@@ -134,7 +134,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
     DrawMasterArm(display);
 
     //Ralt/Laser/Impact time/weapons indication
-    if (!MenuMode)
+    if ( not MenuMode)
     {
         DrawRALT(display);
         LaserIndicator(display);
@@ -144,7 +144,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
 
     theRadar->GetCursorPosition(&cX, &cY);
 
-    if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
         OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
         DrawBullseyeCircle(display, cX, cY);
     else
@@ -159,7 +159,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
 
     // RV - I-Hawk - if in TGP mode (should be only in AG mode) and pitch < -20 degrees or
     // Roll > 75 degrees and pitch < 0 degrees, show attiutde warning
-    if (playerAC && ((fabs(playerAC->Roll()) > 75.0f * DTR && playerAC->Pitch() < 0.0f) ||
+    if (playerAC and ((fabs(playerAC->Roll()) > 75.0f * DTR and playerAC->Pitch() < 0.0f) or
                      (playerAC->Pitch() < -20.0f * DTR)))
     {
         for (int i = 0; i < 4; i++)
@@ -180,7 +180,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
     // (works on all MFDs and not only here)
     for (int i = 0; i < 4; i++)
     {
-        if ((MfdDisplay[i])->GetTGPWarning() && (MfdDisplay[i])->CurMode() == MFDClass::TGPMode)
+        if ((MfdDisplay[i])->GetTGPWarning() and (MfdDisplay[i])->CurMode() == MFDClass::TGPMode)
         {
             TGPAttitudeWarning(display);
             break;
@@ -197,7 +197,7 @@ void TgpMfdDrawable::PushButton(int whichButton, int whichMFD)
     switch (whichButton)
     {
         case 0:
-            MenuMode = !MenuMode;
+            MenuMode = not MenuMode;
             break;
 
         case 2:
@@ -208,8 +208,8 @@ void TgpMfdDrawable::PushButton(int whichButton, int whichMFD)
 
         case 3:
             pFCC->LaserFire = FALSE;
-            pFCC->InhibitFire = !pFCC->InhibitFire;
-            StbyMode = !StbyMode;
+            pFCC->InhibitFire = not pFCC->InhibitFire;
+            StbyMode = not StbyMode;
             break;
 
         case 5:
@@ -220,13 +220,13 @@ void TgpMfdDrawable::PushButton(int whichButton, int whichMFD)
                 pFCC->InhibitFire = FALSE;
             }
             else if (laserPod)
-                laserPod->BHOT = !laserPod->BHOT;
+                laserPod->BHOT = not laserPod->BHOT;
 
             break;
 
         case 7:
-            pFCC->preDesignate = !pFCC->preDesignate;
-            SP = !SP;
+            pFCC->preDesignate = not pFCC->preDesignate;
+            SP = not SP;
             break;
 
         case 8:
@@ -234,13 +234,13 @@ void TgpMfdDrawable::PushButton(int whichButton, int whichMFD)
             break;
 
         case 9:
-            StbyMode = !StbyMode;
-            //pFCC->InhibitFire = !pFCC->InhibitFire;
-            MenuMode = !MenuMode;
+            StbyMode = not StbyMode;
+            //pFCC->InhibitFire = not pFCC->InhibitFire;
+            MenuMode = not MenuMode;
             break;
 
         case 19:
-            if ((g_bGreyMFD) || (!g_bGreyScaleMFD))
+            if ((g_bGreyMFD) or ( not g_bGreyScaleMFD))
                 g_bGreyMFD = false;
             else
                 g_bGreyMFD = true;
@@ -269,7 +269,7 @@ void TgpMfdDrawable::OffMode(VirtualDisplay* display)
     display->SetFont(ofont);
     theRadar->GetCursorPosition(&cX, &cY);
 
-    if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp && // JPG 14 Dec 03 - Added BE/ownship info
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and // JPG 14 Dec 03 - Added BE/ownship info
         OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
         DrawBullseyeCircle(display, cX, cY);
     else
@@ -281,20 +281,20 @@ VirtualDisplay* TgpMfdDrawable::GetDisplay(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC || !playerAC->Sms)
+    if ( not playerAC or not playerAC->Sms)
         return privateDisplay;
 
     SensorClass* laserPod = FindLaserPod(playerAC->Sms->Ownship());
 
     if (laserPod)
     {
-        if (!laserPod->GetDisplay())
+        if ( not laserPod->GetDisplay())
         {
             if (privateDisplay)
             {
                 laserPod->DisplayInit(((Render2D*)(privateDisplay))->GetImageBuffer());
 
-                if ((g_bGreyMFD) && (!bNVGmode))
+                if ((g_bGreyMFD) and ( not bNVGmode))
                     privateDisplay->SetColor(0xff000000);
             }
 
@@ -308,9 +308,9 @@ VirtualDisplay* TgpMfdDrawable::GetDisplay(void)
 }
 void TgpMfdDrawable::DrawRALT(VirtualDisplay* display)
 {
-    if (TheHud && !(self->mFaults && self->mFaults->GetFault(FaultClass::ralt_fault))
-        && self->af->platform->RaltReady() &&
-        TheHud->FindRollAngle(-TheHud->hat) && TheHud->FindPitchAngle(-TheHud->hat))
+    if (TheHud and not (self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
+       and self->af->platform->RaltReady() and 
+        TheHud->FindRollAngle(-TheHud->hat) and TheHud->FindPitchAngle(-TheHud->hat))
     {
         float x, y = 0;
         GetButtonPos(5, &x, &y);
@@ -387,7 +387,7 @@ void TgpMfdDrawable::LaserIndicator(VirtualDisplay* display)
     display->TextLeft(.25f, .30f, "ManualFire       ", (pFCC->ManualFire        ? 2 : 0));
 #endif
 
-    if (laserPod && pFCC->LaserArm)
+    if (laserPod and pFCC->LaserArm)
     {
         //armed and fired
         if (pFCC->LaserFire)
@@ -414,7 +414,7 @@ void TgpMfdDrawable::ImpactTime(VirtualDisplay* display)
 
     if (pFCC->ImpactTime >= 10.0F)
         sprintf(Str, "00:%2.0f", pFCC->ImpactTime);
-    else if (pFCC->ImpactTime > 0 && pFCC->ImpactTime < 10.0F)
+    else if (pFCC->ImpactTime > 0 and pFCC->ImpactTime < 10.0F)
         sprintf(Str, "00:0%1.0f", pFCC->ImpactTime);
     else
         sprintf(Str, "00:00");
@@ -434,7 +434,7 @@ void TgpMfdDrawable::DrawMasterArm(VirtualDisplay* display)
             case SMSBaseClass::Safe:
 
                 //MI not here in real
-                if (!g_bRealisticAvionics)
+                if ( not g_bRealisticAvionics)
                     mode = "SAF";
                 else
                     mode = "";
@@ -596,7 +596,7 @@ void TgpMfdDrawable::DrawRange(VirtualDisplay* display)
     FireControlComputer* pFCC = playerAC->Sms->Ownship()->GetFCC();
     float x, y = 0;
 
-    if (!pFCC)
+    if ( not pFCC)
         return;
 
     //don't draw range in slave mode

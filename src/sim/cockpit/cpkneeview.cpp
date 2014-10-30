@@ -109,7 +109,7 @@ void CPKneeView::DisplayDraw(void)
     {
         // If we're not in Realistic mode, draw the current position marker
         // M.N. Added Full realism mode
-        if (PlayerOptions.GetAvionicsType() != ATRealistic && PlayerOptions.GetAvionicsType() != ATRealisticAV)
+        if (PlayerOptions.GetAvionicsType() not_eq ATRealistic and PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
         {
             DrawCurrentPosition(mpOTWImage, renderer, (SimVehicleClass*)mpOwnship);
         }
@@ -125,7 +125,7 @@ void CPKneeView::DisplayDraw(void)
 void CPKneeView::DrawMissionText(Render2D *renderer, SimVehicleClass *platform)
 {
     // sfr: check at beginning
-    if (SimDriver.RunningDogfight() || SimDriver.RunningInstantAction())
+    if (SimDriver.RunningDogfight() or SimDriver.RunningInstantAction())
     {
         return;
     }
@@ -146,24 +146,24 @@ void CPKneeView::DrawMissionText(Render2D *renderer, SimVehicleClass *platform)
     {
         v = 0.95f - LINE_HEIGHT;
 
-        if (GetBriefingData(GBD_PACKAGE_STPTHDR, 0, string, sizeof(string)) != -1)
+        if (GetBriefingData(GBD_PACKAGE_STPTHDR, 0, string, sizeof(string)) not_eq -1)
         {
             renderer->TextLeft(-0.95f, v, string);
             v -= LINE_HEIGHT;
         }
 
-        for (lines = 0; GetBriefingData(GBD_PACKAGE_STPT, lines, string, sizeof(string)) != -1; ++lines)
+        for (lines = 0; GetBriefingData(GBD_PACKAGE_STPT, lines, string, sizeof(string)) not_eq -1; ++lines)
         {
             renderer->TextLeft(-0.95f, v, string);
             v -= LINE_HEIGHT;
         }
 
         //MI display GPS coords when on ground, for INS alignment stuff
-        if (g_bRealisticAvionics && g_bINS)
+        if (g_bRealisticAvionics and g_bINS)
         {
             v -= 2 * LINE_HEIGHT;
 
-            if (((AircraftClass*)SimDriver.GetPlayerEntity()) && ((AircraftClass*)SimDriver.GetPlayerEntity())->OnGround())
+            if (((AircraftClass*)SimDriver.GetPlayerEntity()) and ((AircraftClass*)SimDriver.GetPlayerEntity())->OnGround())
             {
                 char latStr[20] = "";
                 char longStr[20] = "";
@@ -211,26 +211,26 @@ void CPKneeView::DrawMissionText(Render2D *renderer, SimVehicleClass *platform)
     }
     else
     {
-        if (GetBriefingData(GBD_PLAYER_ELEMENT, 0, string, sizeof(string)) != -1)
+        if (GetBriefingData(GBD_PLAYER_ELEMENT, 0, string, sizeof(string)) not_eq -1)
         {
             renderer->TextLeft(-0.9f, v, string);
             v -= LINE_HEIGHT;
         }
 
-        if (GetBriefingData(GBD_PLAYER_TASK,    0, string, sizeof(string)) != -1)
+        if (GetBriefingData(GBD_PLAYER_TASK,    0, string, sizeof(string)) not_eq -1)
         {
             lines = renderer->TextWrap(-0.8f, v, string, LINE_HEIGHT, 1.7f);
             v -= (lines + 1) * LINE_HEIGHT;
         }
 
         // Display the package info (if we are part of a package)
-        if (GetBriefingData(GBD_PACKAGE_LABEL, 0, string, sizeof(string)) != -1)
+        if (GetBriefingData(GBD_PACKAGE_LABEL, 0, string, sizeof(string)) not_eq -1)
         {
             renderer->TextLeft(-0.9f, v, string);
             v -= LINE_HEIGHT;
 
             // Package mission statement
-            if (GetBriefingData(GBD_PACKAGE_MISSION, 0, string, sizeof(string)) != -1)
+            if (GetBriefingData(GBD_PACKAGE_MISSION, 0, string, sizeof(string)) not_eq -1)
             {
                 lines = renderer->TextWrap(-0.8f, v, string, LINE_HEIGHT, 1.7f);
                 v -= lines * LINE_HEIGHT;
@@ -239,11 +239,11 @@ void CPKneeView::DrawMissionText(Render2D *renderer, SimVehicleClass *platform)
             // List the flights in the package
             lines = 0;
 
-            while (GetBriefingData(GBD_PACKAGE_ELEMENT_NAME, lines, string, sizeof(string)) != -1)
+            while (GetBriefingData(GBD_PACKAGE_ELEMENT_NAME, lines, string, sizeof(string)) not_eq -1)
             {
                 renderer->TextLeft(-0.8f, v, string);
 
-                if (GetBriefingData(GBD_PACKAGE_ELEMENT_TASK, lines, string, sizeof(string)) != -1)
+                if (GetBriefingData(GBD_PACKAGE_ELEMENT_TASK, lines, string, sizeof(string)) not_eq -1)
                     renderer->TextLeft(-0.1f, v, string);
 
                 lines ++;
@@ -374,10 +374,10 @@ void CPKneeView::RenderMap(SimVehicleClass *platform)
     // Copy the map image into the target buffer
     DrawMap();
 
-    // OW FIXME: the following StartFrame() call will result in a call to IDirect3DDevice7::SetRenderTarget. We can't do this on the Voodoo 1 & 2 ;(
+    // OW FIXME: the following StartFrame() call will result in a call to IDirect3DDevice7::SetRenderTarget. We can't do this on the Voodoo 1 bitand 2 ;(
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(DisplayOptions.DispVideoDriver);
 
-    if (!pDI->SupportsSRT())
+    if ( not pDI->SupportsSRT())
         return;
 
     // Draw in the waypoints
@@ -440,8 +440,8 @@ void CPKneeView::DrawMap()
             //this points to the pixel
             UInt8 *pixelPointer = rowFirstPointer + dstCol;
 
-            if (((srcRowInitOffset + dstRow) >= h) || ((srcRowInitOffset + dstRow) < 0) ||
-                ((srcColInitOffset + dstCol) >= w) || ((srcColInitOffset + dstCol) < 0))
+            if (((srcRowInitOffset + dstRow) >= h) or ((srcRowInitOffset + dstRow) < 0) or
+                ((srcColInitOffset + dstCol) >= w) or ((srcColInitOffset + dstCol) < 0))
             {
                 //we use a transparent pixel...
                 dst[0] = 0xff000000;
@@ -482,7 +482,7 @@ void CPKneeView::DrawWaypoints(SimVehicleClass *platform)
         // Draw the waypoint marker and the connecting line if this isn't the first one
         Circle(x1, y1, WP_SIZE);
 
-        if (!isFirst)
+        if ( not isFirst)
         {
             Line(x1, y1, x2, y2);
         }
@@ -554,7 +554,7 @@ void CPKneeView::DrawCurrentPosition(ImageBuffer *targetBuffer, Render2D *render
             v = -0.95f;
         }
 
-        if (vuxRealTime & 0x200)
+        if (vuxRealTime bitand 0x200)
         {
             // Don't draw to implement a flashing icon when the real postion is off screen.
             return;
@@ -572,7 +572,7 @@ void CPKneeView::DrawCurrentPosition(ImageBuffer *targetBuffer, Render2D *render
             h = -0.95f;
         }
 
-        if (vuxRealTime & 0x200)
+        if (vuxRealTime bitand 0x200)
         {
             // Don't draw to implement a flashing icon when the real postion is off screen.
             return;

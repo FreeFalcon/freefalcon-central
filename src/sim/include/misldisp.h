@@ -38,12 +38,12 @@ public:
     MissileDisplayClass(SimMoverClass* newPlatform);
     int IsReady(void)
     {
-        return flags & DisplayReady;
+        return flags bitand DisplayReady;
     };
     void SetReady(int flag)
     {
-        if (flag) flags |= DisplayReady;
-        else flags &= ~DisplayReady;
+        if (flag) flags or_eq DisplayReady;
+        else flags and_eq compl DisplayReady;
     };
     virtual void DisplayInit(ImageBuffer* newImage);
     void Display(VirtualDisplay*);

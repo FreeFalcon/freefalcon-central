@@ -37,7 +37,7 @@ extern int gGameType;
 
 using namespace std;
 
-// constructors & destructor
+// constructors bitand destructor
 FalconSessionEntity::FalconSessionEntity(ulong domainMask, char *callsign) : VuSessionEntity(domainMask, callsign)
 {
     //name = new _TCHAR[_NAME_LEN_];
@@ -167,7 +167,7 @@ FalconSessionEntity::FalconSessionEntity(VU_BYTE** stream, long *rem) : VuSessio
 
 FalconSessionEntity::FalconSessionEntity(FILE* filePtr) : VuSessionEntity(filePtr)
 {
-    MonoPrint("FalconSessionEntity: This function is not supported!\n");
+    MonoPrint("FalconSessionEntity: This function is not supported\n");
 }
 
 VU_ERRCODE FalconSessionEntity::InsertionCallback(void)
@@ -273,7 +273,7 @@ int FalconSessionEntity::Save(VU_BYTE** stream)
         FalconEntityList::iterator it;
         unsigned int i = 0;
 
-        for (it = fineInterestList.begin(); it != fineInterestList.end(); ++it)
+        for (it = fineInterestList.begin(); it not_eq fineInterestList.end(); ++it)
         {
             ids[i++] = it->get()->Id();
         }
@@ -293,8 +293,8 @@ int FalconSessionEntity::Save(VU_BYTE** stream)
 
 int FalconSessionEntity::Save(FILE* filePtr)
 {
-    MonoPrint("FalconSessionEntity: This function is not supported!\n");
-    ShiWarning("FalconSessionEntity: This function is not supported!\n");
+    MonoPrint("FalconSessionEntity: This function is not supported\n");
+    ShiWarning("FalconSessionEntity: This function is not supported\n");
     return 0;
     filePtr;
 }
@@ -348,7 +348,7 @@ void FalconSessionEntity::SetPlayerName(_TCHAR* pname)
     _tcscpy(name, pname);
     name[_NAME_LEN_] = 0;
 
-    if (gUICommsQ && Game())
+    if (gUICommsQ and Game())
     {
         gUICommsQ->Add(_Q_SESSION_UPDATE_, Id(), Game()->Id());
         UI_Refresh();
@@ -365,7 +365,7 @@ void FalconSessionEntity::SetPlayerCallsign(_TCHAR* pcallsign)
     _tcscpy(callSign, pcallsign);
     callSign[_CALLSIGN_LEN_] = 0;
 
-    if (gUICommsQ && Game())
+    if (gUICommsQ and Game())
     {
         gUICommsQ->Add(_Q_SESSION_UPDATE_, Id(), Game()->Id());
         UI_Refresh();
@@ -423,7 +423,7 @@ void FalconSessionEntity::SetPlayerSquadron(SquadronClass* ent)
     {
         playerSquadron = playerSquadronPtr->Id();
         country = playerSquadronPtr->GetOwner();
-        ShiAssert(country > 0 && country < 255);
+        ShiAssert(country > 0 and country < 255);
         GameManager.CheckPlayerStatus(playerSquadronPtr.get());
         //VuReferenceEntity(playerSquadronPtr);
     }
@@ -432,7 +432,7 @@ void FalconSessionEntity::SetPlayerSquadron(SquadronClass* ent)
         playerSquadron = FalconNullId;
     }
 
-    if (gUICommsQ && Game())
+    if (gUICommsQ and Game())
     {
         gUICommsQ->Add(_Q_SESSION_UPDATE_, Id(), Game()->Id());
         UI_Refresh();
@@ -451,7 +451,7 @@ void FalconSessionEntity::SetPlayerFlight(FlightClass* ent)
     CampEnterCriticalSection();
     SetDirty();
 
-    if (gCompressTillTime && IsLocal())
+    if (gCompressTillTime and IsLocal())
     {
         gCompressTillTime = 0; // Cancle our current takeoff flight.
         SetTimeCompression(1);
@@ -479,7 +479,7 @@ void FalconSessionEntity::SetPlayerFlight(FlightClass* ent)
         playerFlight = FalconNullId;
     }
 
-    if (gUICommsQ && Game())
+    if (gUICommsQ and Game())
     {
         gUICommsQ->Add(_Q_SESSION_UPDATE_, Id(), Game()->Id());
         UI_Refresh();
@@ -528,7 +528,7 @@ void FalconSessionEntity::SetPlayerEntity(FalconEntity* ent)
     CampEnterCriticalSection();
 
     // Update cameras if local (remote cameras are sent to us via the update/create event)
-    if (IsLocal() && ent)
+    if (IsLocal() and ent)
     {
         // KCK: Clear any previous camera and snap to this new entity.
         ClearCameras();
@@ -546,7 +546,7 @@ void FalconSessionEntity::SetPlayerEntity(FalconEntity* ent)
         //VuDeReferenceEntity(oldPlayerPtr);
 #if 0//NEW_SERVER_VIEWPOINT
 
-        if (!IsLocal() && Game()->IsLocal())
+        if ( not IsLocal() and Game()->IsLocal())
         {
             // viewpoint for the session if remote
             OTWDriver.RemoveViewpoint(this);
@@ -561,16 +561,16 @@ void FalconSessionEntity::SetPlayerEntity(FalconEntity* ent)
         GameManager.CheckPlayerStatus(playerEntityPtr.get());
         //VuReferenceEntity(playerEntityPtr);
         int newcountry = playerEntityPtr->GetCountry();
-        ShiAssert(newcountry > 0 && newcountry < 255);
+        ShiAssert(newcountry > 0 and newcountry < 255);
 
-        if (newcountry > 0 && newcountry < 255)
+        if (newcountry > 0 and newcountry < 255)
         {
             country = (uchar)newcountry;
         }
 
 #if 0//NEW_SERVER_VIEWPOINT
 
-        if (!IsLocal() && Game()->IsLocal())
+        if ( not IsLocal() and Game()->IsLocal())
         {
             // viewpoint for the session if remote
             OTWDriver.AddViewpoint(this);
@@ -596,7 +596,7 @@ void FalconSessionEntity::SetCountry(uchar c)
     country = c;
     ShiAssert(country > 0);
 
-    if (gUICommsQ && Game())
+    if (gUICommsQ and Game())
     {
         gUICommsQ->Add(_Q_SESSION_UPDATE_, Id(), Game()->Id());
         UI_Refresh();
@@ -695,7 +695,7 @@ void FalconSessionEntity::SetFlyState(uchar fs)
 
 void FalconSessionEntity::SetReqCompression(short rc)
 {
-    if (reqCompression != rc)
+    if (reqCompression not_eq rc)
     {
         reqCompression = rc;
         DoFullUpdate();
@@ -712,7 +712,7 @@ int FalconSessionEntity::InSessionBubble(FalconEntity* ent, float bubble_multipl
     float ent_bubble_range;
     int i;
 
-    if (CameraCount() == 0 || bubble_multiplier < 0.01F)
+    if (CameraCount() == 0 or bubble_multiplier < 0.01F)
     {
         // No camera - so we have no bubble, or a rediculously small multiplier
         return FALSE;
@@ -723,7 +723,7 @@ int FalconSessionEntity::InSessionBubble(FalconEntity* ent, float bubble_multipl
     {
         ent_bubble_range = ent->EntityType()->bubbleRange_; // We don't adjust objective's bubble
     }
-    else if (ent->IsFlight() && gGameType == game_Dogfight)
+    else if (ent->IsFlight() and gGameType == game_Dogfight)
     {
         // KCK HACK: Basically, we want to always keep flights in our bubble in dogfight
         // sfr: is this necessary??
@@ -779,9 +779,9 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     }
 
     // Copy in new data
-    if (!name || strcmp(name, tmpSess->name) != 0)
+    if ( not name or strcmp(name, tmpSess->name) not_eq 0)
     {
-        dirty |= 0x0001;
+        dirty or_eq 0x0001;
         size = _tcslen(tmpSess->name);
         /*if (name)
           delete name;
@@ -790,9 +790,9 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
         name[size] = name[_NAME_LEN_] = 0;
     }
 
-    if (!callSign || strcmp(callSign, tmpSess->callSign) != 0)
+    if ( not callSign or strcmp(callSign, tmpSess->callSign) not_eq 0)
     {
-        dirty |= 0x0002;
+        dirty or_eq 0x0002;
         size = _tcslen(tmpSess->callSign);
         /*if (callSign)
           delete callSign;
@@ -810,42 +810,42 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     // a flight in another game.. Probably not good. If he's in
     // a flight in this game, the playerFlightPtr should dirty the
     // session just dandily..
-    // if(playerFlight != tmpSess->playerFlight)
-    // dirty |= 0x0004;
-    if (country != tmpSess->country)
+    // if(playerFlight not_eq tmpSess->playerFlight)
+    // dirty or_eq 0x0004;
+    if (country not_eq tmpSess->country)
     {
-        dirty |= 0x0008;
+        dirty or_eq 0x0008;
     }
 
-    if (aircraftNum != tmpSess->aircraftNum)
+    if (aircraftNum not_eq tmpSess->aircraftNum)
     {
-        dirty |= 0x0010;
+        dirty or_eq 0x0010;
     }
 
-    if (pilotSlot != tmpSess->pilotSlot)
+    if (pilotSlot not_eq tmpSess->pilotSlot)
     {
-        dirty |= 0x0020;
+        dirty or_eq 0x0020;
     }
 
     tmpSess->playerSquadronPtr.reset((Squadron) vuDatabase->Find(tmpSess->playerSquadron));
     tmpSess->playerFlightPtr.reset((Flight) vuDatabase->Find(tmpSess->playerFlight));
     tmpSess->playerEntityPtr.reset(static_cast<FalconEntity*>(vuDatabase->Find(tmpSess->playerEntity)));
 
-    if (playerSquadronPtr != tmpSess->playerSquadronPtr)
+    if (playerSquadronPtr not_eq tmpSess->playerSquadronPtr)
     {
-        dirty |= 0x0040;
+        dirty or_eq 0x0040;
         SetPlayerSquadron(tmpSess->playerSquadronPtr.get());
     }
 
-    if (playerFlightPtr != tmpSess->playerFlightPtr)
+    if (playerFlightPtr not_eq tmpSess->playerFlightPtr)
     {
-        dirty |= 0x0080;
+        dirty or_eq 0x0080;
         SetPlayerFlight(tmpSess->playerFlightPtr.get());
     }
 
-    if (playerEntityPtr != tmpSess->playerEntityPtr)
+    if (playerEntityPtr not_eq tmpSess->playerEntityPtr)
     {
-        dirty |= 0x0100;
+        dirty or_eq 0x0100;
         SetPlayerEntity(tmpSess->playerEntityPtr.get());
     }
 
@@ -865,19 +865,19 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
 
     // Tell the flight to hold short if this guy is coming into the sim.
     // sfr: taking this out. This prevents flights from taking off
-    //if (flyState == FLYSTATE_LOADING && playerFlightPtr && playerFlightPtr->IsLocal())
+    //if (flyState == FLYSTATE_LOADING and playerFlightPtr and playerFlightPtr->IsLocal())
     // playerFlightPtr->SetFalcFlag(FEC_HOLDSHORT);
 
     memcpy(&reqCompression, &tmpSess->reqCompression, sizeof(short));
 
-    if (tmpSess->Game() && (Game() != tmpSess->Game()))
+    if (tmpSess->Game() and (Game() not_eq tmpSess->Game()))
     {
         JoinGame(tmpSess->Game());
     }
 
     // MonoPrint("Got info for session: %s - team %d - #%d\n", name, country, reqCompression);
 
-    if (gUICommsQ && (dirty & 0x00ff) && Game())
+    if (gUICommsQ and (dirty bitand 0x00ff) and Game())
     {
         gUICommsQ->Add(_Q_SESSION_UPDATE_, Id(), Game()->Id());
         UI_Refresh();
@@ -889,12 +889,12 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
 
     // KCK: if we're the host, check to see if Assigned aircraft is different than the one
     // the session thinks it has and correct any errors by sending an SendAircraftSlot message
-    if (FalconLocalGame && Game() == FalconLocalGame && FalconLocalGame->IsLocal())
+    if (FalconLocalGame and Game() == FalconLocalGame and FalconLocalGame->IsLocal())
     {
         if (
-            assignedAircraftNum != aircraftNum ||
-            assignedPilotSlot != pilotSlot ||
-            assignedPlayerFlightPtr != playerFlightPtr
+            assignedAircraftNum not_eq aircraftNum or
+            assignedPilotSlot not_eq pilotSlot or
+            assignedPlayerFlightPtr not_eq playerFlightPtr
         )
         {
             //Flight flight = GetAssignedPlayerFlight();
@@ -920,7 +920,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
              msg->dataBlock.got_pilot_slot = assignedPilotSlot;
              msg->dataBlock.got_slot = assignedAircraftNum;
              msg->dataBlock.got_pilot_skill = 0;
-             if (msg->dataBlock.got_pilot_slot != NO_PILOT)
+             if (msg->dataBlock.got_pilot_slot not_eq NO_PILOT)
              msg->dataBlock.result = REQUEST_RESULT_SUCCESS;
              else
              msg->dataBlock.result = REQUEST_RESULT_DENIED;
@@ -934,7 +934,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     fineInterestList.clear();
     FalconEntityList::iterator it;
 
-    for (it = tmpSess->fineInterestList.begin(); it != tmpSess->fineInterestList.end(); ++it)
+    for (it = tmpSess->fineInterestList.begin(); it not_eq tmpSess->fineInterestList.end(); ++it)
     {
         AddToFineInterest(it->get());
     }
@@ -953,7 +953,7 @@ void FalconSessionEntity::UpdatePlayer(void)
     squadron_ptr = (Squadron) vuDatabase->Find(playerSquadron);
     flight_ptr = (Flight) vuDatabase->Find(playerFlight);
 
-    if ((!flight_ptr) && (playerFlight != vuNullId))
+    if (( not flight_ptr) and (playerFlight not_eq vuNullId))
     {
         static int now, last_time;
         now = GetTickCount();
@@ -969,17 +969,17 @@ void FalconSessionEntity::UpdatePlayer(void)
 
     entity_ptr = static_cast<FalconEntity*>(vuDatabase->Find(playerEntity));
 
-    if (squadron_ptr != playerSquadronPtr)
+    if (squadron_ptr not_eq playerSquadronPtr)
     {
         SetPlayerSquadron(squadron_ptr);
     }
 
-    if (flight_ptr != playerFlightPtr)
+    if (flight_ptr not_eq playerFlightPtr)
     {
         SetPlayerFlight(flight_ptr);
     }
 
-    if (entity_ptr != playerEntityPtr)
+    if (entity_ptr not_eq playerEntityPtr)
     {
         SetPlayerEntity(entity_ptr);
 
@@ -995,14 +995,14 @@ void FalconSessionEntity::UpdatePlayer(void)
 // sfr fine interest stuff
 bool FalconSessionEntity::AddToFineInterest(FalconEntity *entity, bool silent)
 {
-    if ((entity == NULL) || (fineInterestList.size() == FALCSESS_MAX_FINE_INTEREST))
+    if ((entity == NULL) or (fineInterestList.size() == FALCSESS_MAX_FINE_INTEREST))
     {
         return false;
     }
 
     fineInterestList.push_back(FalconEntityBin(entity));
 
-    if (!silent)
+    if ( not silent)
     {
         SetDirty();
     }
@@ -1013,7 +1013,7 @@ bool FalconSessionEntity::AddToFineInterest(FalconEntity *entity, bool silent)
 /** removes unit from fine interest list. Will be updated normally */
 bool FalconSessionEntity::RemoveFromFineInterest(const FalconEntity *entity, bool silent)
 {
-    for (FalconEntityList::iterator it = fineInterestList.begin(); it != fineInterestList.end(); ++it)
+    for (FalconEntityList::iterator it = fineInterestList.begin(); it not_eq fineInterestList.end(); ++it)
     {
         FalconEntity *e = it->get();
 
@@ -1021,7 +1021,7 @@ bool FalconSessionEntity::RemoveFromFineInterest(const FalconEntity *entity, boo
         {
             fineInterestList.erase(it);
 
-            if (!silent)
+            if ( not silent)
             {
                 SetDirty();
             }
@@ -1038,7 +1038,7 @@ void FalconSessionEntity::ClearFineInterest(bool silent)
 {
     fineInterestList.clear();
 
-    if (!silent)
+    if ( not silent)
     {
         SetDirty();
     }
@@ -1048,7 +1048,7 @@ void FalconSessionEntity::ClearFineInterest(bool silent)
 /** checks if a unit is in fine interest list */
 bool FalconSessionEntity::HasFineInterest(const FalconEntity *entity) const
 {
-    for (FalconEntityList::const_iterator it = fineInterestList.begin(); it != fineInterestList.end(); ++it)
+    for (FalconEntityList::const_iterator it = fineInterestList.begin(); it not_eq fineInterestList.end(); ++it)
     {
         FalconEntity *e = it->get();
 

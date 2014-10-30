@@ -28,7 +28,7 @@ void RViewPoint::Setup(float gndRange, int maxDetail, int minDetail, bool isZBuf
 
     bZBuffering = isZBuffer; //JAM 13Dec03
 
-    ShiAssert(!IsReady());
+    ShiAssert( not IsReady());
 
     // Initialize our sun and moon textures
     SetupTextures();
@@ -208,7 +208,7 @@ void RViewPoint::Update(const Tpoint *pos)
     }
 
     //JAM 265Dec03
-    if (!bZBuffering)
+    if ( not bZBuffering)
     {
         for (i = 0; i < nObjectLists; i++)
             objectLists[i].displayList.SortForViewpoint();
@@ -233,7 +233,7 @@ void RViewPoint::InsertObject(DrawableObject* object)
 
     ShiAssert(object);
 
-    if (!object) // JB 010710 CTD?
+    if ( not object) // JB 010710 CTD?
         return;
 
     // Decide into which list to put the object
@@ -247,7 +247,7 @@ void RViewPoint::InsertObject(DrawableObject* object)
     }
 
     // We could only get here if the object was higher than the highest level
-    ShiWarning("Object with way to much altitude!");
+    ShiWarning("Object with way to much altitude");
 }
 
 
@@ -334,13 +334,13 @@ int RViewPoint::CloudLineOfSight(Tpoint *p1, Tpoint *p2)
 \***************************************************************************/
 void RViewPoint::UpdateMoon()
 {
-    if (!TheTimeOfDay.ThereIsAMoon())
+    if ( not TheTimeOfDay.ThereIsAMoon())
     {
         lastDay = 1;
         return;
     }
 
-    if (!lastDay) return;
+    if ( not lastDay) return;
 
     lastDay = 0; // do it only once when the moon appear
 
@@ -356,9 +356,9 @@ void RViewPoint::UpdateMoon()
 
     while (texel < stopTexel)
     {
-        if (*texel != 0)   // Don't touch the chromakeyed texels!
+        if (*texel not_eq 0)   // Don't touch the chromakeyed texels
         {
-            *dest++ = (BYTE)((*texel++) | 128); // Use the "green" set of palette entries
+            *dest++ = (BYTE)((*texel++) bitor 128); // Use the "green" set of palette entries
         }
         else
         {
@@ -390,12 +390,12 @@ void RViewPoint::SetupTextures()
     else
     {
         // Build the normal sun texture
-        SunTexture.LoadAndCreate("sun5.apl", MPR_TI_CHROMAKEY | MPR_TI_PALETTE);
+        SunTexture.LoadAndCreate("sun5.apl", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE);
         SunTexture.FreeImage();
 
         // Now load the image to construct the green sun texture
         // (Could do without this, but this is easy and done only once...)
-        if (!GreenSunTexture.LoadImage("sun5.apl", MPR_TI_CHROMAKEY | MPR_TI_PALETTE))
+        if ( not GreenSunTexture.LoadImage("sun5.apl", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE))
         {
             ShiError("Failed to load sun texture(2)");
         }
@@ -407,14 +407,14 @@ void RViewPoint::SetupTextures()
 
         while (p < stop)
         {
-            *p &= 0xFF00FF00;
+            *p and_eq 0xFF00FF00;
             p++;
         }
 
         pal->UpdateMPR();
 
         // Convert chroma color to Green
-        GreenSunTexture.chromaKey &= 0xFF00FF00;
+        GreenSunTexture.chromaKey and_eq 0xFF00FF00;
 
         // Send the texture to MPR
         GreenSunTexture.CreateTexture();
@@ -424,10 +424,10 @@ void RViewPoint::SetupTextures()
     //JAM
 
     // Now setup the moon textures.  (We'll tweak them periodicaly in BuildMoon)
-    OriginalMoonTexture.LoadAndCreate("moon.gif", MPR_TI_CHROMAKEY | MPR_TI_PALETTE | MPR_TI_ALPHA);
-    MoonTexture.LoadAndCreate("moon.gif", MPR_TI_CHROMAKEY | MPR_TI_PALETTE | MPR_TI_ALPHA);
+    OriginalMoonTexture.LoadAndCreate("moon.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
+    MoonTexture.LoadAndCreate("moon.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
     GreenMoonTexture.SetPalette(MoonTexture.GetPalette());
-    GreenMoonTexture.LoadAndCreate("moon.gif", MPR_TI_CHROMAKEY | MPR_TI_PALETTE | MPR_TI_ALPHA);
+    GreenMoonTexture.LoadAndCreate("moon.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
 
     // build white moon with alpha
     Palette *moonPal = MoonTexture.GetPalette();
@@ -439,7 +439,7 @@ void RViewPoint::SetupTextures()
 
     while (dst < end)
     {
-        int a = *dst & 0xff;
+        int a = *dst bitand 0xff;
         *dst++ = (a << 24) + 0xffffff;
     }
 
@@ -455,7 +455,7 @@ void RViewPoint::SetupTextures()
     while (dst < end)
     {
         color = *src++;
-        color = ((color >> 3) & 0xff000000) + 0xffffff;
+        color = ((color >> 3) bitand 0xff000000) + 0xffffff;
         *dst++ = color;
     }
 
@@ -468,7 +468,7 @@ void RViewPoint::SetupTextures()
     while (dst < end)
     {
         color = *src++;
-        *dst++ = (color & 0xff000000) + 0x00ff00;
+        *dst++ = (color bitand 0xff000000) + 0x00ff00;
     }
 
     // Update the moon palette
@@ -492,7 +492,7 @@ void RViewPoint::ReleaseTextures(void)
     // Free our texture resources
 
     //JAM 04Oct03
-    if (DisplayOptions.m_texMode != DisplayOptionsClass::TEX_MODE_DDS)
+    if (DisplayOptions.m_texMode not_eq DisplayOptionsClass::TEX_MODE_DDS)
         GreenSunTexture.FreeAll();
 
     //JAM

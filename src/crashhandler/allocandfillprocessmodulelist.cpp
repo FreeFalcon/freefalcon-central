@@ -2,6 +2,7 @@
        John Robbins - Microsoft Systems Journal Bugslayer Column
 ----------------------------------------------------------------------*/
 
+#include <cISO646>
 #include "pch.h"
 #include "BugslayerUtil.h"
 
@@ -21,7 +22,7 @@ AllocAndFillProcessModuleList(HANDLE hHeap    ,
         return (NULL) ;
     }
 
-    ASSERT(NULL != hHeap) ;
+    ASSERT(NULL not_eq hHeap) ;
 
     if (NULL == hHeap)
     {
@@ -37,9 +38,9 @@ AllocAndFillProcessModuleList(HANDLE hHeap    ,
                                  NULL                    ,
                                  &uiQueryCount) ;
     ASSERT(TRUE == bRet) ;
-    ASSERT(0 != uiQueryCount) ;
+    ASSERT(0 not_eq uiQueryCount) ;
 
-    if ((FALSE == bRet) || (0 == uiQueryCount))
+    if ((FALSE == bRet) or (0 == uiQueryCount))
     {
         return (NULL) ;
     }
@@ -53,7 +54,7 @@ AllocAndFillProcessModuleList(HANDLE hHeap    ,
                                     uiQueryCount *
                                     sizeof(HMODULE));
 
-    ASSERT(NULL != pModArray) ;
+    ASSERT(NULL not_eq pModArray) ;
 
     if (NULL == pModArray)
     {
@@ -66,7 +67,7 @@ AllocAndFillProcessModuleList(HANDLE hHeap    ,
                             pModArray               ,
                             puiCount) ;
     // Save off the last error so that the assert can still fire and
-    //  not change the value.
+    // not change the value.
     DWORD dwLastError = GetLastError() ;
     ASSERT(TRUE == bRet) ;
 
@@ -82,7 +83,7 @@ AllocAndFillProcessModuleList(HANDLE hHeap    ,
         SetLastError(ERROR_SUCCESS) ;
     }
 
-    // All OK, Jumpmaster!
+    // All OK, Jumpmaster
     return (pModArray) ;
 }
 

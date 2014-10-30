@@ -72,7 +72,7 @@ int ClosestApproachLinePoint(Tpoint &A, Tpoint &B, Tpoint &C, float &PercentOfAB
     //D = A + ABnorm * lengthAD;
     PercentOfAB = lengthAD / (lengthAB + .00000001f);
 
-    if (PercentOfAB >= 0 && PercentOfAB <= 1)
+    if (PercentOfAB >= 0 and PercentOfAB <= 1)
         return 1;
 
     return 0;
@@ -119,7 +119,7 @@ void AircraftTurbulence::RecordPosition(float Strength, float X, float Y, float 
 
     rn = (TurbRecordNode *)turbRecordList.GetHead();
 
-    if (counter <= 0 || !rn || breakRecord)
+    if (counter <= 0 or not rn or breakRecord)
     {
         breakRecord = 0;
         TurbRecordNode *newrn;
@@ -233,9 +233,9 @@ float AircraftTurbulence::GetTurbulence(float X, float Y, float Z, float Yaw, fl
         {
             AircraftTurbulence *at2 = (AircraftTurbulence *)at->GetSucc();
 
-            if (!at->locked)
+            if ( not at->locked)
             {
-                if (!at->turbRecordList.GetHead())
+                if ( not at->turbRecordList.GetHead())
                 {
                     delete at;
                 }
@@ -377,7 +377,7 @@ float TurbRecordNode::RetieveTurbulence(RetrieveTurbulanceParams &rtp)
 
 void AircraftTurbulence::Draw(class RenderOTW *renderer)   // debug useage
 {
-    if (!g_bDrawWakeTurbulence)
+    if ( not g_bDrawWakeTurbulence)
         return;
 
     lTurbulenceList.Lock();

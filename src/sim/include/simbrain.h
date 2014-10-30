@@ -39,15 +39,15 @@ public:
     void ClearTarget(void);
     void SetFlag(int val)
     {
-        flags |= val;
+        flags or_eq val;
     };
     void ClearFlag(int val)
     {
-        flags &= ~val;
+        flags and_eq compl val;
     };
     int IsSetFlag(int val)
     {
-        return (flags & val ? TRUE : FALSE);
+        return (flags bitand val ? TRUE : FALSE);
     };
     int SkillLevel(void)
     {

@@ -58,7 +58,7 @@ long GetFlightTime(Flight element)
 {
     WayPoint wp;
 
-    if (!element)
+    if ( not element)
         return(0);
 
     wp = element->GetCurrentUnitWP();
@@ -75,7 +75,7 @@ short GetFlightStatusID(Flight element)
     int found = 0;
     short ID = 0;
 
-    if (!element)
+    if ( not element)
         return(0);
 
     wp = element->GetCurrentUnitWP();
@@ -97,7 +97,7 @@ short GetFlightStatusID(Flight element)
             found;
             ID = _MIS_RTB;
 
-            while ((found == 0) && (wp))
+            while ((found == 0) and (wp))
             {
                 if (wp->GetWPAction() == WP_ASSEMBLE)
                 {
@@ -109,15 +109,15 @@ short GetFlightStatusID(Flight element)
                     ID = _MIS_EGRESS;
                     found = 1;
                 }
-                else if (wp->GetWPFlags() & WPF_TARGET)
+                else if (wp->GetWPFlags() bitand WPF_TARGET)
                 {
                     if
                     (
-                        element->GetUnitMission() == AMIS_BARCAP ||
-                        element->GetUnitMission() == AMIS_BARCAP2 ||
-                        element->GetUnitMission() == AMIS_HAVCAP ||
-                        element->GetUnitMission() == AMIS_RESCAP ||
-                        element->GetUnitMission() == AMIS_TARCAP ||
+                        element->GetUnitMission() == AMIS_BARCAP or
+                        element->GetUnitMission() == AMIS_BARCAP2 or
+                        element->GetUnitMission() == AMIS_HAVCAP or
+                        element->GetUnitMission() == AMIS_RESCAP or
+                        element->GetUnitMission() == AMIS_TARCAP or
                         element->GetUnitMission() == AMIS_AMBUSHCAP
                     )
                     {
@@ -147,7 +147,7 @@ short GetFlightStatusID(Flight element)
             }
         }
 
-        if ((TheCampaign.Flags & CAMP_TACTICAL) && (!found))
+        if ((TheCampaign.Flags bitand CAMP_TACTICAL) and ( not found))
         {
             ID = _MIS_ENROUTE;
         }
@@ -171,38 +171,38 @@ void CheckCampaignFlyButton()
     flt = FalconLocalSession->GetPlayerFlight();
     plane = FalconLocalSession->GetPilotSlot();
 
-    if ((gCommsMgr) && (gCommsMgr->Online()))
+    if ((gCommsMgr) and (gCommsMgr->Online()))
     {
         // Don't care about restricting access when online
-        if (flt && plane != 255)
+        if (flt and plane not_eq 255)
             Enabled = 1;
     }
     else
     {
         // OW - sylvains checkfly fix
 #if 1
-        if (flt && plane != 255 && GetFlightStatusID(flt) < _MIS_EGRESS)
+        if (flt and plane not_eq 255 and GetFlightStatusID(flt) < _MIS_EGRESS)
             // ADDED BY S.G. SO UNINITIALIZED FLIGHTS CAN'T TAKE OFF
         {
             int i, dontEnable = 0;
 
             if (GetFlightStatusID(flt) > _MIS_BRIEFING)
             {
-                for (i = 0; i < 4 && dontEnable == 0; i++)
+                for (i = 0; i < 4 and dontEnable == 0; i++)
                 {
-                    if (FalconLocalSession->GetPlayerFlight()->plane_stats[i] == AIRCRAFT_AVAILABLE && FalconLocalSession->GetPlayerFlight()->pilots[i] == NO_PILOT)
+                    if (FalconLocalSession->GetPlayerFlight()->plane_stats[i] == AIRCRAFT_AVAILABLE and FalconLocalSession->GetPlayerFlight()->pilots[i] == NO_PILOT)
                         dontEnable = 1;
                 }
             }
 
-            if (!dontEnable)
+            if ( not dontEnable)
                 // END OF ADDED SECTION
                 Enabled = 1;
         }
 
 #else
 
-        if (flt && plane != 255 && GetFlightStatusID(flt) < _MIS_EGRESS)
+        if (flt and plane not_eq 255 and GetFlightStatusID(flt) < _MIS_EGRESS)
             Enabled = 1;
 
 #endif
@@ -273,7 +273,7 @@ static void MissionSelectCB(long, short hittype, C_Base *control)
     Flight flight;
     F4CSECTIONHANDLE *Leave;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     Leave = UI_Enter(control->Parent_);
@@ -286,7 +286,7 @@ static void MissionSelectCB(long, short hittype, C_Base *control)
         gSelectedFlightID = gCurrentFlightID;
         flight = (Flight)vuDatabase->Find(gCurrentFlightID);
 
-        if (flight && !flight->IsDead())
+        if (flight and not flight->IsDead())
         {
             TheCampaign.MissionEvaluator->PreMissionEval(flight, 255);
             UpdateMissionWindow(win->GetID());
@@ -302,7 +302,7 @@ static void MissionSelectCB(long, short hittype, C_Base *control)
         }
     }
 
-    control->SetState(static_cast<short>(control->GetState() | 1));
+    control->SetState(static_cast<short>(control->GetState() bitor 1));
     control->Refresh();
     CheckCampaignFlyButton();
     UI_Leave(Leave);
@@ -324,7 +324,7 @@ static void SelectMission(C_Base *control)
         gSelectedFlightID = gCurrentFlightID;
         flight = (Flight)vuDatabase->Find(gCurrentFlightID);
 
-        if (flight && !flight->IsDead())
+        if (flight and not flight->IsDead())
         {
             TheCampaign.MissionEvaluator->PreMissionEval(flight, 255);
             UpdateMissionWindow(win->GetID());
@@ -332,7 +332,7 @@ static void SelectMission(C_Base *control)
         }
     }
 
-    control->SetState(static_cast<short>(control->GetState() | 1));
+    control->SetState(static_cast<short>(control->GetState() bitor 1));
     control->Refresh();
     CheckCampaignFlyButton();
     UI_Leave(Leave);
@@ -357,7 +357,7 @@ void FindMissionInBriefing(long ID)
 
             while (cur)
             {
-                if (cur->Item_ && !(cur->Item_->GetFlags() & C_BIT_INVISIBLE))
+                if (cur->Item_ and not (cur->Item_->GetFlags() bitand C_BIT_INVISIBLE))
                 {
                     if (((C_Mission*)cur->Item_)->GetStatusID() < _MIS_EGRESS)
                     {
@@ -369,13 +369,13 @@ void FindMissionInBriefing(long ID)
                             {
                                 cur->Item_->SetState(1);
 
-                                if (!StopLookingforMission)
+                                if ( not StopLookingforMission)
                                 {
                                     MissionSelectCB(cur->ID_, C_TYPE_LMOUSEUP, cur->Item_);
 
                                     // KLUDGE: Throw player in 1st slot
                                     // KCK: This should be done regardless of online status
-                                    // if(!gCommsMgr->Online())
+                                    // if( not gCommsMgr->Online())
                                     // { // Throw player in 1st slot
                                     RequestACSlot(flight, 0, static_cast<uchar>(flight->GetAdjustedAircraftSlot(0)), 0, 0, 1);
                                     // }
@@ -402,7 +402,7 @@ UI_Refresher *FindMissionItem(Flight flight)
 
     urec = (UI_Refresher*)gGps->Find(flight->GetCampID());
 
-    if (urec && urec->Mission_)
+    if (urec and urec->Mission_)
     {
         MissionSelectCB(urec->Mission_->GetID(), C_TYPE_LMOUSEUP, urec->Mission_);
         return urec;
@@ -421,34 +421,34 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
     Package package;
     WayPoint wp;
 
-    if (!element->Final())
+    if ( not element->Final())
         return(NULL);
 
-    if (TheCampaign.Flags & CAMP_TACTICAL)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL)
     {
-        if (element->GetOwner() != FalconLocalSession->GetTeam())
+        if (element->GetOwner() not_eq FalconLocalSession->GetTeam())
         {
             return NULL;
         }
     }
     else
     {
-        if (element->GetUnitSquadronID() != FalconLocalSession->GetPlayerSquadronID())
+        if (element->GetUnitSquadronID() not_eq FalconLocalSession->GetPlayerSquadronID())
             return(NULL);
     }
 
-    if (!tree || !element || !element->GetUnitParent())
+    if ( not tree or not element or not element->GetUnitParent())
         return(NULL);
 
     // Create new record
     mission = new C_Mission;
 
-    if (!mission)
+    if ( not mission)
         return(NULL);
 
     win = tree->GetParent();
 
-    if (!win)
+    if ( not win)
         return(NULL);
 
     mission->Setup(element->GetCampID(), 0); // ID=element->CampID;
@@ -495,7 +495,7 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
     mission->SetPriorityID(static_cast<short>(255 - package->GetMissionRequest()->priority));
 
     // Set a callback incase someone actually wants to see this mission
-    // if (TheCampaign.Flags & CAMP_TACTICAL)
+    // if (TheCampaign.Flags bitand CAMP_TACTICAL)
     // {
     // mission->SetCallback (TacMissionSelectCB);
     // }
@@ -511,7 +511,7 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
     mission->SetUserNumber(C_STATE_2, 1000 - element->GetUnitPriority()); // Priority
     mission->SetUserNumber(C_STATE_3, element->GetUnitMission());
 
-    if (!element->Final() || element->GetUnitMission() == AMIS_ALERT)
+    if ( not element->Final() or element->GetUnitMission() == AMIS_ALERT)
     {
         mission->SetFlagBitOn(C_BIT_INVISIBLE);
     }
@@ -539,7 +539,7 @@ void MissionUpdateStatus(Flight element, C_Mission *mission)
     {
         if (mission->GetStatusID() >= _MIS_EGRESS)
         {
-            mission->SetState(static_cast<short>(mission->GetState() & 1));
+            mission->SetState(static_cast<short>(mission->GetState() bitand 1));
             FalconLocalSession->SetPlayerFlight(NULL);
             FalconLocalSession->SetPilotSlot(255);
             gPlayerFlightID = FalconNullId;
@@ -582,7 +582,7 @@ void RemoveMissionCB(TREELIST *item)
 {
     C_Mission *mis;
 
-    if (!item)
+    if ( not item)
         return;
 
     mis = (C_Mission*)item->Item_;
@@ -601,9 +601,9 @@ void RemoveMissionCB(TREELIST *item)
 
     if (gCurrentFlightID == mis->GetVUID()) // our mission is being removed... find the next mission in briefing
     {
-        if (TheCampaign.Flags & CAMP_TACTICAL)
+        if (TheCampaign.Flags bitand CAMP_TACTICAL)
         {
-            if (gTimeModeServer || g_bServer)
+            if (gTimeModeServer or g_bServer)
             {
                 FindMissionInBriefing(TAC_AIRCRAFT);
             }
@@ -612,7 +612,7 @@ void RemoveMissionCB(TREELIST *item)
         }
         else
         {
-            if (gTimeModeServer || g_bServer)
+            if (gTimeModeServer or g_bServer)
             {
                 FindMissionInBriefing(CB_MISSION_SCREEN);
                 UpdateMissionWindow(CB_MISSION_SCREEN);

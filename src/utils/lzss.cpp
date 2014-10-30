@@ -21,6 +21,7 @@
 
 --------------------------------------------------------------------*/
 
+#include <cISO646>
 #include <stddef.h>
 #include <memory.h>
 #ifdef INCLUDE_FILE_COMPRESSION
@@ -54,7 +55,7 @@ typedef unsigned char uchar;
 #define TREE_ROOT            WINDOW_SIZE
 #define END_OF_STREAM        0
 #define UNUSED               0
-#define MOD_WINDOW( a )      ( ( a ) & ( WINDOW_SIZE - 1 ) )
+#define MOD_WINDOW( a )      ( ( a ) bitand ( WINDOW_SIZE - 1 ) )
 
 // Compression Context (For multi-threaded usaged)
 // Basically, these were globals before, now they're allocated by the stack per call
@@ -185,7 +186,7 @@ int FindNextNode(int node, LZSS_COMP_CTXT* ctxt)
 
     next = ctxt->tree[ node ].smaller_child;
 
-    while (ctxt->tree[ next ].larger_child != UNUSED)
+    while (ctxt->tree[ next ].larger_child not_eq UNUSED)
         next = ctxt->tree[ next ].larger_child;
 
     return(next);
@@ -248,7 +249,7 @@ int AddString(int new_node, int* match_position, LZSS_COMP_CTXT* ctxt)
             delta = ctxt->window[ MOD_WINDOW(new_node + i) ] -
                     ctxt->window[ MOD_WINDOW(test_node + i) ];
 
-            if (delta != 0)
+            if (delta not_eq 0)
                 break;
         }
 
@@ -360,7 +361,7 @@ int FlushOutputBuffer(uchar *output_string, LZSS_COMP_CTXT* ctxt)
 int OutputChar(int data, uchar *output_string, LZSS_COMP_CTXT* ctxt)
 {
     ctxt->DataBuffer[ ctxt->BufferOffset++ ] = (uchar) data;
-    ctxt->DataBuffer[ 0 ] |= ctxt->FlagBitMask;
+    ctxt->DataBuffer[ 0 ] or_eq ctxt->FlagBitMask;
     ctxt->FlagBitMask <<= 1;
     ctxt->inc_output_string = 0;                              /**/
 
@@ -390,8 +391,8 @@ int OutputChar(int data, uchar *output_string, LZSS_COMP_CTXT* ctxt)
 int OutputPair(int position, int length, uchar *output_string, LZSS_COMP_CTXT* ctxt)
 {
     ctxt->DataBuffer[ ctxt->BufferOffset ] = (uchar)(length << 4);
-    ctxt->DataBuffer[ ctxt->BufferOffset++ ] |= (position >> 8);
-    ctxt->DataBuffer[ ctxt->BufferOffset++ ] = (uchar)(position & 0xff);
+    ctxt->DataBuffer[ ctxt->BufferOffset++ ] or_eq (position >> 8);
+    ctxt->DataBuffer[ ctxt->BufferOffset++ ] = (uchar)(position bitand 0xff);
     ctxt->FlagBitMask <<= 1;
     ctxt->inc_output_string = 0;                              /**/
 
@@ -439,7 +440,7 @@ int InputBit(uchar *input_string, LZSS_COMP_CTXT* ctxt) /**/
     }
 
     ctxt->FlagBitMask <<= 1;
-    return(ctxt->DataBuffer[ 0 ] & (ctxt->FlagBitMask >> 1));
+    return(ctxt->DataBuffer[ 0 ] bitand (ctxt->FlagBitMask >> 1));
 }
 
 /*
@@ -525,7 +526,7 @@ extern "C"
             {
                 replace_count = 1;
 
-                if (!OutputChar(ctxt.window[ current_position ], output_string, &ctxt))
+                if ( not OutputChar(ctxt.window[ current_position ], output_string, &ctxt))
                 {
                     return(0);
                 }
@@ -537,7 +538,7 @@ extern "C"
             }
             else
             {
-                if (!OutputPair(match_position,
+                if ( not OutputPair(match_position,
                                 match_length - (BREAK_EVEN + 1), output_string, &ctxt))
                 {
                     return(0);
@@ -580,7 +581,7 @@ extern "C"
 
         /* If the previous OutputChar or OutputPair call
            didn't write to the output, do so now */
-        if (!ctxt.inc_output_string)
+        if ( not ctxt.inc_output_string)
             FlushOutputBuffer(output_string, &ctxt);
 
         return(ctxt.compressed_size);
@@ -621,7 +622,7 @@ extern "C"
 
         // While we still have room in the output buffer
         //sfr: added check for source also
-        while (size  /*&& srcSize*/)
+        while (size  /* and srcSize*/)
         {
             CHSZ(srcSize, 1);
 
@@ -667,7 +668,7 @@ extern "C"
                 match_position = *input_string;             /**/
                 CHSZ(srcSize, 1);
                 input_string++;                             /**/
-                match_position |= (match_length & 0xf) << 8;
+                match_position or_eq (match_length bitand 0xf) << 8;
                 match_length >>= 4;
                 match_length += BREAK_EVEN;
 

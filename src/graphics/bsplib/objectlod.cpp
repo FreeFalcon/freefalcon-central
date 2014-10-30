@@ -5,6 +5,7 @@
 
     Provides structures and definitions for 3D objects.
 \***************************************************************************/
+#include <cISO646>
 #include "stdafx.h"
 #include <io.h>
 #include <fcntl.h>
@@ -54,7 +55,7 @@ ObjectLOD::ObjectLOD()
 
 ObjectLOD::~ObjectLOD()
 {
-    ShiAssert(!root);
+    ShiAssert( not root);
 }
 
 
@@ -134,7 +135,7 @@ void ObjectLOD::SetupTable(int file, char *basename)
     strcpy(filename, basename);
     strcat(filename, ".DXL");
 
-    if (!ObjectLodMap.Open(filename, FALSE, !g_bUseMappedFiles))
+    if ( not ObjectLodMap.Open(filename, FALSE, not g_bUseMappedFiles))
     {
         char message[256];
         sprintf(message, "Failed to open object LOD database %s", filename);
@@ -161,7 +162,7 @@ void ObjectLOD::SetupTable(int file, char *basename)
         if (ObjectLodMap.ReadDataAt(Lod->fileoffset, &rt, sizeof(DxDbHeader)))
         {
             // if a bad version, skip
-            if ((rt.Version & 0xffff) == (~rt.Version >> 16))
+            if ((rt.Version bitand 0xffff) == (compl rt.Version >> 16))
             {
                 // assign the number of textures to the model
                 Lod->NrTextures = rt.dwTexNr;
@@ -261,7 +262,7 @@ BOOL ObjectLOD::Fetch(void)
 
     // if object is on release do nothing
     // DO NOT RETURN A ROOT THAT MAY BE VANISHING, deleted by loader task
-    if (OnRelease || OnOrder) 
+    if (OnRelease or OnOrder) 
         return false;
 
     // If we already have our data
@@ -280,7 +281,7 @@ BOOL ObjectLOD::Fetch(void)
 
     LoadIn = Temp;
     // Kick the Loader
-    // FRB - removing Wakeup is responsible for the VERY long load times!
+    // FRB - removing Wakeup is responsible for the VERY long load times
     TheLoader.WakeUp();
 
     // Return a flag indicating whether or not the data is available for drawing
@@ -297,7 +298,7 @@ void ObjectLOD::Unload(void)
 
     // if nothing loaded or already on release, return
     // Have to modify this or nothing is going to be released since Root is always 0x0
-    if (!root || OnRelease) 
+    if ( not root or OnRelease) 
         return;
 
     // Setup the Flag about Release
@@ -413,17 +414,17 @@ void ObjectLOD::Free(void)
 bool ObjectLOD::UpdateLods(void)
 {
 
-    while (LoadIn != LoadOut || ReleaseIn != ReleaseOut)
+    while (LoadIn not_eq LoadOut or ReleaseIn not_eq ReleaseOut)
     {
         // if something to Load
-        if (LoadOut != LoadIn)
+        if (LoadOut not_eq LoadIn)
         {
             // the amount of data loaded
             DWORD LoadSize = 0;
-            // while( LoadSize < MAX_LOD_LOAD_SIZE && LoadOut != LoadIn){
+            // while( LoadSize < MAX_LOD_LOAD_SIZE and LoadOut not_eq LoadIn){
             ObjectLOD &Lod = TheObjectLODs[CacheLoad[LoadOut++]];
 
-            if (!Lod.root && Lod.OnOrder) LoadSize += Lod.Load(), Sleep(20);
+            if ( not Lod.root and Lod.OnOrder) LoadSize += Lod.Load(), Sleep(20);
 
             // Load is done IN ANY CASE
             Lod.OnOrder = false;
@@ -436,13 +437,13 @@ bool ObjectLOD::UpdateLods(void)
             if (RatedLoad) return true;
         }
 
-        if (ReleaseIn != ReleaseOut)
+        if (ReleaseIn not_eq ReleaseOut)
         {
             ObjectLOD &Lod = TheObjectLODs[CacheRelease[ReleaseOut++]];
 
-            if (!F4IsBadReadPtr(Lod.root, sizeof(ObjectLOD)))
+            if ( not F4IsBadReadPtr(Lod.root, sizeof(ObjectLOD)))
             {
-                if (Lod.root && Lod.OnRelease)
+                if (Lod.root and Lod.OnRelease)
                     Lod.Free();
             }
             else
@@ -467,12 +468,12 @@ bool ObjectLOD::UpdateLods(void)
 void ObjectLOD::WaitUpdates(void)
 {
     // if no data to wait, exit here
-    if (LoadIn == LoadOut && ReleaseIn == ReleaseOut) return;
+    if (LoadIn == LoadOut and ReleaseIn == ReleaseOut) return;
 
     // Pause the Loader...
     TheLoader.SetPause(true);
 
-    while (!TheLoader.Paused());
+    while ( not TheLoader.Paused());
 
     // Not slow loading
     RatedLoad = false;

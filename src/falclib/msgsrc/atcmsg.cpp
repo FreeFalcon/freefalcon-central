@@ -42,7 +42,7 @@ FalconATCMessage::~FalconATCMessage(void)
 
 void HandleInboundFlight(ObjectiveClass *atc, Flight flight)
 {
-    if (!atc || !flight)
+    if ( not atc or not flight)
     {
         return;
     }
@@ -51,7 +51,7 @@ void HandleInboundFlight(ObjectiveClass *atc, Flight flight)
 
     // JBLOOK Added by M.N. for now to prevent CTD
     // when user issues "Inbound" on a carrier
-    if (o && o->IsUnit())
+    if (o and o->IsUnit())
     {
         return;
     }
@@ -62,7 +62,7 @@ void HandleInboundFlight(ObjectiveClass *atc, Flight flight)
     AircraftClass *aircraft = (AircraftClass*)flight->GetComponentLead();
     int delay = 7 * CampaignSeconds;
 
-    if (!PlayerOptions.PlayerRadioVoice)
+    if ( not PlayerOptions.PlayerRadioVoice)
     {
         delay = 500;
     }
@@ -158,7 +158,7 @@ void HandleInboundFlight(ObjectiveClass *atc, Flight flight)
 
 void HandleInbound(ObjectiveClass *atc, AircraftClass *aircraft)
 {
-    if (!atc || !aircraft)
+    if ( not atc or not aircraft)
     {
         return;
     }
@@ -168,7 +168,7 @@ void HandleInbound(ObjectiveClass *atc, AircraftClass *aircraft)
     ATCBrain* atcBrain = atcBrain = atc->brain;
     int delay = 7 * CampaignSeconds;
 
-    if (!PlayerOptions.PlayerRadioVoice)
+    if ( not PlayerOptions.PlayerRadioVoice)
     {
         delay = 500;
     }
@@ -269,10 +269,10 @@ int FalconATCMessage::Process(uchar autodisp)
     int taxiPoint = 0, tod = 0, time_in_minutes = 0;
     int delay = 7 * CampaignSeconds;
 
-    if (!PlayerOptions.PlayerRadioVoice)
+    if ( not PlayerOptions.PlayerRadioVoice)
         delay = 500;
 
-    if (aircraft && aircraft->IsAirplane())
+    if (aircraft and aircraft->IsAirplane())
     {
         DigitalBrain *acBrain = aircraft->DBrain();
         ATCBrain* atcBrain = NULL;
@@ -280,7 +280,7 @@ int FalconATCMessage::Process(uchar autodisp)
         if (atc)
         {
             // RV - Biker - This should avoid CTD when calling clearance for landing on carrier
-            if (!atc->IsObjective())
+            if ( not atc->IsObjective())
                 return 0;
 
             atcBrain = atc->brain;
@@ -293,7 +293,7 @@ int FalconATCMessage::Process(uchar autodisp)
         {
             case ContactApproach:
             case RequestClearance:
-                if (!aircraft->IsPlayer() || !aircraft->IsLocal())
+                if ( not aircraft->IsPlayer() or not aircraft->IsLocal())
                 {
                     if (aircraft->pctStrength < STRENGTH_PCT_FOR_EMERG_LDG)
                         SendCallToATC(aircraft, EntityId(), rcLANDCLEAREMERGENCY, FalconLocalSession);
@@ -301,7 +301,7 @@ int FalconATCMessage::Process(uchar autodisp)
                         SendCallToATC(aircraft, EntityId(), rcLANDCLEARANCE, FalconLocalSession);
                 }
 
-                if (atcBrain && atc->IsLocal())
+                if (atcBrain and atc->IsLocal())
                 {
                     info = atcBrain->InList(aircraft->Id());
 
@@ -313,18 +313,18 @@ int FalconATCMessage::Process(uchar autodisp)
                         //if(info->status < tReqTaxi) // JB 010802 RTBing AI aircraft won't land. This compare was messed up.  Right? I hope so.
                         if (info->status >= tReqTaxi) // JB It appears to work but this was called a bit much for my comfort level. We'll try another approach.
                         {
-                            if (!aircraft->OnGround())
+                            if ( not aircraft->OnGround())
                             {
                                 if (dist < (TOWER_RANGE + 100) * NM_TO_FT * NM_TO_FT)
                                 {
-                                    if (!aircraft->IsPlayer() && aircraft->pctStrength < STRENGTH_PCT_FOR_EMERG_LDG)
+                                    if ( not aircraft->IsPlayer() and aircraft->pctStrength < STRENGTH_PCT_FOR_EMERG_LDG)
                                         atcBrain->RequestEmerClearance(aircraft);
                                     else
                                         atcBrain->RequestClearance(aircraft);
                                 }
-                                else if (dist < APPROACH_RANGE * NM_TO_FT * NM_TO_FT && dist >= (TOWER_RANGE + 100) * NM_TO_FT * NM_TO_FT)
+                                else if (dist < APPROACH_RANGE * NM_TO_FT * NM_TO_FT and dist >= (TOWER_RANGE + 100) * NM_TO_FT * NM_TO_FT)
                                 {
-                                    if (!aircraft->IsPlayer() && aircraft->GetCampaignObject()->GetComponentLead() == aircraft)
+                                    if ( not aircraft->IsPlayer() and aircraft->GetCampaignObject()->GetComponentLead() == aircraft)
                                         HandleInboundFlight(atc, (Flight)aircraft->GetCampaignObject());
                                     else
                                         HandleInbound(atc, aircraft);
@@ -354,7 +354,7 @@ int FalconATCMessage::Process(uchar autodisp)
 
                                 case lIngressing:
                                 case lTakingPosition:
-                                    ShiWarning("This should never happen!");
+                                    ShiWarning("This should never happen");
                                     radioMessage = CreateCallFromATC(atc, aircraft, rcCONTINUEINBOUND1, FalconLocalGame);
                                     //M.N. changed to 32767 -> flexibly use randomized value of max available eval indexes
                                     radioMessage->dataBlock.edata[4] = 32767;
@@ -492,9 +492,9 @@ int FalconATCMessage::Process(uchar autodisp)
                                 {
                                     runwayQueueStruct *tempinfo = atcBrain->InList(element->Id());
 
-                                    if (!tempinfo)
+                                    if ( not tempinfo)
                                     {
-                                        if (!element->IsPlayer() && element->pctStrength < STRENGTH_PCT_FOR_EMERG_LDG)
+                                        if ( not element->IsPlayer() and element->pctStrength < STRENGTH_PCT_FOR_EMERG_LDG)
                                         {
                                             SendCallToATC(element, EntityId(), rcLANDCLEAREMERGENCY, FalconLocalGame);
                                             atcBrain->RequestEmerClearance(element);
@@ -508,7 +508,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             }
                             else
                             {
-                                if (!aircraft->IsPlayer() && aircraft->pctStrength < STRENGTH_PCT_FOR_EMERG_LDG)
+                                if ( not aircraft->IsPlayer() and aircraft->pctStrength < STRENGTH_PCT_FOR_EMERG_LDG)
                                 {
                                     SendCallToATC(aircraft, EntityId(), rcLANDCLEAREMERGENCY, FalconLocalGame);
                                     atcBrain->RequestEmerClearance(aircraft);
@@ -517,7 +517,7 @@ int FalconATCMessage::Process(uchar autodisp)
                                     atcBrain->RequestClearance(aircraft);
                             }
                         }
-                        else if (dist < APPROACH_RANGE * NM_TO_FT * NM_TO_FT && dist > (TOWER_RANGE + 100) * NM_TO_FT * NM_TO_FT)
+                        else if (dist < APPROACH_RANGE * NM_TO_FT * NM_TO_FT and dist > (TOWER_RANGE + 100) * NM_TO_FT * NM_TO_FT)
                         {
                             if (aircraft->GetCampaignObject()->GetComponentLead() == aircraft)
                                 HandleInboundFlight(atc, (Flight)aircraft->GetCampaignObject());
@@ -538,19 +538,19 @@ int FalconATCMessage::Process(uchar autodisp)
                 break;
 
             case RequestEmerClearance:
-                if (!aircraft->IsPlayer() || !aircraft->IsLocal())
+                if ( not aircraft->IsPlayer() or not aircraft->IsLocal())
                     SendCallToATC(aircraft, EntityId(), rcLANDCLEAREMERGENCY, FalconLocalSession);
 
-                if (atcBrain && atc->IsLocal())
+                if (atcBrain and atc->IsLocal())
                     atcBrain->RequestEmerClearance(aircraft);
 
                 break;
 
             case RequestTakeoff:
-                if (!aircraft->IsPlayer() || !aircraft->IsLocal())
+                if ( not aircraft->IsPlayer() or not aircraft->IsLocal())
                     SendCallToATC(aircraft, EntityId(), rcREADYFORDERARTURE, FalconLocalSession);
 
-                if (atcBrain && atc->IsLocal())
+                if (atcBrain and atc->IsLocal())
                     atcBrain->RequestTakeoff(aircraft);
 
                 break;
@@ -561,7 +561,7 @@ int FalconATCMessage::Process(uchar autodisp)
 
                 // sfr: testing client problem
                 // im just echoing an answer here, nothing more
-                if (atcBrain && atc->IsLocal())
+                if (atcBrain and atc->IsLocal())
                 {
                     //SendCallFromAwacs((Flight)aircraft->GetCampaignObject(), rcNOTASKING , static_cast<VuTargetEntity*>(vuDatabase->Find(this->Sender())));
                     SendCallFromATC(atc, aircraft, rcOUTSIDEAIRSPEED, static_cast<VuTargetEntity*>(vuDatabase->Find(aircraft->OwnerId())));
@@ -571,12 +571,12 @@ int FalconATCMessage::Process(uchar autodisp)
 #else
 
                 // sfr: comment for testing... wanna hear only answer...
-                if (!aircraft->IsPlayer() || !aircraft->IsLocal())
+                if ( not aircraft->IsPlayer() or not aircraft->IsLocal())
                 {
                     SendCallToATC(aircraft, EntityId(), rcREADYFORDERARTURE, FalconLocalSession);
                 }
 
-                if (atcBrain && atc->IsLocal())
+                if (atcBrain and atc->IsLocal())
                 {
                     atcBrain->RequestTaxi(aircraft);
                 }
@@ -586,33 +586,33 @@ int FalconATCMessage::Process(uchar autodisp)
 
                 // M.N. 2001-12-20
             case AbortApproach:
-                if (!aircraft->IsPlayer() || !aircraft->IsLocal())
+                if ( not aircraft->IsPlayer() or not aircraft->IsLocal())
                     SendCallToATC(aircraft, EntityId(), rcABORTAPPROACH, FalconLocalSession);
 
                 //atcBrain->AbortApproach(aircraft);//Cobra sfr: changed to match repo
-                if (atcBrain && atc->IsLocal())
+                if (atcBrain and atc->IsLocal())
                     atcBrain->AbortApproach(aircraft);
 
                 break;
 
                 // RAS - 22Jan04 - Set flag for traffic in sight call
             case TrafficInSight:
-                if (!aircraft->IsPlayer() || !aircraft->IsLocal())
+                if ( not aircraft->IsPlayer() or not aircraft->IsLocal())
                     SendCallToATC(aircraft, EntityId(), rcCOPY, FalconLocalSession);
 
-                if (atcBrain && atc->IsLocal())
+                if (atcBrain and atc->IsLocal())
                     atcBrain->trafficInSightFlag = TRUE;
 
                 break;
 
                 // TJL 08/16/04 - Set flag for Hotpit Refueling //Cobra 10/31/04 TJL
             case RequestHotpitRefuel:
-                if (!aircraft->IsPlayer() || !aircraft->IsLocal())
+                if ( not aircraft->IsPlayer() or not aircraft->IsLocal())
                     SendCallToATC(aircraft, EntityId(), rcCOPY, FalconLocalSession);
 
                 aircraft->requestHotpitRefuel = TRUE; //Cobra 11/13/04 TJL will this make online work?
 
-                if (atcBrain && atc->IsLocal())
+                if (atcBrain and atc->IsLocal())
                     aircraft->requestHotpitRefuel = TRUE;
 
                 break;
@@ -657,7 +657,7 @@ int FalconATCMessage::Process(uchar autodisp)
                                         atcBrain->RemoveFromAllOtherATCs(aircraft);
                                         int Runway = atcBrain->IsOverRunway(aircraft);
 
-                                        if (GetQueue(Runway) != GetQueue(info->rwindex))
+                                        if (GetQueue(Runway) not_eq GetQueue(info->rwindex))
                                         {
                                             atcBrain->RemoveTraffic(aircraft->Id(), GetQueue(info->rwindex));
                                             atcBrain->AddTraffic(aircraft->Id(), lCrashed, Runway, SimLibElapsedTime);
@@ -749,7 +749,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case lFirstLeg:
-                            if (acBrain->ATCStatus() != lFirstLeg && acBrain->ATCStatus() <= lOnFinal)
+                            if (acBrain->ATCStatus() not_eq lFirstLeg and acBrain->ATCStatus() <= lOnFinal)
                             {
                                 atcBrain->FindFinalPt(aircraft, acBrain->Runway(), &finalX, &finalY);
                                 cosAngle = atcBrain->DetermineAngle(aircraft, acBrain->Runway(), lFirstLeg);
@@ -769,7 +769,7 @@ int FalconATCMessage::Process(uchar autodisp)
                                 acBrain->CalculateNextTurnDistance();
                             }
 
-                            if (!aircraft->IsPlayer())
+                            if ( not aircraft->IsPlayer())
                             {
                                 atcBrain->MakeVectorCall(aircraft, FalconLocalSession);
                             }
@@ -777,7 +777,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case lToBase:
-                            if (acBrain->ATCStatus() != lToBase && acBrain->ATCStatus() <= lOnFinal)
+                            if (acBrain->ATCStatus() not_eq lToBase and acBrain->ATCStatus() <= lOnFinal)
                             {
                                 atcBrain->FindFinalPt(aircraft, acBrain->Runway(), &finalX, &finalY);
                                 atcBrain->FindBasePt(aircraft, acBrain->Runway(), finalX, finalY, &baseX, &baseY);
@@ -786,7 +786,7 @@ int FalconATCMessage::Process(uchar autodisp)
                                 acBrain->CalculateNextTurnDistance();
                             }
 
-                            if (!aircraft->IsPlayer())
+                            if ( not aircraft->IsPlayer())
                             {
                                 atcBrain->MakeVectorCall(aircraft, FalconLocalSession);
                             }
@@ -794,7 +794,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case lToFinal:
-                            if (acBrain->ATCStatus() != lToFinal && acBrain->ATCStatus() <= lOnFinal)
+                            if (acBrain->ATCStatus() not_eq lToFinal and acBrain->ATCStatus() <= lOnFinal)
                             {
                                 atcBrain->FindFinalPt(aircraft, acBrain->Runway(), &finalX, &finalY);
                                 acBrain->SetATCStatus(lToFinal);
@@ -802,7 +802,7 @@ int FalconATCMessage::Process(uchar autodisp)
                                 acBrain->CalculateNextTurnDistance();
                             }
 
-                            if (!aircraft->IsPlayer())
+                            if ( not aircraft->IsPlayer())
                             {
                                 atcBrain->MakeVectorCall(aircraft, FalconLocalSession);
                             }
@@ -813,14 +813,14 @@ int FalconATCMessage::Process(uchar autodisp)
                             TranslatePointData(atc, GetFirstPt(acBrain->Runway()), &x, &y);
 
                             //if we sent the message we already know this
-                            if (acBrain->ATCStatus() != lOnFinal && acBrain->ATCStatus() <= lOnFinal)
+                            if (acBrain->ATCStatus() not_eq lOnFinal and acBrain->ATCStatus() <= lOnFinal)
                             {
                                 acBrain->SetATCStatus(lOnFinal);
                                 acBrain->SetTrackPoint(x, y, atcBrain->GetAltitude(aircraft, lOnFinal));
                                 acBrain->CalculateNextTurnDistance();
                             }
 
-                            if (!aircraft->IsPlayer())
+                            if ( not aircraft->IsPlayer())
                             {
                                 radioMessage = CreateCallFromATC(atc, aircraft, rcTURNTOFINAL, FalconLocalSession);
 #if 0
@@ -856,7 +856,7 @@ int FalconATCMessage::Process(uchar autodisp)
                         case lLanded:
 
                             //if we sent the message we already know this
-                            if (acBrain->ATCStatus() != lLanded)
+                            if (acBrain->ATCStatus() not_eq lLanded)
                             {
                                 acBrain->SetATCStatus(lLanded);
                                 taxiPoint = GetFirstPt(acBrain->Runway());
@@ -870,7 +870,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case lAborted:
-                            if (acBrain->ATCStatus() != lAborted)
+                            if (acBrain->ATCStatus() not_eq lAborted)
                             {
                                 atcBrain->FindAbortPt(aircraft, &x, &y, &z);
                                 acBrain->SetATCStatus(lAborted);
@@ -885,7 +885,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case lEmergencyToBase:
-                            if (acBrain->ATCStatus() != lEmergencyToBase)
+                            if (acBrain->ATCStatus() not_eq lEmergencyToBase)
                             {
                                 atcBrain->FindFinalPt(aircraft, acBrain->Runway(), &finalX, &finalY);
                                 atcBrain->FindBasePt(aircraft, acBrain->Runway(), finalX, finalY, &baseX, &baseY);
@@ -896,7 +896,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case lEmergencyToFinal:
-                            if (acBrain->ATCStatus() != lEmergencyToFinal)
+                            if (acBrain->ATCStatus() not_eq lEmergencyToFinal)
                             {
                                 atcBrain->FindFinalPt(aircraft, acBrain->Runway(), &finalX, &finalY);
                                 acBrain->SetATCStatus(lEmergencyToFinal);
@@ -906,7 +906,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case lEmergencyOnFinal:
-                            if (acBrain->ATCStatus() != lEmergencyOnFinal)
+                            if (acBrain->ATCStatus() not_eq lEmergencyOnFinal)
                             {
                                 TranslatePointData(atc, GetFirstPt(acBrain->Runway()), &x, &y);
                                 acBrain->SetATCStatus(lEmergencyOnFinal);
@@ -924,7 +924,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case tTaxi:
-                            if (acBrain->ATCStatus() != tTaxi)
+                            if (acBrain->ATCStatus() not_eq tTaxi)
                             {
                                 acBrain->SetATCStatus(tTaxi);
                                 TranslatePointData(atc, acBrain->GetTaxiPoint() , &x, &y);
@@ -937,7 +937,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             acBrain->ClearATCFlag(DigitalBrain::PermitRunway);
                             acBrain->ClearATCFlag(DigitalBrain::PermitTakeoff);
 
-                            if (acBrain->ATCStatus() != tHoldShort)
+                            if (acBrain->ATCStatus() not_eq tHoldShort)
                             {
                                 acBrain->SetATCStatus(tHoldShort);
                                 taxiPoint = GetFirstPt(acBrain->Runway());
@@ -951,7 +951,7 @@ int FalconATCMessage::Process(uchar autodisp)
                         case tPrepToTakeRunway:
                             acBrain->SetATCFlag(DigitalBrain::PermitTakeRunway);
 
-                            if (acBrain->ATCStatus() != tTaxi)
+                            if (acBrain->ATCStatus() not_eq tTaxi)
                             {
                                 acBrain->SetATCStatus(tTaxi);
 
@@ -966,7 +966,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case tTakeRunway:
-                            if (acBrain->ATCStatus() != tTakeRunway)
+                            if (acBrain->ATCStatus() not_eq tTakeRunway)
                             {
                                 acBrain->SetATCFlag(DigitalBrain::PermitTakeRunway);
                                 acBrain->SetATCStatus(tTakeRunway);
@@ -977,7 +977,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case tTakeoff:
-                            if (acBrain->ATCStatus() != tTakeoff)
+                            if (acBrain->ATCStatus() not_eq tTakeoff)
                             {
                                 acBrain->SetATCFlag(DigitalBrain::PermitRunway);
                                 acBrain->SetATCFlag(DigitalBrain::PermitTakeoff);
@@ -989,7 +989,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case tTaxiBack:
-                            if (acBrain->ATCStatus() != tTaxiBack)
+                            if (acBrain->ATCStatus() not_eq tTaxiBack)
                             {
                                 acBrain->SetATCStatus(tTaxiBack);
                             }
@@ -997,7 +997,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             break;
 
                         case tFlyOut:
-                            if (acBrain->ATCStatus() != tFlyOut)
+                            if (acBrain->ATCStatus() not_eq tFlyOut)
                             {
                                 acBrain->ResetATC();
                             }

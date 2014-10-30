@@ -15,9 +15,9 @@ void MissileClass::ClosestApproach(void)
     if (GetSType() == STYPE_MISSILE_SURF_SURF)
         return;
 
-    if (targetPtr && range <= auxData->proximityfuserange && range >= 5.0F)
+    if (targetPtr and range <= auxData->proximityfuserange and range >= 5.0F)
     {
-        flags |= EndGame;
+        flags or_eq EndGame;
         a.x = x;
         a.y = y;
         a.z = z;
@@ -45,17 +45,17 @@ void MissileClass::ClosestApproach(void)
         newMin = FindMinDistance(&a, &b, &c, &d);
 
         if (newMin > 1.2F * ricept)
-            flags |= ClosestApprch;
+            flags or_eq ClosestApprch;
 
         ricept = min(newMin, ricept);
     }
-    else if (auxData && range <= auxData->proximityfuserange)
+    else if (auxData and range <= auxData->proximityfuserange)
     {
         static int count = 0;
 
         if (rand() % 100 < auxData->ProximityfuseChange)
         {
-            flags |= ClosestApprch;
+            flags or_eq ClosestApprch;
         }
 
         count++;

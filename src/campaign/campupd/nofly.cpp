@@ -33,14 +33,14 @@ int NoFlyZoneClass::InZone(GridIndex x, GridIndex y, Team who, int flags)
 
     d = Distance(x, y, zonex, zoney);
 
-    if (flags & FIND_CAUTIOUS)
+    if (flags bitand FIND_CAUTIOUS)
         d *= 0.8F;
 
     if (d < radius)
     {
         if (type == NFZ_OVERFLY_ONLY)
         {
-            if (!GetRoE(who, owner, ROE_AIR_OVERFLY))
+            if ( not GetRoE(who, owner, ROE_AIR_OVERFLY))
                 return 1;
         }
         else if (type == NFZ_OWNER_NOFLY)
@@ -99,7 +99,7 @@ void RemoveNFZ(NFZ zone)
         NFZList = zone->next;
     else
     {
-        while (curr && curr->next != zone)
+        while (curr and curr->next not_eq zone)
             curr = curr->next;
 
         if (curr)
@@ -139,7 +139,7 @@ int LoadNFZs(char *name)
         zone = new NoFlyZoneClass();
         fread(zone, sizeof(NoFlyZoneClass), 1, fp);
 
-        if (!NFZList)
+        if ( not NFZList)
             NFZList = zone;
 
         if (last)

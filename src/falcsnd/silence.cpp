@@ -46,7 +46,7 @@
 #define START_THRESHOLD 5
 #define STOP_THRESHOLD  2
 #define SILENCE_CODE    0xff
-#define IS_SILENCE( c ) ( (c) > ( 0x7f - SILENCE_LIMIT ) && \
+#define IS_SILENCE( c ) ( (c) > ( 0x7f - SILENCE_LIMIT ) and \
                           (c) < ( 0x80 + SILENCE_LIMIT ) )
 
 /*
@@ -142,7 +142,7 @@ void CompressFile(FILE *input, BIT_FILE *output, int, char*[])
             do
             {
                 look_ahead[ index++ ] = getc(input);
-                index &= BUFFER_MASK;
+                index and_eq BUFFER_MASK;
 
                 if (++run_length == 255)
                 {
@@ -154,7 +154,7 @@ void CompressFile(FILE *input, BIT_FILE *output, int, char*[])
                     OutputBits(output, (unsigned long) run_length, 8);
                 }
             }
-            while (!end_of_silence(look_ahead, index));
+            while ( not end_of_silence(look_ahead, index));
 
             if (run_length > 0)
             {
@@ -174,7 +174,7 @@ void CompressFile(FILE *input, BIT_FILE *output, int, char*[])
         OutputBits(output, (unsigned long) compress[ look_ahead[ index ] ], bits);
 
         look_ahead[ index++ ] = getc(input);
-        index &= BUFFER_MASK;
+        index and_eq BUFFER_MASK;
     }
 
 }
@@ -201,7 +201,7 @@ void ExpandFile(BIT_FILE *input, FILE *output, int, char*[])
 
     count = InputBits(input, 32);
 
-    while ((c = (int) InputBits(input, bits)) != EOF)
+    while ((c = (int) InputBits(input, bits)) not_eq EOF)
     {
         if (c == 31)
         {
@@ -373,7 +373,7 @@ long ExpandCompressionBuffer(long bytesToRead, compression_buf_t *compbuf, unsig
     static short silence_run = 0;
 
 
-    if (compbuf->fileLength && (compbuf->fileLength == compbuf->bytesRead))
+    if (compbuf->fileLength and (compbuf->fileLength == compbuf->bytesRead))
     {
         return 0L;
     }
@@ -474,7 +474,7 @@ long ExpandCompressionBuffer( long bytesToRead, compression_buf_t *compbuf, unsi
     static int silence_run = 0;
 
 
-    if (compbuf->fileLength && (compbuf->fileLength == compbuf->bytesRead))
+    if (compbuf->fileLength and (compbuf->fileLength == compbuf->bytesRead))
  {
         return 0L;
  }
@@ -630,7 +630,7 @@ int silence_run(int buffer[], int index)
     int i;
 
     for (i = 0 ; i < START_THRESHOLD ; i++)
-        if (!IS_SILENCE(buffer[(index + i) & BUFFER_MASK ]))
+        if ( not IS_SILENCE(buffer[(index + i) bitand BUFFER_MASK ]))
             return(0);
 
     return(1);
@@ -648,7 +648,7 @@ int end_of_silence(int buffer[], int index)
     int i;
 
     for (i = 0 ; i < STOP_THRESHOLD ; i++)
-        if (IS_SILENCE(buffer[(index + i) & BUFFER_MASK ]))
+        if (IS_SILENCE(buffer[(index + i) bitand BUFFER_MASK ]))
             return(0);
 
     return(1);

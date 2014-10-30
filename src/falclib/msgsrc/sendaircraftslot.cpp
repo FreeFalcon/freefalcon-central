@@ -57,7 +57,7 @@ int UI_SendAircraftSlot::Process(uchar autodisp)
 
     VuGameEntity *g = FalconLocalGame;
 
-    if (game != FalconLocalGame || !session)
+    if (game not_eq FalconLocalGame or not session)
     {
         return FALSE;
     }
@@ -69,13 +69,13 @@ int UI_SendAircraftSlot::Process(uchar autodisp)
     session->SetAircraftNum(dataBlock.got_slot);
     session->SetPilotSlot(dataBlock.got_pilot_slot);
 
-    if (!flight)
+    if ( not flight)
     {
         return FALSE;
     }
 
     // For Campaign and TE games, if the player switches flights, we need to redo PreMissionEval
-    if (session == FalconLocalSession && oldflight != flight && FalconLocalGame->GetGameType() != game_Dogfight)
+    if (session == FalconLocalSession and oldflight not_eq flight and FalconLocalGame->GetGameType() not_eq game_Dogfight)
         TheCampaign.MissionEvaluator->PreMissionEval(flight, dataBlock.got_pilot_slot);
 
     CheckForNewPlayer(session);
@@ -87,7 +87,7 @@ int UI_SendAircraftSlot::Process(uchar autodisp)
     if (FalconLocalGame->GetGameType() == game_Dogfight)
         flight->pilots[dataBlock.got_slot] = dataBlock.got_pilot_skill;
 
-    if (dataBlock.got_pilot_slot > 0 && dataBlock.got_pilot_slot < 255)
+    if (dataBlock.got_pilot_slot > 0 and dataBlock.got_pilot_slot < 255)
         flight->player_slots[dataBlock.got_slot] = dataBlock.got_pilot_slot;
 
     UI_Refresh();

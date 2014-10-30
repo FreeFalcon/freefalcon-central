@@ -51,7 +51,7 @@ VU_ERRCODE VuGridTree::Move(VuEntity *ent, BIG_SCALAR coord1, BIG_SCALAR coord2)
     VuScopeLock l(GetMutex());
     VuBiKeyFilter *bkf = GetBiKeyFilter();
 
-    if ((ent != NULL) && (ent->VuState() == VU_MEM_ACTIVE) && bkf->RemoveTest(ent))
+    if ((ent not_eq NULL) and (ent->VuState() == VU_MEM_ACTIVE) and bkf->RemoveTest(ent))
     {
         VuEntityBin safe(ent);
         VU_KEY ck1 = bkf->Key1(ent);
@@ -59,7 +59,7 @@ VU_ERRCODE VuGridTree::Move(VuEntity *ent, BIG_SCALAR coord1, BIG_SCALAR coord2)
         VU_KEY ck2 = bkf->Key2(ent);
         VU_KEY nk2 = bkf->CoordToKey(coord2);
 
-        if (ck1 != nk1 || ck2 != nk2)
+        if (ck1 not_eq nk1 or ck2 not_eq nk2)
         {
             // keys changed... have to remove and insert again
             table_[ck1]->Remove(ent);
@@ -143,7 +143,7 @@ VU_ERRCODE VuGridTree::ForcedInsert(VuEntity* entity)
 
     VuScopeLock l(GetMutex());
 
-    if (!filter_->RemoveTest(entity)) return VU_NO_OP;
+    if ( not filter_->RemoveTest(entity)) return VU_NO_OP;
 
     VuRedBlackTree *row = table_[Row(filter_->Key1(entity))];
     return row->ForcedInsert(entity);
@@ -158,7 +158,7 @@ VU_ERRCODE VuGridTree::Insert(VuEntity *entity)
 
     VuScopeLock l(GetMutex());
 
-    if (!filter_->Test(entity)) return VU_NO_OP;
+    if ( not filter_->Test(entity)) return VU_NO_OP;
 
     VuRedBlackTree *row = table_[Row(filter_->Key1(entity))];
     return row->Insert(entity);
@@ -199,7 +199,7 @@ VuEntity *VuGridTree::Find(VU_ID entityId) const
 
 VuEntity *VuGridTree::Find(VuEntity* ent) const
 {
-    if (!ent)
+    if ( not ent)
     {
         return NULL;
     }
@@ -213,7 +213,7 @@ VU_ERRCODE VuGridTree::Move(VuEntity *ent, BIG_SCALAR coord1, BIG_SCALAR coord2)
 {
     VuScopeLock l(GetMutex());
 
-    if ((ent != NULL) && (ent->VuState() == VU_MEM_ACTIVE) && filter_->RemoveTest(ent))
+    if ((ent not_eq NULL) and (ent->VuState() == VU_MEM_ACTIVE) and filter_->RemoveTest(ent))
     {
         VuEntityBin safe(ent);
         VU_KEY ck1 = filter_->Key1(ent);
@@ -221,7 +221,7 @@ VU_ERRCODE VuGridTree::Move(VuEntity *ent, BIG_SCALAR coord1, BIG_SCALAR coord2)
         VU_KEY ck2 = filter_->Key2(ent);
         VU_KEY nk2 = filter_->CoordToKey2(coord2);
 
-        if (ck1 != nk1 || ck2 != nk2)
+        if (ck1 not_eq nk1 or ck2 not_eq nk2)
         {
             // keys changed... have to remove and insert again
             table_[Row(ck1)]->Remove(ent);

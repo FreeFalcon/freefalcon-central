@@ -72,19 +72,19 @@ void AircraftClass::InitCountermeasures(void)
 void AircraftClass::DoCountermeasures(void)
 {
     // 2000-11-17 ADDED BY S.G. SO AIRCRAFT HAVE A FLAG TELLING IF THEY CARRY CHAFFS/FLARES OR NOT
-    if (!(GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE)->Flags & 0x40000000))
+    if ( not (GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE)->Flags bitand 0x40000000))
         return;
 
     // END OF ADDED SECTION
 
-    if (mFaults && (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::bus))
+    if (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) bitand FaultClass::bus))
         return;
 
-    if (!IsSetFlag(ON_GROUND))
+    if ( not IsSetFlag(ON_GROUND))
     {
         if (dropFlareCmd)
         {
-            if (!(mFaults && (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::flar)))
+            if ( not (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) bitand FaultClass::flar)))
             {
                 DropFlare();
             }
@@ -93,7 +93,7 @@ void AircraftClass::DoCountermeasures(void)
         }
         else if (dropChaffCmd)
         {
-            if (!(mFaults && (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::chaf)))
+            if ( not (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) bitand FaultClass::chaf)))
             {
                 DropChaff();
             }
@@ -104,7 +104,7 @@ void AircraftClass::DoCountermeasures(void)
         {
             // Run the countdown to the next programmed event
             // 2000-09-02 S.G. dropProgrammedTimer IS int WHILE SimLibMajorFrameTime
-            // IS A float LESS THAN 1.0! NO WONDER IT'S NOT WORKING! ONLY USE int FOR NOW ON
+            // IS A float LESS THAN 1.0 NO WONDER IT'S NOT WORKING! ONLY USE int FOR NOW ON
             //if (dropProgrammedTimer > SimLibMajorFrameTime)
             if (dropProgrammedTimer + AutoProgramTiming < SimLibElapsedTime)
                 // {
@@ -185,7 +185,7 @@ void AircraftClass::DropChaff(void)
 
         int i;
 
-        for (i = 0; i < NumToLaunch && counterMeasureStation[CHAFF_STATION].weaponCount > 0; i++)
+        for (i = 0; i < NumToLaunch and counterMeasureStation[CHAFF_STATION].weaponCount > 0; i++)
         {
             counterMeasureStation[CHAFF_STATION].weaponCount--;
             Tpoint work;
@@ -245,7 +245,7 @@ void AircraftClass::DropChaff(void)
     }
 
     //MI for EWS stuff
-    if (g_bRealisticAvionics && this == FalconLocalSession->GetPlayerEntity())
+    if (g_bRealisticAvionics and this == FalconLocalSession->GetPlayerEntity())
     {
         if (counterMeasureStation[CHAFF_STATION].weaponCount == 0)
         {
@@ -266,7 +266,7 @@ void AircraftClass::DropChaff(void)
 
 
     // If this is the player and they want unlimited chaff, let 'em have it
-    if (IsSetFlag(MOTION_OWNSHIP) && PlayerOptions.UnlimitedChaff())
+    if (IsSetFlag(MOTION_OWNSHIP) and PlayerOptions.UnlimitedChaff())
         counterMeasureStation[CHAFF_STATION].weaponCount++;
 }
 
@@ -283,7 +283,7 @@ void AircraftClass::DropFlare(void)
 
         {
             static int chaffsid = 0; // just need a fake id so multiple chaffs can play at once.
-            chaffsid = (chaffsid + 1) & 0xf;
+            chaffsid = (chaffsid + 1) bitand 0xf;
             SoundPos.Sfx(af->auxaeroData->sndBBFlare, chaffsid);
         }
 
@@ -305,7 +305,7 @@ void AircraftClass::DropFlare(void)
 
         int i;
 
-        for (i = 0; i < NumToLaunch && counterMeasureStation[FLARE_STATION].weaponCount > 0; i++)
+        for (i = 0; i < NumToLaunch and counterMeasureStation[FLARE_STATION].weaponCount > 0; i++)
         {
             counterMeasureStation[FLARE_STATION].weaponCount--;
 
@@ -364,7 +364,7 @@ void AircraftClass::DropFlare(void)
     }
 
     //MI for EWS stuff
-    if (g_bRealisticAvionics && this == FalconLocalSession->GetPlayerEntity())
+    if (g_bRealisticAvionics and this == FalconLocalSession->GetPlayerEntity())
     {
         if (counterMeasureStation[FLARE_STATION].weaponCount == 0)
         {
@@ -387,7 +387,7 @@ void AircraftClass::DropFlare(void)
     }
 
     // If this is the player and they want unlimited chaff, let 'em have it
-    if (IsSetFlag(MOTION_OWNSHIP) && PlayerOptions.UnlimitedChaff())
+    if (IsSetFlag(MOTION_OWNSHIP) and PlayerOptions.UnlimitedChaff())
         counterMeasureStation[FLARE_STATION].weaponCount++;
 }
 
@@ -399,7 +399,7 @@ void AircraftClass::CleanupCountermeasures(void)
 
 void AircraftClass::DropProgramed(void)
 {
-    if (!dropProgrammedStep)
+    if ( not dropProgrammedStep)
     {
         dropProgrammedStep  = 3;
         dropProgrammedTimer = 0;
@@ -412,17 +412,17 @@ void AircraftClass::DropEWS()
     FlareCount = 0;
 
     //make noise
-    if ((counterMeasureStation[FLARE_STATION].weaponCount > 0 ||
-         counterMeasureStation[CHAFF_STATION].weaponCount > 0) &&
-        (EWSPGM() == Man || EWSPGM() == Semi || EWSPGM() == Auto))
+    if ((counterMeasureStation[FLARE_STATION].weaponCount > 0 or
+         counterMeasureStation[CHAFF_STATION].weaponCount > 0) and 
+        (EWSPGM() == Man or EWSPGM() == Semi or EWSPGM() == Auto))
     {
         //F4SoundFXSetDist(af->auxaeroData->sndBBChaffFlare, FALSE, 0.0f, 1.0f);
-        if (!SoundPos.IsPlaying(af->auxaeroData->sndBBChaffFlare))
+        if ( not SoundPos.IsPlaying(af->auxaeroData->sndBBChaffFlare))
         {
             SoundPos.Sfx(af->auxaeroData->sndBBChaffFlare); // MLR 5/16/2004 -
         }
     }
-    else if (counterMeasureStation[FLARE_STATION].weaponCount <= 0 &&
+    else if (counterMeasureStation[FLARE_STATION].weaponCount <= 0 and 
              counterMeasureStation[CHAFF_STATION].weaponCount <= 0)
     {
         //F4SoundFXSetDist(af->auxaeroData->sndBBChaffFlareOut, TRUE, 0.0f, 1.0f);
@@ -438,13 +438,13 @@ void AircraftClass::EWSChaffBurst(void)
 {
     PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
 
-    if (mFaults && (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::bus))
+    if (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) bitand FaultClass::bus))
         return;
 
     if (theRwr)
     {
-        //RWR not on, no spikes!
-        if (!theRwr->IsOn() || !HasPower(AircraftClass::EWSChaffPower))
+        //RWR not on, no spikes
+        if ( not theRwr->IsOn() or not HasPower(AircraftClass::EWSChaffPower))
             return;
     }
     else //no RWR, return anyway
@@ -460,12 +460,12 @@ void AircraftClass::EWSFlareBurst(void)
 {
     PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
 
-    if (mFaults && (mFaults->GetFault(FaultClass::cmds_fault) & FaultClass::bus))
+    if (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) bitand FaultClass::bus))
         return;
 
     if (theRwr)
     {
-        if (!theRwr->IsOn() || !HasPower(AircraftClass::EWSFlarePower))
+        if ( not theRwr->IsOn() or not HasPower(AircraftClass::EWSFlarePower))
             return;
     }
     else //no RWR, return anyway
@@ -481,11 +481,11 @@ void AircraftClass::ReleaseManualProgram(void)
 {
     PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
 
-    if (!theRwr)
+    if ( not theRwr)
         return;
 
-    if (static_cast<unsigned int>(ChaffCount) >= OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum] &&
-        ChaffSalvoCount != 0 && !theRwr->ChaffCheck)
+    if (static_cast<unsigned int>(ChaffCount) >= OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum] and 
+        ChaffSalvoCount not_eq 0 and not theRwr->ChaffCheck)
     {
         //Set our timer
         ChaffBurstInterval = static_cast<VU_TIME>(SimLibElapsedTime + (OTWDriver.pCockpitManager->mpIcp->fCHAFF_SI[EWSProgNum] * CampaignSeconds));
@@ -497,8 +497,8 @@ void AircraftClass::ReleaseManualProgram(void)
         theRwr->ChaffCheck = TRUE;
     }
 
-    if (FlareCount == OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum] &&
-        FlareSalvoCount != 0 && !theRwr->FlareCheck)
+    if (FlareCount == OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum] and 
+        FlareSalvoCount not_eq 0 and not theRwr->FlareCheck)
     {
         //Set our timer
         FlareBurstInterval = static_cast<VU_TIME>(SimLibElapsedTime + (OTWDriver.pCockpitManager->mpIcp->fFLARE_SI[EWSProgNum] * CampaignSeconds));
@@ -510,23 +510,23 @@ void AircraftClass::ReleaseManualProgram(void)
         theRwr->FlareCheck = TRUE;
     }
 
-    if (SimLibElapsedTime >= ChaffBurstInterval &&
+    if (SimLibElapsedTime >= ChaffBurstInterval and 
         (static_cast<unsigned int>(ChaffCount) < OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum]))
     {
         EWSChaffBurst();
         theRwr->ChaffCheck = FALSE;
     }
 
-    if (SimLibElapsedTime >= FlareBurstInterval &&
+    if (SimLibElapsedTime >= FlareBurstInterval and 
         (static_cast<VU_TIME>(FlareCount) < OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum]))
     {
         EWSFlareBurst();
         theRwr->FlareCheck = FALSE;
     }
 
-    if (FlareCount == OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum] &&
-        ChaffCount == OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum] &&
-        ChaffSalvoCount <= 0 && FlareSalvoCount <= 0)
+    if (FlareCount == OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum] and 
+        ChaffCount == OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum] and 
+        ChaffSalvoCount <= 0 and FlareSalvoCount <= 0)
     {
         theRwr->ReleaseManual = FALSE;
     }

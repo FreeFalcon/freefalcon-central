@@ -50,15 +50,15 @@ public:
     void SetTEPilotRating(uchar rating);
     int GetPilotSkill(void)
     {
-        return (pilot_skill_and_rating & 0xF);
+        return (pilot_skill_and_rating bitand 0xF);
     }
     int GetPilotRating(void)
     {
-        return ((uchar)((pilot_skill_and_rating & 0xF0) >> 4));
+        return ((uchar)((pilot_skill_and_rating bitand 0xF0) >> 4));
     }
     void SetPilotSR(uchar skill, uchar rating)
     {
-        pilot_skill_and_rating = (uchar)((rating << 4) | skill);
+        pilot_skill_and_rating = (uchar)((rating << 4) bitor skill);
     }
 };
 

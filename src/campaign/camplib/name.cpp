@@ -55,7 +55,7 @@ void LoadNames(char* filename)
 
     memcpychk(&NameEntries, &data_ptr, sizeof(short), &rem);
 
-    if (NameIndex != NULL)
+    if (NameIndex not_eq NULL)
     {
         delete NameIndex;
     }
@@ -146,7 +146,7 @@ _TCHAR* ReadNameString(int sid, _TCHAR *wstr, unsigned int len)
     FILE *fp;
     unsigned int size, rlen;
 
-    if (!NameIndex) // JB 010731 CTD
+    if ( not NameIndex) // JB 010731 CTD
         return wstr;
 
     ShiAssert(FALSE == F4IsBadReadPtr(NameIndex, sizeof * NameIndex * NameEntries)); // JPO CTD
@@ -185,11 +185,11 @@ int AddName(_TCHAR *name)
     len = _tcslen(name);
 
     // Load our wch file if we don't already have it in memory
-    if (!NameStream)
+    if ( not NameStream)
         LoadNameStream();
 
     // Find a free spot
-    for (i = 2; i < NameEntries && !nid; i++)
+    for (i = 2; i < NameEntries and not nid; i++)
     {
         // And entry is free if it has a zero (or negative) length
         if (NameIndex[i + 1] - NameIndex[i] <= 0)
@@ -205,7 +205,7 @@ int AddName(_TCHAR *name)
     if (nid)
     {
         // Found a free spot, insert this string
-        if (!NameIndex[nid])
+        if ( not NameIndex[nid])
             NameIndex[nid] = (short)offset;
 
         for (i = nid + 1; i < NameEntries; i++)
@@ -275,7 +275,7 @@ void RemoveName(int nid)
         return;
 
     // Load our wch file if we don't already have it in memory
-    if (!NameStream)
+    if ( not NameStream)
         LoadNameStream();
 
     movesize = NameIndex[NameEntries - 1] - NameIndex[nid + 1];
@@ -350,12 +350,12 @@ int AddName (char* name)
  {
  int i,nid=0;
 
- for (i=2; i<NameEntries && !nid; i++)
+ for (i=2; i<NameEntries and not nid; i++)
  {
- if (NameTable[i][0] == 0 || !strcmp(NameTable[i],"<None>"))
+ if (NameTable[i][0] == 0 or not strcmp(NameTable[i],"<None>"))
  nid = i;
  }
- if (!nid && NameEntries < MAX_NAMES)
+ if ( not nid and NameEntries < MAX_NAMES)
  {
  nid = NameEntries;
  NameEntries++;

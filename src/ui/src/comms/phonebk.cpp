@@ -43,7 +43,7 @@ void CopyDataToWindow()
     C_Button *servButtonControl = (C_Button*)win->FindControl(COMM_MODE_SERV);
     C_Button *clientButtonControl = (C_Button*)win->FindControl(COMM_MODE_CLIENT);
 
-    if ((win == NULL) || (hostAddressControl == NULL) || (servButtonControl == NULL))
+    if ((win == NULL) or (hostAddressControl == NULL) or (servButtonControl == NULL))
     {
         return;
     }
@@ -79,7 +79,7 @@ void CopyDataFromWindow()
     C_EditBox *hostAddressControl = (C_EditBox*)win->FindControl(IP_ADDRESS_1);
     C_Button *servButtonControl = (C_Button*)win->FindControl(COMM_MODE_SERV);
 
-    if ((win == NULL) || (hostAddressControl == NULL) || (servButtonControl == NULL))
+    if ((win == NULL) or (hostAddressControl == NULL) or (servButtonControl == NULL))
     {
         return;
     }
@@ -100,7 +100,7 @@ void CopyDataFromWindow()
         bool foundColon = false;
         string::iterator it = uiText.begin(); // outside for cause well need this below
 
-        for (; it != uiText.end(); ++it)
+        for (; it not_eq uiText.end(); ++it)
         {
             if (*it == ':')
             {
@@ -141,7 +141,7 @@ void CopyDataFromWindow()
 void AddressInputCB(long ID, short hittype, C_Base *)
 {
     // set connect as client
-    if ((hittype != 1))
+    if ((hittype not_eq 1))
     {
         return;
     }
@@ -151,8 +151,8 @@ void AddressInputCB(long ID, short hittype, C_Base *)
     C_Button *clientButtonControl = NULL;
 
     if (
-        ((win = gMainHandler->FindWindow(PB_WIN)) == NULL) ||
-        ((clientButtonControl = (C_Button*)win->FindControl(COMM_MODE_CLIENT)) == NULL) ||
+        ((win = gMainHandler->FindWindow(PB_WIN)) == NULL) or
+        ((clientButtonControl = (C_Button*)win->FindControl(COMM_MODE_CLIENT)) == NULL) or
         ((servButtonControl = (C_Button*)win->FindControl(COMM_MODE_SERV)) == NULL)
     )
     {
@@ -170,7 +170,7 @@ void Phone_Select_CB(long ID, short hittype, C_Base *)
 {
     PHONEBOOK *data;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -235,7 +235,7 @@ void CopyPBToWindow(long ID, long Client)
         UI_Leave(Leave);
     }
 
-    if ((localID == 0) && (btn == NULL))
+    if ((localID == 0) and (btn == NULL))
     {
         //_tcscpy(localDescription,gStringMgr->GetString(TXT_DEFAULT));
         localID = 1;
@@ -252,7 +252,7 @@ void CopyPBToWindow(long ID, long Client)
 // new is hit
 void Phone_New_CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -263,7 +263,7 @@ void Phone_New_CB(long, short hittype, C_Base *)
 // save is hit
 void Phone_Apply_CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -278,12 +278,12 @@ void Phone_Apply_CB(long, short hittype, C_Base *)
 
 void Phone_Remove_CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     PHONEBOOK *apply = gPlayerBook->FindID(localID);
 
-    if (apply != NULL)
+    if (apply not_eq NULL)
     {
         gPlayerBook->Remove(localID);
         CopyPBToWindow(PB_WIN, 0);
@@ -292,7 +292,7 @@ void Phone_Remove_CB(long, short hittype, C_Base *)
 
 void Phone_Connect_CB(long n, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -305,7 +305,7 @@ void Phone_Connect_CB(long n, short hittype, C_Base *control)
     //CopyDataFromWindow(localDescription,&localData);
     CopyDataFromWindow();
 
-    if (!gUICommsQ)
+    if ( not gUICommsQ)
     {
         CommsQueue *nq = new CommsQueue;
 
@@ -321,7 +321,7 @@ void Phone_Connect_CB(long n, short hittype, C_Base *control)
     LeaveDogfight();
     CheckFlyButton();
 
-    if (gCommsMgr->Online() && control->Parent_)
+    if (gCommsMgr->Online() and control->Parent_)
     {
         gMainHandler->DisableWindowGroup(control->Parent_->GetGroup());
     }
@@ -331,7 +331,7 @@ void Phone_ConnectType_CB(long, short hittype, C_Base *control)
 {
     int i;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
 

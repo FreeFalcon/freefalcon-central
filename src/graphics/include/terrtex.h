@@ -97,7 +97,7 @@ public:
     BOOL Setup(DXContext *hrc, const char* texturePath);
     BOOL IsReady(void)
     {
-        return (TextureSets != NULL);
+        return (TextureSets not_eq NULL);
     };
     void Cleanup(void);
 
@@ -153,15 +153,15 @@ protected:
     // Extract set, tile, and resolution from a texID
     int ExtractSet(TextureID texID)
     {
-        return (texID >> 4) & 0xFF;
+        return (texID >> 4) bitand 0xFF;
     };
     int ExtractTile(TextureID texID)
     {
-        return texID & 0xF;
+        return texID bitand 0xF;
     };
     int ExtractRes(TextureID texID)
     {
-        return (texID >> 12) & 0xF;
+        return (texID >> 12) bitand 0xF;
     };
 
     // Handle time of day and lighting notifications

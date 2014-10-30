@@ -44,11 +44,11 @@
 
 extern VU_TIME vuxGameTime;
 
-// All headers cut & paste from eom.cpp
+// All headers cut bitand paste from eom.cpp
 // this code provides the animations for gear strut compression and rolling wheels.
 void AirframeClass::RunLandingGear(void)
 {
-    if (auxaeroData->animWheelRadius[0] && platform->drawPointer)
+    if (auxaeroData->animWheelRadius[0] and platform->drawPointer)
     {
         // MLR 2003-10-04 code to support spinning landing wheels
         // the idea here is to set the Radians/Sec rotation of the wheel
@@ -104,7 +104,7 @@ void AirframeClass::RunLandingGear(void)
                     // compute new angle
                     gear[i].WheelAngle += gear[i].WheelRPS * SimLibMajorFrameTime;
                 }
-                else if (SimLibMajorFrameTime && auxaeroData->animWheelRadius[i])
+                else if (SimLibMajorFrameTime and auxaeroData->animWheelRadius[i])
                 {
                     // sfr: using plane speed now
                     // we need this for the case above,

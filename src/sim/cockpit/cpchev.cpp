@@ -138,7 +138,7 @@ void CPChevron::DisplayDraw(void)
     OTWDriver.renderer->ClearDraw();
 
     OTWDriver.renderer->SetViewport(-1.0F, 1.0F, 1.0F, -1.0F);
-    OTWDriver.renderer->SetColor(mColor[OTWDriver.renderer->GetGreenMode() != 0]);
+    OTWDriver.renderer->SetColor(mColor[OTWDriver.renderer->GetGreenMode() not_eq 0]);
 
     for (i = 0; i < mNumCheverons; i++)
     {

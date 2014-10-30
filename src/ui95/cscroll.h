@@ -60,7 +60,7 @@ public:
 
     void SetDistance(int dist)
     {
-        Distance_ = (short)dist;    //!
+        Distance_ = (short)dist;    
     }
     //sfr: i wonder why dist is cast to short...
     long GetDistance()

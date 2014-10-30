@@ -44,11 +44,11 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
     CheckLockedTarget();
 
     // Don't do anything if no emitting
-    if (!isEmitting)
+    if ( not isEmitting)
     {
 #ifdef SAMDEBUG
 
-        if (g_nShowDebugLabels & 0x200)
+        if (g_nShowDebugLabels bitand 0x200)
         {
             if (platform->drawPointer)
                 ((DrawableBSP*)platform->drawPointer)->SetLabel(
@@ -62,7 +62,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
 
 #endif
         SetDesiredTarget(NULL);
-        flag &= ~FirstSweep; // 2002-03-10 ADDED BY S.G. Say we have done our first radar sweep
+        flag and_eq compl FirstSweep; // 2002-03-10 ADDED BY S.G. Say we have done our first radar sweep
         return NULL;
     }
 
@@ -79,7 +79,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
             platform->SetRdrAzCenter(0.0f);
             platform->SetRdrElCenter(0.0f);
             SetDesiredTarget(NULL);
-            flag &= ~FirstSweep; // 2002-03-10 ADDED BY S.G. Say we have done our first radar sweep
+            flag and_eq compl FirstSweep; // 2002-03-10 ADDED BY S.G. Say we have done our first radar sweep
             return NULL;
         }
 
@@ -107,7 +107,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
 
     // Just in case we don't have a list but we do have a locked target OR IF THE RADAR IS NOT IN AA MODE
     // I noticed the radar isn't really used in air to ground mode so we'll do just the lockedTarget then
-    if (!tmpPtr || mode != AA)
+    if ( not tmpPtr or mode not_eq AA)
         tmpPtr = lockedTarget;
 
     while (tmpPtr)
@@ -146,7 +146,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
                 // it can be GMT and SEA as well (not sure about SEA though,
                 // but gndAttck.cpp DO put the digital radar in GMT mode)
                 // But AFAIK, if NOT in AA, you're in GM or GMT mode (SEA is NOT used by AI after all)
-                if (mode != AA)
+                if (mode not_eq AA)
                 {
                     // Skip air objects in AA mode
                     canSee = SG_NOLOCK;
@@ -167,8 +167,8 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
             if (ret < 1.0f)
             {
                 // Ok so it's too low, but is it jamming? If so, follow anyway...
-                if (ret != -1.0f && tmpPtr->BaseData()->IsSPJamming())
-                    canSee |= SG_JAMMING; // That's our second bit being used
+                if (ret not_eq -1.0f and tmpPtr->BaseData()->IsSPJamming())
+                    canSee or_eq SG_JAMMING; // That's our second bit being used
                 // So it's too low and were are not jamming. When did we loose the signal?
                 else if (SimLibElapsedTime - tmpPtr->localData->rdrLastHit > radarData->CoastTime)
                 {
@@ -177,7 +177,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
                 }
                 // We just lost the signal, but we can still follow it, right?
                 else
-                    canSee |= SG_FADING;
+                    canSee or_eq SG_FADING;
             }
         }
 
@@ -196,15 +196,15 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
                 // 2002-03-21 ADDED BY S.G. When a radar is doing its first sweep
                 // after creation, don't fade the signal or the SARH missile launched
                 // by an aggregated battalion that just deaggregated will lose its sensor lock
-                if (!(flag & FirstSweep))
-                    canSee |= SG_FADING; // this will make the sensor state max set to detection
+                if ( not (flag bitand FirstSweep))
+                    canSee or_eq SG_FADING; // this will make the sensor state max set to detection
             }
 
-            // 2002-03-10 ADDED BY S.G. Added the "(flag & FirstSweep) && "
+            // 2002-03-10 ADDED BY S.G. Added the "(flag bitand FirstSweep) and "
             // so when a radar is doing its first sweep after creation,
             // don't fade the signal or the SARH missile launched
             // by an aggregated battalion that just deaggregated will lose its sensor lock
-            if ((flag & FirstSweep) && radarDatFile)
+            if ((flag bitand FirstSweep) and radarDatFile)
             {
                 tmpPtr->localData->rdrLastHit = SimLibElapsedTime - (unsigned)radarDatFile->TimeToLock - 1;
             }
@@ -212,23 +212,23 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
             // END OF ADDED SECTION 2002-03-10
 
             if (
-                radarDatFile &&
-                tmpPtr->localData->sensorState[Radar] == Detection &&
+                radarDatFile and 
+                tmpPtr->localData->sensorState[Radar] == Detection and 
                 SimLibElapsedTime - tmpPtr->localData->rdrLastHit < (unsigned)radarDatFile->TimeToLock
             )
             {
-                canSee |= SG_FADING;// we are attempting a lock so don't go higher then detection
+                canSee or_eq SG_FADING;// we are attempting a lock so don't go higher then detection
             }
 
             // Can we see it (either with a valid lock, a jammed or fading signal?
-            if (canSee & (SG_JAMMING | SG_FADING)) // Is it a jammed or fading signal?
+            if (canSee bitand (SG_JAMMING bitor SG_FADING)) // Is it a jammed or fading signal?
                 // Yep, say so (weapon can't lock on 'Detection' but digi plane can track it)
                 tmpPtr->localData->sensorState[Radar] = Detection;
             else
                 // It's a valid lock, mark it as such. Even when fading, we can launch
                 tmpPtr->localData->sensorState[Radar] = SensorTrack;
 
-            if (!(canSee & SG_FADING))   // Is the signal fading?
+            if ( not (canSee bitand SG_FADING))   // Is the signal fading?
             {
                 // No, so update the last hit field
                 tmpPtr->localData->rdrLastHit = SimLibElapsedTime;
@@ -239,7 +239,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
         else
             tmpPtr->localData->sensorState[Radar] = NoTrack; // Sorry, we lost that target...
 
-        // 2000-10-07 S.G. POSSIBLE BUG!
+        // 2000-10-07 S.G. POSSIBLE BUG
         // If we are looking at our lockedTarget and we are the only one referencing it, clearing it
         // might invalidate tmpPtr->next. So I'll read it ahead of time
         SimObjectType* tmpPtrNext = tmpPtr->next;
@@ -247,21 +247,21 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
         // Now is it time to do lockedTarget housekeeping stuff?
         // 2000-09-18 S.G. We need to check the base data because
         // targetList item and lockedData might not be the same
-        if (lockedTarget && tmpPtr->BaseData() == lockedTarget->BaseData())
+        if (lockedTarget and tmpPtr->BaseData() == lockedTarget->BaseData())
         {
 #ifdef SAMDEBUG
 
-            if (g_nShowDebugLabels & 0x400)
+            if (g_nShowDebugLabels bitand 0x400)
             {
                 sprintf(label, "%04.3f", ret);
 
-                if (canSee & SG_JAMMING)
+                if (canSee bitand SG_JAMMING)
                     strcat(label, "Jamming");
 
-                if (canSee & SG_FADING)
+                if (canSee bitand SG_FADING)
                     strcat(label, "Fading");
 
-                if (canSee & SG_NOLOCK)
+                if (canSee bitand SG_NOLOCK)
                     strcat(label, "No lock");
 
                 if (platform->drawPointer)
@@ -297,7 +297,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
                 platform->SetRdrElCenter(tmpPtr->localData->el);
 
                 // Tag the target as seen from this frame, unless the target is fading
-                if (!(canSee & SG_FADING))
+                if ( not (canSee bitand SG_FADING))
                 {
                     if (sendThisFrame)
                     {
@@ -319,7 +319,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
     }
 
     // If we do not have a locked target, leave the radar centered...
-    if (!lockedTarget)
+    if ( not lockedTarget)
     {
         SetSeekerPos(0.0f, 0.0f);
         platform->SetRdrAz(radarData->ScanHalfAngle);
@@ -329,7 +329,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
         platform->SetRdrElCenter(0.0f);
     }
 
-    flag &= ~FirstSweep; // 2002-03-10 ADDED BY S.G. Say we have done our first radar sweep
+    flag and_eq compl FirstSweep; // 2002-03-10 ADDED BY S.G. Say we have done our first radar sweep
 
     VU_ID lastChaffID = FalconNullId;
     VU_ID id;
@@ -343,7 +343,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
 
     // No counter measures deployed by campaign things
     // countermeasures only work when tracking (for now)
-    if (!lockedTarget || !target || !target->BaseData()->IsSim())
+    if ( not lockedTarget or not target or not target->BaseData()->IsSim())
     {
         return lockedTarget;
     }
@@ -352,7 +352,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
     id = ((SimBaseClass*)target->BaseData())->NewestChaffID();
 
     // If we have a new chaff bundle to deal with
-    if (id != lastChaffID)
+    if (id not_eq lastChaffID)
     {
         // Stop here if there isn't a counter measure in play
         if (id == FalconNullId)
@@ -366,7 +366,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
 
         // MonoPrint ("ConsiderDecoy %08x %f: ", cm, target->localData->range);
 
-        if (!cm)
+        if ( not cm)
         {
             // We'll have to wait until next time
             // (probably because the create event hasn't been processed locally yet)
@@ -386,7 +386,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
         //}
 
         // If we've beaten the missile guidance, countermeasures work two times better
-        //if (!canGuide) {
+        //if ( not canGuide) {
         // chance *= 2.0f;
         //}
 
@@ -446,7 +446,7 @@ void RadarDigiClass::SetMode(RadarMode cmd)
 {
     mode = cmd;
 
-    if (cmd == GM || cmd == GMT || cmd == SEA)
+    if (cmd == GM or cmd == GMT or cmd == SEA)
     {
         // This keeps it from pinging RWRs
         platform->SetRdrRng(0.0F);
@@ -473,7 +473,7 @@ int RadarDigiClass::IsAG(void)
 
     // 2000-09-30 MODIFIED BY S.G. AG MODE CAN BE GM, GMT OR SEA, NOT JUST GM
     // if (mode == GM)
-    if (mode == GM || mode == GMT || mode == SEA)
+    if (mode == GM or mode == GMT or mode == SEA)
         // 2000-10-04 MODIFIED BY S.G. NEED TO KNOW WHICH MODE WE ARE IN
         //     retval = TRUE;
         retval = mode;

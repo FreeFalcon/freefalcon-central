@@ -106,7 +106,7 @@ void DrawCursorBullseyeData(VirtualDisplay* display, float cursorX, float cursor
 
     if (theRadar)
     {
-        if (theRadar->CurrentTarget() && theRadar->CurrentTarget()->BaseData() && theRadar->IsSet(RadarDopplerClass::STTingTarget))
+        if (theRadar->CurrentTarget() and theRadar->CurrentTarget()->BaseData() and theRadar->IsSet(RadarDopplerClass::STTingTarget))
         {
             float yPos = theRadar->CurrentTarget()->BaseData()->YPos();
             float xPos = theRadar->CurrentTarget()->BaseData()->XPos();
@@ -136,7 +136,7 @@ void DrawCursorBullseyeData(VirtualDisplay* display, float cursorX, float cursor
 
     if (g_bINS)
     {
-        if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+        if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
         {
             display->CenterOriginInViewport();
             return;
@@ -161,7 +161,7 @@ void DrawSteerPointCursorData(VirtualDisplay* display, FalconEntity* platform, f
     mlTrig trig;
 
     // Find current steerpoint
-    if (platform && ((SimVehicleClass*)platform)->curWaypoint)
+    if (platform and ((SimVehicleClass*)platform)->curWaypoint)
     {
         ((SimVehicleClass*)platform)->curWaypoint->GetLocation(&steerpointX, &steerpointY, &steerpointZ);
 
@@ -177,7 +177,7 @@ void DrawSteerPointCursorData(VirtualDisplay* display, FalconEntity* platform, f
 
         if (theRadar)
         {
-            if (theRadar->CurrentTarget() && theRadar->CurrentTarget()->BaseData() && theRadar->IsSet(RadarDopplerClass::STTingTarget))
+            if (theRadar->CurrentTarget() and theRadar->CurrentTarget()->BaseData() and theRadar->IsSet(RadarDopplerClass::STTingTarget))
             {
                 float yPos = theRadar->CurrentTarget()->BaseData()->YPos();
                 float xPos = theRadar->CurrentTarget()->BaseData()->XPos();
@@ -207,7 +207,7 @@ void DrawSteerPointCursorData(VirtualDisplay* display, FalconEntity* platform, f
 
         if (g_bINS)
         {
-            if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+            if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             {
                 display->CenterOriginInViewport();
                 return;
@@ -251,7 +251,7 @@ void DrawBullseyeCircle(VirtualDisplay* display, float cursorX, float cursorY)
 
     //Cobra removed the g_bIFF
     // Offset for Bullseye symbology
-    if (/*g_bIFF||*/g_bSmallerBullseye) //Wombat778 11-12-2003 made optional on g_bSmallerBullseye 11-07-2003
+    if (/*g_bIFFor*/g_bSmallerBullseye) //Wombat778 11-12-2003 made optional on g_bSmallerBullseye 11-07-2003
         display->AdjustOriginInViewport(-0.90F, -0.80F); //me123 from .80 to .75 and .65 to .62 to move the data
     else
         display->AdjustOriginInViewport(-0.85F, -0.70F); //me123 from .80 to .75 and .65 to .62 to move the data
@@ -275,7 +275,7 @@ void DrawBullseyeCircle(VirtualDisplay* display, float cursorX, float cursorY)
 
     //Cobra removed the g_bIff
     // Draw the circle symbol
-    if (/*g_bIFF||*/g_bSmallerBullseye) //Wombat778 11-12-2003 made optional on g_bSmallerBullseye 11-07-2003 Smaller bullseye is more realistic
+    if (/*g_bIFFor*/g_bSmallerBullseye) //Wombat778 11-12-2003 made optional on g_bSmallerBullseye 11-07-2003 Smaller bullseye is more realistic
     {
         //set a smaller font (needed)
         int ofont = display->CurFont();
@@ -308,7 +308,7 @@ void DrawBullseyeCircle(VirtualDisplay* display, float cursorX, float cursorY)
     {
         if (g_bINS)
         {
-            if (playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+            if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             {
                 // Draw the circle symbol
                 display->Circle(0.0F, 0.0F, 0.1F);

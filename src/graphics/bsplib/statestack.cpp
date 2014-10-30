@@ -191,8 +191,8 @@ void StateStackClass::SetFog(float alpha, Pcolor *color)
         UInt32 c;
 
         c  = FloatToInt32(color->r * 255.9f);
-        c |= FloatToInt32(color->g * 255.9f) << 8;
-        c |= FloatToInt32(color->b * 255.9f) << 16;
+        c or_eq FloatToInt32(color->g * 255.9f) << 8;
+        c or_eq FloatToInt32(color->b * 255.9f) << 16;
         context->SetState(MPR_STA_FOG_COLOR, c);
         D3DCOLORVALUE cx;
         cx.dvR = color->r;
@@ -262,7 +262,7 @@ void StateStackClass::SetCamera(const Ppoint *pos, const Pmatrix *rotWaspect, Pm
     if (g_bUse_DX_Engine)
     {
         //***************************************************************************************
-        // DX - RED - The camera & view axis has to be reverted
+        // DX - RED - The camera bitand view axis has to be reverted
         Pmatrix Temp;
         ZeroMemory(&Temp, sizeof(Temp));
         /*Temp.M31=-1.0;
@@ -347,22 +347,22 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
 
     SetWorld(rot, pos);
 
-    if ((operation & OP_WARP) || (scale != 1.f))
+    if ((operation bitand OP_WARP) or (scale not_eq 1.f))
     {
         Pmatrix tempM;
         float cx, cy, cz;
         cx = cz = cy = scale;
 
-        if (operation & OP_WARP)
+        if (operation bitand OP_WARP)
         {
             cx *= sx;
             cy *= sy;
             cz *= sz;
         }
 
-        ShiAssert((sx > 0.0f) && (sx <= 1.0f));
-        ShiAssert((sy > 0.0f) && (sy <= 1.0f));
-        ShiAssert((sz > 0.0f) && (sz <= 1.0f));
+        ShiAssert((sx > 0.0f) and (sx <= 1.0f));
+        ShiAssert((sy > 0.0f) and (sy <= 1.0f));
+        ShiAssert((sz > 0.0f) and (sz <= 1.0f));
 
         Pmatrix stretchM = { cx, 0.f, 0.f,
                                 0.f, cy, 0.f,
@@ -381,7 +381,7 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
         mW = mS * mT;
     }
 
-    /* if(scale != 1.f)
+    /* if(scale not_eq 1.f)
      {
      Pmatrix tempM;
 
@@ -407,10 +407,10 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
 
     if (objInst->ParentObject)
     {
-        if (g_bSlowButSafe && F4IsBadCodePtr((FARPROC) objInst->ParentObject)) // JB 010220 CTD (too much CPU)
+        if (g_bSlowButSafe and F4IsBadCodePtr((FARPROC) objInst->ParentObject)) // JB 010220 CTD (too much CPU)
             CurrentLOD = 0; // JB 010220 CTD
         else // JB 010220 CTD
-            if (objInst->id < 0 || objInst->id >= TheObjectListLength || objInst->TextureSet < 0) // JB 010705 CTD second try
+            if (objInst->id < 0 or objInst->id >= TheObjectListLength or objInst->TextureSet < 0) // JB 010705 CTD second try
             {
                 ShiAssert(FALSE);
                 CurrentLOD = 0;
@@ -424,7 +424,7 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
             clipFlag = CheckBoundingSphereClipping();
 
             // Continue only if some part of the bounding volume is on screen
-            if (clipFlag != OFF_SCREEN)
+            if (clipFlag not_eq OFF_SCREEN)
             {
                 // Set the jump pointers to turn on/off clipping
                 if (clipFlag == ON_SCREEN)
@@ -439,8 +439,8 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
                 }
 
                 // Choose perspective correction or not
-                // if ((Xlation.x > CurrentInstance->Radius() * PERSP_CORR_RADIUS_MULTIPLIER) &&
-                // !(CurrentLOD->flags & ObjectLOD::PERSP_CORR))
+                // if ((Xlation.x > CurrentInstance->Radius() * PERSP_CORR_RADIUS_MULTIPLIER) and 
+                // not (CurrentLOD->flags bitand ObjectLOD::PERSP_CORR))
                 // {
                 // RenderStateTable = RenderStateTableNPC;
                 // }
@@ -570,7 +570,7 @@ void StateStackClass::DrawWarpedObject(ObjectInstance *objInst, const Pmatrix *r
             return OFF_SCREEN; // Trivial reject bottom
         }
 
-        // clipFlag |= CLIP_BOTTOM;
+        // clipFlag or_eq CLIP_BOTTOM;
         return CLIP_BOTTOM;
     }
 
@@ -584,7 +584,7 @@ void StateStackClass::DrawWarpedObject(ObjectInstance *objInst, const Pmatrix *r
             return OFF_SCREEN; // Trivial reject left
         }
 
-        // clipFlag |= CLIP_LEFT;
+        // clipFlag or_eq CLIP_LEFT;
         return CLIP_LEFT;
     }
 
@@ -595,7 +595,7 @@ void StateStackClass::DrawWarpedObject(ObjectInstance *objInst, const Pmatrix *r
             return OFF_SCREEN; // Trivial reject right
         }
 
-        // clipFlag |= CLIP_RIGHT;
+        // clipFlag or_eq CLIP_RIGHT;
         return CLIP_RIGHT;
     }
 
@@ -608,7 +608,7 @@ void StateStackClass::DrawWarpedObject(ObjectInstance *objInst, const Pmatrix *r
             return OFF_SCREEN; // Trivial reject near
         }
 
-        // clipFlag |= CLIP_NEAR;
+        // clipFlag or_eq CLIP_NEAR;
         return CLIP_NEAR;
     }
 
@@ -699,7 +699,7 @@ void StateStackClass::PopVerts(void)
     ClipInfoPool = stack[stackDepth].ClipInfoPool;
 }
 
-// Cobra - RED - This function is now about 2 times faster that it was before with following changes...!!!
+// Cobra - RED - This function is now about 2 times faster that it was before with following changes...
 // can be 3 times if FIXME is solved
 void StateStackClass::Light(const Pnormal *n, int i, const Ppoint *p)
 {
@@ -724,7 +724,7 @@ void StateStackClass::Light(const Pnormal *n, int i, const Ppoint *p)
 
         // Cobra - RED - Zero is Zero both in Float and Long...but Long is faster
         // ...........(lightSpecular).........................................
-        if (!LODused && ((*(long*)&lightSpecular) & 0x7fffffff) && DisplayOptions.bSpecularLighting)
+        if ( not LODused and ((*(long*)&lightSpecular) bitand 0x7fffffff) and DisplayOptions.bSpecularLighting)
         {
             viewVector.x = ObjSpaceEye.x - p->x;
             viewVector.y = ObjSpaceEye.y - p->y;
@@ -794,22 +794,22 @@ void StateStackClass::Light(const Pnormal *n, int i, const Ppoint *p)
             ClipInfoPoolNext->clipFlag = ON_SCREEN;
 
             if (scratch_z < NEAR_CLIP_DISTANCE)
-                ClipInfoPoolNext->clipFlag |= CLIP_NEAR;
+                ClipInfoPoolNext->clipFlag or_eq CLIP_NEAR;
 
             if (fabs(scratch_y) > scratch_z)
             {
                 if (scratch_y > scratch_z)
-                    ClipInfoPoolNext->clipFlag |= CLIP_BOTTOM;
+                    ClipInfoPoolNext->clipFlag or_eq CLIP_BOTTOM;
                 else
-                    ClipInfoPoolNext->clipFlag |= CLIP_TOP;
+                    ClipInfoPoolNext->clipFlag or_eq CLIP_TOP;
             }
 
             if (fabs(scratch_x) > scratch_z)
             {
                 if (scratch_x > scratch_z)
-                    ClipInfoPoolNext->clipFlag |= CLIP_RIGHT;
+                    ClipInfoPoolNext->clipFlag or_eq CLIP_RIGHT;
                 else
-                    ClipInfoPoolNext->clipFlag |= CLIP_LEFT;
+                    ClipInfoPoolNext->clipFlag or_eq CLIP_LEFT;
             }
 
             ClipInfoPoolNext->csX = scratch_x;
@@ -866,22 +866,22 @@ void StateStackClass::TransformBillboardWithClip(Ppoint *p, int n, BTransformTyp
         ClipInfoPoolNext->clipFlag = ON_SCREEN;
 
         if (scratch_z < NEAR_CLIP_DISTANCE)
-            ClipInfoPoolNext->clipFlag |= CLIP_NEAR;
+            ClipInfoPoolNext->clipFlag or_eq CLIP_NEAR;
 
         if (fabs(scratch_y) > scratch_z)
         {
             if (scratch_y > scratch_z)
-                ClipInfoPoolNext->clipFlag |= CLIP_BOTTOM;
+                ClipInfoPoolNext->clipFlag or_eq CLIP_BOTTOM;
             else
-                ClipInfoPoolNext->clipFlag |= CLIP_TOP;
+                ClipInfoPoolNext->clipFlag or_eq CLIP_TOP;
         }
 
         if (fabs(scratch_x) > scratch_z)
         {
             if (scratch_x > scratch_z)
-                ClipInfoPoolNext->clipFlag |= CLIP_RIGHT;
+                ClipInfoPoolNext->clipFlag or_eq CLIP_RIGHT;
             else
-                ClipInfoPoolNext->clipFlag |= CLIP_LEFT;
+                ClipInfoPoolNext->clipFlag or_eq CLIP_LEFT;
         }
 
         ClipInfoPoolNext->csX = scratch_x;

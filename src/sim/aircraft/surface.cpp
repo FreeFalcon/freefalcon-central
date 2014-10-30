@@ -32,7 +32,7 @@ extern bool g_bEnableTrackIR; // Cobra - Animated Pilot's head
 extern float g_fTIR2DPitchPercentage, g_fTIR2DYawPercentage;
 extern TrackIR theTrackIRObject; // Retro 27/09/03
 
-// MLR 2/22/2004 - these arrays make it easy to access the gear related DOFs & Switches
+// MLR 2/22/2004 - these arrays make it easy to access the gear related DOFs bitand Switches
 //                 because the ID numbers are out of order.
 int ComplexGearDOF[] =
 {
@@ -106,7 +106,7 @@ int ComplexGearBrokenSwitch[] =
     COMP_GEAR_BROKEN_SW_8
 };
 
-//The ACMI is huge!
+//The ACMI is huge
 
 
 
@@ -169,13 +169,13 @@ void AircraftClass::CalculateSweepAndSpoiler(float &sweep, float &sl1, float &sr
     sweep = 0;
     cursweep = 0;
 
-    if (acFlags & hasSwing)
+    if (acFlags bitand hasSwing)
     {
         if (af->auxaeroData->animSwingWingStages)
         {
             int l;
 
-            if (af->auxaeroData->animSwingWingStages > 10 || af->auxaeroData->animSwingWingStages < 0)
+            if (af->auxaeroData->animSwingWingStages > 10 or af->auxaeroData->animSwingWingStages < 0)
             {
                 MonoPrint("animSwingWingStages %d\n", af->auxaeroData->animSwingWingStages);
             }
@@ -282,11 +282,11 @@ void AircraftClass::CalculateLef(float qfactor)
     }
     else
     {
-        if (!af->IsSet(AirframeClass::InAir))
+        if ( not af->IsSet(AirframeClass::InAir))
         {
             leftLEFAngle = rightLEFAngle = af->auxaeroData->lefGround * DTR;
         }
-        else if (!g_bNewFm && af->mach > af->auxaeroData->lefMaxMach)
+        else if ( not g_bNewFm and af->mach > af->auxaeroData->lefMaxMach)
         {
             leftLEFAngle = rightLEFAngle = 0;;
         }
@@ -296,7 +296,7 @@ void AircraftClass::CalculateLef(float qfactor)
             rightLEFAngle = leftLEFAngle;
 
             //MI additions
-            if (g_bRealisticAvionics && g_bNewFm)
+            if (g_bRealisticAvionics and g_bNewFm)
             {
                 if (g_bNewDamageEffects)
                 {
@@ -311,7 +311,7 @@ void AircraftClass::CalculateLef(float qfactor)
             rightLEFAngle = leftLEFAngle;
         }
 
-        if (LEFLocked && g_bRealisticAvionics && g_bNewFm)
+        if (LEFLocked and g_bRealisticAvionics and g_bNewFm)
         {
             if (IsComplex())
             {
@@ -383,7 +383,7 @@ void AircraftClass::MoveDof(int dof, float newval, float rate, int ssfx, int lsf
         SetDOF(dof, cdof);
     }
 
-    if (SFX_DEF && ssfx >= 0)
+    if (SFX_DEF and ssfx >= 0)
     {
         // something to play
         // MLR 12/30/2003 - reorganized for clarity
@@ -393,8 +393,8 @@ void AircraftClass::MoveDof(int dof, float newval, float rate, int ssfx, int lsf
         }
         else
         {
-            if (!SoundPos.IsPlaying(ssfx) &&  // MLR 12/30/2003 - changed IsPlaying sound call
-                !SoundPos.IsPlaying(lsfx))
+            if ( not SoundPos.IsPlaying(ssfx) and // MLR 12/30/2003 - changed IsPlaying sound call
+ not SoundPos.IsPlaying(lsfx))
                 SoundPos.Sfx(ssfx);
             else
                 SoundPos.Sfx(lsfx);
@@ -404,17 +404,17 @@ void AircraftClass::MoveDof(int dof, float newval, float rate, int ssfx, int lsf
 
 void AircraftClass::DeployDragChute(int type)
 {
-    if (af->vcas < 20.0f && af->dragChute == AirframeClass::DRAGC_DEPLOYED)
+    if (af->vcas < 20.0f and af->dragChute == AirframeClass::DRAGC_DEPLOYED)
         af->dragChute = AirframeClass::DRAGC_TRAILING;
 
-    if (af->dragChute == AirframeClass::DRAGC_DEPLOYED &&
+    if (af->dragChute == AirframeClass::DRAGC_DEPLOYED and 
         af->vcas > af->auxaeroData->dragChuteMaxSpeed)
     {
         if ((af->vcas - af->auxaeroData->dragChuteMaxSpeed) / 100 > PRANDFloatPos())
             af->dragChute = AirframeClass::DRAGC_RIPPED;
     }
 
-    if (af->dragChute != GetSwitch(type))
+    if (af->dragChute not_eq GetSwitch(type))
     {
         if (af->dragChute == AirframeClass::DRAGC_DEPLOYED)
             SoundPos.Sfx(af->auxaeroData->sndDragChute); // MLR 5/16/2004 -
@@ -434,7 +434,7 @@ void AircraftClass::MoveSurfaces(void)
     qFactor = 100.0F / (max(af->vcas, 100.0F));
 
     // are we in easter-egg heli mode?
-    if (af && af->GetSimpleMode() == SIMPLE_MODE_HF)
+    if (af and af->GetSimpleMode() == SIMPLE_MODE_HF)
     {
         /*
         Switch and Dof settings for Helo
@@ -445,7 +445,7 @@ void AircraftClass::MoveSurfaces(void)
         dof4 tail or secondary rotor
          */
         // animate rotors
-        if (GetSwitch(HELI_ROTORS) != 1)
+        if (GetSwitch(HELI_ROTORS) not_eq 1)
         {
             SetSwitch(HELI_ROTORS, 1);
             SetDOF(HELI_MAIN_ROTOR, 0.0f);
@@ -480,7 +480,7 @@ void AircraftClass::MoveSurfaces(void)
 
 
     {
-        // MLR 2003-10-12 Throttle DOF (works on complex & simple - same ID)
+        // MLR 2003-10-12 Throttle DOF (works on complex bitand simple - same ID)
         //SetDOF(COMP_THROTTLE,af->Throtl()); // simple eh?
         //ATARIBABY change for 2 engine ACs to be correct, help from Mike
         if (af->auxaeroData->nEngines == 2)
@@ -555,20 +555,20 @@ void AircraftClass::MoveSurfaces(void)
         float doorAngle = 0.0f;
 
         // RV - Biker - Use DOFs defined in DAT files for opening gun and bomb bay doors
-        if (GunFire || fireGun)
+        if (GunFire or fireGun)
             doorAngle = 90.0f * DTR;
         else
             doorAngle =  0.0f * DTR;
 
-        if (af->GetGunDofType() >= COMP_WEAPON_BAY_0 &&
-            af->GetGunDofType() <= COMP_WEAPON_BAY_4 &&
+        if (af->GetGunDofType() >= COMP_WEAPON_BAY_0 and 
+            af->GetGunDofType() <= COMP_WEAPON_BAY_4 and 
             af->GetGunDofRate() > 0.0f)
         {
 
             MoveDof(af->GetGunDofType(), doorAngle, af->GetGunDofRate());
         }
 
-        if (af->GetGunSwitchType() >= COMP_WEAPON_BAY_0_SW &&
+        if (af->GetGunSwitchType() >= COMP_WEAPON_BAY_0_SW and 
             af->GetGunSwitchType() <= COMP_WEAPON_BAY_4_SW)
         {
 
@@ -588,12 +588,12 @@ void AircraftClass::MoveSurfaces(void)
 
             for (int l = 0; l < Sms->NumHardpoints(); l++)
             {
-                if (af->GetHpDofType(l) != curDOF)
+                if (af->GetHpDofType(l) not_eq curDOF)
                     MoveDof(af->GetHpDofType(l), 0 * DTR, af->GetHpDofRate(l));
 
             }
 
-            /* if (af->GetHpSwitchType(l) >= COMP_WEAPON_BAY_0_SW &&
+            /* if (af->GetHpSwitchType(l) >= COMP_WEAPON_BAY_0_SW and 
              af->GetHpSwitchType(l) <= COMP_WEAPON_BAY_4_SW) {
 
              if(GetDOFValue(af->GetHpDofType(l)) > 0.0f)
@@ -631,7 +631,7 @@ void AircraftClass::MoveSurfaces(void)
         // Thrust Reverser - FRB
         if (af->auxaeroData->hasThrRev)
         {
-            if (OnGround() && af->thrustReverse == 2)
+            if (OnGround() and af->thrustReverse == 2)
             {
                 float thrpos = af->auxaeroData->animThrRevAngle * DTR;
                 MoveDof(COMP_REVERSE_THRUSTER, thrpos, af->auxaeroData->animThrRevRate);
@@ -641,18 +641,18 @@ void AircraftClass::MoveSurfaces(void)
         }
 
         // Cobra - FRB animated pilot's head
-        if ((g_bAnimPilotHead) && ((!IsPlayer()) || ((IsPlayer()) && (!g_bEnableTrackIR))
-                                   || ((IsPlayer()) && (g_bEnableTrackIR)
-                                       && ((PlayerOptions.Get3dTrackIR() == false)
-                                           || (OTWDriver.GetOTWDisplayMode() != OTWDriverClass::Mode2DCockpit
-                                               && OTWDriver.GetOTWDisplayMode() != OTWDriverClass::Mode3DCockpit)))))
+        if ((g_bAnimPilotHead) and (( not IsPlayer()) or ((IsPlayer()) and ( not g_bEnableTrackIR))
+                                   or ((IsPlayer()) and (g_bEnableTrackIR)
+                                      and ((PlayerOptions.Get3dTrackIR() == false)
+                                           or (OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode2DCockpit
+                                              and OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode3DCockpit)))))
         {
             long  nHoldSec = 3;
 
             // Pilot animation timer
             if (SimLibElapsedTime > static_cast<SIM_ULONG>(af->AnimPilotTime))
             {
-                if (!af->IsSet(AirframeClass::InAir))
+                if ( not af->IsSet(AirframeClass::InAir))
                 {
                     af->AnimPilotScenario = 1;
                 }
@@ -670,7 +670,7 @@ void AircraftClass::MoveSurfaces(void)
             // WSO/RIO/Copilot animation timer
             if (SimLibElapsedTime > static_cast<SIM_ULONG>(af->AnimWSOTime))
             {
-                if (!af->IsSet(AirframeClass::InAir))
+                if ( not af->IsSet(AirframeClass::InAir))
                 {
                     af->AnimWSOScenario = 1;
                 }
@@ -825,12 +825,12 @@ void AircraftClass::MoveSurfaces(void)
         }
 
         // Pilot animation tied to stick
-        if (g_bAnimPilotHead && af->AnimPilotAct == 0)
+        if (g_bAnimPilotHead and af->AnimPilotAct == 0)
         {
 
-            if ((!g_bEnableTrackIR) || (!IsPlayer()) || ((g_bEnableTrackIR) && (!PlayerOptions.Get3dTrackIR())))
+            if (( not g_bEnableTrackIR) or ( not IsPlayer()) or ((g_bEnableTrackIR) and ( not PlayerOptions.Get3dTrackIR())))
             {
-                if ((af->rstick > -0.1f) && (af->rstick < 0.1f))
+                if ((af->rstick > -0.1f) and (af->rstick < 0.1f))
                 {
                     MoveDof(COMP_HEAD_LR, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
                     MoveDof(COMP_HEAD2_LR, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
@@ -841,7 +841,7 @@ void AircraftClass::MoveSurfaces(void)
                     MoveDof(COMP_HEAD2_LR, (-af->rstick * 120.0f * DTR), g_fPilotHeadMoveRate, -1);
                 }
 
-                if ((af->pstick > -0.1f) && (af->pstick < 0.1f))
+                if ((af->pstick > -0.1f) and (af->pstick < 0.1f))
                 {
                     MoveDof(COMP_HEAD_UD, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
                     MoveDof(COMP_HEAD2_UD, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
@@ -1008,7 +1008,7 @@ void AircraftClass::MoveSurfaces(void)
             stage = max(0, stage);
 
 
-            if ((rpm[0] > 1.0F) != GetSwitch(COMP_AB))
+            if ((rpm[0] > 1.0F) not_eq GetSwitch(COMP_AB))
             {
 
                 SetSwitch(COMP_AB, (rpm[0] > 1.0F));
@@ -1023,7 +1023,7 @@ void AircraftClass::MoveSurfaces(void)
                 }
             }
 
-            if (1 << stage != GetSwitch(COMP_EXH_NOZZLE))
+            if (1 << stage not_eq GetSwitch(COMP_EXH_NOZZLE))
             {
                 SetSwitch(COMP_EXH_NOZZLE, 1 << stage);
             }
@@ -1133,11 +1133,11 @@ void AircraftClass::MoveSurfaces(void)
 
         gFact = min(7, max(0, FloatToInt32((af->nzcgb - 4.0F) * 1.5F)));
 
-        if (gFact != GetSwitch(COMP_WING_VAPOR))
+        if (gFact not_eq GetSwitch(COMP_WING_VAPOR))
         {
             // RV - I-Hawk - the switch is used only if new vortex code isn't used
             // or if the y position of the first (and basic) vortex trail is set to 0
-            // (or not defind as for sure if defined correctly, y position must be != then 0)
+            // (or not defind as for sure if defined correctly, y position must be not_eq then 0)
 
             bool vortexTrailsCondition = false;
 
@@ -1149,13 +1149,13 @@ void AircraftClass::MoveSurfaces(void)
 
             float vortexTrailsUsed = af->auxaeroData->vortex1Location.y;
 
-            if ((!vortexTrailsCondition) || (!vortexTrailsUsed))
+            if (( not vortexTrailsCondition) or ( not vortexTrailsUsed))
             {
                 SetSwitch(COMP_WING_VAPOR, gFact);
             }
         }
 
-        if (af->IsEngineFlag(AirframeClass::FuelDoorOpen) != GetSwitch(COMP_REFUEL_DR))
+        if (af->IsEngineFlag(AirframeClass::FuelDoorOpen) not_eq GetSwitch(COMP_REFUEL_DR))
         {
 
             SetSwitch(COMP_REFUEL_DR, af->IsEngineFlag(AirframeClass::FuelDoorOpen));
@@ -1248,13 +1248,13 @@ void AircraftClass::MoveSurfaces(void)
             MoveDof(SIMP_RT_LEF, rightLEFAngle, af->auxaeroData->lefRate, -1);
         }
 
-        if ((rpm[0] > 1.0F) != GetSwitch(SIMP_AB))
+        if ((rpm[0] > 1.0F) not_eq GetSwitch(SIMP_AB))
         {
 
             SetSwitch(SIMP_AB, rpm[0] > 1.0F);
         }
 
-        if ((af->gearPos > 0.5F) != GetSwitch(SIMP_GEAR))
+        if ((af->gearPos > 0.5F) not_eq GetSwitch(SIMP_GEAR))
         {
 
             SetSwitch(SIMP_GEAR, af->gearPos > 0.5F);
@@ -1262,7 +1262,7 @@ void AircraftClass::MoveSurfaces(void)
 
         gFact = min(7, max(0, FloatToInt32((af->nzcgb - 4.0F) * 1.5F)));
 
-        if (gFact != GetSwitch(SIMP_WING_VAPOR))
+        if (gFact not_eq GetSwitch(SIMP_WING_VAPOR))
         {
 
             SetSwitch(SIMP_WING_VAPOR, gFact);
@@ -1273,7 +1273,7 @@ void AircraftClass::MoveSurfaces(void)
 
 
         {
-            // MLR - 2003-09-30 Spoiler & Wing Sweep code
+            // MLR - 2003-09-30 Spoiler bitand Wing Sweep code
             //TJL 01/04/04 adding wingSweep;
             float spoiler1l, spoiler1r, spoiler2l, spoiler2r, sweep;
             CalculateSweepAndSpoiler(sweep, spoiler1l, spoiler1r, spoiler2l, spoiler2r);
@@ -1283,7 +1283,7 @@ void AircraftClass::MoveSurfaces(void)
             MoveDof(SIMP_RT_SPOILER2, spoiler2r, af->auxaeroData->animSpoiler2Rate);
             wingSweep = sweep;
 
-            if (acFlags & hasSwing)
+            if (acFlags bitand hasSwing)
             {
                 static const int swdofs[] =
                 {
@@ -1310,11 +1310,11 @@ void AircraftClass::MoveSurfaces(void)
     // Check for stick shake
     if (this == SimDriver.GetPlayerEntity())
     {
-        if (GetAlpha() > 15.0F && GetAlpha() < 20.0F)
+        if (GetAlpha() > 15.0F and GetAlpha() < 20.0F)
         {
-            if (!stallShake)
+            if ( not stallShake)
             {
-                if (this->AutopilotType() != AircraftClass::CombatAP) // Retro 20Feb2004.. it can STOP regardless of AP status however..
+                if (this->AutopilotType() not_eq AircraftClass::CombatAP) // Retro 20Feb2004.. it can STOP regardless of AP status however..
                 {
                     stallShake = TRUE;
                     JoystickPlayEffect(JoyStall1, 0);
@@ -1364,7 +1364,7 @@ void AircraftClass::MoveSurfaces(void)
 
                 d = GetDOFValue(l);
 
-                if (((int)(acmiDOFValue[l] * 360)) != ((int)(d * 360)))
+                if (((int)(acmiDOFValue[l] * 360)) not_eq ((int)(d * 360)))
                 {
                     DOFRec.data.DOFNum = l;
                     DOFRec.data.DOFVal = d;
@@ -1380,7 +1380,7 @@ void AircraftClass::MoveSurfaces(void)
 
                 s = GetSwitch(l);
 
-                if (acmiSwitchValue[l] != s)
+                if (acmiSwitchValue[l] not_eq s)
                 {
                     acmiSwitch.data.switchNum   = l;
                     acmiSwitch.data.switchVal   = s;
@@ -1402,7 +1402,7 @@ void AircraftClass::RunLightSurfaces(void)
     //SetSwitch(COMP_TAIL_STROBE, light == 3);
     //SetSwitch(COMP_LAND_LIGHTS, light == 4);
 
-    if (!ExtlState(Extl_Main_Power))
+    if ( not ExtlState(Extl_Main_Power))
     {
         // lights off
         SetSwitch(COMP_NAV_LIGHTS, FALSE);
@@ -1415,7 +1415,7 @@ void AircraftClass::RunLightSurfaces(void)
     {
         // check flags
         // gear: landing lights on and gear down
-        SetSwitch(COMP_LAND_LIGHTS, IsAcStatusBitsSet(ACSTATUS_EXT_LANDINGLIGHT) && (af->gearPos == 1.0F));
+        SetSwitch(COMP_LAND_LIGHTS, IsAcStatusBitsSet(ACSTATUS_EXT_LANDINGLIGHT) and (af->gearPos == 1.0F));
 
         //----------------------------
         // animWingFlashOnTime  0.4 * 1000.0f = 400
@@ -1458,7 +1458,7 @@ void AircraftClass::RunLightSurfaces(void)
                 if (SimLibElapsedTime > animWingFlashTimer)
                 {
                     // blink time is small. random factor to avoid all blinking together
-                    navState = !navState;
+                    navState = not navState;
 
                     if (navState)
                     {
@@ -1517,7 +1517,7 @@ void AircraftClass::RunLightSurfaces(void)
             if (SimLibElapsedTime > animStrobeTimer)
             {
                 // blink time is small. random factor to avoid all blinking together
-                strobeState = !strobeState;
+                strobeState = not strobeState;
 
                 if (strobeState)
                 {
@@ -1545,7 +1545,7 @@ void AircraftClass::RunGearSurfaces(void)
     //this function is only valid for airplanes with complex gear
     int i;
 
-    // MLR 2003-10-04  must limit the original MPS code to animating 3 gear & door sets,
+    // MLR 2003-10-04  must limit the original MPS code to animating 3 gear bitand door sets,
     // there are no DOFs for the rest
     numgear = af->NumGear();
 
@@ -1553,7 +1553,7 @@ void AircraftClass::RunGearSurfaces(void)
 
     if (IsLocal())
     {
-        if ((af->gearHandle > 0.0F || OnGround()) && !af->IsSet(AirframeClass::GearBroken))
+        if ((af->gearHandle > 0.0F or OnGround()) and not af->IsSet(AirframeClass::GearBroken))
         {
             SetAcStatusBits(ACSTATUS_GEAR_DOWN);
         }
@@ -1585,7 +1585,7 @@ void AircraftClass::RunGearSurfaces(void)
     for (i = 0; i < numgear; i++)
     {
         //move the door
-        if (!(af->gear[i].flags & GearData::DoorStuck) && !(af->gear[i].flags & GearData::DoorBroken))
+        if ( not (af->gear[i].flags bitand GearData::DoorStuck) and not (af->gear[i].flags bitand GearData::DoorBroken))
         {
             float pos = af->gearPos * 2;
 
@@ -1599,7 +1599,7 @@ void AircraftClass::RunGearSurfaces(void)
             SetDOF(ComplexGearDoorDOF[i], af->GetAeroData(AeroDataSet::NosGearRng) * DTR);
 
         //move the gear
-        if (!(af->gear[i].flags & GearData::GearStuck) && !(af->gear[i].flags & GearData::GearBroken))
+        if ( not (af->gear[i].flags bitand GearData::GearStuck) and not (af->gear[i].flags bitand GearData::GearBroken))
         {
             float pos = (af->gearPos - .5f) * 2;
 
@@ -1612,18 +1612,18 @@ void AircraftClass::RunGearSurfaces(void)
         else
             SetDOF(ComplexGearDOF[i], af->GetAeroData(AeroDataSet::NosGearRng) * 0.6f * DTR);
 
-        if (af->gearPos >= 0.9F && ((af->gear[i].flags & GearData::DoorBroken)
-                                    || (af->gear[i].flags & GearData::DoorStuck)
-                                    || (af->gear[i].flags & GearData::GearStuck)
-                                    || (af->gear[i].flags & GearData::GearBroken)))
+        if (af->gearPos >= 0.9F and ((af->gear[i].flags bitand GearData::DoorBroken)
+                                    or (af->gear[i].flags bitand GearData::DoorStuck)
+                                    or (af->gear[i].flags bitand GearData::GearStuck)
+                                    or (af->gear[i].flags bitand GearData::GearBroken)))
         {
-            if ((af->gear[i].flags & GearData::DoorBroken) || (af->gear[i].flags & GearData::DoorStuck))
+            if ((af->gear[i].flags bitand GearData::DoorBroken) or (af->gear[i].flags bitand GearData::DoorStuck))
                 SetSwitch(ComplexGearDoorSwitch[i], TRUE);
 
-            if ((af->gear[i].flags & GearData::DoorBroken) || (af->gear[i].flags & GearData::DoorStuck))
+            if ((af->gear[i].flags bitand GearData::DoorBroken) or (af->gear[i].flags bitand GearData::DoorStuck))
                 SetSwitch(ComplexGearHoleSwitch[i], TRUE);
 
-            if ((af->gear[i].flags & GearData::GearBroken) || (af->gear[i].flags & GearData::GearStuck))
+            if ((af->gear[i].flags bitand GearData::GearBroken) or (af->gear[i].flags bitand GearData::GearStuck))
                 SetSwitch(ComplexGearSwitch[i], TRUE);
         }
         else
@@ -1647,14 +1647,14 @@ void AircraftClass::RunGearSurfaces(void)
 
     if (af->IsSet(AirframeClass::NoseSteerOn))
     {
-        if (!(af->gear[0].flags & GearData::GearStuck))
+        if ( not (af->gear[0].flags bitand GearData::GearStuck))
         {
             // ASSOCIATOR 30/11/03 Added g_bRollLinkedNWSRudder for roll unlinked rudder on the ground
             // RAS 05Apr04 chanded ypedal to lastYPedal and rstick to lastRStick so that nosewheel will track movement of plane
             // lastRStick and lastYPedal defined in EOM.cpp
             // RAS 06Apr04 changed 30.0F to 50.0F to make graphical nose wheel match rate of turn.  Acutal turn radius needs to be
             // looked at.  Real F-16 nose wheel turns 32.0 degrees
-            if (IO.AnalogIsUsed(AXIS_YAW) && !af->IsSet(AirframeClass::IsDigital) || !g_bRollLinkedNWSRudder)  // Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_YAW) and not af->IsSet(AirframeClass::IsDigital) or not g_bRollLinkedNWSRudder)  // Retro 31Dec2003
             {
                 SetDOF(COMP_NOS_GEAR_ROT, -af->lastYPedal * 50.0F * DTR * (0.5F + (80.0F * KNOTS_TO_FTPSEC - af->vt) / (160.0F * KNOTS_TO_FTPSEC)));
             }
@@ -1674,7 +1674,7 @@ void AircraftClass::RunGearSurfaces(void)
     else
         SetDOF(COMP_NOS_GEAR_ROT, GetDOFValue(COMP_NOS_GEAR_ROT) * 0.9F);
 
-    if (GetDOFValue(ComplexGearDOF[0]) == af->GetAeroData(AeroDataSet::NosGearRng)*DTR && !(af->gear[0].flags & GearData::DoorBroken))
+    if (GetDOFValue(ComplexGearDOF[0]) == af->GetAeroData(AeroDataSet::NosGearRng)*DTR and not (af->gear[0].flags bitand GearData::DoorBroken))
         SetSwitch(COMP_NOS_GEAR_ROD, TRUE);
     else
         SetSwitch(COMP_NOS_GEAR_ROD, FALSE);
@@ -1691,7 +1691,7 @@ void AircraftClass::RunGearSurfaces(void)
         DOFRec.data.type = Type();
         DOFRec.data.uniqueID = ACMIIDTable->Add(Id(), NULL, 0); //.num_;
 
-        if (switch1 != GetSwitch(COMP_NOS_GEAR_SW))
+        if (switch1 not_eq GetSwitch(COMP_NOS_GEAR_SW))
         {
             acmiSwitch.data.switchNum = COMP_NOS_GEAR_SW;
             acmiSwitch.data.switchVal = GetSwitch(COMP_NOS_GEAR_SW);
@@ -1699,7 +1699,7 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.SwitchRecord(&acmiSwitch);
         }
 
-        if (switch2 != GetSwitch(COMP_LT_GEAR_SW))
+        if (switch2 not_eq GetSwitch(COMP_LT_GEAR_SW))
         {
             acmiSwitch.data.switchNum = COMP_LT_GEAR_SW;
             acmiSwitch.data.switchVal = GetSwitch(COMP_LT_GEAR_SW);
@@ -1707,7 +1707,7 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.SwitchRecord(&acmiSwitch);
         }
 
-        if (switch3 != GetSwitch(COMP_RT_GEAR_SW))
+        if (switch3 not_eq GetSwitch(COMP_RT_GEAR_SW))
         {
             acmiSwitch.data.switchNum = COMP_RT_GEAR_SW;
             acmiSwitch.data.switchVal = GetSwitch(COMP_RT_GEAR_SW);
@@ -1715,7 +1715,7 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.SwitchRecord(&acmiSwitch);
         }
 
-        if (switch4 != GetSwitch(COMP_NOS_GEAR_ROD))
+        if (switch4 not_eq GetSwitch(COMP_NOS_GEAR_ROD))
         {
             acmiSwitch.data.switchNum = COMP_NOS_GEAR_ROD;
             acmiSwitch.data.switchVal = GetSwitch(COMP_NOS_GEAR_ROD);
@@ -1723,7 +1723,7 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.SwitchRecord(&acmiSwitch);
         }
 
-        if (switch7 != GetSwitch(COMP_TAIL_STROBE))
+        if (switch7 not_eq GetSwitch(COMP_TAIL_STROBE))
         {
             acmiSwitch.data.switchNum = COMP_TAIL_STROBE;
             acmiSwitch.data.switchVal = GetSwitch(COMP_TAIL_STROBE);
@@ -1731,7 +1731,7 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.SwitchRecord(&acmiSwitch);
         }
 
-        if (switch8 != GetSwitch(COMP_NAV_LIGHTS))
+        if (switch8 not_eq GetSwitch(COMP_NAV_LIGHTS))
         {
             acmiSwitch.data.switchNum = COMP_NAV_LIGHTS;
             acmiSwitch.data.switchVal = GetSwitch(COMP_NAV_LIGHTS);
@@ -1739,7 +1739,7 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.SwitchRecord(&acmiSwitch);
         }
 
-        if (switch9 != GetSwitch(COMP_LAND_LIGHTS))
+        if (switch9 not_eq GetSwitch(COMP_LAND_LIGHTS))
         {
             acmiSwitch.data.switchNum = COMP_LAND_LIGHTS;
             acmiSwitch.data.switchVal = GetSwitch(COMP_LAND_LIGHTS);
@@ -1747,7 +1747,7 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.SwitchRecord(&acmiSwitch);
         }
 
-        if (switch14 != GetSwitch(COMP_NOS_GEAR_DR_SW))
+        if (switch14 not_eq GetSwitch(COMP_NOS_GEAR_DR_SW))
         {
             acmiSwitch.data.switchNum = COMP_NOS_GEAR_DR_SW;
             acmiSwitch.data.switchVal = GetSwitch(COMP_NOS_GEAR_DR_SW);
@@ -1755,7 +1755,7 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.SwitchRecord(&acmiSwitch);
         }
 
-        if (switch15 != GetSwitch(COMP_LT_GEAR_DR_SW))
+        if (switch15 not_eq GetSwitch(COMP_LT_GEAR_DR_SW))
         {
             acmiSwitch.data.switchNum = COMP_LT_GEAR_DR_SW;
             acmiSwitch.data.switchVal = GetSwitch(COMP_LT_GEAR_DR_SW);
@@ -1763,7 +1763,7 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.SwitchRecord(&acmiSwitch);
         }
 
-        if (switch16 != GetSwitch(COMP_RT_GEAR_DR_SW))
+        if (switch16 not_eq GetSwitch(COMP_RT_GEAR_DR_SW))
         {
             acmiSwitch.data.switchNum = COMP_RT_GEAR_DR_SW;
             acmiSwitch.data.switchVal = GetSwitch(COMP_RT_GEAR_DR_SW);
@@ -1771,7 +1771,7 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.SwitchRecord(&acmiSwitch);
         }
 
-        if (switch17 != GetSwitch(COMP_NOS_GEAR_HOLE))
+        if (switch17 not_eq GetSwitch(COMP_NOS_GEAR_HOLE))
         {
             acmiSwitch.data.switchNum = COMP_NOS_GEAR_HOLE;
             acmiSwitch.data.switchVal = GetSwitch(COMP_NOS_GEAR_HOLE);
@@ -1779,7 +1779,7 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.SwitchRecord(&acmiSwitch);
         }
 
-        if (switch18 != GetSwitch(COMP_LT_GEAR_HOLE))
+        if (switch18 not_eq GetSwitch(COMP_LT_GEAR_HOLE))
         {
             acmiSwitch.data.switchNum = COMP_LT_GEAR_HOLE;
             acmiSwitch.data.switchVal = GetSwitch(COMP_LT_GEAR_HOLE);
@@ -1787,7 +1787,7 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.SwitchRecord(&acmiSwitch);
         }
 
-        if (switch19 != GetSwitch(COMP_RT_GEAR_HOLE))
+        if (switch19 not_eq GetSwitch(COMP_RT_GEAR_HOLE))
         {
             acmiSwitch.data.switchNum = COMP_RT_GEAR_HOLE;
             acmiSwitch.data.switchVal = GetSwitch(COMP_RT_GEAR_HOLE);
@@ -1795,21 +1795,21 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.SwitchRecord(&acmiSwitch);
         }
 
-        /* if ( switch20 != GetSwitch(COMP_BROKEN_NOS_GEAR) )
+        /* if ( switch20 not_eq GetSwitch(COMP_BROKEN_NOS_GEAR) )
         {
         acmiSwitch.data.switchNum = COMP_BROKEN_NOS_GEAR;
         acmiSwitch.data.switchVal = GetSwitch(COMP_BROKEN_NOS_GEAR);
         acmiSwitch.data.prevSwitchVal = switch20;
         gACMIRec.SwitchRecord( &acmiSwitch );
         }
-        if ( switch21 != GetSwitch(COMP_BROKEN_LT_GEAR) )
+        if ( switch21 not_eq GetSwitch(COMP_BROKEN_LT_GEAR) )
         {
         acmiSwitch.data.switchNum = COMP_BROKEN_LT_GEAR;
         acmiSwitch.data.switchVal = GetSwitch(COMP_BROKEN_LT_GEAR);
         acmiSwitch.data.prevSwitchVal = switch21;
         gACMIRec.SwitchRecord( &acmiSwitch );
         }
-        if ( switch22 != GetSwitch(COMP_BROKEN_RT_GEAR) )
+        if ( switch22 not_eq GetSwitch(COMP_BROKEN_RT_GEAR) )
         {
         acmiSwitch.data.switchNum = COMP_BROKEN_RT_GEAR;
         acmiSwitch.data.switchVal = GetSwitch(COMP_BROKEN_RT_GEAR);
@@ -1817,7 +1817,7 @@ void AircraftClass::RunGearSurfaces(void)
         gACMIRec.SwitchRecord( &acmiSwitch );
         }*/
 
-        if (dof19 != GetDOFValue(COMP_NOS_GEAR))
+        if (dof19 not_eq GetDOFValue(COMP_NOS_GEAR))
         {
             DOFRec.data.DOFNum = COMP_NOS_GEAR;
             DOFRec.data.DOFVal = GetDOFValue(COMP_NOS_GEAR);
@@ -1825,7 +1825,7 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.DOFRecord(&DOFRec);
         }
 
-        if (dof20 != GetDOFValue(COMP_LT_GEAR))
+        if (dof20 not_eq GetDOFValue(COMP_LT_GEAR))
         {
             DOFRec.data.DOFNum = COMP_LT_GEAR;
             DOFRec.data.DOFVal = GetDOFValue(COMP_LT_GEAR);
@@ -1833,7 +1833,7 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.DOFRecord(&DOFRec);
         }
 
-        if (dof21 != GetDOFValue(COMP_RT_GEAR))
+        if (dof21 not_eq GetDOFValue(COMP_RT_GEAR))
         {
             DOFRec.data.DOFNum = COMP_RT_GEAR;
             DOFRec.data.DOFVal = GetDOFValue(COMP_RT_GEAR);
@@ -1841,7 +1841,7 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.DOFRecord(&DOFRec);
         }
 
-        if (dof22 != GetDOFValue(COMP_NOS_GEAR_DR))
+        if (dof22 not_eq GetDOFValue(COMP_NOS_GEAR_DR))
         {
             DOFRec.data.DOFNum = COMP_NOS_GEAR_DR;
             DOFRec.data.DOFVal = GetDOFValue(COMP_NOS_GEAR_DR);
@@ -1849,7 +1849,7 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.DOFRecord(&DOFRec);
         }
 
-        if (dof23 != GetDOFValue(COMP_LT_GEAR_DR))
+        if (dof23 not_eq GetDOFValue(COMP_LT_GEAR_DR))
         {
             DOFRec.data.DOFNum = COMP_LT_GEAR_DR;
             DOFRec.data.DOFVal = GetDOFValue(COMP_LT_GEAR_DR);
@@ -1857,7 +1857,7 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.DOFRecord(&DOFRec);
         }
 
-        if (dof24 != GetDOFValue(COMP_RT_GEAR_DR))
+        if (dof24 not_eq GetDOFValue(COMP_RT_GEAR_DR))
         {
             DOFRec.data.DOFNum = COMP_RT_GEAR_DR;
             DOFRec.data.DOFVal = GetDOFValue(COMP_RT_GEAR_DR);
@@ -1891,7 +1891,7 @@ float AircraftClass::CheckLEF(int side)
         case 0:
 
             //Left LEF
-            if (LEFState(LT_LEF_OUT) || LEFState(LEFSASYNCH)) //can't work anymore
+            if (LEFState(LT_LEF_OUT) or LEFState(LEFSASYNCH)) //can't work anymore
                 leftLEFAngle = LTLEFAOA;
             else //normal operation
             {
@@ -1905,7 +1905,7 @@ float AircraftClass::CheckLEF(int side)
         case 1:
 
             //Right LEF
-            if (LEFState(RT_LEF_OUT) || LEFState(LEFSASYNCH)) //can't work anymore
+            if (LEFState(RT_LEF_OUT) or LEFState(LEFSASYNCH)) //can't work anymore
                 rightLEFAngle = RTLEFAOA; //got set when we took hit
             else //normal operation
             {

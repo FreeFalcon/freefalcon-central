@@ -48,7 +48,7 @@ RadarClass::RadarClass(int type, SimMoverClass* parentPlatform) : SensorClass(pa
     isEmitting = TRUE;
     targetUnderCursor = FalconNullId;
     lasttargetUnderCursor = NULL;//me123
-#if !NO_REMOTE_BUGGED_TARGET
+#if not NO_REMOTE_BUGGED_TARGET
     RemoteBuggedTarget = NULL;
 #endif
     oldseekerElCenter = 0.0f;
@@ -56,7 +56,7 @@ RadarClass::RadarClass(int type, SimMoverClass* parentPlatform) : SensorClass(pa
     digiRadarMode = DigiRWS; // 2002-02-09 ADDED BY S.G. Need to init the radar mode the digi will be set to by default...
     flag = FirstSweep; // 2002-03-10 ADDED BY S.G. Tells the RadarDigi::Exec function that the radar is doing is first sweep since creation, don't apply TimeToLock
 
-    if (!radarData->RDRDataInd) radarData->RDRDataInd = type;
+    if ( not radarData->RDRDataInd) radarData->RDRDataInd = type;
 
     if (radarData->RDRDataInd < NumRadarDatFileTable)
         radarDatFile = &radarDatFileTable[radarData->RDRDataInd];
@@ -78,8 +78,8 @@ void RadarClass::SetPower(BOOL state)
     // Player's radar can break
     if (platform == SimDriver.GetPlayerAircraft())
     {
-        if (((AircraftClass*)platform)->mFaults && (
-                ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::xmtr ||
+        if (((AircraftClass*)platform)->mFaults and (
+                ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::xmtr or
                 ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::bus))
         {
             state = FALSE;
@@ -87,9 +87,9 @@ void RadarClass::SetPower(BOOL state)
     }
 
     isOn = state;
-    isEmitting = isEmitting && state;
+    isEmitting = isEmitting and state;
 
-    if (!isEmitting)
+    if ( not isEmitting)
     {
         if (lockedTarget) SendTrackMsg(lockedTarget, Track_Unlock);
 
@@ -112,17 +112,17 @@ void RadarClass::SetEmitting(BOOL state)
     // Player's radar can break
     if (platform == SimDriver.GetPlayerAircraft())
     {
-        if (((AircraftClass*)platform)->mFaults && (
-                ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::xmtr ||
+        if (((AircraftClass*)platform)->mFaults and (
+                ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::xmtr or
                 ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::bus))
         {
             state = FALSE;
         }
     }
 
-    isEmitting = state && isOn;
+    isEmitting = state and isOn;
 
-    if (!isEmitting)
+    if ( not isEmitting)
     {
         if (lockedTarget)
         {
@@ -143,16 +143,16 @@ void RadarClass::SetEmitting(BOOL state)
 
 void RadarClass::SetDesiredTarget(SimObjectType* newTarget)
 {
-    if (!newTarget || newTarget == lockedTarget)
+    if ( not newTarget or newTarget == lockedTarget)
     {
         return;
     }
 
-    if (platform->IsAirplane() && platform->OnGround()) return;
+    if (platform->IsAirplane() and platform->OnGround()) return;
 
     // If the baseData for the newTarget is the same as the lockedTarget then they are the same
 
-    if ((newTarget) && (lockedTarget) && (newTarget->BaseData() == lockedTarget->BaseData()))
+    if ((newTarget) and (lockedTarget) and (newTarget->BaseData() == lockedTarget->BaseData()))
     {
         // S.G. NEED TO AT LEAST SET THE NEW LOCK TARGET, EVEN IF IT IS THE SAME BASE
         SensorClass::SetSensorTarget(newTarget);
@@ -162,7 +162,7 @@ void RadarClass::SetDesiredTarget(SimObjectType* newTarget)
 
     // If we're not interested in our locked target anymore, tell him he's off the hook
     //if (lockedTarget) // JB 010223 CTD
-    // if (lockedTarget && !F4IsBadCodePtr((FARPROC) lockedTarget) && !F4IsBadCodePtr((FARPROC) lockedTarget->BaseData())) { // JB 010223 CTD
+    // if (lockedTarget and not F4IsBadCodePtr((FARPROC) lockedTarget) and not F4IsBadCodePtr((FARPROC) lockedTarget->BaseData())) { // JB 010223 CTD
     //me123 this is done in SetSensorTarget below SendTrackMsg (lockedTarget->BaseData()->Id(), Track_Unlock);
     // }
 
@@ -178,12 +178,12 @@ void RadarClass::SetDesiredTarget(SimObjectType* newTarget)
 void RadarClass::SetSensorTarget(SimObjectType* newTarget)
 {
     // 2002-02-10 ADDED BY S.G. Reset the digi radar mode to RWS upon losing your target
-    if (!newTarget)
+    if ( not newTarget)
     {
         digiRadarMode = DigiRWS;
     }
 
-    if (lockedTarget && lockedTarget != newTarget)
+    if (lockedTarget and lockedTarget not_eq newTarget)
     {
         SendTrackMsg(lockedTarget, Track_Unlock);
     }
@@ -254,11 +254,11 @@ float RadarClass::ReturnStrength(SimObjectType* target)
         iEl = (int)(target->localData->elFrom * RTD);
 
         // If we don't go inside this if body, we do not have ECM protection at all so 'S' isn't reduced
-        if ((iAz < 60 || iAz > 120) && iEl > -30 && iEl < 15)
+        if ((iAz < 60 or iAz > 120) and iEl > -30 and iEl < 15)
         {
-            if (iAz < 60 && iAz >= 30)
+            if (iAz < 60 and iAz >= 30)
                 ecmAngleFactor = (float)sqrt((60.0f * DTR - (float)fabs(target->localData->azFrom)) / (30.0f * DTR));
-            else if (iAz > 120 && iAz <= 150)
+            else if (iAz > 120 and iAz <= 150)
                 ecmAngleFactor = (float)sqrt(((float)fabs(target->localData->azFrom) - 120.0f * DTR) / (30.0f * DTR));
 
             if (iEl > 5)
@@ -277,7 +277,7 @@ float RadarClass::ReturnStrength(SimObjectType* target)
 
             if (classPtr->dataType == DTYPE_VEHICLE)
             {
-                int iJammerStrenght = (((VehicleClassDataType*)(classPtr->dataPtr))->Name[14] & 0x7f);
+                int iJammerStrenght = (((VehicleClassDataType*)(classPtr->dataPtr))->Name[14] bitand 0x7f);
 
                 if (iJammerStrenght)
                     S /= (float)iJammerStrenght / 10.0f;
@@ -289,7 +289,7 @@ float RadarClass::ReturnStrength(SimObjectType* target)
 
     // 2001-04-05 ADDED BY S.G. SO DEAGGREGATED GROUND RADAR ARE ALSO AFFECTED BY SOJ
     // Only if we're a battalion or an AWAC... Need to check the platform's canpaign object because Missiles (may be others?) don't have any
-    if (platform->GetCampaignObject() && (platform->GetCampaignObject()->IsBattalion() || (platform->GetCampaignObject()->IsFlight() && platform->GetSType() == STYPE_UNIT_AWACS)))
+    if (platform->GetCampaignObject() and (platform->GetCampaignObject()->IsBattalion() or (platform->GetCampaignObject()->IsFlight() and platform->GetSType() == STYPE_UNIT_AWACS)))
     {
         CampBaseClass *campBaseObj;
 
@@ -300,14 +300,14 @@ float RadarClass::ReturnStrength(SimObjectType* target)
             campBaseObj = (CampBaseClass *)target->BaseData();
 
         // Must be a flight because only them can have/be SOJed
-        if (campBaseObj && campBaseObj->IsFlight())
+        if (campBaseObj and campBaseObj->IsFlight())
         {
             // If its the ECM flight or an ECM protected flight...
             Flight ecmFlight = ((FlightClass *)campBaseObj)->GetECMFlight();
 
             if (ecmFlight)
             {
-                if (!ecmFlight->IsAreaJamming())
+                if ( not ecmFlight->IsAreaJamming())
                     ecmFlight = NULL;
             }
             else if (((FlightClass *)campBaseObj)->HasAreaJamming())
@@ -338,7 +338,7 @@ float RadarClass::ReturnStrength(SimObjectType* target)
 
     // END OF ADDED SECTION
     // See if the target is in the Doppler notch
-    if (target->BaseData()->OnGround() && !target->BaseData()->IsMover())
+    if (target->BaseData()->OnGround() and not target->BaseData()->IsMover())
     {
         S = 0.0f;   //me123 don't show ground target's that don't move // 2001-09-07 S.G. ARE THEY SHOWING UP ON THE GM RADAR? IF NOT, WE HAVE A PROBLEM SINCE THEY WON'T SHOW ANYWHERE...
     }
@@ -346,7 +346,7 @@ float RadarClass::ReturnStrength(SimObjectType* target)
     Vr = (float)cos(target->localData->ataFrom) * target->BaseData()->GetVt();
 
     // 2000-11-24 QUESTION BY S.G. me123, DON'T YOU THINK A MAX OF 450 knots IS A BIT FAST FOR GROUND VEHICLE?
-    if (target->BaseData()->OnGround() && target->BaseData()->IsMover())
+    if (target->BaseData()->OnGround() and target->BaseData()->IsMover())
     {
         Vr = g_fMoverVrValue * (float)rand() / BIGGEST_RANDOM_NUMBER;   //me123 let's make some bogus Vt for the moving ground target
     }
@@ -383,7 +383,7 @@ float RadarClass::ReturnStrength(SimObjectType* target)
         {
 
             //notch look up
-            if (!mainclutter)
+            if ( not mainclutter)
                 S *= min(1.0f, radarData->NotchPenalty * 1.5f);
 
             //notch look down
@@ -403,7 +403,7 @@ float RadarClass::ReturnStrength(SimObjectType* target)
             }
 
             // sidelobe effect 2  (co speed target)
-            if (target->localData->rangedot > -20.0f && target->localData->rangedot < 20.0f * KNOTS_TO_FTPSEC)
+            if (target->localData->rangedot > -20.0f and target->localData->rangedot < 20.0f * KNOTS_TO_FTPSEC)
             {
                 S *= 0.90f;//me123 side lope clutter
             }
@@ -413,7 +413,7 @@ float RadarClass::ReturnStrength(SimObjectType* target)
     // Hammer the signal to zero if the target is "in" the terrain and
     // we don't have line of sight (if the target is above terrain, we
     // assume line of sight EVEN THOUGH we might be wrong if we are low)
-    if (!platform->CheckLOS(target))
+    if ( not platform->CheckLOS(target))
     {
         // 2001-05-14 MODIFIED BY S.G. SINCE THE RETURN VALUE IS ALWAYS LESS THAN SOMETHING
         // AND -1 IS LESS THAN 0, I'LL USE IT TO FLAG 'NoLOS' TO THE RadarDigi FUNCTION
@@ -422,8 +422,8 @@ float RadarClass::ReturnStrength(SimObjectType* target)
     }
 
     /* OTWDriver.GetAreaFloorAndCeiling (&bottom, &top);
-    if (target->BaseData()->ZPos() > top || platform->ZPos() > top) {
-     if ( !OTWDriver.CheckLOS( platform, target->BaseData() ) ) {
+    if (target->BaseData()->ZPos() > top or platform->ZPos() > top) {
+     if ( not OTWDriver.CheckLOS( platform, target->BaseData() ) ) {
      S = 0.0f;
      }
     }*/
@@ -438,13 +438,13 @@ void RadarClass::SendTrackMsg(SimObjectType* tgtptr, unsigned int trackType, uns
     ++count;
 
     if (
-        (tgtptr == NULL) || (tgtptr->BaseData() == NULL) ||
-        (tgtptr->localData->lockmsgsend == Track_None && trackType == Track_Unlock) ||
-        (tgtptr->localData->lockmsgsend == Track_Launch && trackType == Track_Lock) ||
-        (!((SimBaseClass*)tgtptr->BaseData())->IsAirplane()) ||
+        (tgtptr == NULL) or (tgtptr->BaseData() == NULL) or
+        (tgtptr->localData->lockmsgsend == Track_None and trackType == Track_Unlock) or
+        (tgtptr->localData->lockmsgsend == Track_Launch and trackType == Track_Lock) or
+        ( not ((SimBaseClass*)tgtptr->BaseData())->IsAirplane()) or
         (
-            tgtptr->localData->lockmsgsend == trackType && (
-                trackType != Track_Lock || tgtptr->localData->lastRadarMode == hardpoint
+            tgtptr->localData->lockmsgsend == trackType and (
+                trackType not_eq Track_Lock or tgtptr->localData->lastRadarMode == hardpoint
             )
         )
     )
@@ -464,7 +464,7 @@ void RadarClass::SendTrackMsg(SimObjectType* tgtptr, unsigned int trackType, uns
     // Create and fill in the message structure
     VuGameEntity *game = vuLocalSessionEntity->Game();
 
-    if (!game) return;
+    if ( not game) return;
 
     VuSessionsIterator Sessioniter(game);
     VuSessionEntity*   sess;
@@ -474,9 +474,9 @@ void RadarClass::SendTrackMsg(SimObjectType* tgtptr, unsigned int trackType, uns
     while (sess)
     {
         if (
-            (sess->CameraCount() > 0) &&
+            (sess->CameraCount() > 0) and 
             (
-                (sess->GetCameraEntity(0)->Id() == platform->Id()) ||
+                (sess->GetCameraEntity(0)->Id() == platform->Id()) or
                 (sess->GetCameraEntity(0)->Id() == id)
             )
         )
@@ -562,7 +562,7 @@ static void ReadDataArray(void *dataPtr, SimlibFileClass* inputFile, const Input
 {
     SimlibFileName buffer;
 
-    while (inputFile->ReadLine(buffer, sizeof buffer) == SIMLIB_OK && buffer[0] != 0)
+    while (inputFile->ReadLine(buffer, sizeof buffer) == SIMLIB_OK and buffer[0] not_eq 0)
     {
         ParseField(dataPtr, buffer, desc);
         buffer[0] = 0;

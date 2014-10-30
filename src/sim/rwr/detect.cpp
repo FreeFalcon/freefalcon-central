@@ -13,9 +13,9 @@
 int RwrClass::CanSeeObject(SimObjectType* rwrObj)
 {
     if (
-        rwrObj->localData->az < typeData->right &&
-        rwrObj->localData->az > typeData->left &&
-        rwrObj->localData->el < typeData->top &&
+        rwrObj->localData->az < typeData->right and 
+        rwrObj->localData->az > typeData->left and 
+        rwrObj->localData->el < typeData->top and 
         rwrObj->localData->el > typeData->bottom)
         return TRUE;
     else
@@ -41,12 +41,12 @@ int RwrClass::BeingPainted(SimObjectType* rwrObj)
 
         // Since targetPtr belongs to movers only, make sure it is one. Not sure if required but just to be safe. I've been burned top many time :-(
         // Only use the true radar scan volume if the contact's target isn't us...
-        if (rwrObj->BaseData()->IsMover() && ((SimMoverClass *)rwrObj->BaseData())->targetPtr && ((SimMoverClass *)rwrObj->BaseData())->targetPtr->BaseData() != platform)
+        if (rwrObj->BaseData()->IsMover() and ((SimMoverClass *)rwrObj->BaseData())->targetPtr and ((SimMoverClass *)rwrObj->BaseData())->targetPtr->BaseData() not_eq platform)
         {
             scanAz = ((SimBaseClass*)rwrObj->BaseData())->RdrAz();
             scanEl = ((SimBaseClass*)rwrObj->BaseData())->RdrEl();
 
-            if ((scanAz > fabs(rwrObj->localData->azFrom - ((SimBaseClass*)rwrObj->BaseData())->RdrAzCenter())) &&
+            if ((scanAz > fabs(rwrObj->localData->azFrom - ((SimBaseClass*)rwrObj->BaseData())->RdrAzCenter())) and 
                 (scanEl > fabs(rwrObj->localData->elFrom - ((SimBaseClass*)rwrObj->BaseData())->RdrElCenter())))
                 return TRUE;
             else
@@ -56,7 +56,7 @@ int RwrClass::BeingPainted(SimObjectType* rwrObj)
         {
             scanAz = scanEl = RadarDataTable[rwrObj->BaseData()->GetRadarType()].ScanHalfAngle;
 
-            if ((scanAz > fabs(rwrObj->localData->azFrom)) && (scanEl > fabs(rwrObj->localData->elFrom)))
+            if ((scanAz > fabs(rwrObj->localData->azFrom)) and (scanEl > fabs(rwrObj->localData->elFrom)))
                 return TRUE;
             else
                 return FALSE;
@@ -87,7 +87,7 @@ int RwrClass::BeingPainted(SimObjectType* rwrObj)
      // RdrAzCenter()
      // RdrElCenter()
 
-     if ((scanAz > fabs(rwrObj->localData->azFrom)) &&
+     if ((scanAz > fabs(rwrObj->localData->azFrom)) and 
      (scanEl > fabs(rwrObj->localData->elFrom)))
      {
      return TRUE;
@@ -144,9 +144,9 @@ int RwrClass::CanDetectObject(SimObjectType* rwrObj)
 
     // If the signal is strong enough for detection, make sure we have line of sight
     // radarRange * nominalRange is the range that the object can be detected at
-    //if (radarRange < typeData->nominalRange && CanDetectObject(rwrObj->BaseData()))
+    //if (radarRange < typeData->nominalRange and CanDetectObject(rwrObj->BaseData()))
     if (
-        (rwrObj->localData->range < radarRange * typeData->nominalRange) &&
+        (rwrObj->localData->range < radarRange * typeData->nominalRange) and 
         platform->CheckLOS(rwrObj))
     {
         return TRUE;

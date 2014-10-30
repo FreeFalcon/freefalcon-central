@@ -33,7 +33,7 @@ const static struct InvData
     { 0.40f, -0.62f,  0.35f, -0.60f, InvData::RJETT|InvData::NORACK|InvData::R2SLOT}, // HP 9*/
     { 0 }, // HP 0 is empty
     //MI tweaked values
-    { -0.90f, -0.50f, -0.95f, -0.50f, InvData::RJETT | InvData::NORACK | InvData::R2SLOT}, // HP 1
+    { -0.90f, -0.50f, -0.95f, -0.50f, InvData::RJETT bitor InvData::NORACK bitor InvData::R2SLOT}, // HP 1
     { -0.90f, -0.25f, -0.95f, -0.25f, InvData::R2SLOT}, // HP 2
     { -0.75f,  0.10f, -0.77f,  0.10f, 0}, // HP 3
     { -0.60f,  0.40f, -0.62f,  0.42f, 0}, // HP 4
@@ -41,7 +41,7 @@ const static struct InvData
     { 0.10f,  0.40f,  0.08f,  0.42f, 0}, // HP 6
     { 0.25f,  0.10f,  0.25f,  0.10f, 0}, // HP 7
     { 0.40f, -0.25f,  0.35f, -0.25f, InvData::R2SLOT}, // HP 8
-    { 0.40f, -0.50f,  0.35f, -0.50f, InvData::RJETT | InvData::NORACK | InvData::R2SLOT}, // HP 9
+    { 0.40f, -0.50f,  0.35f, -0.50f, InvData::RJETT bitor InvData::NORACK bitor InvData::R2SLOT}, // HP 9
 };
 
 void SmsDrawable::InventoryDisplay(int jettOnly)
@@ -53,7 +53,7 @@ void SmsDrawable::InventoryDisplay(int jettOnly)
     for (i = 1; i < 10; i++)
         InvDrawHp(i, jettOnly);
 
-    if (!jettOnly)
+    if ( not jettOnly)
     {
         if (((AircraftClass*)Sms->ownship)->af->IsSet(AirframeClass::CATLimiterIII))
         {
@@ -109,10 +109,10 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
     if (Sms->NumHardpoints() <= hp)
         return;
 
-    if (Sms->hardPoint[hp]->GetRackDataFlags() & RDF_BMSDEFINITION)
+    if (Sms->hardPoint[hp]->GetRackDataFlags() bitand RDF_BMSDEFINITION)
     {
         // is from BMS data
-        ShiAssert(hp > 0 && hp < 10);
+        ShiAssert(hp > 0 and hp < 10);
         char tmpStr[3][12];
         char rev[3] = {0, 0, 0};
         int curStr = 0;
@@ -121,15 +121,15 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
         tmpStr[1][0] = 0;
         tmpStr[2][0] = 0;
 
-        if (jettOnly && !(Sms->hardPoint[hp]->GetRackDataFlags() & (RDF_SELECTIVE_JETT_WEAPON | RDF_SELECTIVE_JETT_RACK)))
+        if (jettOnly and not (Sms->hardPoint[hp]->GetRackDataFlags() bitand (RDF_SELECTIVE_JETT_WEAPON bitor RDF_SELECTIVE_JETT_RACK)))
         {
             // non jettisonable - show nothing
         }
         else
         {
-            if (!jettOnly)
+            if ( not jettOnly)
             {
-                if (Sms->hardPoint[hp]->GetPylonMnemonic() && Sms->hardPoint[hp]->GetPylonMnemonic()[0])
+                if (Sms->hardPoint[hp]->GetPylonMnemonic() and Sms->hardPoint[hp]->GetPylonMnemonic()[0])
                 {
                     sprintf(tmpStr[curStr], "1 %s", Sms->hardPoint[hp]->GetPylonMnemonic());
                     curStr++;
@@ -137,9 +137,9 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
             }
 
 
-            if (Sms->hardPoint[hp]->GetRackMnemonic() && Sms->hardPoint[hp]->GetRackMnemonic()[0])
+            if (Sms->hardPoint[hp]->GetRackMnemonic() and Sms->hardPoint[hp]->GetRackMnemonic()[0])
             {
-                if (jettOnly && sjSelected[hp] == SelectiveRack)
+                if (jettOnly and sjSelected[hp] == SelectiveRack)
                     rev[curStr] = 1;
 
                 int count = (Sms->hardPoint[hp]->GetRack() ? 1 : 0);
@@ -149,14 +149,14 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
 
             if (Sms->hardPoint[hp]->weaponId)
             {
-                if (jettOnly && (sjSelected[hp] == SelectiveWeapon || sjSelected[hp] == SelectiveRack))
+                if (jettOnly and (sjSelected[hp] == SelectiveWeapon or sjSelected[hp] == SelectiveRack))
                     rev[curStr] = 1;
 
                 sprintf(tmpStr[curStr], "%d %s", Sms->hardPoint[hp]->weaponCount, Sms->hardPoint[hp]->GetWeaponData()->mnemonic);
                 curStr++;
             }
 
-            if (!jettOnly)
+            if ( not jettOnly)
             {
                 for (; curStr < 3; curStr++) // fill remaining with "-------"
                 {
@@ -176,7 +176,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
 
         int inverse = 0;
 
-        if (!jettOnly && Sms->curHardpoint == hp)
+        if ( not jettOnly and Sms->curHardpoint == hp)
         {
             inverse = 2;
         }
@@ -199,7 +199,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
     else /************************************************************/
     {
         /* SP3 */
-        ShiAssert(hp > 0 && hp < 10);
+        ShiAssert(hp > 0 and hp < 10);
         char tmpStr1[12];
         char tmpStr2[sizeof(tmpStr1)];
         char tmpStr3[sizeof(tmpStr1)];
@@ -208,10 +208,10 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
         /*
         if(g_bNewSMSInvNames)
         {
-         if (Sms->NumHardpoints() > hp && ((HpInvData[hp].flags & InvData::RJETT) ==0 || !jettOnly))
+         if (Sms->NumHardpoints() > hp and ((HpInvData[hp].flags bitand InvData::RJETT) ==0 or not jettOnly))
          {
          int rack;
-         if(Sms->hardPoint[hp]->GetRackOrPylon() || (HpInvData[hp].flags & InvData::NORACK)) // MLR 2/20/2004 - added OrPylon
+         if(Sms->hardPoint[hp]->GetRackOrPylon() or (HpInvData[hp].flags bitand InvData::NORACK)) // MLR 2/20/2004 - added OrPylon
          rack = 1;
          else
          rack = 0;
@@ -270,11 +270,11 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
         else*/
         {
 
-            if (Sms->NumHardpoints() > hp && ((HpInvData[hp].flags & InvData::RJETT) == 0 || !jettOnly))
+            if (Sms->NumHardpoints() > hp and ((HpInvData[hp].flags bitand InvData::RJETT) == 0 or not jettOnly))
             {
                 int rack;
 
-                if (Sms->hardPoint[hp]->GetRackOrPylon() || (HpInvData[hp].flags & InvData::NORACK)) // MLR 2/20/2004 - added OrPylon
+                if (Sms->hardPoint[hp]->GetRackOrPylon() or (HpInvData[hp].flags bitand InvData::NORACK)) // MLR 2/20/2004 - added OrPylon
                     rack = 1;
                 else
                     rack = 0;
@@ -338,17 +338,17 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
         ShiAssert(strlen(tmpStr3) < sizeof(tmpStr1));
         int reverse = 0;
 
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
-            if ((sjSelected[hp] == SelectiveRack && jettOnly) || (Sms->curHardpoint == hp && !jettOnly))
+            if ((sjSelected[hp] == SelectiveRack and jettOnly) or (Sms->curHardpoint == hp and not jettOnly))
             {
                 reverse = 2;
             }
         }
         else
         {
-            if ((sjSelected[hp] == SelectiveRack && jettOnly) || (Sms->curHardpoint == hp && !jettOnly)
-                && Sms->hardPoint[hp]->GetWeaponType() != wtNone)
+            if ((sjSelected[hp] == SelectiveRack and jettOnly) or (Sms->curHardpoint == hp and not jettOnly)
+               and Sms->hardPoint[hp]->GetWeaponType() not_eq wtNone)
             {
                 reverse = 2;
             }
@@ -364,7 +364,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
 
         display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y - 0.1f, tmpStr2, reverse);
 
-        if ((HpInvData[hp].flags & InvData::R2SLOT) == 0)
+        if ((HpInvData[hp].flags bitand InvData::R2SLOT) == 0)
         {
             if (reverse)
                 display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y - 0.2f, "       ", reverse);
@@ -374,14 +374,14 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
 
         /*
         //MI changed
-        if(!g_bRealisticAvionics)
+        if( not g_bRealisticAvionics)
         {
-         if (hardPointSelected & (1 << hp) || (Sms->curHardpoint == hp && !jettOnly))
+         if (hardPointSelected bitand (1 << hp) or (Sms->curHardpoint == hp and not jettOnly))
          {
          float bx = HpInvData[hp].boxx;
          float by = HpInvData[hp].boxy;
          float dy = 0.25f;
-         if ((HpInvData[hp].flags & InvData::R2SLOT) == 0)
+         if ((HpInvData[hp].flags bitand InvData::R2SLOT) == 0)
          dy += 0.1f;
          display->Line (bx, by, bx, by - dy);
          display->Line (bx + 0.6f, by, bx + 0.6f, by - dy);
@@ -391,14 +391,14 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
         }
         else
         {
-         if(hardPointSelected & (1 << hp) || (Sms->curHardpoint == hp && !jettOnly)
-         && Sms->hardPoint[hp]->GetWeaponType() != wtNone)
+         if(hardPointSelected bitand (1 << hp) or (Sms->curHardpoint == hp and not jettOnly)
+        and Sms->hardPoint[hp]->GetWeaponType() not_eq wtNone)
          {
          float bx = HpInvData[hp].boxx;
          float by = HpInvData[hp].boxy;
          float dy = 0.23f;
          //float dy = 0.25f;
-         if ((HpInvData[hp].flags & InvData::R2SLOT) == 0)
+         if ((HpInvData[hp].flags bitand InvData::R2SLOT) == 0)
          dy += 0.1f;
          //tweaked
          display->Line (bx - 0.05F, by, bx - 0.05F, by - dy);
@@ -415,7 +415,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
 #if 0
 void SmsDrawable::InvDrawHp(int hp, int jettOnly)
 {
-    ShiAssert(hp > 0 && hp < 10);
+    ShiAssert(hp > 0 and hp < 10);
     char tmpStr1[12];
     char tmpStr2[sizeof(tmpStr1)];
     char tmpStr3[sizeof(tmpStr1)];
@@ -425,10 +425,10 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
     if(g_bNewSMSInvNames)
     {
      // MLR - redo this at some point
-     if (Sms->NumHardpoints() > hp && ((HpInvData[hp].flags & InvData::RJETT) ==0 || !jettOnly))
+     if (Sms->NumHardpoints() > hp and ((HpInvData[hp].flags bitand InvData::RJETT) ==0 or not jettOnly))
      {
      int rack;
-     if(Sms->hardPoint[hp]->GetRackOrPylon() || (HpInvData[hp].flags & InvData::NORACK)) // MLR 2/20/2004 - added OrPylon
+     if(Sms->hardPoint[hp]->GetRackOrPylon() or (HpInvData[hp].flags bitand InvData::NORACK)) // MLR 2/20/2004 - added OrPylon
      rack = 1;
      else
      rack = 0;
@@ -487,11 +487,11 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
     else*/
     {
 
-        if (Sms->NumHardpoints() > hp && ((HpInvData[hp].flags & InvData::RJETT) == 0 || !jettOnly))
+        if (Sms->NumHardpoints() > hp and ((HpInvData[hp].flags bitand InvData::RJETT) == 0 or not jettOnly))
         {
             int rack;
 
-            if (Sms->hardPoint[hp]->GetRackOrPylon() || (HpInvData[hp].flags & InvData::NORACK)) // MLR 2/20/2004 - added OrPylon
+            if (Sms->hardPoint[hp]->GetRackOrPylon() or (HpInvData[hp].flags bitand InvData::NORACK)) // MLR 2/20/2004 - added OrPylon
                 rack = 1;
             else
                 rack = 0;
@@ -556,19 +556,19 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
     display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y, tmpStr1);
     display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y - 0.1f, tmpStr2);
 
-    if ((HpInvData[hp].flags & InvData::R2SLOT) == 0)
+    if ((HpInvData[hp].flags bitand InvData::R2SLOT) == 0)
         display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y - 0.2f, tmpStr3);
 
     //MI changed
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
-        if (hardPointSelected & (1 << hp) || (Sms->curHardpoint == hp && !jettOnly))
+        if (hardPointSelected bitand (1 << hp) or (Sms->curHardpoint == hp and not jettOnly))
         {
             float bx = HpInvData[hp].boxx;
             float by = HpInvData[hp].boxy;
             float dy = 0.25f;
 
-            if ((HpInvData[hp].flags & InvData::R2SLOT) == 0)
+            if ((HpInvData[hp].flags bitand InvData::R2SLOT) == 0)
                 dy += 0.1f;
 
             display->Line(bx, by, bx, by - dy);
@@ -579,15 +579,15 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
     }
     else
     {
-        if (hardPointSelected & (1 << hp) || (Sms->curHardpoint == hp && !jettOnly)
-            && Sms->hardPoint[hp]->GetWeaponType() != wtNone)
+        if (hardPointSelected bitand (1 << hp) or (Sms->curHardpoint == hp and not jettOnly)
+           and Sms->hardPoint[hp]->GetWeaponType() not_eq wtNone)
         {
             float bx = HpInvData[hp].boxx;
             float by = HpInvData[hp].boxy;
             float dy = 0.23f;
 
             //float dy = 0.25f;
-            if ((HpInvData[hp].flags & InvData::R2SLOT) == 0)
+            if ((HpInvData[hp].flags bitand InvData::R2SLOT) == 0)
                 dy += 0.1f;
 
             //tweaked
@@ -605,17 +605,17 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
 #if 0
 void SmsDrawable::InvDrawHp(int hp, int jettOnly)
 {
-    ShiAssert(hp > 0 && hp < 10);
+    ShiAssert(hp > 0 and hp < 10);
     char tmpStr1[12];
     char tmpStr2[sizeof(tmpStr1)];
     char tmpStr3[sizeof(tmpStr1)];
     char* countStr;
 
-    if (Sms->NumHardpoints() > hp && ((HpInvData[hp].flags & InvData::RJETT) == 0 || !jettOnly))
+    if (Sms->NumHardpoints() > hp and ((HpInvData[hp].flags bitand InvData::RJETT) == 0 or not jettOnly))
     {
         int rack;
 
-        if (Sms->hardPoint[hp]->GetRackOrPylon() || (HpInvData[hp].flags & InvData::NORACK)) // MLR 2/20/2004 - added OrPylon
+        if (Sms->hardPoint[hp]->GetRackOrPylon() or (HpInvData[hp].flags bitand InvData::NORACK)) // MLR 2/20/2004 - added OrPylon
             rack = 1;
         else
             rack = 0;
@@ -679,19 +679,19 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
     display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y, tmpStr1);
     display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y - 0.1f, tmpStr2);
 
-    if ((HpInvData[hp].flags & InvData::R2SLOT) == 0)
+    if ((HpInvData[hp].flags bitand InvData::R2SLOT) == 0)
         display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y - 0.2f, tmpStr3);
 
     //MI changed
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
-        if (hardPointSelected & (1 << hp) || (Sms->curHardpoint == hp && !jettOnly))
+        if (hardPointSelected bitand (1 << hp) or (Sms->curHardpoint == hp and not jettOnly))
         {
             float bx = HpInvData[hp].boxx;
             float by = HpInvData[hp].boxy;
             float dy = 0.25f;
 
-            if ((HpInvData[hp].flags & InvData::R2SLOT) == 0)
+            if ((HpInvData[hp].flags bitand InvData::R2SLOT) == 0)
                 dy += 0.1f;
 
             display->Line(bx, by, bx, by - dy);
@@ -702,15 +702,15 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
     }
     else
     {
-        if (hardPointSelected & (1 << hp) || (Sms->curHardpoint == hp && !jettOnly)
-            && Sms->hardPoint[hp]->GetWeaponType() != wtNone)
+        if (hardPointSelected bitand (1 << hp) or (Sms->curHardpoint == hp and not jettOnly)
+           and Sms->hardPoint[hp]->GetWeaponType() not_eq wtNone)
         {
             float bx = HpInvData[hp].boxx;
             float by = HpInvData[hp].boxy;
             float dy = 0.23f;
 
             //float dy = 0.25f;
-            if ((HpInvData[hp].flags & InvData::R2SLOT) == 0)
+            if ((HpInvData[hp].flags bitand InvData::R2SLOT) == 0)
                 dy += 0.1f;
 
             //tweaked
@@ -730,7 +730,7 @@ void SmsDrawable::InvPushButton(int whichButton, int whichMFD)
     switch (whichButton)
     {
         case 3:
-            if (!pFCC->IsNavMasterMode())
+            if ( not pFCC->IsNavMasterMode())
                 SetDisplayMode(Wpn);
 
             break;
@@ -762,7 +762,7 @@ void SmsDrawable::InvPushButton(int whichButton, int whichMFD)
             {
                 MfdDrawable::PushButton(whichButton, whichMFD);
             }
-            else if (pFCC->GetMasterMode() == FireControlComputer::ILS ||
+            else if (pFCC->GetMasterMode() == FireControlComputer::ILS or
                      pFCC->GetMasterMode() == FireControlComputer::Nav)
             {
                 SetDisplayMode(Wpn);

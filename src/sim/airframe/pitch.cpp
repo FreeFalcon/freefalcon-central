@@ -63,7 +63,7 @@ extern bool g_bNewFm;
 void AirframeClass::Pitch(void)
 {
     //if(vt == 0.0F)
-    //if(IsSet(Planted) || (!IsSet(InAir) && pstick <= 0.0F) )
+    //if(IsSet(Planted) or ( not IsSet(InAir) and pstick <= 0.0F) )
     if (IsSet(Planted))
         return;
 
@@ -95,7 +95,7 @@ void AirframeClass::Pitch(void)
             maxCmd = aoamax + alphaError;
         }
 
-        if (IsSet(MPOverride) && (alpha > 29.0F))
+        if (IsSet(MPOverride) and (alpha > 29.0F))
         {
             minCmd = max(gsAvail * (-1) * GRAVITY / (qsom * cnalpha), -9.0F);
         }
@@ -109,7 +109,7 @@ void AirframeClass::Pitch(void)
                     maxCmd = limiter->Limit(alpha - alphaError);
 
                 // 2002-03-12 MN use 9.0f G's only for F-16 and player entity - AI planes can use this code, too
-                if (SimDriver.GetPlayerEntity() && platform == SimDriver.GetPlayerEntity() && platform->IsAirplane() && platform->IsF16()) // 2002-03-19 MODIFIED BY S.G. Lets make sure it's an airplane first. Seems odd to happen here but it CTD after ejecting (BT 1071)
+                if (SimDriver.GetPlayerEntity() and platform == SimDriver.GetPlayerEntity() and platform->IsAirplane() and platform->IsF16()) // 2002-03-19 MODIFIED BY S.G. Lets make sure it's an airplane first. Seems odd to happen here but it CTD after ejecting (BT 1071)
                     maxCmd = min(maxCmd + alphaError, alpha + (9.0f - cl * qsom / GRAVITY - cosmu_lim * platform->platformAngles.cosgam) * (GRAVITY / (qsom * cnalpha)));
                 else
                     maxCmd = min(maxCmd + alphaError, alpha + (curMaxGs - cl * qsom / GRAVITY - cosmu_lim * platform->platformAngles.cosgam) * (GRAVITY / (qsom * cnalpha)));
@@ -135,7 +135,7 @@ void AirframeClass::Pitch(void)
 
                 limiter = gLimiterMgr->GetLimiter(AOALimiter, vehicleIndex);
 
-                if (g_bNewFm && limiter)
+                if (g_bNewFm and limiter)
                     maxCmd =  min(limiter->Limit(alpha), maxCmd);
 
                 //maxCmd *= (GRAVITY/(qsom*cnalpha));
@@ -146,7 +146,7 @@ void AirframeClass::Pitch(void)
                 //TJL 04/10/04 Adding limiter
                 //TJL 05/07/04 Removing the dreaded code as this may have caused
                 //major issues in the AI floating point calculations
-                //but I don't know why.  Possibly even missing aircraft!
+                //but I don't know why.  Possibly even missing aircraft
                 /*
                  limiter = gLimiterMgr->GetLimiter(PosGLimiter, vehicleIndex);
                  if (limiter)
@@ -158,7 +158,7 @@ void AirframeClass::Pitch(void)
 
             if (platform->IsF16())
             {
-                if (!IsSet(MPOverride))
+                if ( not IsSet(MPOverride))
                 {
                     //negative G limiter
                     if (gearPos)
@@ -209,7 +209,7 @@ void AirframeClass::Pitch(void)
                             else // we are recovering
                                 alphaError -= alpdot * 0.9f; // slow down the return
                         }
-                        else if (!IsSet(CATLimiterIII))
+                        else if ( not IsSet(CATLimiterIII))
                         {
                             // aoa is below max
                             alphaError += alphadelta * 0.1f; //aoa elastic  only cat I otw up
@@ -228,7 +228,7 @@ void AirframeClass::Pitch(void)
 
                 if (alpha - alphaError > maxCmd)
                 {
-                    if (!g_bNewFm)
+                    if ( not g_bNewFm)
                         pshape = max(-1.0F, (maxCmd - alpha - alphaError) / 4.0F);
                     else if (stallMode == None)
                         pshape = pshape * 1.0f - ((alpha - alphaError - maxCmd) / 3.0f);
@@ -269,15 +269,15 @@ void AirframeClass::Pitch(void)
         //if (g_bEnableAircraftLimits) MI
 
         // 2003-03-12 MN changed to check for player and F-16
-        // guys, this code is also used by ALL AI planes in complex mode (having a TU-16 with 9G limit !!!)
-        if (SimDriver.GetPlayerEntity() && platform == SimDriver.GetPlayerEntity() && platform->IsAirplane()  && platform->IsF16()) // 2002-03-19 MODIFIED BY S.G. Lets make sure it's an airplane first. Seems odd to happen here but it CTD after ejecting (BT 1071)
+        // guys, this code is also used by ALL AI planes in complex mode (having a TU-16 with 9G limit )
+        if (SimDriver.GetPlayerEntity() and platform == SimDriver.GetPlayerEntity() and platform->IsAirplane() and platform->IsF16()) // 2002-03-19 MODIFIED BY S.G. Lets make sure it's an airplane first. Seems odd to happen here but it CTD after ejecting (BT 1071)
             maxCmd = 9.0f ;
         else
             maxCmd = curMaxGs ;// me123 status ok. changed from = curMaxGs to 9.0f;
 
         if (platform->IsF16())
         {
-            if (!IsSet(MPOverride))
+            if ( not IsSet(MPOverride))
             {
                 limiter = gLimiterMgr->GetLimiter(NegGLimiter, vehicleIndex);
 
@@ -289,7 +289,7 @@ void AirframeClass::Pitch(void)
             else
                 maxNegGs = gsAvail * (-1);
 
-            if (alpha < -10.0F && !IsSet(MPOverride))
+            if (alpha < -10.0F and not IsSet(MPOverride))
             {
                 pshape = min(1.0F, (aoamin - alpha) / 4.0F);
                 ptcmd = pshape * kp01;
@@ -306,7 +306,7 @@ void AirframeClass::Pitch(void)
             // 2002-03-12 MN Check for player - if not, use curMaxGs (which is the case for all AI planes)
             AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-            if (playerAC && this == playerAC->af && platform->IsF16())
+            if (playerAC and this == playerAC->af and platform->IsF16())
             {
                 // 2002-03-19 MODIFIED BY S.G. Lets make sure it's an airplane first. SimDriver.GetPlayerEntity()->af might be invalid if the player ejects
                 maxCmd = min(maxCmd, 9.0F) - platform->platformAngles.cosgam * cosmu_lim; //,me123 status ok. changed curMaxGs to 9.0
@@ -407,7 +407,7 @@ void AirframeClass::Pitch(void)
             break;
 
         case DeepStall:
-            if (alpha > 35.0f && qbar * platform->platformAngles.cosalp < 135.0f)
+            if (alpha > 35.0f and qbar * platform->platformAngles.cosalp < 135.0f)
             {
                 pshape *= max(1.0F - (float)fabs(r) * RTD / 45.0F, 0.0F);
 
@@ -420,7 +420,7 @@ void AirframeClass::Pitch(void)
 
                 aoacmd = 60.0f + pshape * 5.0f + oscillationTimer * stallMagnitude * max(0.0F, (0.3F - (float)fabs(r)) * 3.3F);
             }
-            else if (alpha < -20.0f && qbar * platform->platformAngles.cosalp < 135.0f)
+            else if (alpha < -20.0f and qbar * platform->platformAngles.cosalp < 135.0f)
             {
                 pshape *= max(1.0F - (float)fabs(r) * RTD / 45.0F, 0.0F);
 
@@ -466,7 +466,7 @@ void AirframeClass::Pitch(void)
             }
     }
 
-    //if(!IsSet(InAir) && aoacmd < 0.0F)
+    //if( not IsSet(InAir) and aoacmd < 0.0F)
     // aoacmd = 0.0F;
 
     PitchIt(aoacmd, SimLibMinorFrameTime);
@@ -502,7 +502,7 @@ void AirframeClass::PitchIt(float aoacmd, float dt)
                          tp02 * auxaeroData->pitchMomentum, tp03 * auxaeroData->pitchMomentum,
                          dt, oldp03, &jp01);
     alpdot = (alpha - oldalpha) / dt;
-    ShiAssert(!_isnan(alpha));
+    ShiAssert( not _isnan(alpha));
 
     if (alpha < -180.0F)
     {

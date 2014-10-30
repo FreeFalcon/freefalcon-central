@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -39,7 +39,7 @@ C_Slider::C_Slider() : C_Control()
     BgImage_ = NULL; // draw at x,y of control
     Slider_ = NULL;
 
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_SELECTABLE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
 }
 
 C_Slider::C_Slider(char **stream) : C_Control(stream)
@@ -98,13 +98,13 @@ void C_Slider::SetSliderImage(long SliderID)
     SetReady(1);
 }
 
-void C_Slider::SetSliderRange(const long Min, const long Max)//!
+void C_Slider::SetSliderRange(const long Min, const long Max)
 {
     MinPos_ = static_cast<short>(Min);
     MaxPos_ = static_cast<short>(Max);
 }
 
-void C_Slider::SetSliderPos(long Pos) //!
+void C_Slider::SetSliderPos(long Pos) 
 {
     long dist;
 
@@ -117,7 +117,7 @@ void C_Slider::SetSliderPos(long Pos) //!
     {
         dist = (MaxPos_ - MinPos_) / Steps_;
 
-        if (!dist)
+        if ( not dist)
         {
             dist = 1;
         }
@@ -143,7 +143,7 @@ void C_Slider::SetSliderPos(long Pos) //!
 long C_Slider::CheckHotSpots(long relX, long relY)
 {
     // check visibility, enabled and ready
-    if ((GetFlags() & C_BIT_INVISIBLE) || !(GetFlags() & C_BIT_ENABLED) || !Ready())
+    if ((GetFlags() bitand C_BIT_INVISIBLE) or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
     {
         return(0);
     }
@@ -151,12 +151,12 @@ long C_Slider::CheckHotSpots(long relX, long relY)
 
     if (
         /*
-         (relX < (GetX()+SX_)) ||
-         (relX > (GetX()+(Slider_->Header->w)+SX_)) ||
-         (relY < (GetY()+SY_)) ||
+         (relX < (GetX()+SX_)) or
+         (relX > (GetX()+(Slider_->Header->w)+SX_)) or
+         (relY < (GetY()+SY_)) or
          (relY > (GetY()+(Slider_->Header->h)+SY_))*/
-        (relX < GetX()) || (relX > (GetX() + GetW())) ||
-        (relY < GetY()) || (relY > (GetY() + GetH()))
+        (relX < GetX()) or (relX > (GetX() + GetW())) or
+        (relY < GetY()) or (relY > (GetY() + GetH()))
     )
     {
         return(0);
@@ -182,7 +182,7 @@ BOOL C_Slider::Wheel(int increments, WORD MouseX, WORD MouseY)
 {
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
     {
         return(FALSE);
     }
@@ -259,7 +259,7 @@ BOOL C_Slider::Process(long ID, short HitType)
 
 void C_Slider::Refresh()
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX() + SX_, GetY() + SY_, GetX() + SX_ + GetW() + 1, GetY() + SY_ + GetH() + 1, GetFlags(), GetClient());
@@ -269,9 +269,9 @@ void C_Slider::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     UI95_RECT rect, s;
 
-    if (!Ready()) return;
+    if ( not Ready()) return;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
     rect.left = GetX();
@@ -296,9 +296,9 @@ void C_Slider::Draw(SCREEN *surface, UI95_RECT *cliprect)
         rect.right = rect.left + Slider_->Header->w;
         rect.bottom = rect.top + Slider_->Header->h;
 
-        if (GetFlags() & C_BIT_ABSOLUTE)
+        if (GetFlags() bitand C_BIT_ABSOLUTE)
         {
-            if (!Parent_->ClipToArea(&s, &rect, &Parent_->Area_))
+            if ( not Parent_->ClipToArea(&s, &rect, &Parent_->Area_))
                 return;
         }
         else
@@ -308,11 +308,11 @@ void C_Slider::Draw(SCREEN *surface, UI95_RECT *cliprect)
             rect.right += Parent_->VX_[GetClient()];
             rect.bottom += Parent_->VY_[GetClient()];
 
-            if (!Parent_->ClipToArea(&s, &rect, &Parent_->ClientArea_[GetClient()]))
+            if ( not Parent_->ClipToArea(&s, &rect, &Parent_->ClientArea_[GetClient()]))
                 return;
         }
 
-        if (!Parent_->ClipToArea(&s, &rect, cliprect))
+        if ( not Parent_->ClipToArea(&s, &rect, cliprect))
             return;
 
         rect.left += Parent_->GetX();
@@ -322,7 +322,7 @@ void C_Slider::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
         Slider_->Blit(surface, s.left, s.top, s.right - s.left, s.bottom - s.top, rect.left, rect.top);
 
-        if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+        if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
             HighLite(surface, cliprect);
     }
 }
@@ -334,17 +334,17 @@ void C_Slider::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     clip.left = GetX() + SX_;
     clip.top = GetY() + SY_;
 
-    if (Flags_ & C_BIT_RIGHT)
+    if (Flags_ bitand C_BIT_RIGHT)
         clip.left -= GetW();
-    else if (Flags_ & C_BIT_HCENTER)
+    else if (Flags_ bitand C_BIT_HCENTER)
         clip.left -= GetW() / 2;
 
-    if (Flags_ & C_BIT_BOTTOM)
+    if (Flags_ bitand C_BIT_BOTTOM)
         clip.top -= GetH();
-    else if (Flags_ & C_BIT_VCENTER)
+    else if (Flags_ bitand C_BIT_VCENTER)
         clip.top -= GetH() / 2;
 
-    if (!(Flags_ & C_BIT_ABSOLUTE))
+    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
     {
         clip.left += Parent_->VX_[Client_];
         clip.top += Parent_->VY_[Client_];
@@ -353,11 +353,11 @@ void C_Slider::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     clip.right = clip.left + Slider_->Header->w;
     clip.bottom = clip.top + Slider_->Header->h;
 
-    if (!Parent_->ClipToArea(&tmp, &clip, cliprect))
+    if ( not Parent_->ClipToArea(&tmp, &clip, cliprect))
         return;
 
-    if (!(Flags_ & C_BIT_ABSOLUTE))
-        if (!Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
+    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
+        if ( not Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
             return;
 
     Parent_->BlitTranslucent(surface, MouseOverColor_, MouseOverPercent_, &clip, C_BIT_ABSOLUTE, 0);
@@ -367,11 +367,11 @@ BOOL C_Slider::MouseOver(long relx, long rely, C_Base *)
 {
     // Don't want to do anything here
 
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
         return(FALSE);
 
-    if (relx >= (GetX() + SX_) && relx < (GetX() + GetW() + SX_) &&
-        rely >= (GetY() + SY_) && rely < (GetY() + GetH() + SY_))
+    if (relx >= (GetX() + SX_) and relx < (GetX() + GetW() + SX_) and 
+        rely >= (GetY() + SY_) and rely < (GetY() + GetH() + SY_))
     {
         return(TRUE);
     }
@@ -385,7 +385,7 @@ BOOL C_Slider::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
     float dist;
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return(FALSE);
 
     Leave = UI_Enter(Parent_);
@@ -404,8 +404,8 @@ BOOL C_Slider::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
             if (Steps_ > 0)
             {
                 dist = (float)(MaxPos_ - MinPos_) / (float)Steps_;
-                SY_ = static_cast<long>((static_cast<float>(SY_ - MinPos_) + dist / 2.0) / dist); //!
-                SY_ = static_cast<long>(static_cast<float>(SY_) * dist) + MinPos_;    //!
+                SY_ = static_cast<long>((static_cast<float>(SY_ - MinPos_) + dist / 2.0) / dist); 
+                SY_ = static_cast<long>(static_cast<float>(SY_) * dist) + MinPos_;    
             }
 
             if (SY_ > MaxPos_)
@@ -422,8 +422,8 @@ BOOL C_Slider::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
             if (Steps_ > 0)
             {
                 dist = (float)(MaxPos_ - MinPos_) / (float)Steps_;
-                SX_ = static_cast<long>((static_cast<float>(SX_ - MinPos_) + dist / 2.0) / dist); //!
-                SX_ = static_cast<long>(static_cast<float>(SX_) * dist)  + MinPos_;  //!
+                SX_ = static_cast<long>((static_cast<float>(SX_ - MinPos_) + dist / 2.0) / dist); 
+                SX_ = static_cast<long>(static_cast<float>(SX_) * dist)  + MinPos_;  
             }
 
             if (SX_ > MaxPos_)

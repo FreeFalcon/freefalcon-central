@@ -1,5 +1,6 @@
 #ifndef VU_FWD_H
 #define VU_FWD_H
+#include <cISO646>
 
 /** @file vu_fwd.h
 * forward declaration of all classes declared in vu
@@ -91,7 +92,7 @@ class VuOrderedList;
 class VuOrderedList;
 #endif
 class VuHashTable;
-#if !VU_ALL_FILTERED
+#if not VU_ALL_FILTERED
 class VuFilteredHashTable;
 #endif
 class VuDatabase;

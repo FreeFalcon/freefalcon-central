@@ -27,7 +27,7 @@
  *   maximum spherical harmonic degree=order,
  *   g[n][m] cosine coefficients, 0<n<=degree, 0<=m<=n,
  *   h[n][m] sine coefficients,
- *   and their secular (annual change) derivatives.
+ *  and their secular (annual change) derivatives.
  */
 
 struct model

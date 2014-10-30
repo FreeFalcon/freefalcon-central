@@ -47,7 +47,7 @@ BOOL RequestACSlot(Flight flight, uchar team, uchar plane_slot, uchar skill, int
     {
         msg->dataBlock.request_type = REQUEST_SLOT_JOIN_PLAYER;
 
-        if (FalconLocalSession->GetPlayerFlight() == flight && FalconLocalSession->GetPilotSlot() < 255)
+        if (FalconLocalSession->GetPlayerFlight() == flight and FalconLocalSession->GetPilotSlot() < 255)
             msg->dataBlock.current_pilot_slot = FalconLocalSession->GetPilotSlot();
         else
             msg->dataBlock.current_pilot_slot = 255;
@@ -69,7 +69,7 @@ void LeaveACSlot(Flight flight, uchar plane_slot)
     UI_RequestAircraftSlot *msg;
     VuTargetEntity *target;
 
-    if (!flight)
+    if ( not flight)
         return;
 
     target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
@@ -86,7 +86,7 @@ void RequestFlightDelete(Flight flight)
     UI_RequestAircraftSlot *msg;
     VuTargetEntity *target;
 
-    if (!flight)
+    if ( not flight)
         return;
 
     target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
@@ -102,7 +102,7 @@ void RequestTeamChange(Flight flight, int newteam)
     UI_RequestAircraftSlot *msg;
     VuTargetEntity *target;
 
-    if (!flight)
+    if ( not flight)
         return;
 
     target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
@@ -119,7 +119,7 @@ void RequestTypeChange(Flight flight, int newtype)
     UI_RequestAircraftSlot *msg;
     VuTargetEntity *target;
 
-    if (!flight)
+    if ( not flight)
         return;
 
     target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
@@ -136,7 +136,7 @@ void RequestCallsignChange(Flight flight, int newcallsign)
     UI_RequestAircraftSlot *msg;
     VuTargetEntity *target;
 
-    if (!flight)
+    if ( not flight)
         return;
 
     target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
@@ -154,7 +154,7 @@ void RequestSkillChange(Flight flight, int plane_slot, int newskill)
     UI_RequestAircraftSlot *msg;
     VuTargetEntity *target;
 
-    if (!flight)
+    if ( not flight)
         return;
 
     target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());

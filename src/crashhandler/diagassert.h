@@ -114,7 +114,7 @@ extern "C" {
 #define ASSERTMACRO(a,x)                                            \
     do                                                              \
     {                                                               \
-        if ( !(x)                                               &&  \
+        if ( not (x)                                              and \
              DiagAssert ( a , _T ( #x ) , __FILE__  , __LINE__)    )\
         {                                                           \
                 DebugBreak ( ) ;                                    \
@@ -131,8 +131,8 @@ extern "C" {
 #define VERIFY(x)   ASSERT(x)
 
     // Full blow assert with all the trimmings.
-#define SUPERASSERT(x) ASSERTMACRO ( DA_SHOWSTACKTRACE |    \
-                                        DA_SHOWMSGBOX  |    \
+#define SUPERASSERT(x) ASSERTMACRO ( DA_SHOWSTACKTRACE bitor    \
+                                        DA_SHOWMSGBOX  bitor    \
                                         DA_SHOWODS      ,   \
                                      x                  , )
 
@@ -169,9 +169,9 @@ extern "C" {
 #define TRACE2(sz, p1, p2)      ::DiagOutput(_T(sz), p1, p2)
 #define TRACE3(sz, p1, p2, p3)  ::DiagOutput(_T(sz), p1, p2, p3)
 
-#else   // !_DEBUG
+#else   // not _DEBUG
     /*//////////////////////////////////////////////////////////////////////
-                           _DEBUG Is !!NOT!! Defined
+                           _DEBUG Is NOT Defined
     //////////////////////////////////////////////////////////////////////*/
 
 #define ASSERTMACRO(a,x)

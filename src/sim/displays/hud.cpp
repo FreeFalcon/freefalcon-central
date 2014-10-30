@@ -359,7 +359,7 @@ void HudClass::SetTarget(SimObjectType* newTarget)
 
     if (newTarget)
     {
-        ShiAssert(newTarget->BaseData() != (FalconEntity*)0xDDDDDDDD);
+        ShiAssert(newTarget->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
         newTarget->Reference();
         targetPtr = newTarget;
         targetData = newTarget->localData;
@@ -398,23 +398,23 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
     ShiAssert(ownship);
 
     // Various ways to be broken
-    if (ownship->mFaults &&
+    if (ownship->mFaults and 
         (
-            (ownship->mFaults->GetFault(FaultClass::flcs_fault) & FaultClass::dmux) ||
-            ownship->mFaults->GetFault(FaultClass::dmux_fault) ||
+            (ownship->mFaults->GetFault(FaultClass::flcs_fault) bitand FaultClass::dmux) or
+            ownship->mFaults->GetFault(FaultClass::dmux_fault) or
             ownship->mFaults->GetFault(FaultClass::hud_fault)
         )
        )
     {
         //MI still allow STBY reticle for bombing
-        if (FCC->GetSubMode() == FireControlComputer::MAN && WhichMode == 2)
+        if (FCC->GetSubMode() == FireControlComputer::MAN and WhichMode == 2)
             DrawMANReticle();
 
         return;
     }
 
     // JPO - check systems have power
-    if (!ownship->HasPower(AircraftClass::HUDPower))
+    if ( not ownship->HasPower(AircraftClass::HUDPower))
     {
         return;
     }
@@ -424,14 +424,14 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
     // COBRA - RED - ALPHA forced for HUD Display
     display->ForceAlpha = gTranslucent;
     // Do we draw flashing things this frame?
-    flash = (vuxRealTime & 0x200);
-    Warnflash = (vuxRealTime & 0x080);
+    flash = (vuxRealTime bitand 0x200);
+    Warnflash = (vuxRealTime bitand 0x080);
     mlSinCos(&rollTrig, cockpitFlightData.roll);
     alphaHudUnits = RadToHudUnitsX(cockpitFlightData.alpha * DTR - cockpitFlightData.windOffset * rollTrig.sin);
 
     // 2000-11-10 MODIFIED BY S.G. TO HANDLE THE 'driftCO' switch
     // if (ownship->OnGround()) {
-    if (ownship->OnGround() || driftCOSwitch == DRIFT_CO_ON)
+    if (ownship->OnGround() or driftCOSwitch == DRIFT_CO_ON)
     {
 #if 1
         // With weight on wheels, the jet turns on "drift cutout" to keep the fpm centered on the HUD
@@ -449,14 +449,14 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
     //MI
     if (g_bRealisticAvionics)
     {
-        if (!(WhichMode == 2 && FCC->GetSubMode() == FireControlComputer::MAN))
+        if ( not (WhichMode == 2 and FCC->GetSubMode() == FireControlComputer::MAN))
         {
             DrawBoresightCross();
             DrawAirspeed();
             DrawAltitude();
 
             // Marco Edit
-            if (FCC && FCC->GetMasterMode() != FireControlComputer::Dogfight)
+            if (FCC and FCC->GetMasterMode() not_eq FireControlComputer::Dogfight)
                 DrawHeading(); // Don't draw heading in Dogfight Mode
         }
     }
@@ -467,7 +467,7 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
         DrawAltitude();
 
         // Marco Edit
-        if (FCC && FCC->GetMasterMode() != FireControlComputer::Dogfight)
+        if (FCC and FCC->GetMasterMode() not_eq FireControlComputer::Dogfight)
             DrawHeading(); // Don't draw heading in Dogfight Mode
     }
 
@@ -518,9 +518,9 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
             DrawHorizonLine();
         }
     }
-    else if ((ownship && ownship->af && ownship->af->gearPos > 0.5F) || (fpmSwitch == ATT_FPM))
+    else if ((ownship and ownship->af and ownship->af->gearPos > 0.5F) or (fpmSwitch == ATT_FPM))
     {
-        if (FCC && FCC->GetMasterMode() != FireControlComputer::Dogfight)
+        if (FCC and FCC->GetMasterMode() not_eq FireControlComputer::Dogfight)
             DrawPitchLadder();//me123 status ok. don't draw ladders in dogfight mode
     }
 
@@ -535,15 +535,15 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
     DrawAlphaNumeric();
 
     //TJL 03/07/04 Draw Other HUDs 04/17/04 Make non-F16 default to F18 HUD
-    if (ownship->af->GetTypeAC() == 8 || ownship->af->GetTypeAC() == 9 || ownship->af->GetTypeAC() == 10)
+    if (ownship->af->GetTypeAC() == 8 or ownship->af->GetTypeAC() == 9 or ownship->af->GetTypeAC() == 10)
     {
         DrawF18HUD();
     }
-    else if (ownship->af->GetTypeAC() == 6 || ownship->af->GetTypeAC() == 7)
+    else if (ownship->af->GetTypeAC() == 6 or ownship->af->GetTypeAC() == 7)
     {
         DrawF14HUD();
     }
-    else if (ownship->af->GetTypeAC() == 3 || ownship->af->GetTypeAC() == 4 || ownship->af->GetTypeAC() == 5)
+    else if (ownship->af->GetTypeAC() == 3 or ownship->af->GetTypeAC() == 4 or ownship->af->GetTypeAC() == 5)
     {
         DrawF15HUD();
     }
@@ -552,9 +552,9 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
         DrawA10HUD();
     }
 
-    if ((!FCC->postDrop || flash) &&
-        fpmSwitch != FPM_OFF &&
-        FCC && FCC->GetMasterMode() != FireControlComputer::Dogfight) // JPO not show in DGFT
+    if (( not FCC->postDrop or flash) and 
+        fpmSwitch not_eq FPM_OFF and 
+        FCC and FCC->GetMasterMode() not_eq FireControlComputer::Dogfight) // JPO not show in DGFT
         DrawFPM();
 
     switch (FCC->GetMasterMode())
@@ -569,7 +569,7 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
             break;
             /*
                case FireControlComputer::Gun:
-                   if (FCC->GetSubMode() != FireControlComputer::STRAF)
+                   if (FCC->GetSubMode() not_eq FireControlComputer::STRAF)
                 {
                 DrawTDBox();
                 DrawGuns();
@@ -620,7 +620,7 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
             break;
 
         case FireControlComputer::AirGroundRocket:
-            if (!g_bRealisticAvionics) // MLR 5/30/2004 -
+            if ( not g_bRealisticAvionics) // MLR 5/30/2004 -
             {
                 DrawAirGroundRocket();
             }
@@ -641,7 +641,7 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
     }
 
     // Check ground Collision
-    if (Warnflash && ownship && ownship->mFaults->GetFault(alt_low))
+    if (Warnflash and ownship and ownship->mFaults->GetFault(alt_low))
     {
         display->AdjustOriginInViewport(0.0F, hudWinY[BORESIGHT_CROSS_WINDOW] +
                                         hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F);
@@ -655,7 +655,7 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
 
     //MI removed RPM indication
     //M.N. we need RPM indication for Flightmodel testing
-    if (!g_bNoRPMOnHud/* || !g_bRealisticAvionics*/)
+    if ( not g_bNoRPMOnHud/* or not g_bRealisticAvionics*/)
     {
         if (ownship)
         {
@@ -666,7 +666,7 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
     }
 
     //TJL 11/08/03 HUD Alpha for aircraft with AOA in the HUD
-    if (!ownship->IsF16() && g_bhudAOA)
+    if ( not ownship->IsF16() and g_bhudAOA)
     {
         //TJL 11/10/03 HUD AOA Greek Letter Alpha
         display->Line(-0.95F, 0.74F, -0.95F, 0.76F);
@@ -687,13 +687,13 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
     //End Alpha
 
     //////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-    // COBRA - RED - HACK!!!!!! This forces a Context VB Flush to solve a loss of vertices
+    // COBRA - RED - HACK This forces a Context VB Flush to solve a loss of vertices
     // still have to find why
     /////////////////////////////////////////////////////////////////////////////////////
 
     display->TextCenter(0, 0, "", 0);
 
-    // COBRA - RED - END OF HACK !!!! \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+    // COBRA - RED - END OF HACK  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 
     display->ZeroRotationAboutOrigin();
@@ -813,7 +813,7 @@ void HudClass::CycleDriftCOSwitch(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC && playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC and playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
         switch (driftCOSwitch)
         {
@@ -850,10 +850,10 @@ void HudClass::CycleDEDSwitch(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC && playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC and playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
         //MI
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             switch (dedSwitch)
             {
@@ -949,7 +949,7 @@ void HudClass::CycleRadarSwitch(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC && playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC and playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
         switch (radarSwitch)
         {
@@ -990,7 +990,7 @@ void HudClass::CycleBrightnessSwitch(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC && playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC and playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
         switch (brightnessSwitch)
         {
@@ -1019,10 +1019,10 @@ void HudClass::CycleBrightnessSwitchUp(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC && playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC and playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
-        // MD -- 20040108: Comment out the power control since this switch doesn't do that!
-        //if(!playerAC->HasPower(AircraftClass::HUDPower))
+        // MD -- 20040108: Comment out the power control since this switch doesn't do that
+        //if( not playerAC->HasPower(AircraftClass::HUDPower))
         // playerAC->PowerOn(AircraftClass::HUDPower);
         switch (brightnessSwitch)
         {
@@ -1048,7 +1048,7 @@ void HudClass::CycleBrightnessSwitchDown(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC && playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC and playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
         switch (brightnessSwitch)
         {
@@ -1076,7 +1076,7 @@ void HudClass::CycleBrightnessSwitchDown(void)
 void HudClass::DrawAlphaNumeric(void)
 {
     //MI not here in BUP reticle mode
-    if (g_bRealisticAvionics && WhichMode == 2 && FCC->GetSubMode() == FireControlComputer::MAN)
+    if (g_bRealisticAvionics and WhichMode == 2 and FCC->GetSubMode() == FireControlComputer::MAN)
         return;
 
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
@@ -1084,16 +1084,16 @@ void HudClass::DrawAlphaNumeric(void)
 
     // Window 3 (Master Arm / ILS)
     //TJL 03/07/04 F16 specific or default HUD
-    if (PlayerOptions.GetAvionicsType() != ATEasy && (ownship->IsF16() || ownship->af->GetTypeAC() == 0))
+    if (PlayerOptions.GetAvionicsType() not_eq ATEasy and (ownship->IsF16() or ownship->af->GetTypeAC() == 0))
     {
-        if (FCC && FCC->GetMasterMode() == FireControlComputer::ILS)
+        if (FCC and FCC->GetMasterMode() == FireControlComputer::ILS)
             DrawWindowString(3, "ILS");
         else switch (ownship->Sms->MasterArm())
             {
                 case SMSBaseClass::Safe:
 
                     //MI not here in real
-                    if (!g_bRealisticAvionics)
+                    if ( not g_bRealisticAvionics)
                         DrawWindowString(3, "SAF");
 
                     break;
@@ -1110,7 +1110,7 @@ void HudClass::DrawAlphaNumeric(void)
 
     // Window 4 (Mach Number)
     //TJL 03/07/04 F16 specific or default HUD
-    if (ownship->IsF16() || ownship->af->GetTypeAC() == 0)
+    if (ownship->IsF16() or ownship->af->GetTypeAC() == 0)
     {
         float mach =  cockpitFlightData.mach;
 
@@ -1120,16 +1120,16 @@ void HudClass::DrawAlphaNumeric(void)
         sprintf(tmpStr, "%.2f", mach);
         ShiAssert(strlen(tmpStr) < 40);
 
-        if (FCC && FCC->GetMasterMode() != FireControlComputer::Dogfight) //JPG 29 Apr 04 - Not here in DF override
+        if (FCC and FCC->GetMasterMode() not_eq FireControlComputer::Dogfight) //JPG 29 Apr 04 - Not here in DF override
         {
             DrawWindowString(4, tmpStr);
         }
     }
 
     // Window 5 (Gs)
-    //MI (JPO - fixed elsewhere !)
+    //MI (JPO - fixed elsewhere )
     //TJL 03/07/04 F16 specific or default HUD
-    if (ownship->IsF16() || ownship->af->GetTypeAC() == 0)
+    if (ownship->IsF16() or ownship->af->GetTypeAC() == 0)
     {
         sprintf(tmpStr, "%.1f", cockpitFlightData.gs);
         ShiAssert(strlen(tmpStr) < 40);
@@ -1137,20 +1137,20 @@ void HudClass::DrawAlphaNumeric(void)
     }
 
     //TJL 03/07/04 F16 specific or default HUD
-    if (PlayerOptions.GetAvionicsType() != ATEasy && (ownship->IsF16() || ownship->af->GetTypeAC() == 0))
+    if (PlayerOptions.GetAvionicsType() not_eq ATEasy and (ownship->IsF16() or ownship->af->GetTypeAC() == 0))
     {
         //MI changed for INS stuff
-        if (g_bINS && g_bRealisticAvionics)
+        if (g_bINS and g_bRealisticAvionics)
         {
-            if (!ownship->INSState(AircraftClass::INS_Aligned) &&
-                ownship->INSState(AircraftClass::INS_AlignNorm) && (cockpitFlightData.kias <= 1.0F
-                        && !ownship->INS60kts) || ownship->INSState(AircraftClass::INS_AlignFlight))
+            if ( not ownship->INSState(AircraftClass::INS_Aligned) and 
+                ownship->INSState(AircraftClass::INS_AlignNorm) and (cockpitFlightData.kias <= 1.0F
+                       and not ownship->INS60kts) or ownship->INSState(AircraftClass::INS_AlignFlight))
             {
                 sprintf(tmpStr, "ALIGN");
             }
-            else if (ownship->INSState(AircraftClass::INS_Aligned) &&
-                     ownship->INSState(AircraftClass::INS_AlignNorm) && cockpitFlightData.kias <= 1.0F
-                     && !ownship->INS60kts || ownship->INSState(AircraftClass::INS_AlignFlight))
+            else if (ownship->INSState(AircraftClass::INS_Aligned) and 
+                     ownship->INSState(AircraftClass::INS_AlignNorm) and cockpitFlightData.kias <= 1.0F
+                    and not ownship->INS60kts or ownship->INSState(AircraftClass::INS_AlignFlight))
             {
                 if (flash)
                     sprintf(tmpStr, "ALIGN");
@@ -1170,7 +1170,7 @@ void HudClass::DrawAlphaNumeric(void)
                 sprintf(tmpStr, "%.1f", maxGs);
             }
         }
-        else if (ownship->IsF16() || ownship->af->GetTypeAC() == 0)
+        else if (ownship->IsF16() or ownship->af->GetTypeAC() == 0)
         {
             // Window 7 (Max Gs)
             if (cockpitFlightData.gs > maxGs)
@@ -1181,20 +1181,20 @@ void HudClass::DrawAlphaNumeric(void)
 
         ShiAssert(strlen(tmpStr) < 40);
 
-        if (FCC && FCC->GetMasterMode() != FireControlComputer::Dogfight) //JPG 29 Apr 04 - Not here in DF override
+        if (FCC and FCC->GetMasterMode() not_eq FireControlComputer::Dogfight) //JPG 29 Apr 04 - Not here in DF override
         {
             DrawWindowString(7, tmpStr);
         }
     }
 
     // Window 8 (Master/Sub Mode)
-    if (ownship->Sms->drawable && ownship->Sms->drawable->DisplayMode() == SmsDrawable::SelJet)
+    if (ownship->Sms->drawable and ownship->Sms->drawable->DisplayMode() == SmsDrawable::SelJet)
         DrawWindowString(8, "JETT");
     //TJL F16 specific or default HUD
-    else if (ownship->IsF16() || ownship->af->GetTypeAC() == 0)
+    else if (ownship->IsF16() or ownship->af->GetTypeAC() == 0)
     {
         //MI
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             if (ownship->Sms->NumCurrentWpn() > 0)
                 sprintf(tmpStr, "%d %s", ownship->Sms->NumCurrentWpn(), FCC->subModeString);
@@ -1203,9 +1203,9 @@ void HudClass::DrawAlphaNumeric(void)
         }
         else
         {
-            if (FCC && FCC->IsAGMasterMode())
+            if (FCC and FCC->IsAGMasterMode())
             {
-                if (ownship->Sms && ownship->Sms->curWeaponType == wtAgm65)
+                if (ownship->Sms and ownship->Sms->curWeaponType == wtAgm65)
                 {
                     if (ownship->Sms->MavSubMode == SMSBaseClass::PRE)
                         sprintf(tmpStr, "PRE");
@@ -1237,21 +1237,21 @@ void HudClass::DrawAlphaNumeric(void)
     int ofont = display->CurFont();
     display->SetFont(3);
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
-        if (ownship->mFaults->MasterCaution() && flash)
+        if (ownship->mFaults->MasterCaution() and flash)
         {
             DrawWindowString(11, "WARN");
         }
     }
     else
     {
-        if (ownship->mFaults->WarnReset() && Warnflash)
+        if (ownship->mFaults->WarnReset() and Warnflash)
         {
             //Fuel doesn't flash warning
-            if (!ownship->mFaults->GetFault(fuel_low_fault) &&
-                !ownship->mFaults->GetFault(fuel_trapped) &&
-                !ownship->mFaults->GetFault(fuel_home))
+            if ( not ownship->mFaults->GetFault(fuel_low_fault) and 
+ not ownship->mFaults->GetFault(fuel_trapped) and 
+ not ownship->mFaults->GetFault(fuel_home))
                 DrawWindowString(11, "WARN");
         }
     }
@@ -1261,24 +1261,24 @@ void HudClass::DrawAlphaNumeric(void)
     // Window 12, 15 (Bingo, trapped or home Fuel) JPO additions
 
 
-    if (ownship->mFaults->GetFault(fuel_low_fault) ||
-        ownship->mFaults->GetFault(fuel_trapped) ||
+    if (ownship->mFaults->GetFault(fuel_low_fault) or
+        ownship->mFaults->GetFault(fuel_trapped) or
         ownship->mFaults->GetFault(fuel_home))
     {
         //MI Warn Reset is correct
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
-            if (ownship->mFaults->MasterCaution() && flash)
+            if (ownship->mFaults->MasterCaution() and flash)
                 DrawWindowString(12, "FUEL");
         }
         else
         {
-            if (ownship->mFaults->WarnReset() && Warnflash)
+            if (ownship->mFaults->WarnReset() and Warnflash)
                 DrawWindowString(12, "FUEL");
         }
 
         // RV - RED - REWRITTEN THIS STUFF in a decent way
-        if (PlayerOptions.GetAvionicsType() != ATEasy)
+        if (PlayerOptions.GetAvionicsType() not_eq ATEasy)
         {
             char tempstr[10] = "";
 
@@ -1294,9 +1294,9 @@ void HudClass::DrawAlphaNumeric(void)
         }
 
         //MI warn reset is correct
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
-            if (ownship->mFaults->GetFault(fuel_low_fault) && ownship->mFaults->MasterCaution() &&
+            if (ownship->mFaults->GetFault(fuel_low_fault) and ownship->mFaults->MasterCaution() and 
                 F4SoundFXPlaying(ownship->af->GetBingoSnd()))  // JB 010425
             {
                 F4SoundFXSetDist(ownship->af->GetBingoSnd(), FALSE, 0.0f, 1.0f);
@@ -1307,8 +1307,8 @@ void HudClass::DrawAlphaNumeric(void)
 #if 0
         else
         {
-            if (ownship->mFaults->GetFault(fuel_low_fault) &&
-                ownship->mFaults->WarnReset() &&
+            if (ownship->mFaults->GetFault(fuel_low_fault) and 
+                ownship->mFaults->WarnReset() and 
                 F4SoundFXPlaying(ownship->af->GetBingoSnd()))  // JB 010425
             {
                 F4SoundFXSetDist(ownship->af->GetBingoSnd(), FALSE, 0.0f, 1.0f);
@@ -1319,7 +1319,7 @@ void HudClass::DrawAlphaNumeric(void)
     }
     //Wombat778 10-16-2003 added as per MIRV  (draw bullseye info on hud)
 
-    else if ((OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo) && (PlayerOptions.GetAvionicsType() != ATEasy))
+    else if ((OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo) and (PlayerOptions.GetAvionicsType() not_eq ATEasy))
     {
         char tempstr[15] = "";
         GetBullseyeToOwnship(tempstr);
@@ -1337,13 +1337,13 @@ void HudClass::DrawAlphaNumeric(void)
     // Done in missile or gun section
 
     //MI they wanted DED data, so here it is.....
-    //if (dedSwitch == DED_DATA && OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeHud)
-    if (dedSwitch == DED_DATA || dedSwitch == PFL_DATA)// && OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeHud)
+    //if (dedSwitch == DED_DATA and OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeHud)
+    if (dedSwitch == DED_DATA or dedSwitch == PFL_DATA)// and OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeHud)
     {
         if (OTWDriver.pCockpitManager)
         {
 
-            if (!g_bRealisticAvionics && dedSwitch == DED_DATA)
+            if ( not g_bRealisticAvionics and dedSwitch == DED_DATA)
             {
                 char line1[40];
                 char line2[40];
@@ -1358,8 +1358,8 @@ void HudClass::DrawAlphaNumeric(void)
             }
             else
             {
-                if (!playerAC->HasPower(AircraftClass::UFCPower) ||
-                    (FCC && FCC->GetMasterMode() == FireControlComputer::Dogfight))
+                if ( not playerAC->HasPower(AircraftClass::UFCPower) or
+                    (FCC and FCC->GetMasterMode() == FireControlComputer::Dogfight))
                     return;
 
                 OTWDriver.pCockpitManager->mpIcp->Exec();
@@ -1459,17 +1459,17 @@ void HudClass::DrawAlphaNumeric(void)
     }
 
     //MI TFR info if needed
-    if (theLantirn && theLantirn->IsEnabled() && ownship && ownship->mFaults && !ownship->mFaults->WarnReset()
-        && ownship->RFState != 2)
+    if (theLantirn and theLantirn->IsEnabled() and ownship and ownship->mFaults and not ownship->mFaults->WarnReset()
+       and ownship->RFState not_eq 2)
     {
         char tempstr[20] = "";
 
-        if (theLantirn->evasize  == 1 && flash)
+        if (theLantirn->evasize  == 1 and flash)
             sprintf(tempstr, "FLY UP");
-        else if (theLantirn->evasize  == 2 && flash)
+        else if (theLantirn->evasize  == 2 and flash)
             sprintf(tempstr, "OBSTACLE");
 
-        if (theLantirn->SpeedUp && !flash)
+        if (theLantirn->SpeedUp and not flash)
             sprintf(tempstr, "SLOW");
 
         display->TextCenter(0, 0.25, tempstr, 0);
@@ -1500,7 +1500,7 @@ const static float Linelenght = 0.07F;
 void HudClass::DrawFPM(void)
 {
     //MI not here in BUP reticle mode
-    if (g_bRealisticAvionics && WhichMode == 2 && FCC->GetSubMode() == FireControlComputer::MAN)
+    if (g_bRealisticAvionics and WhichMode == 2 and FCC->GetSubMode() == FireControlComputer::MAN)
         return;
 
     float dx, dy;
@@ -1513,7 +1513,7 @@ void HudClass::DrawFPM(void)
          alphaHudUnits;
 
     //MI -- Make the FPM a bit bigger....why did they make it so complicated??
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         display->Line(-0.0075F + dx, 0.015F + dy, 0.0075F + dx, 0.015F + dy);
         display->Line(0.0075F + dx, 0.015F + dy, 0.015F + dx, 0.0075F + dy);
@@ -1568,7 +1568,7 @@ void HudClass::DrawFPM(void)
         } //End of HUD fix.
 
         //MI
-        if (g_bINS && g_bRealisticAvionics)
+        if (g_bINS and g_bRealisticAvionics)
         {
             if (ownship->INSState(AircraftClass::INS_HUD_FPM))
             {
@@ -1596,11 +1596,11 @@ void HudClass::DrawFPM(void)
     {
         float aoaOffset = 0.0f;
 
-        if (ownship->af->GetTypeAC() == 8 || ownship->af->GetTypeAC() == 9 || ownship->af->GetTypeAC() == 10)
+        if (ownship->af->GetTypeAC() == 8 or ownship->af->GetTypeAC() == 9 or ownship->af->GetTypeAC() == 10)
         {
             aoaOffset = cockpitFlightData.alpha - 8.0F;
         }
-        else if (ownship->af->GetTypeAC() == 6 || ownship->af->GetTypeAC() == 7)
+        else if (ownship->af->GetTypeAC() == 6 or ownship->af->GetTypeAC() == 7)
         {
             aoaOffset = cockpitFlightData.alpha - 15.0F;
         }
@@ -1645,9 +1645,9 @@ void HudClass::DrawDesignateMarker(DesignateShape shape, float az, float el, flo
     xPos = RadToHudUnitsX(az);
     yPos = RadToHudUnitsY(el);
 
-    if (fabs(az) < 90.0F * DTR &&
-        fabs(el) < 90.0F * DTR &&
-        fabs(xPos) < 0.90F && fabs(yPos + hudWinY[BORESIGHT_CROSS_WINDOW] +
+    if (fabs(az) < 90.0F * DTR and 
+        fabs(el) < 90.0F * DTR and 
+        fabs(xPos) < 0.90F and fabs(yPos + hudWinY[BORESIGHT_CROSS_WINDOW] +
                                    hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) < 0.90F)
     {
         if (shape == Square)
@@ -1683,7 +1683,7 @@ void HudClass::DrawBoresightCross(void)
     float yCenter = hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
 
     //TJL 03/11/04 F16 only for boresight cross (others have waterline) or default HUD
-    if (ownship->IsF16() || ownship->af->GetTypeAC() == 0)
+    if (ownship->IsF16() or ownship->af->GetTypeAC() == 0)
     {
         //end
 
@@ -1697,15 +1697,15 @@ void HudClass::DrawBoresightCross(void)
     if (HudData.IsSet(HudDataType::RadarNoRad))
     {
         //MI
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
             display->TextCenter(xCenter, yCenter + 0.075F, "NO RAD", 0);
         else
             display->TextCenter(xCenter, yCenter + 0.15F, "NO RAD", 0);
     }
 
-    if (HudData.IsSet(HudDataType::RadarBoresight | HudDataType::RadarSlew))
+    if (HudData.IsSet(HudDataType::RadarBoresight bitor HudDataType::RadarSlew))
     {
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             yCenter -= RadToHudUnitsY(3.0F * DTR);
             display->Line(xCenter + 0.05F, yCenter, xCenter + 0.1F, yCenter);
@@ -1786,12 +1786,12 @@ void HudClass::DrawPitchLadder(void)
 {
 
     //MI INS stuff
-    if (g_bRealisticAvionics && g_bINS)
+    if (g_bRealisticAvionics and g_bINS)
     {
         if (
-            ownship &&
-            ownship->INSState(AircraftClass::INS_PowerOff) ||
-            !ownship->INSState(AircraftClass::INS_HUD_STUFF)
+            ownship and 
+            ownship->INSState(AircraftClass::INS_PowerOff) or
+ not ownship->INSState(AircraftClass::INS_HUD_STUFF)
         )
         {
             return;
@@ -1799,7 +1799,7 @@ void HudClass::DrawPitchLadder(void)
     }
 
     //MI not here in BUP reticle mode
-    if (g_bRealisticAvionics && WhichMode == 2 && FCC->GetSubMode() == FireControlComputer::MAN)
+    if (g_bRealisticAvionics and WhichMode == 2 and FCC->GetSubMode() == FireControlComputer::MAN)
     {
         return;
     }
@@ -1839,7 +1839,7 @@ void HudClass::DrawPitchLadder(void)
     i = a % 50;
 
     //MI Smaller pitchladder
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         vert[0][0] = hudWinWidth[PITCH_LADDER_WINDOW] * 0.25F;
         vert[1][0] = hudWinWidth[PITCH_LADDER_WINDOW] * 0.35F;
@@ -1869,7 +1869,7 @@ void HudClass::DrawPitchLadder(void)
     vert[13][0] = -vert[5][0];
 
     //MI Smaller pitchladder
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         vert[14][0] = hudWinWidth[PITCH_LADDER_WINDOW] * 1.00F;
         vert[15][0] = -vert[14][0];
@@ -1895,7 +1895,7 @@ void HudClass::DrawPitchLadder(void)
         }
     }
 
-    if (!g_bNewPitchLadder)
+    if ( not g_bNewPitchLadder)
     {
         vert[0][1] = -(0.1F * i + 20.0F) * degreesForScreen;
     }
@@ -1908,8 +1908,8 @@ void HudClass::DrawPitchLadder(void)
 
     // JPO - draw the 2.5 degree line when gear is down and locked.
     if (
-        ((AircraftClass*)ownship)->af->gearPos > 0.5F &&
-        (a < -2) && ((a + 50) > -2)
+        ((AircraftClass*)ownship)->af->gearPos > 0.5F and 
+        (a < -2) and ((a + 50) > -2)
     )  // JPO we surround the -2.5 line
     {
         float delta = (float)a - -2.5f;
@@ -1945,10 +1945,10 @@ void HudClass::DrawPitchLadder(void)
 
     for (i = 0; i < 30; i++)
     {
-        if ((a >= -90) && (a <= 90))
+        if ((a >= -90) and (a <= 90))
         {
             //MI no - is drawn on the real pitchladder
-            if (!g_bRealisticAvionics)
+            if ( not g_bRealisticAvionics)
             {
                 sprintf(tmpStr , "%d", a);
             }
@@ -1997,7 +1997,7 @@ void HudClass::DrawPitchLadder(void)
                 //HUD fix #3b: pitch ladder bars below horizon should be slanted downwards,
                 //from 8.3 degrees down for the -5deg line, to 45deg down on the -90deg line.
                 //Smeg, 15-Oct-2003
-                if ((g_bHUDFix == true) && (g_bRealisticAvionics))
+                if ((g_bHUDFix == true) and (g_bRealisticAvionics))
                 {
                     //Determine angle down from horizontal.
                     float angleDown = (-a - 5) * ((45.0F - 8.3F) / 85.0F) + 8.3F;
@@ -2066,7 +2066,7 @@ void HudClass::DrawPitchLadder(void)
 
                 //Now do vertical ticks. Positioning is different for -ve pitch ladder
                 //if we're applying the HUD fix.
-                if ((g_bHUDFix == true) && (a < 0) && (g_bRealisticAvionics))
+                if ((g_bHUDFix == true) and (a < 0) and (g_bRealisticAvionics))
                 {
                     display->Line(vert[0][0], vert[0][1], vert[6][0], vert[6][1]);
                     display->Line(vert[7][0], vert[7][1], vert[13][0], vert[13][1]);
@@ -2181,7 +2181,7 @@ bool HudClass::CheckGhostHorizon(float radius, float xOffset, float yOffset, flo
     bool ghostHorizonDrawn = false;
 
     //Ghost horizon only drawn if HUD fixes are used and we're on realistic avionics.
-    if ((g_bHUDFix == false) || !(g_bRealisticAvionics))
+    if ((g_bHUDFix == false) or not (g_bRealisticAvionics))
     {
         return ghostHorizonDrawn;
     }
@@ -2333,7 +2333,7 @@ DWORD HudClass::GetHudColor(void)
 
     //Set Up the Contrast, the Hud Color and the Light Level and Apply them
     SetLightLevel();
-    curHudColor = curHudColor & 0xff000000; // mantain alpha
+    curHudColor = curHudColor bitand 0xff000000; // mantain alpha
     curHudColor += ((int)(Color.b * 255 * (0.5F + HudContrast / 2))) << 16;
     curHudColor += ((int)(Color.g * 255 * (0.5F + HudContrast / 2))) << 8;
     curHudColor += ((int)(Color.r * 255 * (0.5F + HudContrast / 2)));
@@ -2350,7 +2350,7 @@ void HudClass::SetHudColor(DWORD newColor)
     // Find fixed colors index
     curColorIdx = 0;
 
-    while (newColor != HUDcolor[curColorIdx])
+    while (newColor not_eq HUDcolor[curColorIdx])
     {
         curColorIdx++;
 
@@ -2366,13 +2366,13 @@ void HudClass::SetHudColor(DWORD newColor)
         SymWheelPos = 0.5F;
     }
 
-    hudColor.a = ((float)((HUDcolor[curColorIdx] & 0xff000000) >> 24)) / 255.0f;
-    hudColor.b = ((float)((HUDcolor[curColorIdx] & 0xff0000) >> 16)) / 255.0f;
-    hudColor.g = ((float)((HUDcolor[curColorIdx] & 0xff00) >> 8)) / 255.0f;
-    hudColor.r = ((float)(HUDcolor[curColorIdx] & 0xff)) / 255.0f;
+    hudColor.a = ((float)((HUDcolor[curColorIdx] bitand 0xff000000) >> 24)) / 255.0f;
+    hudColor.b = ((float)((HUDcolor[curColorIdx] bitand 0xff0000) >> 16)) / 255.0f;
+    hudColor.g = ((float)((HUDcolor[curColorIdx] bitand 0xff00) >> 8)) / 255.0f;
+    hudColor.r = ((float)(HUDcolor[curColorIdx] bitand 0xff)) / 255.0f;
     //Set Up the Contrast, the Hud Color and the Light Level and Apply them
     SetLightLevel();
-    curHudColor = curHudColor & 0xff000000; // mantain alpha
+    curHudColor = curHudColor bitand 0xff000000; // mantain alpha
     curHudColor += ((int)(hudColor.b * 255 * (0.5F + HudContrast / 2))) << 16;
     curHudColor += ((int)(hudColor.g * 255 * (0.5F + HudContrast / 2))) << 8;
     curHudColor += ((int)(hudColor.r * 255 * (0.5F + HudContrast / 2)));
@@ -2394,7 +2394,7 @@ void HudClass::HudColorStep(void)
 void HudClass::CalculateBrightness(float percent, DWORD* color)
 {
     HudBrightness = 1.0f * percent;
-    *color = (*color & 0x00ffffff) | ((FloatToInt32(255 * percent)) << 24);
+    *color = (*color bitand 0x00ffffff) bitor ((FloatToInt32(255 * percent)) << 24);
 }
 
 // COBRA - RED - Completely rewritten
@@ -2405,7 +2405,7 @@ void HudClass::SetLightLevel(void)
     curHudColor = HUDcolor[curColorIdx];
 
     // COBRA - RED - Non realistic
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         if (brightnessSwitch == BRIGHT_AUTO)
         {
@@ -2466,7 +2466,7 @@ void HudClass::SetLightLevel(void)
             CalculateBrightness(Value, &curHudColor);
     }
 
-    if ((g_bBrightHUD) && (brightnessSwitch == DAY))
+    if ((g_bBrightHUD) and (brightnessSwitch == DAY))
         HudContrast = 1.0f;
     else
         HudContrast = hudColor.a + 1.0f - HUD_MAX_BRIGHT_DAY + HudBrightness * (1.0f - hudColor.a); //0.5f + TheTimeOfDay.GetAmbientValue() * lightLevel * 3.0f;
@@ -2524,7 +2524,7 @@ VuEntity* HudClass::CanSeeTarget(int type, VuEntity* entity, FalconEntity* platf
                     left   = pixelXCenter - 6.0F * sightRadius;
                     right  = pixelXCenter + 6.0F * sightRadius;
 
-                    if (pixel.x > left && pixel.x < right && pixel.y < bottom && pixel.y > top)
+                    if (pixel.x > left and pixel.x < right and pixel.y < bottom and pixel.y > top)
                     {
                         retval = entity;
                     }
@@ -2644,7 +2644,7 @@ VuEntity* HudClass::CanSeeTarget(int type, VuEntity* entity, FalconEntity* platf
                     el = (float)atan2(-point.z, (float)sqrt(point.x * point.x + point.y * point.y));
                     az = (float)atan2(point.y, point.x);
 
-                    if (fabs(el - g_fReconCameraOffset * DTR) < g_fReconCameraHalfFOV * DTR && fabs(az) < g_fReconCameraHalfFOV * DTR)
+                    if (fabs(el - g_fReconCameraOffset * DTR) < g_fReconCameraHalfFOV * DTR and fabs(az) < g_fReconCameraHalfFOV * DTR)
                     {
                         retval = entity;
                     }
@@ -2685,7 +2685,7 @@ void HudClass::DrawTDMarker(float az, float el, float dRoll, float size)
     xPos = RadToHudUnitsX(az);
     yPos = RadToHudUnitsY(el);
 
-    if (fabs(az) < 90.0F * DTR && fabs(el) < 90.0F * DTR && fabs(xPos) < 0.90F &&
+    if (fabs(az) < 90.0F * DTR and fabs(el) < 90.0F * DTR and fabs(xPos) < 0.90F and 
         fabs(yPos + hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) < 0.90F)
     {
         display->AdjustOriginInViewport(xPos, yPos);
@@ -2693,8 +2693,8 @@ void HudClass::DrawTDMarker(float az, float el, float dRoll, float size)
         //MI
         if (g_bRealisticAvionics)
         {
-            if (playerAC && playerAC->Sms && playerAC->Sms
-                ->curWeaponType == wtAgm65 && playerAC->Sms->curWeapon)
+            if (playerAC and playerAC->Sms and playerAC->Sms
+                ->curWeaponType == wtAgm65 and playerAC->Sms->curWeapon)
             {
                 if (playerAC->Sms->MavSubMode == SMSBaseClass::VIS)
                 {
@@ -2729,11 +2729,11 @@ void HudClass::DrawTDMarker(float az, float el, float dRoll, float size)
                 display->Line(size, size, size, -size);
 
                 //MI add a GO STT readout if we're a SARH and not in STT
-                if (ownship && g_bRealisticAvionics)
+                if (ownship and g_bRealisticAvionics)
                 {
-                    if (ownship->Sms && ownship->Sms->curWeapon && ownship->Sms->curWeapon->IsMissile() &&
-                        ((MissileClass *)ownship->Sms->GetCurrentWeapon())->GetSeekerType() == SensorClass::RadarHoming &&
-                        theRadar && !theRadar->IsSet(RadarDopplerClass::STTingTarget))
+                    if (ownship->Sms and ownship->Sms->curWeapon and ownship->Sms->curWeapon->IsMissile() and 
+                        ((MissileClass *)ownship->Sms->GetCurrentWeapon())->GetSeekerType() == SensorClass::RadarHoming and 
+                        theRadar and not theRadar->IsSet(RadarDopplerClass::STTingTarget))
                     {
                         display->TextCenter(0.0F, -0.1F, "GO STT", 0);
                     }
@@ -2784,7 +2784,7 @@ void HudClass::DrawF18HUD(void)
     //Cobra.  Let's fix this to increment by 10 and add in the delay factor
     int vvi = (((FloatToInt32(-cockpitFlightData.zDot * 60)) + 5) / 10) * 10;
 
-    if (vuxRealTime & 0x040)
+    if (vuxRealTime bitand 0x040)
         vvid = vvi;
 
     sprintf(tmpStr, "%d", vvid);
@@ -2793,8 +2793,8 @@ void HudClass::DrawF18HUD(void)
 
     //AOA 46
     //HUD AOA Greek Letter Alpha -65 X -13 Y
-    if (ownship->af->gearPos < 0.5F || (ownship->af->gearPos > 0.5F &&
-                                        (ownship->af->alpha > 10.0F || ownship->af->alpha < 6.0F)))
+    if (ownship->af->gearPos < 0.5F or (ownship->af->gearPos > 0.5F and 
+                                        (ownship->af->alpha > 10.0F or ownship->af->alpha < 6.0F)))
     {
 
         display->Line(-0.80F, -0.13F, -0.80F, -0.15F);
@@ -2820,7 +2820,7 @@ void HudClass::DrawF18HUD(void)
     }
 
     //G 48
-    if (ownship->af->gearPos < 0.5F || (ownship->af->gearPos > 0.5 && maxGs > 4.0f))
+    if (ownship->af->gearPos < 0.5F or (ownship->af->gearPos > 0.5 and maxGs > 4.0f))
     {
         sprintf(tmpStr, "G %.1f", cockpitFlightData.gs);
         ShiAssert(strlen(tmpStr) < 40);
@@ -2828,7 +2828,7 @@ void HudClass::DrawF18HUD(void)
     }
 
     //G-Max 49
-    if (cockpitFlightData.gs > 4.0F && cockpitFlightData.gs > maxGs)
+    if (cockpitFlightData.gs > 4.0F and cockpitFlightData.gs > maxGs)
     {
         maxGs = cockpitFlightData.gs;
     }
@@ -2840,7 +2840,7 @@ void HudClass::DrawF18HUD(void)
     }
 
     //Waterline
-    if (fpmConstrained || ownship->af->gearPos > 0.5)
+    if (fpmConstrained or ownship->af->gearPos > 0.5)
     {
         display->Line(-0.09F, 0.6F, -0.05F, 0.6F);
         display->Line(-0.05F, 0.6F, -0.03F, 0.57F);
@@ -2861,7 +2861,7 @@ void HudClass::DrawF14HUD(void)
     //Cobra.  Let's fix this to increment by 10 and add in the delay factor
     int vvi = (((FloatToInt32(-cockpitFlightData.zDot * 60)) + 5) / 10) * 10;
 
-    if (vuxRealTime & 0x040)
+    if (vuxRealTime bitand 0x040)
         vvid = vvi;
 
     sprintf(tmpStr, "%d", vvid);
@@ -2870,8 +2870,8 @@ void HudClass::DrawF14HUD(void)
 
     //AOA 46
     //HUD AOA Greek Letter Alpha -65 X -13 Y
-    if (ownship->af->gearPos < 0.5F || (ownship->af->gearPos > 0.5F &&
-                                        (ownship->af->alpha > 17.0F || ownship->af->alpha < 13.0F)))
+    if (ownship->af->gearPos < 0.5F or (ownship->af->gearPos > 0.5F and 
+                                        (ownship->af->alpha > 17.0F or ownship->af->alpha < 13.0F)))
     {
 
         display->Line(-0.80F, -0.13F, -0.80F, -0.15F);
@@ -2898,7 +2898,7 @@ void HudClass::DrawF14HUD(void)
     }
 
     //G 48
-    if (ownship->af->gearPos < 0.5F || (ownship->af->gearPos > 0.5 && maxGs > 4.0f))
+    if (ownship->af->gearPos < 0.5F or (ownship->af->gearPos > 0.5 and maxGs > 4.0f))
     {
         sprintf(tmpStr, "G %.1f", cockpitFlightData.gs);
         ShiAssert(strlen(tmpStr) < 40);
@@ -2906,7 +2906,7 @@ void HudClass::DrawF14HUD(void)
     }
 
     //G-Max 49
-    if (cockpitFlightData.gs > 4.0F && cockpitFlightData.gs > maxGs)
+    if (cockpitFlightData.gs > 4.0F and cockpitFlightData.gs > maxGs)
     {
         maxGs = cockpitFlightData.gs;
     }
@@ -2919,18 +2919,18 @@ void HudClass::DrawF14HUD(void)
 
     //TJL 03/06/04 F-14 Specific HUD warning per -1
 
-    if ((ownship->af->tefPos > 0.0f || ownship->af->lefPos > 0.0f) &&
-        ownship->GetKias() > 225.0f && flash)
+    if ((ownship->af->tefPos > 0.0f or ownship->af->lefPos > 0.0f) and 
+        ownship->GetKias() > 225.0f and flash)
     {
         DrawWindowString(12, "RDC SPEED");
     }
-    else if (ownship->af->mach > 2.4f && flash)
+    else if (ownship->af->mach > 2.4f and flash)
     {
         DrawWindowString(12, "RDC SPEED");
     }
 
     //Waterline
-    if (fpmConstrained || ownship->af->gearPos > 0.5)
+    if (fpmConstrained or ownship->af->gearPos > 0.5)
     {
         display->Line(-0.09F, 0.6F, -0.05F, 0.6F);
         display->Line(-0.05F, 0.6F, -0.03F, 0.57F);
@@ -2951,7 +2951,7 @@ void HudClass::DrawF15HUD(void)
     //Cobra.  Let's fix this to increment by 10 and add in the delay factor
     int vvi = (((FloatToInt32(-cockpitFlightData.zDot * 60)) + 5) / 10) * 10;
 
-    if (vuxRealTime & 0x040)
+    if (vuxRealTime bitand 0x040)
         vvid = vvi;
 
     sprintf(tmpStr, "%d", vvid);
@@ -2983,7 +2983,7 @@ void HudClass::DrawF15HUD(void)
     }
 
     //G 48
-    if (ownship->af->gearPos < 0.5F || (ownship->af->gearPos > 0.5 && maxGs > 4.0f))
+    if (ownship->af->gearPos < 0.5F or (ownship->af->gearPos > 0.5 and maxGs > 4.0f))
     {
         sprintf(tmpStr, "G %.1f", cockpitFlightData.gs);
         ShiAssert(strlen(tmpStr) < 40);
@@ -2991,7 +2991,7 @@ void HudClass::DrawF15HUD(void)
     }
 
     //G-Max 49
-    if (cockpitFlightData.gs > 4.0F && cockpitFlightData.gs > maxGs)
+    if (cockpitFlightData.gs > 4.0F and cockpitFlightData.gs > maxGs)
     {
         maxGs = cockpitFlightData.gs;
     }

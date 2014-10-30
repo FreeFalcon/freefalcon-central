@@ -101,7 +101,7 @@
 
     <!-- No downgrading -->
     <CustomAction Id="PreventDowngrading"
-                  Error="Cannot install, A newer version is allready installed!" />
+                  Error="Cannot install, A newer version is allready installed" />
 
     <InstallExecuteSequence>
       <Custom Action="PreventDowngrading"

@@ -8,9 +8,10 @@
 #ifndef _3DEJ_CONTEXT_H_
 #define _3DEJ_CONTEXT_H_
 
+#include <cISO646>
 #include "define.h"
 
-#if !defined(MPR_INTERNAL)
+#if not defined(MPR_INTERNAL)
 #include <windows.h>
 #endif
 
@@ -176,7 +177,7 @@ extern  "C" {
         MPR_MSG_CLOSE_DEVICE
     } mprMsgID;
 
-    // Possible values for: MPR_STA_ENABLES & MPR_STA_DISABLES
+    // Possible values for: MPR_STA_ENABLES bitand MPR_STA_DISABLES
 #define MPR_SE_SHADING 0x00000001L
 #define MPR_SE_TEXTURING 0x00000002L
 #define MPR_SE_MODULATION 0x00000004L
@@ -196,7 +197,7 @@ extern  "C" {
 #define MPR_SE_CHROMA_ALPHATEST   0x00001000L // Wombat
 #define MPR_SE_LIGHTING 0x00002000L
 
-    // Possible values for: MPR_STA_SRC_BLEND_FUNCTION & MPR_STA_DST_BLEND_FUNCTION
+    // Possible values for: MPR_STA_SRC_BLEND_FUNCTION bitand MPR_STA_DST_BLEND_FUNCTION
     enum
     {
         MPR_BF_ZERO = 1,
@@ -211,7 +212,7 @@ extern  "C" {
         MPR_BF_DST_INV,                // Only MPR_STA_SRC_BLEND_FUNCTION
     };
 
-    // Possible values for: MPR_STA_ALPHA_OP_FUNCTION && MPR_STA_TEXTURE_OP_FUNCTION
+    // Possible values for: MPR_STA_ALPHA_OP_FUNCTION and MPR_STA_TEXTURE_OP_FUNCTION
     enum
     {
         MPR_TO_DISABLE = 1,
@@ -569,7 +570,7 @@ extern  "C" {
 
 
 #if (MAXIMUM_MPR_STATE >= 64)
-#error "Can have at most 64 prestored states (#define'd inside MPR) & we need one free"
+#error "Can have at most 64 prestored states (#define'd inside MPR) bitand we need one free"
 #endif
 
     // Transformed + Lit Vertex

@@ -59,12 +59,12 @@ New Matrix --> Old Matrix ==> new M(i),(j) = old M(i+1),(j+1)
 void
 glGetSinCos(GLfloat *sinOut, GLfloat *cosOut, GLFixed0_14 angle)
 {
-    angle &= 0x3fff;
+    angle and_eq 0x3fff;
 
-    if (angle & 0x1000)
+    if (angle bitand 0x1000)
     {
         // angle between 270-360
-        if (angle & 0x2000)
+        if (angle bitand 0x2000)
         {
             *sinOut = (GLfloat) - CosineTable[angle - 0x3000];
             *cosOut = (GLfloat) CosineTable[0x4000 - angle];
@@ -78,7 +78,7 @@ glGetSinCos(GLfloat *sinOut, GLfloat *cosOut, GLFixed0_14 angle)
     }
     else
     {
-        if (angle & 0x2000)
+        if (angle bitand 0x2000)
         {
             // angle between 180-270
             *sinOut = (GLfloat) - CosineTable[0x3000 - angle];
@@ -96,12 +96,12 @@ glGetSinCos(GLfloat *sinOut, GLfloat *cosOut, GLFixed0_14 angle)
 void
 glGetSinCos(GLdouble *sinOut, GLdouble *cosOut, GLFixed0_14 angle)
 {
-    angle &= 0x3fff;
+    angle and_eq 0x3fff;
 
-    if (angle & 0x1000)
+    if (angle bitand 0x1000)
     {
         // angle between 270-360
-        if (angle & 0x2000)
+        if (angle bitand 0x2000)
         {
             *sinOut = -CosineTable[angle - 0x3000];
             *cosOut = CosineTable[0x4000 - angle];
@@ -115,7 +115,7 @@ glGetSinCos(GLdouble *sinOut, GLdouble *cosOut, GLFixed0_14 angle)
     }
     else
     {
-        if (angle & 0x2000)
+        if (angle bitand 0x2000)
         {
             // angle between 180-270
             *sinOut = -CosineTable[0x3000 - angle];
@@ -135,12 +135,12 @@ glGetSinCos(GLdouble *sinOut, GLdouble *cosOut, GLFixed0_14 angle)
 GLdouble
 glGetSine(GLFixed0_14 angle)
 {
-    angle &= 0x3fff;
+    angle and_eq 0x3fff;
 
-    if (angle & 0x1000)
+    if (angle bitand 0x1000)
     {
         // angle between 270-360
-        if (angle & 0x2000)
+        if (angle bitand 0x2000)
         {
             return -CosineTable[angle - 0x3000];
         }
@@ -152,7 +152,7 @@ glGetSine(GLFixed0_14 angle)
     }
     else
     {
-        if (angle & 0x2000)
+        if (angle bitand 0x2000)
         {
             // angle between 180-270
             return -CosineTable[0x3000 - angle];
@@ -170,12 +170,12 @@ glGetSine(GLFixed0_14 angle)
 GLdouble
 glGetCosine(GLFixed0_14 angle)
 {
-    angle &= 0x3fff;
+    angle and_eq 0x3fff;
 
-    if (angle & 0x1000)
+    if (angle bitand 0x1000)
     {
         // angle between 270-360
-        if (angle & 0x2000)
+        if (angle bitand 0x2000)
         {
             return CosineTable[0x4000 - angle];
         }
@@ -187,7 +187,7 @@ glGetCosine(GLFixed0_14 angle)
     }
     else
     {
-        if (angle & 0x2000)
+        if (angle bitand 0x2000)
         {
             // angle between 180-270
             return -CosineTable[angle - 0x2000];
@@ -264,15 +264,15 @@ CalculateArcTan(GLfloat opposite,
 |                                                                           |
 |    Returns:      angle (16384 = 360 degrees)                              |
 |                                                                           |
-|    Note:                      | 90    /|                                  |
-|                               |  I  /  |                                  |
-|                       II      |   /    | opp                              |
-|                               | / adj  |                                  |
+|    Note:                      bitor 90    /|                                  |
+|                               bitor  I  /  bitor                                  |
+|                       II      bitor   /    bitor opp                              |
+|                               bitor / adj  bitor                                  |
 |               180 ------------+------------ 0                             |
-|                               |                                           |
-|                       III     |    IV                                     |
-|                               |                                           |
-|                               | 270                                       |
+|                               bitor                                           |
+|                       III     bitor    IV                                     |
+|                               bitor                                           |
+|                               bitor 270                                       |
 +---------------------------------------------------------------------------+
 |    Programmed by Erick Jap                           November 29, 1993    |
 +---------------------------------------------------------------------------+
@@ -285,14 +285,14 @@ glCalculateAngle(GLfloat opposite,
     GLint       sign_opp, sign_adj;
     GLFixed0_14 angle;
 
-    if (!opposite)
+    if ( not opposite)
     {
         if (adjacent < 0.0f) return (8192); // 180 degree
 
         return(0);
     }
 
-    if (!adjacent)
+    if ( not adjacent)
     {
         if (opposite < 0.0f) return (12288); // 270 degree
 
@@ -315,7 +315,7 @@ glCalculateAngle(GLfloat opposite,
 
     angle = CalculateArcTan(opposite, adjacent);
 
-    if (!angle)   // either 0 or 180
+    if ( not angle)   // either 0 or 180
     {
         if (sign_adj) return (8192); // 180 degree
 

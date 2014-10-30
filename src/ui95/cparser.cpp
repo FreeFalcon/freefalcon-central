@@ -439,7 +439,7 @@ long C_Parser::TokenizeIDs(char *idfile, long size)
     // remove ALL white space
     while (idx < size)
     {
-        if (idfile[idx] <= ' ' || idfile[idx] == ',')
+        if (idfile[idx] <= ' ' or idfile[idx] == ',')
             idfile[idx] = 0;
 
         idx++;
@@ -454,7 +454,7 @@ long C_Parser::TokenizeIDs(char *idfile, long size)
 
     while (idx <= size)
     {
-        if (!idfile[idx])
+        if ( not idfile[idx])
         {
             if (expecting == 1)
                 expecting = 2;
@@ -468,21 +468,21 @@ long C_Parser::TokenizeIDs(char *idfile, long size)
         {
             if (expecting == 0)
             {
-                if (isdigit(idfile[idx]) || idfile[idx] == '-')
+                if (isdigit(idfile[idx]) or idfile[idx] == '-')
                     idfile[idx] = 0;
                 else
                     expecting = 1;
             }
             else if (expecting == 2)
             {
-                if (isdigit(idfile[idx]) || idfile[idx] == '-')
+                if (isdigit(idfile[idx]) or idfile[idx] == '-')
                     expecting = 3;
                 else
                     idfile[idx] = 0;
             }
             else if (expecting == 3)
             {
-                if (!isdigit(idfile[idx]))
+                if ( not isdigit(idfile[idx]))
                 {
                     idfile[idx] = 0;
                     count++;
@@ -520,7 +520,7 @@ void C_Parser::LoadIDTable(char *filename)
 
     size = UI_FILESIZE(ifp);
 
-    if (!size)
+    if ( not size)
     {
         if (g_bLogUiErrors)
         {
@@ -533,7 +533,7 @@ void C_Parser::LoadIDTable(char *filename)
 
     idfile = new char [size + 5]; // just in case :)
 
-    if (UI_READ(idfile, size, 1, ifp) != 1)
+    if (UI_READ(idfile, size, 1, ifp) not_eq 1)
     {
         if (g_bLogUiErrors)
         {
@@ -559,20 +559,20 @@ void C_Parser::LoadIDTable(char *filename)
 
         while (i < count)
         {
-            while (!idfile[idx] && idx < size)
+            while ( not idfile[idx] and idx < size)
                 idx++;
 
             token = &idfile[idx];
 
-            while (idfile[idx] && idx < size)
+            while (idfile[idx] and idx < size)
                 idx++;
 
-            while (!idfile[idx] && idx < size)
+            while ( not idfile[idx] and idx < size)
                 idx++;
 
             ID = atol(&idfile[idx]);
 
-            while (idfile[idx] && idx < size)
+            while (idfile[idx] and idx < size)
                 idx++;
 
             TokenOrder_->AddTextID(ID, token);
@@ -622,7 +622,7 @@ void C_Parser::LoadIDList(char *filename)
 
     size = UI_FILESIZE(ifp);
 
-    if (!size)
+    if ( not size)
     {
         UI_CLOSE(ifp);
         return;
@@ -630,7 +630,7 @@ void C_Parser::LoadIDList(char *filename)
 
     listfile = new char [size + 5]; // just in case :)
 
-    if (UI_READ(listfile, size, 1, ifp) != 1)
+    if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
         delete listfile;
         UI_CLOSE(ifp);
@@ -650,7 +650,7 @@ void C_Parser::LoadIDList(char *filename)
 
     while (i < size)
     {
-        while (!(*lfp) && i < size)
+        while ( not (*lfp) and i < size)
         {
             lfp++;
             i++;
@@ -658,7 +658,7 @@ void C_Parser::LoadIDList(char *filename)
 
         if (*lfp)
         {
-            if (*lfp != '#')
+            if (*lfp not_eq '#')
             {
                 //strcpy(filebuf,FalconUIArtDirectory);
                 //strcat(filebuf,"\\");
@@ -666,7 +666,7 @@ void C_Parser::LoadIDList(char *filename)
                 LoadIDTable(lfp);
             }
 
-            while ((*lfp) && i < size)
+            while ((*lfp) and i < size)
             {
                 lfp++;
                 i++;
@@ -690,7 +690,7 @@ long C_Parser::FindToken(char *token)
 
     while (C_All_Tokens[i])
     {
-        if (!strnicmp(token, C_All_Tokens[i], strlen(C_All_Tokens[i])))
+        if ( not strnicmp(token, C_All_Tokens[i], strlen(C_All_Tokens[i])))
             return(i);
 
         i++;
@@ -720,7 +720,7 @@ BOOL C_Parser::LoadScript(char *filename)
 
     size = UI_FILESIZE(ifp);
 
-    if (!size)
+    if ( not size)
     {
         if (g_bLogUiErrors)
         {
@@ -741,7 +741,7 @@ BOOL C_Parser::LoadScript(char *filename)
 
     if (script_) memset(script_, 0, size + 5); // OW
 
-    if (UI_READ(script_, size, 1, ifp) != 1)
+    if (UI_READ(script_, size, 1, ifp) not_eq 1)
     {
         if (g_bLogUiErrors)
         {
@@ -765,7 +765,7 @@ UI_HANDLE C_Parser::OpenArtFile(char *filename, const char *thrdir, const char *
     UI_HANDLE ifp;
 
     // absolute path
-    if (isalpha(filename[0]) && filename[1] == ':' && filename[2] == '\\')
+    if (isalpha(filename[0]) and filename[1] == ':' and filename[2] == '\\')
     {
         return UI_OPEN(filename, "rb");
     }
@@ -798,7 +798,7 @@ UI_HANDLE C_Parser::OpenArtFile(char *filename, const char *thrdir, const char *
     strcat(filebuf, filename);
     ifp = UI_OPEN(filebuf, "rb");
 
-    if (ifp != NULL)
+    if (ifp not_eq NULL)
     {
         return ifp;    // got the main one
     }
@@ -869,7 +869,7 @@ BOOL C_Parser::LoadWindowList(char *filename)
 
     size = UI_FILESIZE(ifp);
 
-    if (!size)
+    if ( not size)
     {
         if (g_bLogUiErrors)
         {
@@ -883,7 +883,7 @@ BOOL C_Parser::LoadWindowList(char *filename)
 
     listfile = new char [size + 5]; // just in case :)
 
-    if (UI_READ(listfile, size, 1, ifp) != 1)
+    if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
         if (g_bLogUiErrors)
         {
@@ -909,7 +909,7 @@ BOOL C_Parser::LoadWindowList(char *filename)
 
     while (i < size)
     {
-        while (!(*lfp) && i < size)
+        while ( not (*lfp) and i < size)
         {
             lfp++;
             i++;
@@ -923,7 +923,7 @@ BOOL C_Parser::LoadWindowList(char *filename)
                     fprintf(Perror_, "LoadWindowList Parsing Window (%s)\n", lfp);
             }
 
-            if (*lfp != '#')
+            if (*lfp not_eq '#')
             {
                 //strcpy(filebuf,FalconUIArtDirectory);
                 //strcat(filebuf,"\\");
@@ -950,7 +950,7 @@ BOOL C_Parser::LoadWindowList(char *filename)
                 }
             }
 
-            while ((*lfp) && i < size)
+            while ((*lfp) and i < size)
             {
                 lfp++;
                 i++;
@@ -997,7 +997,7 @@ BOOL C_Parser::LoadPopupMenuList(char *filename)
 
     size = UI_FILESIZE(ifp);
 
-    if (!size)
+    if ( not size)
     {
         if (g_bLogUiErrors)
         {
@@ -1011,7 +1011,7 @@ BOOL C_Parser::LoadPopupMenuList(char *filename)
 
     listfile = new char [size + 5]; // just in case :)
 
-    if (UI_READ(listfile, size, 1, ifp) != 1)
+    if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
         if (g_bLogUiErrors)
         {
@@ -1037,7 +1037,7 @@ BOOL C_Parser::LoadPopupMenuList(char *filename)
 
     while (i < size)
     {
-        while (!(*lfp) && i < size)
+        while ( not (*lfp) and i < size)
         {
             lfp++;
             i++;
@@ -1068,7 +1068,7 @@ BOOL C_Parser::LoadPopupMenuList(char *filename)
                 }
             }
 
-            while ((*lfp) && i < size)
+            while ((*lfp) and i < size)
             {
                 lfp++;
                 i++;
@@ -1114,7 +1114,7 @@ BOOL C_Parser::LoadImageList(char *filename)
 
     size = UI_FILESIZE(ifp);
 
-    if (!size)
+    if ( not size)
     {
         if (g_bLogUiErrors)
         {
@@ -1128,7 +1128,7 @@ BOOL C_Parser::LoadImageList(char *filename)
 
     listfile = new char [size + 5]; // just in case :)
 
-    if (UI_READ(listfile, size, 1, ifp) != 1)
+    if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
         if (g_bLogUiErrors)
         {
@@ -1154,7 +1154,7 @@ BOOL C_Parser::LoadImageList(char *filename)
 
     while (i < size)
     {
-        while (!(*lfp) && i < size)
+        while ( not (*lfp) and i < size)
         {
             lfp++;
             i++;
@@ -1167,7 +1167,7 @@ BOOL C_Parser::LoadImageList(char *filename)
             //strcat(filebuf,lfp);
             ParseImage(lfp);
 
-            while ((*lfp) && i < size)
+            while ((*lfp) and i < size)
             {
                 lfp++;
                 i++;
@@ -1213,7 +1213,7 @@ BOOL C_Parser::LoadSoundList(char *filename)
 
     size = UI_FILESIZE(ifp);
 
-    if (!size)
+    if ( not size)
     {
         if (g_bLogUiErrors)
         {
@@ -1227,7 +1227,7 @@ BOOL C_Parser::LoadSoundList(char *filename)
 
     listfile = new char [size + 5]; // just in case :)
 
-    if (UI_READ(listfile, size, 1, ifp) != 1)
+    if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
         if (g_bLogUiErrors)
         {
@@ -1253,7 +1253,7 @@ BOOL C_Parser::LoadSoundList(char *filename)
 
     while (i < size)
     {
-        while (!(*lfp) && i < size)
+        while ( not (*lfp) and i < size)
         {
             lfp++;
             i++;
@@ -1267,7 +1267,7 @@ BOOL C_Parser::LoadSoundList(char *filename)
             strcat(filebuf, lfp);
             ParseSound(filebuf);
 
-            while ((*lfp) && i < size)
+            while ((*lfp) and i < size)
             {
                 lfp++;
                 i++;
@@ -1313,7 +1313,7 @@ BOOL C_Parser::LoadStringList(char *filename)
 
     size = UI_FILESIZE(ifp);
 
-    if (!size)
+    if ( not size)
     {
         if (g_bLogUiErrors)
         {
@@ -1327,7 +1327,7 @@ BOOL C_Parser::LoadStringList(char *filename)
 
     listfile = new char [size + 5]; // just in case :)
 
-    if (UI_READ(listfile, size, 1, ifp) != 1)
+    if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
         if (g_bLogUiErrors)
         {
@@ -1353,7 +1353,7 @@ BOOL C_Parser::LoadStringList(char *filename)
 
     while (i < size)
     {
-        while (!(*lfp) && i < size)
+        while ( not (*lfp) and i < size)
         {
             lfp++;
             i++;
@@ -1366,7 +1366,7 @@ BOOL C_Parser::LoadStringList(char *filename)
             //strcat(filebuf,lfp);
             ParseString(lfp);
 
-            while ((*lfp) && i < size)
+            while ((*lfp) and i < size)
             {
                 lfp++;
                 i++;
@@ -1412,7 +1412,7 @@ BOOL C_Parser::LoadMovieList(char *filename)
 
     size = UI_FILESIZE(ifp);
 
-    if (!size)
+    if ( not size)
     {
         if (g_bLogUiErrors)
         {
@@ -1426,7 +1426,7 @@ BOOL C_Parser::LoadMovieList(char *filename)
 
     listfile = new char [size + 5]; // just in case :)
 
-    if (UI_READ(listfile, size, 1, ifp) != 1)
+    if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
         if (g_bLogUiErrors)
         {
@@ -1452,7 +1452,7 @@ BOOL C_Parser::LoadMovieList(char *filename)
 
     while (i < size)
     {
-        while (!(*lfp) && i < size)
+        while ( not (*lfp) and i < size)
         {
             lfp++;
             i++;
@@ -1468,7 +1468,7 @@ BOOL C_Parser::LoadMovieList(char *filename)
             ParseMovie(filebuf);
 
             //ParseMovie(lfp); // Don't tack on movie directory... handled by PlayMovie function
-            while ((*lfp) && i < size)
+            while ((*lfp) and i < size)
             {
                 lfp++;
                 i++;
@@ -1504,7 +1504,7 @@ enum
 
 BOOL C_Parser::ParseScript(char *filename)
 {
-    int Done, Comment, Found, InString; //!,Finished=0;;
+    int Done, Comment, Found, InString; //,Finished=0;;
     int TokenID, Section, TokenType;
 
     if (LoadScript(filename) == FALSE)
@@ -1520,7 +1520,7 @@ BOOL C_Parser::ParseScript(char *filename)
     Section = SECTION_FINDTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while (!Done)
+    while ( not Done)
     {
         switch (Section)
         {
@@ -1528,12 +1528,12 @@ BOOL C_Parser::ParseScript(char *filename)
                 // Look for token starting with '['
                 Found = 0;
 
-                while (!Found && !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if (!Comment && !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -1568,7 +1568,7 @@ BOOL C_Parser::ParseScript(char *filename)
 
                 tokenlen_ = 1;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -1659,7 +1659,7 @@ C_Base *C_Parser::ControlParser()
     Section = SECTION_PROCESSTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while (!Done)
+    while ( not Done)
     {
         switch (Section)
         {
@@ -1667,12 +1667,12 @@ C_Base *C_Parser::ControlParser()
                 // Look for token starting with '['
                 Found = 0;
 
-                while (!Found && !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if (!Comment && !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -1707,7 +1707,7 @@ C_Base *C_Parser::ControlParser()
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -1922,12 +1922,12 @@ C_Base *C_Parser::ControlParser()
                 // Look for token starting with '['
                 Found = 0;
 
-                while (!Found && !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if (!Comment && !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -1962,7 +1962,7 @@ C_Base *C_Parser::ControlParser()
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -2030,12 +2030,12 @@ C_Base *C_Parser::ControlParser()
                 // Repeat until token char '[' found (or EOF)
                 Finished = 0;
 
-                while (!Finished)
+                while ( not Finished)
                 {
                     // Find NON white space
                     Found = 0;
 
-                    while (!Found && !Done && !Finished)
+                    while ( not Found and not Done and not Finished)
                     {
                         switch (script_[Idx_])
                         {
@@ -2074,7 +2074,7 @@ C_Base *C_Parser::ControlParser()
                             str_ = &script_[Idx_ + tokenlen_];
 
                             // Find closing (")
-                            while (!Found && !Finished)
+                            while ( not Found and not Finished)
                             {
                                 if (script_[Idx_ + tokenlen_] == '"')
                                     Found = 1;
@@ -2096,13 +2096,13 @@ C_Base *C_Parser::ControlParser()
                             Idx_ += tokenlen_ + 1;
                             tokenlen_ = 0;
                         }
-                        else if (isdigit(script_[Idx_]) || script_[Idx_] == '-') // Number
+                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
                         {
                             // find white space
                             Found = 0;
                             tokenlen_ = 1;
 
-                            while (!Found)
+                            while ( not Found)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -2127,7 +2127,7 @@ C_Base *C_Parser::ControlParser()
                                 }
                             }
 
-                            if (Found && P_Idx_ < PARSE_MAX_PARAMS)
+                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                                 P_[P_Idx_++] = atol(&script_[Idx_]);
 
                             Idx_ += tokenlen_;
@@ -2140,7 +2140,7 @@ C_Base *C_Parser::ControlParser()
                             Found = 0;
                             tokenlen_ = 0;
 
-                            while (!Found && !Finished)
+                            while ( not Found and not Finished)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -2165,12 +2165,12 @@ C_Base *C_Parser::ControlParser()
                                 }
                             }
 
-                            if (Found && P_Idx_ < PARSE_MAX_PARAMS)
+                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                             {
                                 script_[Idx_ + tokenlen_] = 0;
                                 P_[P_Idx_++] = FindID(&script_[Idx_]);
 
-                                if (P_[P_Idx_ - 1] < 0 && strcmp(&script_[Idx_], "NID"))
+                                if (P_[P_Idx_ - 1] < 0 and strcmp(&script_[Idx_], "NID"))
                                     TokenErrorList->AddText(&script_[Idx_]);
                             }
 
@@ -2223,7 +2223,7 @@ C_Window *C_Parser::WindowParser()
     Section = SECTION_PROCESSTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while (!Done)
+    while ( not Done)
     {
         switch (Section)
         {
@@ -2231,12 +2231,12 @@ C_Window *C_Parser::WindowParser()
                 // Look for token starting with '['
                 Found = 0;
 
-                while (!Found && !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if (!Comment && !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -2271,7 +2271,7 @@ C_Window *C_Parser::WindowParser()
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -2377,12 +2377,12 @@ C_Window *C_Parser::WindowParser()
                 // Look for token starting with '['
                 Found = 0;
 
-                while (!Found && !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if (!Comment && !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -2417,7 +2417,7 @@ C_Window *C_Parser::WindowParser()
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -2487,12 +2487,12 @@ C_Window *C_Parser::WindowParser()
                 // Repeat until token char '[' found (or EOF)
                 Finished = 0;
 
-                while (!Finished)
+                while ( not Finished)
                 {
                     // Find NON white space
                     Found = 0;
 
-                    while (!Found && !Done && !Finished)
+                    while ( not Found and not Done and not Finished)
                     {
                         switch (script_[Idx_])
                         {
@@ -2531,7 +2531,7 @@ C_Window *C_Parser::WindowParser()
                             str_ = &script_[Idx_ + tokenlen_];
 
                             // Find closing (")
-                            while (!Found && !Finished)
+                            while ( not Found and not Finished)
                             {
                                 if (script_[Idx_ + tokenlen_] == '"')
                                     Found = 1;
@@ -2553,13 +2553,13 @@ C_Window *C_Parser::WindowParser()
                             Idx_ += tokenlen_ + 1;
                             tokenlen_ = 0;
                         }
-                        else if (isdigit(script_[Idx_]) || script_[Idx_] == '-') // Number
+                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
                         {
                             // find white space
                             Found = 0;
                             tokenlen_ = 1;
 
-                            while (!Found)
+                            while ( not Found)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -2584,7 +2584,7 @@ C_Window *C_Parser::WindowParser()
                                 }
                             }
 
-                            if (Found && P_Idx_ < PARSE_MAX_PARAMS)
+                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                                 P_[P_Idx_++] = atol(&script_[Idx_]);
 
                             Idx_ += tokenlen_;
@@ -2597,7 +2597,7 @@ C_Window *C_Parser::WindowParser()
                             Found = 0;
                             tokenlen_ = 0;
 
-                            while (!Found && !Finished)
+                            while ( not Found and not Finished)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -2622,12 +2622,12 @@ C_Window *C_Parser::WindowParser()
                                 }
                             }
 
-                            if (Found && P_Idx_ < PARSE_MAX_PARAMS)
+                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                             {
                                 script_[Idx_ + tokenlen_] = 0;
                                 P_[P_Idx_++] = FindID(&script_[Idx_]);
 
-                                if (P_[P_Idx_ - 1] < 0 && strcmp(&script_[Idx_], "NID"))
+                                if (P_[P_Idx_ - 1] < 0 and strcmp(&script_[Idx_], "NID"))
                                     TokenErrorList->AddText(&script_[Idx_]);
                             }
 
@@ -2667,7 +2667,7 @@ C_Window *C_Parser::WindowParser()
 
 C_Window *C_Parser::ParseWindow(char *filename)
 {
-    long Done = 0, Comment = 0, Found = 0, InString = 0; //!,Finished=0;;
+    long Done = 0, Comment = 0, Found = 0, InString = 0; //,Finished=0;;
     long TokenID = 0, Section = 0, TokenType = 0;
 
     if (LoadScript(filename) == FALSE)
@@ -2683,7 +2683,7 @@ C_Window *C_Parser::ParseWindow(char *filename)
     Section = SECTION_FINDTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while (!Done)
+    while ( not Done)
     {
         switch (Section)
         {
@@ -2691,12 +2691,12 @@ C_Window *C_Parser::ParseWindow(char *filename)
                 // Look for token starting with '['
                 Found = 0;
 
-                while (!Found && !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if (!Comment && !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -2731,7 +2731,7 @@ C_Window *C_Parser::ParseWindow(char *filename)
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -2781,7 +2781,7 @@ C_Window *C_Parser::ParseWindow(char *filename)
 
 C_Base *C_Parser::ParseControl(char *filename)
 {
-    long Done = 0, Comment = 0, Found = 0, InString = 0; //!,Finished=0;;
+    long Done = 0, Comment = 0, Found = 0, InString = 0; //,Finished=0;;
     long TokenID = 0, Section = 0, TokenType = 0;
 
     if (LoadScript(filename) == FALSE)
@@ -2797,7 +2797,7 @@ C_Base *C_Parser::ParseControl(char *filename)
     Section = SECTION_FINDTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while (!Done)
+    while ( not Done)
     {
         switch (Section)
         {
@@ -2805,12 +2805,12 @@ C_Base *C_Parser::ParseControl(char *filename)
                 // Look for token starting with '['
                 Found = 0;
 
-                while (!Found && !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if (!Comment && !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -2845,7 +2845,7 @@ C_Base *C_Parser::ParseControl(char *filename)
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -2942,7 +2942,7 @@ C_Image *C_Parser::ParseImage(char *filename)
     Section = SECTION_FINDTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while (!Done)
+    while ( not Done)
     {
         switch (Section)
         {
@@ -2950,12 +2950,12 @@ C_Image *C_Parser::ParseImage(char *filename)
                 // Look for token starting with '['
                 Found = 0;
 
-                while (!Found && !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if (!Comment && !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -2990,7 +2990,7 @@ C_Image *C_Parser::ParseImage(char *filename)
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -3041,12 +3041,12 @@ C_Image *C_Parser::ParseImage(char *filename)
                 // Repeat until token char '[' found (or EOF)
                 Finished = 0;
 
-                while (!Finished)
+                while ( not Finished)
                 {
                     // Find NON white space
                     Found = 0;
 
-                    while (!Found && !Done && !Finished)
+                    while ( not Found and not Done and not Finished)
                     {
                         switch (script_[Idx_])
                         {
@@ -3085,7 +3085,7 @@ C_Image *C_Parser::ParseImage(char *filename)
                             str_ = &script_[Idx_ + tokenlen_];
 
                             // Find closing (")
-                            while (!Found && !Finished)
+                            while ( not Found and not Finished)
                             {
                                 if (script_[Idx_ + tokenlen_] == '"')
                                     Found = 1;
@@ -3107,13 +3107,13 @@ C_Image *C_Parser::ParseImage(char *filename)
                             Idx_ += tokenlen_ + 1;
                             tokenlen_ = 0;
                         }
-                        else if (isdigit(script_[Idx_]) || script_[Idx_] == '-') // Number
+                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
                         {
                             // find white space
                             Found = 0;
                             tokenlen_ = 1;
 
-                            while (!Found)
+                            while ( not Found)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -3138,7 +3138,7 @@ C_Image *C_Parser::ParseImage(char *filename)
                                 }
                             }
 
-                            if (Found && P_Idx_ < PARSE_MAX_PARAMS)
+                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                                 P_[P_Idx_++] = atol(&script_[Idx_]);
 
                             Idx_ += tokenlen_;
@@ -3151,7 +3151,7 @@ C_Image *C_Parser::ParseImage(char *filename)
                             Found = 0;
                             tokenlen_ = 0;
 
-                            while (!Found && !Finished)
+                            while ( not Found and not Finished)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -3176,7 +3176,7 @@ C_Image *C_Parser::ParseImage(char *filename)
                                 }
                             }
 
-                            if (Found && P_Idx_ < PARSE_MAX_PARAMS)
+                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                             {
                                 script_[Idx_ + tokenlen_] = 0;
                                 ImageID = FindID(&script_[Idx_]);
@@ -3248,7 +3248,7 @@ C_Font *C_Parser::ParseFont(char *filename)
 
     memset(&logfont, 0, sizeof(LOGFONT));
 
-    while (!Done)
+    while ( not Done)
     {
         switch (Section)
         {
@@ -3256,12 +3256,12 @@ C_Font *C_Parser::ParseFont(char *filename)
                 // Look for token starting with '['
                 Found = 0;
 
-                while (!Found && !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if (!Comment && !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -3296,7 +3296,7 @@ C_Font *C_Parser::ParseFont(char *filename)
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -3336,12 +3336,12 @@ C_Font *C_Parser::ParseFont(char *filename)
                 // Repeat until token char '[' found (or EOF)
                 Finished = 0;
 
-                while (!Finished)
+                while ( not Finished)
                 {
                     // Find NON white space
                     Found = 0;
 
-                    while (!Found && !Done && !Finished)
+                    while ( not Found and not Done and not Finished)
                     {
                         switch (script_[Idx_])
                         {
@@ -3380,7 +3380,7 @@ C_Font *C_Parser::ParseFont(char *filename)
                             str_ = &script_[Idx_ + tokenlen_];
 
                             // Find closing (")
-                            while (!Found && !Finished)
+                            while ( not Found and not Finished)
                             {
                                 if (script_[Idx_ + tokenlen_] == '"')
                                     Found = 1;
@@ -3402,13 +3402,13 @@ C_Font *C_Parser::ParseFont(char *filename)
                             Idx_ += tokenlen_ + 1;
                             tokenlen_ = 0;
                         }
-                        else if (isdigit(script_[Idx_]) || script_[Idx_] == '-') // Number
+                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
                         {
                             // find white space
                             Found = 0;
                             tokenlen_ = 1;
 
-                            while (!Found)
+                            while ( not Found)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -3433,7 +3433,7 @@ C_Font *C_Parser::ParseFont(char *filename)
                                 }
                             }
 
-                            if (Found && P_Idx_ < PARSE_MAX_PARAMS)
+                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                                 P_[P_Idx_++] = atol(&script_[Idx_]);
 
                             Idx_ += tokenlen_;
@@ -3446,7 +3446,7 @@ C_Font *C_Parser::ParseFont(char *filename)
                             Found = 0;
                             tokenlen_ = 0;
 
-                            while (!Found && !Finished)
+                            while ( not Found and not Finished)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -3471,7 +3471,7 @@ C_Font *C_Parser::ParseFont(char *filename)
                                 }
                             }
 
-                            if (Found && P_Idx_ < PARSE_MAX_PARAMS)
+                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                             {
                                 script_[Idx_ + tokenlen_] = 0;
                                 FontID = FindID(&script_[Idx_]);
@@ -3538,7 +3538,7 @@ C_Sound *C_Parser::ParseSound(char *filename)
     Section = SECTION_FINDTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while (!Done)
+    while ( not Done)
     {
         switch (Section)
         {
@@ -3546,12 +3546,12 @@ C_Sound *C_Parser::ParseSound(char *filename)
                 // Look for token starting with '['
                 Found = 0;
 
-                while (!Found && !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if (!Comment && !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -3586,7 +3586,7 @@ C_Sound *C_Parser::ParseSound(char *filename)
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -3626,12 +3626,12 @@ C_Sound *C_Parser::ParseSound(char *filename)
                 // Repeat until token char '[' found (or EOF)
                 Finished = 0;
 
-                while (!Finished)
+                while ( not Finished)
                 {
                     // Find NON white space
                     Found = 0;
 
-                    while (!Found && !Done && !Finished)
+                    while ( not Found and not Done and not Finished)
                     {
                         switch (script_[Idx_])
                         {
@@ -3670,7 +3670,7 @@ C_Sound *C_Parser::ParseSound(char *filename)
                             str_ = &script_[Idx_ + tokenlen_];
 
                             // Find closing (")
-                            while (!Found && !Finished)
+                            while ( not Found and not Finished)
                             {
                                 if (script_[Idx_ + tokenlen_] == '"')
                                     Found = 1;
@@ -3692,13 +3692,13 @@ C_Sound *C_Parser::ParseSound(char *filename)
                             Idx_ += tokenlen_ + 1;
                             tokenlen_ = 0;
                         }
-                        else if (isdigit(script_[Idx_]) || script_[Idx_] == '-') // Number
+                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
                         {
                             // find white space
                             Found = 0;
                             tokenlen_ = 1;
 
-                            while (!Found)
+                            while ( not Found)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -3723,7 +3723,7 @@ C_Sound *C_Parser::ParseSound(char *filename)
                                 }
                             }
 
-                            if (Found && P_Idx_ < PARSE_MAX_PARAMS)
+                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                                 P_[P_Idx_++] = atol(&script_[Idx_]);
 
                             Idx_ += tokenlen_;
@@ -3736,7 +3736,7 @@ C_Sound *C_Parser::ParseSound(char *filename)
                             Found = 0;
                             tokenlen_ = 0;
 
-                            while (!Found && !Finished)
+                            while ( not Found and not Finished)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -3761,7 +3761,7 @@ C_Sound *C_Parser::ParseSound(char *filename)
                                 }
                             }
 
-                            if (Found && P_Idx_ < PARSE_MAX_PARAMS)
+                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                             {
                                 script_[Idx_ + tokenlen_] = 0;
                                 SoundID = FindID(&script_[Idx_]);
@@ -3828,7 +3828,7 @@ C_String *C_Parser::ParseString(char *filename)
     Section = SECTION_FINDTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while (!Done)
+    while ( not Done)
     {
         switch (Section)
         {
@@ -3836,12 +3836,12 @@ C_String *C_Parser::ParseString(char *filename)
                 // Look for token starting with '['
                 Found = 0;
 
-                while (!Found && !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if (!Comment && !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -3876,7 +3876,7 @@ C_String *C_Parser::ParseString(char *filename)
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -3916,12 +3916,12 @@ C_String *C_Parser::ParseString(char *filename)
                 // Repeat until token char '[' found (or EOF)
                 Finished = 0;
 
-                while (!Finished)
+                while ( not Finished)
                 {
                     // Find NON white space
                     Found = 0;
 
-                    while (!Found && !Done && !Finished)
+                    while ( not Found and not Done and not Finished)
                     {
                         switch (script_[Idx_])
                         {
@@ -3960,7 +3960,7 @@ C_String *C_Parser::ParseString(char *filename)
                             str_ = &script_[Idx_ + tokenlen_];
 
                             // Find closing (")
-                            while (!Found && !Finished)
+                            while ( not Found and not Finished)
                             {
                                 if (script_[Idx_ + tokenlen_] == '"')
                                     Found = 1;
@@ -3982,13 +3982,13 @@ C_String *C_Parser::ParseString(char *filename)
                             Idx_ += tokenlen_ + 1;
                             tokenlen_ = 0;
                         }
-                        else if (isdigit(script_[Idx_]) || script_[Idx_] == '-') // Number
+                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
                         {
                             // find white space
                             Found = 0;
                             tokenlen_ = 1;
 
-                            while (!Found)
+                            while ( not Found)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -4013,7 +4013,7 @@ C_String *C_Parser::ParseString(char *filename)
                                 }
                             }
 
-                            if (Found && P_Idx_ < PARSE_MAX_PARAMS)
+                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                                 P_[P_Idx_++] = atol(&script_[Idx_]);
 
                             Idx_ += tokenlen_;
@@ -4026,7 +4026,7 @@ C_String *C_Parser::ParseString(char *filename)
                             Found = 0;
                             tokenlen_ = 0;
 
-                            while (!Found && !Finished)
+                            while ( not Found and not Finished)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -4051,7 +4051,7 @@ C_String *C_Parser::ParseString(char *filename)
                                 }
                             }
 
-                            if (Found && P_Idx_ < PARSE_MAX_PARAMS)
+                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                             {
                                 script_[Idx_ + tokenlen_] = 0;
                                 StringID = FindID(&script_[Idx_]);
@@ -4128,7 +4128,7 @@ C_Movie *C_Parser::ParseMovie(char *filename)
     Section = SECTION_FINDTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while (!Done)
+    while ( not Done)
     {
         switch (Section)
         {
@@ -4136,12 +4136,12 @@ C_Movie *C_Parser::ParseMovie(char *filename)
                 // Look for token starting with '['
                 Found = 0;
 
-                while (!Found && !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if (!Comment && !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -4176,7 +4176,7 @@ C_Movie *C_Parser::ParseMovie(char *filename)
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -4216,12 +4216,12 @@ C_Movie *C_Parser::ParseMovie(char *filename)
                 // Repeat until token char '[' found (or EOF)
                 Finished = 0;
 
-                while (!Finished)
+                while ( not Finished)
                 {
                     // Find NON white space
                     Found = 0;
 
-                    while (!Found && !Done && !Finished)
+                    while ( not Found and not Done and not Finished)
                     {
                         switch (script_[Idx_])
                         {
@@ -4260,7 +4260,7 @@ C_Movie *C_Parser::ParseMovie(char *filename)
                             str_ = &script_[Idx_ + tokenlen_];
 
                             // Find closing (")
-                            while (!Found && !Finished)
+                            while ( not Found and not Finished)
                             {
                                 if (script_[Idx_ + tokenlen_] == '"')
                                     Found = 1;
@@ -4282,13 +4282,13 @@ C_Movie *C_Parser::ParseMovie(char *filename)
                             Idx_ += tokenlen_ + 1;
                             tokenlen_ = 0;
                         }
-                        else if (isdigit(script_[Idx_]) || script_[Idx_] == '-') // Number
+                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
                         {
                             // find white space
                             Found = 0;
                             tokenlen_ = 1;
 
-                            while (!Found)
+                            while ( not Found)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -4313,7 +4313,7 @@ C_Movie *C_Parser::ParseMovie(char *filename)
                                 }
                             }
 
-                            if (Found && P_Idx_ < PARSE_MAX_PARAMS)
+                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                                 P_[P_Idx_++] = atol(&script_[Idx_]);
 
                             Idx_ += tokenlen_;
@@ -4326,7 +4326,7 @@ C_Movie *C_Parser::ParseMovie(char *filename)
                             Found = 0;
                             tokenlen_ = 0;
 
-                            while (!Found && !Finished)
+                            while ( not Found and not Finished)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -4351,7 +4351,7 @@ C_Movie *C_Parser::ParseMovie(char *filename)
                                 }
                             }
 
-                            if (Found && P_Idx_ < PARSE_MAX_PARAMS)
+                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                             {
                                 script_[Idx_ + tokenlen_] = 0;
                                 MovieID = FindID(&script_[Idx_]);
@@ -4403,7 +4403,7 @@ C_Base *C_Parser::PopupParser()
     Section = SECTION_PROCESSTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while (!Done)
+    while ( not Done)
     {
         switch (Section)
         {
@@ -4411,12 +4411,12 @@ C_Base *C_Parser::PopupParser()
                 // Look for token starting with '['
                 Found = 0;
 
-                while (!Found && !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if (!Comment && !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -4451,7 +4451,7 @@ C_Base *C_Parser::PopupParser()
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -4503,12 +4503,12 @@ C_Base *C_Parser::PopupParser()
                 // Look for token starting with '['
                 Found = 0;
 
-                while (!Found && !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if (!Comment && !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -4543,7 +4543,7 @@ C_Base *C_Parser::PopupParser()
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -4611,12 +4611,12 @@ C_Base *C_Parser::PopupParser()
                 // Repeat until token char '[' found (or EOF)
                 Finished = 0;
 
-                while (!Finished)
+                while ( not Finished)
                 {
                     // Find NON white space
                     Found = 0;
 
-                    while (!Found && !Done && !Finished)
+                    while ( not Found and not Done and not Finished)
                     {
                         switch (script_[Idx_])
                         {
@@ -4655,7 +4655,7 @@ C_Base *C_Parser::PopupParser()
                             str_ = &script_[Idx_ + tokenlen_];
 
                             // Find closing (")
-                            while (!Found && !Finished)
+                            while ( not Found and not Finished)
                             {
                                 if (script_[Idx_ + tokenlen_] == '"')
                                     Found = 1;
@@ -4677,13 +4677,13 @@ C_Base *C_Parser::PopupParser()
                             Idx_ += tokenlen_ + 1;
                             tokenlen_ = 0;
                         }
-                        else if (isdigit(script_[Idx_]) || script_[Idx_] == '-') // Number
+                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
                         {
                             // find white space
                             Found = 0;
                             tokenlen_ = 1;
 
-                            while (!Found)
+                            while ( not Found)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -4708,7 +4708,7 @@ C_Base *C_Parser::PopupParser()
                                 }
                             }
 
-                            if (Found && P_Idx_ < PARSE_MAX_PARAMS)
+                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                                 P_[P_Idx_++] = atol(&script_[Idx_]);
 
                             Idx_ += tokenlen_;
@@ -4721,7 +4721,7 @@ C_Base *C_Parser::PopupParser()
                             Found = 0;
                             tokenlen_ = 0;
 
-                            while (!Found && !Finished)
+                            while ( not Found and not Finished)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -4746,12 +4746,12 @@ C_Base *C_Parser::PopupParser()
                                 }
                             }
 
-                            if (Found && P_Idx_ < PARSE_MAX_PARAMS)
+                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                             {
                                 script_[Idx_ + tokenlen_] = 0;
                                 P_[P_Idx_++] = FindID(&script_[Idx_]);
 
-                                if (P_[P_Idx_ - 1] < 0 && strcmp(&script_[Idx_], "NID"))
+                                if (P_[P_Idx_ - 1] < 0 and strcmp(&script_[Idx_], "NID"))
                                     TokenErrorList->AddText(&script_[Idx_]);
                             }
 
@@ -4821,7 +4821,7 @@ C_Base *C_Parser::ParsePopupMenu(char *filename)
     Section = SECTION_FINDTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while (!Done)
+    while ( not Done)
     {
         switch (Section)
         {
@@ -4829,12 +4829,12 @@ C_Base *C_Parser::ParsePopupMenu(char *filename)
                 // Look for token starting with '['
                 Found = 0;
 
-                while (!Found && !Done)
+                while ( not Found and not Done)
                 {
                     switch (script_[Idx_])
                     {
                         case '[':
-                            if (!Comment && !InString)
+                            if ( not Comment and not InString)
                             {
                                 Found = 1;
                                 break;
@@ -4869,7 +4869,7 @@ C_Base *C_Parser::ParsePopupMenu(char *filename)
 
                 tokenlen_ = 0;
 
-                while (script_[Idx_ + tokenlen_] != ']' && (Idx_ + tokenlen_) < scriptlen_)
+                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
                     tokenlen_++;
 
                 tokenlen_++;
@@ -4926,7 +4926,7 @@ C_SoundBite *C_Parser::ParseSoundBite(char *filename)
 
     Bite = new C_SoundBite;
 
-    if (!Bite)
+    if ( not Bite)
         return(NULL);
 
     Bite->Setup();
@@ -4936,7 +4936,7 @@ C_SoundBite *C_Parser::ParseSoundBite(char *filename)
     InString = 0;
     Section = SECTION_FINDPARAMS;
 
-    while (!Done)
+    while ( not Done)
     {
         switch (Section)
         {
@@ -4946,12 +4946,12 @@ C_SoundBite *C_Parser::ParseSoundBite(char *filename)
                 // Repeat until token char '[' found (or EOF)
                 Finished = 0;
 
-                while (!Finished)
+                while ( not Finished)
                 {
                     // Find NON white space
                     Found = 0;
 
-                    while (!Found && !Done && !Finished)
+                    while ( not Found and not Done and not Finished)
                     {
                         switch (script_[Idx_])
                         {
@@ -4975,7 +4975,7 @@ C_SoundBite *C_Parser::ParseSoundBite(char *filename)
                                 break;
 
                             default:
-                                if (!Comment)
+                                if ( not Comment)
                                 {
                                     Found = 1;
                                     break;
@@ -5002,7 +5002,7 @@ C_SoundBite *C_Parser::ParseSoundBite(char *filename)
                             str_ = &script_[Idx_ + tokenlen_];
 
                             // Find closing (")
-                            while (!Found && !Finished)
+                            while ( not Found and not Finished)
                             {
                                 if (script_[Idx_ + tokenlen_] == '"')
                                     Found = 1;
@@ -5024,13 +5024,13 @@ C_SoundBite *C_Parser::ParseSoundBite(char *filename)
                             Idx_ += tokenlen_ + 1;
                             tokenlen_ = 0;
                         }
-                        else if (isdigit(script_[Idx_]) || script_[Idx_] == '-') // Number
+                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
                         {
                             // find white space
                             Found = 0;
                             tokenlen_ = 1;
 
-                            while (!Found)
+                            while ( not Found)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -5055,7 +5055,7 @@ C_SoundBite *C_Parser::ParseSoundBite(char *filename)
                                 }
                             }
 
-                            if (Found && P_Idx_ < PARSE_MAX_PARAMS)
+                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                                 P_[P_Idx_++] = atol(&script_[Idx_]);
 
                             Idx_ += tokenlen_;
@@ -5068,7 +5068,7 @@ C_SoundBite *C_Parser::ParseSoundBite(char *filename)
                             Found = 0;
                             tokenlen_ = 0;
 
-                            while (!Found && !Finished)
+                            while ( not Found and not Finished)
                             {
                                 switch (script_[Idx_ + tokenlen_])
                                 {
@@ -5093,12 +5093,12 @@ C_SoundBite *C_Parser::ParseSoundBite(char *filename)
                                 }
                             }
 
-                            if (Found && P_Idx_ < PARSE_MAX_PARAMS)
+                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                             {
                                 script_[Idx_ + tokenlen_] = 0;
                                 P_[P_Idx_++] = FindID(&script_[Idx_]);
 
-                                if (P_[P_Idx_ - 1] < 0 && strcmp(&script_[Idx_], "NID"))
+                                if (P_[P_Idx_ - 1] < 0 and strcmp(&script_[Idx_], "NID"))
                                     TokenErrorList->AddText(&script_[Idx_]);
                             }
 

@@ -40,6 +40,7 @@ DO_NOT_WORK_AROUND_SRCLINE_BUG - Define this to NOT work around the
 #ifndef _SYMBOLENGINE_H
 #define _SYMBOLENGINE_H
 
+#include <cISO646>
 #include "imagehlp.h"
 #include <tchar.h>
 
@@ -113,11 +114,11 @@ Note: I had a whopper of a bug here.  I had the declarations and
     instructions like ADD ESP,10h after certain calls.  This was driving
     me nuts until it dawned on me that the extra ADD after the calls
     were cleaning up the stack for CDECL calls but that Windows API
-    calls are all STDCALL.  I had a calling convention mismatch!
+    calls are all STDCALL.  I had a calling convention mismatch
 
     I just thought I'd mention this so that it might save you some
     problems if you do something like this.  Watch those calling
-    conventions!
+    conventions
 
 //////////////////////////////////////////////////////////////////////*/
 
@@ -168,7 +169,7 @@ SymMatchFileName(
 
 // The great Bugslayer idea of creating wrapper classes on structures
 //  that have size fields came from fellow MSJ columnist, Paul DiLascia.
-// Thanks, Paul!
+// Thanks, Paul
 
 // I did not wrap IMAGEHLP_SYMBOL because that is a variable size
 //  structure.
@@ -277,7 +278,7 @@ public      :
     BOOL CanDoSourceLines(void)
     {
 #ifdef SYMENG_EXTRAWORK
-        return (NULL != m_pfnSymGetLineFromAddr) ;
+        return (NULL not_eq m_pfnSymGetLineFromAddr) ;
 #else
         return (TRUE) ;
 #endif  // SYMENG_EXTRAWORK
@@ -292,13 +293,13 @@ public      :
     //            HIWORD ( dwLS )        ,
     //            LOWORD ( dwLS )         ) ;
     // szVer will contain a string like: 5.00.1878.1
-    BOOL GetImageHlpVersion(DWORD & dwMS , DWORD & dwLS)
+    BOOL GetImageHlpVersion(DWORD bitand dwMS , DWORD bitand dwLS)
     {
         return(GetInMemoryFileVersion("IMAGEHLP.DLL" , dwMS , dwLS));
     }
 
     // Does the same thing for the PDB reading DLLs.
-    BOOL GetPDBReaderVersion(DWORD & dwMS , DWORD & dwLS)
+    BOOL GetPDBReaderVersion(DWORD bitand dwMS , DWORD bitand dwLS)
     {
         // First try MSDBI.DLL.
         if (TRUE == GetInMemoryFileVersion("MSDBI.DLL" ,
@@ -314,8 +315,8 @@ public      :
 
     // The worker function used by the previous two functions.
     BOOL GetInMemoryFileVersion(LPCTSTR szFile ,
-                                DWORD & dwMS   ,
-                                DWORD & dwLS)
+                                DWORD bitand dwMS   ,
+                                DWORD bitand dwLS)
     {
         HMODULE hInstIH = GetModuleHandle(szFile) ;
 
@@ -545,7 +546,7 @@ public      :
 
         // It was found and the source line information is correct so
         //  change the displacement if it was looked up multiple times.
-        if (0 != dwTempDis)
+        if (0 not_eq dwTempDis)
         {
             *pdwDisplacement = dwTempDis ;
         }

@@ -78,7 +78,7 @@ int g_nThrottleID = DIJOFS_Z; // OW
 #define AUTOCENTERFUN // this should bring back autocentering with the FFB-button in the advanced controls tab disabled
 #define NO_CENTER_FOR_MY_AXIS_PLEASE // Retro 9Jan2004 - what´s the point ? Doesn´t work too good anyways BTW (has offset)
 #define USE_IDLE_CUTOFF // Retro 2Feb2004 - with this enable we use analog[].cutoff as well as the ABDetent
-#define SYMMETRIC_THROTTLEDETENTS // Retro 2Feb2004 - ABDetent and cuttof var are set for BOTH throttles by the LEFT throttle !!
+#define SYMMETRIC_THROTTLEDETENTS // Retro 2Feb2004 - ABDetent and cuttof var are set for BOTH throttles by the LEFT throttle 
 
 /*****************************************************************************/
 //
@@ -136,7 +136,7 @@ inline void ProcessJoystickInput(GameAxis_t axis, long *value)
         JoyOutput[axis][OldInput] = JoyOutput[axis][NewInput];
         JoyOutput[axis][NewInput] = *value;
 
-        if (!DisableSmoothing)
+        if ( not DisableSmoothing)
         {
             int diff = abs(JoyOutput[axis][NewInput] - JoyOutput[axis][OldInput]) * FloatToInt32((SimLibMajorFrameTime / 0.1F));
 
@@ -239,7 +239,7 @@ void GetJoystickInput()
     HRESULT hRes;
     DIJOYSTATE joyState;
 
-    if (!gTotalJoy)
+    if ( not gTotalJoy)
         return; // returning if we don´t have a stick
 
     long device_axis_values[SIM_NUMDEVICES][8]; // 8 axis in a DIJOYSTATE structure.. don´t think we´ll switch to DIJOYSTATE2
@@ -253,11 +253,11 @@ void GetJoystickInput()
         hRes = gpDIDevice[i]->Poll(); // Retro 21Jan2004
 
         // Retro 21Jan2004
-        if ((hRes == DIERR_INPUTLOST) || (hRes == DIERR_NOTACQUIRED))
+        if ((hRes == DIERR_INPUTLOST) or (hRes == DIERR_NOTACQUIRED))
         {
             hRes = gpDIDevice[i]->Acquire();
 
-            if (hRes != DI_OK)
+            if (hRes not_eq DI_OK)
             {
 #pragma warning(disable:4127)
                 ShiAssert(false);
@@ -304,7 +304,7 @@ void GetJoystickInput()
         /*******************************************************************************/
         for (int j = 0; j < SIMLIB_MAX_DIGITAL; j++)
         {
-            IO.digital[j + (SIMLIB_MAX_DIGITAL * (i - SIM_JOYSTICK1))] = (short)(joyState.rgbButtons[j] & BUTTON_PRESSED);
+            IO.digital[j + (SIMLIB_MAX_DIGITAL * (i - SIM_JOYSTICK1))] = (short)(joyState.rgbButtons[j] bitand BUTTON_PRESSED);
         }
 
         /*******************************************************************************/
@@ -333,7 +333,7 @@ void GetJoystickInput()
     /*******************************************************************************/
     // Copy and process flight control (roll and pitch) info
     /*******************************************************************************/
-    if ((IO.AnalogIsUsed(AXIS_PITCH)) && (IO.AnalogIsUsed(AXIS_ROLL)))
+    if ((IO.AnalogIsUsed(AXIS_PITCH)) and (IO.AnalogIsUsed(AXIS_ROLL)))
     {
         ProcessJoystickInput(AXIS_PITCH, &device_axis_values[AxisMap.FlightControlDevice][AxisMap.Pitch.Axis]);
         ProcessJoystickInput(AXIS_ROLL, &device_axis_values[AxisMap.FlightControlDevice][AxisMap.Bank.Axis]);
@@ -406,13 +406,13 @@ void GetJoystickInput()
 
     /*******************************************************************************/
     // Copy and process throttle data (if available)
-    // engrVal goes from 0 to 1.5 !!!
+    // engrVal goes from 0 to 1.5
     /*******************************************************************************/
     if (IO.AnalogIsUsed(AXIS_THROTTLE))
     {
         ProcessJoystickInput(AXIS_THROTTLE, &device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis]);
 
-        if ((!UseKeyboardThrottle) ||
+        if (( not UseKeyboardThrottle) or
             (abs(JoyOutput[AXIS_THROTTLE][OldInput] - device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis]) > 500.0F))
         {
             UseKeyboardThrottle = FALSE;
@@ -421,7 +421,7 @@ void GetJoystickInput()
 #endif
 
             // not in afterburner.. throttle 0 result in 0.0F, throttle in ABDetent results in 1.0F - OK
-            if ((IO.analog[AXIS_THROTTLE].center) &&
+            if ((IO.analog[AXIS_THROTTLE].center) and 
                 (device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis] > IO.analog[AXIS_THROTTLE].center))
             {
 #ifndef USE_IDLE_CUTOFF
@@ -473,13 +473,13 @@ void GetJoystickInput()
 
     /*******************************************************************************/
     // Copy and process throttle2 data (if available)
-    // engrVal goes from 0 to 1.5 !!!
+    // engrVal goes from 0 to 1.5
     /*******************************************************************************/
     if (IO.AnalogIsUsed(AXIS_THROTTLE2))
     {
         ProcessJoystickInput(AXIS_THROTTLE2, &device_axis_values[AxisMap.Throttle2.Device][AxisMap.Throttle2.Axis]);
 
-        if ((!UseKeyboardThrottle) ||
+        if (( not UseKeyboardThrottle) or
             (abs(JoyOutput[AXIS_THROTTLE2][OldInput] - device_axis_values[AxisMap.Throttle2.Device][AxisMap.Throttle2.Axis]) > 500.0F))
         {
             UseKeyboardThrottle = FALSE;
@@ -488,7 +488,7 @@ void GetJoystickInput()
 #endif
 
             // not in afterburner.. throttle 0 result in 0.0F, throttle in ABDetent results in 1.0F - OK
-            if ((IO.analog[AXIS_THROTTLE2].center) &&
+            if ((IO.analog[AXIS_THROTTLE2].center) and 
                 (device_axis_values[AxisMap.Throttle2.Device][AxisMap.Throttle2.Axis] > IO.analog[AXIS_THROTTLE2].center))
             {
 #ifndef USE_IDLE_CUTOFF
@@ -659,7 +659,7 @@ void GetJoystickInput()
     {
         GetURHelmetInput();
     }
-    else if ((g_bEnableTrackIR) && (PlayerOptions.Get3dTrackIR() == true)) // Retro 26/09/03
+    else if ((g_bEnableTrackIR) and (PlayerOptions.Get3dTrackIR() == true)) // Retro 26/09/03
     {
         GetTrackIRInput();
     }
@@ -797,13 +797,13 @@ void ProcessJoyButtonAndPOVHat(void)
 
     for (i = 0; i < NumberOfPOVs; i++) // Retro 26Dec2003
     {
-        if (IO.povHatAngle[i] != -1)
+        if (IO.povHatAngle[i] not_eq -1)
         {
             int ID;
             InputFunctionType theFunc;
             int Direction = 0;
 
-            if ((IO.povHatAngle[i] < 2250 || IO.povHatAngle[i] > 33750) && IO.povHatAngle[i] != -1)
+            if ((IO.povHatAngle[i] < 2250 or IO.povHatAngle[i] > 33750) and IO.povHatAngle[i] not_eq -1)
                 Direction = 0;
             else if (IO.povHatAngle[i] < 6750)
                 Direction = 1;
@@ -820,7 +820,7 @@ void ProcessJoyButtonAndPOVHat(void)
             else if (IO.povHatAngle[i] < 33750)
                 Direction = 7;
 
-            if (LastDirPOV[i] != Direction)
+            if (LastDirPOV[i] not_eq Direction)
             {
                 theFunc = UserFunctionTable.GetPOVFunction(i, LastDirPOV[i], &ID);
 
@@ -885,17 +885,17 @@ float ReadThrottle(void)
     HRESULT hRes;
     DIJOYSTATE joyState;
 
-    if ((gTotalJoy) && (IO.AnalogIsUsed(AXIS_THROTTLE) == true)) // Retro 4Jan2004
+    if ((gTotalJoy) and (IO.AnalogIsUsed(AXIS_THROTTLE) == true)) // Retro 4Jan2004
     {
 
         hRes = ((LPDIRECTINPUTDEVICE2)gpDIDevice[AxisMap.Throttle.Device])->Poll();
 
         // Retro 21Jan2004
-        if ((hRes == DIERR_INPUTLOST) || (hRes == DIERR_NOTACQUIRED))
+        if ((hRes == DIERR_INPUTLOST) or (hRes == DIERR_NOTACQUIRED))
         {
             hRes = gpDIDevice[AxisMap.Throttle.Device]->Acquire();
 
-            if (hRes != DI_OK)
+            if (hRes not_eq DI_OK)
             {
 #pragma warning(disable:4127)
                 ShiAssert(false);
@@ -955,7 +955,7 @@ float ReadThrottle(void)
 
                 IO.analog[AXIS_THROTTLE].ioVal = theDeviceValue; // Retro 11Jan2004
 
-                if (IO.analog[AXIS_THROTTLE].center && theDeviceValue > IO.analog[AXIS_THROTTLE].center)
+                if (IO.analog[AXIS_THROTTLE].center and theDeviceValue > IO.analog[AXIS_THROTTLE].center)
                     IO.analog[AXIS_THROTTLE].engrValue = (15000.0F - theDeviceValue) / (15000.0F - IO.analog[AXIS_THROTTLE].center);
                 else if (IO.analog[AXIS_THROTTLE].center)
                     IO.analog[AXIS_THROTTLE].engrValue = 1.0F + (IO.analog[AXIS_THROTTLE].center - theDeviceValue) / (IO.analog[AXIS_THROTTLE].center * 2.0F);
@@ -967,7 +967,7 @@ float ReadThrottle(void)
             default:
                 AcquireDeviceInput(AxisMap.Throttle.Device, TRUE);
 
-                if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->OnGround())
+                if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->OnGround())
                     IO.analog[AXIS_THROTTLE].engrValue = 0.0f;
                 else
                     IO.analog[AXIS_THROTTLE].engrValue = 1.0f;
@@ -975,7 +975,7 @@ float ReadThrottle(void)
     }
     else
     {
-        if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->OnGround())
+        if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->OnGround())
             IO.analog[AXIS_THROTTLE].engrValue = 0.0f;
         else
             IO.analog[AXIS_THROTTLE].engrValue = 1.0f;
@@ -1000,7 +1000,7 @@ BOOL FAR PASCAL EnumDeviceObjects(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef
 {
     char* DevName = (char*)pvRef;
 
-    if (!pvRef)
+    if ( not pvRef)
         return FALSE;
 
     ShiAssert(lpddoi->tszName);
@@ -1065,7 +1065,7 @@ BOOL FAR PASCAL EnumDeviceObjects(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef
 // possible axis on a joystick at once.
 //
 // Of course, should the dataformat change (to joystick2) then we´d have to
-// change a bit here (and in the rest of the code !!)
+// change a bit here (and in the rest of the code )
 /*****************************************************************************/
 void CheckAxisOnDevice(LPDIRECTINPUTDEVICE8 pdev, const char* DevName)
 {
@@ -1131,7 +1131,7 @@ void CheckForMouseAxis(void)
     LPDIRECTINPUTDEVICE8 mouse = 0;
     HRESULT hr = gpDIObject->CreateDevice(GUID_SysMouse, &mouse, NULL);
 
-    if (hr != DI_OK)
+    if (hr not_eq DI_OK)
         return;
 
     hr = mouse->SetDataFormat(&c_dfDIMouse);
@@ -1179,7 +1179,7 @@ void CheckForMouseAxis(void)
     mouse->Release();
     mouse = 0;
 #else
-    // no mousewheel axis !
+    // no mousewheel axis 
 #endif
 }
 #endif // USE_DINPUT_8
@@ -1191,15 +1191,15 @@ void CheckForMouseAxis(void)
 // autocenter goes OFF (we do it ourselves then), else we turn it back ON so
 // that at least centering spring forces are there, else it feels like ass.
 //
-// I´m ASSuming that this IS a FFB stick !!! You can´t check this with
-// HasForceFeedback however (at least not here) !
+// I´m ASSuming that this IS a FFB stick  You can´t check this with
+// HasForceFeedback however (at least not here) 
 /*****************************************************************************/
 int ActivateAutoCenter(const bool OnOff, const int theJoyIndex)
 {
     ShiAssert(theJoyIndex >= 0);
     HRESULT hres;
 
-    // have to unacquire in order to set new properties !
+    // have to unacquire in order to set new properties 
     hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->Unacquire();
 
     DIPROPDWORD DIPropAutoCenter;
@@ -1216,7 +1216,7 @@ int ActivateAutoCenter(const bool OnOff, const int theJoyIndex)
         DIPropAutoCenter.dwData = DIPROPAUTOCENTER_ON;
 
     //Wombat778 Put back to original code because fix for FF Centering is now it atmos.cpp.  This should be cleaner and better.
-    if (!VerifyResult(gpDIDevice[SIM_JOYSTICK1 + theJoyIndex]->SetProperty(DIPROP_AUTOCENTER, &DIPropAutoCenter.diph)))
+    if ( not VerifyResult(gpDIDevice[SIM_JOYSTICK1 + theJoyIndex]->SetProperty(DIPROP_AUTOCENTER, &DIPropAutoCenter.diph)))
     {
         if (OnOff == false)
             OutputDebugString("Failed to turn auto-center off.\n");
@@ -1240,7 +1240,7 @@ int ActivateAutoCenter(const bool OnOff, const int theJoyIndex)
 // FFB is only supported for the primary flight device (the one with the PITCH
 // and BANK axis)
 //
-// theJoyIndex is the index, with SIM_JOYSTICK1 deducted  !!!
+// theJoyIndex is the index, with SIM_JOYSTICK1 deducted  
 /*****************************************************************************/
 int CheckForForceFeedback(const int theJoyIndex)
 {
@@ -1248,7 +1248,7 @@ int CheckForForceFeedback(const int theJoyIndex)
     HRESULT hres;
 
 #ifndef AUTOCENTERFUN
-    // have to unacquire in order to set new properties !
+    // have to unacquire in order to set new properties 
     hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->Unacquire();
 #endif
 
@@ -1258,15 +1258,15 @@ int CheckForForceFeedback(const int theJoyIndex)
 
     if (theJoyIndex == AxisMap.FlightControlDevice - SIM_JOYSTICK1)  // Retro 31Dec2003
     {
-        // a total shit sandwich here.. FFB only for the primary device ! if nothing is yet mapped
+        // a total shit sandwich here.. FFB only for the primary device  if nothing is yet mapped
         // then it will have to wait till the user selects it in the appropriate screen
-        if (devcaps.dwFlags & DIDC_FORCEFEEDBACK)
+        if (devcaps.dwFlags bitand DIDC_FORCEFEEDBACK)
         {
             //Got it
             OutputDebugString("ForceFeedback device found.\n");
 
             // we're supporting ForceFeedback
-            if (!JoystickCreateEffect(0xffffffff))
+            if ( not JoystickCreateEffect(0xffffffff))
             {
                 OutputDebugString("JoystickCreateEffects() failed - ForceFeedback disabled\n");
                 hasForceFeedback =  FALSE;
@@ -1288,7 +1288,7 @@ int CheckForForceFeedback(const int theJoyIndex)
                 DIPropAutoCenter.dwData = DIPROPAUTOCENTER_OFF;
 
                 //Wombat778 Put back to original code because fix for FF Centering is now it atmos.cpp.  This should be cleaner and better.
-                if (!VerifyResult(gpDIDevice[SIM_JOYSTICK1 + theJoyIndex]->SetProperty(DIPROP_AUTOCENTER, &DIPropAutoCenter.diph)))
+                if ( not VerifyResult(gpDIDevice[SIM_JOYSTICK1 + theJoyIndex]->SetProperty(DIPROP_AUTOCENTER, &DIPropAutoCenter.diph)))
                 {
                     OutputDebugString("Failed to turn auto-center off.\n");
                     hasForceFeedback =  FALSE;
@@ -1303,8 +1303,8 @@ int CheckForForceFeedback(const int theJoyIndex)
                 }
 
 #else
-                // autocenter will get turned OFF if FFB is ENABLED !
-                hasForceFeedback =  ActivateAutoCenter(!PlayerOptions.GetFFB(), theJoyIndex);
+                // autocenter will get turned OFF if FFB is ENABLED 
+                hasForceFeedback =  ActivateAutoCenter( not PlayerOptions.GetFFB(), theJoyIndex);
                 return hasForceFeedback;
 #endif
             }
@@ -1314,13 +1314,13 @@ int CheckForForceFeedback(const int theJoyIndex)
 #ifndef AUTOCENTERFUN
         hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->Acquire();
 #endif
-        return FALSE; // no ffb stick !
+        return FALSE; // no ffb stick 
     }
 
 #ifndef AUTOCENTERFUN
     hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->Acquire();
 #endif
-    return FALSE; // device checked is not the primary flight stick (the only one that has FFB effects) !
+    return FALSE; // device checked is not the primary flight stick (the only one that has FFB effects) 
 }
 
 /*****************************************************************************/
@@ -1355,7 +1355,7 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
     SetupResult = (hr == DI_OK) ? TRUE : FALSE;
 #endif
 
-    if (!SetupResult)
+    if ( not SetupResult)
     {
         return DIENUM_CONTINUE;
     }
@@ -1376,9 +1376,9 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
     if (SetupResult)
     {
 #ifdef NDEBUG
-        SetupResult = VerifyResult(pdev->SetCooperativeLevel(hWndMain, DISCL_EXCLUSIVE | DISCL_FOREGROUND));
+        SetupResult = VerifyResult(pdev->SetCooperativeLevel(hWndMain, DISCL_EXCLUSIVE bitor DISCL_FOREGROUND));
 #else // bye bye FFB :/
-        SetupResult = VerifyResult(pdev->SetCooperativeLevel(hWndMain, DISCL_EXCLUSIVE | DISCL_BACKGROUND));
+        SetupResult = VerifyResult(pdev->SetCooperativeLevel(hWndMain, DISCL_EXCLUSIVE bitor DISCL_BACKGROUND));
 #endif
     }
 
@@ -1423,7 +1423,7 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
         if (gDIDevNames[SIM_JOYSTICK1 + gTotalJoy])
             _tcscpy(gDIDevNames[SIM_JOYSTICK1 + gTotalJoy], pdinst->tszProductName);
 
-        if (!strcmp(pdinst->tszProductName, "Union Reality Gear"))
+        if ( not strcmp(pdinst->tszProductName, "Union Reality Gear"))
         {
             OutputDebugString("UR Helmet found\n");
             OTWDriver.SetHeadTracking(TRUE);
@@ -1434,7 +1434,7 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
         gTotalJoy++;
 
         /*****************************************************************************/
-        // we've used up our whole array, sorry no more!!
+        // we've used up our whole array, sorry no more
         /*****************************************************************************/
         if ((SIM_JOYSTICK1 + gTotalJoy) >= SIM_NUMDEVICES)
             return DIENUM_STOP;
@@ -1492,7 +1492,7 @@ BOOL JoystickCreateEffect(DWORD)
     fPtr = fopen(dataFileName, "r");
 
     // Find the file
-    if (!fPtr)
+    if ( not fPtr)
     {
         OutputDebugString("Unable to open force feedback data file");
         return FALSE;
@@ -1597,7 +1597,7 @@ BOOL JoystickCreateEffect(DWORD)
         // Check for envelope
         j = GetPrivateProfileInt(effectName, "envelopeAttackLevel", -1, dataFileName);
 
-        if (j != 0xffffffff)
+        if (j not_eq 0xffffffff)
         {
             envelopeHolder.dwSize = sizeof(DIENVELOPE);
             envelopeHolder.dwAttackLevel = j;
@@ -1648,7 +1648,7 @@ BOOL JoystickCreateEffect(DWORD)
 
                 guidEffect = GUID_Square;
 
-                if (!SetupResult)
+                if ( not SetupResult)
                 {
                     OutputDebugString("EnumEffects(Costum Force) failed\n");
                     continue;
@@ -1700,7 +1700,7 @@ BOOL JoystickCreateEffect(DWORD)
                         break;
                 }
 
-                if (!SetupResult)
+                if ( not SetupResult)
                 {
                     OutputDebugString("EnumEffects(Periodic Force) failed\n");
                     continue;
@@ -1719,7 +1719,7 @@ BOOL JoystickCreateEffect(DWORD)
                 SetupResult = VerifyResult(joystickDevice->EnumEffects((LPDIENUMEFFECTSCALLBACK)JoystickEnumEffectTypeProc,
                                            &guidEffect, DIEFT_CONSTANTFORCE));
 
-                if (!SetupResult)
+                if ( not SetupResult)
                 {
                     OutputDebugString("EnumEffects(Constant Force) failed\n");
                     continue;
@@ -1739,7 +1739,7 @@ BOOL JoystickCreateEffect(DWORD)
                 SetupResult = VerifyResult(joystickDevice->EnumEffects((LPDIENUMEFFECTSCALLBACK)JoystickEnumEffectTypeProc,
                                            &guidEffect, DIEFT_RAMPFORCE));
 
-                if (!SetupResult)
+                if ( not SetupResult)
                 {
                     OutputDebugString("EnumEffects(Ramp Force) failed\n");
                     continue;
@@ -1816,11 +1816,11 @@ BOOL JoystickCreateEffect(DWORD)
 /*****************************************************************************/
 void JoystickReleaseEffects(void)
 {
-    if (!hasForceFeedback)
+    if ( not hasForceFeedback)
         return;
 
     // Get rid of any old effects
-    ShiAssert(gNumEffectsLoaded > 0 && gNumEffectsLoaded < 20); // arbitrary for now JPO
+    ShiAssert(gNumEffectsLoaded > 0 and gNumEffectsLoaded < 20); // arbitrary for now JPO
 
     if (gNumEffectsLoaded > 20)
         return; // arbitray sanity
@@ -1853,12 +1853,12 @@ void JoystickStopAllEffects(void)
 {
     int i;
 
-    if (!hasForceFeedback)
+    if ( not hasForceFeedback)
         return;
 
     for (i = 0; i < gNumEffectsLoaded; i++)
     {
-        if (i != g_nFFEffectAutoCenter)
+        if (i not_eq g_nFFEffectAutoCenter)
             JoystickStopEffect(i);
     }
 }
@@ -1874,7 +1874,7 @@ int lastStoppedEffect = -1;
 /*****************************************************************************/
 void JoystickStopEffect(int effectNum)
 {
-    if (!hasForceFeedback || effectNum >= gNumEffectsLoaded || !gForceFeedbackEffect || !gForceFeedbackEffect[effectNum])
+    if ( not hasForceFeedback or effectNum >= gNumEffectsLoaded or not gForceFeedbackEffect or not gForceFeedbackEffect[effectNum])
         return;
 
     ShiAssert(FALSE == F4IsBadReadPtr(gForceFeedbackEffect[effectNum], sizeof * gForceFeedbackEffect[effectNum]));
@@ -1883,7 +1883,7 @@ void JoystickStopEffect(int effectNum)
 #ifndef NDEBUG
 
     // Retro 14Jan2004
-    if (effectNum != lastStoppedEffect)
+    if (effectNum not_eq lastStoppedEffect)
     {
         lastStoppedEffect = effectNum;
         MonoPrint("Stopped effect %d\n", effectNum);
@@ -1901,7 +1901,7 @@ int JoystickPlayEffect(int effectNum, int data)
     DIEFFECT        diEffect;
     LONG            rglDirections[2] = { 0, 0 };
 
-    if (!hasForceFeedback || effectNum >= gNumEffectsLoaded || !gForceFeedbackEffect || !gForceFeedbackEffect[effectNum])
+    if ( not hasForceFeedback or effectNum >= gNumEffectsLoaded or not gForceFeedbackEffect or not gForceFeedbackEffect[effectNum])
         return FALSE;
 
     if (PlayerOptions.GetFFB() == false) // Retro 27Dec2003 - returning false here.. dunno if this is too clever though
@@ -1924,19 +1924,19 @@ int JoystickPlayEffect(int effectNum, int data)
         // Direction is passed in in degrees, we convert to 100ths
         // of a degree to make it easier for the caller.
         rglDirections[0]        = data * 100;
-        diEffect.dwFlags        = DIEFF_OBJECTOFFSETS | DIEFF_POLAR;
+        diEffect.dwFlags        = DIEFF_OBJECTOFFSETS bitor DIEFF_POLAR;
         diEffect.cAxes          = 2;
         diEffect.rglDirection   = rglDirections;
         SetupResult = VerifyResult(gForceFeedbackEffect[effectNum]->SetParameters(&diEffect, DIEP_DIRECTION));
 
-        if (!SetupResult)
+        if ( not SetupResult)
         {
             OutputDebugString("SetParameters(Bounce effect) failed\n");
             return FALSE;
         }
     }
 
-    if (effectNum == JoyRunwayRumble1 || effectNum == JoyRunwayRumble2)
+    if (effectNum == JoyRunwayRumble1 or effectNum == JoyRunwayRumble2)
     {
         DIPERIODIC periodicHolder;
 
@@ -1948,7 +1948,7 @@ int JoystickPlayEffect(int effectNum, int data)
         diEffect.lpvTypeSpecificParams = &periodicHolder;
         SetupResult = VerifyResult(gForceFeedbackEffect[effectNum]->SetParameters(&diEffect, DIEP_TYPESPECIFICPARAMS));
 
-        if (!SetupResult)
+        if ( not SetupResult)
         {
             OutputDebugString("SetParameters(Runway Rumble) failed\n");
             return FALSE;
@@ -1976,7 +1976,7 @@ int JoystickPlayEffect(int effectNum, int data)
 
         SetupResult = VerifyResult(gForceFeedbackEffect[effectNum]->SetParameters(&diEffect, DIEP_TYPESPECIFICPARAMS));
 
-        if (!SetupResult)
+        if ( not SetupResult)
         {
             OutputDebugString("SetParameters(Auto Center) failed\n");
             return FALSE;
@@ -1986,7 +1986,7 @@ int JoystickPlayEffect(int effectNum, int data)
     // play the effect
     SetupResult = VerifyResult(gForceFeedbackEffect[effectNum]->Start(1, 0));
 
-    if (!SetupResult)
+    if ( not SetupResult)
     {
         //JoystickCreateEffect(1);
         MonoPrint("Start Effect %d Failed\n", effectNum);
@@ -1995,7 +1995,7 @@ int JoystickPlayEffect(int effectNum, int data)
 
 #ifndef NDEBUG // Retro 14Feb2004
 
-    if (effectNum != lastStartedEffect)
+    if (effectNum not_eq lastStartedEffect)
     {
         lastStartedEffect = effectNum;
         MonoPrint("Started effect %d\n", effectNum);

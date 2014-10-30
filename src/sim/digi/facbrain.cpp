@@ -130,7 +130,7 @@ void FACBrain::AddToQ(SimVehicleClass* theFighter)
 {
     fighterQ->ForcedInsert(theFighter);
 
-    if (flags & FlightInbound)
+    if (flags bitand FlightInbound)
     {
         // Say hold message
         FalconFACMessage* facMsg = new FalconFACMessage(theFighter->Id(), FalconLocalGame);
@@ -150,14 +150,14 @@ void FACBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
 {
     SimBaseClass* newTarget;
 
-    if (!controlledFighter)
+    if ( not controlledFighter)
     {
         VuListIterator fighterWalker(fighterQ);
         controlledFighter = (SimVehicleClass*)fighterWalker.GetFirst();
 
         if (controlledFighter)
         {
-            flags |= FlightInbound;
+            flags or_eq FlightInbound;
             newTarget = AssignTarget();
 
             FalconFACMessage* facMsg = new FalconFACMessage(controlledFighter->Id(), FalconLocalGame);

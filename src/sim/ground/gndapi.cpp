@@ -98,7 +98,7 @@ WayPointClass *GNDAIClass::Next_WayPoint(void)
         distance = (float) sqrt(((self->XPos() - dx) * (self->XPos() - dx)) +
                                 ((self->YPos() - dy) * (self->YPos() - dy)));
 
-        // Assume we are at the current way point if we are very close (!)
+        // Assume we are at the current way point if we are very close ( not )
         //
         if (distance < MIN_DIST)
         {
@@ -139,7 +139,7 @@ WayPointClass *GNDAIClass::Next_WayPoint(void)
     else if (self->GetCampaignObject())
     {
 
-        // Needs some changes here!
+        // Needs some changes here
         // (MCC - UnitMove routines)
         // VP_changes this part should be modified
         theBattalion = (BattalionClass *)self->GetCampaignObject();
@@ -155,7 +155,7 @@ WayPointClass *GNDAIClass::Next_WayPoint(void)
         // (recalculate the velocity to get some movement
         // - can be speed up)
         //
-        if ((ox != x) || (oy != y))
+        if ((ox not_eq x) or (oy not_eq y))
         {
             dir = theBattalion->GetNextMoveDirection();
 
@@ -176,7 +176,7 @@ WayPointClass *GNDAIClass::Next_WayPoint(void)
         }
 
         waypoint = (WayPoint)&waypoint; // MCC WARNING - this tells the AI code we
-        // are still moving.....!!!!!!!!
+        // are still moving.....
     }
 
     return (waypoint);
@@ -228,7 +228,7 @@ void GNDAIClass::Fire(void)
 
         for (int i = 0; i < HARDPOINT_MAX; i++)
         {
-            if (vc->Weapon[i] && vc->Weapons[i])
+            if (vc->Weapon[i] and vc->Weapons[i])
             {
                 hasWeapons = 1;
                 break;
@@ -236,14 +236,14 @@ void GNDAIClass::Fire(void)
         }
 
         // RV - Biker - Radar vehicles shouldn't do this
-        if (SimLibElapsedTime > nextFire && !(self->isEmitter && !hasWeapons))
+        if (SimLibElapsedTime > nextFire and not (self->isEmitter and not hasWeapons))
         {
             // FRB - The weapns search above seems to break the SAM firing (decreases it or stops it)
-            //if (SimLibElapsedTime > nextFire && !(self->isEmitter && !self->Sms->GetCurrentWeapon())) {
+            //if (SimLibElapsedTime > nextFire and not (self->isEmitter and not self->Sms->GetCurrentWeapon())) {
             nextTurretCalc = SimLibElapsedTime + TURRET_CALC_RATE;
 
-            if (!self->targetPtr->BaseData()->OnGround())
-                self->SelectWeapon(!battalionCommand->self->allowSamFire);
+            if ( not self->targetPtr->BaseData()->OnGround())
+                self->SelectWeapon( not battalionCommand->self->allowSamFire);
             else
                 self->SelectWeapon(FALSE);
 
@@ -293,7 +293,7 @@ void GNDAIClass::Fire(void)
 
             // RV - Biker - Radar vehicles without weapons should do this also
             //if(SimLibElapsedTime > nextTurretCalc) {
-            if (SimLibElapsedTime > nextTurretCalc || (self->isEmitter && !self->Sms->GetCurrentWeapon()))
+            if (SimLibElapsedTime > nextTurretCalc or (self->isEmitter and not self->Sms->GetCurrentWeapon()))
             {
                 float xft, yft, zft;
                 float realRange, tof;
@@ -302,13 +302,13 @@ void GNDAIClass::Fire(void)
                 SimWeaponClass *theWeapon = self->Sms->GetCurrentWeapon();
 
                 // RV - Biker - Adjust this
-                //if(!theWeapon)
-                if (!theWeapon && !self->isEmitter)
+                //if( not theWeapon)
+                if ( not theWeapon and not self->isEmitter)
                     return;
 
                 target = self->targetPtr->BaseData();
 
-                if (!target)
+                if ( not target)
                     return;
 
                 nextTurretCalc = SimLibElapsedTime + TURRET_CALC_RATE;
@@ -320,7 +320,7 @@ void GNDAIClass::Fire(void)
 
                 // RV - Biker - Check if we have a weapon first
                 //if(theWeapon->IsGun()) {
-                if (theWeapon && theWeapon->IsGun())
+                if (theWeapon and theWeapon->IsGun())
                 {
                     GunClass *Gun = (GunClass*)theWeapon;
 

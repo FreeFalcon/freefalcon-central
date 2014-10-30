@@ -161,7 +161,7 @@ public:
     // Query Functions
     _TCHAR *GetText()
     {
-        if (Label_ != NULL) return(Label_->GetText());
+        if (Label_ not_eq NULL) return(Label_->GetText());
 
         return(NULL);
     }

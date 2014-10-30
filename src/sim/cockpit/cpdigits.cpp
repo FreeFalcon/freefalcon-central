@@ -92,14 +92,14 @@ void CPDigits::DisplayBlit()
     int i;
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag)
+    if ( not mDirtyFlag)
         return;
 
     if (DisplayOptions.bRender2DCockpit) //Wombat778 3-22-04 Handle drawing in DisplayBlit3D
         return;
 
     //MI
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         for (i = 0; i < mDestDigits; i++)
             mpOTWImage->Compose(mpTemplate, &mpSrcRects[mpValues[i]], &mpDestRects[i]);
@@ -123,14 +123,14 @@ void CPDigits::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered digi
     int i;
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag)
+    if ( not mDirtyFlag)
         return;
 
-    if (!DisplayOptions.bRender2DCockpit) //Handle drawing in DisplayBlit
+    if ( not DisplayOptions.bRender2DCockpit) //Handle drawing in DisplayBlit
         return;
 
     //Wombat778 new rendering code. Taken from cpsurface.cpp
-    if (!g_bRealisticAvionics || (g_bRealisticAvionics && active))
+    if ( not g_bRealisticAvionics or (g_bRealisticAvionics and active))
     {
         OTWDriver.renderer->CenterOriginInViewport();
         OTWDriver.renderer->SetViewport(-1.0F, 1.0F, 1.0F, -1.0F);
@@ -181,7 +181,7 @@ void CPDigits::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered digi
                     OTWDriver.renderer->context.RestoreState(STATE_TEXTURE_NOFILTER);
 
                 OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
-                OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
+                OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
             }
         }
     }
@@ -195,7 +195,7 @@ void CPDigits::SetDigitValues(long value)
     int i, j;
     int fieldlen;
 
-    if (mValue != value)
+    if (mValue not_eq value)
     {
         mValue = value;
         char tbuf[20]; // temporary copy - as it might be bigger
@@ -215,7 +215,7 @@ void CPDigits::SetDigitValues(long value)
         {
             for (i = mDestDigits - fieldlen, j = 0; i < mDestDigits; i++, j++)
             {
-                ShiAssert(i >= 0 && i < mDestDigits);
+                ShiAssert(i >= 0 and i < mDestDigits);
                 mpValues[i] = mpDestString[j] - 0x30;
             }
         }
@@ -236,25 +236,25 @@ void CPDigits::CreateLit(void)
             const DWORD dwMaxTextureHeight = mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
             m_pPalette = new PaletteHandle(mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
 
-            if (!m_pPalette)
+            if ( not m_pPalette)
                 throw _com_error(E_OUTOFMEMORY);
 
             for (int i = 0; i < 10; i++)
             {
                 // Check if we can use a single texture
-                if ((int)dwMaxTextureWidth >= mpSourceBuffer[i].mWidth && (int)dwMaxTextureHeight >= mpSourceBuffer[i].mHeight)
+                if ((int)dwMaxTextureWidth >= mpSourceBuffer[i].mWidth and (int)dwMaxTextureHeight >= mpSourceBuffer[i].mHeight)
                 {
                     TextureHandle *pTex = new TextureHandle;
 
-                    if (!pTex)
+                    if ( not pTex)
                         throw _com_error(E_OUTOFMEMORY);
 
                     m_pPalette->AttachToTexture(pTex);
 
-                    if (!pTex->Create("CPDigit", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, mpSourceBuffer[i].mWidth, mpSourceBuffer[i].mHeight))
+                    if ( not pTex->Create("CPDigit", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8, mpSourceBuffer[i].mWidth, mpSourceBuffer[i].mHeight))
                         throw _com_error(E_FAIL);
 
-                    if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer[i].digit, true, true)) // soon to be re-loaded by CPSurface::Translate3D
+                    if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer[i].digit, true, true)) // soon to be re-loaded by CPSurface::Translate3D
                         throw _com_error(E_FAIL);
 
                     mpSourceBuffer[i].m_arrTex.push_back(pTex);

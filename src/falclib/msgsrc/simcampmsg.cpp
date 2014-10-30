@@ -99,7 +99,7 @@ int FalconSimCampMessage::Process(uchar autodisp)
     CampBaseClass *ent = static_cast<CampBaseClass*>(esafe.get());
     FalconSessionEntity *session = static_cast<FalconSessionEntity*>(ssafe.get());
 
-    if (autodisp || !ent || !session || !FalconLocalGame)
+    if (autodisp or not ent or not session or not FalconLocalGame)
     {
         return 0;
     }
@@ -149,11 +149,11 @@ int FalconSimCampMessage::Process(uchar autodisp)
 
                 for (
                     CampEntity c = static_cast<CampEntity>(deagIt.GetFirst());
-                    c != NULL;
+                    c not_eq NULL;
                     c = static_cast<CampEntity>(deagIt.GetNext())
                 )
                 {
-                    if ((!c->IsAggregate()) && (c->IsLocal()))
+                    if (( not c->IsAggregate()) and (c->IsLocal()))
                     {
                         c->SendDeaggregateData(FalconLocalGame);
                     }

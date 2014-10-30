@@ -3,6 +3,7 @@
 
 //___________________________________________________________________________
 
+#include <cISO646>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -25,7 +26,7 @@ inline void *glAllocateMemory(int totalbytes, GLint clearit = 1)
     char *buf = new char[totalbytes];
 #endif
 
-    if (buf && clearit) memset(buf, 0, totalbytes);
+    if (buf and clearit) memset(buf, 0, totalbytes);
 
     return buf;
 }
@@ -136,14 +137,14 @@ inline void glGetFileExtension(const char *file, char *ext)
 
     prevchar = '.';
 
-    while (*file != 0)
+    while (*file not_eq 0)
     {
         currchar = *file++;
         nextchar = *file;
 
-        if (currchar == '.' &&
-            ((prevchar != '.' && prevchar != '\\') ||
-             (nextchar != '.' && nextchar != '\\'))) break;
+        if (currchar == '.' and 
+            ((prevchar not_eq '.' and prevchar not_eq '\\') or
+             (nextchar not_eq '.' and nextchar not_eq '\\'))) break;
 
         prevchar = currchar;
     }

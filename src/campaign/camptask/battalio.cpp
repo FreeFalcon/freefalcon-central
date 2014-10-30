@@ -139,7 +139,7 @@ MEM_POOL BattalionClass::pool;
 // Battalion class Functions
 // ============================================
 
-// KCK: ALL BATTALION CONSTRUCTION SHOULD USE THIS FUNCTION!
+// KCK: ALL BATTALION CONSTRUCTION SHOULD USE THIS FUNCTION
 BattalionClass* NewBattalion(int type, Unit parent)
 {
     BattalionClass *new_battalion;
@@ -201,16 +201,16 @@ BattalionClass::BattalionClass(VU_BYTE **stream, long *rem) : GroundUnitClass(st
     GridIndex x, y;
     CampBaseClass::GetLocation(&x, &y);
 
-    if (rfx - x > 5 || rfx - x < -5) // 5 km for right flank
+    if (rfx - x > 5 or rfx - x < -5) // 5 km for right flank
         rfx = x;
 
-    if (rfy = y > 5 || rfy - y < -5)
+    if (rfy = y > 5 or rfy - y < -5)
         rfy = y;
 
-    if (lfx - x > 2 || lfx - x < -2) // Only 2 for left - since we don't use this for column
+    if (lfx - x > 2 or lfx - x < -2) // Only 2 for left - since we don't use this for column
         lfx = x;
 
-    if (lfy = y > 2 || lfy - y < -2)
+    if (lfy = y > 2 or lfy - y < -2)
         lfy = y;
 
 #endif
@@ -264,7 +264,7 @@ BattalionClass::BattalionClass(VU_BYTE **stream, long *rem) : GroundUnitClass(st
     GetLocation(&x, &y);
     GetUnitDestination(&nx, &ny);
 
-    if ((x != nx) && (y != ny))
+    if ((x not_eq nx) and (y not_eq ny))
     {
         GetUnitGridPath(path, x, y, nx, ny);
         SetMoving(1);
@@ -284,7 +284,7 @@ BattalionClass::~BattalionClass(void)
         deag_data = NULL;
     }
 
-    if (path != NULL)
+    if (path not_eq NULL)
     {
         delete path;
         path = NULL;
@@ -319,7 +319,7 @@ void BattalionClass::InitLocalData(Unit parent)
     {
         SetReinforcement(parent->GetReinforcement());
         // Inherit parent's inactive status;
-        SetUnitFlags(parent->GetUnitFlags() & U_INACTIVE);
+        SetUnitFlags(parent->GetUnitFlags() bitand U_INACTIVE);
     }
     else
     {
@@ -489,9 +489,9 @@ int BattalionClass::MoveUnit(CampaignTime time)
     lo = GetUnitObjective();
 
     if (
-        !lo || (
-            Parent() && (FalconLocalGame->GetGameType() == game_Campaign) &&
-            !TeamInfo[GetTeam()]->gtm->IsValidObjective(GetOrders(), lo)
+ not lo or (
+            Parent() and (FalconLocalGame->GetGameType() == game_Campaign) and 
+ not TeamInfo[GetTeam()]->gtm->IsValidObjective(GetOrders(), lo)
         )
     )
     {
@@ -507,7 +507,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
         else
         {
 #ifdef ROBIN_DEBUG
-            MonoPrint("Error: Battalion %d not assigned! - vegitating instead.\n", GetCampID());
+            MonoPrint("Error: Battalion %d not assigned - vegitating instead.\n", GetCampID());
 #endif
             SetLastCheck(GetLastCheck() + CampaignMinutes);
             return 0;
@@ -523,7 +523,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
        */
 
     // Check if we're being transported
-    ShiAssert(!Cargo());
+    ShiAssert( not Cargo());
 
     // Check to make sure our orders and tactics are still valid.
     ChooseTactic();
@@ -534,7 +534,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
         // Keep falling back 1 km until our tactic changes
         lo = FindRetreatPath(this, 1, 0);
 
-        if (!lo)
+        if ( not lo)
         {
             // This unit is cut off.
             CheckForSurrender();
@@ -553,13 +553,13 @@ int BattalionClass::MoveUnit(CampaignTime time)
     }
     else if (GetUnitTactic() == GTACTIC_SUPPORT_UNIT)
     {
-        if (Ordered() && PositionToSupportUnit(this) < 1)
+        if (Ordered() and PositionToSupportUnit(this) < 1)
         {
             SetUnitOrders(GORD_RESERVE, GetUnitObjectiveID());
             return 0;
         }
     }
-    else if (GetUnitTactic() == GTACTIC_MOVE_BRIGADE_COLUMN && GetUnitElement())
+    else if (GetUnitTactic() == GTACTIC_MOVE_BRIGADE_COLUMN and GetUnitElement())
     {
         // We want to follow the previous battalion, unless we're closer to our destination in which
         // case we hang out off the road and wait for the other unit to pass
@@ -572,7 +572,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
             u = brig->GetPrevUnitElement(this);
         }
 
-        if (u && (u != this) && (u->GetUnitTactic() == GTACTIC_MOVE_BRIGADE_COLUMN))
+        if (u and (u not_eq this) and (u->GetUnitTactic() == GTACTIC_MOVE_BRIGADE_COLUMN))
         {
             pw = u->GetCurrentUnitWP();
 
@@ -605,11 +605,11 @@ int BattalionClass::MoveUnit(CampaignTime time)
     }
 
     // Get our next waypoint, or build a set of waypoints if we don't have any
-    if ((x != nx) || (y != ny))
+    if ((x not_eq nx) or (y not_eq ny))
     {
         w = GetCurrentUnitWP();
 
-        if (!w)
+        if ( not w)
         {
             if (BuildGroundWP(this) < 0)
             {
@@ -628,7 +628,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
     }
     else
     {
-        if (Retreating() && !Engaged())
+        if (Retreating() and not Engaged())
         {
             // We've retreated to our destination
             SetRetreating(0);
@@ -643,7 +643,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
     // Check if we've arrived at this waypoint, and get next one if so.
     // KCK WARNING: This is duplicated at the bottom of this function -
     // we may be able to remove it from this point.
-    if (w && (x == nx) && (y == ny))
+    if (w and (x == nx) and (y == ny))
     {
         FinishUnitWP();
         w = GetCurrentUnitWP();
@@ -661,7 +661,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
     }
 
     // Make some adjustments for certain tactics
-    if ((GetUnitTactic() == GTACTIC_MOVE_BRIGADE_COLUMN) && GetUnitElement())
+    if ((GetUnitTactic() == GTACTIC_MOVE_BRIGADE_COLUMN) and GetUnitElement())
     {
         Unit u = NULL, brig;
         GridIndex px, py, pwx, pwy;
@@ -682,7 +682,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
             {
                 pw->GetWPLocation(&pwx, &pwy);
 
-                if ((DistSqu(x, y, px, py) < 25.0F) || (DistSqu(x, y, pwx, pwy) < DistSqu(px, py, pwx, pwy)))
+                if ((DistSqu(x, y, px, py) < 25.0F) or (DistSqu(x, y, pwx, pwy) < DistSqu(px, py, pwx, pwy)))
                 {
                     nx = x; // Don't move right now - wait for previous element to pass
                     ny = y;
@@ -721,7 +721,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
 #ifdef CAMPTOOL
 
     // Display what we're doing, if it's on..
-    if (SHOWSTATS && Engaged() && TrackingOn[GetCampID()])
+    if (SHOWSTATS and Engaged() and TrackingOn[GetCampID()])
 #endif
     {
         Objective o;
@@ -746,7 +746,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
 #endif
 
     // Now try to actually move
-    if ((x != nx) || (y != ny))
+    if ((x not_eq nx) or (y not_eq ny))
     {
         SetMoving(1);
 
@@ -805,7 +805,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
         SetMoving(0);
     }
 
-    if (!IsAggregate())
+    if ( not IsAggregate())
     {
         return 0;
     }
@@ -814,7 +814,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
     {
 #ifdef DEBUG
 
-        if (!IsAggregate())
+        if ( not IsAggregate())
         {
             MonoPrint("Updating deaggregate unit #%d.\n", GetCampID());
         }
@@ -823,7 +823,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
         int formation = GetUnitFormation();
         h = GetNextMoveDirection();
 
-        if (h != Here)
+        if (h not_eq Here)
         {
             // Below is ok, if we've got time for it - otherwise, we drive through other units.
             // h = GetAlternateHeading(this,x,y,nx,ny,h); // Check if we need to go around
@@ -837,7 +837,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
             }
         }
 
-        if ((h < 0) || (h > 7))
+        if ((h < 0) or (h > 7))
         {
             ClearUnitPath();
             ChangeUnitLocation(Here);
@@ -851,7 +851,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
 
 #ifdef USE_FLANKS
 
-        if ((formation == GFORM_WEDGE) || (formation == GFORM_ECHELON) || (formation == GFORM_LINE))
+        if ((formation == GFORM_WEDGE) or (formation == GFORM_ECHELON) or (formation == GFORM_LINE))
         {
             // Move our flanks towards their 'correct' position (This will happen both before and after any move)
             GridIndex tx, ty;
@@ -886,13 +886,13 @@ int BattalionClass::MoveUnit(CampaignTime time)
 
 #endif
 
-        if (moving && ChangeUnitLocation(h) > 0)
+        if (moving and ChangeUnitLocation(h) > 0)
         {
             SetUnitNextMove();
             GetLocation(&x, &y);
 
             // Store move in path history, in opposite order
-            if (GetUnitMoved() > 20 && supply > 2)
+            if (GetUnitMoved() > 20 and supply > 2)
             {
                 // RV - Biker - Reduce supply at higher rate
                 //supply--;
@@ -903,18 +903,18 @@ int BattalionClass::MoveUnit(CampaignTime time)
 
 #ifdef USE_FLANKS
 
-            if (formation == GFORM_COLUMN || formation == GFORM_OVERWATCH)
+            if (formation == GFORM_COLUMN or formation == GFORM_OVERWATCH)
             {
                 int i;
                 // Update flank info - Left flank on unit, right flank 3 km behind
                 lfx = rfx = x;
                 lfy = rfy = y;
 
-                for (i = 1, ph = 0; ph != Here; i++)
+                for (i = 1, ph = 0; ph not_eq Here; i++)
                 {
                     ph = (GetPreviousDirection(i) + 4) % 8;
 
-                    if (ph != Here)
+                    if (ph not_eq Here)
                     {
                         rfx += dx[ph];
                         rfy += dy[ph];
@@ -928,9 +928,9 @@ int BattalionClass::MoveUnit(CampaignTime time)
 #ifdef CAMPTOOL
 
             // Display what we're doing, if it's on..
-            if (SHOWSTATS && Engaged() && TrackingOn[GetCampID()])
+            if (SHOWSTATS and Engaged() and TrackingOn[GetCampID()])
 #endif
-                MonoPrint(" - Moved!");
+                MonoPrint(" - Moved");
 
 #endif
         }
@@ -939,7 +939,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
         {
             moving = 0;
 
-            if (GetMoveTime() > 3 * DEG_TO_SEC * SEC_TO_MSEC && supply > 2)
+            if (GetMoveTime() > 3 * DEG_TO_SEC * SEC_TO_MSEC and supply > 2)
             {
                 supply -= 2;
             }
@@ -950,14 +950,14 @@ int BattalionClass::MoveUnit(CampaignTime time)
 #ifdef CAMPTOOL
 
     // Display what we're doing, if it's on..
-    if (SHOWSTATS && Engaged() && TrackingOn[GetCampID()])
+    if (SHOWSTATS and Engaged() and TrackingOn[GetCampID()])
 #endif
         MonoPrint("\n");
 
 #endif
 
     // Check once again (after movement) if we've arrived at this waypoint, and increment wp pointer if so.
-    if (w && x == nx && y == ny)
+    if (w and x == nx and y == ny)
     {
         FinishUnitWP();
 
@@ -988,18 +988,18 @@ int BattalionClass::DoCombat()
         FalconEntity *a = GetAirTarget();
 
         // Check vs our Ground Target
-        if (!e)
+        if ( not e)
         {
             SetTargeted(0);
             SetTarget(NULL);
         }
         else
         {
-            if (Combat() && IsAggregate())
+            if (Combat() and IsAggregate())
             {
                 combat = ::DoCombat(this, e);
 
-                if (combat <= 0 || Targeted())
+                if (combat <= 0 or Targeted())
                 {
                     SetTarget(NULL); // Clear targeting data so we can look for another
                     SetTargeted(0);
@@ -1007,7 +1007,7 @@ int BattalionClass::DoCombat()
             }
 
             // Check if our target should call in Artillery/CAS against us (Only for enemy battalions with bad odds)
-            if (e->IsUnit() && e->GetDomain() == DOMAIN_LAND && ((Unit)e)->GetOdds() < 20 && !((Unit)e)->Supported())
+            if (e->IsUnit() and e->GetDomain() == DOMAIN_LAND and ((Unit)e)->GetOdds() < 20 and not ((Unit)e)->Supported())
             {
                 // Look for artillery or air support
                 if (RequestSupport((Unit)e, this))
@@ -1018,9 +1018,9 @@ int BattalionClass::DoCombat()
         SetSupported(0); // Clear supported flag so we can ask again
 
         // Check vs our Air Target
-        if (!a)
+        if ( not a)
             SetAirTarget(NULL);
-        else if (Combat() && IsAggregate())
+        else if (Combat() and IsAggregate())
         {
             combat = ::DoCombat(this, a);
 
@@ -1052,7 +1052,7 @@ CampaignHeading FindBestHeading(Objective o, int type, int own)
     CampaignHeading h = 0, nh;
     Objective n;
 
-    if (!o)
+    if ( not o)
         return Here;
 
     o->GetLocation(&x, &y);
@@ -1139,10 +1139,10 @@ void BattalionClass::SetUnitOrders(int neworders, VU_ID oid)
 
 #endif
 
-    if (neworders == GetOrders() && oid == GetUnitObjectiveID())
+    if (neworders == GetOrders() and oid == GetUnitObjectiveID())
         return;
 
-    /* if (Cargo() || cargo_id != FalconNullId)
+    /* if (Cargo() or cargo_id not_eq FalconNullId)
      {
     // KCK: We're in mid-transport, or waiting for pickup what o-what to do?
     // Probably be cool if we re-routed the transports to new location.
@@ -1158,7 +1158,7 @@ void BattalionClass::SetUnitOrders(int neworders, VU_ID oid)
     SetLastCheck(0);
 
     // If we've received new orders, and arn't engaged, let's halt our retreat
-    if (Retreating() && (!Engaged() || neworders != GORD_RESERVE))
+    if (Retreating() and ( not Engaged() or neworders not_eq GORD_RESERVE))
         SetRetreating(0);
 
     GroundUnitClass::SetUnitOrders(neworders);
@@ -1177,7 +1177,7 @@ void BattalionClass::PickFinalLocation(void)
     DisposeWayPoints();
     o = GetUnitObjective();
 
-    if (!o)
+    if ( not o)
     {
         // KCK: We should pick a retreat path during the next cycle.
         return;
@@ -1192,7 +1192,7 @@ void BattalionClass::PickFinalLocation(void)
             // For these, we want to sit in front of the objective
         case GORD_DEFEND:
         case GORD_RECON:
-            if (o->GetTeam() != GetTeam()) // Counter attack
+            if (o->GetTeam() not_eq GetTeam()) // Counter attack
             {
                 SetUnitOrders(GORD_CAPTURE, o->Id());
                 return;
@@ -1214,19 +1214,19 @@ void BattalionClass::PickFinalLocation(void)
         case GORD_RADAR:
 
             // In the case of us being artillery/SAM/radar sits on our objective type, we sit on objective
-            if (o->ArtillerySite() && GetUnitNormalRole() == GRO_FIRESUPPORT)
+            if (o->ArtillerySite() and GetUnitNormalRole() == GRO_FIRESUPPORT)
             {
                 final_heading = 255;
                 break;
             }
 
-            if (o->SamSite() && GetUnitNormalRole() == GRO_AIRDEFENSE)
+            if (o->SamSite() and GetUnitNormalRole() == GRO_AIRDEFENSE)
             {
                 final_heading = 255;
                 break;
             }
 
-            if (o->RadarSite() && GetUnitNormalRole() == GRO_RECON)
+            if (o->RadarSite() and GetUnitNormalRole() == GRO_RECON)
             {
                 final_heading = 255;
                 break;
@@ -1258,7 +1258,7 @@ void BattalionClass::PickFinalLocation(void)
 
     GetLocation(&x, &y);
 
-    if ((x != dx || y != dy) && GetMovementType() != NoMove)
+    if ((x not_eq dx or y not_eq dy) and GetMovementType() not_eq NoMove)
         SetMoving(1);
     else
         GetLocation(&dx, &dy);
@@ -1272,7 +1272,7 @@ float BattalionClass::GetSpeedModifier() const
     float d;
 
     // 2001-04-10 MODIFIED BY S.G. TimeOfDay RETURNS THE TIME OF THE DAY
-    // IN MILISECONDS! THAT'S NOT WHAT WE WANT... TimeOfDayGeneral WILL DO WHAT WE WANT
+    // IN MILISECONDS THAT'S NOT WHAT WE WANT... TimeOfDayGeneral WILL DO WHAT WE WANT
     // switch (TimeOfDay()) // Time of day modifiers
     switch (TimeOfDayGeneral()) // Time of day modifiers
     {
@@ -1413,7 +1413,7 @@ int BattalionClass::GetUnitFuelNeed(int have)
 
     for (int v = 0; v < VEHICLE_GROUPS_PER_UNIT; v++)
     {
-        if (class_data->VehicleClass[v][2] == TYPE_WHEELED || class_data->VehicleClass[v][2] == TYPE_TRACKED)
+        if (class_data->VehicleClass[v][2] == TYPE_WHEELED or class_data->VehicleClass[v][2] == TYPE_TRACKED)
             vehicles += this->GetNumVehicles(v);
     }
 
@@ -1422,7 +1422,7 @@ int BattalionClass::GetUnitFuelNeed(int have)
     else
         return (vehicles * (100 - GetUnitSupply())) / 100;
 
-    //if (GetMovementType() == Wheeled || GetMovementType() == Tracked)
+    //if (GetMovementType() == Wheeled or GetMovementType() == Tracked)
     // if (have)
     // return (GetTotalVehicles() * GetUnitSupply())/100*1000;
     // else
@@ -1435,7 +1435,7 @@ void BattalionClass::SupplyUnit(int supply, int fuel)
 {
     int got;
 
-    if (GetMovementType() == Wheeled || GetMovementType() == Tracked)
+    if (GetMovementType() == Wheeled or GetMovementType() == Tracked)
         supply = supply + fuel / 2;
 
     got = (supply * 100) / GetTotalVehicles();
@@ -1450,7 +1450,7 @@ int BattalionClass::GetDetectionRange(int mt)
     uc = GetUnitClassData();
     ShiAssert(uc);
 
-    if (IsEmitting() && uc->RadarVehicle < 255 && GetNumVehicles(uc->RadarVehicle))
+    if (IsEmitting() and uc->RadarVehicle < 255 and GetNumVehicles(uc->RadarVehicle))
         // 2001-04-21 MODIFIED BY S.G. ABOVE 250 HAS A NEW MEANING SO USE THE UNIT ELECTRONIC DETECTION RANGE INSTEAD...
         // dr = uc->Detection[mt];
         dr = GetElectronicDetectionRange(mt);
@@ -1465,7 +1465,7 @@ int BattalionClass::GetDetectionRange(int mt)
 
 int BattalionClass::GetElectronicDetectionRange(int mt)
 {
-    if (class_data->RadarVehicle < 255 && GetNumVehicles(class_data->RadarVehicle))
+    if (class_data->RadarVehicle < 255 and GetNumVehicles(class_data->RadarVehicle))
         // 2001-04-21 MODIFIED BY S.G. ABOVE 250 HAS A NEW MEANING SO USE THE UNIT ELECTRONIC DETECTION RANGE INSTEAD...
         // return class_data->Detection[mt];
     {
@@ -1482,7 +1482,7 @@ int BattalionClass::GetElectronicDetectionRange(int mt)
 
 void BattalionClass::ReturnToSearch(void)
 {
-    if (missiles_flying < 1 && IsEmitting())
+    if (missiles_flying < 1 and IsEmitting())
     {
         // 2002-04-08 MN fix - this must also use Sylvain's new step_search_mode, not the old search_mode, or we will fall back from guide to search...
         // 2002-04-11 ADDED BY S.G. If we have no missiles in the air anymore and we were off originally, switch back off, otherwise use the interim guidance step
@@ -1495,24 +1495,24 @@ void BattalionClass::ReturnToSearch(void)
         if (radar_mode == FEC_RADAR_OFF)
             SetEmitting(0);
     }
-    else if (!IsEmitting())
+    else if ( not IsEmitting())
         radar_mode = FEC_RADAR_OFF;
 }
 
 int BattalionClass::CanShootWeapon(int wid)
 {
-    if (class_data->RadarVehicle < 255 && (class_data->VehicleType[class_data->RadarVehicle])) // 2002-02-07 MODIFIED BY S,G. Added check for RadarVehicle being less than 255 since 255 means 'no radar' and can cause a CTD if not checked.
+    if (class_data->RadarVehicle < 255 and (class_data->VehicleType[class_data->RadarVehicle])) // 2002-02-07 MODIFIED BY S,G. Added check for RadarVehicle being less than 255 since 255 means 'no radar' and can cause a CTD if not checked.
     {
         RadarDataSet* radarData = &radarDatFileTable[((VehicleClassDataType *)Falcon4ClassTable[class_data->VehicleType[class_data->RadarVehicle]].dataPtr)->RadarType];
 
-        if (radarData && WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR && missiles_flying >= radarData->Maxmissilesintheair)
+        if (radarData and WeaponDataTable[wid].GuidanceFlags bitand WEAP_RADAR and missiles_flying >= radarData->Maxmissilesintheair)
             return FALSE;
     }
-    else if (WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR && missiles_flying >= 1)
+    else if (WeaponDataTable[wid].GuidanceFlags bitand WEAP_RADAR and missiles_flying >= 1)
         return FALSE;
 
     // Check for radar guidance, and make adjustments if necessary
-    if (!(WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR) || GetRadarMode() == FEC_RADAR_GUIDE || GetRadarMode() == FEC_RADAR_SEARCH_100)
+    if ( not (WeaponDataTable[wid].GuidanceFlags bitand WEAP_RADAR) or GetRadarMode() == FEC_RADAR_GUIDE or GetRadarMode() == FEC_RADAR_SEARCH_100)
         return TRUE;
 
     return FALSE;
@@ -1526,14 +1526,14 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
     int radMode = GetRadarMode();
     int newMode = FEC_RADAR_OFF; // 2002-03-21 ADDED BY S.G. In order to accomodate the radar label, I'm using a var to hold the return value instead of calling 'return' for the if body themself. 'else' were also added in front of the 'if' so they are exclusive
 
-    if (IsAggregate() || g_bOldSamActivity)
+    if (IsAggregate() or g_bOldSamActivity)
     {
         // Check if we still have any radar vehicles
-        if (class_data->RadarVehicle == 255 || !GetNumVehicles(class_data->RadarVehicle))
+        if (class_data->RadarVehicle == 255 or not GetNumVehicles(class_data->RadarVehicle))
             newMode = FEC_RADAR_OFF;
 
         // Check if we're already in our fire state
-        else if (radMode == FEC_RADAR_GUIDE || radMode == FEC_RADAR_SEARCH_100)
+        else if (radMode == FEC_RADAR_GUIDE or radMode == FEC_RADAR_SEARCH_100)
             newMode = radMode;
 
         // Check for switch over to guide
@@ -1548,7 +1548,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
 
             // KCK: Good operators could shoot before going to guide mode. Check skill and return TRUE
             if (
-                GetRadarMode() == FEC_RADAR_AQUIRE &&
+                GetRadarMode() == FEC_RADAR_AQUIRE and 
                 rand() % 100 < TeamInfo[GetOwner()]->airDefenseExperience - MINIMUM_EXP_TO_FIRE_PREGUIDE
             )
             {
@@ -1561,7 +1561,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
 #ifdef DEBUG
         extern int g_nShowDebugLabels;
 
-        if (g_nShowDebugLabels & 0x04)
+        if (g_nShowDebugLabels bitand 0x04)
         {
             switch (newMode)
             {
@@ -1601,7 +1601,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
 
             if (draw_pointer)
             {
-                if (g_nShowDebugLabels & 0x04)
+                if (g_nShowDebugLabels bitand 0x04)
                     draw_pointer->SetLabel(label, draw_pointer->LabelColor());
                 else
                 {
@@ -1627,10 +1627,10 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
 
 
     // Check if we still have any radar vehicles
-    if (class_data->RadarVehicle == 255 || !GetNumVehicles(class_data->RadarVehicle))
+    if (class_data->RadarVehicle == 255 or not GetNumVehicles(class_data->RadarVehicle))
         return FEC_RADAR_OFF;
 
-    assert(radarDatFileTable != NULL);
+    assert(radarDatFileTable not_eq NULL);
     RadarDataSet* radarData = &radarDatFileTable[((VehicleClassDataType *)Falcon4ClassTable[class_data->VehicleType[class_data->RadarVehicle]].dataPtr)->RadarType];
 
 
@@ -1645,9 +1645,9 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
     float timetosearch ;
     float timetoaquire ;
 
-    if (!d && !t) SetRadarMode(step_search_mode);
+    if ( not d and not t) SetRadarMode(step_search_mode);
 
-    if (GetRadarMode() == FEC_RADAR_CHANGEMODE && step_search_mode >= FEC_RADAR_SEARCH_1)
+    if (GetRadarMode() == FEC_RADAR_CHANGEMODE and step_search_mode >= FEC_RADAR_SEARCH_1)
         SetRadarMode(step_search_mode);// we are changing mode.. realy not off
 
     switch (GetRadarMode())
@@ -1655,16 +1655,16 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
         case FEC_RADAR_OFF:
             timetosearch = radarData->Timetosearch1 - skill;
 
-            if (range <= radarData->Rangetosearch1 && !SEARCHtimer)
+            if (range <= radarData->Rangetosearch1 and not SEARCHtimer)
             {
                 SEARCHtimer = SimLibElapsedTime;
             }
-            else if (range >= radarData->Rangetosearch1 || SimLibElapsedTime - SEARCHtimer > timetosearch + 6000.0f)
+            else if (range >= radarData->Rangetosearch1 or SimLibElapsedTime - SEARCHtimer > timetosearch + 6000.0f)
             {
                 SEARCHtimer = 0;
             }
 
-            if (range <= radarData->Rangetosearch1 && SEARCHtimer && SimLibElapsedTime - SEARCHtimer > timetosearch)
+            if (range <= radarData->Rangetosearch1 and SEARCHtimer and SimLibElapsedTime - SEARCHtimer > timetosearch)
             {
                 SEARCHtimer = SimLibElapsedTime;
                 step_search_mode = FEC_RADAR_SEARCH_1 ;
@@ -1676,14 +1676,14 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
         case FEC_RADAR_SEARCH_1:
             AQUIREtimer = SimLibElapsedTime;
 
-            if (!SEARCHtimer)
+            if ( not SEARCHtimer)
             {
                 SEARCHtimer = SimLibElapsedTime;
             }
 
             timetosearch = radarData->Timetosearch1 - skill;
 
-            if (d && range <= radarData->Rangetosearch2 && SimLibElapsedTime - SEARCHtimer >= timetosearch)
+            if (d and range <= radarData->Rangetosearch2 and SimLibElapsedTime - SEARCHtimer >= timetosearch)
             {
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
                 step_search_mode = FEC_RADAR_SEARCH_2;
@@ -1696,18 +1696,18 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
             AQUIREtimer = SimLibElapsedTime;
             timetosearch = radarData->Timetosearch2 - skill;
 
-            if (!SEARCHtimer)
+            if ( not SEARCHtimer)
             {
                 SEARCHtimer = SimLibElapsedTime;
             }
 
-            if (d && range <= radarData->Rangetosearch3 &&  SimLibElapsedTime - SEARCHtimer >= timetosearch)
+            if (d and range <= radarData->Rangetosearch3 and SimLibElapsedTime - SEARCHtimer >= timetosearch)
             {
                 step_search_mode = FEC_RADAR_SEARCH_3;
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
                 SEARCHtimer = SimLibElapsedTime;
             }
-            else if (!d)// no detection step search down
+            else if ( not d)// no detection step search down
             {
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
                 step_search_mode = FEC_RADAR_SEARCH_1 ;
@@ -1720,16 +1720,16 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
             AQUIREtimer = SimLibElapsedTime;
             timetosearch = radarData->Timetosearch3 - skill;
 
-            if (!SEARCHtimer) SEARCHtimer = SimLibElapsedTime;
+            if ( not SEARCHtimer) SEARCHtimer = SimLibElapsedTime;
 
             // goto aquire ?
-            if (d && range <= radarData->Rangetoacuire && SimLibElapsedTime - SEARCHtimer >= timetosearch)
+            if (d and range <= radarData->Rangetoacuire and SimLibElapsedTime - SEARCHtimer >= timetosearch)
             {
                 step_search_mode = FEC_RADAR_AQUIRE;
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
                 AQUIREtimer = SimLibElapsedTime;
             }
-            else if (!d) //  no detection step search down
+            else if ( not d) //  no detection step search down
             {
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
                 step_search_mode = FEC_RADAR_SEARCH_2 ;
@@ -1743,12 +1743,12 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
             timetoaquire = radarData->Timetoacuire - skill;
 
             // only allow to be in aquire for the coast amount of time
-            if (!t && !d && SimLibElapsedTime - AQUIREtimer >= (unsigned)radarData->Timetocoast)
+            if ( not t and not d and SimLibElapsedTime - AQUIREtimer >= (unsigned)radarData->Timetocoast)
             {
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
                 step_search_mode = FEC_RADAR_SEARCH_3 ;
             }
-            else if (t && range <= radarData->Rangetoguide && SimLibElapsedTime - AQUIREtimer >= timetoaquire)
+            else if (t and range <= radarData->Rangetoguide and SimLibElapsedTime - AQUIREtimer >= timetoaquire)
             {
                 step_search_mode = FEC_RADAR_GUIDE;
                 SetRadarMode(FEC_RADAR_CHANGEMODE);
@@ -1761,7 +1761,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
             AQUIREtimer = SimLibElapsedTime;
             step_search_mode = FEC_RADAR_AQUIRE;
 
-            if (!t) SetRadarMode(FEC_RADAR_CHANGEMODE);
+            if ( not t) SetRadarMode(FEC_RADAR_CHANGEMODE);
 
             break;
     }
@@ -1772,7 +1772,7 @@ int BattalionClass::StepRadar(int t, int d, float range)//me123 modifyed to take
      {
     // KCK: Good operators could shoot before going to guide mode. Check skill and return TRUE
     if (
-     GetRadarMode() == FEC_RADAR_AQUIRE &&
+     GetRadarMode() == FEC_RADAR_AQUIRE and 
      rand()%100 < TeamInfo[GetOwner()]->airDefenseExperience - MINIMUM_EXP_TO_FIRE_PREGUIDE
     )
     {
@@ -1800,13 +1800,13 @@ int BattalionClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
         simdata->vehicleInUnit = 0;
         ent = NULL;
 
-        if (!remote)
+        if ( not remote)
         {
             simdata->ptIndex = GetDeaggregationPoint(0, &ent);
 
             if (simdata->ptIndex)
             {
-                // Yuck!  The first call returns only the list index, NOT a real point index.
+                // Yuck  The first call returns only the list index, NOT a real point index.
                 // To ensure we have at least one point we have to actually query for it
                 // then reset again...
                 simdata->ptIndex = GetDeaggregationPoint(0, &ent);
@@ -1830,7 +1830,7 @@ int BattalionClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
         simdata->vehicleInUnit++;
 
     // Three positioning schemes
-    if (!remote)
+    if ( not remote)
     {
         if (deag_data) // Place in our last location
         {
@@ -1848,7 +1848,7 @@ int BattalionClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
             // Find the next point
             simdata->ptIndex = GetDeaggregationPoint(simdata->campSlot, &ent);
 
-            if (!simdata->ptIndex)
+            if ( not simdata->ptIndex)
             {
                 // Reuse the old points, but with an offset
                 ent = NULL;
@@ -1857,7 +1857,7 @@ int BattalionClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
                 round++;
             }
 
-            //ShiAssert( simdata->ptIndex ); // Point list with none of the point we wanted!
+            //ShiAssert( simdata->ptIndex ); // Point list with none of the point we wanted
             // HACK to tolerate bad data -- Shouldn't have to test this.
             if (simdata->ptIndex)
             {
@@ -1935,7 +1935,7 @@ int BattalionClass::RallyUnit(int minutes)
 {
     int maxMorale, increase;
 
-    if (!fullstrength)
+    if ( not fullstrength)
         fullstrength = GetFullstrengthVehicles();
 
     if (fullstrength)
@@ -1944,7 +1944,7 @@ int BattalionClass::RallyUnit(int minutes)
         maxMorale = 0;  // MLR 6/26/2004 - 0 er?
 
     // Regain MORALE_REGAIN_RATE % of maxMorale each hour we've been waiting
-    if (/*!Engaged() &&*/ GetUnitMorale() < maxMorale)
+    if (/* not Engaged() and */ GetUnitMorale() < maxMorale)
     {
         increase = (MORALE_REGAIN_RATE * minutes * maxMorale) / 6000;
 
@@ -1986,13 +1986,13 @@ int BattalionClass::GetDeaggregationPoint(int slot, CampEntity *installation)
     int pt = 0, type;
     static int last_SAM_pt, last_AAA_pt, last_support_pt, last_art_pt, ptListType, index = 0;
 
-    if (!*installation)
+    if ( not *installation)
     {
         // We're looking for a new list, so clear statics
         last_SAM_pt = last_AAA_pt = last_support_pt = last_art_pt = ptListType = index = 0;
 
         // Check if we care about placement
-        if (!Moving())
+        if ( not Moving())
         {
             // RV - Biker - Check if we want some special index type
             if (GetUnitClassData()->PtDataIndex)
@@ -2063,15 +2063,15 @@ int BattalionClass::GetDeaggregationPoint(int slot, CampEntity *installation)
         VehicleClassDataType *vc = GetVehicleClassData(uc->VehicleType[slot]);
 
         // Check which type of point we're looking for
-        if (ptListType == SAMListType && slot == uc->RadarVehicle)
+        if (ptListType == SAMListType and slot == uc->RadarVehicle)
             type = RadarPt;
-        else if (ptListType == AAAListType && slot == uc->RadarVehicle)
+        else if (ptListType == AAAListType and slot == uc->RadarVehicle)
             type = RadarPt;
-        else if (ptListType == SAMListType && (vc->Flags & VEH_IS_AIR_DEFENSE))
+        else if (ptListType == SAMListType and (vc->Flags bitand VEH_IS_AIR_DEFENSE))
             type = SAMPt;
-        else if (ptListType == AAAListType && (vc->Flags & VEH_IS_AIR_DEFENSE))
+        else if (ptListType == AAAListType and (vc->Flags bitand VEH_IS_AIR_DEFENSE))
             type = AAAPt;
-        else if (ptListType == ArtListType && (vc->Flags & VEH_IS_ARTILLERY))
+        else if (ptListType == ArtListType and (vc->Flags bitand VEH_IS_ARTILLERY))
             type = ArtilleryPt;
         else
             type = SupportPt;
@@ -2080,11 +2080,11 @@ int BattalionClass::GetDeaggregationPoint(int slot, CampEntity *installation)
         // NOTE: Log error if we don't have enough points of this type
 
         // RV - Biker - Search for SAM pt
-        if (last_SAM_pt && ptListType == SAMListType && type == SAMPt)
+        if (last_SAM_pt and ptListType == SAMListType and type == SAMPt)
         {
             last_SAM_pt = pt = GetNextPt(last_SAM_pt);
 
-            while (pt && PtDataTable[pt].type != SAMPt)
+            while (pt and PtDataTable[pt].type not_eq SAMPt)
             {
                 last_SAM_pt = pt = GetNextPt(last_SAM_pt);
             }
@@ -2093,11 +2093,11 @@ int BattalionClass::GetDeaggregationPoint(int slot, CampEntity *installation)
         }
 
         // RV - Biker - Search for AAA pt
-        if (last_AAA_pt && ptListType == AAAListType && type == AAAPt)
+        if (last_AAA_pt and ptListType == AAAListType and type == AAAPt)
         {
             last_AAA_pt = pt = GetNextPt(last_AAA_pt);
 
-            while (pt && PtDataTable[pt].type != AAAPt)
+            while (pt and PtDataTable[pt].type not_eq AAAPt)
             {
                 last_AAA_pt = pt = GetNextPt(last_AAA_pt);
             }
@@ -2106,11 +2106,11 @@ int BattalionClass::GetDeaggregationPoint(int slot, CampEntity *installation)
         }
 
         // RV - Biker - Search for artillery pt
-        if (last_art_pt && ptListType == ArtListType && type == ArtilleryPt)
+        if (last_art_pt and ptListType == ArtListType and type == ArtilleryPt)
         {
             last_art_pt = pt = GetNextPt(last_art_pt);
 
-            while (pt && PtDataTable[pt].type != ArtilleryPt)
+            while (pt and PtDataTable[pt].type not_eq ArtilleryPt)
             {
                 last_art_pt = pt = GetNextPt(last_art_pt);
             }
@@ -2119,11 +2119,11 @@ int BattalionClass::GetDeaggregationPoint(int slot, CampEntity *installation)
         }
 
         // RV - Biker - Search for support pt
-        if (last_support_pt && type == SupportPt)
+        if (last_support_pt and type == SupportPt)
         {
             last_support_pt = pt = GetNextPt(last_support_pt);
 
-            while (pt && PtDataTable[pt].type != SupportPt)
+            while (pt and PtDataTable[pt].type not_eq SupportPt)
             {
                 last_support_pt = pt = GetNextPt(last_support_pt);
             }
@@ -2138,13 +2138,13 @@ int BattalionClass::GetDeaggregationPoint(int slot, CampEntity *installation)
         {
             if (PtDataTable[pt].type == type)
             {
-                if (ptListType == SAMListType && type == SAMPt)
+                if (ptListType == SAMListType and type == SAMPt)
                     last_SAM_pt = pt;
 
-                if (ptListType == AAAListType && type == AAAPt)
+                if (ptListType == AAAListType and type == AAAPt)
                     last_AAA_pt = pt;
 
-                if (ptListType == ArtListType && type == ArtilleryPt)
+                if (ptListType == ArtListType and type == ArtilleryPt)
                     last_art_pt = pt;
 
                 if (type == SupportPt)
@@ -2182,7 +2182,7 @@ int BattalionClass::Reaction(CampEntity e, int knowledge, float range)
     MoveType tmt, omt;
     GridIndex x, y, ex, ey;
 
-    if (!e || e->IsObjective()) // Ignore objectives for target canidates
+    if ( not e or e->IsObjective()) // Ignore objectives for target canidates
         return 0;
 
     // Some basic info on us.
@@ -2191,18 +2191,18 @@ int BattalionClass::Reaction(CampEntity e, int knowledge, float range)
     neworders = GetUnitOrders();
 
     // Aircraft on ground are ignored (technically, we could shoot at them.. but..)
-    if (e->IsFlight() && !((Flight)e)->Moving())
+    if (e->IsFlight() and not ((Flight)e)->Moving())
         return 0;
 
     // KCK HACK: Don't shoot at FAC aircraft.
-    if (e->IsFlight() && ((Flight)e)->GetUnitMission() == AMIS_FAC)
+    if (e->IsFlight() and ((Flight)e)->GetUnitMission() == AMIS_FAC)
         return 0;
 
     // Score their threat to us
-    if (knowledge & FRIENDLY_DETECTED)
+    if (knowledge bitand FRIENDLY_DETECTED)
         enemy_threat_bonus++;
 
-    if (knowledge & FRIENDLY_IN_RANGE)
+    if (knowledge bitand FRIENDLY_IN_RANGE)
         enemy_threat_bonus += 2;
 
     et = ((Unit)e)->GetCampTarget();
@@ -2220,14 +2220,14 @@ int BattalionClass::Reaction(CampEntity e, int knowledge, float range)
         score += (e->GetAproxHitChance(omt, 0) * enemy_threat_bonus) / 5;
 
     // Bonus if we can shoot them
-    if (knowledge & ENEMY_IN_RANGE)
+    if (knowledge bitand ENEMY_IN_RANGE)
         score += (GetAproxHitChance(tmt, FloatToInt32(range / 2.0F)) + 4) / 5;
 
     // Bonus for them being our target
     GetUnitDestination(&x, &y);
     e->GetLocation(&ex, &ey);
 
-    if (x == ex && y == ey && e->IsUnit())
+    if (x == ex and y == ey and e->IsUnit())
         score += 2 + GetAproxHitChance(tmt, FloatToInt32(range / 2.0F)) / 5;
 
     // Now score for our ability to kill them, if we're on that sort of mission type
@@ -2237,7 +2237,7 @@ int BattalionClass::Reaction(CampEntity e, int knowledge, float range)
         case GORD_SECURE:
 
             // Added bonus for them being engaged with any unit
-            if (et && et->IsUnit())
+            if (et and et->IsUnit())
                 score += (e->GetAproxHitChance(omt, 0) * enemy_threat_bonus) / 5;
 
             break;
@@ -2245,7 +2245,7 @@ int BattalionClass::Reaction(CampEntity e, int knowledge, float range)
         case GORD_AIRDEFENSE:
 
             // Added bonus for them attacking
-            if (et && (tmt == Air || tmt == LowAir))
+            if (et and (tmt == Air or tmt == LowAir))
                 score += (GetAproxHitChance(tmt, 0) * enemy_threat_bonus) / 5;
 
             break;
@@ -2272,7 +2272,7 @@ int BattalionClass::Reaction(CampEntity e, int knowledge, float range)
     }
 
     // Minimal reaction against broken units
-    if (e->IsBattalion() && ((Unit)e)->Broken())
+    if (e->IsBattalion() and ((Unit)e)->Broken())
         score = 1;
 
     return score;
@@ -2284,7 +2284,7 @@ int BattalionClass::ChooseTactic(void)
 
     tid = FirstGroundTactic;
 
-    while ((tid < FirstGroundTactic + GroundTactics) && (priority < 2))
+    while ((tid < FirstGroundTactic + GroundTactics) and (priority < 2))
     {
         priority = CheckTactic(tid) + rand() % 2;
 
@@ -2292,7 +2292,7 @@ int BattalionClass::ChooseTactic(void)
             tid++;
     }
 
-    if (tid != GetTactic())
+    if (tid not_eq GetTactic())
         SetOrdered(1);
 
     // Make Adjustments due to tactic
@@ -2300,13 +2300,13 @@ int BattalionClass::ChooseTactic(void)
     {
         SetAssigned(0);
 
-        if (GetUnitTactic() != GTACTIC_WITHDRAW)
+        if (GetUnitTactic() not_eq GTACTIC_WITHDRAW)
         {
             Objective o;
             Brigade brigade;
 
             // Check for objective abandonment (possibly only if we're nearby)
-            if (GetUnitOrders() == GORD_DEFEND && ourObjDist < 5)
+            if (GetUnitOrders() == GORD_DEFEND and ourObjDist < 5)
             {
                 o = GetUnitObjective();
 
@@ -2336,7 +2336,7 @@ int BattalionClass::ChooseTactic(void)
 
 #ifdef ROBIN_DEBUG
 
-    if (GetUnitTactic() != tid && TrackingOn[GetCampID()] || (GetUnitParent() && TrackingOn[GetUnitParent()->GetCampID()]))
+    if (GetUnitTactic() not_eq tid and TrackingOn[GetCampID()] or (GetUnitParent() and TrackingOn[GetUnitParent()->GetCampID()]))
     {
         CampEntity target = (CampEntity) GetTarget();
         MonoPrint("Battalion %d (%s) chose tactic %s vs %d.\n", GetCampID(), OrderStr[GetUnitOrders()], TacticsTable[tid].name, (target) ? target->GetCampID() : 0);
@@ -2356,7 +2356,7 @@ int BattalionClass::CheckTactic(int tid)
         Objective o;
         FalconEntity *e = GetTarget();
 
-        if (Engaged() && !e)
+        if (Engaged() and not e)
             SetEngaged(0);
 
         if (GetUnitSupply() > 30)
@@ -2368,7 +2368,7 @@ int BattalionClass::CheckTactic(int tid)
         o = GetUnitObjective();
         ourObjOwner = 0;
 
-        if (o && o->GetTeam() == GetTeam())
+        if (o and o->GetTeam() == GetTeam())
             ourObjOwner = 1;
 
         if (o)
@@ -2379,58 +2379,58 @@ int BattalionClass::CheckTactic(int tid)
         ourObjDist = FloatToInt32(Distance(x, y, dx, dy));
     }
 
-    if (!CheckUnitType(tid, GetDomain(), GetType()))
+    if ( not CheckUnitType(tid, GetDomain(), GetType()))
         return 0;
 
-    if (!CheckTeam(tid, GetTeam()))
+    if ( not CheckTeam(tid, GetTeam()))
         return 0;
 
-    if (!CheckEngaged(tid, Engaged()))
+    if ( not CheckEngaged(tid, Engaged()))
         return 0;
 
-    if (!CheckCombat(tid, Combat()))
+    if ( not CheckCombat(tid, Combat()))
         return 0;
 
-    if (!CheckLosses(tid, Losses()))
+    if ( not CheckLosses(tid, Losses()))
         return 0;
 
-    if (!CheckRetreating(tid, Retreating()))
+    if ( not CheckRetreating(tid, Retreating()))
         return 0;
 
-    if (!CheckAction(tid, GetUnitOrders()))
+    if ( not CheckAction(tid, GetUnitOrders()))
         return 0;
 
-    if (!CheckOwned(tid, ourObjOwner))
+    if ( not CheckOwned(tid, ourObjOwner))
         return 0;
 
-    if (!CheckRange(tid, ourObjDist))
+    if ( not CheckRange(tid, ourObjDist))
         return 0;
 
-    // if (!CheckDistToFront(tid,ourFrontDist))
+    // if ( not CheckDistToFront(tid,ourFrontDist))
     // return 0;
-    if (!CheckStatus(tid, Broken()))
+    if ( not CheckStatus(tid, Broken()))
         return 0;
 
-    if (!CheckOdds(tid, GetOdds()))
+    if ( not CheckOdds(tid, GetOdds()))
         return 0;
 
-    if (CheckWeapons(tid) == 1 && !haveWeaps)
+    if (CheckWeapons(tid) == 1 and not haveWeaps)
         return 0;
 
-    if (!CheckRole(tid, GetUnitNormalRole()))
+    if ( not CheckRole(tid, GetUnitNormalRole()))
         return 0;
 
-    if (CheckSpecial(tid) == 1 && GetUnitParentID() == FalconNullId)
+    if (CheckSpecial(tid) == 1 and GetUnitParentID() == FalconNullId)
         return 0; // Check if part of a brigade
 
-    if (CheckSpecial(tid) == 2 && TeamInfo[GetTeam()]->GetGroundAction()->actionType != GACTION_OFFENSIVE)
+    if (CheckSpecial(tid) == 2 and TeamInfo[GetTeam()]->GetGroundAction()->actionType not_eq GACTION_OFFENSIVE)
         return 0; // KCK Check if our offensive's started yet.
 
     // Refused() means our request was refused. These are no longer valid tactics
-    if (!CheckAirborne(tid, !Refused()))
+    if ( not CheckAirborne(tid, not Refused()))
         return 0;
 
-    if (!CheckMarine(tid, !Refused()))
+    if ( not CheckMarine(tid, not Refused()))
         return 0;
 
     return GetTacticPriority(tid);
@@ -2453,7 +2453,7 @@ void BattalionClass::SimSetLocation(float x, float y, float z)
     ::vector pos = { x, y };
     ConvertSimToGrid(&pos, &nx, &ny);
 
-    if (cx != nx || cy != ny)
+    if (cx not_eq nx or cy not_eq ny)
     {
         SetPosition(x, y, z);
         //MakeCampBaseDirty (DIRTY_POSITION, DDP[90].priority);
@@ -2470,7 +2470,7 @@ void BattalionClass::SimSetLocation(float x, float y, float z)
 
 void BattalionClass::GetRealPosition(float *x, float *y, float *z)
 {
-    // This will use the last move time to determine the real x,y & z of the unit
+    // This will use the last move time to determine the real x,y bitand z of the unit
     float movetime = (float)(SimLibElapsedTime - last_move) / VU_TICS_PER_SECOND;
     float speed;
     float heading;
@@ -2478,7 +2478,7 @@ void BattalionClass::GetRealPosition(float *x, float *y, float *z)
     int h = GetNextMoveDirection();
     mlTrig sincos;
 
-    if (h < 0 || h > 7 || SimLibElapsedTime < last_move)
+    if (h < 0 or h > 7 or SimLibElapsedTime < last_move)
     {
         *x = XPos();
         *y = YPos();
@@ -2510,7 +2510,7 @@ void BattalionClass::HandleRequestReceipt(int type, int them, VU_ID flight)
 
 CampaignTime BattalionClass::GetMoveTime(void)
 {
-    if (last_move && TheCampaign.CurrentTime > last_move)
+    if (last_move and TheCampaign.CurrentTime > last_move)
         return TheCampaign.CurrentTime - last_move;
 
     last_move = TheCampaign.CurrentTime;
@@ -2584,17 +2584,17 @@ void BattalionClass::SetUnitSupply(int s)
 
 void BattalionClass::MakeBattalionDirty(Dirty_Battalion bits, Dirtyness score)
 {
-    if ((!IsLocal()) || (VuState() != VU_MEM_ACTIVE))
+    if (( not IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
 
-    if (!IsAggregate() && (score != SEND_RELIABLEANDOOB))
+    if ( not IsAggregate() and (score not_eq SEND_RELIABLEANDOOB))
     {
         score = static_cast<Dirtyness>(score << 4);
     }
 
-    dirty_battalion |= bits;
+    dirty_battalion or_eq bits;
 
     MakeDirty(DIRTY_BATTALION, score);
 }
@@ -2617,26 +2617,26 @@ void BattalionClass::WriteDirty(unsigned char **stream)
     *(uchar*)ptr = (uchar) dirty_battalion;
     ptr += sizeof(uchar);
 
-    if (dirty_battalion & DIRTY_SUPPLY)
+    if (dirty_battalion bitand DIRTY_SUPPLY)
     {
         *(Percentage*)ptr = supply;
         ptr += sizeof(Percentage);
     }
 
-    if (dirty_battalion & DIRTY_MORALE)
+    if (dirty_battalion bitand DIRTY_MORALE)
     {
         *(Percentage*)ptr = morale;
         ptr += sizeof(Percentage);
     }
 
-    if (dirty_battalion & DIRTY_FATIGUE)
+    if (dirty_battalion bitand DIRTY_FATIGUE)
     {
         *(Percentage*)ptr = fatigue;
         ptr += sizeof(Percentage);
     }
 
     /*
-    if (dirty_battalion & DIRTY_SMALLPATH){
+    if (dirty_battalion bitand DIRTY_SMALLPATH){
      // this call updates stream
      path->Save(stream);
     }*/
@@ -2657,29 +2657,29 @@ void BattalionClass::ReadDirty(VU_BYTE **stream, long *rem)
     memcpychk(&bits, stream, sizeof(unsigned char), rem);
 
 
-    if (bits & DIRTY_SUPPLY)
+    if (bits bitand DIRTY_SUPPLY)
     {
         memcpychk(&supply, stream, sizeof(Percentage), rem);
     }
 
-    if (bits & DIRTY_MORALE)
+    if (bits bitand DIRTY_MORALE)
     {
         memcpychk(&morale, stream, sizeof(Percentage), rem);
     }
 
-    if (bits & DIRTY_FATIGUE)
+    if (bits bitand DIRTY_FATIGUE)
     {
         memcpychk(&fatigue, stream, sizeof(Percentage), rem);
     }
 
     // sfr: dirty smallpath: recompute it
-    if (bits & DIRTY_SMALLPATH)
+    if (bits bitand DIRTY_SMALLPATH)
     {
         short x, y, nx, ny;
         GetLocation(&x, &y);
         GetUnitDestination(&nx, &ny);
 
-        if ((x != nx) && (y != ny))
+        if ((x not_eq nx) and (y not_eq ny))
         {
             GetUnitGridPath(path, x, y, nx, ny);
             SetMoving(1);

@@ -10,7 +10,7 @@ C_Help::C_Help() : C_Control()
     FgColor_ = 0xffffff;
     Font_ = 1;
 
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER;
 }
 
 C_Help::C_Help(char **stream) : C_Control(stream)
@@ -38,13 +38,13 @@ void C_Help::Setup(long ID, short Type)
     SetDefaultFlags();
     SetReady(1);
 
-    if (!Picture_)
+    if ( not Picture_)
     {
         Picture_ = new O_Output;
         Picture_->SetOwner(this);
     }
 
-    if (!Text_)
+    if ( not Text_)
     {
         Text_ = new O_Output;
         Text_->SetOwner(this);
@@ -86,7 +86,7 @@ void C_Help::SetText(long x, long y, long w, long TextID)
 
 long C_Help::CheckHotSpots(long , long)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
         return(0);
 
     return(0);
@@ -104,7 +104,7 @@ BOOL C_Help::Process(long ID, short HitType)
 
 void C_Help::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -112,7 +112,7 @@ void C_Help::Refresh()
 
 void C_Help::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Picture_)
@@ -126,7 +126,7 @@ void C_Help::SetSubParents(C_Window *parent)
 {
     int w = 0, h = 0;
 
-    if (!parent)
+    if ( not parent)
         return;
 
     if (Picture_)

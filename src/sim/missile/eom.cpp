@@ -11,7 +11,7 @@ void MissileClass::EquationsOfMotion(void)
     float xwind;         /* x velocity, wind axis */
     float e1dot, e2dot, e3dot, e4dot, enorm;
 
-    if (!ifd)
+    if ( not ifd)
         return; // JB 010720
 
     /*----------------------------------*/
@@ -108,7 +108,7 @@ void MissileClass::EquationsOfMotion(void)
     /*-----------------*/
     /* inertial coords */
     /*-----------------*/
-    if (done != FalconMissileEndMessage::GroundImpact)
+    if (done not_eq FalconMissileEndMessage::GroundImpact)
     {
         x   = Math.FITust(xdot, SimLibMinorFrameTime, ifd->oldx);
         y   = Math.FITust(ydot, SimLibMinorFrameTime, ifd->oldy);

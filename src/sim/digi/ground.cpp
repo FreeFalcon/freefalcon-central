@@ -14,7 +14,7 @@
 extern float g_MaximumTheaterAltitude;
 extern float g_fPullupTime;
 extern bool g_bOtherGroundCheck; // = OldGroundCheck function
-extern float g_fGALookAheadTime; // Cobra - How far to look ahead (times deltaX & deltaY) for lower elevations
+extern float g_fGALookAheadTime; // Cobra - How far to look ahead (times deltaX bitand deltaY) for lower elevations
 extern float g_fAIMinAlt; // Cobra - minimum alt AI will fly
 extern float g_fGApStickFac; // Cobra - Smooth out Ground Avoidance pitch (pStick * g_fGApStickFac)
 extern int g_nCriticalPullup; // Cobra - <= g_fGALookAheadTime tick full pStick pullup
@@ -30,14 +30,14 @@ void DigitalBrain::GroundCheck(void)
     // 2001-10-21 Modified by M.N. When Leader is in WaypointMode, Wings are always in Wingymode.
     // so they do terrain based ground checks for the wingies, but not for leads - makes no sense.
     // Let it follow waypoints close to the ground
-    if ( //( curMode == WaypointMode || // also perform GroundCheck for leaders
-        //curMode == LandingMode || // airbases with hilly terrain around need GroundCheck
-        /*(curMode == WaypointMode && agDoctrine != AGD_NONE) ||*/ // 2002-03-11 ADDED BY S.G. GroundAttackMode has its own ground avoidance code
+    if ( //( curMode == WaypointMode or // also perform GroundCheck for leaders
+        //curMode == LandingMode or // airbases with hilly terrain around need GroundCheck
+        /*(curMode == WaypointMode and agDoctrine not_eq AGD_NONE) or*/ // 2002-03-11 ADDED BY S.G. GroundAttackMode has its own ground avoidance code
         curMode == TakeoffMode //)
-        && threatPtr == NULL)
+       and threatPtr == NULL)
     {
         // edg: do we really ever need to do ground avoidance if we're in
-        // waypoint mode!?  The waypoint code should be smart enough....
+        // waypoint mode?  The waypoint code should be smart enough....
         // minAlt = 500.0F;
         groundAvoidNeeded = FALSE;
         ResetMaxRoll();
@@ -46,7 +46,7 @@ void DigitalBrain::GroundCheck(void)
     }
 
     // 2002-03-11 ADDED BY S.G. If in WaypointMode or WingyMode, drop the min altitude before pullup to 500 feet AGL or -trackZ, whichever is smaller but never below 100.0f AGL
-    if (curMode == WaypointMode || curMode == WingyMode)
+    if (curMode == WaypointMode or curMode == WingyMode)
         minAlt = (trackZ > -g_fAIMinAlt ? (trackZ > -100.0f ? 100.0f : -trackZ) : g_fAIMinAlt); // Cobra - externalized AI min alt
     else
         // END OF ADDED SECTION 2002-03-11
@@ -125,7 +125,7 @@ void DigitalBrain::GroundCheck(void)
         // Test the terrain along the likely path we will take.  Take into account the deltas along the ground
         // and the fact that we may be headed straight down so the deltas could be very small.  Since we still
         // need to test the terrain in case we're diving into a valley, test the terrain along the recovery path.
-        //  for (float i = 0.0; i < lookahead && !groundavoid; i += 0.5)
+        //  for (float i = 0.0; i < lookahead and not groundavoid; i += 0.5)
         for (float i = 0.0; i < lookahead; i += 0.5)
         {
             // Project a recovery path based on our pitch.
@@ -146,7 +146,7 @@ void DigitalBrain::GroundCheck(void)
 
                 // Check to be sure we're not going to hit the ground in the next time frame and double check that our worst case
                 // recovery path along the ground to recover from high pitch angles won't take us into the ground either.
-                if (-self->ZPos() - (i * self->ZDelta()) < maxElevation + 100.0F ||
+                if (-self->ZPos() - (i * self->ZDelta()) < maxElevation + 100.0F or
                     -self->ZPos() - pitchturnfactor * 1.25 < maxElevation + 100.0F)
                 {
                     //float z = self->ZPos();
@@ -156,7 +156,7 @@ void DigitalBrain::GroundCheck(void)
                     //float slope = atan2(height, (g_fPullupTime * self->GetVt()));
                     //groundAvoidPStick = slope * RTD / 90.0f;
                     //float Time2Pull = dist / (self->GetVt()+1);
-                    if (!PullupNow)
+                    if ( not PullupNow)
                     {
                         PullupNow = (int)i;
                     }
@@ -169,7 +169,7 @@ void DigitalBrain::GroundCheck(void)
 
     // Cobra - end of reconstruction
 
-    if (self->GetVt() < 0.1f || !groundavoid)
+    if (self->GetVt() < 0.1f or not groundavoid)
     {
         groundAvoidNeeded = FALSE;
         ResetMaxRoll();
@@ -297,7 +297,7 @@ void DigitalBrain::PullUp(void)
     // if (pullupTimer < SimLibElapsedTime)
     // pullupTimer = 0; // This says us "stop pull up"
     // Cobra -
-    if ((groundAvoidNeeded) && (pullupTimer <= SimLibElapsedTime))
+    if ((groundAvoidNeeded) and (pullupTimer <= SimLibElapsedTime))
         pullupTimer = SimLibElapsedTime + ((unsigned long)(g_fPullupTime * CampaignSeconds)); // configureable for how long we pull at least once entered groundAvoidNeeded mode
     else
         pullupTimer = 0; // This says us "stop pull up"

@@ -27,7 +27,7 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
     {
         FalconRadioChatterMessage *radioMessage = (FalconRadioChatterMessage*)theEvent;
 
-        if (radioMessage->dataBlock.message < 0 || radioMessage->dataBlock.message >= LastComm)
+        if (radioMessage->dataBlock.message < 0 or radioMessage->dataBlock.message >= LastComm)
         {
             ShiWarning("Bad radio message");
             MonoPrint("Dropping Chatter Message ID: %d \n", radioMessage->dataBlock.message);
@@ -46,7 +46,7 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
             VuSessionsIterator sit(FalconLocalGame);
             session = (FalconSessionEntity*) sit.GetFirst();
 
-            while (session && (!friendly || !inrange))
+            while (session and ( not friendly or not inrange))
             {
                 if (session->GetPlayerEntity())
                     player = (FalconEntity*)session->GetPlayerEntity();
@@ -71,7 +71,7 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
                 session = (FalconSessionEntity*) sit.GetNext();
             }
 
-            if (!friendly || !inrange)
+            if ( not friendly or not inrange)
             {
                 // MonoPrint("Dropping Chatter Message ID: %d  Friendly:%d  In Range:%d\n", radioMessage->dataBlock.message, friendly, inrange );
                 delete theEvent;
@@ -86,11 +86,11 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
 
     int printit = 0;
 
-    if (monoall == 0 ||
-        ((theEvent->Flags() & VU_RELIABLE_MSG_FLAG) && monoall == 1) ||
-        ((theEvent->Flags() & VU_OUT_OF_BAND_MSG_FLAG) && monoall == 2) ||
-        ((theEvent->Flags() & VU_RELIABLE_MSG_FLAG) &&
-         (theEvent->Flags() & VU_OUT_OF_BAND_MSG_FLAG) && monoall == 3)
+    if (monoall == 0 or
+        ((theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG) and monoall == 1) or
+        ((theEvent->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG) and monoall == 2) or
+        ((theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG) and 
+         (theEvent->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG) and monoall == 3)
        )
         printit = 1;
 
@@ -602,13 +602,13 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
 
     }
 
-    if ((printit) && theEvent->Type() != 30)
+    if ((printit) and theEvent->Type() not_eq 30)
         MonoPrint("Sent Message: time %d,  Keepalive %d, LowPrio %d , reliable %d, oob %d, , size %d, target %d\n" ,
                   vuxGameTime,
-                  theEvent->Flags() & VU_KEEPALIVE_MSG_FLAG,
-                  theEvent->Flags() & 0xf0,
-                  theEvent->Flags() & VU_RELIABLE_MSG_FLAG,
-                  theEvent->Flags() & VU_OUT_OF_BAND_MSG_FLAG ,
+                  theEvent->Flags() bitand VU_KEEPALIVE_MSG_FLAG,
+                  theEvent->Flags() bitand 0xf0,
+                  theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG,
+                  theEvent->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG ,
                   theEvent->Size(),
                   theEvent->Target());
 
@@ -629,13 +629,13 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
     static int count = 0;
     msgcount ++;
 
-    if (theEvent->Flags() & VU_RELIABLE_MSG_FLAG)
+    if (theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG)
     {
         sendreliable += theEvent->Size();
         TOTsendreliable += theEvent->Size();
     }
 
-    if (theEvent->Flags() & VU_OUT_OF_BAND_MSG_FLAG)
+    if (theEvent->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG)
     {
         msgoob += theEvent->Size();
         TOToob += theEvent->Size();
@@ -650,7 +650,7 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
 
         //MonoPrint("reliable %d, oob %d, total %d \n", sendreliable, msgoob, sendtotal);
         //MonoPrint("TOTreliable %d, TOToob %d, TOTtotal %d \n", TOTsendreliable, TOToob, TOTsendtotal);
-        if ((printit) && count > 5 && theEvent->Type() != 30)
+        if ((printit) and count > 5 and theEvent->Type() not_eq 30)
         {
             MonoPrint("Avgreliable %d, Avgoob %d, Avgtotal %d mescount %d \n",
                       (TOTsendreliable / count), (TOToob / count), (TOTsendtotal / count), msgcount);
@@ -689,13 +689,13 @@ FalconEvent::FalconEvent(VU_MSG_TYPE type, HandlingThread threadID, VU_ID entity
     // because I'll explicitly set it to FALSE here if you're not included in the target.
     if (loopback)
     {
-        // if (!target && !FalconLocalGame)
+        // if ( not target and not FalconLocalGame)
         // RequestLoopback();
-        if (!target)
+        if ( not target)
             loopback = FALSE;
-        else if (target->IsGroup() && !((VuGroupEntity*)target)->SessionInGroup(FalconLocalSession))
+        else if (target->IsGroup() and not ((VuGroupEntity*)target)->SessionInGroup(FalconLocalSession))
             loopback = FALSE;
-        else if (target->IsSession() && target != FalconLocalSession)
+        else if (target->IsSession() and target not_eq FalconLocalSession)
             loopback = FALSE;
         else
             RequestLoopback();
@@ -761,7 +761,7 @@ int FalconEvent::Activate(VuEntity *theEntity)
     VuMessage::Activate(theEntity);
 
     // Only record sim events to disk if ACMI is recording
-    if (F4EventFile && gACMIRec.IsRecording() && handlingThread == SimThread && Type() != ControlSurfaceMsg)
+    if (F4EventFile and gACMIRec.IsRecording() and handlingThread == SimThread and Type() not_eq ControlSurfaceMsg)
     {
         idData.size = (unsigned short)Size();
         idData.type = Type();
@@ -794,7 +794,7 @@ FalconMessageFilter::FalconMessageFilter(FalconEvent::HandlingThread theThread, 
         vuFilterBits = vuMessageBits;
 #else
         // KCK: All threads must handle delete events
-        vuFilterBits = vuMessageBits | VU_DELETE_EVENT_BITS;
+        vuFilterBits = vuMessageBits bitor VU_DELETE_EVENT_BITS;
 #endif
     }
 #endif
@@ -810,7 +810,7 @@ VU_BOOL FalconMessageFilter::Test(VuMessage * event) const
     if (event->Type() > VU_LAST_EVENT)
     {
         // This is a FreeFalcon Event
-        if ((((FalconEvent*)event)->handlingThread & filterThread) == 0)
+        if ((((FalconEvent*)event)->handlingThread bitand filterThread) == 0)
         {
             // message not intended for this thread
             retval = FALSE;
@@ -822,7 +822,7 @@ VU_BOOL FalconMessageFilter::Test(VuMessage * event) const
 
         // This is a Vu Event. Compare vs filter bits
         // sfr: fixed shift adding -1
-        if (!processVu)
+        if ( not processVu)
         {
             retval = FALSE;
         }
@@ -831,8 +831,8 @@ VU_BOOL FalconMessageFilter::Test(VuMessage * event) const
 
         // This is a Vu Event. Compare vs filter bits
         // sfr: fixed shift adding -1
-        if (!
-            ((1 << (event->Type() - 1)) & vuFilterBits)
+        if ( not 
+            ((1 << (event->Type() - 1)) bitand vuFilterBits)
            )
         {
             retval = FALSE;

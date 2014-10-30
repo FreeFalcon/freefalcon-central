@@ -145,18 +145,18 @@ void PilotInputs::Update()
     // operations so that we don´t have to introduce 6.23*10^23 new keypresses
     //
     // Access functions to get the current controlled axis and to set it are provided
-    // insider the pilotinput class. The enum is within the class scope !
+    // insider the pilotinput class. The enum is within the class scope 
     /*******************************************************************************/
     if (playerAC)
     {
         AirframeClass *af = playerAC->af;
 
-        if ((af) && (af->GetNumberEngines() == 2))
+        if ((af) and (af->GetNumberEngines() == 2))
         {
             /*******************************************************************************/
-            // keyboard only, right engine axis is not even evalutated !
+            // keyboard only, right engine axis is not even evalutated 
             /*******************************************************************************/
-            if ((!IO.AnalogIsUsed(AXIS_THROTTLE)) || (UseKeyboardThrottle))
+            if (( not IO.AnalogIsUsed(AXIS_THROTTLE)) or (UseKeyboardThrottle))
             {
                 throttleOffset += throttleOffsetRate;
                 throttleOffset = max(min(throttleOffset, 1.5F), 0.0F);
@@ -174,7 +174,7 @@ void PilotInputs::Update()
             // both axis mapped. state of 3-way variable not important
             // keyboard not considered
             /*******************************************************************************/
-            else if ((IO.AnalogIsUsed(AXIS_THROTTLE2)) && (IO.AnalogIsUsed(AXIS_THROTTLE)))
+            else if ((IO.AnalogIsUsed(AXIS_THROTTLE2)) and (IO.AnalogIsUsed(AXIS_THROTTLE)))
             {
                 engineThrottle[Left_Engine] = IO.ReadAnalog(AXIS_THROTTLE);
                 engineThrottle[Right_Engine] = IO.ReadAnalog(AXIS_THROTTLE2);
@@ -205,7 +205,7 @@ void PilotInputs::Update()
         }
         else   // end Retro 12Jan2004 (this is the old, single-engine code)
         {
-            if (IO.AnalogIsUsed(AXIS_THROTTLE) && !UseKeyboardThrottle)  // Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_THROTTLE) and not UseKeyboardThrottle)  // Retro 31Dec2003
             {
                 //throttle = 1.5F - (IO.ReadAnalog(2) * 1.05F + 1.0F) * 0.75F;
                 throttle = IO.ReadAnalog(AXIS_THROTTLE); // Retro 31Dec2003
@@ -263,8 +263,8 @@ void PilotInputs::Update()
     else
     {
         if (
-            (!g_bRealisticAvionics) ||
-            ((playerAC) && (!playerAC->TrimAPDisc))
+            ( not g_bRealisticAvionics) or
+            ((playerAC) and ( not playerAC->TrimAPDisc))
         )
         {
             ptrim += pitchElevatorTrimRate * SimLibMajorFrameTime;
@@ -284,8 +284,8 @@ void PilotInputs::Update()
     else
     {
         if (
-            (!g_bRealisticAvionics) || // TrimAPDisc only works in realistic avionics..
-            ((playerAC) && (!playerAC->TrimAPDisc))
+            ( not g_bRealisticAvionics) or // TrimAPDisc only works in realistic avionics..
+            ((playerAC) and ( not playerAC->TrimAPDisc))
         )
         {
             rtrim += pitchAileronTrimRate * SimLibMajorFrameTime;
@@ -305,8 +305,8 @@ void PilotInputs::Update()
     else
     {
         if (
-            (!g_bRealisticAvionics) || // TrimAPDisc only works in realistic avionics..
-            ((playerAC) && (!playerAC->TrimAPDisc))
+            ( not g_bRealisticAvionics) or // TrimAPDisc only works in realistic avionics..
+            ((playerAC) and ( not playerAC->TrimAPDisc))
         )
         {
             ytrim += pitchRudderTrimRate * SimLibMajorFrameTime;
@@ -319,8 +319,8 @@ void PilotInputs::Update()
     // Retro 31Dec2003 ends..
 
     //all joystick button functionality is now in sijoy
-    //if (IO.ReadDigital(0) || keyboardTriggerOverride)
-    if (keyboardTriggerOverride || TriggerOverride)
+    //if (IO.ReadDigital(0) or keyboardTriggerOverride)
+    if (keyboardTriggerOverride or TriggerOverride)
     {
         trigger = Down;
     }
@@ -330,12 +330,12 @@ void PilotInputs::Update()
 
         // COBRA - RED - The Pickle Stuff
         // RV - I-Hawk - Added a check to allow ARH "Maddog" launch only in boresight mode
-        if ((SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsAirplane()))
+        if ((SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsAirplane()))
         {
-            if (keyboardPickleOverride || PickleOverride)
+            if (keyboardPickleOverride or PickleOverride)
             {
-                if (!PickleTime) PickleTime = SimLibElapsedTime;
-                else if ((SimLibElapsedTime - PickleTime) > playerAC->FCC->GetPickleTime() && pickleButton == Off &&
+                if ( not PickleTime) PickleTime = SimLibElapsedTime;
+                else if ((SimLibElapsedTime - PickleTime) > playerAC->FCC->GetPickleTime() and pickleButton == Off and 
                          playerAC->FCC->AllowMaddog())
                     pickleButton = On;
             }
@@ -388,7 +388,7 @@ void PilotInputs::Reset(void)
 /*******************************************************************************/
 void PilotInputs::cycleCurrentEngine()
 {
-    if ((SimDriver.GetPlayerEntity())/*&&(SimDriver.GetPlayerEntity()->acFlags & hasTwoEngines)*/)
+    if ((SimDriver.GetPlayerEntity())/* and (SimDriver.GetPlayerEntity()->acFlags bitand hasTwoEngines)*/)
     {
         switch (currentlyActiveEngine)
         {

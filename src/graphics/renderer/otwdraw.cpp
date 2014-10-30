@@ -64,7 +64,7 @@ void RenderOTW::DrawTerrainSquare(int r, int c, int LOD)
 
 
     // If all verticies are clipped by the same edge, skip this square
-    if (v0->clipFlag & v1->clipFlag & v2->clipFlag & v3->clipFlag)
+    if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand v3->clipFlag)
     {
         return;
     }
@@ -74,7 +74,7 @@ void RenderOTW::DrawTerrainSquare(int r, int c, int LOD)
     // If required, get the post which will provide the texture for this segment
     // and setup the texture coordinates at the corners of this square
     if (v0->RenderingStateHandle > STATE_GOURAUD
-        //&& !F4IsBadReadPtr(v0->post, sizeof(Tpost)) // JB 010318 CTD (too much CPU)
+        // and not F4IsBadReadPtr(v0->post, sizeof(Tpost)) // JB 010318 CTD (too much CPU)
        )
     {
 
@@ -98,10 +98,10 @@ void RenderOTW::DrawTerrainSquare(int r, int c, int LOD)
         v3->u = post->u + post->d;
         v3->v = post->v - post->d;
 
-        // ShiAssert(v0->u <= 1.0f && v1->u <= 1.0f && v2->u <= 1.0f);
-        // ShiAssert(v0->v <= 1.0f && v1->v <= 1.0f && v2->v <= 1.0f);
-        // ShiAssert(v0->u >= 0.0 && v1->u >= 0.0 && v2->u >= 0.0);
-        // ShiAssert(v0->v >= 0.0 && v1->v >= 0.0 && v2->v >= 0.0);
+        // ShiAssert(v0->u <= 1.0f and v1->u <= 1.0f and v2->u <= 1.0f);
+        // ShiAssert(v0->v <= 1.0f and v1->v <= 1.0f and v2->v <= 1.0f);
+        // ShiAssert(v0->u >= 0.0 and v1->u >= 0.0 and v2->u >= 0.0);
+        // ShiAssert(v0->v >= 0.0 and v1->v >= 0.0 and v2->v >= 0.0);
 
 #if defined( SET_FG_COLOR_ON_FLAT )
     }
@@ -154,7 +154,7 @@ void RenderOTW::DrawUpConnector(int r, int c, int LOD)
 
 
     // Skip this segment if it is entirely clipped
-    if (v0->clipFlag & v1->clipFlag & v2->clipFlag & v3->clipFlag & v4->clipFlag)
+    if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand v3->clipFlag bitand v4->clipFlag)
     {
         return;
     }
@@ -163,7 +163,7 @@ void RenderOTW::DrawUpConnector(int r, int c, int LOD)
 
     // If required, get the post which will provide the texture for this segment
     if (v0->RenderingStateHandle > STATE_GOURAUD
-        && !F4IsBadReadPtr(viewpoint, sizeof(RViewPoint)))   // JB 010408 CTD
+       and not F4IsBadReadPtr(viewpoint, sizeof(RViewPoint)))   // JB 010408 CTD
     {
         post = viewpoint->GetPost(lowRow - 1 + LODdata[LOD + 1].centerRow,
                                   lowCol   + LODdata[LOD + 1].centerCol, LOD + 1);
@@ -311,7 +311,7 @@ void RenderOTW::DrawDownConnector(int r, int c, int LOD)
 
 
     // Skip this segment if it is entirely clipped
-    if (v0->clipFlag & v1->clipFlag & v2->clipFlag & v3->clipFlag & v4->clipFlag)
+    if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand v3->clipFlag bitand v4->clipFlag)
     {
         return;
     }
@@ -349,10 +349,10 @@ void RenderOTW::DrawDownConnector(int r, int c, int LOD)
     }
     else if (v3->RenderingStateHandle == STATE_SOLID)
     {
-        SetColor(((FloatToInt32(v0->r * 255.9f) & 0xFF)) |
-                 ((FloatToInt32(v0->g * 255.9f) & 0xFF) << 8) |
-                 ((FloatToInt32(v0->b * 255.9f) & 0xFF) << 16) |
-                 ((FloatToInt32(v0->a * 255.9f) & 0xFF) << 24));
+        SetColor(((FloatToInt32(v0->r * 255.9f) bitand 0xFF)) |
+                 ((FloatToInt32(v0->g * 255.9f) bitand 0xFF) << 8) |
+                 ((FloatToInt32(v0->b * 255.9f) bitand 0xFF) << 16) |
+                 ((FloatToInt32(v0->a * 255.9f) bitand 0xFF) << 24));
 #endif
     }
 
@@ -466,7 +466,7 @@ void RenderOTW::DrawRightConnector(int r, int c, int LOD)
 
 
     // Skip this segment if it is entirely clipped
-    if (v0->clipFlag & v1->clipFlag & v2->clipFlag & v3->clipFlag & v4->clipFlag)
+    if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand v3->clipFlag bitand v4->clipFlag)
     {
         return;
     }
@@ -505,10 +505,10 @@ void RenderOTW::DrawRightConnector(int r, int c, int LOD)
     }
     else if (v0->RenderingStateHandle == STATE_SOLID)
     {
-        SetColor(((FloatToInt32(v0->r * 255.9f) & 0xFF)) |
-                 ((FloatToInt32(v0->g * 255.9f) & 0xFF) << 8) |
-                 ((FloatToInt32(v0->b * 255.9f) & 0xFF) << 16) |
-                 ((FloatToInt32(v0->a * 255.9f) & 0xFF) << 24));
+        SetColor(((FloatToInt32(v0->r * 255.9f) bitand 0xFF)) |
+                 ((FloatToInt32(v0->g * 255.9f) bitand 0xFF) << 8) |
+                 ((FloatToInt32(v0->b * 255.9f) bitand 0xFF) << 16) |
+                 ((FloatToInt32(v0->a * 255.9f) bitand 0xFF) << 24));
 #endif
     }
 
@@ -621,7 +621,7 @@ void RenderOTW::DrawLeftConnector(int r, int c, int LOD)
 
 
     // Skip this segment if it is entirely clipped
-    if (v0->clipFlag & v1->clipFlag & v2->clipFlag & v3->clipFlag & v4->clipFlag)
+    if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand v3->clipFlag bitand v4->clipFlag)
     {
         return;
     }
@@ -659,10 +659,10 @@ void RenderOTW::DrawLeftConnector(int r, int c, int LOD)
     }
     else if (v2->RenderingStateHandle == STATE_SOLID)
     {
-        SetColor(((FloatToInt32(v0->r * 255.9f) & 0xFF)) |
-                 ((FloatToInt32(v0->g * 255.9f) & 0xFF) << 8) |
-                 ((FloatToInt32(v0->b * 255.9f) & 0xFF) << 16) |
-                 ((FloatToInt32(v0->a * 255.9f) & 0xFF) << 24));
+        SetColor(((FloatToInt32(v0->r * 255.9f) bitand 0xFF)) |
+                 ((FloatToInt32(v0->g * 255.9f) bitand 0xFF) << 8) |
+                 ((FloatToInt32(v0->b * 255.9f) bitand 0xFF) << 16) |
+                 ((FloatToInt32(v0->a * 255.9f) bitand 0xFF) << 24));
 #endif
     }
 

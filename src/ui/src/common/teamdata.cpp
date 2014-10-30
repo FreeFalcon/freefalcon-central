@@ -859,7 +859,7 @@ uchar AssignUIImageID(uchar voice_id)
     static int lastm = 0, lastf = 0;
 
     // if women's voice...
-    if (voice_id == 4 || voice_id == 6)
+    if (voice_id == 4 or voice_id == 6)
     {
         res = static_cast<uchar>(lastf + 1);
         lastf = (lastf + 1) % MAX_FEMALE_PILOTS;
@@ -881,7 +881,7 @@ uchar AssignUISquadronID(short SquadronNo)
 
     i = 0;
 
-    while (SquadronMatchIDs[i][0] && SquadronMatchIDs[i][1])
+    while (SquadronMatchIDs[i][0] and SquadronMatchIDs[i][1])
     {
         if (SquadronMatchIDs[i][1] == SquadronNo)
             return(static_cast<uchar>(i));

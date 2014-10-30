@@ -5,6 +5,7 @@
 
     //JAM 08Jan04 - Begin Major Rewrite
 \***************************************************************************/
+#include <cISO646>
 #include <math.h>
 #include "falclib/include/debuggr.h"
 #include "StateStack.h"
@@ -434,7 +435,7 @@ void Render3D::GetLightDirection(Tpoint* dir)
 \***************************************************************************/
 void Render3D::SetObjectTextureState(BOOL state)
 {
-    if (state != objTextureState)
+    if (state not_eq objTextureState)
     {
         // Record the choice
         objTextureState = state;
@@ -468,8 +469,8 @@ void Render3D::TransformPoint(Tpoint* p, ThreeDVertex* result)
 
     // Now determine if the point is out behind us or to the sides
     clipFlag  = GetRangeClipFlags(scratch_z, far_clip);
-    clipFlag |= GetHorizontalClipFlags(scratch_x, scratch_z);
-    clipFlag |= GetVerticalClipFlags(scratch_y, scratch_z);
+    clipFlag or_eq GetHorizontalClipFlags(scratch_x, scratch_z);
+    clipFlag or_eq GetVerticalClipFlags(scratch_y, scratch_z);
 
     // Finally, do the perspective divide and scale and shift into screen space
     register float OneOverZ = 1.0f / scratch_z;
@@ -507,8 +508,8 @@ void Render3D::TransformCameraCentricPoint(Tpoint* p, ThreeDVertex* result)
 
     // Now determine if the point is out behind us or to the sides
     clipFlag  = GetRangeClipFlags(scratch_z, far_clip);
-    clipFlag |= GetHorizontalClipFlags(scratch_x, scratch_z);
-    clipFlag |= GetVerticalClipFlags(scratch_y, scratch_z);
+    clipFlag or_eq GetHorizontalClipFlags(scratch_x, scratch_z);
+    clipFlag or_eq GetVerticalClipFlags(scratch_y, scratch_z);
 
     // Finally, do the perspective divide and scale and shift into screen space
     register float OneOverZ = 1.0f / scratch_z;
@@ -572,8 +573,8 @@ void Render3D::TransformBillboardPoint(Tpoint* p, Tpoint *viewOffset, ThreeDVert
 
     // Now determine if the point is out behind us or to the sides
     clipFlag  = GetRangeClipFlags(scratch_z, far_clip);
-    clipFlag |= GetHorizontalClipFlags(scratch_x, scratch_z);
-    clipFlag |= GetVerticalClipFlags(scratch_y, scratch_z);
+    clipFlag or_eq GetHorizontalClipFlags(scratch_x, scratch_z);
+    clipFlag or_eq GetVerticalClipFlags(scratch_y, scratch_z);
 
     // Finally, do the perspective divide and scale and shift into screen space
     register float OneOverZ = 1.0f / scratch_z;
@@ -609,8 +610,8 @@ void Render3D::TransformTreePoint(Tpoint* p, Tpoint *viewOffset, ThreeDVertex* r
 
     // Now determine if the point is out behind us or to the sides
     clipFlag  = GetRangeClipFlags(scratch_z, far_clip);
-    clipFlag |= GetHorizontalClipFlags(scratch_x, scratch_z);
-    clipFlag |= GetVerticalClipFlags(scratch_y, scratch_z);
+    clipFlag or_eq GetHorizontalClipFlags(scratch_x, scratch_z);
+    clipFlag or_eq GetVerticalClipFlags(scratch_y, scratch_z);
 
     // Finally, do the perspective divide and scale and shift into screen space
     register float OneOverZ = 1.0f / scratch_z;
@@ -706,7 +707,7 @@ void Render3D::Render3DPoint(Tpoint* p1)
     // Transform the point from world space to window space
     TransformPoint(p1, &ps1);
 
-    if (ps1.clipFlag != ON_SCREEN)  return;
+    if (ps1.clipFlag not_eq ON_SCREEN)  return;
 
     // Draw the point
     Render2DPoint((UInt16)ps1.x, (UInt16)ps1.y);
@@ -726,54 +727,54 @@ void Render3D::Render3DLine(Tpoint* p1, Tpoint* p2)
     TransformPoint(p2, &ps2);
 
     // Quit now if both ends are clipped by the same edge
-    if (ps1.clipFlag & ps2.clipFlag)  return;
+    if (ps1.clipFlag bitand ps2.clipFlag)  return;
 
     // Clip the line as necessary
-    if (ps1.clipFlag & CLIP_NEAR)
+    if (ps1.clipFlag bitand CLIP_NEAR)
     {
         IntersectNear(&ps1, &ps2, &ps1);
     }
-    else if (ps2.clipFlag & CLIP_NEAR)
+    else if (ps2.clipFlag bitand CLIP_NEAR)
     {
         IntersectNear(&ps1, &ps2, &ps2);
     }
 
-    if (ps1.clipFlag & ps2.clipFlag)  return;
+    if (ps1.clipFlag bitand ps2.clipFlag)  return;
 
-    if (ps1.clipFlag & CLIP_BOTTOM)
+    if (ps1.clipFlag bitand CLIP_BOTTOM)
     {
         IntersectBottom(&ps1, &ps2, &ps1);
     }
-    else if (ps2.clipFlag & CLIP_BOTTOM)
+    else if (ps2.clipFlag bitand CLIP_BOTTOM)
     {
         IntersectBottom(&ps1, &ps2, &ps2);
     }
 
-    if (ps1.clipFlag & CLIP_TOP)
+    if (ps1.clipFlag bitand CLIP_TOP)
     {
         IntersectTop(&ps1, &ps2, &ps1);
     }
-    else if (ps2.clipFlag & CLIP_TOP)
+    else if (ps2.clipFlag bitand CLIP_TOP)
     {
         IntersectTop(&ps1, &ps2, &ps2);
     }
 
-    if (ps1.clipFlag & ps2.clipFlag)  return;
+    if (ps1.clipFlag bitand ps2.clipFlag)  return;
 
-    if (ps1.clipFlag & CLIP_RIGHT)
+    if (ps1.clipFlag bitand CLIP_RIGHT)
     {
         IntersectRight(&ps1, &ps2, &ps1);
     }
-    else if (ps2.clipFlag & CLIP_RIGHT)
+    else if (ps2.clipFlag bitand CLIP_RIGHT)
     {
         IntersectRight(&ps1, &ps2, &ps2);
     }
 
-    if (ps1.clipFlag & CLIP_LEFT)
+    if (ps1.clipFlag bitand CLIP_LEFT)
     {
         IntersectLeft(&ps1, &ps2, &ps1);
     }
-    else if (ps2.clipFlag & CLIP_LEFT)
+    else if (ps2.clipFlag bitand CLIP_LEFT)
     {
         IntersectLeft(&ps1, &ps2, &ps2);
     }
@@ -802,7 +803,7 @@ void Render3D::Render3DFlatTri(Tpoint* p1, Tpoint* p2, Tpoint* p3)
     // I'm not sure this function is called anywhere anyway.  With the current
     // state of things, just checking near clip could cause bad problems since
     // MPR no longer does other edge clipping.  We'd have to do that here.
-    if (ps1.clipFlag || ps2.clipFlag || ps3.clipFlag)  return;
+    if (ps1.clipFlag or ps2.clipFlag or ps3.clipFlag)  return;
 
     // Don't draw the triangle if it is backfacing (counter-clockwise in screen space)
     // edg: always draw irregardless of backfacing
@@ -829,17 +830,17 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
     BOOL useLast = TRUE;
 
     // Check the clipping flags on the verteces which bound this region
-    if (v0->clipFlag | v1->clipFlag | v2->clipFlag | v3->clipFlag)
+    if (v0->clipFlag bitor v1->clipFlag bitor v2->clipFlag bitor v3->clipFlag)
     {
         // If all verticies are clipped by the same edge, skip this square
-        if (v0->clipFlag & v1->clipFlag & v2->clipFlag & v3->clipFlag)
+        if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand v3->clipFlag)
             return;
 
         ThreeDVertex *vertPointers[4];
         vertPointers[2] = v2;
 
         // If any verteces are clipped, do separate triangles since the quad isn't necessarily planar
-        if (v0->clipFlag | v1->clipFlag | v2->clipFlag)
+        if (v0->clipFlag bitor v1->clipFlag bitor v2->clipFlag)
         {
             vertPointers[0] = v0;
             vertPointers[1] = v1;
@@ -847,7 +848,7 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
             useFirst = FALSE;
         }
 
-        if (v0->clipFlag | v2->clipFlag | v3->clipFlag)
+        if (v0->clipFlag bitor v2->clipFlag bitor v3->clipFlag)
         {
             vertPointers[1] = v0;
             vertPointers[3] = v3;
@@ -896,11 +897,11 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
     }
 
     // If culling or clipping took care of both triangles, quit now
-    if (useFirst && useLast)
+    if (useFirst and useLast)
         count = 4;
     else
     {
-        if (useFirst || useLast)
+        if (useFirst or useLast)
             count = 3;
         else
             return;
@@ -909,12 +910,12 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
     if (useFirst)
     {
         MPRVtxTexClr_t *arr[] = { v0, v1, v2, v3 };
-        context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, count, arr, terrain); //JAM 14Sep03
+        context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, count, arr, terrain); //JAM 14Sep03
     }
     else
     {
         MPRVtxTexClr_t *arr[] = { v0, v2, v3 };
-        context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, count, arr, terrain); //JAM 14Sep03
+        context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, count, arr, terrain); //JAM 14Sep03
     }
 
 }
@@ -925,10 +926,10 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
 void Render3D::DrawTriangle(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, int CullFlag, bool gifPicture, bool terrain)  //JAM 14Sep03
 {
     // Check the clipping flags on the verteces which bound this region
-    if (v0->clipFlag | v1->clipFlag | v2->clipFlag)
+    if (v0->clipFlag bitor v1->clipFlag bitor v2->clipFlag)
     {
         // If all verticies are clipped by the same edge, skip this triangle
-        if (v0->clipFlag & v1->clipFlag & v2->clipFlag)
+        if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag)
             return;
 
         // If any verteces are clipped, do them as a special case
@@ -959,7 +960,7 @@ void Render3D::DrawTriangle(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2
 
     // Draw the tri
     MPRVtxTexClr_t *arr[] = { v0, v1, v2 };
-    context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 3, arr, terrain); //JAM 14Sep03
+    context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 3, arr, terrain); //JAM 14Sep03
 }
 
 

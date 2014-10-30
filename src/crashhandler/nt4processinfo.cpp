@@ -5,6 +5,7 @@ Windows NT 4.0 access functions for getting to process information.
 Windows95 and NT5 can use TOOLHELP32.DLL.
 ----------------------------------------------------------------------*/
 
+#include <cISO646>
 #include "PCH.h"
 #include "BugslayerUtil.h"
 
@@ -57,11 +58,11 @@ static BOOL InitPSAPI(void)
 
     // Load up PSAPI.DLL.
     HINSTANCE hInst = LoadLibraryA("PSAPI.DLL") ;
-    ASSERT(NULL != hInst) ;
+    ASSERT(NULL not_eq hInst) ;
 
     if (NULL == hInst)
     {
-        TRACE0("Unable to load PSAPI.DLL!\n") ;
+        TRACE0("Unable to load PSAPI.DLL\n") ;
         return (FALSE) ;
     }
 
@@ -69,26 +70,26 @@ static BOOL InitPSAPI(void)
     g_pEnumProcessModules =
         (ENUMPROCESSMODULES)GetProcAddress(hInst ,
                                            "EnumProcessModules") ;
-    ASSERT(NULL != g_pEnumProcessModules) ;
+    ASSERT(NULL not_eq g_pEnumProcessModules) ;
 
     if (NULL == g_pEnumProcessModules)
     {
-        TRACE0("GetProcAddress failed on EnumProcessModules!\n") ;
+        TRACE0("GetProcAddress failed on EnumProcessModules\n") ;
         return (FALSE) ;
     }
 
     g_pGetModuleBaseName =
         (GETMODULEBASENAME)GetProcAddress(hInst ,
                                           "GetModuleBaseNameA") ;
-    ASSERT(NULL != g_pGetModuleBaseName) ;
+    ASSERT(NULL not_eq g_pGetModuleBaseName) ;
 
     if (NULL == g_pGetModuleBaseName)
     {
-        TRACE0("GetProcAddress failed on GetModuleBaseNameA!\n") ;
+        TRACE0("GetProcAddress failed on GetModuleBaseNameA\n") ;
         return (FALSE) ;
     }
 
-    // All OK, Jumpmaster!
+    // All OK, Jumpmaster
     g_bInitialized = TRUE ;
     return (TRUE) ;
 }
@@ -102,7 +103,7 @@ PARAMETERS      :
     dwPID        - The process ID to look into.
     uiCount      - The number of slots in the paModArray buffer.  If
                    this value is 0, then the return value will be TRUE
-                   and puiRealCount will hold the number of items
+                  and puiRealCount will hold the number of items
                    needed.
     paModArray   - The array to place the HMODULES into.  If this buffer
                    is too small to hold the result and uiCount is not
@@ -134,7 +135,7 @@ BOOL NT4GetLoadedModules(DWORD     dwPID        ,
                                PROCESS_VM_READ         ,
                                FALSE                      ,
                                dwPID) ;
-    ASSERT(NULL != hProc) ;
+    ASSERT(NULL not_eq hProc) ;
 
     if (NULL == hProc)
     {
@@ -143,7 +144,7 @@ BOOL NT4GetLoadedModules(DWORD     dwPID        ,
     }
 
     // Now get the modules for the specified process.
-    ASSERT(NULL != g_pEnumProcessModules) ;
+    ASSERT(NULL not_eq g_pEnumProcessModules) ;
     // Because of possible DLL unload order differences, make sure that
     //  PSAPI.DLL is still loaded in case this function is called during
     //  shutdown.
@@ -151,7 +152,7 @@ BOOL NT4GetLoadedModules(DWORD     dwPID        ,
 
     if (TRUE == IsBadCodePtr((FARPROC)g_pEnumProcessModules))
     {
-        TRACE0("PSAPI.DLL has been unloaded on us!\n") ;
+        TRACE0("PSAPI.DLL has been unloaded on us\n") ;
 
         // Close the process handle used.
         VERIFY(CloseHandle(hProc)) ;
@@ -175,25 +176,25 @@ BOOL NT4GetLoadedModules(DWORD     dwPID        ,
 
     // If bRet was FALSE, and the user was not just asking for the
     //  total, there was a problem.
-    if (((FALSE == bRet) && (uiCount > 0)) || (0 == dwTotal))
+    if (((FALSE == bRet) and (uiCount > 0)) or (0 == dwTotal))
     {
         ASSERT(FALSE) ;
-        TRACE0("EnumProcessModules failed!\n") ;
+        TRACE0("EnumProcessModules failed\n") ;
         return (FALSE) ;
     }
 
     // If the total returned in puiRealCount is larger than the value in
     //  uiCount, then return an error.  If uiCount is zero, then it is
-    //  not an error.
-    if ((*puiRealCount > uiCount) && (uiCount > 0))
+    // not an error.
+    if ((*puiRealCount > uiCount) and (uiCount > 0))
     {
         ASSERT(FALSE) ;
-        TRACE0("Buffer is too small in NT4GetLoadedModules!\n") ;
+        TRACE0("Buffer is too small in NT4GetLoadedModules\n") ;
         SetLastErrorEx(ERROR_INSUFFICIENT_BUFFER , SLE_ERROR) ;
         return (FALSE) ;
     }
 
-    // All OK, Jumpmaster!
+    // All OK, Jumpmaster
     SetLastError(ERROR_SUCCESS) ;
     return (TRUE) ;
 }

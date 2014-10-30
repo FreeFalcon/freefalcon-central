@@ -32,9 +32,9 @@ void CBEECMPwrLight(void * pObject)
 {
     CPLight *pCPLight = (CPLight*) pObject;
 
-    if (SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity()->HasSPJamming())
+    if (SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity()->HasSPJamming())
     {
-        pCPLight->mState = SimDriver.GetPlayerEntity()->IsSetFlag(ECM_ON) != FALSE;
+        pCPLight->mState = SimDriver.GetPlayerEntity()->IsSetFlag(ECM_ON) not_eq FALSE;
     }
     else
     {
@@ -68,7 +68,7 @@ void CBEECMFailLight(void * pObject)
     if (playerAC->HasSPJamming())
     {
         if (
-            playerAC->mFaults->GetFault(FaultClass::epod_fault) ||
+            playerAC->mFaults->GetFault(FaultClass::epod_fault) or
             playerAC->mFaults->GetFault(FaultClass::blkr_fault)
         )
         {
@@ -102,13 +102,13 @@ void CBEAuxWarnActL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->HasActivity() != FALSE);
+            pCPLight->mState = (theRwr->HasActivity() not_eq FALSE);
         }
 
         //MI extracting Data
@@ -129,13 +129,13 @@ void CBELaunchL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->LaunchIndication() != FALSE);
+            pCPLight->mState = (theRwr->LaunchIndication() not_eq FALSE);
         }
 
         //MI extracting Data
@@ -157,13 +157,13 @@ void CBEHandoffL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->ManualSelect() != FALSE);
+            pCPLight->mState = (theRwr->ManualSelect() not_eq FALSE);
         }
 
         //MI extracting Data
@@ -185,13 +185,13 @@ void CBEPriModeL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->IsPriority() != FALSE);
+            pCPLight->mState = (theRwr->IsPriority() not_eq FALSE);
         }
 
         //MI extracting DATA
@@ -213,13 +213,13 @@ void CBEUnknownL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->LightUnknowns() != FALSE);
+            pCPLight->mState = (theRwr->LightUnknowns() not_eq FALSE);
         }
 
         //MI extracting Data
@@ -240,13 +240,13 @@ void CBENavalL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->ShowNaval() != FALSE);
+            pCPLight->mState = (theRwr->ShowNaval() not_eq FALSE);
         }
 
         //MI extracting Data
@@ -267,13 +267,13 @@ void CBETgtSepL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->TargetSep() != FALSE);
+            pCPLight->mState = (theRwr->TargetSep() not_eq FALSE);
         }
 
         //MI extracting Data
@@ -295,13 +295,13 @@ void CBEAuxWarnSearchL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->LightSearch() != FALSE);
+            pCPLight->mState = (theRwr->LightSearch() not_eq FALSE);
         }
 
         //MI extracting Data
@@ -323,13 +323,13 @@ void CBEAuxWarnAltL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->LowAltPriority() != FALSE);
+            pCPLight->mState = (theRwr->LowAltPriority() not_eq FALSE);
         }
 
         //MI extracting Data
@@ -351,13 +351,13 @@ void CBEAuxWarnPwrL(void * pObject)
 {
     CPLight* pCPLight = (CPLight*) pObject;
 
-    if (pCPLight && (SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if (pCPLight and (SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
         PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
 
         if (theRwr)
         {
-            pCPLight->mState = (theRwr->IsOn() != FALSE);
+            pCPLight->mState = (theRwr->IsOn() not_eq FALSE);
         }
 
         //MI extracting Data
@@ -388,7 +388,7 @@ void CBEAuxWarnSearch(void * pObject)
 {
     CPLight *pCPLight = (CPLight*) pObject;
 
-    if ((SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if ((SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
 
         ALR56Class* theRwr = (ALR56Class*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
@@ -405,7 +405,7 @@ void CBEAuxWarnActPwr(void * pObject)
 {
     CPLight *pCPLight = (CPLight*) pObject;
 
-    if ((SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if ((SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
 
         ALR56Class* theRwr = (ALR56Class*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
@@ -422,7 +422,7 @@ void CBEAuxWarnAlt(void * pObject)
 {
     CPLight *pCPLight = (CPLight*) pObject;
 
-    if ((SimDriver.GetPlayerEntity()) && (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
+    if ((SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP)))
     {
 
         ALR56Class* theRwr = (ALR56Class*)FindSensor(SimDriver.GetPlayerEntity(), SensorClass::RWR);
@@ -464,31 +464,31 @@ void CheckLandingGearHandle(void * pObject)
     int currentState;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC == NULL || !playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC == NULL or not playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
         return;
     }
 
     if (playerAC->af->gearHandle <= 0.0F)
     {
-        if (playerAC->af->gearPos == 0.0F && !playerAC->mFaults->GetFault(FaultClass::gear_fault))
+        if (playerAC->af->gearPos == 0.0F and not playerAC->mFaults->GetFault(FaultClass::gear_fault))
         {
-            currentState = 0; // handle up & wheels locked
+            currentState = 0; // handle up bitand wheels locked
         }
         else
         {
-            currentState = 1; // handle up & wheels moving
+            currentState = 1; // handle up bitand wheels moving
         }
     }
     else
     {
-        if (playerAC->af->gearPos == 1.0F && !playerAC->mFaults->GetFault(FaultClass::gear_fault))
+        if (playerAC->af->gearPos == 1.0F and not playerAC->mFaults->GetFault(FaultClass::gear_fault))
         {
-            currentState = 2; // handle down & wheels locked
+            currentState = 2; // handle down bitand wheels locked
         }
         else
         {
-            currentState = 3; // handle down & wheels moving
+            currentState = 3; // handle down bitand wheels moving
         }
     }
 
@@ -509,7 +509,7 @@ void CheckThreatWarn(void * pObject, type_TWSubSystem subSystem)
 
         case missile_launch:
             // If we have a launch warning and we're in the "ON" part of the blink cycle
-            val = theRwr->LaunchIndication() && (vuxRealTime & 0x200);
+            val = theRwr->LaunchIndication() and (vuxRealTime bitand 0x200);
             break;
 
         case pri_mode:
@@ -641,7 +641,7 @@ void CBEAOAIndLight(void * pObject)
     currentAOAVal = cockpitFlightData.alpha;
 
     //MI in realistic these only work with gear down  //JPG 2 Jan 04 - Nosir, -1 says AoA indexer is operational regardless of gear position
-    /* if(g_bRealisticAvionics && SimDriver.GetPlayerEntity() &&
+    /* if(g_bRealisticAvionics and SimDriver.GetPlayerEntity() and 
      SimDriver.GetPlayerEntity()->af->gearPos < 0.8F)
      {
      pCPLight->mState = CPLIGHT_AOA_OFF;
@@ -658,7 +658,7 @@ void CBEAOAIndLight(void * pObject)
             {
                 pCPLight->mState = CPLIGHT_AOA_SLOW;
             }
-            else if ((currentAOAVal < 9.3F) && (currentAOAVal >= 6.9F))
+            else if ((currentAOAVal < 9.3F) and (currentAOAVal >= 6.9F))
             {
                 pCPLight->mState = CPLIGHT_AOA_ON;
             }
@@ -675,7 +675,7 @@ void CBEAOAIndLight(void * pObject)
             {
                 pCPLight->mState = CPLIGHT_AOA_SLOW;
             }
-            else if ((currentAOAVal < 15.5F) && (currentAOAVal >= 14.5F))
+            else if ((currentAOAVal < 15.5F) and (currentAOAVal >= 14.5F))
             {
                 pCPLight->mState = CPLIGHT_AOA_ON;
             }
@@ -691,7 +691,7 @@ void CBEAOAIndLight(void * pObject)
             {
                 pCPLight->mState = CPLIGHT_AOA_SLOW;
             }
-            else if ((currentAOAVal < 14.0F) && (currentAOAVal >= 11.5F))
+            else if ((currentAOAVal < 14.0F) and (currentAOAVal >= 11.5F))
             {
                 pCPLight->mState = CPLIGHT_AOA_ON;
             }
@@ -712,7 +712,7 @@ extern void CBEAOAFastLight(void * pObject)
     currentAOAVal = cockpitFlightData.alpha;
 
     //MI in realistic these only work with gear down //JPG 2 Jan 04 - Nosir, -1 says AoA indexer is operational regardless of gear position
-    /* if(g_bRealisticAvionics && SimDriver.GetPlayerEntity() &&
+    /* if(g_bRealisticAvionics and SimDriver.GetPlayerEntity() and 
      SimDriver.GetPlayerEntity()->af->gearPos < 0.8F)
      {
      pCPLight->mState = CPLIGHT_AOA_OFF;
@@ -744,7 +744,7 @@ void CBERefuelLight(void * pObject)
 
     // MD -- 20031215: moving this to cautions.cpp to ensure that the state is set independent of whether the lamp is being
     // drawn in the OTW view currently or not,
-    // if(OTWDriver.pCockpitManager->mMiscStates.mRefuelState == 3 && (vuxGameTime > (OTWDriver.pCockpitManager->mMiscStates.mRefuelTimer + 3000))) {
+    // if(OTWDriver.pCockpitManager->mMiscStates.mRefuelState == 3 and (vuxGameTime > (OTWDriver.pCockpitManager->mMiscStates.mRefuelTimer + 3000))) {
     // OTWDriver.pCockpitManager->mMiscStates.SetRefuelState(0);
     // }
 
@@ -765,10 +765,10 @@ void CBERefuelLight(void * pObject)
         }
     }
     //MI NWS light fix
-    //else if (!SimDriver.GetPlayerEntity()->af->IsEngineFlag(AirframeClass::FuelDoorOpen) && pCPLight->mState > CPLIGHT_AR_NWS_RDY )
+    //else if ( not SimDriver.GetPlayerEntity()->af->IsEngineFlag(AirframeClass::FuelDoorOpen) and pCPLight->mState > CPLIGHT_AR_NWS_RDY )
     else if (
-        !playerAC->af->IsEngineFlag(AirframeClass::FuelDoorOpen) &&
-        !playerAC->af->IsSet(AirframeClass::NoseSteerOn)
+ not playerAC->af->IsEngineFlag(AirframeClass::FuelDoorOpen) and 
+ not playerAC->af->IsSet(AirframeClass::NoseSteerOn)
     )
     {
         pCPLight->mState = CPLIGHT_AR_NWS_OFF;
@@ -830,7 +830,7 @@ void CBECaution1(void * pObject)
     pCPLight = (CPLight*) pObject;
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
-    pCPLight->mState = faultSys->GetFault(FaultClass::flcs_fault) != 0;
+    pCPLight->mState = faultSys->GetFault(FaultClass::flcs_fault) not_eq 0;
 }
 
 //Caution le_flaps_fault
@@ -844,7 +844,7 @@ void CBECaution2(void * pObject)
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
     // JPO
-    pCPLight->mState = faultSys->GetFault(le_flaps_fault) != 0;
+    pCPLight->mState = faultSys->GetFault(le_flaps_fault) not_eq 0;
 }
 
 //Caution overheat_fault ???
@@ -862,8 +862,8 @@ void CBECaution3(void * pObject)
 
     pCPLight = (CPLight*) pObject;
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
-    pCPLight->mState = (faultSys->GetFault(FaultClass::eng_fault) != 0) &&
-                       playerAC->af->rpm <= 0.75 &&
+    pCPLight->mState = (faultSys->GetFault(FaultClass::eng_fault) not_eq 0) and 
+                       playerAC->af->rpm <= 0.75 and 
                        playerAC->af->FuelFlow() > 0.0f
                        ; // JPO
 }
@@ -884,7 +884,7 @@ void CBECaution4(void * pObject)
     pCPLight = (CPLight*) pObject;
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
-    pCPLight->mState = (playerAC->af->Fuel() < 750.0F) || faultSys->GetFault(FaultClass::fms_fault);
+    pCPLight->mState = (playerAC->af->Fuel() < 750.0F) or faultSys->GetFault(FaultClass::fms_fault);
 }
 
 //Caution avionics_fault
@@ -898,13 +898,13 @@ void CBECaution5(void * pObject)
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
     // JPO fix
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
-        pCPLight->mState = faultSys->GetFault(FaultClass::amux_fault) != 0;
+        pCPLight->mState = faultSys->GetFault(FaultClass::amux_fault) not_eq 0;
     }
     else
     {
-        pCPLight->mState = SimDriver.GetPlayerAircraft()->mFaults->NeedAckAvioncFault != 0;
+        pCPLight->mState = SimDriver.GetPlayerAircraft()->mFaults->NeedAckAvioncFault not_eq 0;
     }
 }
 
@@ -918,7 +918,7 @@ void CBECaution6(void * pObject)
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
     // JPO fix
-    pCPLight->mState = faultSys->GetFault(FaultClass::ralt_fault) != 0;
+    pCPLight->mState = faultSys->GetFault(FaultClass::ralt_fault) not_eq 0;
 }
 
 //Caution iff_fault
@@ -931,7 +931,7 @@ void CBECaution7(void * pObject)
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
     // IFF - JPO fix
-    pCPLight->mState = faultSys->GetFault(FaultClass::iff_fault) != 0;
+    pCPLight->mState = faultSys->GetFault(FaultClass::iff_fault) not_eq 0;
 }
 
 //Caution ecm_fault
@@ -944,7 +944,7 @@ void CBECaution8(void * pObject)
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
     // JPO Fix
-    pCPLight->mState = faultSys->GetFault(FaultClass::rwr_fault) != 0;
+    pCPLight->mState = faultSys->GetFault(FaultClass::rwr_fault) not_eq 0;
 }
 
 //Caution hook_fault - JPO Fix
@@ -956,8 +956,8 @@ void CBECaution9(void *pObject)
     pCPLight = (CPLight*) pObject;
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
-    // use the hook caution to set it!
-    pCPLight->mState = faultSys->GetFault(hook_fault) != 0;
+    // use the hook caution to set it
+    pCPLight->mState = faultSys->GetFault(hook_fault) not_eq 0;
 }
 
 //Caution nws_fault
@@ -981,7 +981,7 @@ void CBECaution12(void * pObject)
     pCPLight = (CPLight*) pObject;
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
-    pCPLight->mState = (faultSys->GetFault(FaultClass::eng_fault) != 0) ;
+    pCPLight->mState = (faultSys->GetFault(FaultClass::eng_fault) not_eq 0) ;
 }
 
 // Caution TO/LDG Config
@@ -1006,7 +1006,7 @@ void CBECaution13(void * pObject)
     {
         if (g_bTO_LDG_LightFix)
         {
-            if (playerAC->mFaults && playerAC->mFaults->GetFault(to_ldg_config))
+            if (playerAC->mFaults and playerAC->mFaults->GetFault(to_ldg_config))
             {
                 pCPLight->mState = TRUE;
             }
@@ -1019,10 +1019,10 @@ void CBECaution13(void * pObject)
         {
             if (
                 //RV - I-Hawk - changed altitude value from 10000 to 5000 according to Dannycoh
-                (playerAC->ZPos() > -5000.0F) &&
-                (playerAC->GetKias() < 190.0F) &&
-                (playerAC->ZDelta() * 60.0F >= 250.0F) &&
-                (playerAC->af->gearPos != 1.0F)
+                (playerAC->ZPos() > -5000.0F) and 
+                (playerAC->GetKias() < 190.0F) and 
+                (playerAC->ZDelta() * 60.0F >= 250.0F) and 
+                (playerAC->af->gearPos not_eq 1.0F)
             )
             {
                 pCPLight->mState = TRUE;
@@ -1053,7 +1053,7 @@ void CBECaution14(void * pObject)
     pCPLight = (CPLight*) pObject;
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
-    //pCPLight->mState = (2 * faultSys->GetFault(FaultClass::fcc_fault) || faultSys->GetFault(FaultClass::dmux_fault)) + faultSys->GetFault(FaultClass::hud_fault);
+    //pCPLight->mState = (2 * faultSys->GetFault(FaultClass::fcc_fault) or faultSys->GetFault(FaultClass::dmux_fault)) + faultSys->GetFault(FaultClass::hud_fault);
     pCPLight->mState = 0;
     // copied canopy fault code
     int canopyopen;
@@ -1067,7 +1067,7 @@ void CBECaution14(void * pObject)
         canopyopen = playerAC->GetDOFValue(SIMP_CANOPY_DOF) > 0;
     }
 
-    if (canopyopen || (faultSys && faultSys->GetFault(canopy)))
+    if (canopyopen or (faultSys and faultSys->GetFault(canopy)))
     {
         pCPLight->mState = 1;
     }
@@ -1095,9 +1095,9 @@ void CBECaution15(void * pObject)
     pCPLight = (CPLight*) pObject;
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
-    pCPLight->mState = (playerAC->af->rpm * 37.0F) < 15.0F ||
-                       faultSys->GetFault(FaultClass::eng_fault) != 0 ||
-                       !playerAC->af->HydraulicOK();
+    pCPLight->mState = (playerAC->af->rpm * 37.0F) < 15.0F or
+                       faultSys->GetFault(FaultClass::eng_fault) not_eq 0 or
+ not playerAC->af->HydraulicOK();
 }
 /////////
 
@@ -1125,7 +1125,7 @@ void CBECaution16(void * pObject)
             break;
 
         default: // either just something else or both
-            if (faultSys->GetFault(FaultClass::eng_fault) & eng_fire)
+            if (faultSys->GetFault(FaultClass::eng_fault) bitand eng_fire)
                 pCPLight->mState = 2;
             else
                 pCPLight->mState = 1;
@@ -1137,7 +1137,7 @@ void CBECaution16(void * pObject)
 
     // MD -- 20031221: re-wrote this so that the ENGINE half of this split face works like
     // the dash one says it does.
-    // NB!!!!  I changed the state table swapping the last two over so any cockpit art that
+    // NB  I changed the state table swapping the last two over so any cockpit art that
     // has four state support needs to flip the last two srcloc lines in the dat file for
     // this lamp now.
 
@@ -1152,16 +1152,16 @@ void CBECaution16(void * pObject)
 
     if (
         (
-            (playerAC->af->rpm <= 0.6F) &&
+            (playerAC->af->rpm <= 0.6F) and 
             (playerAC->MainPower() == AircraftClass::MainPowerMain)
-        ) ||
+        ) or
         (cockpitFlightData.ftit > 1100.0F)
     )
     {
         engine = 1;
     }
 
-    if (faultSys->GetFault(FaultClass::eng_fault) & eng_fire)
+    if (faultSys->GetFault(FaultClass::eng_fault) bitand eng_fire)
     {
         fire = 2;
     }
@@ -1190,22 +1190,22 @@ void CBEEng2WarningLight(void * pObject)
 
     // MD -- 20031221: re-wrote this so that the ENGINE half of this split face works like
     // the dash one says it does.
-    // NB!!!!  I changed the state table swapping the last two over so any cockpit art that
+    // NB  I changed the state table swapping the last two over so any cockpit art that
     // has four state support needs to flip the last two srcloc lines in the dat file for
     // this lamp now.
 
     int engine = 0, fire = 0;
 
     if (
-        ((playerAC->af->rpm2 <= 0.6F) &&
-         (playerAC->MainPower() == AircraftClass::MainPowerMain)) ||
+        ((playerAC->af->rpm2 <= 0.6F) and 
+         (playerAC->MainPower() == AircraftClass::MainPowerMain)) or
         (cockpitFlightData.ftit2 > 1100.0F)
     )
     {
         engine = 1;
     }
 
-    if (faultSys->GetFault(FaultClass::eng2_fault) & eng_fire)
+    if (faultSys->GetFault(FaultClass::eng2_fault) bitand eng_fire)
     {
         fire = 2;
     }
@@ -1228,7 +1228,7 @@ void CBEFrontLandGearLight(void * pObject)
 
     pCPLight = (CPLight*) pObject;
 
-    if (((AircraftClass*) pCPLight->mpOwnship)->af->gear[0].flags & GearData::GearProblem)
+    if (((AircraftClass*) pCPLight->mpOwnship)->af->gear[0].flags bitand GearData::GearProblem)
     {
         pCPLight->mState = 2;  // Damaged
     }
@@ -1260,7 +1260,7 @@ void CBELeftLandGearLight(void * pObject)
 
     int gear = min(1, ((AircraftClass*) pCPLight->mpOwnship)->af->NumGear());
 
-    if (((AircraftClass*) pCPLight->mpOwnship)->af->gear[gear].flags & GearData::GearProblem)
+    if (((AircraftClass*) pCPLight->mpOwnship)->af->gear[gear].flags bitand GearData::GearProblem)
     {
         pCPLight->mState = 2;  // Damaged
     }
@@ -1292,7 +1292,7 @@ void CBERightLandGearLight(void * pObject)
 
     int gear = min(2, ((AircraftClass*) pCPLight->mpOwnship)->af->NumGear());
 
-    if (((AircraftClass*) pCPLight->mpOwnship)->af->gear[gear].flags & GearData::GearProblem)
+    if (((AircraftClass*) pCPLight->mpOwnship)->af->gear[gear].flags bitand GearData::GearProblem)
     {
         pCPLight->mState = 2;  // Damaged
     }
@@ -1507,7 +1507,7 @@ void CBEInteriorLight(void *pObject)
 
     pCPLight = (CPLight*) pObject;
 
-    if (!((AircraftClass*) pCPLight->mpOwnship)->HasPower(AircraftClass::InteriorLightPower))
+    if ( not ((AircraftClass*) pCPLight->mpOwnship)->HasPower(AircraftClass::InteriorLightPower))
         pCPLight->mState = CPLIGHT_OFF;
     else
     {
@@ -1535,7 +1535,7 @@ void CBEInstrumentLight(void *pObject)
 
     pCPLight = (CPLight*) pObject;
 
-    if (!((AircraftClass*) pCPLight->mpOwnship)->HasPower(AircraftClass::InstrumentLightPower))
+    if ( not ((AircraftClass*) pCPLight->mpOwnship)->HasPower(AircraftClass::InstrumentLightPower))
         pCPLight->mState = CPLIGHT_OFF;
     else
     {
@@ -1563,7 +1563,7 @@ void CBESpotLight(void *pObject)
 
     pCPLight = (CPLight*) pObject;
 
-    if (!((AircraftClass*) pCPLight->mpOwnship)->HasPower(AircraftClass::SpotLightPower))
+    if ( not ((AircraftClass*) pCPLight->mpOwnship)->HasPower(AircraftClass::SpotLightPower))
         pCPLight->mState = CPLIGHT_OFF;
     else
     {
@@ -1753,7 +1753,7 @@ void CBECanopyLight(void *pObject)
         canopyopen = playerAC->GetDOFValue(SIMP_CANOPY_DOF) > 0;
     }
 
-    if (canopyopen || (faultSys && faultSys->GetFault(canopy)))
+    if (canopyopen or (faultSys and faultSys->GetFault(canopy)))
     {
         pCPLight->mState = CPLIGHT_ON;
     }
@@ -1797,7 +1797,7 @@ void CBEGearHandleLight(void *pObject)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC == NULL || !SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC == NULL or not SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP))
     {
         return;
     }
@@ -1819,8 +1819,8 @@ void CBEGearHandleLight(void *pObject)
 
         if (playerAC->af->gearPos == 0.0F) //0 = gear up
         {
-            if (!playerAC->mFaults->GetFault(FaultClass::gear_fault) &&
-                !playerAC->mFaults->GetFault(to_ldg_config))
+            if ( not playerAC->mFaults->GetFault(FaultClass::gear_fault) and 
+ not playerAC->mFaults->GetFault(to_ldg_config))
             {
                 pCPLight->mState = CPLIGHT_OFF; //Light off
             }
@@ -1846,7 +1846,7 @@ void CBEGearHandleLight(void *pObject)
         //handle down. Here it's only on if our gear isn't locked
         if (playerAC->af->gearPos == 1.0F) //1 = gear down
         {
-            if (!playerAC->mFaults->GetFault(FaultClass::gear_fault))
+            if ( not playerAC->mFaults->GetFault(FaultClass::gear_fault))
             {
                 pCPLight->mState = 2; //Light off
             }
@@ -1882,7 +1882,7 @@ void CBEADIOff(void *pObject)
     CPLight* pCPLight;
     pCPLight = (CPLight*) pObject;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         pCPLight->mState = CPLIGHT_OFF;
         return;
@@ -1913,7 +1913,7 @@ void CBEADIAux(void *pObject)
     CPLight* pCPLight;
     pCPLight = (CPLight*) pObject;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         pCPLight->mState = CPLIGHT_OFF;
         return;
@@ -1945,7 +1945,7 @@ void CBEHSIOff(void *pObject)
     CPLight* pCPLight;
     pCPLight = (CPLight*) pObject;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         pCPLight->mState = CPLIGHT_OFF;
         return;
@@ -1969,7 +1969,7 @@ void CBELEFLight(void *pObject)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC == NULL || playerAC->mFaults == NULL)
+    if (playerAC == NULL or playerAC->mFaults == NULL)
     {
         return;
     }
@@ -2013,7 +2013,7 @@ void CBEBUPADIFlag(void *pObject)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC == NULL || playerAC->mFaults == NULL)
+    if (playerAC == NULL or playerAC->mFaults == NULL)
     {
         return;
     }
@@ -2021,7 +2021,7 @@ void CBEBUPADIFlag(void *pObject)
     CPLight* pCPLight;
     pCPLight = (CPLight*) pObject;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         pCPLight->mState = CPLIGHT_OFF;
         return;
@@ -2072,13 +2072,13 @@ void CBEGSFlag(void *pObject)
     CPLight* pCPLight;
     pCPLight = (CPLight*) pObject;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         pCPLight->mState = CPLIGHT_OFF;
         return;
     }
 
-    if (playerAC->GSValid == FALSE || playerAC->currentPower == AircraftClass::PowerNone)
+    if (playerAC->GSValid == FALSE or playerAC->currentPower == AircraftClass::PowerNone)
     {
         pCPLight->mState = CPLIGHT_ON; //Flag visible
         // MD -- 20031011: Move to otwloop.cpp
@@ -2104,13 +2104,13 @@ void CBELOCFlag(void *pObject)
     CPLight* pCPLight;
     pCPLight = (CPLight*) pObject;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         pCPLight->mState = CPLIGHT_OFF;
         return;
     }
 
-    if (playerAC->LOCValid == FALSE || playerAC->currentPower == AircraftClass::PowerNone)
+    if (playerAC->LOCValid == FALSE or playerAC->currentPower == AircraftClass::PowerNone)
     {
         pCPLight->mState = CPLIGHT_ON; //Flag visible
         // MD -- 20031011: Move to otwloop.cpp
@@ -2173,7 +2173,7 @@ void CBECkptWingLight(void *pObject)
     CPLight* pCPLight;
     pCPLight = (CPLight*) pObject;
 
-    if (playerAC->CockpitWingLight && PlayerOptions.ObjDetailLevel > 1.0F)
+    if (playerAC->CockpitWingLight and PlayerOptions.ObjDetailLevel > 1.0F)
     {
         pCPLight->mState = CPLIGHT_ON;
     }

@@ -127,11 +127,11 @@ public:
     // no cliping version (except for screen)
     void Draw(SCREEN *surface, _TCHAR *str, WORD color, long x, long y);
     void Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long x, long y);
-    //! void Draw(SCREEN *surface,_TCHAR *str,short length,WORD color,long x,long y);
+    //void Draw(SCREEN *surface,_TCHAR *str,short length,WORD color,long x,long y);
     void DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color, WORD bgcolor, long x, long y);
     void _DrawSolid16(SCREEN *surface, _TCHAR *str, long length, WORD color, WORD bgcolor, long x, long y, UI95_RECT *cliprect); //XX
     void _DrawSolid32(SCREEN *surface, _TCHAR *str, long length, DWORD color, DWORD bgcolor, long x, long y, UI95_RECT *cliprect); //XX
-    //! void DrawSolid(SCREEN *surface,_TCHAR *str,short length,WORD color,WORD bgcolor,long x,long y);
+    //void DrawSolid(SCREEN *surface,_TCHAR *str,short length,WORD color,WORD bgcolor,long x,long y);
     void DrawSolid(SCREEN *surface, _TCHAR *str, WORD color, WORD bgcolor, long x, long y);
 
     // clipping version (use cliprect)
@@ -140,9 +140,9 @@ public:
     void _Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, long x, long y, UI95_RECT *cliprect); //XX
     void _Draw32(SCREEN *surface, _TCHAR *str, long length, DWORD dwColor, long x, long y, UI95_RECT *cliprect); //XX
 
-    //! void Draw(SCREEN *surface,_TCHAR *str,short length,WORD color,long x,long y,UI95_RECT *cliprect);
+    //void Draw(SCREEN *surface,_TCHAR *str,short length,WORD color,long x,long y,UI95_RECT *cliprect);
     void DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color, WORD bgcolor, long x, long y, UI95_RECT *cliprect);
-    //! void DrawSolid(SCREEN *surface,_TCHAR *str,short length,WORD color,WORD bgcolor,long x,long y,UI95_RECT *cliprect);
+    //void DrawSolid(SCREEN *surface,_TCHAR *str,short length,WORD color,WORD bgcolor,long x,long y,UI95_RECT *cliprect);
     void DrawSolid(SCREEN *surface, _TCHAR *str, WORD color, WORD bgcolor, long x, long y, UI95_RECT *cliprect);
 
     // Font creation Functions (for converting winders fonts to my BFT format)

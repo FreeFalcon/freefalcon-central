@@ -129,11 +129,11 @@ BOOL C_PopupMgr::OpenMenu(long ID, long x, long y, C_Base *control)
 {
     POPUPMENU *cur;
 
-    if (!ID) return(FALSE);
+    if ( not ID) return(FALSE);
 
     CloseMenu();
 
-    if (!AMenuOpened())
+    if ( not AMenuOpened())
     {
         cur = Root_;
 
@@ -156,7 +156,7 @@ BOOL C_PopupMgr::OpenMenu(long ID, long x, long y, C_Base *control)
             if (Current_->Menu->OpenCallback_)
                 (*Current_->Menu->OpenCallback_)(Current_->Menu, control);
 
-            Current_->Menu->OpenWindow(static_cast<short>(x - 20), static_cast<short>(y - 5), C_TYPE_RIGHT); //!
+            Current_->Menu->OpenWindow(static_cast<short>(x - 20), static_cast<short>(y - 5), C_TYPE_RIGHT); 
 
             LastX_ = static_cast<short>(x);
             LastY_ = static_cast<short>(y);
@@ -172,20 +172,20 @@ BOOL C_PopupMgr::OpenWindowMenu(C_Window *win, long x, long y)
     POPUPMENU *cur;
     long i;
 
-    if (!win) return(FALSE);
+    if ( not win) return(FALSE);
 
     if (win->IsMenu())
         return(FALSE);
 
     CloseMenu();
 
-    if (!AMenuOpened())
+    if ( not AMenuOpened())
     {
         for (i = 0; i < WIN_MAX_CLIENTS; i++)
         {
-            if ((x - win->GetX()) >= win->ClientArea_[i].left && (y - win->GetY()) >= win->ClientArea_[i].top &&
-                (x - win->GetX()) < win->ClientArea_[i].right && (y - win->GetY()) < win->ClientArea_[i].bottom &&
-                win->GetClientMenu(i) && (win->GetClientFlags(i) & C_BIT_ENABLED))
+            if ((x - win->GetX()) >= win->ClientArea_[i].left and (y - win->GetY()) >= win->ClientArea_[i].top and 
+                (x - win->GetX()) < win->ClientArea_[i].right and (y - win->GetY()) < win->ClientArea_[i].bottom and 
+                win->GetClientMenu(i) and (win->GetClientFlags(i) bitand C_BIT_ENABLED))
             {
                 cur = Root_;
 
@@ -194,11 +194,11 @@ BOOL C_PopupMgr::OpenWindowMenu(C_Window *win, long x, long y)
                     if (cur->Menu->GetID() == win->GetClientMenu(i))
                     {
                         Current_ = cur;
-                        Current_->Menu->OpenWindow(static_cast<short>(x - 20), static_cast<short>(y - 5), C_TYPE_RIGHT); //!
+                        Current_->Menu->OpenWindow(static_cast<short>(x - 20), static_cast<short>(y - 5), C_TYPE_RIGHT); 
                         CurrentType_ = C_TYPE_WINDOW;
-                        CurrentClient_ = static_cast<short>(i); //!
-                        LastX_ = static_cast<short>(x); //!
-                        LastY_ = static_cast<short>(y); //!
+                        CurrentClient_ = static_cast<short>(i); 
+                        LastX_ = static_cast<short>(x); 
+                        LastY_ = static_cast<short>(y); 
                         return(TRUE);
                     }
 
@@ -216,9 +216,9 @@ BOOL C_PopupMgr::OpenWindowMenu(C_Window *win, long x, long y)
                 CurrentType_ = C_TYPE_WINDOW;
                 CurrentClient_ = -1;
                 Current_ = cur;
-                Current_->Menu->OpenWindow(static_cast<short>(x - 20), static_cast<short>(y - 5), C_TYPE_RIGHT); //!
-                LastX_ = static_cast<short>(x); //!
-                LastY_ = static_cast<short>(y); //!
+                Current_->Menu->OpenWindow(static_cast<short>(x - 20), static_cast<short>(y - 5), C_TYPE_RIGHT); 
+                LastX_ = static_cast<short>(x); 
+                LastY_ = static_cast<short>(y); 
                 return(TRUE);
             }
 

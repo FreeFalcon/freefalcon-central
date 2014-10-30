@@ -24,10 +24,10 @@ public:
 		return mOutputValue;
 	}
 	
-	SubRange & operator=(const InputType InputValue)
+	SubRange bitand operator=(const InputType InputValue)
 	{
 
-		if (InputValue >= InputMinimum &&
+		if (InputValue >= InputMinimum and 
 			InputValue <= InputMaximum)
 		{
 			mOutputValue = InputValue;
@@ -43,25 +43,25 @@ public:
 
 	}
 	
-	SubRange & operator+=(const InputType InputValue)
+	SubRange bitand operator+=(const InputType InputValue)
 	{
 		*this = *this + InputValue;
 		return *this;
 	}
 	
-	SubRange & operator-=(const InputType InputValue)
+	SubRange bitand operator-=(const InputType InputValue)
 	{
 		*this = *this - InputValue;
 		return *this;
 	}
 
-	SubRange & operator*=(const InputType InputValue)
+	SubRange bitand operator*=(const InputType InputValue)
 	{
 		*this = *this * InputValue;
 		return *this;
 	}
 
-	SubRange & operator/=(const InputType InputValue)
+	SubRange bitand operator/=(const InputType InputValue)
 	{
 		*this = *this / InputValue;
 		return *this;

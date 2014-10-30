@@ -42,7 +42,7 @@ CPObject::CPObject(const ObjectInitStr* pobjectInitStr)
     mCallbackSlot = pobjectInitStr->callbackSlot;
 
     // JPO - test the limits.
-    if (mCallbackSlot < 0 || mCallbackSlot >= TOTAL_CPCALLBACK_SLOTS)
+    if (mCallbackSlot < 0 or mCallbackSlot >= TOTAL_CPCALLBACK_SLOTS)
     {
         mExecCallback = NULL;
         mDisplayCallback = NULL;

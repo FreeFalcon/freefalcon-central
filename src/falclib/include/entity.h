@@ -157,7 +157,7 @@ struct VehicleClassDataType
     ushort VisibleFlags; //0x01 means hardpoint 0 is visible, 0x02 -> hdpt 1, etc
     uchar CallsignIndex;
     uchar CallsignSlots;
-    uchar HitChance[MOVEMENT_TYPES]; // Vehicle hit chances (best hitchance & bonus)
+    uchar HitChance[MOVEMENT_TYPES]; // Vehicle hit chances (best hitchance bitand bonus)
     uchar Strength[MOVEMENT_TYPES]; // Combat strengths (full strength only) (calculated)
     uchar Range[MOVEMENT_TYPES]; // Firing ranges (full strength only) (calculated)
     uchar Detection[MOVEMENT_TYPES]; // Electronic detection ranges

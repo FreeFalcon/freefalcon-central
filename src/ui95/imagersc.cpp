@@ -1,3 +1,4 @@
+#include <cISO646>
 #include <windows.h>
 #include "chandler.h"
 
@@ -10,33 +11,33 @@ extern WORD rShift[], bShift[], gShift[];
 DWORD RGB565toRGB8(WORD sc)
 {
     //unpack rgb565
-    DWORD r = (sc >> 11) & 31;
-    DWORD g = (sc >> 5) & 63;
-    DWORD b = (sc & 31);
+    DWORD r = (sc >> 11) bitand 31;
+    DWORD g = (sc >> 5) bitand 63;
+    DWORD b = (sc bitand 31);
     r <<= 3;//scale 0..31 to 0..255
     g <<= 2;//scale 0..63 to 0..255
     b <<= 3;
     //pack rgb888
-    return (r << 16) | (g << 8) | b; //ARGB
+    return (r << 16) bitor (g << 8) bitor b; //ARGB
 }
 //XX
 WORD RGB8toRGB565(DWORD sc)
 {
     //unpack rgb565
-    DWORD r = (sc >> 16) & 255;
-    DWORD g = (sc >> 8) & 255;
-    DWORD b = (sc & 255);
+    DWORD r = (sc >> 16) bitand 255;
+    DWORD g = (sc >> 8) bitand 255;
+    DWORD b = (sc bitand 255);
     r >>= 3;//scale to 0..31 from 0..255
     g >>= 2;//scale to 0..63 from 0..255
     b >>= 3;
     //pack rgb565
-    return static_cast<WORD>((r << 11) | (g << 5) | b); //ARGB
+    return static_cast<WORD>((r << 11) bitor (g << 5) bitor b); //ARGB
 }
 
 
 // Drawing with Palettes
 
-// This is for src size <= dest && same width
+// This is for src size <= dest and same width
 void IMAGE_RSC::Blit8BitFast(WORD *dest)
 {
     unsigned char *sptr;
@@ -54,7 +55,8 @@ void IMAGE_RSC::Blit8BitFast(WORD *dest)
         *dptr++ = Palette[*sptr++];
 
 #else
-    __asm
+#undef xor
+	__asm
     {
         mov ESI, sptr
         mov EDI, dptr
@@ -73,10 +75,11 @@ void IMAGE_RSC::Blit8BitFast(WORD *dest)
         stosw
         loop  loop_here
     };
+#define xor ^
 #endif
 }
 
-// This is for src size <= dest && same width
+// This is for src size <= dest and same width
 void IMAGE_RSC::Blit8BitTransparentFast(WORD *dest)
 {
     unsigned char *sptr;
@@ -396,7 +399,7 @@ void IMAGE_RSC::_Blit8BitTransparentPartTo32(long soffset, long scopy, long ssiz
 
 // Straight Bliting
 
-// This is for src size <= dest && same width
+// This is for src size <= dest and same width
 void IMAGE_RSC::Blit16BitFast(WORD *dest)
 {
     WORD *sptr;
@@ -422,7 +425,7 @@ void IMAGE_RSC::Blit16BitFast(WORD *dest)
 #endif
 }
 
-// This is for src size <= dest && same width
+// This is for src size <= dest and same width
 void IMAGE_RSC::Blit16BitTransparentFast(WORD *dest)
 {
     WORD *sptr;
@@ -436,7 +439,7 @@ void IMAGE_RSC::Blit16BitTransparentFast(WORD *dest)
 
     while (count--)
     {
-        if (*sptr ^ Owner->ColorKey_)
+        if (*sptr xor Owner->ColorKey_)
             *dptr++ = *sptr++;
         else
         {
@@ -585,7 +588,7 @@ void IMAGE_RSC::_Blit16BitTransparentTo32(long doffset, long dwidth, DWORD *dest
 
         while (i--)
         {
-            if (*sptr ^ Owner->ColorKey_)
+            if (*sptr xor Owner->ColorKey_)
             {
                 sc = *sptr++;
                 dc = RGB565toRGB8(sc);
@@ -661,7 +664,7 @@ void IMAGE_RSC::_Blit16BitTransparentPartTo32(long soffset, long scopy, long ssi
 
         while (i--)
         {
-            if (*sptr ^ Owner->ColorKey_)
+            if (*sptr xor Owner->ColorKey_)
             {
                 //*dptr++=*sptr++;
                 sc = *sptr++;
@@ -704,7 +707,7 @@ void IMAGE_RSC::Blit16BitTransparent(long doffset, long dwidth, WORD *dest)
 
         while (i--)
         {
-            if (*sptr ^ Owner->ColorKey_)
+            if (*sptr xor Owner->ColorKey_)
                 *dptr++ = *sptr++;
             else
             {
@@ -822,7 +825,7 @@ void IMAGE_RSC::Blit16BitTransparentPart(long soffset, long scopy, long ssize, l
 
         while (i--)
         {
-            if (*sptr ^ Owner->ColorKey_)
+            if (*sptr xor Owner->ColorKey_)
                 *dptr++ = *sptr++;
             else
             {
@@ -841,7 +844,7 @@ void IMAGE_RSC::Blit16BitTransparentPart(long soffset, long scopy, long ssize, l
 
 // Translucent Blending code
 
-// This is for src size <= dest && same width
+// This is for src size <= dest and same width
 void IMAGE_RSC::Blend8BitFast(WORD *dest, long front, long back)
 {
     unsigned char *sptr;
@@ -861,26 +864,26 @@ void IMAGE_RSC::Blend8BitFast(WORD *dest, long front, long back)
     while (count--)
     {
         r = rShift[UIColorTable[operc][
-                       UIColorTable[front][(Palette[*sptr] >> Owner->reds) & 0x1f] +
-                       UIColorTable[back][(*dptr >> Owner->reds) & 0x1f]
+                       UIColorTable[front][(Palette[*sptr] >> Owner->reds) bitand 0x1f] +
+                       UIColorTable[back][(*dptr >> Owner->reds) bitand 0x1f]
                    ]];
 
         g = gShift[UIColorTable[operc][
-                       UIColorTable[front][(Palette[*sptr] >> Owner->greens) & 0x1f] +
-                       UIColorTable[back][(*dptr >> Owner->greens) & 0x1f]
+                       UIColorTable[front][(Palette[*sptr] >> Owner->greens) bitand 0x1f] +
+                       UIColorTable[back][(*dptr >> Owner->greens) bitand 0x1f]
                    ]];
 
         b = bShift[UIColorTable[operc][
-                       UIColorTable[front][(Palette[*sptr] >> Owner->blues) & 0x1f] +
-                       UIColorTable[back][(*dptr >> Owner->blues) & 0x1f]
+                       UIColorTable[front][(Palette[*sptr] >> Owner->blues) bitand 0x1f] +
+                       UIColorTable[back][(*dptr >> Owner->blues) bitand 0x1f]
                    ]];
 
         sptr++;
-        *dptr++ = static_cast<WORD>(r | g | b);
+        *dptr++ = static_cast<WORD>(r bitor g bitor b);
     }
 }
 
-// This is for src size <= dest && same width
+// This is for src size <= dest and same width
 void IMAGE_RSC::Blend8BitTransparentFast(WORD *dest, long front, long back)
 {
     unsigned char *sptr;
@@ -902,20 +905,20 @@ void IMAGE_RSC::Blend8BitTransparentFast(WORD *dest, long front, long back)
         if (*sptr)
         {
             r = rShift[UIColorTable[operc][
-                           UIColorTable[front][(Palette[*sptr] >> Owner->reds) & 0x1f] +
-                           UIColorTable[back][(*dptr >> Owner->reds) & 0x1f]
+                           UIColorTable[front][(Palette[*sptr] >> Owner->reds) bitand 0x1f] +
+                           UIColorTable[back][(*dptr >> Owner->reds) bitand 0x1f]
                        ]];
 
             g = gShift[UIColorTable[operc][
-                           UIColorTable[front][(Palette[*sptr] >> Owner->greens) & 0x1f] +
-                           UIColorTable[back][(*dptr >> Owner->greens) & 0x1f]
+                           UIColorTable[front][(Palette[*sptr] >> Owner->greens) bitand 0x1f] +
+                           UIColorTable[back][(*dptr >> Owner->greens) bitand 0x1f]
                        ]];
 
             b = bShift[UIColorTable[operc][
-                           UIColorTable[front][(Palette[*sptr] >> Owner->blues) & 0x1f] +
-                           UIColorTable[back][(*dptr >> Owner->blues) & 0x1f]
+                           UIColorTable[front][(Palette[*sptr] >> Owner->blues) bitand 0x1f] +
+                           UIColorTable[back][(*dptr >> Owner->blues) bitand 0x1f]
                        ]];
-            *dptr++ = static_cast<WORD>(r | g | b);
+            *dptr++ = static_cast<WORD>(r bitor g bitor b);
         }
         else
             dptr++;
@@ -950,18 +953,18 @@ void IMAGE_RSC::Blend8Bit(long doffset,long dwidth,WORD *dest,long front,long ba
  while(i--)
  {
  r=rShift[UIColorTable[operc][
- UIColorTable[front][(Palette[*sptr] >> Owner->reds) & 0x1f]+
- UIColorTable[back][(*dptr >> Owner->reds) & 0x1f]
+ UIColorTable[front][(Palette[*sptr] >> Owner->reds) bitand 0x1f]+
+ UIColorTable[back][(*dptr >> Owner->reds) bitand 0x1f]
  ]];
 
  g=gShift[UIColorTable[operc][
- UIColorTable[front][(Palette[*sptr] >> Owner->greens) & 0x1f]+
- UIColorTable[back][(*dptr >> Owner->greens) & 0x1f]
+ UIColorTable[front][(Palette[*sptr] >> Owner->greens) bitand 0x1f]+
+ UIColorTable[back][(*dptr >> Owner->greens) bitand 0x1f]
  ]];
 
  b=bShift[UIColorTable[operc][
- UIColorTable[front][(Palette[*sptr] >> Owner->blues) & 0x1f]+
- UIColorTable[back][(*dptr >> Owner->blues) & 0x1f]
+ UIColorTable[front][(Palette[*sptr] >> Owner->blues) bitand 0x1f]+
+ UIColorTable[back][(*dptr >> Owner->blues) bitand 0x1f]
  ]];
 
  sptr++;
@@ -1005,33 +1008,33 @@ void IMAGE_RSC::Blend8Bit(long doffset, long dwidth, WORD *dest, long front, lon
         {
             WORD dc;
 
-            if (!b32)
+            if ( not b32)
                 dc = *dptr;
             else
                 dc = RGB8toRGB565(*dptr2);
 
             r = rShift[UIColorTable[operc][
-                           UIColorTable[front][(Palette[*sptr] >> Owner->reds) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                           UIColorTable[front][(Palette[*sptr] >> Owner->reds) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                        ]];
 
             g = gShift[UIColorTable[operc][
-                           UIColorTable[front][(Palette[*sptr] >> Owner->greens) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                           UIColorTable[front][(Palette[*sptr] >> Owner->greens) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                        ]];
 
             b = bShift[UIColorTable[operc][
-                           UIColorTable[front][(Palette[*sptr] >> Owner->blues) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                           UIColorTable[front][(Palette[*sptr] >> Owner->blues) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                        ]];
 
             sptr++;
 
 
-            if (!b32)
-                *dptr = static_cast<WORD>(r | g | b); //565
+            if ( not b32)
+                *dptr = static_cast<WORD>(r bitor g bitor b); //565
             else
-                *dptr2  = RGB565toRGB8(static_cast<WORD>(r | g | b));
+                *dptr2  = RGB565toRGB8(static_cast<WORD>(r bitor g bitor b));
 
             ++dptr;
             ++dptr2;
@@ -1061,7 +1064,7 @@ void IMAGE_RSC::Blend8BitTransparent(long doffset, long dwidth, WORD *dest, long
     sptr   = (uchar *)(Owner->Data_ + Header->imageoffset);
     srcsize = (uchar *)(sptr  + Header->w * Header->h);
 
-    if (!b32)
+    if ( not b32)
         dptr = dest + doffset;
     else
         dptr = dest + doffset * 2;
@@ -1081,34 +1084,34 @@ void IMAGE_RSC::Blend8BitTransparent(long doffset, long dwidth, WORD *dest, long
             {
                 WORD dc;
 
-                if (!b32)
+                if ( not b32)
                     dc = *dptr;
                 else
                     dc = RGB8toRGB565(*(reinterpret_cast<DWORD*>(dptr)));
 
 
                 r = rShift[UIColorTable[operc][
-                               UIColorTable[front][(Palette[*sptr] >> Owner->reds) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                               UIColorTable[front][(Palette[*sptr] >> Owner->reds) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                            ]];
 
                 g = gShift[UIColorTable[operc][
-                               UIColorTable[front][(Palette[*sptr] >> Owner->greens) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                               UIColorTable[front][(Palette[*sptr] >> Owner->greens) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                            ]];
 
                 b = bShift[UIColorTable[operc][
-                               UIColorTable[front][(Palette[*sptr] >> Owner->blues) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                               UIColorTable[front][(Palette[*sptr] >> Owner->blues) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                            ]];
 
                 sptr++;
 
-                if (!b32)
-                    *dptr++ = static_cast<WORD>(r | g | b);
+                if ( not b32)
+                    *dptr++ = static_cast<WORD>(r bitor g bitor b);
                 else
                 {
-                    DWORD dc = RGB565toRGB8(static_cast<WORD>(r | g | b));
+                    DWORD dc = RGB565toRGB8(static_cast<WORD>(r bitor g bitor b));
                     *(reinterpret_cast<DWORD*>(dptr)) = dc;
                     dptr += 2;
                 }
@@ -1144,7 +1147,7 @@ void IMAGE_RSC::Blend8BitPart(long soffset, long scopy, long ssize, long doffset
     sptr   = (uchar *)(Owner->Data_ + Header->imageoffset + soffset);
     srcsize = (uchar *)(Owner->Data_ + Header->imageoffset + ssize);
 
-    if (!b32)
+    if ( not b32)
         dptr = dest + doffset;
     else
         dptr = dest + doffset * 2;
@@ -1164,35 +1167,35 @@ void IMAGE_RSC::Blend8BitPart(long soffset, long scopy, long ssize, long doffset
         {
             WORD dc;
 
-            if (!b32)
+            if ( not b32)
                 dc = *dptr;
             else
                 dc = RGB8toRGB565(*(reinterpret_cast<DWORD*>(dptr)));
 
 
             r = rShift[UIColorTable[operc][
-                           UIColorTable[front][(Palette[*sptr] >> Owner->reds) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                           UIColorTable[front][(Palette[*sptr] >> Owner->reds) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                        ]];
 
             g = gShift[UIColorTable[operc][
-                           UIColorTable[front][(Palette[*sptr] >> Owner->greens) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                           UIColorTable[front][(Palette[*sptr] >> Owner->greens) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                        ]];
 
             b = bShift[UIColorTable[operc][
-                           UIColorTable[front][(Palette[*sptr] >> Owner->blues) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                           UIColorTable[front][(Palette[*sptr] >> Owner->blues) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                        ]];
 
             sptr++;
 
             //XX *dptr++=static_cast<WORD>(r|g|b);
-            if (!b32)
-                *dptr++ = static_cast<WORD>(r | g | b);
+            if ( not b32)
+                *dptr++ = static_cast<WORD>(r bitor g bitor b);
             else
             {
-                DWORD dc = RGB565toRGB8(static_cast<WORD>(r | g | b));
+                DWORD dc = RGB565toRGB8(static_cast<WORD>(r bitor g bitor b));
                 *(reinterpret_cast<DWORD*>(dptr)) = dc;
                 *dptr += 2;
             }
@@ -1221,14 +1224,14 @@ void IMAGE_RSC::Blend8BitTransparentPart(long soffset, long scopy, long ssize, l
     sptr   = (uchar *)(Owner->Data_ + Header->imageoffset + soffset);
     srcsize = (uchar *)(Owner->Data_ + Header->imageoffset + ssize);
 
-    if (!b32)
+    if ( not b32)
         dptr = dest + doffset;
     else
         dptr = dest + doffset * 2;
 
     sadd = Header->w - scopy;
 
-    if (!b32)
+    if ( not b32)
         dadd = dwidth - scopy;
     else
         dadd = (dwidth - scopy) * 2;
@@ -1244,35 +1247,35 @@ void IMAGE_RSC::Blend8BitTransparentPart(long soffset, long scopy, long ssize, l
             {
                 WORD dc;
 
-                if (!b32)
+                if ( not b32)
                     dc = *dptr;
                 else
                     dc = RGB8toRGB565(*(reinterpret_cast<DWORD*>(dptr)));
 
 
                 r = rShift[UIColorTable[operc][
-                               UIColorTable[front][(Palette[*sptr] >> Owner->reds) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                               UIColorTable[front][(Palette[*sptr] >> Owner->reds) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                            ]];
 
                 g = gShift[UIColorTable[operc][
-                               UIColorTable[front][(Palette[*sptr] >> Owner->greens) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                               UIColorTable[front][(Palette[*sptr] >> Owner->greens) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                            ]];
 
                 b = bShift[UIColorTable[operc][
-                               UIColorTable[front][(Palette[*sptr] >> Owner->blues) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                               UIColorTable[front][(Palette[*sptr] >> Owner->blues) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                            ]];
 
                 sptr++;
 
                 //XX *dptr++=static_cast<WORD>(r|g|b);
-                if (!b32)
-                    *dptr++ = static_cast<WORD>(r | g | b);
+                if ( not b32)
+                    *dptr++ = static_cast<WORD>(r bitor g bitor b);
                 else
                 {
-                    DWORD dc = RGB565toRGB8(static_cast<WORD>(r | g | b));
+                    DWORD dc = RGB565toRGB8(static_cast<WORD>(r bitor g bitor b));
                     *(reinterpret_cast<DWORD*>(dptr)) = dc;
 
                     *dptr += 2;
@@ -1294,7 +1297,7 @@ void IMAGE_RSC::Blend8BitTransparentPart(long soffset, long scopy, long ssize, l
 
 // Straight Blending
 
-// This is for src size <= dest && same width
+// This is for src size <= dest and same width
 void IMAGE_RSC::Blend16BitFast(WORD *dest, long front, long back)
 {
     WORD *sptr;
@@ -1315,26 +1318,26 @@ void IMAGE_RSC::Blend16BitFast(WORD *dest, long front, long back)
         dc = *dptr;
 
         r = rShift[UIColorTable[operc][
-                       UIColorTable[front][(*sptr >> Owner->reds) & 0x1f] +
-                       UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                       UIColorTable[front][(*sptr >> Owner->reds) bitand 0x1f] +
+                       UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                    ]];
 
         g = gShift[UIColorTable[operc][
-                       UIColorTable[front][(*sptr >> Owner->greens) & 0x1f] +
-                       UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                       UIColorTable[front][(*sptr >> Owner->greens) bitand 0x1f] +
+                       UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                    ]];
 
         b = bShift[UIColorTable[operc][
-                       UIColorTable[front][(*sptr >> Owner->blues) & 0x1f] +
-                       UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                       UIColorTable[front][(*sptr >> Owner->blues) bitand 0x1f] +
+                       UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                    ]];
 
         sptr++;
-        *dptr++ = static_cast<WORD>(r | g | b);
+        *dptr++ = static_cast<WORD>(r bitor g bitor b);
     }
 }
 
-// This is for src size <= dest && same width
+// This is for src size <= dest and same width
 void IMAGE_RSC::Blend16BitTransparentFast(WORD *dest, long front, long back)
 {
     WORD *sptr;
@@ -1351,26 +1354,26 @@ void IMAGE_RSC::Blend16BitTransparentFast(WORD *dest, long front, long back)
 
     while (count--)
     {
-        if (*sptr ^ Owner->ColorKey_)
+        if (*sptr xor Owner->ColorKey_)
         {
             WORD dc;
             dc = *dptr;
 
             r = rShift[UIColorTable[operc][
-                           UIColorTable[front][(*sptr >> Owner->reds) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                           UIColorTable[front][(*sptr >> Owner->reds) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                        ]];
 
             g = gShift[UIColorTable[operc][
-                           UIColorTable[front][(*sptr >> Owner->greens) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                           UIColorTable[front][(*sptr >> Owner->greens) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                        ]];
 
             b = bShift[UIColorTable[operc][
-                           UIColorTable[front][(*sptr >> Owner->blues) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                           UIColorTable[front][(*sptr >> Owner->blues) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                        ]];
-            *dptr++ = static_cast<WORD>(r | g | b);
+            *dptr++ = static_cast<WORD>(r bitor g bitor b);
         }
         else
             dptr++;
@@ -1394,12 +1397,12 @@ void IMAGE_RSC::Blend16Bit(long doffset, long dwidth, WORD *dest, long front, lo
     sptr   = (WORD *)(Owner->Data_ + Header->imageoffset);
     srcsize = (WORD *)(sptr  + Header->w * Header->h);
 
-    if (!b32)
+    if ( not b32)
         dptr = dest + doffset;
     else
         dptr = dest + doffset * 2;
 
-    if (!b32)
+    if ( not b32)
         dadd = dwidth - Header->w;
     else
         dadd = (dwidth - Header->w) * 2;
@@ -1412,34 +1415,34 @@ void IMAGE_RSC::Blend16Bit(long doffset, long dwidth, WORD *dest, long front, lo
         {
             WORD dc;
 
-            if (!b32)
+            if ( not b32)
                 dc = *dptr;
             else
                 dc = RGB8toRGB565(*(reinterpret_cast<DWORD*>(dptr)));
 
 
             r = rShift[UIColorTable[operc][
-                           UIColorTable[front][(*sptr >> Owner->reds) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                           UIColorTable[front][(*sptr >> Owner->reds) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                        ]];
 
             g = gShift[UIColorTable[operc][
-                           UIColorTable[front][(*sptr >> Owner->greens) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                           UIColorTable[front][(*sptr >> Owner->greens) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                        ]];
 
             b = bShift[UIColorTable[operc][
-                           UIColorTable[front][(*sptr >> Owner->blues) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                           UIColorTable[front][(*sptr >> Owner->blues) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                        ]];
 
             sptr++;
 
-            if (!b32)
-                *dptr++ = static_cast<WORD>(r | g | b);
+            if ( not b32)
+                *dptr++ = static_cast<WORD>(r bitor g bitor b);
             else
             {
-                *(reinterpret_cast<DWORD*>(dptr)) = RGB565toRGB8(static_cast<WORD>(r | g | b));
+                *(reinterpret_cast<DWORD*>(dptr)) = RGB565toRGB8(static_cast<WORD>(r bitor g bitor b));
 
                 *dptr += 2;
             }
@@ -1464,12 +1467,12 @@ void IMAGE_RSC::Blend16BitTransparent(long doffset, long dwidth, WORD *dest, lon
     sptr   = (WORD *)(Owner->Data_ + Header->imageoffset);
     srcsize = (WORD *)(sptr  + Header->w * Header->h);
 
-    if (!b32)
+    if ( not b32)
         dptr = dest + doffset;
     else
         dptr = dest + doffset * 2;
 
-    if (!b32)
+    if ( not b32)
         dadd = dwidth - Header->w;
     else
         dadd = (dwidth - Header->w) * 2;
@@ -1480,37 +1483,37 @@ void IMAGE_RSC::Blend16BitTransparent(long doffset, long dwidth, WORD *dest, lon
 
         while (i--)
         {
-            if (*sptr ^ Owner->ColorKey_)
+            if (*sptr xor Owner->ColorKey_)
             {
                 WORD dc;
 
-                if (!b32)
+                if ( not b32)
                     dc = *dptr;
                 else
                     dc = RGB8toRGB565(*(reinterpret_cast<DWORD*>(dptr)));
 
                 r = rShift[UIColorTable[operc][
-                               UIColorTable[front][(*sptr >> Owner->reds) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                               UIColorTable[front][(*sptr >> Owner->reds) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                            ]];
 
                 g = gShift[UIColorTable[operc][
-                               UIColorTable[front][(*sptr >> Owner->greens) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                               UIColorTable[front][(*sptr >> Owner->greens) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                            ]];
 
                 b = bShift[UIColorTable[operc][
-                               UIColorTable[front][(*sptr >> Owner->blues) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                               UIColorTable[front][(*sptr >> Owner->blues) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                            ]];
 
                 sptr++;
 
-                if (!b32)
-                    *dptr++ = static_cast<WORD>(r | g | b);
+                if ( not b32)
+                    *dptr++ = static_cast<WORD>(r bitor g bitor b);
                 else
                 {
-                    *(reinterpret_cast<DWORD*>(dptr)) = RGB565toRGB8(static_cast<WORD>(r | g | b));
+                    *(reinterpret_cast<DWORD*>(dptr)) = RGB565toRGB8(static_cast<WORD>(r bitor g bitor b));
                     *dptr += 2;
                 }
             }
@@ -1518,7 +1521,7 @@ void IMAGE_RSC::Blend16BitTransparent(long doffset, long dwidth, WORD *dest, lon
             {
                 sptr++;
 
-                if (!b32)
+                if ( not b32)
                     dptr++;
                 else
                     dptr += 2;
@@ -1545,14 +1548,14 @@ void IMAGE_RSC::Blend16BitPart(long soffset, long scopy, long ssize, long doffse
     sptr   = (WORD *)(Owner->Data_ + Header->imageoffset) + soffset;
     srcsize = (WORD *)(Owner->Data_ + Header->imageoffset) + ssize;
 
-    if (!b32)
+    if ( not b32)
         dptr = dest + doffset;
     else
         dptr = dest + doffset * 2;
 
     sadd = Header->w - scopy;
 
-    if (!b32)
+    if ( not b32)
         dadd = dwidth - scopy;
     else
         dadd = (dwidth - scopy) * 2;
@@ -1565,33 +1568,33 @@ void IMAGE_RSC::Blend16BitPart(long soffset, long scopy, long ssize, long doffse
         {
             WORD dc;
 
-            if (!b32)
+            if ( not b32)
                 dc = *dptr;
             else
                 dc = RGB8toRGB565(*(reinterpret_cast<DWORD*>(dptr)));
 
             r = rShift[UIColorTable[operc][
-                           UIColorTable[front][(*sptr >> Owner->reds) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                           UIColorTable[front][(*sptr >> Owner->reds) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                        ]];
 
             g = gShift[UIColorTable[operc][
-                           UIColorTable[front][(*sptr >> Owner->greens) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                           UIColorTable[front][(*sptr >> Owner->greens) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                        ]];
 
             b = bShift[UIColorTable[operc][
-                           UIColorTable[front][(*sptr >> Owner->blues) & 0x1f] +
-                           UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                           UIColorTable[front][(*sptr >> Owner->blues) bitand 0x1f] +
+                           UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                        ]];
 
             sptr++;
 
-            if (!b32)
-                *dptr++ = static_cast<WORD>(r | g | b);
+            if ( not b32)
+                *dptr++ = static_cast<WORD>(r bitor g bitor b);
             else
             {
-                *(reinterpret_cast<DWORD*>(dptr)) = RGB565toRGB8(static_cast<WORD>(r | g | b));
+                *(reinterpret_cast<DWORD*>(dptr)) = RGB565toRGB8(static_cast<WORD>(r bitor g bitor b));
                 *dptr += 2;
             }
 
@@ -1617,14 +1620,14 @@ void IMAGE_RSC::Blend16BitTransparentPart(long soffset, long scopy, long ssize, 
     sptr   = (WORD *)(Owner->Data_ + Header->imageoffset) + soffset;
     srcsize = (WORD *)(Owner->Data_ + Header->imageoffset) + ssize;
 
-    if (!b32)
+    if ( not b32)
         dptr = dest + doffset;
     else
         dptr = dest + doffset * 2;
 
     sadd = Header->w - scopy;
 
-    if (!b32)
+    if ( not b32)
         dadd = dwidth - scopy;
     else
         dadd = (dwidth - scopy) * 2;
@@ -1636,39 +1639,39 @@ void IMAGE_RSC::Blend16BitTransparentPart(long soffset, long scopy, long ssize, 
 
         while (i--)
         {
-            if (*sptr ^ Owner->ColorKey_)
+            if (*sptr xor Owner->ColorKey_)
             {
                 WORD dc;
 
-                if (!b32)
+                if ( not b32)
                     dc = *dptr;
                 else
                     dc = RGB8toRGB565(*(reinterpret_cast<DWORD*>(dptr)));
 
                 r = rShift[UIColorTable[operc][
-                               UIColorTable[front][(*sptr >> Owner->reds) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->reds) & 0x1f]
+                               UIColorTable[front][(*sptr >> Owner->reds) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->reds) bitand 0x1f]
                            ]];
 
                 g = gShift[UIColorTable[operc][
-                               UIColorTable[front][(*sptr >> Owner->greens) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->greens) & 0x1f]
+                               UIColorTable[front][(*sptr >> Owner->greens) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->greens) bitand 0x1f]
                            ]];
 
                 b = bShift[UIColorTable[operc][
-                               UIColorTable[front][(*sptr >> Owner->blues) & 0x1f] +
-                               UIColorTable[back][(dc >> Owner->blues) & 0x1f]
+                               UIColorTable[front][(*sptr >> Owner->blues) bitand 0x1f] +
+                               UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                            ]];
 
                 sptr++;
 
 
                 //XX *dptr++=static_cast<WORD>(r|g|b);
-                if (!b32)
-                    *dptr++ = static_cast<WORD>(r | g | b);
+                if ( not b32)
+                    *dptr++ = static_cast<WORD>(r bitor g bitor b);
                 else
                 {
-                    *(reinterpret_cast<DWORD*>(dptr)) = RGB565toRGB8(static_cast<WORD>(r | g | b));
+                    *(reinterpret_cast<DWORD*>(dptr)) = RGB565toRGB8(static_cast<WORD>(r bitor g bitor b));
                     *dptr += 2;
                 }
             }
@@ -1676,7 +1679,7 @@ void IMAGE_RSC::Blend16BitTransparentPart(long soffset, long scopy, long ssize, 
             {
                 sptr++;
 
-                if (!b32)
+                if ( not b32)
                     dptr++;
                 else
                     dptr += 2;
@@ -1690,9 +1693,9 @@ void IMAGE_RSC::Blend16BitTransparentPart(long soffset, long scopy, long ssize, 
 
 char *IMAGE_RSC::GetImage()
 {
-    if (!Owner) return(NULL);
+    if ( not Owner) return(NULL);
 
-    if (!Owner->Data_)
+    if ( not Owner->Data_)
         return(NULL);
 
     if (Header->Type == _RSC_IS_IMAGE_)
@@ -1703,20 +1706,20 @@ char *IMAGE_RSC::GetImage()
 
 WORD *IMAGE_RSC::GetPalette()
 {
-    if (!Owner) return(NULL);
+    if ( not Owner) return(NULL);
 
-    if (!Owner->Data_)
+    if ( not Owner->Data_)
         return(NULL);
 
     if (Header->Type == _RSC_IS_IMAGE_)
-        if (Header->flags & _RSC_8_BIT_)
+        if (Header->flags bitand _RSC_8_BIT_)
             return((WORD*)(Owner->Data_ + Header->paletteoffset));
 
     return(NULL);
 }
 
 // VITAL NOTE:
-//  it is VERY important that all the source & destination parameters are
+//  it is VERY important that all the source bitand destination parameters are
 //  within the DESTINATION
 //  source checking is provided...
 //  DESTINATION is NOT checked whatsoever
@@ -1727,20 +1730,20 @@ void IMAGE_RSC::Blit(SCREEN *surface, long sx, long sy, long sw, long sh, long d
 {
     long soff, doff, ssize;
 
-    if (!Owner)
+    if ( not Owner)
         return;
 
-    if (!Owner->Data_)
+    if ( not Owner->Data_)
         return;
 
-    if (sx >= Header->w || sy >= Header->h)
+    if (sx >= Header->w or sy >= Header->h)
         return;
 
-    if (!sx && !sy && sw >= Header->w && sh >= Header->h)
+    if ( not sx and not sy and sw >= Header->w and sh >= Header->h)
     {
-        if (Header->flags & _RSC_USECOLORKEY_)
+        if (Header->flags bitand _RSC_USECOLORKEY_)
         {
-            if (Header->flags & _RSC_8_BIT_)
+            if (Header->flags bitand _RSC_8_BIT_)
             {
                 //XX
                 //if(Header->w == surface->width)
@@ -1765,7 +1768,7 @@ void IMAGE_RSC::Blit(SCREEN *surface, long sx, long sy, long sw, long sh, long d
         }
         else
         {
-            if (Header->flags & _RSC_8_BIT_)
+            if (Header->flags bitand _RSC_8_BIT_)
             {
                 //XX
                 // if(0)
@@ -1801,16 +1804,16 @@ void IMAGE_RSC::Blit(SCREEN *surface, long sx, long sy, long sw, long sh, long d
     if ((sy + sh) > Header->h)
         sw = Header->h - sy;
 
-    if (sw < 1 || sh < 1)
+    if (sw < 1 or sh < 1)
         return;
 
     soff = sy * Header->w + sx;
     doff = dy * surface->width + dx;
     ssize = Header->w * (sy + sh);
 
-    if (Header->flags & _RSC_USECOLORKEY_)
+    if (Header->flags bitand _RSC_USECOLORKEY_)
     {
-        if (Header->flags & _RSC_8_BIT_)
+        if (Header->flags bitand _RSC_8_BIT_)
         {
             if (surface->bpp == 32)   //XX
                 _Blit8BitTransparentPartTo32(soff, sw, ssize, dy * surface->width + dx, surface->width, (DWORD*)surface->mem);
@@ -1827,7 +1830,7 @@ void IMAGE_RSC::Blit(SCREEN *surface, long sx, long sy, long sw, long sh, long d
     }
     else
     {
-        if (Header->flags & _RSC_8_BIT_)
+        if (Header->flags bitand _RSC_8_BIT_)
         {
             if (surface->bpp == 32)  //XX
                 _Blit8BitPartTo32(soff, sw, ssize, dy * surface->width + dx, surface->width, (DWORD*) surface->mem);
@@ -1845,7 +1848,7 @@ void IMAGE_RSC::Blit(SCREEN *surface, long sx, long sy, long sw, long sh, long d
 }
 
 // VITAL NOTE:
-//  it is VERY important that all the source & destination parameters are
+//  it is VERY important that all the source bitand destination parameters are
 //  within the DESTINATION
 //  source checking is provided...
 //  DESTINATION is NOT checked whatsoever
@@ -1856,17 +1859,17 @@ void IMAGE_RSC::Blend(SCREEN *surface, long sx, long sy, long sw, long sh, long 
 {
     long soff, doff, ssize;
 
-    if (!Owner->Data_)
+    if ( not Owner->Data_)
         return;
 
-    if (sx >= Header->w || sy >= Header->h)
+    if (sx >= Header->w or sy >= Header->h)
         return;
 
-    if (!sx && !sy && sw >= Header->w && sh >= Header->h)
+    if ( not sx and not sy and sw >= Header->w and sh >= Header->h)
     {
-        if (Header->flags & _RSC_USECOLORKEY_)
+        if (Header->flags bitand _RSC_USECOLORKEY_)
         {
-            if (Header->flags & _RSC_8_BIT_)
+            if (Header->flags bitand _RSC_8_BIT_)
             {
                 //if(Header->w == surface->width)
                 // Blend8BitTransparentFast(surface->mem,front,back);
@@ -1884,7 +1887,7 @@ void IMAGE_RSC::Blend(SCREEN *surface, long sx, long sy, long sw, long sh, long 
         }
         else
         {
-            if (Header->flags & _RSC_8_BIT_)
+            if (Header->flags bitand _RSC_8_BIT_)
             {
                 //if(Header->w == surface->width)
                 // Blend8BitFast(surface->mem,front,back);
@@ -1910,23 +1913,23 @@ void IMAGE_RSC::Blend(SCREEN *surface, long sx, long sy, long sw, long sh, long 
     if ((sy + sh) > Header->h)
         sw = Header->h - sy;
 
-    if (sw < 1 || sh < 1)
+    if (sw < 1 or sh < 1)
         return;
 
     soff = sy * Header->w + sx;
     doff = dy * surface->width + dx;
     ssize = Header->w * (sy + sh);
 
-    if (Header->flags & _RSC_USECOLORKEY_)
+    if (Header->flags bitand _RSC_USECOLORKEY_)
     {
-        if (Header->flags & _RSC_8_BIT_)
+        if (Header->flags bitand _RSC_8_BIT_)
             Blend8BitTransparentPart(soff, sw, ssize, dy * surface->width + dx, surface->width, surface->mem, front, back, surface->bpp == 32); //XX
         else
             Blend16BitTransparentPart(soff, sw, ssize, dy * surface->width + dx, surface->width, surface->mem, front, back, surface->bpp == 32); //XX
     }
     else
     {
-        if (Header->flags & _RSC_8_BIT_)
+        if (Header->flags bitand _RSC_8_BIT_)
             Blend8BitPart(soff, sw, ssize, dy * surface->width + dx, surface->width, surface->mem, front, back, surface->bpp == 32); //XX
         else
             Blend16BitPart(soff, sw, ssize, dy * surface->width + dx, surface->width, surface->mem, front, back, surface->bpp == 32); //XX
@@ -1934,7 +1937,7 @@ void IMAGE_RSC::Blend(SCREEN *surface, long sx, long sy, long sw, long sh, long 
 }
 
 // NOTE: Although ScaleUp and ScaleDown have the same parameter lists... they are VERY different,
-//       and won't work interchangably
+//      and won't work interchangably
 // Shrink a Bitmap
 void IMAGE_RSC::ScaleDown8(SCREEN *surface, long *Rows, long *Cols, long dx, long dy, long dw, long dh, long offx, long offy)
 {
@@ -1943,10 +1946,10 @@ void IMAGE_RSC::ScaleDown8(SCREEN *surface, long *Rows, long *Cols, long dx, lon
     WORD *Palette;
     int i, j, count;
 
-    if (!Owner)
+    if ( not Owner)
         return;
 
-    if (!Owner->Data_)
+    if ( not Owner->Data_)
         return;
 
     sptr = (unsigned char *)(Owner->Data_ + Header->imageoffset);
@@ -2006,7 +2009,7 @@ void IMAGE_RSC::ScaleDown8Overlay(SCREEN *surface, long *Rows, long *Cols, long 
 
         for (j = offx; j < (offx + dw); j++)
         {
-            palno = (long)(oline[Cols[j]] & 0x0f);
+            palno = (long)(oline[Cols[j]] bitand 0x0f);
 
             if (surface->bpp == 32)
             {
@@ -2025,7 +2028,7 @@ void IMAGE_RSC::ScaleDown8Overlay(SCREEN *surface, long *Rows, long *Cols, long 
 }
 
 // NOTE: Although ScaleUp and ScaleDown have the similar parameter lists... the meanings are VERY different,
-//       and won't work interchangably
+//      and won't work interchangably
 // Grow a Bitmap
 void IMAGE_RSC::ScaleUp8(SCREEN *surface, long *Rows, long *Cols, long dx, long dy, long dw, long dh)
 {
@@ -2065,7 +2068,7 @@ void IMAGE_RSC::ScaleUp8(SCREEN *surface, long *Rows, long *Cols, long dx, long 
                     rep movsd
                 };
             }
-            else if (Rows[i] != Rows[i + 1])
+            else if (Rows[i] not_eq Rows[i + 1])
             {
                 for (j = 0; j < dw; j++)
                     ((DWORD*)dline)[j] = RGB565toRGB8(Palette[sline[Cols[j]]]);
@@ -2103,7 +2106,7 @@ void IMAGE_RSC::ScaleUp8(SCREEN *surface, long *Rows, long *Cols, long dx, long 
                 };
                 // memcpy(&dline[first],cpyline,count*sizeof(WORD));
             }
-            else if (Rows[i] != Rows[i + 1])
+            else if (Rows[i] not_eq Rows[i + 1])
             {
                 for (j = 0; j < dw; j++)
                     dline[j] = Palette[sline[Cols[j]]];
@@ -2172,11 +2175,11 @@ void IMAGE_RSC::ScaleUp8Overlay(SCREEN *surface, long *Rows, long *Cols, long dx
                     rep movsd
                 };
             }
-            else if (Rows[i] != Rows[i + 1])
+            else if (Rows[i] not_eq Rows[i + 1])
             {
                 for (j = 0; j < dw; j++)
                 {
-                    palno = (long)(oline[Cols[j]] & 0x0f);
+                    palno = (long)(oline[Cols[j]] bitand 0x0f);
                     ((DWORD*)dline)[j] = RGB565toRGB8(Palette[palno][sline[Cols[j]]]);
                 }
             }
@@ -2186,7 +2189,7 @@ void IMAGE_RSC::ScaleUp8Overlay(SCREEN *surface, long *Rows, long *Cols, long dx
 
                 for (j = 0; j < dw; j++)
                 {
-                    palno = (long)(oline[Cols[j + 1]] & 0x0f);
+                    palno = (long)(oline[Cols[j + 1]] bitand 0x0f);
                     cpyline2[count++] = RGB565toRGB8(Palette[palno][sline[Cols[j + 1]]]);
                 }
 
@@ -2217,11 +2220,11 @@ void IMAGE_RSC::ScaleUp8Overlay(SCREEN *surface, long *Rows, long *Cols, long dx
                 };
                 // memcpy(&dline[first],cpyline,count*sizeof(WORD));
             }
-            else if (Rows[i] != Rows[i + 1])
+            else if (Rows[i] not_eq Rows[i + 1])
             {
                 for (j = 0; j < dw; j++)
                 {
-                    palno = (long)(oline[Cols[j]] & 0x0f);
+                    palno = (long)(oline[Cols[j]] bitand 0x0f);
                     dline[j] = Palette[palno][sline[Cols[j]]];
                 }
             }
@@ -2231,7 +2234,7 @@ void IMAGE_RSC::ScaleUp8Overlay(SCREEN *surface, long *Rows, long *Cols, long dx
 
                 for (j = 0; j < dw; j++)
                 {
-                    palno = (long)(oline[Cols[j + 1]] & 0x0f);
+                    palno = (long)(oline[Cols[j + 1]] bitand 0x0f);
                     cpyline[count++] = Palette[palno][sline[Cols[j + 1]]];
                 }
 

@@ -45,7 +45,7 @@ TacticalReference::TacticalReference()
 
 TacticalReference::~TacticalReference()
 {
-    if (Index_ || Data_)
+    if (Index_ or Data_)
         Cleanup();
 }
 
@@ -55,7 +55,7 @@ BOOL TacticalReference::Load(char *filename)
 
     fp = UI_OPEN(filename, "rb");
 
-    if (!fp)
+    if ( not fp)
         return(FALSE);
 
     UI_SEEK(fp, 0l, SEEK_END);
@@ -137,7 +137,7 @@ Entity *TacticalReference::FindFirst(long GroupID, long SubGroupID)
 
     while (rec)
     {
-        if (rec->GroupID == GroupID && rec->SubGroupID == SubGroupID)
+        if (rec->GroupID == GroupID and rec->SubGroupID == SubGroupID)
             return((Entity*)rec);
 
         rec = GetNext(&Offset);
@@ -150,7 +150,7 @@ Entity *TacticalReference::GetFirst(long *offset)
 {
     Header *hdr;
 
-    if (!Data_)
+    if ( not Data_)
         return(NULL);
 
     *offset = 0;
@@ -162,14 +162,14 @@ Entity *TacticalReference::GetNext(long *offset)
 {
     Header *hdr;
 
-    if (!Data_)
+    if ( not Data_)
         return(NULL);
 
     hdr = (Header*)(Data_ + *offset);
     *offset += sizeof(Header) + hdr->size;
     hdr = (Header*)(Data_ + *offset);
 
-    if (*offset < Size_ && hdr->type == _ENTITY_)  // JPO - reorder condition to stop bad array ref
+    if (*offset < Size_ and hdr->type == _ENTITY_)  // JPO - reorder condition to stop bad array ref
         return((Entity*)hdr->Data);
 
     return(NULL);
@@ -194,7 +194,7 @@ Entity *TacticalReference::GetNext(long *offset)
 
 Category *Statistics::GetFirst(long *offset)
 {
-    if (!size)
+    if ( not size)
         return(NULL);
 
     *offset = 0;
@@ -237,7 +237,7 @@ CatText *Category::GetFirst(long *offset)
 
     hdr = (Header *)Data;
 
-    if (!hdr->size)
+    if ( not hdr->size)
         return(NULL);
 
     *offset = 0;
@@ -279,7 +279,7 @@ CatText *Category::GetNext(long *offset)
 
 TextString *Description::GetFirst(long *offset)
 {
-    if (!size)
+    if ( not size)
         return(NULL);
 
     *offset = 0;
@@ -293,7 +293,7 @@ TextString *Description::GetNext(long *offset)
     txt = (TextString*)&Data[*offset];
     *offset += sizeof(TextString) + txt->length;
 
-    if (*offset < size && txt->length)
+    if (*offset < size and txt->length)
         return((TextString*)&Data[*offset]);
 
     return(NULL);
@@ -318,7 +318,7 @@ TextString *Description::GetNext(long *offset)
 
 Radar *RWR::GetFirst(long *offset)
 {
-    if (!size)
+    if ( not size)
         return(NULL);
 
     *offset = 0;
@@ -360,7 +360,7 @@ Statistics *Entity::GetStats()
     offset = 0;
     hdr = (Header*)&Data[offset];
 
-    while (hdr && hdr->type != _STATS_)
+    while (hdr and hdr->type not_eq _STATS_)
     {
         offset += sizeof(Header) + hdr->size;
         hdr = (Header*)&Data[offset];
@@ -377,7 +377,7 @@ Description *Entity::GetDescription()
     offset = 0;
     hdr = (Header*)&Data[offset];
 
-    while (hdr && hdr->type != _DESCRIPTION_)
+    while (hdr and hdr->type not_eq _DESCRIPTION_)
     {
         offset += sizeof(Header) + hdr->size;
         hdr = (Header*)&Data[offset];
@@ -394,7 +394,7 @@ RWR *Entity::GetRWR()
     offset = 0;
     hdr = (Header*)&Data[offset];
 
-    while (hdr && hdr->type != _RWR_MAIN_ && hdr->type != _ENTITY_)
+    while (hdr and hdr->type not_eq _RWR_MAIN_ and hdr->type not_eq _ENTITY_)
     {
         offset += sizeof(Header) + hdr->size;
         hdr = (Header*)&Data[offset];

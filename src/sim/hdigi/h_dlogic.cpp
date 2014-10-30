@@ -52,7 +52,7 @@ void HeliBrain::DecisionLogic(void)
     /*--------------*/
     /* fire control */
     /*--------------*/
-    // if (targetPtr && shooting)
+    // if (targetPtr and shooting)
     //     FireControl();
 }
 
@@ -65,14 +65,14 @@ void HeliBrain::TargetSelection(void)
     int campTactic;
 
     // sanity check
-    if (!campUnit)
+    if ( not campUnit)
         return;
 
     // check to see if our current ground target is a sim and exploding or
     // dead, if so let's get a new target from the campaign
-    if (targetPtr &&
-        targetPtr->BaseData()->IsSim() &&
-        (targetPtr->BaseData()->IsExploding() || !((SimBaseClass *)targetPtr->BaseData())->IsAwake()))
+    if (targetPtr and 
+        targetPtr->BaseData()->IsSim() and 
+        (targetPtr->BaseData()->IsExploding() or not ((SimBaseClass *)targetPtr->BaseData())->IsAwake()))
     {
         ClearTarget();
     }
@@ -102,10 +102,10 @@ void HeliBrain::TargetSelection(void)
 
      simTarg = FindSimGroundTarget((CampBaseClass*)target, ((CampBaseClass*)target)->NumberOfComponents(), 0);
 
-     if (!simTarg) // another sanity check
+     if ( not simTarg) // another sanity check
      return;
 
-     if (!simTarg->IsExploding() && !simTarg->IsDead() && simTarg->pctStrength > 0.0f) // still alive?
+     if ( not simTarg->IsExploding() and not simTarg->IsDead() and simTarg->pctStrength > 0.0f) // still alive?
      SetTargetEntity( simTarg );
 
      return;
@@ -120,7 +120,7 @@ void HeliBrain::TargetSelection(void)
     campUnit->UnsetChecked();
 
     // choose target.  I assume if this returns 0, no target....
-    if (!campUnit->ChooseTarget())
+    if ( not campUnit->ChooseTarget())
     {
         ClearTarget();
         // alternately try and choose the waypoint's target
@@ -135,12 +135,12 @@ void HeliBrain::TargetSelection(void)
     campUnit->ChooseTactic();
     campTactic = campUnit->GetUnitTactic();
 
-    // sanity check and make sure its on ground, what to do if not?!...
-    if (!target ||
-        campTactic == ATACTIC_RETROGRADE ||
-        campTactic == ATACTIC_IGNORE ||
-        campTactic == ATACTIC_AVOID ||
-        campTactic == ATACTIC_ABORT ||
+    // sanity check and make sure its on ground, what to do if not?...
+    if ( not target or
+        campTactic == ATACTIC_RETROGRADE or
+        campTactic == ATACTIC_IGNORE or
+        campTactic == ATACTIC_AVOID or
+        campTactic == ATACTIC_ABORT or
         campTactic == ATACTIC_REFUEL)
     {
         ClearTarget();
@@ -157,15 +157,15 @@ void HeliBrain::TargetSelection(void)
     // we've a SIM target, go get a component
 
     // M.N. use S.G.'s FindSimGroundTarget function to choose a sim entity
-    if (target->IsSim() && target->OnGround())
+    if (target->IsSim() and target->OnGround())
     {
         simTarg = FindSimGroundTarget((CampBaseClass*)target, ((CampBaseClass*)target)->NumberOfComponents(), 0);
 
-        if (!simTarg) // another sanity check
+        if ( not simTarg) // another sanity check
             return;
 
         // set it as our target
-        if (!simTarg->IsExploding() && !simTarg->IsDead() && simTarg->pctStrength > 0.0f) // still alive?
+        if ( not simTarg->IsExploding() and not simTarg->IsDead() and simTarg->pctStrength > 0.0f) // still alive?
             SetTargetEntity(simTarg);
 
         return;
@@ -190,12 +190,12 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
         // I onced tried to get the player's current target so it could be skipped by the AI but
         // all the player's are not on the same PC as the AI so this is not valid.
         // Therefore, only get this from digital planes, or the player if he is local
-        if (((HeliMMClass *)self->GetCampaignObject()->GetComponentEntity(i))->isDigital || ((HelicopterClass *)self->GetCampaignObject()->GetComponentEntity(i))->IsLocal())
+        if (((HeliMMClass *)self->GetCampaignObject()->GetComponentEntity(i))->isDigital or ((HelicopterClass *)self->GetCampaignObject()->GetComponentEntity(i))->IsLocal())
         {
             flightMember[i] = (HelicopterClass *)self->GetCampaignObject()->GetComponentEntity(i);
 
             // Sanity check
-            if (!flightMember[i])
+            if ( not flightMember[i])
                 continue;
         }
     }
@@ -208,11 +208,11 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
         // Get the sim object associated to this entity number
         simTarg = targetGroup->GetComponentEntity(i);
 
-        if (!simTarg) //sanity check
+        if ( not simTarg) //sanity check
             continue;
 
         // Is it alive?
-        if (simTarg->IsExploding() || simTarg->IsDead() || simTarg->pctStrength <= 0.0f)
+        if (simTarg->IsExploding() or simTarg->IsDead() or simTarg->pctStrength <= 0.0f)
             continue; // Dead thing, ignore it.
 
         // Are flight members already using it (was using it) as a target?
@@ -220,19 +220,19 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
 
         for (j = 0; j < usComponents; j++)
             if (flightMember[j]
-                && flightMember[j]->hBrain
-                && ((flightMember[j]->hBrain->targetPtr
-                     && flightMember[j]->hBrain->targetPtr->BaseData() == simTarg)
-                    || flightMember[j]->hBrain->targetHistory[0] == simTarg
-                    || flightMember[j]->hBrain->targetHistory[1] == simTarg))
+               and flightMember[j]->hBrain
+               and ((flightMember[j]->hBrain->targetPtr
+                    and flightMember[j]->hBrain->targetPtr->BaseData() == simTarg)
+                    or flightMember[j]->hBrain->targetHistory[0] == simTarg
+                    or flightMember[j]->hBrain->targetHistory[1] == simTarg))
                 break;  // Yes, ignore it.
 
         // If we didn't reach the end, someone else is using it so skip it.
-        if (j != usComponents)
+        if (j not_eq usComponents)
             continue;
 
         // Mark this sim entity as the first target with a match (in case no emitting targets are left standing, or it's a feature)
-        if (!firstSimTarg)
+        if ( not firstSimTarg)
             firstSimTarg = simTarg;
 
         // Is it an objective, break out
@@ -255,7 +255,7 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
         firstSimTarg = 0;
 
     // JB 011017 from Schumi if targetNumComponents is less than usComponents, then of course there is no target anymore for the wingmen to bomb, and firstSimTarg is NULL.
-    if (firstSimTarg == NULL && targetNumComponents && targetNumComponents < usComponents)
+    if (firstSimTarg == NULL and targetNumComponents and targetNumComponents < usComponents)
         firstSimTarg = targetGroup->GetComponentEntity(rand() % targetNumComponents);
 
     return firstSimTarg;
@@ -271,12 +271,12 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
 */
 void HeliBrain::SetTargetEntity(FalconEntity *obj)
 {
-    if (obj != NULL)
+    if (obj not_eq NULL)
     {
-        if (targetPtr != NULL)
+        if (targetPtr not_eq NULL)
         {
             // release existing target data if different object
-            if (targetPtr->BaseData() != obj)
+            if (targetPtr->BaseData() not_eq obj)
             {
                 targetPtr->Release();
                 targetPtr = NULL;
@@ -301,7 +301,7 @@ void HeliBrain::SetTargetEntity(FalconEntity *obj)
     }
     else // obj is null
     {
-        if (targetPtr != NULL)
+        if (targetPtr not_eq NULL)
         {
             targetPtr->Release();
             targetPtr = NULL;
@@ -340,8 +340,8 @@ void HeliBrain::TargetSelection(SimObjectType *tlist)
         // Targeting should be based in type
         theObject = (SimBaseClass*)tmpObj->BaseData();
 
-        // edg : ERROR!
-        if (!theObject || !tmpObj->localData)
+        // edg : ERROR
+        if ( not theObject or not tmpObj->localData)
         {
             // get next object
             tmpObj = tmpObj->next;
@@ -356,7 +356,7 @@ void HeliBrain::TargetSelection(SimObjectType *tlist)
         if (theObject->OnGround())
         {
 
-            if (GetRoE(side, b, ROE_GROUND_FIRE) == ROE_ALLOWED ||
+            if (GetRoE(side, b, ROE_GROUND_FIRE) == ROE_ALLOWED or
                 GetRoE(side, b, ROE_GROUND_CAPTURE) == ROE_ALLOWED)
             {
                 // favor ground units
@@ -375,19 +375,19 @@ void HeliBrain::TargetSelection(SimObjectType *tlist)
         {
             // special case instant action -- only target ownship
             /*
-            if ( SimDriver.RunningInstantAction() && theObject->IsSetFlag( MOTION_OWNSHIP ) )
+            if ( SimDriver.RunningInstantAction() and theObject->IsSetFlag( MOTION_OWNSHIP ) )
             {
              SetTarget( tmpObj );
              return;
             }
             else
             */
-            if (GetRoE(side, b, ROE_AIR_FIRE) == ROE_ALLOWED ||
-                GetRoE(side, b, ROE_AIR_ENGAGE) == ROE_ALLOWED ||
+            if (GetRoE(side, b, ROE_AIR_FIRE) == ROE_ALLOWED or
+                GetRoE(side, b, ROE_AIR_ENGAGE) == ROE_ALLOWED or
                 GetRoE(side, b, ROE_AIR_ATTACK) == ROE_ALLOWED)
             {
                 // if the object is another helicopter, favor it
-                if (theObject->IsSim() && theObject->IsHelicopter())
+                if (theObject->IsSim() and theObject->IsHelicopter())
                     range = tmpObj->localData->range * 0.5f;
                 else
                     range = tmpObj->localData->range * 2.0f;
@@ -459,7 +459,7 @@ void HeliBrain::PrtMode(void)
 {
     AirAIModeMsg* modeMsg;
 
-    if (curMode != lastMode)
+    if (curMode not_eq lastMode)
     {
         switch (curMode)
         {

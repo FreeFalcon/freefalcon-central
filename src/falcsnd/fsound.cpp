@@ -129,7 +129,7 @@ extern "C" LPDIRECTSOUND DIRECT_SOUND_OBJECT;
 BOOL ChatSetup(void);
 void ChatCleanup(void);
 
-long gSoundFlags = FSND_SOUND | FSND_REPETE;
+long gSoundFlags = FSND_SOUND bitor FSND_REPETE;
 static int soundCount = 0;
 
 BOOL gSoundManagerRunning = FALSE;
@@ -327,7 +327,7 @@ void InitWaveFormatEXData(void)
 int InitSoundManager(HWND hWnd, int, char *falconDataDir)
 {
     ShiAssert(FALSE == IsBadStringPtr(falconDataDir, _MAX_PATH));
-    ShiAssert(FALSE != IsWindow(hWnd));
+    ShiAssert(FALSE not_eq IsWindow(hWnd));
     ShiAssert(FALSE == IsBadStringPtr(FalconObjectDataDir, _MAX_PATH));
     ShiAssert(FALSE == IsBadStringPtr(FalconSoundThrDirectory, _MAX_PATH));
 
@@ -353,9 +353,9 @@ int InitSoundManager(HWND hWnd, int, char *falconDataDir)
     {
         gSoundDriver = new CSoundMgr;
 
-        if (!gSoundDriver)
+        if ( not gSoundDriver)
             return FALSE;
-        else if (!gSoundDriver->InstallDSound(hWnd, DSSCL_NORMAL, &stereo_16bit_22k))
+        else if ( not gSoundDriver->InstallDSound(hWnd, DSSCL_NORMAL, &stereo_16bit_22k))
         {
             delete gSoundDriver;
             gSoundDriver = NULL;
@@ -363,7 +363,7 @@ int InitSoundManager(HWND hWnd, int, char *falconDataDir)
         }
     }
 
-    if (gSoundFlags & FSND_REPETE)
+    if (gSoundFlags bitand FSND_REPETE)
     {
         voiceFilter = new VoiceFilter;
         voiceFilter->SetUpVoiceFilter();
@@ -375,10 +375,10 @@ int InitSoundManager(HWND hWnd, int, char *falconDataDir)
     sprintf(sfxtable, "%s\\%s", FalconSoundThrDirectory, FALCONSNDTABLETXT);
     ShiAssert(SFX_DEF == NULL);
 
-    if (!ReadSFXTableTXT(sfxtable)) // MLR 2003-10-17 Parse text file if it exists
+    if ( not ReadSFXTableTXT(sfxtable)) // MLR 2003-10-17 Parse text file if it exists
     {
         return FALSE;
-        // MLR 2003-11-19 the new sound table is mandatory!
+        // MLR 2003-11-19 the new sound table is mandatory
         /*
         sprintf (sfxtable, "%s\\%s", FalconObjectDataDir, FALCONSNDTABLE);
         if (ReadSFXTable (sfxtable) == FALSE)
@@ -390,7 +390,7 @@ int InitSoundManager(HWND hWnd, int, char *falconDataDir)
     LoadSFX(falconDataDir);
 
     //JAM 14Dec03 - Fixing -nopete CTD
-    if (gSoundFlags & FSND_REPETE)
+    if (gSoundFlags bitand FSND_REPETE)
         g_voicemap.SetVoiceCount(voiceFilter->fragfile.MaxVoices());
 
     gSoundManagerRunning = TRUE;
@@ -402,7 +402,7 @@ int InitSoundManager(HWND hWnd, int, char *falconDataDir)
     int i = _set_SSE2_enable(1);
 #endif
 
-    if (!gSoundObject) // MLR 1/25/2004 - the global sound object
+    if ( not gSoundObject) // MLR 1/25/2004 - the global sound object
     {
         gSoundObject = new F4SoundPos();
     }
@@ -461,7 +461,7 @@ int F4LoadFXSound(char filename[], long Flags, SFX_DEF_ENTRY *sfx)
  * with the exception of a generic load file and have the Wav header
  * slapped on. 8bit-22k
  */
-// MLR apparently is never used!
+// MLR apparently is never used
 //int F4LoadRawSound (int flags, char *data, int len)
 int F4LoadRawSound(int, char *data, int len)
 {
@@ -567,7 +567,7 @@ int F4CreateStream(WAVEFORMATEX *fmt, float seconds)
  */
 void F4RemoveStream(int StreamID)
 {
-    if (gSoundDriver && StreamID != SND_NO_HANDLE)
+    if (gSoundDriver and StreamID not_eq SND_NO_HANDLE)
         gSoundDriver->RemoveStream(StreamID);
 }
 
@@ -596,7 +596,7 @@ int F4StartStream(char *filename, long flags)
         StreamID = gSoundDriver->CreateStream(&Header, 0.5);
 
         // END KLUDGE
-        if (StreamID != SND_NO_HANDLE)
+        if (StreamID not_eq SND_NO_HANDLE)
         {
             if (gSoundDriver->StartFileStream(StreamID, filename, flags))
                 return(StreamID);
@@ -612,7 +612,7 @@ int F4StartStream(char *filename, long flags)
 */
 BOOL F4LoopStream(int StreamID, char *filename)
 {
-    if (gSoundDriver && StreamID != SND_NO_HANDLE)
+    if (gSoundDriver and StreamID not_eq SND_NO_HANDLE)
         return(gSoundDriver->StartFileStream(StreamID, filename, SND_STREAM_LOOP));
 
     return(FALSE);
@@ -620,7 +620,7 @@ BOOL F4LoopStream(int StreamID, char *filename)
 
 BOOL F4StartRawStream(int StreamID, char *Data, long size)
 {
-    if (gSoundDriver && StreamID != SND_NO_HANDLE)
+    if (gSoundDriver and StreamID not_eq SND_NO_HANDLE)
         return(gSoundDriver->StartMemoryStream(StreamID, Data, size));
 
     return(FALSE);
@@ -628,7 +628,7 @@ BOOL F4StartRawStream(int StreamID, char *Data, long size)
 
 BOOL F4StartCallbackStream(int StreamID, void *ptr, DWORD (*cb)(void *, char *, DWORD))
 {
-    if (gSoundDriver && StreamID != SND_NO_HANDLE)
+    if (gSoundDriver and StreamID not_eq SND_NO_HANDLE)
         return(gSoundDriver->StartCallbackStream(StreamID, ptr, cb));
 
     return(FALSE);
@@ -636,7 +636,7 @@ BOOL F4StartCallbackStream(int StreamID, void *ptr, DWORD (*cb)(void *, char *, 
 
 void F4StopStream(int StreamID)
 {
-    if (gSoundDriver && StreamID != SND_NO_HANDLE)
+    if (gSoundDriver and StreamID not_eq SND_NO_HANDLE)
     {
         gSoundDriver->StopStream(StreamID);
         gSoundDriver->RemoveStream(StreamID);
@@ -698,7 +698,7 @@ long F4StreamPlayed(int StreamID)
  */
 void F4PanSound(int soundIdx, int PanDir)
 {
-    if (gSoundDriver && soundIdx != SND_NO_HANDLE)
+    if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
         gSoundDriver->SetSamplePan(soundIdx, PanDir);
 }
 
@@ -709,7 +709,7 @@ SND_EXPORT int AudioSetPitch( int handle, int pitch )
  */
 void F4PitchBend(int soundIdx, float Pitch)
 {
-    if (gSoundDriver && soundIdx != SND_NO_HANDLE)
+    if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
         gSoundDriver->SetSamplePitch(soundIdx, Pitch);
 }
 
@@ -719,7 +719,7 @@ void F4PitchBend(int soundIdx, float Pitch)
 // Volume is in dBs (-10000 -> 0)
 long F4SetVolume(int soundIdx, int Volume)
 {
-    if (gSoundDriver && soundIdx != SND_NO_HANDLE)
+    if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
         return(gSoundDriver->SetSampleVolume(soundIdx, Volume));
 
     return(-10000);
@@ -728,7 +728,7 @@ long F4SetVolume(int soundIdx, int Volume)
 // Volume is in dBs (-10000 -> 0)
 void F4SetGroupVolume(int group, int vol)
 {
-    if (group < 0 || group >= NUM_SOUND_GROUPS)
+    if (group < 0 or group >= NUM_SOUND_GROUPS)
         return;
 
     //gGroupMaxVols[ group ] = vol;
@@ -739,12 +739,12 @@ void F4SetSoundFlags(int soundIdx, long flags)
 {
     SOUNDLIST *snd;
 
-    if (gSoundDriver && soundIdx != SND_NO_HANDLE)
+    if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
     {
         snd = gSoundDriver->FindSample(soundIdx);
 
-        if (snd != NULL)
-            snd->Flags |= flags;
+        if (snd not_eq NULL)
+            snd->Flags or_eq flags;
     }
 }
 
@@ -752,7 +752,7 @@ void F4SetSoundFlags(int soundIdx, long flags)
 void F4SetStreamFlags(int, long)
 {
     /*
-     if(gSoundDriver && soundIdx != SND_NO_HANDLE)
+     if(gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
      {
      }
     */
@@ -760,7 +760,7 @@ void F4SetStreamFlags(int, long)
 
 int F4GetVolume(int soundIdx)
 {
-    if (gSoundDriver && soundIdx != SND_NO_HANDLE)
+    if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
         return(gSoundDriver->GetSampleVolume(soundIdx));
 
     return(0);
@@ -772,13 +772,13 @@ int F4GetVolume(int soundIdx)
  */
 void F4PlaySound(int soundIdx)
 {
-    if (gSoundDriver && soundIdx != SND_NO_HANDLE)
+    if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
         gSoundDriver->PlaySample(soundIdx, 0);
 }
 
 void F4PlaySound(int soundIdx, int flags)
 {
-    if (gSoundDriver && soundIdx != SND_NO_HANDLE)
+    if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
         gSoundDriver->PlaySample(soundIdx, flags);
 }
 
@@ -787,7 +787,7 @@ void F4PlaySound(int soundIdx, int flags)
  */
 int F4IsSoundPlaying(int theSound, int UID)
 {
-    if (gSoundDriver && theSound != SND_NO_HANDLE)
+    if (gSoundDriver and theSound not_eq SND_NO_HANDLE)
         return(gSoundDriver->IsSamplePlaying(theSound, UID));
 
     return(0);
@@ -798,7 +798,7 @@ int F4SoundFXPlaying(int sfxId, int UID)
     ShiAssert(sfxId < NumSFX);
     ShiAssert(sfxId > 0);
 
-    if (sfxId <= 0 || sfxId >= NumSFX) return 0;
+    if (sfxId <= 0 or sfxId >= NumSFX) return 0;
 
     if (gSoundManagerRunning == FALSE) return 0;
 
@@ -810,8 +810,8 @@ int F4SoundFXPlaying(int sfxId, int UID)
  */
 void F4LoopSound(int soundIdx)
 {
-    if (gSoundDriver && soundIdx != SND_NO_HANDLE)
-        //gSoundDriver->PlaySample(soundIdx,SND_LOOP_SAMPLE | SND_EXCLUSIVE);
+    if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
+        //gSoundDriver->PlaySample(soundIdx,SND_LOOP_SAMPLE bitor SND_EXCLUSIVE);
         gSoundDriver->PlaySample(soundIdx, SFX_POS_LOOPED);
 }
 
@@ -821,7 +821,7 @@ void F4LoopSound(int soundIdx)
  */
 void F4StopSound(int soundIdx)
 {
-    if (gSoundDriver && soundIdx != SND_NO_HANDLE)
+    if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
         gSoundDriver->StopSample(soundIdx);
 }
 
@@ -855,7 +855,7 @@ void ExitSoundManager(void)
 
     UnLoadSFX();
 
-    if (SFX_DEF != BuiltinSFX)
+    if (SFX_DEF not_eq BuiltinSFX)
     {
         delete [] SFX_DEF;
     }
@@ -887,8 +887,8 @@ BOOL ReadSFXTable(char *sndtable)
     UINT nsfx;
     int vrsn;
 
-    if (fread(&vrsn, sizeof(vrsn), 1, fp) != 1 ||
-        fread(&nsfx, sizeof(nsfx), 1, fp) != 1)
+    if (fread(&vrsn, sizeof(vrsn), 1, fp) not_eq 1 or
+        fread(&nsfx, sizeof(nsfx), 1, fp) not_eq 1)
     {
         SFX_DEF = BuiltinSFX;
         NumSFX = BuiltinNSFX;
@@ -896,7 +896,7 @@ BOOL ReadSFXTable(char *sndtable)
         return TRUE;
     }
 
-    ShiAssert(nsfx >= SFX_LAST && nsfx < 32767); // arbitrary test
+    ShiAssert(nsfx >= SFX_LAST and nsfx < 32767); // arbitrary test
 
     if (nsfx < SFX_LAST)
     {
@@ -907,7 +907,7 @@ BOOL ReadSFXTable(char *sndtable)
         return TRUE;
     }
 
-    if (vrsn != SFX_TABLE_VRSN)
+    if (vrsn not_eq SFX_TABLE_VRSN)
     {
         ShiWarning("Old Version of Sound Table");
         SFX_DEF = BuiltinSFX;
@@ -918,9 +918,9 @@ BOOL ReadSFXTable(char *sndtable)
 
     SFX_DEF = new SFX_DEF_ENTRY[nsfx];
 
-    if (fread(SFX_DEF, sizeof(*SFX_DEF), nsfx, fp) != nsfx)
+    if (fread(SFX_DEF, sizeof(*SFX_DEF), nsfx, fp) not_eq nsfx)
     {
-        ShiAssert(!"Read error on Sound Table");
+        ShiAssert( not "Read error on Sound Table");
         fclose(fp);
         return FALSE;
     }
@@ -951,7 +951,7 @@ BOOL ReadSFXTable(char *sndtable)
 
             for (l = 0; l < sizeof(flags); l++)
             {
-                if (SFX_DEF[i].flags & 1 << l)
+                if (SFX_DEF[i].flags bitand 1 << l)
                     fprintf(t, "%s", flags[l]);
             }
 
@@ -1000,7 +1000,7 @@ BOOL ReadSFXTableTXT(char *sndtable)
 
     while (fgets(buffer, 512, fp))
     {
-        if (buffer[0] != '#')
+        if (buffer[0] not_eq '#')
             nsfx++;
     }
 
@@ -1013,7 +1013,7 @@ BOOL ReadSFXTableTXT(char *sndtable)
 
     while (fgets(buffer, 512, fp))
     {
-        if (buffer[0] != '#')
+        if (buffer[0] not_eq '#')
         {
             arg = strtok(buffer, " ,\t\n");
             strncpy(SFX_DEF[i].fileName, arg, 64);
@@ -1044,7 +1044,7 @@ BOOL ReadSFXTableTXT(char *sndtable)
                     {
                         if (*arg == flags[l])
                         {
-                            SFX_DEF[i].flags |= 1 << l;
+                            SFX_DEF[i].flags or_eq 1 << l;
                         }
                     }
 
@@ -1053,17 +1053,17 @@ BOOL ReadSFXTableTXT(char *sndtable)
             }
 
 
-            if (SFX_DEF[i].flags & (SFX_POS_SELF | SFX_POS_EXTONLY | SFX_POS_EXTINT))
+            if (SFX_DEF[i].flags bitand (SFX_POS_SELF bitor SFX_POS_EXTONLY bitor SFX_POS_EXTINT))
             {
                 // for all those types, set the External flag
-                SFX_DEF[i].flags |= SFX_POS_EXTERN;
+                SFX_DEF[i].flags or_eq SFX_POS_EXTERN;
             }
 
-            if (SFX_DEF[i].flags & SFX_POS_EXTERN)
+            if (SFX_DEF[i].flags bitand SFX_POS_EXTERN)
             {
                 // for all external types, set the 3d flag
-                SFX_DEF[i].flags |= SFX_FLAGS_3D;
-                // SFX_DEF[i].flags |= SFX_FLAGS_FREQ; // needed for doppler effect // this will be handled in psound
+                SFX_DEF[i].flags or_eq SFX_FLAGS_3D;
+                // SFX_DEF[i].flags or_eq SFX_FLAGS_FREQ; // needed for doppler effect // this will be handled in psound
 
             }
 
@@ -1117,7 +1117,7 @@ BOOL ReadSFXTableTXT(char *sndtable)
             {
                 char flags[11] = "PLEV3FAHOR";
 
-                if (SFX_DEF[i].flags & 1 << l)
+                if (SFX_DEF[i].flags bitand 1 << l)
                     fprintf(fp, "%c", flags[l]);
             }
 
@@ -1136,14 +1136,14 @@ BOOL ReadSFXTableTXT(char *sndtable)
 
 extern char FalconDataDirectory[_MAX_PATH];
 
-// MLR Hack to allow reloading the sound data while in the 3d world!
+// MLR Hack to allow reloading the sound data while in the 3d world
 // to make dev'ing the sound data easier.
 // Odds are, if it failes, your screwed.
 void F4ReloadSFX(void)
 {
     UnLoadSFX();
 
-    if (SFX_DEF != BuiltinSFX)
+    if (SFX_DEF not_eq BuiltinSFX)
     {
         delete [] SFX_DEF;
     }
@@ -1153,7 +1153,7 @@ void F4ReloadSFX(void)
     char sfxtable[_MAX_PATH];
     sprintf(sfxtable, "%s\\%s", FalconSoundThrDirectory, FALCONSNDTABLETXT);
 
-    if (!ReadSFXTableTXT(sfxtable)) // MLR 2003-10-17 Parse text file if it exists
+    if ( not ReadSFXTableTXT(sfxtable)) // MLR 2003-10-17 Parse text file if it exists
     {
         return; // MLR 2003-11-18 - the new style sound table is mandatory
         /*
@@ -1184,7 +1184,7 @@ void LoadSFX(char *falconDataDir)
 
         for (i = 0; i < NumSFX; i++) // first pass - most important buffers
         {
-            if ((SFX_DEF[i].flags & SFX_FLAGS_HIGH) == 0)
+            if ((SFX_DEF[i].flags bitand SFX_FLAGS_HIGH) == 0)
                 continue;
 
             sprintf(fname, "%s\\%s", FalconSoundThrDirectory, SFX_DEF[i].fileName);
@@ -1195,12 +1195,12 @@ void LoadSFX(char *falconDataDir)
             // if(fp)
             // fprintf(fp,"LoadSFX() didn't load %d:%s\n",i,fname);
             //}
-            // ShiAssert (SFX_DEF[i].handle != SND_NO_HANDLE); // MLR 1/21/2004 - who cares!
+            // ShiAssert (SFX_DEF[i].handle not_eq SND_NO_HANDLE); // MLR 1/21/2004 - who cares
         }
 
         for (i = 0; i < NumSFX; i++)
         {
-            if (SFX_DEF[i].flags & SFX_FLAGS_HIGH)
+            if (SFX_DEF[i].flags bitand SFX_FLAGS_HIGH)
                 continue;
 
             sprintf(fname, "%s\\%s", FalconSoundThrDirectory, SFX_DEF[i].fileName);
@@ -1211,7 +1211,7 @@ void LoadSFX(char *falconDataDir)
             // if(fp)
             // fprintf(fp,"LoadSFX() didn't load %f\n",fname);
             //}
-            // ShiAssert (SFX_DEF[i].handle != SND_NO_HANDLE); // MLR 1/21/2004 - who cares!
+            // ShiAssert (SFX_DEF[i].handle not_eq SND_NO_HANDLE); // MLR 1/21/2004 - who cares
         }
 
         //if(fp)
@@ -1224,7 +1224,7 @@ BOOL WriteSFXTable(char *sndtable)
 {
     ShiAssert(FALSE == IsBadStringPtr(sndtable, _MAX_PATH));
 
-    if (BuiltinNSFX <= 0 || BuiltinSFX == NULL) return FALSE;
+    if (BuiltinNSFX <= 0 or BuiltinSFX == NULL) return FALSE;
 
     ShiAssert(FALSE == F4IsBadReadPtr(BuiltinSFX, sizeof(SFX_DEF) * BuiltinNSFX));
 
@@ -1237,17 +1237,17 @@ BOOL WriteSFXTable(char *sndtable)
 
     int vrsn = SFX_TABLE_VRSN;
 
-    if (fwrite(&vrsn, sizeof(vrsn), 1, fp) != 1 ||
-        fwrite(&BuiltinNSFX, sizeof(BuiltinNSFX), 1, fp) != 1)
+    if (fwrite(&vrsn, sizeof(vrsn), 1, fp) not_eq 1 or
+        fwrite(&BuiltinNSFX, sizeof(BuiltinNSFX), 1, fp) not_eq 1)
     {
-        ShiAssert(!"Write error on Sound Table");
+        ShiAssert( not "Write error on Sound Table");
         fclose(fp);
         return FALSE;
     }
 
-    if (fwrite(BuiltinSFX, sizeof(*BuiltinSFX), BuiltinNSFX, fp) != (UINT)BuiltinNSFX)
+    if (fwrite(BuiltinSFX, sizeof(*BuiltinSFX), BuiltinNSFX, fp) not_eq (UINT)BuiltinNSFX)
     {
-        ShiAssert(!"Write error on Sound Table");
+        ShiAssert( not "Write error on Sound Table");
         fclose(fp);
         return FALSE;
     }
@@ -1275,7 +1275,7 @@ void UnLoadSFX(void)
 BOOL
 ChatSetup(void)
 {
-    if (!gSoundDriver) return(FALSE);
+    if ( not gSoundDriver) return(FALSE);
 
 #ifdef CHAT_USED
     HRESULT result;
@@ -1332,7 +1332,7 @@ ChatCleanup(void)
 #ifdef CHAT_USED
     HRESULT result;
 
-    if (!gSoundDriver) return;
+    if ( not gSoundDriver) return;
 
 
     // If we were transmitting, stop
@@ -1356,7 +1356,7 @@ ChatCleanup(void)
 void
 F4ChatToggleXmitReceive(void)
 {
-    if (!gSoundDriver) return;
+    if ( not gSoundDriver) return;
 
     // Switch modes
     if (chatMode == Transmit)
@@ -1383,22 +1383,22 @@ void F4SoundEntering3d(void)
     g_bSoundDistanceEffect = false;
     g_bSoundHearVMSExternal = false;
 
-    if (PlayerOptions.SoundFlags & SNDFNEWENG)
+    if (PlayerOptions.SoundFlags bitand SNDFNEWENG)
     {
         g_bNewEngineSounds  = true;
     }
 
-    if (PlayerOptions.SoundFlags & SNDFDOP)
+    if (PlayerOptions.SoundFlags bitand SNDFDOP)
     {
         g_bEnableDopplerSound  = true;
     }
 
-    if (PlayerOptions.SoundFlags & SNDFDISTE)
+    if (PlayerOptions.SoundFlags bitand SNDFDISTE)
     {
         g_bSoundDistanceEffect = true;
     }
 
-    if (PlayerOptions.SoundFlags & SNDFVMSEXT)
+    if (PlayerOptions.SoundFlags bitand SNDFVMSEXT)
     {
         g_bSoundHearVMSExternal = true;
     }
@@ -1439,8 +1439,8 @@ extern "C" void F4SoundFXSetCamPosAndOrient(Tpoint *campos, Trotation *camrot, T
             v = playerAC->af->GetSoundExternalVol() + PlayerOptions.SoundExtAttenuation;
 
             if (
-                playerAC->GetNumDOFs() > COMP_CANOPY_DOF &&
-                playerAC->IsComplex() &&
+                playerAC->GetNumDOFs() > COMP_CANOPY_DOF and 
+                playerAC->IsComplex() and 
                 playerAC->af->GetCanopyMaxAngle()
             )
             {
@@ -1490,15 +1490,15 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
     //Cobra Inhibit stuff?
     SFX_DEF_ENTRY *sfxp;
 
-    if (sfxId <= 0 || sfxId >= NumSFX) return;
+    if (sfxId <= 0 or sfxId >= NumSFX) return;
 
     sfxp = &SFX_DEF[ sfxId ];
 
     // Cobra - Fix CTD when exiting FF
     if (F4IsBadReadPtr(sfxp, sizeof(sfxp))) return;
 
-    if (g_bRealisticAvionics &&
-        (sfxp->flags & SFX_FLAGS_VMS))
+    if (g_bRealisticAvionics and 
+        (sfxp->flags bitand SFX_FLAGS_VMS))
     {
         AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -1506,12 +1506,12 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
         if (playerAC)
         {
             if (
-                OTWDriver.DisplayInCockpit() && playerAC->OnGround() ||
-                !playerAC->playBetty || !playerAC->IsSetFlag(MOTION_OWNSHIP)
+                OTWDriver.DisplayInCockpit() and playerAC->OnGround() or
+ not playerAC->playBetty or not playerAC->IsSetFlag(MOTION_OWNSHIP)
             )
             {
                 // MD -- 20031125: except if the MAL/IND test button is being pressed to test the warning sound
-                if (!((sfxId == SFX_BB_ALLWORDS) && playerAC->TestLights))
+                if ( not ((sfxId == SFX_BB_ALLWORDS) and playerAC->TestLights))
                 {
                     return;
                 }
@@ -1523,9 +1523,9 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
 
     if (gSoundObject)
     {
-        if ((SFX_DEF[ sfxId ].flags & SFX_POS_LOOPED) ||
-            override ||
-            (!gSoundObject->IsPlaying(sfxId, 0)))
+        if ((SFX_DEF[ sfxId ].flags bitand SFX_POS_LOOPED) or
+            override or
+            ( not gSoundObject->IsPlaying(sfxId, 0)))
             gSoundObject->Sfx(sfxId, 0, pscale, volume, CamPos.x, CamPos.y, CamPos.z);
     }
 }
@@ -1559,20 +1559,20 @@ F4SoundFXPositionDriver(unsigned int begFrame, unsigned int endFrame)
     {
         lastPlayTime = vuxRealTime;
 
-        if (gSoundManagerRunning == FALSE || !SimDriver.InSim())
+        if (gSoundManagerRunning == FALSE or not SimDriver.InSim())
         {
             return;
         }
 
         // set stagger counter
-        sPosLoopStagger = (++sPosLoopStagger) & LOOP_STAGGER_MASK;
+        sPosLoopStagger = (++sPosLoopStagger) bitand LOOP_STAGGER_MASK;
 
         if (gSoundDriver)
         {
             static int LastOTWDispMode = -1;
             bool reset = 0;
 
-            if (OTWDriver.GetOTWDisplayMode() != LastOTWDispMode)
+            if (OTWDriver.GetOTWDisplayMode() not_eq LastOTWDispMode)
             {
                 reset = 1;
                 LastOTWDispMode = OTWDriver.GetOTWDisplayMode();
@@ -1624,7 +1624,7 @@ F4SoundFXInit(void)
     int i;
     SFX_DEF_ENTRY *sfxp;
 
-    if (!gSoundDriver) return;
+    if ( not gSoundDriver) return;
 
     // main loop thru sound effects
     for (i = 0, sfxp = &SFX_DEF[0]; i < NumSFX; i++, sfxp++)
@@ -1646,7 +1646,7 @@ F4SoundFXEnd(void)
     int i;
     SFX_DEF_ENTRY *sfxp;
 
-    if (!gSoundDriver) return;
+    if ( not gSoundDriver) return;
 
     // main loop thru sound effects
     for (i = 0, sfxp = &SFX_DEF[0]; i < NumSFX; i++, sfxp++)
@@ -1706,7 +1706,7 @@ void F4SoundPos::UpdatePos(SimBaseClass  *owner)
 
 void F4SoundPos::PositionalData(void)
 {
-    if (platform && platform->drawPointer)
+    if (platform and platform->drawPointer)
     {
         orientation = ((DrawableBSP *)(platform->drawPointer))->orientation;
     }
@@ -1730,11 +1730,11 @@ void F4SoundPos::PositionalData(void)
     // dist from camera
     distance = (float)sqrt(relPos.x * relPos.x + relPos.y * relPos.y + relPos.z * relPos.z);
 
-    if (g_bSoundSonicBoom && platform && ((SimBaseClass *)platform)->IsAirplane())
+    if (g_bSoundSonicBoom and platform and ((SimBaseClass *)platform)->IsAirplane())
     {
         // platform is really a SimBaseClass object
         // object exceeding mach 1?
-        if (velocity > 1100 && distance)
+        if (velocity > 1100 and distance)
         {
             // determine the angle between the velocity vector, the object, and the camera.
             float rvx, rvy, rvz;
@@ -1763,7 +1763,7 @@ void F4SoundPos::PositionalData(void)
             }
         }
 
-        if (wasInMachShadow && !inMachShadow) // don't do booms with a view change
+        if (wasInMachShadow and not inMachShadow) // don't do booms with a view change
         {
             sonicBoom = 1000;
         }
@@ -1778,7 +1778,7 @@ void F4SoundPos::PositionalData(void)
             float v = SonicBoomTable.Lookup(1.0f - (float)sonicBoom / 1000.0f);
             sonicBoom -= (int)(SimLibMajorFrameTime * 1000);
             Sfx(SFX_SONIC_BOOM, 0, 1, v);
-            //play the BOOM!
+            //play the BOOM
         }
         else
         {
@@ -1794,7 +1794,7 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol)
     //Cobra Inhibit stuff?
     SFX_DEF_ENTRY *sfxp;
 
-    if (SfxID <= 0 || SfxID >= NumSFX) return;
+    if (SfxID <= 0 or SfxID >= NumSFX) return;
 
     sfxp = &SFX_DEF[ SfxID ];
 
@@ -1802,7 +1802,7 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol)
     // sfr: @todo remove this hack
     if (F4IsBadReadPtr(sfxp, sizeof(sfxp))) return;
 
-    if (g_bRealisticAvionics && (sfxp->flags & SFX_FLAGS_VMS))
+    if (g_bRealisticAvionics and (sfxp->flags bitand SFX_FLAGS_VMS))
     {
         AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -1810,12 +1810,12 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol)
         if (playerAC)
         {
             if (
-                OTWDriver.DisplayInCockpit() && playerAC->OnGround() ||
-                !playerAC->playBetty || !playerAC->IsSetFlag(MOTION_OWNSHIP)
+                OTWDriver.DisplayInCockpit() and playerAC->OnGround() or
+ not playerAC->playBetty or not playerAC->IsSetFlag(MOTION_OWNSHIP)
             )
             {
                 // MD -- 20031125: except if the MAL/IND test button is being pressed to test the warning sound
-                if (!((SfxID == SFX_BB_ALLWORDS) && playerAC->TestLights))
+                if ( not ((SfxID == SFX_BB_ALLWORDS) and playerAC->TestLights))
                     return;
             }
         }
@@ -1894,7 +1894,7 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol, float X, float
 
     mlrVoiceHandle *vh;
 
-    if (!inPurgeList)
+    if ( not inPurgeList)
     {
         ENTERSPCS;
         sndPurgeList.AddHead(this);
@@ -1920,7 +1920,7 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol, float X, float
     ShiAssert(SfxID < NumSFX);
     ShiAssert(SfxID > 0);
 
-    if (SfxID < NumSFX && SfxID > 0)
+    if (SfxID < NumSFX and SfxID > 0)
     {
         if (vh = new mlrVoiceHandle(this, SfxID, SID))
         {
@@ -1970,7 +1970,7 @@ void F4SoundPos::Purge(void)
         sn = sn2;
     }
 
-    if (!(soList.GetHead()))
+    if ( not (soList.GetHead()))
     {
         ENTERSPCS;
         inPurgeList = 0;

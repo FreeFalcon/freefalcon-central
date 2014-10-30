@@ -82,7 +82,7 @@ int SimDirtyData::Process(uchar autodisp)
 
     ent = static_cast<FalconEntity*>(vuDatabase->Find(EntityId()));
 
-    if (!ent || autodisp)
+    if ( not ent or autodisp)
     {
         return 0;
     }
@@ -90,7 +90,7 @@ int SimDirtyData::Process(uchar autodisp)
     // sfr: removing this. some dirty data stuff come after unit has changed owner
     // specially low priority data
     // Only accept data on remote entities
-    //if (!ent->IsLocal())
+    //if ( not ent->IsLocal())
     //{
     VU_BYTE *data = dataBlock.data;
 

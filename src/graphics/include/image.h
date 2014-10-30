@@ -164,21 +164,21 @@ inline GLint CheckImageType(const char *file)
 
     glGetFileExtension(file, ext);
 
-    if (!_strnicmp(ext, "GIF", 3))
+    if ( not _strnicmp(ext, "GIF", 3))
         i = IMAGE_TYPE_GIF;
-    else if (!_strnicmp(ext, "LBM", 3))
+    else if ( not _strnicmp(ext, "LBM", 3))
         i = IMAGE_TYPE_LBM;
-    else if (!_strnicmp(ext, "PCX", 3))
+    else if ( not _strnicmp(ext, "PCX", 3))
         i = IMAGE_TYPE_PCX;
-    else if (!_strnicmp(ext, "BMP", 3))
+    else if ( not _strnicmp(ext, "BMP", 3))
         i = IMAGE_TYPE_BMP;
-    else if (!_strnicmp(ext, "APL", 3))
+    else if ( not _strnicmp(ext, "APL", 3))
         i = IMAGE_TYPE_APL;
-    else if (!_strnicmp(ext, "TGA", 3))
+    else if ( not _strnicmp(ext, "TGA", 3))
         i = IMAGE_TYPE_TGA;
 
     //JAM 22Sep03
-    else if (!_strnicmp(ext, "DDS", 3))
+    else if ( not _strnicmp(ext, "DDS", 3))
         i = IMAGE_TYPE_DDS;
 
     //JAM
@@ -236,13 +236,13 @@ inline GLint ReadTextureImage(CImageFileMemory *fi)
 
 inline GLint   motr2intl(GLint l)
 {
-    return(((l & 0xff000000L) >> 24) + ((l & 0x00ff0000L) >> 8) +
-           ((l & 0x0000ff00L) << 8) + ((l & 0x000000ffL) << 24));
+    return(((l bitand 0xff000000L) >> 24) + ((l bitand 0x00ff0000L) >> 8) +
+           ((l bitand 0x0000ff00L) << 8) + ((l bitand 0x000000ffL) << 24));
 }
 
 inline GLint motr2inti(GLint n)
 {
-    return(((n & 0xff00) >> 8) | ((n & 0x00ff) << 8));
+    return(((n bitand 0xff00) >> 8) bitor ((n bitand 0x00ff) << 8));
 }
 
 //___________________________________________________________________________

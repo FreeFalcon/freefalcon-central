@@ -115,9 +115,9 @@ void LoadVisIdMap();
 void WriteClassTable(void)
 {
     /*
-       if (!VirtualProtect (Falcon4ClassTable, NumEntities * sizeof (Falcon4EntityClassType), PAGE_READWRITE, NULL))
+       if ( not VirtualProtect (Falcon4ClassTable, NumEntities * sizeof (Falcon4EntityClassType), PAGE_READWRITE, NULL))
        {
-       ShiAssert (!"Cannot Read/Write Protect ClassTable\n");
+       ShiAssert ( not "Cannot Read/Write Protect ClassTable\n");
        }
      */
 }
@@ -125,9 +125,9 @@ void WriteClassTable(void)
 void ReadClassTable(void)
 {
     /*
-       if (!VirtualProtect (Falcon4ClassTable, NumEntities * sizeof (Falcon4EntityClassType), PAGE_READONLY, NULL))
+       if ( not VirtualProtect (Falcon4ClassTable, NumEntities * sizeof (Falcon4EntityClassType), PAGE_READONLY, NULL))
        {
-       ShiAssert (!"Cannot ReadOnly Protect ClassTable\n");
+       ShiAssert ( not "Cannot ReadOnly Protect ClassTable\n");
        }
      */
 }
@@ -172,41 +172,41 @@ int LoadClassTable(char *filename)
 #ifndef ACMI
 #ifndef IACONVERT
 
-    if (!LoadUnitData(filename)) ShiError("Failed to load unit data");
+    if ( not LoadUnitData(filename)) ShiError("Failed to load unit data");
 
-    if (!LoadFeatureEntryData(filename)) ShiError("Failed to load feature entries");
+    if ( not LoadFeatureEntryData(filename)) ShiError("Failed to load feature entries");
 
-    if (!LoadObjectiveData(filename)) ShiError("Failed to load objective data");
+    if ( not LoadObjectiveData(filename)) ShiError("Failed to load objective data");
 
-    if (!LoadWeaponData(filename)) ShiError("Failed to load weapon data");
+    if ( not LoadWeaponData(filename)) ShiError("Failed to load weapon data");
 
-    if (!LoadFeatureData(filename)) ShiError("Failed to load feature data");
+    if ( not LoadFeatureData(filename)) ShiError("Failed to load feature data");
 
-    if (!LoadVehicleData(filename)) ShiError("Failed to load vehicle data");
+    if ( not LoadVehicleData(filename)) ShiError("Failed to load vehicle data");
 
-    if (!LoadWeaponListData(filename)) ShiError("Failed to load weapon list");
+    if ( not LoadWeaponListData(filename)) ShiError("Failed to load weapon list");
 
-    if (!LoadPtHeaderData(filename)) ShiError("Failed to load point headers");
+    if ( not LoadPtHeaderData(filename)) ShiError("Failed to load point headers");
 
-    if (!LoadPtData(filename)) ShiError("Failed to load point data");
+    if ( not LoadPtData(filename)) ShiError("Failed to load point data");
 
-    if (!LoadRadarData(filename)) ShiError("Failed to load radar data");
+    if ( not LoadRadarData(filename)) ShiError("Failed to load radar data");
 
-    if (!LoadIRSTData(filename)) ShiError("Failed to load IRST data");
+    if ( not LoadIRSTData(filename)) ShiError("Failed to load IRST data");
 
-    if (!LoadRwrData(filename)) ShiError("Failed to load Rwr data");
+    if ( not LoadRwrData(filename)) ShiError("Failed to load Rwr data");
 
-    if (!LoadVisualData(filename)) ShiError("Failed to load Visual data");
+    if ( not LoadVisualData(filename)) ShiError("Failed to load Visual data");
 
-    if (!LoadSimWeaponData(filename)) ShiError("Failed to load SimWeapon data");
+    if ( not LoadSimWeaponData(filename)) ShiError("Failed to load SimWeapon data");
 
-    if (!LoadACDefData(filename)) ShiError("Failed to load AC Definition data");
+    if ( not LoadACDefData(filename)) ShiError("Failed to load AC Definition data");
 
-    if (!LoadSquadronStoresData(filename)) ShiError("Failed to load Squadron stores data");
+    if ( not LoadSquadronStoresData(filename)) ShiError("Failed to load Squadron stores data");
 
-    if (!LoadRocketData(filename)) ShiError("Failed to load Rocket data"); // added by M.N.
+    if ( not LoadRocketData(filename)) ShiError("Failed to load Rocket data"); // added by M.N.
 
-    if (!LoadDirtyData(filename)) ShiError("Failed to load Dirty data priorities");   // added by M.N.
+    if ( not LoadDirtyData(filename)) ShiError("Failed to load Dirty data priorities");   // added by M.N.
 
     LoadMissionData();
     LoadVisIdMap();
@@ -219,11 +219,11 @@ int LoadClassTable(char *filename)
     // Build ptr data
     for (i = 0; i < NumEntities; i++)
     {
-        if (Falcon4ClassTable[i].dataPtr != NULL)
+        if (Falcon4ClassTable[i].dataPtr not_eq NULL)
         {
             if (Falcon4ClassTable[i].dataType == DTYPE_UNIT)
             {
-                // if (Falcon4ClassTable[i].vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_AIR && Falcon4ClassTable[i].vuClassData.classInfo_[VU_TYPE] == TYPE_SQUADRON)
+                // if (Falcon4ClassTable[i].vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_AIR and Falcon4ClassTable[i].vuClassData.classInfo_[VU_TYPE] == TYPE_SQUADRON)
                 // NumSquadTypes++;
                 ShiAssert((int)Falcon4ClassTable[i].dataPtr < NumUnitEntries);
                 UnitDataTable[(int)Falcon4ClassTable[i].dataPtr].Index = i;
@@ -419,7 +419,7 @@ int LoadUnitData(char *filename)
         if (fread(&entries, sizeof(short), 1, fp) < 1)
             return 0;
 
-        if (size != sizeof(UnitClassDataType) * entries + 2)
+        if (size not_eq sizeof(UnitClassDataType) * entries + 2)
             return 0;
     }
 
@@ -446,7 +446,7 @@ int LoadObjectiveData(char *filename)
 
     //if ((fp = OpenCampFile(fname, "OCD", "rb")) == NULL)
     //{
-    // if (g_bDisplayTrees && fedtree) // we've loaded a fedtree previously, so we also need a ocdtree version
+    // if (g_bDisplayTrees and fedtree) // we've loaded a fedtree previously, so we also need a ocdtree version
     // {
     // ShiError( "Failed to load objective data" );
     // return 0;
@@ -480,14 +480,14 @@ int LoadObjectiveData(char *filename)
         if (fread(&entries, sizeof(short), 1, fp) < 1)
             return 0;
 
-        if (size != sizeof(ObjClassDataType) * entries + 2)
+        if (size not_eq sizeof(ObjClassDataType) * entries + 2)
             return 0;
     }
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&entries,sizeof(short),1,fp) < 1)
     // return 0;
-    //if (size != sizeof(ObjClassDataType) * entries + 2)
+    //if (size not_eq sizeof(ObjClassDataType) * entries + 2)
     // return 0;
     ObjDataTable = new ObjClassDataType[entries];
     fread(ObjDataTable, sizeof(ObjClassDataType), entries, fp);
@@ -545,14 +545,14 @@ int LoadWeaponData(char *filename)
         if (fread(&entries, sizeof(short), 1, fp) < 1)
             return 0;
 
-        if (size != sizeof(WeaponClassDataType) * entries + 2)
+        if (size not_eq sizeof(WeaponClassDataType) * entries + 2)
             return 0;
     }
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&entries,sizeof(short),1,fp) < 1)
     // return 0;
-    //if (size != sizeof(WeaponClassDataType) * entries + 2)
+    //if (size not_eq sizeof(WeaponClassDataType) * entries + 2)
     // return 0;
     WeaponDataTable = new WeaponClassDataType[entries];
     fread(WeaponDataTable, sizeof(WeaponClassDataType), entries, fp);
@@ -596,14 +596,14 @@ int LoadRocketData(char *filename)
         if (fread(&entries, sizeof(short), 1, fp) < 1)
             return 0;
 
-        if (size != sizeof(RocketClassDataType) * entries + 2)
+        if (size not_eq sizeof(RocketClassDataType) * entries + 2)
             return 0;
     }
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&entries,sizeof(short),1,fp) < 1)
     // return 0;
-    //if (size != sizeof(RocketClassDataType) * entries + 2)
+    //if (size not_eq sizeof(RocketClassDataType) * entries + 2)
     // return 0;
     RocketDataTable = new RocketClassDataType[entries];
     fread(RocketDataTable, sizeof(RocketClassDataType), entries, fp);
@@ -649,14 +649,14 @@ int LoadDirtyData(char *filename)
         if (fread(&entries, sizeof(short), 1, fp) < 1)
             return 0;
 
-        if (size != sizeof(DirtyDataClassType) * entries + 2)
+        if (size not_eq sizeof(DirtyDataClassType) * entries + 2)
             return 0;
     }
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&entries,sizeof(short),1,fp) < 1)
     // return 0;
-    //if (size != sizeof(DirtyDataClassType) * entries + 2)
+    //if (size not_eq sizeof(DirtyDataClassType) * entries + 2)
     // return 0;
     DDP = new DirtyDataClassType[entries];
     fread(DDP, sizeof(DirtyDataClassType), entries, fp);
@@ -703,14 +703,14 @@ int LoadFeatureData(char *filename)
         if (fread(&entries, sizeof(short), 1, fp) < 1)
             return 0;
 
-        if (size != sizeof(FeatureClassDataType) * entries + 2)
+        if (size not_eq sizeof(FeatureClassDataType) * entries + 2)
             return 0;
     }
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&entries,sizeof(short),1,fp) < 1)
     // return 0;
-    //if (size != sizeof(FeatureClassDataType) * entries + 2)
+    //if (size not_eq sizeof(FeatureClassDataType) * entries + 2)
     // return 0;
     FeatureDataTable = new FeatureClassDataType[entries];
     fread(FeatureDataTable, sizeof(FeatureClassDataType), entries, fp);
@@ -752,14 +752,14 @@ int LoadVehicleData(char *filename)
         if (fread(&entries, sizeof(short), 1, fp) < 1)
             return 0;
 
-        if (size != sizeof(VehicleClassDataType) * entries + 2)
+        if (size not_eq sizeof(VehicleClassDataType) * entries + 2)
             return 0;
     }
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&entries,sizeof(short),1,fp) < 1)
     // return 0;
-    //if (size != sizeof(VehicleClassDataType) * entries + 2)
+    //if (size not_eq sizeof(VehicleClassDataType) * entries + 2)
     // return 0;
     VehicleDataTable = new VehicleClassDataType[entries];
     fread(VehicleDataTable, sizeof(VehicleClassDataType), entries, fp);
@@ -801,14 +801,14 @@ int LoadWeaponListData(char *filename)
         if (fread(&entries, sizeof(short), 1, fp) < 1)
             return 0;
 
-        if (size != sizeof(WeaponListDataType) * entries + 2)
+        if (size not_eq sizeof(WeaponListDataType) * entries + 2)
             return 0;
     }
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&entries,sizeof(short),1,fp) < 1)
     // return 0;
-    //if (size != sizeof(WeaponListDataType) * entries + 2)
+    //if (size not_eq sizeof(WeaponListDataType) * entries + 2)
     // return 0;
     WeaponListDataTable = new WeaponListDataType[entries];
     fread(WeaponListDataTable, sizeof(WeaponListDataType), entries, fp);
@@ -834,7 +834,7 @@ int LoadPtHeaderData(char *filename)
         return 0;
     }
 
-    if (size != sizeof(PtHeaderDataType) * NumPtHeaders + 2)
+    if (size not_eq sizeof(PtHeaderDataType) * NumPtHeaders + 2)
     {
         return 0;
     }
@@ -856,7 +856,7 @@ int LoadPtHeaderData(char *filename)
 
                 for (t = 0; t < MAX_FEAT_DEPEND; t++)
                 {
-                    if (PtHeaderDataTable[l].features[t] != 255 && PtHeaderDataTable[l].features[t] >= featureCount)
+                    if (PtHeaderDataTable[l].features[t] not_eq 255 and PtHeaderDataTable[l].features[t] >= featureCount)
                     {
                         if (ErrorFH)
                             fprintf(ErrorFH, "PtHeaderDataTable[%d].features[%d]=%d >= Objective[%d]'s Features %d\n",
@@ -880,7 +880,7 @@ int LoadPtHeaderData(char *filename)
 
     for (l = 0; l < NumObjectiveEntries; l++)
     {
-        if ((ObjDataTable[l].PtDataIndex >= NumPtHeaders) || (ObjDataTable[l].PtDataIndex < 0))
+        if ((ObjDataTable[l].PtDataIndex >= NumPtHeaders) or (ObjDataTable[l].PtDataIndex < 0))
         {
             if (ErrorFH)
                 fprintf(ErrorFH, "ObjDataTable[%d].PtDataIndex >= NumPtHeaders = %d or < 0\n",
@@ -911,7 +911,7 @@ int LoadPtData(char *filename)
         return 0;
     }
 
-    if (size != sizeof(PtDataType) * NumPts + 2)
+    if (size not_eq sizeof(PtDataType) * NumPts + 2)
     {
         return 0;
     }
@@ -969,14 +969,14 @@ int LoadFeatureEntryData(char *filename)
         if (fread(&NumObjFeatEntries, sizeof(short), 1, fp) < 1)
             return 0;
 
-        if (size != sizeof(FeatureEntry) * NumObjFeatEntries + 2)
+        if (size not_eq sizeof(FeatureEntry) * NumObjFeatEntries + 2)
             return 0;
     }
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&NumObjFeatEntries,sizeof(short),1,fp) < 1)
     // return 0;
-    //if (size != sizeof(FeatureEntry) * NumObjFeatEntries + 2)
+    //if (size not_eq sizeof(FeatureEntry) * NumObjFeatEntries + 2)
     // return 0;
     FeatureEntryDataTable = new FeatureEntry[NumObjFeatEntries];
     fread(FeatureEntryDataTable, sizeof(FeatureEntry), NumObjFeatEntries, fp);
@@ -1016,14 +1016,14 @@ int LoadRadarData(char *filename)
         if (fread(&NumRadarEntries, sizeof(short), 1, fp) < 1)
             return 0;
 
-        if (size != sizeof(RadarDataType) * NumRadarEntries + 2)
+        if (size not_eq sizeof(RadarDataType) * NumRadarEntries + 2)
             return 0;
     }
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&NumRadarEntries,sizeof(short),1,fp) < 1)
     // return 0;
-    //if (size != sizeof(RadarDataType) * NumRadarEntries + 2)
+    //if (size not_eq sizeof(RadarDataType) * NumRadarEntries + 2)
     // return 0;
     RadarDataTable = new RadarDataType[NumRadarEntries];
     ShiAssert(RadarDataTable);
@@ -1064,14 +1064,14 @@ int LoadIRSTData(char *filename)
         if (fread(&NumIRSTEntries, sizeof(short), 1, fp) < 1)
             return 0;
 
-        if (size != sizeof(IRSTDataType) * NumIRSTEntries + 2)
+        if (size not_eq sizeof(IRSTDataType) * NumIRSTEntries + 2)
             return 0;
     }
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&NumIRSTEntries,sizeof(short),1,fp) < 1)
     // return 0;
-    //if (size != sizeof(IRSTDataType) * NumIRSTEntries + 2)
+    //if (size not_eq sizeof(IRSTDataType) * NumIRSTEntries + 2)
     // return 0;
     IRSTDataTable = new IRSTDataType[NumIRSTEntries];
     ShiAssert(IRSTDataTable);
@@ -1112,14 +1112,14 @@ int LoadRwrData(char *filename)
         if (fread(&NumRwrEntries, sizeof(short), 1, fp) < 1)
             return 0;
 
-        if (size != sizeof(RwrDataType) * NumRwrEntries + 2)
+        if (size not_eq sizeof(RwrDataType) * NumRwrEntries + 2)
             return 0;
     }
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&NumRwrEntries,sizeof(short),1,fp) < 1)
     // return 0;
-    //if (size != sizeof(RwrDataType) * NumRwrEntries + 2)
+    //if (size not_eq sizeof(RwrDataType) * NumRwrEntries + 2)
     // return 0;
     RwrDataTable = new RwrDataType[NumRwrEntries];
     ShiAssert(RwrDataTable);
@@ -1160,14 +1160,14 @@ int LoadVisualData(char *filename)
         if (fread(&NumVisualEntries, sizeof(short), 1, fp) < 1)
             return 0;
 
-        if (size != sizeof(VisualDataType) * NumVisualEntries + 2)
+        if (size not_eq sizeof(VisualDataType) * NumVisualEntries + 2)
             return 0;
     }
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&NumVisualEntries,sizeof(short),1,fp) < 1)
     // return 0;
-    //if (size != sizeof(VisualDataType) * NumVisualEntries + 2)
+    //if (size not_eq sizeof(VisualDataType) * NumVisualEntries + 2)
     // return 0;
     VisualDataTable = new VisualDataType[NumVisualEntries];
     ShiAssert(VisualDataTable);
@@ -1208,14 +1208,14 @@ int LoadSimWeaponData(char *filename)
         if (fread(&NumSimWeaponEntries, sizeof(short), 1, fp) < 1)
             return 0;
 
-        if (size != sizeof(SimWeaponDataType) * NumSimWeaponEntries + 2)
+        if (size not_eq sizeof(SimWeaponDataType) * NumSimWeaponEntries + 2)
             return 0;
     }
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&NumSimWeaponEntries,sizeof(short),1,fp) < 1)
     // return 0;
-    //if (size != sizeof(SimWeaponDataType) * NumSimWeaponEntries + 2)
+    //if (size not_eq sizeof(SimWeaponDataType) * NumSimWeaponEntries + 2)
     // return 0;
     SimWeaponDataTable = new SimWeaponDataType[NumSimWeaponEntries];
     ShiAssert(SimWeaponDataTable);
@@ -1256,14 +1256,14 @@ int LoadACDefData(char *filename)
         if (fread(&NumACDefEntries, sizeof(short), 1, fp) < 1)
             return 0;
 
-        if (size != sizeof(SimACDefType) * NumACDefEntries + 2)
+        if (size not_eq sizeof(SimACDefType) * NumACDefEntries + 2)
             return 0;
     }
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&NumACDefEntries,sizeof(short),1,fp) < 1)
     // return 0;
-    //if (size != sizeof(SimACDefType) * NumACDefEntries + 2)
+    //if (size not_eq sizeof(SimACDefType) * NumACDefEntries + 2)
     // return 0;
     SimACDefTable = new SimACDefType[NumACDefEntries];
     ShiAssert(SimACDefTable);
@@ -1305,14 +1305,14 @@ int LoadSquadronStoresData(char *filename)
         if (NumSquadTypes < 1)
             return 0;
 
-        if (size != sizeof(SquadronStoresDataType) * NumSquadTypes + 2)
+        if (size not_eq sizeof(SquadronStoresDataType) * NumSquadTypes + 2)
             // MAXIMUM_WEAPTYPES = 600;
             return 0;
     }
 
     // Check for FF new record size
     //if ((size == sizeof(SquadronStoresDataType) * NumSquadTypes + 2)
-    // && (sizeof(SquadronStoresDataType)-3 == FF_MAXIMUM_WEAPTYPES))
+    // and (sizeof(SquadronStoresDataType)-3 == FF_MAXIMUM_WEAPTYPES))
     // MAXIMUM_WEAPTYPES = FF_MAXIMUM_WEAPTYPES;
     //else
     // MAXIMUM_WEAPTYPES = SP_MAXIMUM_WEAPTYPES;
@@ -1337,7 +1337,7 @@ void UpdateVehicleCombatStatistics(void)
     {
         for (mt = 0; mt < MOVEMENT_TYPES; mt++)
         {
-            // KCK: HitChance is now the inherent hitchance only!
+            // KCK: HitChance is now the inherent hitchance only
             // Units will use the calculated hitchance
             // VehicleDataTable[id].HitChance[mt] += CalculateVehicleHitChance(VehicleDataTable[id].Index,mt);
             VehicleDataTable[id].Range[mt] = CalculateVehicleRange(VehicleDataTable[id].Index, mt);
@@ -1434,10 +1434,10 @@ void UpdateUnitCombatStatistics(void)
             {
                 vc = GetVehicleClassData(UnitDataTable[id].VehicleType[i]);
 
-                for (j = 0; j < OtherDam && vc; j++)
+                for (j = 0; j < OtherDam and vc; j++)
                     dam[j] += vc->DamageMod[j];
 
-                UnitDataTable[id].Flags |= vc->Flags & 0xFF;
+                UnitDataTable[id].Flags or_eq vc->Flags bitand 0xFF;
 
                 if (vc->MaxSpeed < mspeed)
                     mspeed = vc->MaxSpeed;
@@ -1455,13 +1455,13 @@ void UpdateUnitCombatStatistics(void)
         if (mspeed == 0)
             UnitDataTable[id].MovementType = NoMove;
 
-        if (Falcon4ClassTable[UnitDataTable[id].Index].vuClassData.classInfo_[0] == DOMAIN_AIR &&
+        if (Falcon4ClassTable[UnitDataTable[id].Index].vuClassData.classInfo_[0] == DOMAIN_AIR and 
             Falcon4ClassTable[UnitDataTable[id].Index].vuClassData.classInfo_[2] == TYPE_SQUADRON)
         {
             // Calculate squadron's max stores, by weapons it can load
             vc = GetVehicleClassData(UnitDataTable[id].VehicleType[0]);
 
-            if (vc && squads < NumSquadTypes)
+            if (vc and squads < NumSquadTypes)
             {
                 uchar baaweap = 0, bagweap = 0;
                 short score, baascore = 9999, bagscore = 9999;
@@ -1471,18 +1471,18 @@ void UpdateUnitCombatStatistics(void)
                 {
                     if (vc->Weapons[i] == 255)
                     {
-                        for (j = 0, mr = -1; j < MAX_WEAPONS_IN_LIST && mr; j++)
+                        for (j = 0, mr = -1; j < MAX_WEAPONS_IN_LIST and mr; j++)
                         {
                             mr = GetListEntryWeapon(vc->Weapon[i], j);
 
-                            if (mr > 0 && mr < 255)
+                            if (mr > 0 and mr < 255)
                             {
                                 SquadronStoresDataTable[squads].Stores[mr]++;
 
-                                if (!baaweap && GetWeaponScore(mr, Air, 0))
+                                if ( not baaweap and GetWeaponScore(mr, Air, 0))
                                     baaweap = mr;
 
-                                if (!bagweap && GetWeaponScore(mr, NoMove, 0))
+                                if ( not bagweap and GetWeaponScore(mr, NoMove, 0))
                                     bagweap = mr;
                             }
                         }
@@ -1498,7 +1498,7 @@ void UpdateUnitCombatStatistics(void)
                     {
                         score = GetWeaponScore(i, NoMove, 0);
 
-                        if (score && score < bagscore && WeaponDataTable[i].DamageType == HighExplosiveDam)
+                        if (score and score < bagscore and WeaponDataTable[i].DamageType == HighExplosiveDam)
                         {
                             bagscore = score;
                             bagweap = i;
@@ -1506,7 +1506,7 @@ void UpdateUnitCombatStatistics(void)
 
                         score = GetWeaponScore(i, Air, 0);
 
-                        if (score && score < baascore && i != vc->Weapon[0])
+                        if (score and score < baascore and i not_eq vc->Weapon[0])
                         {
                             baascore = score;
                             baaweap = i;
@@ -1523,7 +1523,7 @@ void UpdateUnitCombatStatistics(void)
                 {
                     j = SquadronStoresDataTable[squads].Stores[i] * 20;
 
-                    if (j > 255 || WeaponDataTable[i].Flags & WEAP_ONETENTH)
+                    if (j > 255 or WeaponDataTable[i].Flags bitand WEAP_ONETENTH)
                         j = 255;
 
                     SquadronStoresDataTable[squads].Stores[i] = (uchar)j;
@@ -1580,7 +1580,7 @@ void UpdateObjectiveCombatStatistics(void)
 
             if (fc)
             {
-                for (j = 0; j < OtherDam && fc; j++)
+                for (j = 0; j < OtherDam and fc; j++)
                     dam[j] += fc->DamageMod[j];
 
                 tf++;
@@ -1610,9 +1610,9 @@ int CheckClassEntry(int id, uchar filter[CLASS_NUM_BYTES])
         }
         else
         {
-            if (filter[i] != VU_FILTERANY)
+            if (filter[i] not_eq VU_FILTERANY)
             {
-                if (filter[i] != Falcon4ClassTable[id].vuClassData.classInfo_[i])
+                if (filter[i] not_eq Falcon4ClassTable[id].vuClassData.classInfo_[i])
                 {
                     return 0;
                 }
@@ -1709,11 +1709,11 @@ void LoadVisIdMap()
 
     while (fgets(buffer, sizeof buffer, fp))
     {
-        if (buffer[0] == '/' || buffer[0] == '\n' || buffer[0] == '\r')
+        if (buffer[0] == '/' or buffer[0] == '\n' or buffer[0] == '\r')
             continue;
 
-        if (sscanf(buffer, "%d => %d", &id1, &id2) == 2 &&
-            id1 >= 0 && id1 < MAXMAPID)
+        if (sscanf(buffer, "%d => %d", &id1, &id2) == 2 and 
+            id1 >= 0 and id1 < MAXMAPID)
             idmap[id1] = id2;
     }
 
@@ -1722,7 +1722,7 @@ void LoadVisIdMap()
 
 DWORD MapVisId(DWORD visId)
 {
-    if (visId >= 0 && visId < MAXMAPID)
+    if (visId >= 0 and visId < MAXMAPID)
         return idmap[visId];
 
     return visId;
@@ -1743,13 +1743,13 @@ void LoadRackTables()
 
     while (fgets(buffer, sizeof buffer, fp))
     {
-        if (buffer[0] == '#' || buffer[0] == '\n')
+        if (buffer[0] == '#' or buffer[0] == '\n')
             continue;
 
-        if (sscanf(buffer, "NumGroups %d", &ngrp) != 1)
+        if (sscanf(buffer, "NumGroups %d", &ngrp) not_eq 1)
             continue;
 
-        ShiAssert(ngrp >= 0 && ngrp < 1000); // arbitrary 1000
+        ShiAssert(ngrp >= 0 and ngrp < 1000); // arbitrary 1000
         break;
     }
 
@@ -1764,16 +1764,16 @@ void LoadRackTables()
     RackGroupTable = new RackGroup[MaxRackGroups];
     int rg = 0;
 
-    while (rg < MaxRackGroups && fgets(buffer, sizeof buffer, fp))
+    while (rg < MaxRackGroups and fgets(buffer, sizeof buffer, fp))
     {
-        if (buffer[0] == '#' || buffer[0] == '\n')
+        if (buffer[0] == '#' or buffer[0] == '\n')
             continue;
 
         int grp;
 
         char *cp = buffer;
 
-        if (sscanf(cp, "Group%d", &grp) != 1)
+        if (sscanf(cp, "Group%d", &grp) not_eq 1)
             continue;
 
         cp += 5;
@@ -1784,7 +1784,7 @@ void LoadRackTables()
         while (isspace(*cp)) cp++;
 
         ngrp = atoi(cp);
-        ShiAssert(ngrp >= 0 && ngrp < 1000); // arbitrary 1000
+        ShiAssert(ngrp >= 0 and ngrp < 1000); // arbitrary 1000
         RackGroupTable[grp].nentries = ngrp;
         RackGroupTable[grp].entries = new int [ngrp];
 
@@ -1792,7 +1792,7 @@ void LoadRackTables()
 
         while (isspace(*cp)) cp++;
 
-        for (int i = 0; *cp && i < ngrp; i++)
+        for (int i = 0; *cp and i < ngrp; i++)
         {
             RackGroupTable[grp].entries[i] = atoi(cp);
 
@@ -1807,13 +1807,13 @@ void LoadRackTables()
     // now read in the entries
     while (fgets(buffer, sizeof buffer, fp))
     {
-        if (buffer[0] == '#' || buffer[0] == '\n')
+        if (buffer[0] == '#' or buffer[0] == '\n')
             continue;
 
-        if (sscanf(buffer, "NumRacks %d", &ngrp) != 1)
+        if (sscanf(buffer, "NumRacks %d", &ngrp) not_eq 1)
             continue;
 
-        ShiAssert(ngrp >= 0 && ngrp < 1000); // arbitrary 1000
+        ShiAssert(ngrp >= 0 and ngrp < 1000); // arbitrary 1000
         break;
     }
 
@@ -1830,16 +1830,16 @@ void LoadRackTables()
 
     while (fgets(buffer, sizeof buffer, fp))
     {
-        if (buffer[0] == '#' || buffer[0] == '\n')
+        if (buffer[0] == '#' or buffer[0] == '\n')
             continue;
 
         int ctid, occ;
 
-        if (sscanf(buffer, "Rack%d %d %d", &rack, &ctid, &occ) != 3)
+        if (sscanf(buffer, "Rack%d %d %d", &rack, &ctid, &occ) not_eq 3)
             continue;
 
         ShiAssert(rack < MaxRackObjects);
-        ShiAssert(ctid >= 0 && ctid < NumEntities);
+        ShiAssert(ctid >= 0 and ctid < NumEntities);
         RackObjectTable[rack].ctind = ctid;
         RackObjectTable[rack].maxoccupancy = occ;
     }
@@ -1849,14 +1849,14 @@ void LoadRackTables()
 
 int FindBestRackID(int rackgroup, int count)
 {
-    if (rackgroup < 0 || rackgroup >= MaxRackGroups)
+    if (rackgroup < 0 or rackgroup >= MaxRackGroups)
         return -1;
 
     for (int i = 0; i < RackGroupTable[rackgroup].nentries; i++)
     {
         int rack = RackGroupTable[rackgroup].entries[i];
 
-        if (rack > 0 && rack < MaxRackObjects &&
+        if (rack > 0 and rack < MaxRackObjects and 
             RackObjectTable[rack].maxoccupancy >= count)
             return rack;
     }
@@ -1866,8 +1866,8 @@ int FindBestRackID(int rackgroup, int count)
 
 int FindBestRackIDByPlaneAndWeapon(int planerg, int weaponrg, int count)
 {
-    if (planerg < 0 || planerg >= MaxRackGroups ||
-        weaponrg < 0 || weaponrg >= MaxRackGroups)
+    if (planerg < 0 or planerg >= MaxRackGroups or
+        weaponrg < 0 or weaponrg >= MaxRackGroups)
         return -1;
 
     // first find a rackgroup in common
@@ -1877,8 +1877,8 @@ int FindBestRackIDByPlaneAndWeapon(int planerg, int weaponrg, int count)
         {
             int rack = RackGroupTable[planerg].entries[i];
 
-            if (rack == RackGroupTable[weaponrg].entries[j] &&
-                rack > 0 && rack < MaxRackObjects &&
+            if (rack == RackGroupTable[weaponrg].entries[j] and 
+                rack > 0 and rack < MaxRackObjects and 
                 RackObjectTable[rack].maxoccupancy >= count)
                 return rack;
         }
@@ -1962,8 +1962,8 @@ RDRackNode::RDRackNode()
     any = 0;
     wClassCount = 0;
     wClass = 0;
-    flags = RDF_EMERGENCY_JETT_RACK   | RDF_SELECTIVE_JETT_RACK  |
-            RDF_EMERGENCY_JETT_WEAPON | RDF_SELECTIVE_JETT_WEAPON;
+    flags = RDF_EMERGENCY_JETT_RACK   bitor RDF_SELECTIVE_JETT_RACK  |
+            RDF_EMERGENCY_JETT_WEAPON bitor RDF_SELECTIVE_JETT_WEAPON;
 }
 
 
@@ -2054,7 +2054,7 @@ void RDLoadRackData(void)
     {
         char *com, *arg;
 
-        if (buffer[0] == '#' || buffer[0] == ';' || buffer[0] == '\n')
+        if (buffer[0] == '#' or buffer[0] == ';' or buffer[0] == '\n')
             continue;
 
         com = strtok(buffer, " \t\n");
@@ -2064,7 +2064,7 @@ void RDLoadRackData(void)
         /* kludge so that arg is the current string being parsed */
         SetTokenString(arg);
 
-        if (!com)
+        if ( not com)
             continue;
 
 #define On(s) if(stricmp(com,s)==0)
@@ -2100,19 +2100,19 @@ void RDLoadRackData(void)
             On("rackjettmodes")
             {
                 int i;
-                rn->flags &= ~(RDF_EMERGENCY_JETT_RACK | RDF_SELECTIVE_JETT_RACK); // clear flags
+                rn->flags and_eq compl (RDF_EMERGENCY_JETT_RACK bitor RDF_SELECTIVE_JETT_RACK); // clear flags
                 char *enums[] = {"emergency", "selective", 0};
 
-                while (-1 != (i = TokenEnum(enums, -1)))
+                while (-1 not_eq (i = TokenEnum(enums, -1)))
                 {
                     switch (i)
                     {
                         case 0:
-                            rn->flags |= RDF_EMERGENCY_JETT_RACK;
+                            rn->flags or_eq RDF_EMERGENCY_JETT_RACK;
                             break;
 
                         case 1:
-                            rn->flags |= RDF_SELECTIVE_JETT_RACK;
+                            rn->flags or_eq RDF_SELECTIVE_JETT_RACK;
                             break;
                     }
                 }
@@ -2121,19 +2121,19 @@ void RDLoadRackData(void)
             On("weapjettmodes")
             {
                 int i;
-                rn->flags &= ~(RDF_EMERGENCY_JETT_WEAPON | RDF_SELECTIVE_JETT_WEAPON); // clear flags
+                rn->flags and_eq compl (RDF_EMERGENCY_JETT_WEAPON bitor RDF_SELECTIVE_JETT_WEAPON); // clear flags
                 char *enums[] = {"emergency", "selective", 0};
 
-                while (-1 != (i = TokenEnum(enums, -1)))
+                while (-1 not_eq (i = TokenEnum(enums, -1)))
                 {
                     switch (i)
                     {
                         case 0:
-                            rn->flags |= RDF_EMERGENCY_JETT_WEAPON;
+                            rn->flags or_eq RDF_EMERGENCY_JETT_WEAPON;
                             break;
 
                         case 1:
-                            rn->flags |= RDF_SELECTIVE_JETT_WEAPON;
+                            rn->flags or_eq RDF_SELECTIVE_JETT_WEAPON;
                             break;
                     }
                 }
@@ -2146,7 +2146,7 @@ void RDLoadRackData(void)
                 int i[100];
                 int ok = 1;
 
-                while (ok && l < 100)
+                while (ok and l < 100)
                 {
                     i[l] = TokenI(-1);
 
@@ -2171,7 +2171,7 @@ void RDLoadRackData(void)
                 int i[100];
                 int ok = 1;
 
-                while (ok && l < 100)
+                while (ok and l < 100)
                 {
                     i[l] = TokenI(-1);
 
@@ -2215,7 +2215,7 @@ void RDLoadRackData(void)
 
                 if (lon)
                 {
-                    for (l = 0; i[l] != -1; l++)
+                    for (l = 0; i[l] not_eq -1; l++)
                     {
                         lon->loadOrder[l] = i[l];
                     }
@@ -2232,7 +2232,7 @@ void RDLoadRackData(void)
                 int i[100];
                 int ok = 1;
 
-                while (ok && l < 100)
+                while (ok and l < 100)
                 {
                     i[l] = TokenEnum(enums, -1);
 
@@ -2309,19 +2309,19 @@ void RDLoadRackData(void)
                 On("pylonjettmodes")
                 {
                     int i;
-                    pn->flags &= ~(RDF_EMERGENCY_JETT_PYLON | RDF_SELECTIVE_JETT_PYLON); // clear flags
+                    pn->flags and_eq compl (RDF_EMERGENCY_JETT_PYLON bitor RDF_SELECTIVE_JETT_PYLON); // clear flags
                     char *enums[] = {"emergency", "selective", 0};
 
-                    while (-1 != (i = TokenEnum(enums, -1)))
+                    while (-1 not_eq (i = TokenEnum(enums, -1)))
                     {
                         switch (i)
                         {
                             case 0:
-                                pn->flags |= RDF_EMERGENCY_JETT_PYLON;
+                                pn->flags or_eq RDF_EMERGENCY_JETT_PYLON;
                                 break;
 
                             case 1:
-                                pn->flags |= RDF_SELECTIVE_JETT_PYLON;
+                                pn->flags or_eq RDF_SELECTIVE_JETT_PYLON;
                                 break;
                         }
                     }
@@ -2371,7 +2371,7 @@ void RDCopyRackData(int count, RDPylonNode *pn, RDRackNode *rn, RDRackData *rd)
     rd->rackCT   = rn->rackCT;
     rd->pylonCT   = pn->pylonCT;
     rd->rackStations  = rn->stations;
-    rd->flags         = pn->flags | rn->flags | RDF_BMSDEFINITION;
+    rd->flags         = pn->flags bitor rn->flags bitor RDF_BMSDEFINITION;
     rd->pylonmnemonic = pn->mnemonic;
     rd->rackmnemonic  = rn->mnemonic;
     rd->count         = count;
@@ -2421,7 +2421,7 @@ int RDFindBestRackWID(int GroupId, int WeaponId, int WeaponCount, struct RDRackD
 
                     while (rn)
                     {
-                        if (stricmp(rn->rackName, rnn->rackName) == 0 &&
+                        if (stricmp(rn->rackName, rnn->rackName) == 0 and 
                             rn->stations >= WeaponCount)
                         {
                             int l;
@@ -2430,7 +2430,7 @@ int RDFindBestRackWID(int GroupId, int WeaponId, int WeaponCount, struct RDRackD
                             {
                                 if (rn->wId[l] == WeaponId)
                                 {
-                                    // a match!
+                                    // a match
                                     RDCopyRackData(WeaponCount, pn, rn, rd);
                                     return 1;
                                 }
@@ -2480,7 +2480,7 @@ int RDFindBestRackWClass(int GroupId, int wClass, int WeaponCount, struct RDRack
 
                     while (rn)
                     {
-                        if (stricmp(rn->rackName, rnn->rackName) == 0 &&
+                        if (stricmp(rn->rackName, rnn->rackName) == 0 and 
                             rn->stations >= WeaponCount)
                         {
                             int l;
@@ -2489,7 +2489,7 @@ int RDFindBestRackWClass(int GroupId, int wClass, int WeaponCount, struct RDRack
                             {
                                 if (rn->wClass[l] == wClass)
                                 {
-                                    // a match!
+                                    // a match
                                     RDCopyRackData(WeaponCount, pn, rn, rd);
                                     return 1;
                                 }
@@ -2543,7 +2543,7 @@ int RDFindBestRackSWD(int GroupId, int SWD, int WeaponCount, struct RDRackData *
 
                     while (rn)
                     {
-                        if (stricmp(rn->rackName, rnn->rackName) == 0 &&
+                        if (stricmp(rn->rackName, rnn->rackName) == 0 and 
                             rn->stations >= WeaponCount)
                         {
                             int l;
@@ -2558,7 +2558,7 @@ int RDFindBestRackSWD(int GroupId, int SWD, int WeaponCount, struct RDRackData *
 
                                 if (rn->swd[l] == SWD)
                                 {
-                                    // a match!
+                                    // a match
                                     RDCopyRackData(WeaponCount, pn, rn, rd);
                                     return 1;
                                 }

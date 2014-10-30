@@ -25,7 +25,7 @@ extern bool g_bFuelUseVtDot; // 2002-03-14 S.G. For better fuel consumption twea
 extern float g_fFuelVtClip; // 2002-03-14 S.G. For better fuel consumption tweaking
 extern float g_fFuelVtDotMult; // 2002-03-14 S.G. For better fuel consumption tweaking
 extern bool g_bFuelLimitBecauseVtDot; // 2002-03-14 S.G. For better fuel consumption tweaking
-extern float g_fWaypointBurnerDelta; // 2002-03-27 MN BurnerDelta in WaypointMode & WingyMode
+extern float g_fWaypointBurnerDelta; // 2002-03-27 MN BurnerDelta in WaypointMode bitand WingyMode
 extern float g_fePropFactor; // 2002-04-05 MN ePr
 
 int HoldCorner(int combatClass, SimObjectType* targetPtr);
@@ -62,7 +62,7 @@ float DigitalBrain::TrackPointLanding(float speed)
     }
 
     //if we're going to stall out, hit the gas a bit
-    if (af->Qsom()*af->Cnalpha() < 1.55F && eProp < 20.0F)
+    if (af->Qsom()*af->Cnalpha() < 1.55F and eProp < 20.0F)
     {
         eProp = 20.0F;
         speed = af->vt + 20.0F;
@@ -82,9 +82,9 @@ float DigitalBrain::TrackPointLanding(float speed)
     }
     else
     {
-        //if(atcstatus == lOnFinal || (throtl == 0.0F && af->vtDot > -5.0F && eProp < -10.0F))
+        //if(atcstatus == lOnFinal or (throtl == 0.0F and af->vtDot > -5.0F and eProp < -10.0F))
         //TJL 02/20/04 Not just boards on final because of drag penalty.
-        if (throtl == 0.0F && af->vtDot > -5.0F && eProp < -10.0F)
+        if (throtl == 0.0F and af->vtDot > -5.0F and eProp < -10.0F)
             //deploy speed brakes on final
             af->speedBrake = 1.0F;
         else
@@ -106,8 +106,8 @@ float DigitalBrain::TrackPoint(float maxGs, float speed)
 {
     float retval = 0.0F;
 
-    //TJL 08/28/04 Other things besides ATC/LANDME use this.  A/A and A/G maneuvers too!
-    /*if (!self->OnGround())
+    //TJL 08/28/04 Other things besides ATC/LANDME use this.  A/A and A/G maneuvers too
+    /*if ( not self->OnGround())
         af->SetFlaps(curMode == LandingMode);*/
     if (self->af->GetSimpleMode())
     {
@@ -160,7 +160,7 @@ float DigitalBrain::VectorTrack(float maxMnvrGs, int fineTrack)
     /*-------------------*/
     /* relative geometry */
     /*-------------------*/
-    if (rx != 0.0F)
+    if (rx not_eq 0.0F)
         ata      = (float)acos(rx / range) * RTD;
     else
         ata = 0.0F;
@@ -244,19 +244,19 @@ float DigitalBrain::AutoTrack(float maxMnvrGs)
         SetYpedal(azerr / 4.0F);
         SetRstick(-self->Roll() * 5.0F);
     }
-    else if (ata < 10.0f && curMode >= BVREngageMode)
+    else if (ata < 10.0f and curMode >= BVREngageMode)
     {
         // edg note: what this does is to roll in the opposite direction
         // and do a neg G push rather than roll all the way around and pull
         // if our roll error is large ( in this case beyond 150deg ).   This
         // will keep it from flip-flopping around as seen previously, plus
         // I think it's the way a pilot would likely do things.
-        if (droll > 150.0f * DTR && rStick < 0.5F)
+        if (droll > 150.0f * DTR and rStick < 0.5F)
         {
             SetRstick(droll * RTD - 180.0f);
             SetPstick(-ata, maxMnvrGs, AirframeClass::ErrorCommand);
         }
-        else if (droll < -150.0f * DTR  && rStick > -0.5F)
+        else if (droll < -150.0f * DTR and rStick > -0.5F)
         {
             SetRstick(droll * RTD + 180.0f);
             SetPstick(-ata, maxMnvrGs, AirframeClass::ErrorCommand);
@@ -272,7 +272,7 @@ float DigitalBrain::AutoTrack(float maxMnvrGs)
     else
     {
         // If we're stupid
-        if (SkillLevel() < 2 && fabs(ata) > 90.0F && fabs(self->Pitch()) < 45.0F * DTR)
+        if (SkillLevel() < 2 and fabs(ata) > 90.0F and fabs(self->Pitch()) < 45.0F * DTR)
         {
             elerr = maxMnvrGs * 0.85F;
             droll = (float)acos(1.0F / elerr);
@@ -301,8 +301,8 @@ float DigitalBrain::SetPstick(float pitchError , float gLimit, int commandType)
 {
     float stickFact = 0.0F, stickCmd = 0.0F;
 
-    af->ClearFlag(AirframeClass::GCommand | AirframeClass::AlphaCommand |
-                  AirframeClass::AutoCommand | AirframeClass::ErrorCommand);
+    af->ClearFlag(AirframeClass::GCommand bitor AirframeClass::AlphaCommand |
+                  AirframeClass::AutoCommand bitor AirframeClass::ErrorCommand);
 
     if (commandType == AirframeClass::ErrorCommand)
     {
@@ -336,7 +336,7 @@ float DigitalBrain::SetPstick(float pitchError , float gLimit, int commandType)
     }
     else
     {
-        MonoPrint("digi.w: : BAD COMMAND MODE IN stickCmd!!!!!!!!!\n");
+        MonoPrint("digi.w: : BAD COMMAND MODE IN stickCmd\n");
         stickCmd = 0.0F;
     }
 
@@ -426,7 +426,7 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
     // 2001-10-28 ADDED "* FTPSEC_TO_KNOTS" to MinVCas by M.N. this function needs knots 2002-03-14 REMOVED BY S.G. MinVcas is ALREADY in KNOTS and NOT in FTPSEC
     // Added it back in, Hehe... // JPG 2 Jan 04
     //TJL 02/20/04 Took it back out ;)
-    if (m1 < (af->MinVcas()) && af->IsSet(AirframeClass::InAir))
+    if (m1 < (af->MinVcas()) and af->IsSet(AirframeClass::InAir))
     {
         //Cobra 10/31/04 TJL
         m1 = af->MinVcas(); // * TJL 08/28/04 FTPSEC_TO_KNOTS; m1 is in KNOTS and MinVcas is in KNOTS
@@ -434,7 +434,7 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
     }
 
     //me123 addet the max check. we don't wanna exceed the airframe max speed
-    if (m1 > af->curMaxStoreSpeed - 20.0f && af->IsSet(AirframeClass::InAir))
+    if (m1 > af->curMaxStoreSpeed - 20.0f and af->IsSet(AirframeClass::InAir))
     {
         m1 = af->curMaxStoreSpeed - 20.0f;
         eProp = m1 - m2 - g_fePropFactor;
@@ -446,7 +446,7 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
     {
         thr = 0.0F;                        /* idle and boards */
 
-        if (curMode > DefensiveModes && curMode < LoiterMode)
+        if (curMode > DefensiveModes and curMode < LoiterMode)
             af->speedBrake = 1.0F;
         else
             af->speedBrake = -1.0F;
@@ -460,7 +460,7 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
     {
         // If in combat take vtDot into account
         // For waypoint stuff you need to be really slow to hit burner
-        if (curMode < LoiterMode && curMode != LandingMode) // 2002-02-12 MODIFIED BY S.G. And not in landing mode
+        if (curMode < LoiterMode and curMode not_eq LandingMode) // 2002-02-12 MODIFIED BY S.G. And not in landing mode
         {
             eProp -= min(2.0F * af->VtDot(), 0.0F);
             burnerDelta = 100.0F;
@@ -470,7 +470,7 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
             burnerDelta = 500.0F;
 
             // 2002-03-26 MN make it harder to go into afterburner when in waypoint- or wingymode
-            if (curMode == WingyMode || curMode == WaypointMode)
+            if (curMode == WingyMode or curMode == WaypointMode)
                 burnerDelta = g_fWaypointBurnerDelta;
         }
 
@@ -499,9 +499,9 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
             // Now see if we're asking to increase/cut the throtle because of speed difference too much (don't go the other direction)
             if (g_bFuelLimitBecauseVtDot)
             {
-                if (eProp > 0.0f && autoThrottle < 0.0f)
+                if (eProp > 0.0f and autoThrottle < 0.0f)
                     autoThrottle = 0.0f;
-                else if (eProp < 0.0f && autoThrottle > 0.0f)
+                else if (eProp < 0.0f and autoThrottle > 0.0f)
                     autoThrottle = 0.0f;
             }
 
@@ -518,20 +518,20 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
             }
 
             // no burner unless in combat
-            if ((curMode >= LoiterMode || curMode == LandingMode) && // 2002-02-12 MODIFIED BY S.G. Don't go in AB if you're in landing mode either
-                m2 > aeroDataset[self->af->VehicleIndex()].inputData[AeroDataSet::MinVcas] * 0.9f && // JB 011018 If we can't keep our speed up, use the buner 2002-02-12 MODIFIED BY S.G. Use a percentage of MinVcas instead.
-                (!flightLead || flightLead && ((AircraftClass*)flightLead)->af) &&
-                (!flightLead || (((AircraftClass*)flightLead)->af == af || ((((AircraftClass*)flightLead)->af->rpm < 1.0F)) && // JB 011025 If the lead is using his burner, we can use ours 2002-02-12 MODIFIED BY S.G. Don't look at lead's burner or g_fFormationBurnerDistance if we're RTBing...
-                                 dist < g_fFormationBurnerDistance * NM_TO_FT) || curMode == RTBMode) || // allow usage of burner if lead is more than defined distance away
+            if ((curMode >= LoiterMode or curMode == LandingMode) and // 2002-02-12 MODIFIED BY S.G. Don't go in AB if you're in landing mode either
+                m2 > aeroDataset[self->af->VehicleIndex()].inputData[AeroDataSet::MinVcas] * 0.9f and // JB 011018 If we can't keep our speed up, use the buner 2002-02-12 MODIFIED BY S.G. Use a percentage of MinVcas instead.
+                ( not flightLead or flightLead and ((AircraftClass*)flightLead)->af) and 
+                ( not flightLead or (((AircraftClass*)flightLead)->af == af or ((((AircraftClass*)flightLead)->af->rpm < 1.0F)) and // JB 011025 If the lead is using his burner, we can use ours 2002-02-12 MODIFIED BY S.G. Don't look at lead's burner or g_fFormationBurnerDistance if we're RTBing...
+                                 dist < g_fFormationBurnerDistance * NM_TO_FT) or curMode == RTBMode) or // allow usage of burner if lead is more than defined distance away
                 self->OnGround()) // never use AB on ground
             {
                 // Flight lead goes even slower so wingies can catch up
                 /* 2002-02-12 MODIFIED BY S.G. Take the wings 'mInPositionFlag' flag before limiting ourself
-                            if (!isWing)
+                            if ( not isWing)
                                thr = min (thr, 0.9F);
                             else
                                thr = min (thr, 0.975F); */
-                if (!isWing)
+                if ( not isWing)
                 {
                     // The lead will look at everybody else's position and push faster if everyone is in position.
                     int size = self->GetCampaignObject()->NumberOfComponents();
@@ -542,7 +542,7 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
                         AircraftClass *flightMember = (AircraftClass *)self->GetCampaignObject()->GetComponentEntity(i);
 
                         // This code is assuming the lead and the AI are on the same PC... Should be no problem unless another player is in Combat AP...
-                        if (flightMember && flightMember->DBrain() && !flightMember->DBrain()->mInPositionFlag)
+                        if (flightMember and flightMember->DBrain() and not flightMember->DBrain()->mInPositionFlag)
                             break;
                     }
 
@@ -567,7 +567,7 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
         }
 
         // Scale pStick if way off
-        if (targetPtr && HoldCorner(self->CombatClass(), targetPtr))
+        if (targetPtr and HoldCorner(self->CombatClass(), targetPtr))
         {
             cornerDelta = cornerSpeed - m2;
             cornerDelta -= 2.0F * af->VtDot();
@@ -598,9 +598,9 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
 
             if (pStick > 1.0f) pStick = 1.0f;//me123
 
-            if (!af->IsSet(AirframeClass::IsDigital)) maxDelta = 0.0F;
+            if ( not af->IsSet(AirframeClass::IsDigital)) maxDelta = 0.0F;
 
-            if (pitchStick && cornerDelta > maxDelta && pStick > 0.0F)// && fabs(self->Roll()) < 110.0F * DTR)
+            if (pitchStick and cornerDelta > maxDelta and pStick > 0.0F)// and fabs(self->Roll()) < 110.0F * DTR)
             {
                 pStick *= max(0.55F, (1.0F - (cornerDelta - maxDelta) / (cornerSpeed * 0.75F))); //me123 0.55 from 0.25
             }
@@ -617,22 +617,22 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
 
     //me123 status test. IRCM STUFF.
 
-    if (curMode == MissileEngageMode || curMode == GunsEngageMode || curMode == WVREngageMode)
+    if (curMode == MissileEngageMode or curMode == GunsEngageMode or curMode == WVREngageMode)
     {
         //me123 status test. we are inside 6nm, somebody is pointing at us and we are head on.
 
         if (
-            targetData && !F4IsBadReadPtr(targetData, sizeof(SimObjectLocalData)) && // JB 010318 CTD
-            targetData->ataFrom < 40.0f * DTR &&
-            targetData->ata < 40.0f * DTR &&
-            targetData->range < 10.0f * NM_TO_FT &&
+            targetData and not F4IsBadReadPtr(targetData, sizeof(SimObjectLocalData)) and // JB 010318 CTD
+            targetData->ataFrom < 40.0f * DTR and 
+            targetData->ata < 40.0f * DTR and 
+            targetData->range < 10.0f * NM_TO_FT and 
             targetData->range > 1.0 * NM_TO_FT)
         {
-            if (SkillLevel() >= 1 && targetData->range > 8.0 * NM_TO_FT)
+            if (SkillLevel() >= 1 and targetData->range > 8.0 * NM_TO_FT)
             {
                 throtl = min(0.99f, throtl); // let's cancel burner inside 10nm
             }
-            else if (SkillLevel() >= 3 && targetData->range > 5.0 * NM_TO_FT)
+            else if (SkillLevel() >= 3 and targetData->range > 5.0 * NM_TO_FT)
             {
                 throtl = min(0.40f, throtl); // let's go midrange inside 8
             }
@@ -647,7 +647,7 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
     throtl = min(max(throtl, 0.0F), 1.5F);
 #ifdef MANEUVER_DEBUG
 
-    if (g_nShowDebugLabels & 0x10000)
+    if (g_nShowDebugLabels bitand 0x10000)
     {
         char tmpchr[128];
         sprintf(tmpchr, "%.0f %.0f %.0f %.3f %.2f %.2f", m1, m2, eProp, thr, autoThrottle, throtl);
@@ -686,7 +686,7 @@ void DigitalBrain::Loiter(void)
         /*-----------*/
         /* MACH HOLD */
         /*-----------*/
-        if (curMode != lastMode)
+        if (curMode not_eq lastMode)
         {
             onStation = Stabalizing;
             holdAlt = -self->ZPos();
@@ -723,7 +723,7 @@ void DigitalBrain::LevelTurn(float load_factor, float turnDir, int newTurn)
         trackMode = 0;
     }
 
-    if (trackMode != 0)
+    if (trackMode not_eq 0)
     {
         edroll = (float)atan(sqrt(load_factor * load_factor - 1));
         ResetMaxRoll();
@@ -732,7 +732,7 @@ void DigitalBrain::LevelTurn(float load_factor, float turnDir, int newTurn)
 
         SetRstick(edroll * RTD * 2.50F);
 
-        if (fabs(edroll) < 5.0 * DTR || trackMode == 2)
+        if (fabs(edroll) < 5.0 * DTR or trackMode == 2)
         {
             alterr = (holdAlt + self->ZPos() - self->ZDelta()) * 0.015F;
             GammaHold(alterr);
@@ -749,7 +749,7 @@ void DigitalBrain::LevelTurn(float load_factor, float turnDir, int newTurn)
         elerr = -af->gmma;
         SetPstick(elerr * RTD, 2.5F, AirframeClass::ErrorCommand);
 
-        if (fabs(af->gmma) < 2.0 * DTR && fabs(self->Roll()) < 10.0 * DTR)
+        if (fabs(af->gmma) < 2.0 * DTR and fabs(self->Roll()) < 10.0 * DTR)
             trackMode = 1;
     }
 
@@ -872,7 +872,7 @@ void DigitalBrain::RollOutOfPlane(void)
     /*-----------------------*/
     /* first pass, save roll */
     /*-----------------------*/
-    if (lastMode != RoopMode)
+    if (lastMode not_eq RoopMode)
     {
         mnverTime = 1.0F;//me123 from 4
 
@@ -932,7 +932,7 @@ void DigitalBrain::OverBank(float delta)
         /*-----------------------*/
         /* Find a new roll angle */
         /*-----------------------*/
-        if (lastMode != OverBMode)
+        if (lastMode not_eq OverBMode)
         {
             if (self->Roll() > 0.0F)
                 newroll = targetData->droll + delta;
@@ -968,8 +968,8 @@ int HoldCorner(int combatClass, SimObjectType* targetPtr)
     //always alow corner hold until we fix the disengage stuff
 
     // Only check for A/C
-    // if (targetPtr->BaseData()->IsSim() && targetPtr->BaseData()->IsAirplane())
-    if (targetPtr->BaseData()->IsAirplane() || targetPtr->BaseData()->IsFlight()) // 2002-02-26 MODIFIED BY S.G. airplane and fligth are ok in here
+    // if (targetPtr->BaseData()->IsSim() and targetPtr->BaseData()->IsAirplane())
+    if (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight()) // 2002-02-26 MODIFIED BY S.G. airplane and fligth are ok in here
     {
         // Find the data table for these two types of A/C
         hisCombatClass = targetPtr->BaseData()->CombatClass(); // 2002-02-26 MODIFIED BY S.G. Removed the AircraftClass cast
@@ -985,7 +985,7 @@ int HoldCorner(int combatClass, SimObjectType* targetPtr)
         }
 
         //me123 don't blow corner for now, i wanna test them
-        //     if (!retval)
+        //     if ( not retval)
         //     {
         // Chance of blowing corner speed is proportional to your number of choices
         //        if ((float)rand()/(float)RAND_MAX > 1.0F / theIntercept->numMerges)

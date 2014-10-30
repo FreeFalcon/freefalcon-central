@@ -73,19 +73,19 @@ void DigitalBrain::Actions(void)
             WayPoint w = flight->GetFirstUnitWP();
             bool found = false;
 
-            while (w && !found)
+            while (w and not found)
             {
-                if (w->GetWPFlags() & WPF_TARGET)
+                if (w->GetWPFlags() bitand WPF_TARGET)
                     found = true;
 
                 w = w->GetNextWP();
             }
 
-            if (!found)
+            if ( not found)
             {
                 char message[250];
                 sprintf(message, "Mission: %d doesn't have WPF_TARGET", flight->GetUnitMission());
-                F4Assert(!message);
+                F4Assert( not message);
             }
         }
     }
@@ -98,7 +98,7 @@ void DigitalBrain::Actions(void)
 #endif
 
     // handle threat above all else
-    if (threatPtr && curMode != TakeoffMode)
+    if (threatPtr and curMode not_eq TakeoffMode)
     {
         if (curMode == MissileDefeatMode)
         {
@@ -116,7 +116,7 @@ void DigitalBrain::Actions(void)
         }
 
         //tell atc we're going to ignore him
-        if (atcstatus != noATC)
+        if (atcstatus not_eq noATC)
         {
             ShiAssert(atcstatus < tReqTaxi);
             SendATCMsg(noATC);
@@ -129,7 +129,7 @@ void DigitalBrain::Actions(void)
     else
     {
         // Mode radar appropriately
-        if (curMode != WaypointMode && theRadar && theRadar->IsAG())
+        if (curMode not_eq WaypointMode and theRadar and theRadar->IsAG())
         {
             theRadar->SetMode(RadarClass::AA);
         }
@@ -193,7 +193,7 @@ void DigitalBrain::Actions(void)
                 Land();
 #ifdef SHOW_MANEUVERLABELS
                 sprintf(label, "Landing %s",
-                        atcstatus >= 0 && atcstatus < MAXATCSTATUS ? ATCModes[atcstatus] : "");
+                        atcstatus >= 0 and atcstatus < MAXATCSTATUS ? ATCModes[atcstatus] : "");
 #endif
                 break;
 
@@ -201,7 +201,7 @@ void DigitalBrain::Actions(void)
                 TakeOff();
 #ifdef SHOW_MANEUVERLABELS
                 sprintf(label, "TakeOff %s",
-                        atcstatus >= 0 && atcstatus < MAXATCSTATUS ? ATCModes[atcstatus] : "");
+                        atcstatus >= 0 and atcstatus < MAXATCSTATUS ? ATCModes[atcstatus] : "");
 #endif
                 break;
 
@@ -294,10 +294,10 @@ void DigitalBrain::Actions(void)
                 /*----------*/
             case SeparateMode:
             case BugoutMode:
-                if (lastMode != BugoutMode && lastMode != SeparateMode && targetPtr)
+                if (lastMode not_eq BugoutMode and lastMode not_eq SeparateMode and targetPtr)
                 {
                     // 2001-10-28 CHANGED BACK M.N. holdAlt is used in AltitudeHold, which needs a positive value
-                    // altitude error is calculated as holdAlt + self->ZPos() there !!!
+                    // altitude error is calculated as holdAlt + self->ZPos() there 
                     //    holdAlt = min (-5000.0F, self->ZPos());
                     //TJL 11/08/03 Hold position altitude but bug out
                     //holdAlt = min (5000.0F, -self->ZPos());
@@ -365,13 +365,13 @@ void DigitalBrain::Actions(void)
 
 #ifdef SHOW_MANEUVERLABELS
 
-    if (g_nShowDebugLabels & 0x01)
+    if (g_nShowDebugLabels bitand 0x01)
     {
         char element[40];
         sprintf(element, " %d%d W%d R%d V%d", isWing + 1, SkillLevel(), detRWR, detRAD, detVIS);
         strcat(label, element);
 
-        if (g_nShowDebugLabels & 0x40)
+        if (g_nShowDebugLabels bitand 0x40)
         {
             RadarClass* theRadar = (RadarClass*)FindSensor(self, SensorClass::Radar);
 
@@ -391,10 +391,10 @@ void DigitalBrain::Actions(void)
             }
         }
 
-        if (groundAvoidNeeded || pullupTimer)
+        if (groundAvoidNeeded or pullupTimer)
             strcat(label, " Pullup");
 
-        if (g_nShowDebugLabels & 0x8000)
+        if (g_nShowDebugLabels bitand 0x8000)
         {
             if (((AircraftClass*) self)->af->GetSimpleMode())
                 strcat(label, " SIMP");
@@ -402,9 +402,9 @@ void DigitalBrain::Actions(void)
                 strcat(label, " COMP");
         }
 
-        if (g_nShowDebugLabels & 0x1000)
+        if (g_nShowDebugLabels bitand 0x1000)
         {
-            if (SimDriver.GetPlayerEntity() && self->GetCampaignObject() && self->GetCampaignObject()->GetIdentified(SimDriver.GetPlayerEntity()->GetTeam()))
+            if (SimDriver.GetPlayerEntity() and self->GetCampaignObject() and self->GetCampaignObject()->GetIdentified(SimDriver.GetPlayerEntity()->GetTeam()))
                 strcat(label, "IDed");
             else
                 strcat(label, "Not IDed");
@@ -414,7 +414,7 @@ void DigitalBrain::Actions(void)
             ((DrawableBSP*)self->drawPointer)->SetLabel(label, ((DrawableBSP*)self->drawPointer)->LabelColor());
     }
 
-    if (g_nShowDebugLabels & 0x200000)
+    if (g_nShowDebugLabels bitand 0x200000)
     {
         sprintf(label, "%.0f %.0f %.0f", trackX, trackY, trackZ);
 
@@ -422,7 +422,7 @@ void DigitalBrain::Actions(void)
             ((DrawableBSP*)self->drawPointer)->SetLabel(label, ((DrawableBSP*)self->drawPointer)->LabelColor());
     }
 
-    if (g_nShowDebugLabels & 0x100000)
+    if (g_nShowDebugLabels bitand 0x100000)
     {
         float yaw = self->Yaw();
 
@@ -436,7 +436,7 @@ void DigitalBrain::Actions(void)
             ((DrawableBSP*)self->drawPointer)->SetLabel(label, ((DrawableBSP*)self->drawPointer)->LabelColor());
     }
 
-    if (g_nShowDebugLabels & 0x800000)
+    if (g_nShowDebugLabels bitand 0x800000)
     {
         sprintf(label, "0x%x leader: 0x%x", self, flightLead);
 
@@ -446,8 +446,8 @@ void DigitalBrain::Actions(void)
 
 #endif
 
-    // have we got a surprise for you!!
-    if ((targetPtr || threatPtr) && IsSetATC(HasTrainable) && self->HasPilot())
+    // have we got a surprise for you
+    if ((targetPtr or threatPtr) and IsSetATC(HasTrainable) and self->HasPilot())
     {
         TrainableGunsEngage();
     }
@@ -466,7 +466,7 @@ void DigitalBrain::Actions(void)
     /*-----------------------------------------------------------------*/
 
     // 2002-02-24 MN added pullupTimer - continue last calculated pullup for at least g_nPullupTime seconds
-    if (groundAvoidNeeded || pullupTimer)
+    if (groundAvoidNeeded or pullupTimer)
     {
 
         // 2001-10-21 MODIFIED by M.N.
@@ -517,7 +517,7 @@ void DigitalBrain::AirbaseCheck()
 
     // when on Bingo, check distance to closest airbase when not having a target and not being threatened
     // return if distance is greater than g_fBingoReturnDistance
-    if (IsSetATC(SaidBingo) && !IsSetATC(SaidFumes) && !targetPtr && !threatPtr && !airbasediverted)
+    if (IsSetATC(SaidBingo) and not IsSetATC(SaidFumes) and not targetPtr and not threatPtr and not airbasediverted)
     {
         pos.x = self->XPos();
         pos.y = self->YPos();
@@ -538,7 +538,7 @@ void DigitalBrain::AirbaseCheck()
     }
 
     // 2002-03-13 modified by MN works together with checks in Separate.cpp, if 49.9% damage, head to hearest airbase instead of home base
-    if (IsSetATC(SaidFumes) || self->pctStrength < 0.50f) // when on fumes, force RTB to closest airbase
+    if (IsSetATC(SaidFumes) or self->pctStrength < 0.50f) // when on fumes, force RTB to closest airbase
     {
         nearestAirbase = true;
         airbasediverted = 2;
@@ -548,9 +548,9 @@ void DigitalBrain::AirbaseCheck()
 
     if (returnHomebase)
     {
-        if (!(moreFlags & SaidImADot))
+        if ( not (moreFlags bitand SaidImADot))
         {
-            moreFlags |= SaidImADot;
+            moreFlags or_eq SaidImADot;
             int flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
             FalconRadioChatterMessage* radioMessage = new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
             radioMessage->dataBlock.from = self->Id();
@@ -564,7 +564,7 @@ void DigitalBrain::AirbaseCheck()
 
         AddMode(RTBMode); // changed from LandingMode to RTBMode
 
-        if (g_nShowDebugLabels & 0x40000)
+        if (g_nShowDebugLabels bitand 0x40000)
         {
             sprintf(label, "RTB Homebase");
 
@@ -581,16 +581,16 @@ void DigitalBrain::AirbaseCheck()
         ConvertSimToGrid(&pos, &x, &y);
 
         // 2002-04-02 ADDED BY S.G. Since it's not done above anymore, do it here only if not done within 'SaidBingo' if statement above
-        if (!obj)
+        if ( not obj)
             obj = FindNearestFriendlyAirbase(self->GetTeam(), x, y);
 
         // END OF ADDED SECTION 2002-04-02
 
         // change home base, of course only if it is another than our current one...
-        if (obj && obj->Id() != airbase)
+        if (obj and obj->Id() not_eq airbase)
         {
             airbase = obj->Id();
-            moreFlags |= NewHomebase; // set this so that ResetATC doesn't reset our new airbase
+            moreFlags or_eq NewHomebase; // set this so that ResetATC doesn't reset our new airbase
             int flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
             FalconRadioChatterMessage* radioMessage = new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
             radioMessage->dataBlock.from = self->Id();
@@ -606,7 +606,7 @@ void DigitalBrain::AirbaseCheck()
 
         AddMode(LandingMode);
 
-        if (g_nShowDebugLabels & 0x40000)
+        if (g_nShowDebugLabels bitand 0x40000)
         {
             sprintf(label, "RTB near ab, pct-Strgth: %1.2f", self->pctStrength);
 

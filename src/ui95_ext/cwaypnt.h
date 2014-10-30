@@ -137,7 +137,7 @@ public:
     long CheckHotSpots(long relX, long relY);
     BOOL Dragable(long)
     {
-        return(GetFlags() & C_BIT_DRAGABLE);
+        return(GetFlags() bitand C_BIT_DRAGABLE);
     }
     BOOL Process(long ID, short ButtonHitType);
     BOOL MouseOver(long relX, long relY, C_Base *);

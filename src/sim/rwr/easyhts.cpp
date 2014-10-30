@@ -71,7 +71,7 @@ void EasyHarmTargetingPod::Display(VirtualDisplay* activeDisplay)
         displayY = sinAng * x2 + cosAng * y2 + HTS_Y_OFFSET;
 
         // Skip this one if its off screen
-        if ((fabs(displayX) > 1.0f) || (fabs(displayY) > 1.0f))
+        if ((fabs(displayX) > 1.0f) or (fabs(displayY) > 1.0f))
         {
             continue;
         }
@@ -101,15 +101,15 @@ void EasyHarmTargetingPod::Display(VirtualDisplay* activeDisplay)
         // Set the symbols draw color based on its team
         if (TeamInfo[platform->GetTeam()]->TStance(tmpElement->BaseObject()->GetTeam()) == War)
         {
-            color &= 0x000000FF; // Red means at war
+            color and_eq 0x000000FF; // Red means at war
         }
         else if (TeamInfo[platform->GetTeam()]->TStance(tmpElement->BaseObject()->GetTeam()) == Allied)
         {
-            color &= 0x00FF0000; // Blue means our team
+            color and_eq 0x00FF0000; // Blue means our team
         }
         else
         {
-            color &= 0x0000FF00; // Green means everyone else
+            color and_eq 0x0000FF00; // Green means everyone else
         }
 
 
@@ -119,7 +119,7 @@ void EasyHarmTargetingPod::Display(VirtualDisplay* activeDisplay)
         DrawEmitterSymbol(tmpElement->symbol, boxed);
 
         // Mark the locked target
-        if (lockedTarget && tmpElement->BaseObject() == lockedTarget->BaseData())
+        if (lockedTarget and tmpElement->BaseObject() == lockedTarget->BaseData())
         {
             display->SetColor(0xFF00FF00);
             display->Circle(0.0F, 0.0F, 0.08F);

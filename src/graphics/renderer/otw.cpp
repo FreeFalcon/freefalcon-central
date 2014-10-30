@@ -163,7 +163,7 @@ void RenderOTW::SetLightning()
 
 void RenderOTW::ToggleGreenMode()
 {
-    GreenMode = !GreenMode;
+    GreenMode = not GreenMode;
 }
 
 
@@ -250,7 +250,7 @@ void RenderOTW::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
     spanList = new SpanListEntry[ spanListMaxEntries ];
     firstEmptySpan = spanList;
 
-    if (!spanList)
+    if ( not spanList)
     {
         ShiError("Failed to allocate span buffer");
     }
@@ -261,7 +261,7 @@ void RenderOTW::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
     LODbufferSize = (maxSpanExtent) * (maxSpanExtent);
     vertexMemory = new TerrainVertex[ usedLODcount * LODbufferSize ];
 
-    if (!vertexMemory)
+    if ( not vertexMemory)
     {
         ShiError("Failed to allocate transformed vertex buffer");
     }
@@ -271,7 +271,7 @@ void RenderOTW::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
     // Allocate memory for the array of transformed vertex buffer pointers
     vertexBuffer = new TerrainVertex*[(viewpoint->GetMaxLOD() + 1) ];
 
-    if (!vertexBuffer)
+    if ( not vertexBuffer)
     {
         ShiError("Failed to allocate transformed vertex buffer list");
     }
@@ -293,10 +293,10 @@ void RenderOTW::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
     }
 
 
-    // Allocate memory for the array of information stored for each LOD (viewer location & vectors)
+    // Allocate memory for the array of information stored for each LOD (viewer location bitand vectors)
     LODdata = new LODdataBlock[(viewpoint->GetMaxLOD() + 1) ];
 
-    if (!LODdata)
+    if ( not LODdata)
     {
         ShiError("Failed to allocate memory for LOD step vector array");
     }
@@ -452,8 +452,8 @@ void RenderOTW::SetupStates(void)
     }
     else
     {
-        // RED - WTF..!!! if u Eneter that light is hi, u would not get lights on when light go down...
-        if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS/* && TheTerrTextures.lightLevel < 0.5f*/)
+        // RED - WTF.. if u Eneter that light is hi, u would not get lights on when light go down...
+        if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS/* and TheTerrTextures.lightLevel < 0.5f*/)
         {
             state_fore = STATE_MULTITEXTURE;
             state_near = STATE_MULTITEXTURE;
@@ -513,7 +513,7 @@ void RenderOTW::SetTunnelPercent(float percent, DWORD color)
     else if (percent < 0.0f) percent = 0.0f;
 
     // Apply adjustments if we're in NVG mode
-    if (TheTimeOfDay.GetNVGmode() && (percent < NVG_TUNNEL_PERCENT))
+    if (TheTimeOfDay.GetNVGmode() and (percent < NVG_TUNNEL_PERCENT))
     {
         percent = NVG_TUNNEL_PERCENT;
 
@@ -524,9 +524,9 @@ void RenderOTW::SetTunnelPercent(float percent, DWORD color)
         else
         {
             float t = percent / NVG_TUNNEL_PERCENT;
-            color = (FloatToInt32((color & 0x00FF0000) * t) & 0x000000FF) |
-                    (FloatToInt32((color & 0x00FF0000) * t) & 0x0000FF00) |
-                    (FloatToInt32((color & 0x00FF0000) * t) & 0x00FF0000);
+            color = (FloatToInt32((color bitand 0x00FF0000) * t) bitand 0x000000FF) |
+                    (FloatToInt32((color bitand 0x00FF0000) * t) bitand 0x0000FF00) |
+                    (FloatToInt32((color bitand 0x00FF0000) * t) bitand 0x00FF0000);
         }
 
         if (g_bFullScreenNVG)
@@ -555,7 +555,7 @@ void RenderOTW::PreSceneCloudOcclusion(float percent, DWORD color)
     {
 
         // Save the cloud color with alpha for post processing use.
-        cloudColor = (color & 0x00FFFFFF) | (FloatToInt32(percent * 255.9f) << 24);
+        cloudColor = (color bitand 0x00FFFFFF) bitor (FloatToInt32(percent * 255.9f) << 24);
 
     }
     else
@@ -570,9 +570,9 @@ void RenderOTW::PreSceneCloudOcclusion(float percent, DWORD color)
         float correction = 1.0f + percent * percent * 100.0f;
 
         // Red
-        if (((color & 0x000000FF) == 0x0) &&
-            ((color & 0x0000FF00) >= 0x10) &&
-            ((color & 0x00FF0000) == 0x0))
+        if (((color bitand 0x000000FF) == 0x0) and 
+            ((color bitand 0x0000FF00) >= 0x10) and 
+            ((color bitand 0x00FF0000) == 0x0))
         {
 
             // Guess that we're on a green display
@@ -604,7 +604,7 @@ void RenderOTW::PostSceneCloudOcclusion(void)
     {
 
         // Drop out if alpha is 0
-        if ((cloudColor & 0xFF000000) == 0)
+        if ((cloudColor bitand 0xFF000000) == 0)
         {
             return;
         }
@@ -704,9 +704,9 @@ void RenderOTW::DrawTunnelBorder(void)
     SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
 
     // Initialize all the verticies
-    float r = (float)((tunnelColor)     & 0xFF) / 255.9f;
-    float g = (float)((tunnelColor >> 8)  & 0xFF) / 255.9f;
-    float b = (float)((tunnelColor >> 16) & 0xFF) / 255.9f;
+    float r = (float)((tunnelColor) bitand 0xFF) / 255.9f;
+    float g = (float)((tunnelColor >> 8) bitand 0xFF) / 255.9f;
+    float b = (float)((tunnelColor >> 16) bitand 0xFF) / 255.9f;
 
     for (i = 0; i < NumPoints; i++)
     {
@@ -947,7 +947,7 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
      snowFactor = 0;
         }
 
-        if (thundertimer > 0 && thundertimer < vuxRealTime)
+        if (thundertimer > 0 and thundertimer < vuxRealTime)
      {
      thunder = true;
      thundertimer = 0;
@@ -960,7 +960,7 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
          opacity = max(opacity, 1.0 - visibility);
 
      // Handle the entering/inside/leaving cloud effects
-     if (opacity <= 0.0f && !Lightning)
+     if (opacity <= 0.0f and not Lightning)
      {
     */ // We're not being affected by a cloud, the only effect is sun glare (if any)
     PreSceneCloudOcclusion(SunGlareWashout, 0xFFFFFFFF);
@@ -1009,7 +1009,7 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
      color.b = (opacity*color.b + SunGlareWashout) * scaler;
 
      // JB 010618 vary the brightness on cloud thickness
-     if (g_bEnableWeatherExtensions && !thunderAndLightning)
+     if (g_bEnableWeatherExtensions and not thunderAndLightning)
      {
      float thickness = fabs(viewpoint->GetLocalCloudTops() - position.z);
      if (thickness > 0)
@@ -1028,8 +1028,8 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
      // Construct a 32 bit RGB value
      ProcessColor( &color );
      c  = (FloatToInt32(color.r * 255.9f));
-     c |= (FloatToInt32(color.g * 255.9f)) << 8;
-     c |= (FloatToInt32(color.b * 255.9f)) << 16;
+     c or_eq (FloatToInt32(color.g * 255.9f)) << 8;
+     c or_eq (FloatToInt32(color.b * 255.9f)) << 16;
 
      // Are we IN it our NEAR it?
      if (blend >= 1.0f)
@@ -1045,7 +1045,7 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
      SetViewport( prevLeft, prevTop, prevRight, prevBottom );
      }
 
-     // And we're done!
+     // And we're done
      return;
 
      }
@@ -1063,7 +1063,7 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
     //JAM 15Dec03
     BOOL bToggle = FALSE;
 
-    if (context.bZBuffering && DisplayOptions.bZBuffering)
+    if (context.bZBuffering and DisplayOptions.bZBuffering)
     {
         bToggle = TRUE;
         context.SetZBuffering(FALSE);
@@ -1076,7 +1076,7 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
 
     //realWeather->Draw();
     //JAM 15Dec03
-    if (bToggle && DisplayOptions.bZBuffering)
+    if (bToggle and DisplayOptions.bZBuffering)
     {
         context.SetZBuffering(TRUE);
         context.SetState(MPR_STA_ENABLES, MPR_SE_Z_WRITE);
@@ -1123,7 +1123,7 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
     realWeather->Draw();
 
     // Special case if we're above the roof and the roof is diplayed
-    if ((containingList == 4) && (skyRoof))
+    if ((containingList == 4) and (skyRoof))
     {
         viewpoint->ObjectsAboveRoof()->DrawBeyond(0.0f, 0, this);
 
@@ -1141,9 +1141,9 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
     // Upward order (don't draw the one we're in)
     if (containingList > 0)
     {
-        //START_PROFILE("Grnd & Objects");
+        //START_PROFILE("Grnd bitand Objects");
         DrawGroundAndObjects(viewpoint->ObjectsInTerrain());
-        //STOP_PROFILE("Grnd & Objects");
+        //STOP_PROFILE("Grnd bitand Objects");
 
         if (containingList > 1)
         {
@@ -1151,10 +1151,10 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
 
             if (containingList > 2)
             {
-                //START_PROFILE("Clouds & Objects");
+                //START_PROFILE("Clouds bitand Objects");
                 DrawCloudsAndObjects(viewpoint->Clouds(), viewpoint->ObjectsInClouds());
 
-                //STOP_PROFILE("Clouds & Objects");
+                //STOP_PROFILE("Clouds bitand Objects");
                 if (containingList > 3)
                 {
                     viewpoint->ObjectsAboveClouds()->DrawBeyond(0.f, 0, this);
@@ -1180,9 +1180,9 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
 
                 if (containingList < 1)
                 {
-                    //START_PROFILE("Grnd & Objects");
+                    //START_PROFILE("Grnd bitand Objects");
                     DrawGroundAndObjects(viewpoint->ObjectsInTerrain());
-                    //STOP_PROFILE("Grnd & Objects");
+                    //STOP_PROFILE("Grnd bitand Objects");
                 }
             }
         }
@@ -1267,7 +1267,7 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
                 v1.x = (xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(span->Tsector.maxEndPoint - viewpoint->Y()));
                 v2.x = (xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(span->Tsector.minEndPoint - viewpoint->Y()));
 
-                SetColor((0x4040 << ((span->LOD - 2) * 8)) | 0x80000000);
+                SetColor((0x4040 << ((span->LOD - 2) * 8)) bitor 0x80000000);
                 Render2DLine((UInt16)v1.x, (UInt16)v1.y, (UInt16)v2.x, (UInt16)v2.y);
             }
 
@@ -1294,7 +1294,7 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
                 v1.y = (yRes >> 1) - TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(span->Rsector.maxEndPoint - viewpoint->X()));
                 v2.y = (yRes >> 1) - TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(span->Rsector.minEndPoint - viewpoint->X()));
 
-                SetColor((0x4040 << ((span->LOD - 2) * 8)) | 0x80000000);
+                SetColor((0x4040 << ((span->LOD - 2) * 8)) bitor 0x80000000);
                 Render2DLine((UInt16)v1.x, (UInt16)v1.y, (UInt16)v2.x, (UInt16)v2.y);
             }
 
@@ -1321,7 +1321,7 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
                 v1.x = (xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(span->Bsector.maxEndPoint - viewpoint->Y()));
                 v2.x = (xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(span->Bsector.minEndPoint - viewpoint->Y()));
 
-                SetColor((0x4040 << ((span->LOD - 2) * 8)) | 0x80000000);
+                SetColor((0x4040 << ((span->LOD - 2) * 8)) bitor 0x80000000);
                 Render2DLine((UInt16)v1.x, (UInt16)v1.y, (UInt16)v2.x, (UInt16)v2.y);
             }
 
@@ -1348,7 +1348,7 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
                 v1.y = (yRes >> 1) - TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(span->Lsector.maxEndPoint - viewpoint->X()));
                 v2.y = (yRes >> 1) - TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(span->Lsector.minEndPoint - viewpoint->X()));
 
-                SetColor((0x4040 << ((span->LOD - 2) * 8)) | 0x80000000);
+                SetColor((0x4040 << ((span->LOD - 2) * 8)) bitor 0x80000000);
                 Render2DLine((UInt16)v1.x, (UInt16)v1.y, (UInt16)v2.x, (UInt16)v2.y);
             }
 
@@ -1405,7 +1405,7 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
 
         // COBRA - RED - Only this is good...just do nothing is false
         //JAM 13Nov03
-        if ((realWeather->weatherCondition <= FAIR) || (viewpoint->Z() > realWeather->MidOvercast))
+        if ((realWeather->weatherCondition <= FAIR) or (viewpoint->Z() > realWeather->MidOvercast))
             // If we're above the overcast layer, ground objects are not visible.
             objectList->DrawBeyond(LEVEL_POST_TO_WORLD(span->ring, span->LOD), span->LOD, this);
 
@@ -1422,7 +1422,7 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
     // COBRA - RED - Seems completely wrong condition, completely wrong way to do it to me
     // these condition ( corrected ) should be placed above
     //JAM 13Nov03
-    /* if(!(realWeather->weatherCondition > FAIR && (-viewpoint->Z()) > (-realWeather->stratusZ)))
+    /* if( not (realWeather->weatherCondition > FAIR and (-viewpoint->Z()) > (-realWeather->stratusZ)))
      {
      // If we're above the overcast layer, ground objects are not visible.
      objectList->DrawBeyond(0.f,-1,this);
@@ -1560,18 +1560,18 @@ void RenderOTW::TransformRun(int row, int col, int run, int LOD, BOOL do_row)
 
             if (scratch_z < NEAR_CLIP)
             {
-                vert->clipFlag |= CLIP_NEAR;
+                vert->clipFlag or_eq CLIP_NEAR;
             }
 
             if (fabs(scratch_y) > scratch_z)
             {
                 if (scratch_y > scratch_z)
                 {
-                    vert->clipFlag |= CLIP_BOTTOM;
+                    vert->clipFlag or_eq CLIP_BOTTOM;
                 }
                 else
                 {
-                    vert->clipFlag |= CLIP_TOP;
+                    vert->clipFlag or_eq CLIP_TOP;
                 }
             }
 
@@ -1579,11 +1579,11 @@ void RenderOTW::TransformRun(int row, int col, int run, int LOD, BOOL do_row)
             {
                 if (scratch_x > scratch_z)
                 {
-                    vert->clipFlag |= CLIP_RIGHT;
+                    vert->clipFlag or_eq CLIP_RIGHT;
                 }
                 else
                 {
-                    vert->clipFlag |= CLIP_LEFT;
+                    vert->clipFlag or_eq CLIP_LEFT;
                 }
             }
 
@@ -1594,7 +1594,7 @@ void RenderOTW::TransformRun(int row, int col, int run, int LOD, BOOL do_row)
 
 
             // Finally, do the perspective divide and scale and shift into screen space
-            if (!(vert->clipFlag & CLIP_NEAR))
+            if ( not (vert->clipFlag bitand CLIP_NEAR))
             {
                 ShiAssert(scratch_z > 0.0f);
                 register float OneOverZ = 1.0f / scratch_z;
@@ -1704,7 +1704,7 @@ void RenderOTW::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
         if (realWeather->weatherCondition > FAIR)
         {
             // if we are lower than overcast layer upper limit, enable Fog...
-            if (realWeather->InsideOvercast() || realWeather->UnderOvercast()) TheDXEngine.LinearFog(true);
+            if (realWeather->InsideOvercast() or realWeather->UnderOvercast()) TheDXEngine.LinearFog(true);
 
             // if we are upper the middle of layer, do not draw grounded objects
             if (viewpoint->Z() < realWeather->MidOvercast)
@@ -1724,7 +1724,7 @@ void RenderOTW::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
         {
             vert->RenderingStateHandle = state_fore;
         }
-        else if (!hazed && distance < haze_start)
+        else if ( not hazed and distance < haze_start)
         {
             vert->RenderingStateHandle = state_near;
         }
@@ -1825,7 +1825,7 @@ void RenderOTW::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
         }
 
         // if we are lower than overcast layer upper limit, enable Fog...
-        if (realWeather->InsideOvercast() || realWeather->UnderOvercast()) TheDXEngine.LinearFog(true);
+        if (realWeather->InsideOvercast() or realWeather->UnderOvercast()) TheDXEngine.LinearFog(true);
 
         // if we are upper the middle of layer, do not draw grounded objects
         if (viewpoint->Z() < realWeather->MidOvercast)
@@ -1876,7 +1876,7 @@ void RenderOTW::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
             b *= iTot;
         }
 
-        if (PlayerOptions.ShadowsOn() && realWeather->weatherCondition == FAIR)
+        if (PlayerOptions.ShadowsOn() and realWeather->weatherCondition == FAIR)
         {
             for (row = realWeather->shadowCell; row < realWeather->numCells - realWeather->shadowCell; row++)
             {
@@ -2184,7 +2184,7 @@ void RenderOTW::DrawWeather(const Trotation *orientation)
         DWORD rcol = TheTimeOfDay.GetRainColor();
 
         if (TheTimeOfDay.GetNVGmode())
-            rcol &= 0xff00ff00; // just green component
+            rcol and_eq 0xff00ff00; // just green component
 
         DWORD ocol = Color();
         SetColor(rcol);
@@ -2205,7 +2205,7 @@ void RenderOTW::DrawWeather(const Trotation *orientation)
 
             // just vertical lines currently. Need to slant them based on speed....
             // but thats tricky, cos we have no knowledge of that here
-            // JB 010608 We do now!
+            // JB 010608 We do now
             Render2DLine(viewportXtoPixel(sx), viewportYtoPixel(sy),
                          viewportXtoPixel(sx + dx), viewportYtoPixel(sy + dy));
         }
@@ -2217,7 +2217,7 @@ void RenderOTW::DrawWeather(const Trotation *orientation)
     {
         // draw some shapes...
 
-        // do something clever - damm out of time!!
+        // do something clever - damm out of time
         // algorithm written, (in perl) and ready to go,
         // this is the wrong place anyway, should be tied to a cloud and done in 3-d space.
     }
@@ -2229,7 +2229,7 @@ void RenderOTW::DrawWeather(const Trotation *orientation)
         DWORD scol = TheTimeOfDay.GetSnowColor();
 
         if (TheTimeOfDay.GetNVGmode())
-            scol &= 0xff00ff00; // just green component
+            scol and_eq 0xff00ff00; // just green component
 
         DWORD ocol = Color();
         SetColor(scol);

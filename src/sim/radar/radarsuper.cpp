@@ -39,7 +39,7 @@ RadarSuperClass::RadarSuperClass(int type, SimMoverClass* parentPlatform) : Rada
 void RadarSuperClass::ExecModes(int newDesignate, int newDrop)
 {
     // Change modes if such has been requested
-    if (mode != wantMode)
+    if (mode not_eq wantMode)
     {
         mode = wantMode;
 
@@ -47,7 +47,7 @@ void RadarSuperClass::ExecModes(int newDesignate, int newDrop)
         ClearSensorTarget();
 
         // Turn off auto-targeting unless we're in AA
-        if (mode != AA)
+        if (mode not_eq AA)
         {
             lockCmd = NOCHANGE;
             wantLock = NOCHANGE;
@@ -55,13 +55,13 @@ void RadarSuperClass::ExecModes(int newDesignate, int newDrop)
     }
 
     // Change ranges if such has been requested
-    if (wantRange != rangeNM)
+    if (wantRange not_eq rangeNM)
     {
-        if ((wantRange >= 5.0f) && (wantRange <= 40.0f))
+        if ((wantRange >= 5.0f) and (wantRange <= 40.0f))
         {
 
             // Update the cursor position
-            if (flags & CursorMoving)
+            if (flags bitand CursorMoving)
             {
                 // Keep same real world cursor position
                 cursorY = cursorY + 1.0f;
@@ -99,7 +99,7 @@ void RadarSuperClass::ExecModes(int newDesignate, int newDrop)
     }
 
     // If we're in auto targeting, keep trying to get a lock
-    if (wantLock != AUTO)
+    if (wantLock not_eq AUTO)
     {
         wantLock = NOCHANGE;
     }
@@ -111,7 +111,7 @@ void RadarSuperClass::UpdateState(int cursorXCmd, int cursorYCmd)
     // Handle any requests for cursor movement
     if (cursorXCmd)
     {
-        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
             cursorX += (cursorXCmd / 10000.0F) * CursorRate * SimLibMajorFrameTime;
         else
             cursorX += cursorXCmd * CursorRate * SimLibMajorFrameTime;
@@ -121,7 +121,7 @@ void RadarSuperClass::UpdateState(int cursorXCmd, int cursorYCmd)
 
     if (cursorYCmd)
     {
-        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
             cursorY += (cursorYCmd / 10000.0F) * CursorRate * SimLibMajorFrameTime;
         else
             cursorY += cursorYCmd * CursorRate * SimLibMajorFrameTime;
@@ -135,10 +135,10 @@ void RadarSuperClass::UpdateState(int cursorXCmd, int cursorYCmd)
     if (cursorY <= -0.8f) RangeStep(-1);
 
     // Note if the cursors are in motion or not
-    if ((cursorXCmd != 0) || (cursorYCmd != 0))
-        flags |= CursorMoving;
+    if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
+        flags or_eq CursorMoving;
     else
-        flags &= ~CursorMoving;
+        flags and_eq compl CursorMoving;
 }
 
 
@@ -150,7 +150,7 @@ SimObjectType* RadarSuperClass::Exec(SimObjectType*)
 
 
     // Quit now if we're turned off
-    if (!isEmitting)
+    if ( not isEmitting)
     {
         if (lockedTarget) SendTrackMsg(lockedTarget, Track_Unlock);
 
@@ -320,7 +320,7 @@ void RadarSuperClass::ExecAG(void)
     {
 
         // Skip things not on the ground
-        if (!object->OnGround())
+        if ( not object->OnGround())
         {
             continue;
         }
@@ -332,7 +332,7 @@ void RadarSuperClass::ExecAG(void)
         range = (float)sqrt(dx * dx + dy * dy);
 
         // Skip the object if it is out of range or _really_ close
-        if ((range > rangeFT) || (range < 500.0f))
+        if ((range > rangeFT) or (range < 500.0f))
         {
             continue;
         }
@@ -342,7 +342,7 @@ void RadarSuperClass::ExecAG(void)
         y = dy * scaledSinYaw + dx * scaledCosYaw - 1.0f;
 
         // Skip the object if it is off screen
-        if ((fabs(x) > 1.0f) || (fabs(y) > 1.0f))
+        if ((fabs(x) > 1.0f) or (fabs(y) > 1.0f))
         {
             continue;
         }
@@ -358,7 +358,7 @@ void RadarSuperClass::ExecAG(void)
 
 
         // We're done unless we need to lock something up
-        if (!lockCmd)
+        if ( not lockCmd)
         {
             continue;
         }
@@ -396,7 +396,7 @@ void RadarSuperClass::ExecAG(void)
             case NEXT:
                 if (range < bestSoFar)
                 {
-                    if ((!lockedTarget) || (range > lockedTarget->localData->range))
+                    if (( not lockedTarget) or (range > lockedTarget->localData->range))
                     {
                         bestSoFar = range;
                         newLock = object;
@@ -409,7 +409,7 @@ void RadarSuperClass::ExecAG(void)
             case PREV:
                 if (range > bestSoFar)
                 {
-                    if ((!lockedTarget) || (range < lockedTarget->localData->range))
+                    if (( not lockedTarget) or (range < lockedTarget->localData->range))
                     {
                         bestSoFar = range;
                         newLock = object;
@@ -464,7 +464,7 @@ void RadarSuperClass::ExecAA(void)
     {
 
         // Drop lock if the guy is outside our radar cone
-        if ((fabs(lockedTarget->localData->az) > radarData->ScanHalfAngle) ||
+        if ((fabs(lockedTarget->localData->az) > radarData->ScanHalfAngle) or
             (fabs(lockedTarget->localData->el) > radarData->ScanHalfAngle))
         {
             if (lockedTarget) SendTrackMsg(lockedTarget, Track_Unlock);
@@ -549,7 +549,7 @@ void RadarSuperClass::ExecAA(void)
         }
 
         // Skip weapons
-        if (object->BaseData()->IsMissile() || object->BaseData()->IsBomb())
+        if (object->BaseData()->IsMissile() or object->BaseData()->IsBomb())
         {
             continue;
         }
@@ -578,7 +578,7 @@ void RadarSuperClass::ExecAA(void)
         }
 
         // We're done unless we need to acquire a lock
-        if (!lockCmd)
+        if ( not lockCmd)
         {
             continue;
         }
@@ -637,7 +637,7 @@ void RadarSuperClass::ExecAA(void)
             case NEXT:
                 if (object->localData->range < bestSoFar)
                 {
-                    if ((!lockedTarget) || (object->localData->range > lockedTarget->localData->range))
+                    if (( not lockedTarget) or (object->localData->range > lockedTarget->localData->range))
                     {
                         bestSoFar = object->localData->range;
                         newLock = object;
@@ -650,7 +650,7 @@ void RadarSuperClass::ExecAA(void)
             case PREV:
                 if (object->localData->range > bestSoFar)
                 {
-                    if ((!lockedTarget) || (object->localData->range < lockedTarget->localData->range))
+                    if (( not lockedTarget) or (object->localData->range < lockedTarget->localData->range))
                     {
                         bestSoFar = object->localData->range;
                         newLock = object;
@@ -667,7 +667,7 @@ void RadarSuperClass::ExecAA(void)
 
 
     // If we changed locks, immediatly notify those concerned and update our state
-    if (newLock != lockedTarget)
+    if (newLock not_eq lockedTarget)
     {
         SetDesiredTarget(newLock);
         sendThisFrame = TRUE;
@@ -675,11 +675,11 @@ void RadarSuperClass::ExecAA(void)
     else
     {
         // See if it is time to send a "lock" update
-        sendThisFrame = lockedTarget && (SimLibElapsedTime - lastTargetLockSend > TrackUpdateTime);
+        sendThisFrame = lockedTarget and (SimLibElapsedTime - lastTargetLockSend > TrackUpdateTime);
     }
 
     // Send our periodic lock message
-    if ((sendThisFrame) && (lockedTarget))
+    if ((sendThisFrame) and (lockedTarget))
     {
         SendTrackMsg(lockedTarget, Track_Lock);
         lastTargetLockSend = SimLibElapsedTime;
@@ -698,7 +698,7 @@ void RadarSuperClass::Display(VirtualDisplay *activeDisplay)
     display = activeDisplay;
 
     // Quit now if we're turned off
-    if (!isEmitting)
+    if ( not isEmitting)
     {
         return;
         display->TextCenter(0.0f, 0.0f, "RADAR OFF");
@@ -762,7 +762,7 @@ void RadarSuperClass::DisplayAGReturns(void)
     {
 
         // Skip things not on the ground
-        if (!object->OnGround())
+        if ( not object->OnGround())
         {
             continue;
         }
@@ -777,13 +777,13 @@ void RadarSuperClass::DisplayAGReturns(void)
 
 
         // Skip the object if it is out of range or _really_ close
-        if ((range > rangeFT) || (range < 1000.0f))
+        if ((range > rangeFT) or (range < 1000.0f))
         {
             continue;
         }
 
         // Draw the appropriate target symbol
-        if (lockedTarget && object == lockedTarget->BaseData())
+        if (lockedTarget and object == lockedTarget->BaseData())
         {
 
             DrawLockedGndInfo(x, y);
@@ -829,7 +829,7 @@ void RadarSuperClass::DisplayAAReturns(void)
         }
 
         // Skip weapons
-        if (object->BaseData()->IsMissile() || object->BaseData()->IsBomb())
+        if (object->BaseData()->IsMissile() or object->BaseData()->IsBomb())
         {
             continue;
         }
@@ -868,7 +868,7 @@ void RadarSuperClass::DisplayAAReturns(void)
             else
             {
                 // Dimmed
-                display->SetColor((tmpColor > 4) && 0xFF00);
+                display->SetColor((tmpColor > 4) and 0xFF00);
             }
 
             display->Tri(x - BLIP_SIZE, y - BLIP_SIZE, x - BLIP_SIZE, y + BLIP_SIZE, x + BLIP_SIZE, y + BLIP_SIZE);
@@ -1040,7 +1040,7 @@ void RadarSuperClass::DrawLockedAirInfo(float h, float v)
     // Target ID (NCTR)
     classPtr = (Falcon4EntityClassType*)lockedTarget->BaseData()->EntityType();
 
-    if (lockedTarget->BaseData()->IsSim() && (!((SimBaseClass*)lockedTarget->BaseData())->IsExploding()) &&
+    if (lockedTarget->BaseData()->IsSim() and ( not ((SimBaseClass*)lockedTarget->BaseData())->IsExploding()) and 
         (classPtr->dataType == DTYPE_VEHICLE))
     {
         sprintf(str, "%s", ((VehicleClassDataType*)(classPtr->dataPtr))->Name);
@@ -1072,7 +1072,7 @@ void RadarSuperClass::DrawLockedAirInfo(float h, float v)
     else
     {
         // Dimmed
-        display->SetColor((tmpColor >> 4) & 0xFF00);
+        display->SetColor((tmpColor >> 4) bitand 0xFF00);
     }
 
     // Draw the locked target's symbol (triangle with velocity line)
@@ -1124,7 +1124,7 @@ void RadarSuperClass::DrawLockedGndInfo(float h, float v)
 
 
     // Target ID (NCTR)
-    if (lockedTarget->BaseData()->IsSim() && !((SimBaseClass*)lockedTarget->BaseData())->IsExploding())
+    if (lockedTarget->BaseData()->IsSim() and not ((SimBaseClass*)lockedTarget->BaseData())->IsExploding())
     {
         Falcon4EntityClassType *classPtr = (Falcon4EntityClassType*)lockedTarget->BaseData()->EntityType();
 

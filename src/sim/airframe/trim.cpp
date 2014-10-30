@@ -69,7 +69,7 @@ void AirframeClass::TrimModel(void)
     /*---------------------------------------------------------*/
     do
     {
-        if (!isTrimmed)
+        if ( not isTrimmed)
         {
             /*-----------------*/
             /* initial guesses */
@@ -99,7 +99,7 @@ void AirframeClass::TrimModel(void)
 
         for (i = 0; i < 50; i++)
         {
-            if (fabs(accx2) < error && fabs(accz2) < error)
+            if (fabs(accx2) < error and fabs(accz2) < error)
             {
                 isTrimmed = TRUE;
                 break;
@@ -141,7 +141,7 @@ void AirframeClass::TrimModel(void)
         }
 
         // Too slow for weight, make it faster
-        if (!isTrimmed && (_isnan(accz2) || fabs(accz2) > error))
+        if ( not isTrimmed and (_isnan(accz2) or fabs(accz2) > error))
         {
             ii ++;
 
@@ -159,7 +159,7 @@ void AirframeClass::TrimModel(void)
         }
 
     }
-    while (!isTrimmed);
+    while ( not isTrimmed);
 
     //   F4Assert (i<50);
 

@@ -22,9 +22,9 @@
     it is better)*
 
     NOTE:  MSVC users - don't even bother trying to 'Update Dependencies'.
-           Uggh!  06/30/96 - This should work now
+           Uggh  06/30/96 - This should work now
 
- Created     Mark Adler & Jean-loup Gailly (GCC)
+ Created     Mark Adler bitand Jean-loup Gailly (GCC)
     Modified    Roger Fujii (STTNG:AFU)
     Big Purge   Kevin Ray   (RESMGR)
 
@@ -33,6 +33,7 @@
 
    ========================================================================== */
 
+#include <cISO646>
 #include <ctype.h>
 #include <fcntl.h>
 
@@ -91,7 +92,7 @@ int process_local_file_hdr(local_file_hdr * lrec, char * buffer);
 
 /* -------------------------------------------------------------------------
 
-    E X T E R N A L   P R O T O T Y P E S   &   D A T A
+    E X T E R N A L   P R O T O T Y P E S bitand D A T A
 
    ------------------------------------------------------------------------- */
 
@@ -133,10 +134,10 @@ _say_error(int error, const char * msg, int line, const char * filename);
 
 #ifdef SFX
 #  define UNKN_COMPR \
-    (crec.compression_method!=STORED && crec.compression_method!=DEFLATED)
+    (crec.compression_method not_eq STORED and crec.compression_method not_eq DEFLATED)
 #else
 #  define UNKN_COMPR \
-    (crec.compression_method>IMPLODED && crec.compression_method!=DEFLATED)
+    (crec.compression_method>IMPLODED and crec.compression_method not_eq DEFLATED)
 #endif
 
 
@@ -200,7 +201,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
     arc = (ARCHIVE *)MemMalloc(sizeof(ARCHIVE), filename);
 #endif
 
-    if (!arc)
+    if ( not arc)
     {
         UNZIP_ERROR = RES_ERR_NO_MEMORY;
         return(NULL);
@@ -235,7 +236,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
     {
         struct stat statbuf;
 
-        if (SSTAT(filename, &statbuf) || (error = S_ISDIR(statbuf.st_mode)) != 0)
+        if (SSTAT(filename, &statbuf) or (error = S_ISDIR(statbuf.st_mode)) not_eq 0)
         {
             ResCheckMedia(toupper(filename[0]) - 'A');   /* see if media has been swapped */
 
@@ -253,7 +254,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
         arc -> length = statbuf.st_size;
     }
 
-    if ((arc -> os_handle = _open(filename, O_RDONLY | O_BINARY)) < 0)
+    if ((arc -> os_handle = _open(filename, O_RDONLY bitor O_BINARY)) < 0)
     {
         ResCheckMedia(toupper(filename[0]) - 'A');   /* see if media has been swapped */
 
@@ -317,7 +318,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
     {
         table -> num_entries = sz;
 
-        if (!hash_resize(table))
+        if ( not hash_resize(table))
         {
             _close(arc -> os_handle);
 #ifdef USE_SH_POOLS
@@ -337,7 +338,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
 #endif /*RES_PREDETERMINE_SIZE */
 
     //****** (arc -> len) ?  66000L ? *****//
-    if ((((error_in_archive = find_end_central_dir(MIN((arc -> length), 66000L), &ecrec, arc)) != 0)))
+    if ((((error_in_archive = find_end_central_dir(MIN((arc -> length), 66000L), &ecrec, arc)) not_eq 0)))
     {
         _close(arc -> os_handle);
 #ifdef USE_SH_POOLS
@@ -356,7 +357,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
     /*-----------------------------------------------------------------------
         Compensate for missing or extra bytes, and seek to where the start
         of central directory should be.  If header not found, uncompensate
-        and try again (necessary for at least some Atari archives created
+       and try again (necessary for at least some Atari archives created
         with STZIP, as well as archives created by J.H. Holm's ZIPSPLIT 1.1).
       ----------------------------------------------------------------------- */
 
@@ -406,7 +407,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
         Begin main loop over blocks of member files.  We know the entire central
         directory is on this disk:  we would not have any of this information un-
         less the end-of-central-directory record was on this disk, and we would
-        not have gotten to this routine unless this is also the disk on which
+ not have gotten to this routine unless this is also the disk on which
         the central directory starts.  In practice, this had better be the ONLY
         disk in the archive, but maybe someday we'll add multi-disk support.
        ---------------------------------------------------------------------------*/
@@ -435,14 +436,14 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
 
         /* process_cdir_file_hdr() sets pInfo->hostnum, pInfo->lcflag */
 
-        if ((error = process_cdir_file_hdr(&crec, arc)) != PK_COOL)
+        if ((error = process_cdir_file_hdr(&crec, arc)) not_eq PK_COOL)
         {
             error_in_archive = error;               /* only PK_EOF defined                          */
             SAY_ERROR(RES_ERR_BAD_ARCHIVE, filename);
             break;
         }
 
-        if ((error = do_string(crec.filename_length, FILENAME, curfilename, arc)) != PK_COOL)
+        if ((error = do_string(crec.filename_length, FILENAME, curfilename, arc)) not_eq PK_COOL)
         {
             if (error > error_in_archive)
                 error_in_archive = error;
@@ -455,7 +456,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
             }
         }
 
-        if ((error = do_string(crec.extra_field_length, SKIP, NULL, arc)) != PK_COOL)
+        if ((error = do_string(crec.extra_field_length, SKIP, NULL, arc)) not_eq PK_COOL)
         {
             if (error > error_in_archive)
                 error_in_archive = error;
@@ -468,7 +469,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
             }
         }
 
-        if ((error = do_string(crec.file_comment_length, SKIP, NULL, arc)) != PK_COOL)
+        if ((error = do_string(crec.file_comment_length, SKIP, NULL, arc)) not_eq PK_COOL)
         {
             if (error > error_in_archive)
                 error_in_archive = error;
@@ -484,7 +485,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
         fname = curfilename;
         path_idx = 0;                               /* see if directory has changed                 */
 
-        if (attach_point[ strlen(attach_point) - 1 ] != ASCII_BACKSLASH)
+        if (attach_point[ strlen(attach_point) - 1 ] not_eq ASCII_BACKSLASH)
             sprintf(path, "%s\\%s", attach_point, curfilename);
         else
             sprintf(path, "%s%s", attach_point, curfilename);
@@ -495,7 +496,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
         {
             if (path[i - 1] == ASCII_FORESLASH)
             {
-                if (!path_idx)
+                if ( not path_idx)
                 {
                     path_idx = i - 1;
                     fname = &path[ path_idx + 1 ];
@@ -517,7 +518,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
         do
         {
 
-            if (!stricmp(GLOBAL_SEARCH_PATH[i], attach_point))
+            if ( not stricmp(GLOBAL_SEARCH_PATH[i], attach_point))
             {
                 dir_was = i;
                 break;
@@ -528,7 +529,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
 
         vol_was = (char)(toupper(path[0]) - 'A');
 
-#if( !RES_USE_FLAT_MODEL )
+#if( not RES_USE_FLAT_MODEL )
 
         /* See if there is a new directory name.  If so, we need to create a new hash table,
            add this path into the global hash table, and continue add files into the new
@@ -538,7 +539,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
         path[ path_idx + 1 ] = '\0';
         path[ path_idx + 2 ] = '\0';
 
-        if (path_idx && strcmp(path, path_was))      /* new directory! */
+        if (path_idx and strcmp(path, path_was))      /* new directory */
         {
             strcpy(path_was, path);
 
@@ -551,7 +552,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
             {
                 table = (HASH_TABLE *)entry -> dir;
 
-                if (!table)
+                if ( not table)
                     break;
             }
             else
@@ -560,7 +561,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
 
                 if (GLOBAL_SEARCH_INDEX >= (MAX_DIRECTORIES - 1))
                 {
-                    assert(!"Exceeded MAX_DIRECTORIES as defined in omni.h");
+                    assert( not "Exceeded MAX_DIRECTORIES as defined in omni.h");
                     //                  SAY_ERROR( RES_ERR_TOO_MANY_DIRECTORIES, "ResAddPath" );
                     return(FALSE);
                 }
@@ -569,14 +570,14 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
                 table = hash_create(ARCHIVE_TABLE_SIZE, path);
 
                 strcpy(info.name, path);                  /* insert a dummy entry into the global hash table  */
-                info.attrib = _A_SUBDIR | (unsigned int)FORCE_BIT;
+                info.attrib = _A_SUBDIR bitor (unsigned int)FORCE_BIT;
                 info.time_create = 0;
                 info.time_access = 0;
                 info.size = 0;
 
                 entry = hash_add(&info, GLOBAL_HASH_TABLE);
 
-                if (!entry)
+                if ( not entry)
                     break;
 
                 entry -> archive       = -1; /* the actual directory existence should not be considered
@@ -597,15 +598,15 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
             /*            RES_UNLOCK( GLOBAL_HASH_TABLE );  GFG */
         }
 
-#endif /* !RES_USE_FLAT_MODEL */
+#endif /* not RES_USE_FLAT_MODEL */
 
-        if (!(*data.name))
+        if ( not (*data.name))
             continue;  /* this is usually a directory entry, which we'll decipher later */
 
 
 #if( RES_REJECT_EMPTY_FILES )
 
-        if (!crec.csize)
+        if ( not crec.csize)
             continue;
 
 #endif
@@ -617,10 +618,10 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
         /*        RES_LOCK( table );  GFG */
         entry = hash_find(data.name, table);    /* see if an entry already exists */
 
-        if (!entry)
+        if ( not entry)
             entry = hash_add(&data, table);     /* if not, create one             */
-        else /* there is already a file with the same name here! */
-            if (!replace_flag)
+        else /* there is already a file with the same name here */
+            if ( not replace_flag)
                 continue;
 
 
@@ -728,7 +729,7 @@ int archive_size(ARCHIVE * arc)
     central_hdr_sig[0] = '\120';
     end_central_sig[0] = '\120';   /* not EBCDIC */
 
-    if ((((error_in_archive = find_end_central_dir(MIN((arc -> length), 66000L), &ecrec, arc)) != 0)))
+    if ((((error_in_archive = find_end_central_dir(MIN((arc -> length), 66000L), &ecrec, arc)) not_eq 0)))
         return(-1);
 
     if (UNZIP_LSEEK(ecrec.offset_start_central_directory, arc))
@@ -754,13 +755,13 @@ int archive_size(ARCHIVE * arc)
 
         /* process_cdir_file_hdr() sets pInfo->hostnum, pInfo->lcflag */
 
-        if ((error = process_cdir_file_hdr(&crec, arc)) != PK_COOL)
+        if ((error = process_cdir_file_hdr(&crec, arc)) not_eq PK_COOL)
         {
             error_in_archive = error;               /* only PK_EOF defined                          */
             break;
         }
 
-        if ((error = do_string(crec.filename_length, FILENAME, curfilename, arc)) != PK_COOL)
+        if ((error = do_string(crec.filename_length, FILENAME, curfilename, arc)) not_eq PK_COOL)
         {
             if (error > error_in_archive)
                 error_in_archive = error;
@@ -772,7 +773,7 @@ int archive_size(ARCHIVE * arc)
             }
         }
 
-        if ((error = do_string(crec.file_comment_length, SKIP, NULL, arc)) != PK_COOL)
+        if ((error = do_string(crec.file_comment_length, SKIP, NULL, arc)) not_eq PK_COOL)
         {
             if (error > error_in_archive)
                 error_in_archive = error;
@@ -784,7 +785,7 @@ int archive_size(ARCHIVE * arc)
             }
         }
 
-        if (!(*curfilename))
+        if ( not (*curfilename))
             continue;  /* this is usually a directory entry, which we'll decipher later */
 
         count++;
@@ -809,7 +810,7 @@ int unzip_seek(LONGINT val, ARCHIVE * arc)
     }
     else
     {
-        if (bufstart != arc -> start_buffer)
+        if (bufstart not_eq arc -> start_buffer)
         {
             arc -> start_buffer = lseek(arc -> os_handle, (LONGINT)bufstart, SEEK_SET);
 
@@ -859,7 +860,7 @@ int getfiletomem(char * myfile, char **retbuf, long * size, COMPRESSED_FILE * cm
         construct_path(local_file_dir, filename, myfile, entry->file_position);
         // sprintf(filename, "%s%s", local_file_dir, myfile);
 
-        if ((fd = open(filename, O_BINARY | O_RDONLY)) >= 0)
+        if ((fd = open(filename, O_BINARY bitor O_RDONLY)) >= 0)
         {
 #ifdef USE_SH_POOLS
 
@@ -919,7 +920,7 @@ int getfiletomem(char * myfile, char **retbuf, long * size, COMPRESSED_FILE * cm
 
         lseek(tmp -> archive -> os_handle, entry->file_position, SEEK_SET);
 
-        if ((error = extract_or_test_member(entry->method, entry->file_csize, cmp)) != PK_COOL)
+        if ((error = extract_or_test_member(entry->method, entry->file_csize, cmp)) not_eq PK_COOL)
         {
 #ifdef USE_SH_POOLS
             MemFreePtr(tmp -> out_buffer);
@@ -934,7 +935,7 @@ int getfiletomem(char * myfile, char **retbuf, long * size, COMPRESSED_FILE * cm
 
     *retbuf = tmp -> out_buffer;
 
-    if (size != NULL)
+    if (size not_eq NULL)
         *size = entry->file_size;
 
     return(0);
@@ -957,7 +958,7 @@ int getfiletomem(char * myfile, char **retbuf, long * size, COMPRESSED_FILE * cm
 
 static ush makeword(uch *b)
 {
-    return (ush)((b[1] << 8) | b[0]);
+    return (ush)((b[1] << 8) bitor b[0]);
 }
 
 
@@ -977,7 +978,7 @@ static ush makeword(uch *b)
 
 static ulg makelong(uch *sig)
 {
-    return (((ulg)sig[3]) << 24) | (((ulg)sig[2]) << 16) | (((ulg)sig[1]) << 8) | ((ulg)sig[0]);
+    return (((ulg)sig[3]) << 24) bitor (((ulg)sig[2]) << 16) bitor (((ulg)sig[1]) << 8) bitor ((ulg)sig[0]);
 }
 
 
@@ -1001,7 +1002,7 @@ static int process_cdir_file_hdr(cdir_file_hdr * crec, ARCHIVE * arc)
 {
     int error;
 
-    if ((error = get_cdir_file_hdr(crec, arc)) != 0)
+    if ((error = get_cdir_file_hdr(crec, arc)) not_eq 0)
         return(error);
 
     return(PK_COOL);
@@ -1061,13 +1062,13 @@ int extract_or_test_member(int method, long fcsize, COMPRESSED_FILE * cmp)
 
         case IMPLODED:
             break;
-#endif /* !SFX */
+#endif /* not SFX */
 
         case DEFLATED:
             cmp -> csize = fcsize;
             seeklocked = TRUE;
 
-            if ((r = inflate(cmp)) != 0)
+            if ((r = inflate(cmp)) not_eq 0)
                 error = (r == 3) ? PK_MEM2 : PK_ERR;
 
             /* free allocated memory */
@@ -1181,7 +1182,7 @@ int readbyte(COMPRESSED_FILE * cmp)
 
    RETURNS:    Byte read or EOF token.
 
-   NOTE:       Only called from inflate.h!
+   NOTE:       Only called from inflate.h
 
        --- archive_entry should be compress_file ---
 
@@ -1240,12 +1241,12 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
 
             for (arc -> tmp_in_ptr = arc -> tmp_in_buffer + (arc -> length - 22);
                  arc -> tmp_in_ptr >= arc -> tmp_in_buffer;
-                 arc -> tmp_in_ptr = arc -> tmp_in_ptr - 1 /* was: --inptr  uggh! */
+                 arc -> tmp_in_ptr = arc -> tmp_in_ptr - 1 /* was: --inptr  Uggh */
                 )
             {
-                //                if((native(*((int*)arc -> tmp_in_ptr)) == 'P') &&
-                //                    !strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))  /* GFG 31/01/98
-                if (((*(char*)(arc -> tmp_in_ptr)) == 'P') && !strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
+                //                if((native(*((int*)arc -> tmp_in_ptr)) == 'P') and 
+                // not strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))  /* GFG 31/01/98
+                if (((*(char*)(arc -> tmp_in_ptr)) == 'P') and not strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
 
                 {
                     arc -> tmp_in_count -= (int)arc -> tmp_in_ptr - (int)arc -> tmp_in_buffer;
@@ -1266,7 +1267,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
             arc -> start_buffer = lseek(arc -> os_handle, (arc -> length) - tail_len, SEEK_SET);
             arc -> tmp_in_count = read(arc -> os_handle, (char *)arc -> tmp_in_buffer, (unsigned int)tail_len);
 
-            if (arc -> tmp_in_count != (int)tail_len)
+            if (arc -> tmp_in_count not_eq (int)tail_len)
                 goto fail;      /* shut up; it's expedient */
 
             /* 'P' must be at least 22 bytes from end of zipfile */
@@ -1275,7 +1276,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
                  arc -> tmp_in_ptr = arc -> tmp_in_ptr - 1
                 )
             {
-                if (((*(char*)(arc -> tmp_in_ptr)) == 'P') && !strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
+                if (((*(char*)(arc -> tmp_in_ptr)) == 'P') and not strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
                 {
                     arc -> tmp_in_count -= (int)arc -> tmp_in_ptr - (int)arc -> tmp_in_buffer;
                     found = TRUE;
@@ -1300,12 +1301,12 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
 
         /*   ==amount=   ==done==   ==rounding==    =blksiz=  */
 
-        for (i = 1;  !found && (i <= numblks);  ++i)
+        for (i = 1; not found and (i <= numblks);  ++i)
         {
             arc -> start_buffer -= arc -> tmp_in_size;
             lseek(arc -> os_handle, arc -> start_buffer, SEEK_SET);
 
-            if ((arc -> tmp_in_count = read(arc -> os_handle, (char *)arc -> tmp_in_buffer, arc -> tmp_in_size)) != arc -> tmp_in_size)
+            if ((arc -> tmp_in_count = read(arc -> os_handle, (char *)arc -> tmp_in_buffer, arc -> tmp_in_size)) not_eq arc -> tmp_in_size)
                 break;   /* fall through and fail */
 
             for (arc -> tmp_in_ptr = arc -> tmp_in_buffer + arc -> tmp_in_size - 1;
@@ -1313,7 +1314,7 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
                  arc -> tmp_in_ptr = arc -> tmp_in_ptr - 1
                 )
             {
-                if ((*(char *)arc -> tmp_in_ptr == 'P')  && !strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
+                if ((*(char *)arc -> tmp_in_ptr == 'P') and not strncmp((char *)arc -> tmp_in_ptr, end_central_sig, 4))
                 {
                     arc -> tmp_in_count -= ((int)arc -> tmp_in_ptr - (int)arc -> tmp_in_buffer);
                     found = TRUE;
@@ -1335,12 +1336,12 @@ int find_end_central_dir(long searchlen, ecdir_rec *ecrec, ARCHIVE * arc)
 
 fail:
 
-    if (!found)
+    if ( not found)
     {
 #ifdef MSWIN
         MessageBeep(1);
 #endif
-        //  if (qflag || (zipinfo_mode && !hflag))
+        //  if (qflag or (zipinfo_mode and not hflag))
         //        fprintf(stderr, "[%s]\n", zipfn);
         //  fprintf(stderr, "\
         //    End-of-central-directory signature not found.  Either this file is not\n\
@@ -1413,7 +1414,7 @@ static int get_cdir_file_hdr(cdir_file_hdr *crec, ARCHIVE * arc)     /* return P
     crec->file_comment_length = makeword(&byterec[C_FILE_COMMENT_LENGTH]);
     crec->disk_number_start = makeword(&byterec[C_DISK_NUMBER_START]);
     crec->internal_file_attributes = makeword(&byterec[C_INTERNAL_FILE_ATTRIBUTES]);
-    crec->external_file_attributes = makelong(&byterec[C_EXTERNAL_FILE_ATTRIBUTES]);  /* LONG, not word! */
+    crec->external_file_attributes = makelong(&byterec[C_EXTERNAL_FILE_ATTRIBUTES]);  /* LONG, not word */
     crec->relative_offset_local_header = makelong(&byterec[C_RELATIVE_OFFSET_LOCAL_HEADER]);
 
     return(PK_COOL);
@@ -1447,7 +1448,7 @@ static int do_string(unsigned int len, int option, char * filename, ARCHIVE * ar
       of string:  if zero, we're already done.
       ---------------------------------------------------------------------------*/
 
-    if (!len)
+    if ( not len)
         return(PK_COOL);
 
     switch (option)
@@ -1486,7 +1487,7 @@ static int do_string(unsigned int len, int option, char * filename, ARCHIVE * ar
 
             A_TO_N(filename);            /* translate string to native    */
 
-            if (!extra_len)             /* we're done here                */
+            if ( not extra_len)             /* we're done here                */
                 break;
 
             /*
@@ -1558,14 +1559,14 @@ int process_local_file_hdr(local_file_hdr * lrec, char * buffer)      /* return 
     lrec->filename_length = makeword(&byterec[L_FILENAME_LENGTH]);
     lrec->extra_field_length = makeword(&byterec[L_EXTRA_FIELD_LENGTH]);
 
-    if ((lrec->general_purpose_bit_flag & 8) != 0)
+    if ((lrec->general_purpose_bit_flag bitand 8) not_eq 0)
     {
         /* can't trust local header, use central directory
            If this is the problem, you should probably extract the
            entire zip and then rebuild it.  The local header should
            always be more reliable than the global, and in your case
            it is not (sorry, but you're fucked) */
-        SAY_ERROR(RES_ERR_BAD_ARCHIVE, "Big problemo, read comment!");
+        SAY_ERROR(RES_ERR_BAD_ARCHIVE, "Big problemo, read comment");
         return(PK_ERR);
     }
 

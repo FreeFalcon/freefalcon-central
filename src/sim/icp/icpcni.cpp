@@ -26,9 +26,9 @@ void ICPClass::ExecCNIMode()
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC) return;//me123 ctd fix
+    if ( not playerAC) return;//me123 ctd fix
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         int type;
         static int wpflags;
@@ -47,7 +47,7 @@ void ICPClass::ExecCNIMode()
 
             // Clear the update flag
 
-            mUpdateFlags &= !CNI_UPDATE;
+            mUpdateFlags and_eq not CNI_UPDATE;
 
             // Calculate Some Stuff
             if (playerAC->curWaypoint)
@@ -59,11 +59,11 @@ void ICPClass::ExecCNIMode()
                 wpflags = 0;
             }
 
-            if (wpflags & WPF_TARGET)
+            if (wpflags bitand WPF_TARGET)
             {
                 type = Way_TGT;
             }
-            else if (wpflags & WPF_IP)
+            else if (wpflags bitand WPF_IP)
             {
                 type = Way_IP;
             }
@@ -201,7 +201,7 @@ void ICPClass::ExecCNIMode()
         // }
         // else
         // sprintf(tempstr, "%s", VM ? RadioStrings[VM->GetRadioFreq(1)] : "XXXX");
-        // // FillDEDMatrix(0,1,"VHF"); MD -- 20031121: should show active when transmitting!
+        // // FillDEDMatrix(0,1,"VHF"); MD -- 20031121: should show active when transmitting
         // if (transmitingvoicecom2)
         // FillDEDMatrix(0,1,"VHF",2);
         // else
@@ -211,7 +211,7 @@ void ICPClass::ExecCNIMode()
 
         //END COMM STUFF
         //WAYPOINT INFO
-        if (!MAN) //Auto Waypoint
+        if ( not MAN) //Auto Waypoint
         {
             if (IsICPSet(ICPClass::EDIT_STPT))
                 sprintf(tempstr, "\x01%2dA", mWPIndex + 1);
@@ -234,9 +234,9 @@ void ICPClass::ExecCNIMode()
         else
             wpflags = 0;
 
-        if (wpflags & WPF_TARGET)
+        if (wpflags bitand WPF_TARGET)
             sprintf(tempstr, "TGT");
-        else if (wpflags & WPF_IP)
+        else if (wpflags bitand WPF_IP)
             sprintf(tempstr, "IP");
         else
             sprintf(tempstr, "STPT");
@@ -246,12 +246,12 @@ void ICPClass::ExecCNIMode()
         //END WAYPOINT INFO
         //Up
         // MD -- 20040204: UHF should always appear in line 1, VHF in line 3
-        //if(IsICPSet(ICPClass::EDIT_VHF) && WhichRadio == 1)
+        //if(IsICPSet(ICPClass::EDIT_VHF) and WhichRadio == 1)
         // FillDEDMatrix(0,5,"\x01");
         //else
         if (IsICPSet(ICPClass::EDIT_VHF))
             FillDEDMatrix(2, 5, "\x01");
-        else if (IsICPSet(ICPClass::EDIT_UHF)) // && WhichRadio == 0)
+        else if (IsICPSet(ICPClass::EDIT_UHF)) // and WhichRadio == 0)
             FillDEDMatrix(0, 5, "\x01");
 
         //else if(IsICPSet(ICPClass::EDIT_UHF))
@@ -263,7 +263,7 @@ void ICPClass::ExecCNIMode()
         {
             GetWind();
 
-            if (windSpeed > 1 && windSpeed < 9)
+            if (windSpeed > 1 and windSpeed < 9)
                 sprintf(tempstr, "%d*00%d", heading, (int)windSpeed);
             else if (windSpeed > 9)
                 sprintf(tempstr, "%d*0%d", heading, (int)windSpeed);
@@ -315,7 +315,7 @@ void ICPClass::ExecCNIMode()
         // }
         // else
         // sprintf(tempstr, "%s", VM ? RadioStrings[VM->GetRadioFreq(0)] : "XXXX");
-        // // FillDEDMatrix(2,1, "UHF"); MD -- 20031121: should show active when transmitting!
+        // // FillDEDMatrix(2,1, "UHF"); MD -- 20031121: should show active when transmitting
         // if (transmitingvoicecom1)
         // FillDEDMatrix(2,1,"UHF",2);
         // else
@@ -345,14 +345,14 @@ void ICPClass::ExecCNIMode()
                 if (tempstr[i] == ':')
                 {
                     //now we gotta look ahead
-                    if (tempstr[j] != '0' || tempstr[k] != '0')
+                    if (tempstr[j] not_eq '0' or tempstr[k] not_eq '0')
                     {
-                        if (tempstr[j] != '0')
+                        if (tempstr[j] not_eq '0')
                         {
                             tempstr[i] = ' ';
                             break;
                         }
-                        else if (tempstr[k] != '0')
+                        else if (tempstr[k] not_eq '0')
                         {
                             tempstr[j] = ' ';
                             tempstr[i] = ' ';

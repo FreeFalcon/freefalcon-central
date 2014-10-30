@@ -44,7 +44,7 @@ void HookupSelectACTypes(C_PopupList *menu, void (*cb)(long, short, C_Base *))
 
         while (DFAIPlanes[i].ID)
         {
-            if (gUI_Tracking_Flag & _UI_TRACK_FLAG02)
+            if (gUI_Tracking_Flag bitand _UI_TRACK_FLAG02)
                 menu->AddItem(DFAIPlanes[i].ID, C_TYPE_RADIO, DFAIPlanes[i].TextID, MID_DF_TYPE);
 
             menu->SetCallback(DFAIPlanes[i].ID, cb);
@@ -64,7 +64,7 @@ static void SetACTypeCB(long ID, short hittype, C_Base *)
     C_Dog_Flight *dfflight = NULL;
     Flight        flt = NULL;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     LoadDfPlanes();
@@ -163,7 +163,7 @@ static void TeamJoinCB(long, short hittype, C_Base *)
     C_Pilot      *pilot;
     Flight        flt;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     LoadDfPlanes();
@@ -253,7 +253,7 @@ static void DeleteFlightCB(long, short hittype, C_Base *)
     C_Dog_Flight *dfflight;
     Flight        flt;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tree = (C_TreeList*)gPopupMgr->GetCallingControl();
@@ -270,7 +270,7 @@ static void DeleteFlightCB(long, short hittype, C_Base *)
             {
                 flt = (Flight)vuDatabase->Find(dfflight->GetVUID());
 
-                if (!flt->IsPlayer())
+                if ( not flt->IsPlayer())
                     RequestFlightDelete(flt);
             }
         }
@@ -286,7 +286,7 @@ static void DeletePilotCB(long, short hittype, C_Base *)
     C_Pilot    *pilot;
     Flight      flt;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tree = (C_TreeList*)gPopupMgr->GetCallingControl();
@@ -299,7 +299,7 @@ static void DeletePilotCB(long, short hittype, C_Base *)
         {
             pilot = (C_Pilot*)item->Item_;
 
-            if (pilot && !pilot->GetPlayer())
+            if (pilot and not pilot->GetPlayer())
             {
                 flt = (Flight)vuDatabase->Find(pilot->GetVUID());
 
@@ -322,7 +322,7 @@ static void AddAIToFlightCB(long ID, short hittype, C_Base *)
     Flight        flt;
     uchar SkillLevel;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     switch (ID)
@@ -381,7 +381,7 @@ static void AddAIPilotCB(long ID, short hittype, C_Base *)
     Flight        flt;
     uchar SkillLevel;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     switch (ID)
@@ -446,7 +446,7 @@ static void SetAIPilotSkillCB(long ID, short hittype, C_Base *)
     Flight        flt;
     short SkillLevel;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     switch (ID)
@@ -484,7 +484,7 @@ static void SetAIPilotSkillCB(long ID, short hittype, C_Base *)
 
             item = child->Parent;
 
-            if (item && pilot)
+            if (item and pilot)
             {
                 dfflight = (C_Dog_Flight*)item->Item_;
 
@@ -504,7 +504,7 @@ static void SetAIPilotSkillCB(long ID, short hittype, C_Base *)
 
 static void SetFlightLeadCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gPopupMgr->CloseMenu();
@@ -587,7 +587,7 @@ void CheckForPlayerCB(C_Base *themenu, C_Base *caller)
     Flight flt;
     C_PopupList *menu;
 
-    if (!themenu || !caller)
+    if ( not themenu or not caller)
         return;
 
     menu = (C_PopupList*)themenu;

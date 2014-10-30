@@ -206,7 +206,7 @@ void VoiceFilter::LoadCommFile(void)
     // commData = (char *)map_file(filename);
 
     // ShiAssert( commData );
-    if (commfile.Open(filename) != TRUE)
+    if (commfile.Open(filename) not_eq TRUE)
         ShiError("Can't open commfile.bin");
 
     commfile.Initialise();
@@ -249,7 +249,7 @@ void VoiceFilter::LoadEvalFile(void)
     // evalData = (char *)map_file(filename);
 
     // ShiAssert( evalData );
-    if (evalfile.Open(filename) != TRUE)
+    if (evalfile.Open(filename) not_eq TRUE)
         ShiError("Can't open evalFile.bin");
 
     evalfile.Initialise();
@@ -293,7 +293,7 @@ void VoiceFilter::LoadFragFile(void)
     //fragData = (char *)map_file(filename);
 
     //ShiAssert( fragData );
-    if (fragfile.Open(filename) != TRUE)
+    if (fragfile.Open(filename) not_eq TRUE)
         ShiError("Can't open fragFile.bin");
 
     fragfile.Initialise();
@@ -323,7 +323,7 @@ char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID fro
 {
     char retval[2] = { 0, 0 };
 
-    if (!VM)
+    if ( not VM)
         return false;
 
     for (int i = 0; i < 2; i++)
@@ -339,8 +339,8 @@ char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID fro
             case rcfFlight2:
             case rcfFlight3:
             case rcfFlight4:
-                if (TOFROM_FLIGHT & radiofilter)
-                    retval[i] |= TOFROM_FLIGHT;
+                if (TOFROM_FLIGHT bitand radiofilter)
+                    retval[i] or_eq TOFROM_FLIGHT;
 
                 break;
 
@@ -349,47 +349,47 @@ char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID fro
             case rcfPackage2:
             case rcfPackage3:
             case rcfPackage4:
-                if ((TO_PACKAGE & radiofilter) || (radiofilter & TOFROM_FLIGHT))
+                if ((TO_PACKAGE bitand radiofilter) or (radiofilter bitand TOFROM_FLIGHT))
                 {
-                    retval[i] |= TO_PACKAGE;
+                    retval[i] or_eq TO_PACKAGE;
                 }
 
                 break;
 
             case rcfFromPackage:
-                if ((TOFROM_PACKAGE & radiofilter) || (radiofilter & TOFROM_FLIGHT))
-                    retval[i] |= TOFROM_PACKAGE;
+                if ((TOFROM_PACKAGE bitand radiofilter) or (radiofilter bitand TOFROM_FLIGHT))
+                    retval[i] or_eq TOFROM_PACKAGE;
 
                 break;
 
             case rcfProx:
-                if ((radiofilter & TOFROM_FLIGHT) || ((IN_PROXIMITY & radiofilter) && ((radiofilter & TO_TEAM) || (TO_PACKAGE & radiofilter))))
-                    retval[i] |= IN_PROXIMITY;
+                if ((radiofilter bitand TOFROM_FLIGHT) or ((IN_PROXIMITY bitand radiofilter) and ((radiofilter bitand TO_TEAM) or (TO_PACKAGE bitand radiofilter))))
+                    retval[i] or_eq IN_PROXIMITY;
 
                 break;
 
             case rcfTeam:
-                if ((TO_TEAM & radiofilter) || (radiofilter & TOFROM_FLIGHT) || (TOFROM_PACKAGE & radiofilter))
-                    retval[i] |= TO_TEAM;
+                if ((TO_TEAM bitand radiofilter) or (radiofilter bitand TOFROM_FLIGHT) or (TOFROM_PACKAGE bitand radiofilter))
+                    retval[i] or_eq TO_TEAM;
 
                 break;
 
             case rcfAll:
-                if ((TO_WORLD & radiofilter) || (radiofilter & TOFROM_FLIGHT) || (TOFROM_PACKAGE & radiofilter) || (TO_TEAM & radiofilter))
-                    retval[i] |= TO_WORLD;
+                if ((TO_WORLD bitand radiofilter) or (radiofilter bitand TOFROM_FLIGHT) or (TOFROM_PACKAGE bitand radiofilter) or (TO_TEAM bitand radiofilter))
+                    retval[i] or_eq TO_WORLD;
 
                 break;
 
             case rcfTower:
-                if (radiofilter & TOFROM_FLIGHT)
-                    retval[i] |= TOFROM_FLIGHT;
-                else if ((TOFROM_TOWER & radiofilter) && gNavigationSys)
+                if (radiofilter bitand TOFROM_FLIGHT)
+                    retval[i] or_eq TOFROM_FLIGHT;
+                else if ((TOFROM_TOWER bitand radiofilter) and gNavigationSys)
                 {
                     VU_ID ATCId;
                     gNavigationSys->GetAirbase(&ATCId);
 
-                    if (ATCId == from || ATCId == to)
-                        retval[i] |= TOFROM_TOWER;
+                    if (ATCId == from or ATCId == to)
+                        retval[i] or_eq TOFROM_TOWER;
                 }
 
             default:
@@ -397,7 +397,7 @@ char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID fro
         }
     }
 
-    char ret = (retval[0] | retval[1]);
+    char ret = (retval[0] bitor retval[1]);
 
     return ret;
 }
@@ -439,24 +439,24 @@ void VoiceFilter::PlayRadioMessage(
     if (
         // sfr: JB code commented out
         (
-            pEntity /*&& !F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass))*/ &&
+            pEntity /* and not F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass))*/ and 
             pEntity->IsEject()
-        ) ||
+        ) or
         (
-            VM /*&& !F4IsBadReadPtr(VM, sizeof(VoiceManager))*/ &&
+            VM /* and not F4IsBadReadPtr(VM, sizeof(VoiceManager))*/ and 
             VM->falconVoices[channel].exitChannel
-        ) ||
+        ) or
         killThread
     )
     {
         int player = 0, exit = 0;
 
-        if (pEntity && pEntity->IsEject())
+        if (pEntity and pEntity->IsEject())
         {
             player = 1;
         }
 
-        if (VM && VM->falconVoices[channel].exitChannel)
+        if (VM and VM->falconVoices[channel].exitChannel)
         {
             exit = 1;
         }
@@ -492,7 +492,7 @@ void VoiceFilter::PlayRadioMessage(
     // setup message structure with appropriate values
     message.message = msgid;
     message.status = SLOT_IN_USE;
-    ShiAssert(talker >= 0 && talker < fragfile.MaxVoices());
+    ShiAssert(talker >= 0 and talker < fragfile.MaxVoices());
 
     if (talker < 0)
     {
@@ -531,7 +531,7 @@ void VoiceFilter::PlayRadioMessage(
 
     //add pop at beginning
     //int pop = rand() % NUM_VOICES;
-    int pop = rand() % 12; //JPO - only 12 of these!
+    int pop = rand() % 12; //JPO - only 12 of these
     static const short RADIO_POP = 2142;
     *dfileNum = FragToFile(pop, RADIO_POP);
     dfileNum++;
@@ -630,7 +630,7 @@ void VoiceFilter::PlayRadioMessage(
                     eval++;
                 }
 
-                if (evalElement == -1 || evalElement == 32766)  // 32766 = airbase without ATC
+                if (evalElement == -1 or evalElement == 32766)  // 32766 = airbase without ATC
                 {
                     message.sizeofConv--;
                     commInfo ++;
@@ -643,7 +643,7 @@ void VoiceFilter::PlayRadioMessage(
         }
 
         // Retro 20Dec2003 start
-        if ((radioLabel) && (SimDriver.InSim()))
+        if ((radioLabel) and (SimDriver.InSim()))
         {
             // however there´s a prob as there are a few 'continues' up so maybe I´m missing some chunks here..
             char theChannel = CanUserHearThisMessage(radiofilter, from, to);
@@ -933,7 +933,7 @@ short VoiceFilter::EvaluateElement(short evalHdrNumber, short evalElement)
 
     //index into evaldata to get appropriate offset
     //  dEvalData = evalData + (evalHdrNumber * sizeof( EVAL_FILE_INFO ));
-    ShiAssert(evalHdrNumber >= 0 && evalHdrNumber < evalfile.MaxEvals());
+    ShiAssert(evalHdrNumber >= 0 and evalHdrNumber < evalfile.MaxEvals());
     eEvalData = evalfile.GetEval(evalHdrNumber);
     ShiAssert(FALSE == F4IsBadReadPtr(eEvalData, sizeof * eEvalData));
 
@@ -1118,7 +1118,7 @@ int VoiceFilter::GetBullseyeComm(int *mesgID, short *data)
     // commHdrInfo = (COMM_FILE_INFO *)dcommPtr;
     commHdrInfo = commfile.GetComm(*mesgID);
 
-    if (!commHdrInfo || F4IsBadReadPtr(commHdrInfo, sizeof(COMM_FILE_INFO))) // JB 010331 CTD
+    if ( not commHdrInfo or F4IsBadReadPtr(commHdrInfo, sizeof(COMM_FILE_INFO))) // JB 010331 CTD
         return FALSE;
 
     float dist = 0;
@@ -1155,9 +1155,9 @@ int VoiceFilter::GetBullseyeComm(int *mesgID, short *data)
                 dist = abs(Distance(xs1, ys1, xs2, ys2));
         }
 
-        if (((commHdrInfo->bullseye > -1) && PlayerOptions.BullseyeOn()
-             && dist * FT_TO_NM > 25 // JB 010121 if the dist is less than 25 miles don't use a bullseye call
-            ) || !SimDriver.InSim() ||
+        if (((commHdrInfo->bullseye > -1) and PlayerOptions.BullseyeOn()
+            and dist * FT_TO_NM > 25 // JB 010121 if the dist is less than 25 miles don't use a bullseye call
+            ) or not SimDriver.InSim() or
             (commHdrInfo->bullseye == *mesgID))
         {
             TheCampaign.GetBullseyeLocation(&x2, &y2);
@@ -1377,7 +1377,7 @@ void IncDecDataToPlay(int delta)
                     VToolMsgData.data[i] += delta;
                     fragNumber = voiceFilter->IndexElement(VToolMsgData.eval[i], VToolMsgData.data[i]);
 
-                    while (fragsPlayed[fragNumber + (VToolMsgData.talker * voiceFilter->fragfile.MaxFrags())] && (VToolMsgData.data[i] < VToolMsgData.maxs[i]))
+                    while (fragsPlayed[fragNumber + (VToolMsgData.talker * voiceFilter->fragfile.MaxFrags())] and (VToolMsgData.data[i] < VToolMsgData.maxs[i]))
                     {
                         evalLastFrag[VToolMsgData.eval[i] * voiceFilter->fragfile.MaxVoices() + VToolMsgData.talker] = VToolMsgData.data[i];
                         VToolMsgData.data[i] += delta;
@@ -1407,7 +1407,7 @@ void IncDecDataToPlay(int delta)
             }
         }
 
-        if (!wasInc)
+        if ( not wasInc)
             IncDecMsgToPlay(delta);
     }
     else if (VToolMsgData.mode == PLAY_FRAG)
@@ -1613,7 +1613,7 @@ void GetDialogValues(HWND hwnd)
     VToolMsgData.talker = atoi(buffer);
     GetWindowText(GetDlgItem(hwnd, IDC_MESSAGE), (LPTSTR) buffer, MAX_PATH);
 
-    if (atoi(buffer) != VToolMsgData.message)
+    if (atoi(buffer) not_eq VToolMsgData.message)
     {
         VToolMsgData.message = atoi(buffer);
         SetupNewMsg();

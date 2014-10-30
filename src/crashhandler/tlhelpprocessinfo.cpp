@@ -64,53 +64,53 @@ static BOOL InitTOOLHELP32(void)
     // Obtain the module handle of the kernel to retrieve addresses of
     //  the tool helper functions.
     hKernel = GetModuleHandleA("KERNEL32.DLL") ;
-    ASSERT(NULL != hKernel) ;
+    ASSERT(NULL not_eq hKernel) ;
 
-    if (NULL != hKernel)
+    if (NULL not_eq hKernel)
     {
         g_pCreateToolhelp32Snapshot =
             (CREATESNAPSHOT)GetProcAddress(hKernel ,
                                            "CreateToolhelp32Snapshot");
-        ASSERT(NULL != g_pCreateToolhelp32Snapshot) ;
+        ASSERT(NULL not_eq g_pCreateToolhelp32Snapshot) ;
 
         g_pModule32First = (MODULEWALK)GetProcAddress(hKernel ,
                            "Module32First");
-        ASSERT(NULL != g_pModule32First) ;
+        ASSERT(NULL not_eq g_pModule32First) ;
 
         g_pModule32Next = (MODULEWALK)GetProcAddress(hKernel        ,
                           "Module32Next");
-        ASSERT(NULL != g_pModule32Next) ;
+        ASSERT(NULL not_eq g_pModule32Next) ;
 
         g_pProcess32First =
             (PROCESSWALK)GetProcAddress(hKernel          ,
                                         "Process32First") ;
-        ASSERT(NULL != g_pProcess32First) ;
+        ASSERT(NULL not_eq g_pProcess32First) ;
 
         g_pProcess32Next =
             (PROCESSWALK)GetProcAddress(hKernel         ,
                                         "Process32Next") ;
-        ASSERT(NULL != g_pProcess32Next) ;
+        ASSERT(NULL not_eq g_pProcess32Next) ;
 
         g_pThread32First =
             (THREADWALK)GetProcAddress(hKernel         ,
                                        "Thread32First") ;
-        ASSERT(NULL != g_pThread32First) ;
+        ASSERT(NULL not_eq g_pThread32First) ;
 
         g_pThread32Next =
             (THREADWALK)GetProcAddress(hKernel        ,
                                        "Thread32Next") ;
-        ASSERT(NULL != g_pThread32Next) ;
+        ASSERT(NULL not_eq g_pThread32Next) ;
 
         // All addresses must be non-NULL to be successful.  If one of
         //  these addresses is NULL, one of the needed lists cannot be
         //  walked.
 
-        bRet =  g_pModule32First            &&
-                g_pModule32Next             &&
-                g_pProcess32First           &&
-                g_pProcess32Next            &&
-                g_pThread32First            &&
-                g_pThread32Next             &&
+        bRet =  g_pModule32First            and 
+                g_pModule32Next             and 
+                g_pProcess32First           and 
+                g_pProcess32Next            and 
+                g_pThread32First            and 
+                g_pThread32Next             and 
                 g_pCreateToolhelp32Snapshot    ;
     }
     else
@@ -124,7 +124,7 @@ static BOOL InitTOOLHELP32(void)
 
     if (TRUE == bRet)
     {
-        // All OK, Jumpmaster!
+        // All OK, Jumpmaster
         g_bInitialized = TRUE ;
     }
 
@@ -140,7 +140,7 @@ PARAMETERS      :
     dwPID        - The process ID to look into.
     uiCount      - The number of slots in the paModArray buffer.  If
                    this value is 0, then the return value will be TRUE
-                   and puiRealCount will hold the number of items
+                  and puiRealCount will hold the number of items
                    needed.
     paModArray   - The array to place the HMODULES into.  If this buffer
                    is too small to hold the result and uiCount is not
@@ -182,7 +182,7 @@ BOOL TLHELPGetLoadedModules(DWORD     dwPID        ,
     // Get the snapshot for the specified process.
     hModSnap = g_pCreateToolhelp32Snapshot(TH32CS_SNAPMODULE ,
                                            dwPID) ;
-    ASSERT(INVALID_HANDLE_VALUE != hModSnap) ;
+    ASSERT(INVALID_HANDLE_VALUE not_eq hModSnap) ;
 
     if (INVALID_HANDLE_VALUE == hModSnap)
     {
@@ -199,13 +199,13 @@ BOOL TLHELPGetLoadedModules(DWORD     dwPID        ,
         do
         {
             // If uiCount is not zero, copy values.
-            if (0 != uiCount)
+            if (0 not_eq uiCount)
             {
                 // If the passed in buffer is to small, set the flag.
                 //  This is so we match the functionality of the NT4
                 //  version of this function which will return the
                 //  correct total needed.
-                if ((TRUE == bBuffToSmall) ||
+                if ((TRUE == bBuffToSmall) or
                     (*puiRealCount == uiCount))
                 {
                     bBuffToSmall = TRUE ;
@@ -227,7 +227,7 @@ BOOL TLHELPGetLoadedModules(DWORD     dwPID        ,
     else
     {
         ASSERT(FALSE) ;
-        TRACE0("Failed to get first module!\n") ;
+        TRACE0("Failed to get first module\n") ;
         bRet = FALSE ;
     }
 
@@ -243,7 +243,7 @@ BOOL TLHELPGetLoadedModules(DWORD     dwPID        ,
         bRet = FALSE ;
     }
 
-    // All OK, Jumpmaster!
+    // All OK, Jumpmaster
     SetLastError(ERROR_SUCCESS) ;
     return (bRet) ;
 }

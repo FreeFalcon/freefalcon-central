@@ -41,13 +41,13 @@ void HeliBrain::CollisionCheck(void)
         // aircraft objects only
         classPtr = (Falcon4EntityClassType*)obj->BaseData()->EntityType();
 
-        if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_AIRPLANE ||
+        if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_AIRPLANE or
             classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_HELICOPTER)
         {
             timeToImpact = (localData->range - hRange) / localData->rangedot;
 
             // not a problem
-            if (timeToImpact < 0.0 || timeToImpact > reactTime)
+            if (timeToImpact < 0.0 or timeToImpact > reactTime)
             {
                 obj = obj->next;
                 continue;
@@ -119,7 +119,7 @@ void HeliBrain::CollisionCheck(void)
     }
 
     // exit mode when collision no longer probable
-    if (curMode == CollisionAvoidMode && !collision)
+    if (curMode == CollisionAvoidMode and not collision)
     {
     }
 }

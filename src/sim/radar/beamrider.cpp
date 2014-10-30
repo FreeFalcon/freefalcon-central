@@ -44,7 +44,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
     // Validate our radar platform
     SetGuidancePlatform(SimCampHandoff(radarPlatform, HANDOFF_RADAR));
 
-    if (!radarPlatform)
+    if ( not radarPlatform)
     {
         if (lockedTarget)
             SendTrackMsg(lockedTarget, Track_Unlock);
@@ -53,7 +53,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         return NULL;
     }
 
-    if (!lockedTarget)  //me123 allow reacusition
+    if ( not lockedTarget)  //me123 allow reacusition
     {
         // 2002-03-13 MODIFIED BY S.G. Fair enough but don't assume it's a battalion, planes can fire SARH but they always return FEC_RADAR_SEARCH_100. Removed all cast to BattalionClass and other unrequired class casting. Let the class hierarchy sort it out
         /*RadarClass* platformradar = NULL;
@@ -61,19 +61,19 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         {
          platformradar = (RadarClass*)FindSensor( (SimMoverClass*) radarPlatform, SensorClass::Radar );
          int mode;
-         if (((SimBaseClass*)radarPlatform)->IsSim() && ((BattalionClass*)((SimBaseClass*)radarPlatform)->GetCampaignObject()))
+         if (((SimBaseClass*)radarPlatform)->IsSim() and ((BattalionClass*)((SimBaseClass*)radarPlatform)->GetCampaignObject()))
          mode = ((BattalionClass*)((SimBaseClass*)radarPlatform)->GetCampaignObject())->GetRadarMode();
          else
          mode = ((SimBaseClass*)radarPlatform)->GetRadarMode();
 
-         if (mode == FEC_RADAR_GUIDE && platformradar)
+         if (mode == FEC_RADAR_GUIDE and platformradar)
          {
          SetSensorTarget( platformradar->CurrentTarget());
          CalcRelGeom ((MissileClass *)platform, lockedTarget, NULL, 1.0F);
          }
          else return NULL;
         }*/
-        if (radarPlatform->IsSim() && radarPlatform->OnGround())
+        if (radarPlatform->IsSim() and radarPlatform->OnGround())
         {
             RadarClass* radarSensor = (RadarClass*)FindSensor((SimMoverClass*) radarPlatform, SensorClass::Radar);
             int mode = FEC_RADAR_OFF;
@@ -81,7 +81,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
             if (((SimBaseClass*)radarPlatform)->GetCampaignObject())
                 mode = ((SimBaseClass*)radarPlatform)->GetCampaignObject()->GetRadarMode();
 
-            if (mode == FEC_RADAR_GUIDE && radarSensor)
+            if (mode == FEC_RADAR_GUIDE and radarSensor)
             {
                 SetSensorTarget(radarSensor->CurrentTarget());
                 CalcRelGeom((MissileClass *)platform, lockedTarget, NULL, 1.0F);
@@ -91,7 +91,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         }
     }
 
-    if (!lockedTarget)
+    if ( not lockedTarget)
     {
         return NULL;
     }
@@ -107,7 +107,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         {
             if (((MissileClass *)platform)->GetSeekerType() == SensorClass::RadarHoming)
             {
-                if (!((RadarDopplerClass *)radar)->IsSet(RadarDopplerClass::STTingTarget))
+                if ( not ((RadarDopplerClass *)radar)->IsSet(RadarDopplerClass::STTingTarget))
                 {
                     // That's it, he's off the hook...
                     if (lockedTarget)
@@ -123,9 +123,9 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
 
 #if(0)
         // Cobra - AI SARH support check
-        else if (lockedTarget && radarPlatform->IsAirplane())
+        else if (lockedTarget and radarPlatform->IsAirplane())
         {
-            if ((((MissileClass *)platform)->GetSeekerType() == SensorClass::RadarHoming) &&
+            if ((((MissileClass *)platform)->GetSeekerType() == SensorClass::RadarHoming) and 
                 (((MissileClass *)platform)->GetRuntime() > 0.0f))
             {
                 int stat = 0;
@@ -136,7 +136,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
                 //if (ret < 1.0f)
                 //{
                 // Ok so it's too low, but is it jamming? If so, follow anyway...
-                //if (ret == -1.0f || lockedTarget->BaseData()->IsSPJamming())
+                //if (ret == -1.0f or lockedTarget->BaseData()->IsSPJamming())
                 //}
                 //stat ++;
                 //}
@@ -146,16 +146,16 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
                 if (radarPlatform->IsExploding())
                     stat ++;
 
-                //if (!radarPlatform->IsEmitting())
+                //if ( not radarPlatform->IsEmitting())
                 //stat ++;
 
 
                 if (stat)
                 {
-                    //if (lockedTarget->BaseData()->IsSPJamming() ||
-                    // radarPlatform->IsDead() ||
-                    // radarPlatform->IsExploding() ||
-                    // !radarPlatform->IsEmitting())
+                    //if (lockedTarget->BaseData()->IsSPJamming() or
+                    // radarPlatform->IsDead() or
+                    // radarPlatform->IsExploding() or
+                    // not radarPlatform->IsEmitting())
                     //{
                     if (lockedTarget)
                     {
@@ -195,16 +195,16 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         }
         // end Cobra
         // Cobra - AI SARH ground support check
-        else if (!radarPlatform->IsAirplane() && radarPlatform->OnGround())
+        else if ( not radarPlatform->IsAirplane() and radarPlatform->OnGround())
         {
-            if ((((MissileClass *)platform)->GetSeekerType() == SensorClass::RadarHoming) &&
+            if ((((MissileClass *)platform)->GetSeekerType() == SensorClass::RadarHoming) and 
                 (((MissileClass *)platform)->GetRuntime() > 0.0f))
             {
                 //float ret = ((RadarClass *)platform)->ReturnStrength(lockedTarget);
                 //if (ret < 1.0f)
                 //{
                 // Ok so it's too low, but is it jamming? If so, follow anyway...
-                //if (ret == -1.0f || lockedTarget->BaseData()->IsSPJamming())
+                //if (ret == -1.0f or lockedTarget->BaseData()->IsSPJamming())
                 int stat = 0;
 
                 //if (lockedTarget->BaseData()->IsSPJamming())
@@ -215,15 +215,15 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
                 if (radarPlatform->IsExploding())
                     stat ++;
 
-                //if (!radarPlatform->IsEmitting())
+                //if ( not radarPlatform->IsEmitting())
                 //stat ++;
 
                 if (stat)
                 {
-                    //if (lockedTarget->BaseData()->IsSPJamming() ||
-                    // radarPlatform->IsDead() ||
-                    // radarPlatform->IsExploding() ||
-                    // !radarPlatform->IsEmitting())
+                    //if (lockedTarget->BaseData()->IsSPJamming() or
+                    // radarPlatform->IsDead() or
+                    // radarPlatform->IsExploding() or
+                    // not radarPlatform->IsEmitting())
                     //{
                     if (lockedTarget)
                     {
@@ -245,7 +245,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         // end Cobra
 #endif
 
-        if (!radar->CurrentTarget() || radar->CurrentTarget()->BaseData() != lockedTarget->BaseData())
+        if ( not radar->CurrentTarget() or radar->CurrentTarget()->BaseData() not_eq lockedTarget->BaseData())
         {
             if (lockedTarget)
                 SendTrackMsg(lockedTarget, Track_Unlock);
@@ -255,7 +255,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         }
 
         // ADDED BY S.G. TO MAKE SURE OUR RADAR IS STILL LOCKED ON THE TARGET AND NOT JAMMED (NEW: USES SensorTrack INSTEAD of noTrack)
-        if (radar->CurrentTarget()->localData->sensorState[SensorClass::Radar] != SensorClass::SensorTrack)
+        if (radar->CurrentTarget()->localData->sensorState[SensorClass::Radar] not_eq SensorClass::SensorTrack)
         {
             if (lockedTarget)
                 SendTrackMsg(lockedTarget, Track_Unlock);
@@ -288,7 +288,7 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         }
         else
         {
-            if (radarPlatform->GetRadarMode() != FEC_RADAR_GUIDE)
+            if (radarPlatform->GetRadarMode() not_eq FEC_RADAR_GUIDE)
             {
                 if (lockedTarget)
                     SendTrackMsg(lockedTarget, Track_Unlock);
@@ -305,13 +305,13 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
 
 
     // Send a launch message to our intended victim (if he isn't a countermeasure)
-    if (lockedTarget && !lockedTarget->BaseData()->IsWeapon())
+    if (lockedTarget and not lockedTarget->BaseData()->IsWeapon())
     {
         // 2000-08-31 ADDED BY S.G. SO ARH DOESN'T SEND A LAUNCH WHEN THE MISSILE IS LAUNCHED (IT'S COMMAND GUIDED, NOT A REAL BEAM RIDER)
-        if (((MissileClass *)platform)->GetSeekerType() != SensorClass::Radar)
+        if (((MissileClass *)platform)->GetSeekerType() not_eq SensorClass::Radar)
         {
             // END OF ADDED SECTION (EXCEPT FOR THE BLOCK INDENTATION)
-            if (lockedTarget->localData->lockmsgsend == Track_Lock && SimLibElapsedTime - lastTargetLockSend > RadarClass::TrackUpdateTime)
+            if (lockedTarget->localData->lockmsgsend == Track_Lock and SimLibElapsedTime - lastTargetLockSend > RadarClass::TrackUpdateTime)
             {
                 SendTrackMsg(lockedTarget, Track_Launch);
                 lastTargetLockSend = SimLibElapsedTime;
@@ -320,10 +320,10 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
     }
 
     //me123 hardcoded gimbal limit for semiactive/beamrider missiles for now
-    //there were no limit before !!
-    // it's on purpose that this is placed after the send trach msg !!
+    //there were no limit before 
+    // it's on purpose that this is placed after the send trach msg 
     //ME123 I GUES THIS WAS A BIT TOO HACKY...IT BRAKES MP..FLOODING TRACK LOCK/UNLOCK/LAUNCH MESSAGES
-    /* if (lockedTarget && lockedTarget->localData->ata > 60.0f*DTR)
+    /* if (lockedTarget and lockedTarget->localData->ata > 60.0f*DTR)
      {
      if (lockedTarget)
      SendTrackMsg( lockedTarget, Track_Unlock );
@@ -372,7 +372,7 @@ void BeamRiderClass::SetGuidancePlatform(FalconEntity* rdrPlat)
 
 void BeamRiderClass::SendTrackMsg(SimObjectType* tgtptr , unsigned int trackType, unsigned int hardpoint)
 {
-    if (!radarPlatform) return;
+    if ( not radarPlatform) return;
 
     VU_ID id = tgtptr->BaseData()->Id();
     static int count = 0;
@@ -381,15 +381,15 @@ void BeamRiderClass::SendTrackMsg(SimObjectType* tgtptr , unsigned int trackType
 
     if (tgtptr->localData->lockmsgsend == trackType) return;
 
-    if (tgtptr->localData->lockmsgsend == Track_None && trackType == 2) return;
+    if (tgtptr->localData->lockmsgsend == Track_None and trackType == 2) return;
 
-    if (!((SimBaseClass*)tgtptr->BaseData())->IsAirplane()) return;
+    if ( not ((SimBaseClass*)tgtptr->BaseData())->IsAirplane()) return;
 
     tgtptr->localData->lockmsgsend = trackType;
     // Create and fill in the message structure
     VuGameEntity *game = vuLocalSessionEntity->Game();
 
-    if (!game) return;
+    if ( not game) return;
 
     VuSessionsIterator Sessioniter(game);
     VuSessionEntity*   sess;
@@ -399,9 +399,9 @@ void BeamRiderClass::SendTrackMsg(SimObjectType* tgtptr , unsigned int trackType
     while (sess)
     {
         if (
-            (sess->CameraCount() > 0) &&
+            (sess->CameraCount() > 0) and 
             (
-                sess->GetCameraEntity(0)->Id() == platform->Id() ||
+                sess->GetCameraEntity(0)->Id() == platform->Id() or
                 sess->GetCameraEntity(0)->Id() == id
             )
         )
@@ -444,7 +444,7 @@ void BeamRiderClass::ConsiderDecoy(SimObjectType *target)
     int dummy = 0;
 
     // No counter measures deployed by campaign things
-    if (!target || !target->BaseData()->IsSim())
+    if ( not target or not target->BaseData()->IsSim())
     {
         return;
     }
@@ -455,7 +455,7 @@ void BeamRiderClass::ConsiderDecoy(SimObjectType *target)
     id = ((SimBaseClass*)target->BaseData())->NewestChaffID();
 
     // If we have a new chaff bundle to deal with
-    if (id != lastChaffID)
+    if (id not_eq lastChaffID)
     {
         // Stop here if there isn't a counter measure in play
         if (id == FalconNullId)
@@ -467,7 +467,7 @@ void BeamRiderClass::ConsiderDecoy(SimObjectType *target)
         // Try to find the counter measure entity in the database
         cm = (FalconEntity*)vuDatabase->Find(id);
 
-        if (!cm)
+        if ( not cm)
         {
             // We'll have to wait until next time
             // (probably because the create event hasn't been processed locally yet)

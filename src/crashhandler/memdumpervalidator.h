@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------
 John Robbins
-Microsoft Systems Journal, October 1997 - BugSlayer Column!
+Microsoft Systems Journal, October 1997 - BugSlayer Column
 ----------------------------------------------------------------------*/
 
 #ifndef _MEMDUMPERVALIDATOR_H
@@ -9,7 +9,7 @@ Microsoft Systems Journal, October 1997 - BugSlayer Column!
 // This file should not be included directly, include Bugslayer.h
 //  instead.
 #ifndef _BUGSLAYERUTIL_H
-#error "Include BugslayerUtil.h instead of this file directly!"
+#error "Include BugslayerUtil.h instead of this file directly"
 #endif  // _BUGSLAYERUTIL_H
 
 // Include the main header.
@@ -44,7 +44,7 @@ extern "C" {
     //  DVINFO structure below.
 #define CLIENT_BLOCK_VALUE(x) (_CLIENT_BLOCK|(x<<16))
     // A macro to pick out the subtype.
-#define CLIENT_BLOCK_SUBTYPE(x) ((x >> 16) & 0xFFFF)
+#define CLIENT_BLOCK_SUBTYPE(x) ((x >> 16) bitand 0xFFFF)
 
     ////////////////////////////////////////////////////////////////////////
     // The header used to initialize the dumper and validator for a specific

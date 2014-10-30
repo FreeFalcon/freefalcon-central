@@ -41,11 +41,11 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
     int fromIndex;
     short edata[10];
 
-    if (!self->IsAwake() || self->IsDead())
+    if ( not self->IsAwake() or self->IsDead())
         return;
 
-    //we can't follow orders about how to fly if we're on the ground still!
-    if (self->OnGround() || atcstatus >= lOnFinal)
+    //we can't follow orders about how to fly if we're on the ground still
+    if (self->OnGround() or atcstatus >= lOnFinal)
         return;
 
     wingMsg = (FalconWingmanMsg *)theEvent;
@@ -55,7 +55,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
     p_from = (AircraftClass*) vuDatabase->Find(wingMsg->dataBlock.from);
     fromIndex = p_flight->GetComponentIndex(p_from);
 
-    if (curMode == GunsJinkMode || curMode == MissileDefeatMode || curMode == DefensiveModes)
+    if (curMode == GunsJinkMode or curMode == MissileDefeatMode or curMode == DefensiveModes)
     {
 
         switch (command)
@@ -187,7 +187,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
                 edata[1] = 0;
                 AiMakeRadioResponse(p_from, rcFUELCRITICAL, edata);
 
-                if (!isWing)
+                if ( not isWing)
                     FlightMemberWantsFuel(SaidJoker);
 
                 break;
@@ -197,7 +197,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
                 edata[1] = 1;
                 AiMakeRadioResponse(p_from, rcFUELCRITICAL, edata);
 
-                if (!isWing)
+                if ( not isWing)
                     FlightMemberWantsFuel(SaidBingo);
 
                 break;
@@ -207,7 +207,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
                 edata[1] = 2;
                 AiMakeRadioResponse(p_from, rcFUELCRITICAL, edata);
 
-                if (!isWing)
+                if ( not isWing)
                     FlightMemberWantsFuel(SaidFumes);
 
                 break;
@@ -217,7 +217,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
                 edata[1] = 3;
                 AiMakeRadioResponse(p_from, rcFUELCRITICAL, edata);
 
-                if (!isWing)
+                if ( not isWing)
                     FlightMemberWantsFuel(SaidFlameout);
 
                 break;
@@ -260,7 +260,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
             case FalconWingmanMsg::WMPwideLT:
             case FalconWingmanMsg::WMPShortLT:
             case FalconWingmanMsg::WMPDefensive:
-                if (flightLead && ((AircraftClass *)flightLead)->DBrain())
+                if (flightLead and ((AircraftClass *)flightLead)->DBrain())
                     ((AircraftClass *)flightLead)->DBrain()->SetBvrCurrProfile(BvrLookup[command - FalconWingmanMsg::WMPlevel1a]);
 
                 fromIndex = self->GetCampaignObject()->GetComponentIndex(self);
@@ -485,7 +485,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
                 edata[1] = 0;
                 AiMakeRadioResponse(p_from, rcFUELCRITICAL, edata);
 
-                if (!isWing)
+                if ( not isWing)
                     FlightMemberWantsFuel(SaidJoker);
 
                 break;
@@ -495,7 +495,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
                 edata[1] = 1;
                 AiMakeRadioResponse(p_from, rcFUELCRITICAL, edata);
 
-                if (!isWing)
+                if ( not isWing)
                     FlightMemberWantsFuel(SaidBingo);
 
                 break;
@@ -505,7 +505,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
                 edata[1] = 2;
                 AiMakeRadioResponse(p_from, rcFUELCRITICAL, edata);
 
-                if (!isWing)
+                if ( not isWing)
                     FlightMemberWantsFuel(SaidFumes);
 
                 break;
@@ -515,7 +515,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
                 edata[1] = 3;
                 AiMakeRadioResponse(p_from, rcFUELCRITICAL, edata);
 
-                if (!isWing)
+                if ( not isWing)
                     FlightMemberWantsFuel(SaidFlameout);
 
                 break;
@@ -550,7 +550,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
             case FalconWingmanMsg::WMPwideLT:
             case FalconWingmanMsg::WMPShortLT:
             case FalconWingmanMsg::WMPDefensive:
-                if (flightLead && ((AircraftClass *)flightLead)->DBrain())
+                if (flightLead and ((AircraftClass *)flightLead)->DBrain())
                     ((AircraftClass *)flightLead)->DBrain()->SetBvrCurrProfile(BvrLookup[command - FalconWingmanMsg::WMPlevel1a]);
 
                 fromIndex = self->GetCampaignObject()->GetComponentIndex(self);

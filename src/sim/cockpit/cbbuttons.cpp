@@ -245,7 +245,7 @@ void CBEAuxWarnPwrB(void *, int)
 
         if (theRwr)
         {
-            theRwr->SetPower(!theRwr->IsOn());
+            theRwr->SetPower( not theRwr->IsOn());
         }
     }
 }
@@ -277,7 +277,7 @@ void CBExAutoPilot(void * pButton, int)
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ((playerAC == NULL) || !playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if ((playerAC == NULL) or not playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
         return;
     }
@@ -371,7 +371,7 @@ void CBEStoresJettison(void *, int)
 
     SimEmergencyJettison(0, KEY_DOWN, NULL);
 
-    if (playerAC->Sms != NULL && playerAC->Sms->DidEmergencyJettison())
+    if (playerAC->Sms not_eq NULL and playerAC->Sms->DidEmergencyJettison())
     {
         SimEmergencyJettison(0, 0, NULL);
     }
@@ -385,7 +385,7 @@ void CBExStoresJettison(void * pButton, int)
     // pCPButton->SetCurrentState(1);
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC == NULL || playerAC->Sms == NULL)
+    if (playerAC == NULL or playerAC->Sms == NULL)
     {
         return;
     }
@@ -1218,7 +1218,7 @@ void CBExICPPrimaryExclusive(void * pButton, int event)
 
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI original code
         if (OTWDriver.pCockpitManager->mpIcp->GetPrimaryExclusiveButton() == pButton)
@@ -1243,7 +1243,7 @@ void CBExICPSecondaryExclusive(void * pButton, int event)
 
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI original code
         if (OTWDriver.pCockpitManager->mpIcp->GetSecondaryExclusiveButton() == pButton)
@@ -1269,7 +1269,7 @@ void CBExICPTertiaryExclusive(void * pButton, int event)
 
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI original code
         if (OTWDriver.pCockpitManager->mpIcp->GetTertiaryExclusiveButton() == pButton)
@@ -1836,7 +1836,7 @@ void CBExExteriorLite(void * pButton, int)
         return;
     }
 
-    if (playerAC->af->IsSet(AirframeClass::HasComplexGear) && playerAC->GetSwitch(COMP_NAV_LIGHTS))
+    if (playerAC->af->IsSet(AirframeClass::HasComplexGear) and playerAC->GetSwitch(COMP_NAV_LIGHTS))
     {
         pCPButton->SetCurrentState(1);
     }
@@ -1936,10 +1936,10 @@ void CBExMasterArm(void * pButton, int)
 
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
 
-    // sfr: TODO this MUST go away!!!!
+    // sfr: TODO this MUST go away
     if (
-        !F4IsBadReadPtr(playerAC, sizeof(AircraftClass*)) &&
-        !F4IsBadReadPtr(playerAC->Sms, sizeof(SMSClass))
+ not F4IsBadReadPtr(playerAC, sizeof(AircraftClass*)) and 
+ not F4IsBadReadPtr(playerAC->Sms, sizeof(SMSClass))
     )  // JB 010326 CTD
     {
         switch (playerAC->Sms->MasterArm())
@@ -1965,7 +1965,7 @@ void CBExCatIII(void * pButton, int)
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ((playerAC == NULL) || (playerAC->af == NULL))
+    if ((playerAC == NULL) or (playerAC->af == NULL))
     {
         return;
     }
@@ -2865,14 +2865,14 @@ void CBExHookToggle(void * pButton, int)
     {
         pCPButton->SetCurrentState(1);
         //MI
-        //if(faultSys && playerAC->af->platform->IsF16())
+        //if(faultSys and playerAC->af->platform->IsF16())
         // faultSys->SetCaution(hook_fault);
     }
     else
     {
         pCPButton->SetCurrentState(0);
         //MI
-        //if(faultSys && faultSys->GetFault(hook_fault) && playerAC->af->platform->IsF16())
+        //if(faultSys and faultSys->GetFault(hook_fault) and playerAC->af->platform->IsF16())
         // faultSys->ClearFault(hook_fault);
     }
 }
@@ -3094,7 +3094,7 @@ void CBExInteriorLightSwitch(void * pButton, int event)
             break;
     }
 
-    // if (OTWDriver.pCockpitManager != NULL){
+    // if (OTWDriver.pCockpitManager not_eq NULL){
     // OTWDriver.pCockpitManager->UpdatePalette();
     // }
 
@@ -3135,7 +3135,7 @@ void CBExInstrumentLightSwitch(void * pButton, int event)
             break;
     }
 
-    // if (OTWDriver.pCockpitManager != NULL){
+    // if (OTWDriver.pCockpitManager not_eq NULL){
     // OTWDriver.pCockpitManager->UpdatePalette();
     // }
 }
@@ -3491,7 +3491,7 @@ void CBENwsToggle(void * pButton, int event)
         return;
     }
 
-    if (!playerAC->af->IsSet(AirframeClass::NoseSteerOn))
+    if ( not playerAC->af->IsSet(AirframeClass::NoseSteerOn))
     {
         playerAC->af->SetFlag(AirframeClass::NoseSteerOn);
     }
@@ -3554,7 +3554,7 @@ void CBExInhibitVMS(void * pButton, int event)
 
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
 
-    if (!playerAC->playBetty)
+    if ( not playerAC->playBetty)
     {
         pCPButton->SetCurrentState(1); // Betty Off
     }
@@ -3652,7 +3652,7 @@ void CBExGndJettEnable(void * pButton, int event)
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC == NULL || playerAC->Sms == NULL)
+    if (playerAC == NULL or playerAC->Sms == NULL)
     {
         return;
     }
@@ -3825,7 +3825,7 @@ void CBExIFFPower(void * pButton, int event)
 
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
 
-    if (g_bIFF || g_bMLU)
+    if (g_bIFF or g_bMLU)
     {
         if (playerAC->PowerSwitchOn(AircraftClass::IFFPower))
         {
@@ -4167,23 +4167,23 @@ void CBExTrimYaw(void * pButton, int event)
 
     if (state <= -50)
         pCPButton->SetCurrentState(1);
-    else if (state <= -40 && state > -50)
+    else if (state <= -40 and state > -50)
         pCPButton->SetCurrentState(2);
-    else if (state <= -30 && state > -40)
+    else if (state <= -30 and state > -40)
         pCPButton->SetCurrentState(3);
-    else if (state <= -20 && state > -30)
+    else if (state <= -20 and state > -30)
         pCPButton->SetCurrentState(4);
-    else if (state <= -10 && state > -20)
+    else if (state <= -10 and state > -20)
         pCPButton->SetCurrentState(5);
-    else if (state <= 9 && state > -10)
+    else if (state <= 9 and state > -10)
         pCPButton->SetCurrentState(6);
-    else if (state >= 10 && state < 20)
+    else if (state >= 10 and state < 20)
         pCPButton->SetCurrentState(7);
-    else if (state >= 20 && state < 30)
+    else if (state >= 20 and state < 30)
         pCPButton->SetCurrentState(8);
-    else if (state >= 30 && state < 40)
+    else if (state >= 30 and state < 40)
         pCPButton->SetCurrentState(9);
-    else if (state >= 40 && state < 50)
+    else if (state >= 40 and state < 50)
         pCPButton->SetCurrentState(10);
     else if (state >= 50)
         pCPButton->SetCurrentState(11);
@@ -4391,13 +4391,13 @@ void CBEFlap(void * pButton, int event)
     {
         AFIncFlap(0, KEY_DOWN, NULL);
         pCPButton->SetCurrentState(1);
-        //if (pCPButton != NULL){ pCPButton->IncrementState(); }
+        //if (pCPButton not_eq NULL){ pCPButton->IncrementState(); }
     }
     else
     {
         AFDecFlap(0, KEY_DOWN, NULL);
         pCPButton->SetCurrentState(2);
-        //if (pCPButton != NULL){ pCPButton->DecrementState(); }
+        //if (pCPButton not_eq NULL){ pCPButton->DecrementState(); }
     }
 }
 
@@ -4433,12 +4433,12 @@ void CBELef(void * pButton, int event)
     if (event == CP_MOUSE_BUTTON0)
     {
         AFIncLEF(0, KEY_DOWN, NULL);
-        //if (pCPButton != NULL){ pCPButton->IncrementState(); }
+        //if (pCPButton not_eq NULL){ pCPButton->IncrementState(); }
     }
     else
     {
         AFDecLEF(0, KEY_DOWN, NULL);
-        //if (pCPButton != NULL){ pCPButton->DecrementState(); }
+        //if (pCPButton not_eq NULL){ pCPButton->DecrementState(); }
     }
 }
 
@@ -4461,7 +4461,7 @@ void CBExDragChute(void * pButton, int event)
 
     CPButtonObject *pCPButton = (CPButtonObject*) pButton;
 
-    if (playerAC->af->dragChute != AirframeClass::DRAGC_STOWED)
+    if (playerAC->af->dragChute not_eq AirframeClass::DRAGC_STOWED)
     {
         pCPButton->SetCurrentState(1);
     }
@@ -4509,7 +4509,7 @@ void CBExComm1Vol(void * pButton, int event)
 {
     int pos = 0;
 
-    if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp)
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp)
     {
         pos = OTWDriver.pCockpitManager->mpIcp->Comm1Volume;
     }
@@ -4579,7 +4579,7 @@ void CBExComm2Vol(void * pButton, int event)
 {
     int pos = 0;
 
-    if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp)
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp)
         pos = OTWDriver.pCockpitManager->mpIcp->Comm2Volume;
 
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
@@ -4696,7 +4696,7 @@ void CBExSymWheel(void * pButton, int event)
             break;
 
         default:
-            // ShiWarning("No good state!");
+            // ShiWarning("No good state");
             break;
     }
 }

@@ -6,6 +6,7 @@
     This class provides 2D drawing functions for a Hercules monochrome
  display.
 \***************************************************************************/
+#include <cISO646>
 #include <conio.h>
 #include <math.h>
 #include "Mono2D.h"
@@ -148,7 +149,7 @@ void MonochromeDisplay::EndDraw(void)
         {
 
             // Copy only those bytes which have changed (since display is accross the slow ISA bus)
-            if (*((char *)(screen_buffer[page] + i)) != *((char *)(screen_buffer[1 - page] + i)))
+            if (*((char *)(screen_buffer[page] + i)) not_eq *((char *)(screen_buffer[1 - page] + i)))
             {
                 *((char *)(FRAME_BUFFER_ADDR + i)) = *((char *)(screen_buffer[page] + i));
             }
@@ -174,11 +175,11 @@ void MonochromeDisplay::Render2DPoint(float x, float y)
     x1 = FloatToInt32(x);
     y1 = FloatToInt32(y);
 
-    the_byte = 0x2000 * (y1 & 0x3) + 90 * (y1 >> 2) + (x1 >> 3);
-    the_bit  = 7 - (x1 & 0x7);
+    the_byte = 0x2000 * (y1 bitand 0x3) + 90 * (y1 >> 2) + (x1 >> 3);
+    the_bit  = 7 - (x1 bitand 0x7);
 
     currentValue   = (char *)(screen_buffer[page] + the_byte);
-    *currentValue |= (char)(1 << the_bit);
+    *currentValue or_eq (char)(1 << the_bit);
 }
 
 
@@ -192,11 +193,11 @@ void MonochromeDisplay::Render2DPoint(int x1, int y1)
     int the_bit;
     char *currentValue;
 
-    the_byte = 0x2000 * (y1 & 0x3) + 90 * (y1 >> 2) + (x1 >> 3);
-    the_bit  = 7 - (x1 & 0x7);
+    the_byte = 0x2000 * (y1 bitand 0x3) + 90 * (y1 >> 2) + (x1 >> 3);
+    the_bit  = 7 - (x1 bitand 0x7);
 
     currentValue   = (char *)(screen_buffer[page] + the_byte);
-    *currentValue |= (char)(1 << the_bit);
+    *currentValue or_eq (char)(1 << the_bit);
 }
 
 
@@ -234,7 +235,7 @@ void MonochromeDisplay::Render2DLine(float x0in, float y0in, float x1in, float y
     pixcount = 0;
 
     // Select which of four possible octants we're in (0, 1, 6, or 7)
-    if (dy >= 0 && dy <= dx)
+    if (dy >= 0 and dy <= dx)
     {
         d = 2 * dy - dx;
         ince = 2 * dy;
@@ -259,7 +260,7 @@ void MonochromeDisplay::Render2DLine(float x0in, float y0in, float x1in, float y
             pixcount ++;
         }
     }
-    else if (dy < 0 && -dy < dx)
+    else if (dy < 0 and -dy < dx)
     {
         d = -2 * dy - dx;
         ince = -2 * dy;
@@ -283,7 +284,7 @@ void MonochromeDisplay::Render2DLine(float x0in, float y0in, float x1in, float y
             pixcount ++;
         }
     }
-    else if (dx >= 0 && dy >= 0)
+    else if (dx >= 0 and dy >= 0)
     {
         d = 2 * dx - dy;
         ince = 2 * dx;

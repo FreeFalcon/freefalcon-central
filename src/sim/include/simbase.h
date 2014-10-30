@@ -1,6 +1,7 @@
 #ifndef _SIMBASE_H
 #define _SIMBASE_H
 
+#include <cISO646>
 #include "FalcLib/include/f4vu.h"
 #include "Falclib/include/FalcEnt.h"
 #include "geometry.h"
@@ -203,59 +204,59 @@ public:
     virtual void MakeRemote();
     virtual int OnGround()
     {
-        return (specialData.flags & ON_GROUND ? TRUE : FALSE);
+        return (specialData.flags bitand ON_GROUND ? TRUE : FALSE);
     }
     virtual int IsExploding()
     {
-        return (specialData.flags & OBJ_EXPLODING ? TRUE : FALSE);
+        return (specialData.flags bitand OBJ_EXPLODING ? TRUE : FALSE);
     }
     virtual int IsDead() const
     {
-        return (specialData.flags & OBJ_DEAD ? true : false);
+        return (specialData.flags bitand OBJ_DEAD ? true : false);
     }
     int IsDying() const
     {
-        return (specialData.flags & OBJ_DYING ? TRUE : FALSE);
+        return (specialData.flags bitand OBJ_DYING ? TRUE : FALSE);
     }
     int IsFiring() const
     {
-        return (specialData.flags & OBJ_FIRING_GUN ? TRUE : FALSE);
+        return (specialData.flags bitand OBJ_FIRING_GUN ? TRUE : FALSE);
     }
     int IsAwake() const
     {
-        return localFlags & OBJ_AWAKE;
+        return localFlags bitand OBJ_AWAKE;
     }
     int  IsSetFlag(int flag) const
     {
-        return ((specialData.flags & flag) ? TRUE : FALSE);
+        return ((specialData.flags bitand flag) ? TRUE : FALSE);
     }
     int  IsSetLocalFlag(int flag) const
     {
-        return ((localFlags & flag) ? TRUE : FALSE);
+        return ((localFlags bitand flag) ? TRUE : FALSE);
     }
     void SetLocalFlag(int flag)
     {
-        localFlags |= flag;
+        localFlags or_eq flag;
     }
     void UnSetLocalFlag(int flag)
     {
-        localFlags &= ~(flag);
+        localFlags and_eq compl (flag);
     }
     int  IsSetCampaignFlag(int flag) const
     {
-        return ((campaignFlags & flag) ? TRUE : FALSE);
+        return ((campaignFlags bitand flag) ? TRUE : FALSE);
     }
     void SetCampaignFlag(int flag)
     {
-        campaignFlags |= flag;
+        campaignFlags or_eq flag;
     }
     void UnSetCampaignFlag(int flag)
     {
-        campaignFlags &= ~(flag);
+        campaignFlags and_eq compl (flag);
     }
     int IsSetRemoveFlag() const
     {
-        return localFlags & REMOVE_NEXT_FRAME;
+        return localFlags bitand REMOVE_NEXT_FRAME;
     }
     void SetRemoveFlag();
     void SetRemoveSilentFlag();
@@ -275,7 +276,7 @@ public:
     }
 
     // Seems like this stuff (and its support "sepecial data") could move into vehicle or aircraft???
-    // LOCAL ONLY!
+    // LOCAL ONLY
     void SetChaffExpireTime(VU_TIME t)
     {
         ShiAssert(IsLocal());
@@ -401,7 +402,7 @@ public:
     {
         return lastShooter;
     };
-    void SetDying(int flag); // { if (flag) specialData.flags |= OBJ_DYING; else specialData.flags &= ~OBJ_DYING;};
+    void SetDying(int flag); // { if (flag) specialData.flags or_eq OBJ_DYING; else specialData.flags and_eq compl OBJ_DYING;};
     SimBaseSpecialData* SpecialData(void)
     {
         return &specialData;

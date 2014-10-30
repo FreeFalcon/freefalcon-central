@@ -30,8 +30,8 @@ enum JettisonMode // MLR 3/2/2004 - Jettison Mode
     JettisonNone    = 0,
     Emergency       = 1 << 1,
     SelectiveWeapon = 1 << 2,
-    SelectiveRack   = 1 << 3 | SelectiveWeapon,
-    SelectivePylon  = 1 << 4 | SelectiveRack,
+    SelectiveRack   = 1 << 3 bitor SelectiveWeapon,
+    SelectivePylon  = 1 << 4 bitor SelectiveRack,
     RippedOff       = 1 << 5
 };
 
@@ -139,15 +139,15 @@ public:
 
     void SetFlag(int newFlag)
     {
-        flags |= newFlag;
+        flags or_eq newFlag;
     };
     void ClearFlag(int newFlag)
     {
-        flags &= ~newFlag;
+        flags and_eq compl newFlag;
     };
     int  IsSet(int newFlag)
     {
-        return flags & newFlag;
+        return flags bitand newFlag;
     };
 
     float GetWeaponRangeFeet(int hardpoint);
@@ -166,7 +166,7 @@ public:
     MavSubModes MavSubMode;
     void ToggleMavPower(void)
     {
-        Powered = !Powered;
+        Powered = not Powered;
     };
     void StepMavSubMode(bool init = FALSE);
     bool JDAMPowered;//Cobra
@@ -184,7 +184,7 @@ public:
     }
     void ToggleHARMPower(void)
     {
-        HARMPowered = !HARMPowered;
+        HARMPowered = not HARMPowered;
     }
 
     int GetCurrentHardpoint(void)
@@ -304,11 +304,11 @@ public:
     void AGJettison(void);
     int  DidEmergencyJettison(void)
     {
-        return flags & EmergencyJettisonFlag;
+        return flags bitand EmergencyJettisonFlag;
     }
     int  DidJettisonedTank(void)
     {
-        return flags & TankJettisonFlag;    // 2002-02-20 ADDED BY S.G. Helper to know if our tanks where jettisoned
+        return flags bitand TankJettisonFlag;    // 2002-02-20 ADDED BY S.G. Helper to know if our tanks where jettisoned
     }
     void TankJettison(void);  // 2002-02-20 ADDED BY S.G. Will jettison the tanks (if empty) and set TankJettisonFlag
     int  WeaponStep(int symFlag = FALSE);
@@ -321,21 +321,21 @@ public:
     void SetUnlimitedGuns(int flag);
     int UnlimitedAmmo(void)
     {
-        return flags & UnlimitedAmmoFlag;
+        return flags bitand UnlimitedAmmoFlag;
     };
     void SetUnlimitedAmmo(int newFlag);
     int  HasHarm(void)
     {
-        return (flags & HTSOnBoard ? TRUE : FALSE);
+        return (flags bitand HTSOnBoard ? TRUE : FALSE);
     };
     int  HasLGB(void)
     {
-        return (flags & LGBOnBoard ? TRUE : FALSE);
+        return (flags bitand LGBOnBoard ? TRUE : FALSE);
     };
     int  HasTrainable(void);
     int  HasSPJammer(void)
     {
-        return (flags & SPJamOnBoard ? TRUE : FALSE);
+        return (flags bitand SPJamOnBoard ? TRUE : FALSE);
     };
     int  HasWeaponClass(WeaponClass classDesired);
     void FreeWeapons(void);
@@ -418,7 +418,7 @@ public:
     // AirGroundBomb Profile access
     void NextAGBProfile(void)
     {
-        curProfile = (curProfile + 1) & 1;
+        curProfile = (curProfile + 1) bitand 1;
     }
     void SetAGBProfile(int i)
     {

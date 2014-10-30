@@ -130,7 +130,7 @@ extern int asAgg;
 // For testing
 unsigned char SHOWSTATS;
 int NoInput = 1;
-int gMoveFlags = PATH_ENEMYOK | PATH_ROADOK;
+int gMoveFlags = PATH_ENEMYOK bitor PATH_ROADOK;
 int gMoveType = Tracked;
 int gMoveWho = 6;
 extern BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
@@ -171,10 +171,10 @@ void ReBltWnd(MapData md, HDC DC)
 {
     RECT r;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
@@ -190,10 +190,10 @@ void ShowWhere(MapData md, GridIndex x, GridIndex y, int color)
     PAINTSTRUCT ps;
     HDC DC;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     GetCellScreenRect(md, x, y, &r);
@@ -210,7 +210,7 @@ void ShowTime(CampaignTime t)
     RECT r;
     WORD nm, nh;
 
-    if (!hToolWnd)
+    if ( not hToolWnd)
         return;
 
     while (t > CampaignDay)
@@ -219,7 +219,7 @@ void ShowTime(CampaignTime t)
     nh = (WORD)(t / CampaignHours);
     nm = (WORD)((t - nh * CampaignHours) / CampaignMinutes);
 
-    if (nm != CampMinute)
+    if (nm not_eq CampMinute)
     {
         _setcolor(hToolDC, White);
         CampHour = nh;
@@ -238,10 +238,10 @@ void ShowLink(MapData md, Objective o, Objective n, int color)
     HDC DC;
     GridIndex x, y;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
@@ -262,10 +262,10 @@ void ShowWP(MapData md, GridIndex X, GridIndex Y, int color)
     PAINTSTRUCT ps;
     HDC DC;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     GetCellScreenRect(md, X, Y, &r);
@@ -282,10 +282,10 @@ void ShowWPLeg(MapData md, GridIndex x, GridIndex y, GridIndex X, GridIndex Y, i
     PAINTSTRUCT ps;
     HDC DC;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
@@ -307,10 +307,10 @@ void ShowPath(MapData md, GridIndex X, GridIndex Y, Path p, int color)
     int i, d, step;
     GridIndex x, y;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
@@ -349,10 +349,10 @@ void ShowObjectivePath(MapData md, Objective o, Path p, int color)
     int i, d;
     GridIndex x, y;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
@@ -385,10 +385,10 @@ void ShowPathHistory(MapData md, GridIndex X, GridIndex Y, Path p, int color)
     int i, d, step;
     GridIndex x, y;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
@@ -405,7 +405,7 @@ void ShowPathHistory(MapData md, GridIndex X, GridIndex Y, Path p, int color)
 
     d = p->GetPreviousDirection(i);
 
-    while (d != Here)
+    while (d not_eq Here)
     {
         x = X - dx[d] * step;
         y = Y - dy[d] * step;
@@ -425,10 +425,10 @@ void ShowRange(MapData md, GridIndex X, GridIndex Y, int range, int color)
     HDC DC;
     GridIndex x, y;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
@@ -498,7 +498,7 @@ void RedrawUnit(Unit u)
     HDC DC;
     MapData md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return;
 
     u->GetLocation(&x, &y);
@@ -512,11 +512,11 @@ void RedrawUnit(Unit u)
 // return 0 or 1 depending on if this unit is a type we want to display
 int DisplayOk(Unit u)
 {
-    if (ShowReal == 1 && u->Real() && !u->Inactive())
+    if (ShowReal == 1 and u->Real() and not u->Inactive())
         return 1;
-    else if (!ShowReal && u->Parent() && !u->Inactive())
+    else if ( not ShowReal and u->Parent() and not u->Inactive())
         return 1;
-    else if (ShowReal == 2 && u->Inactive())
+    else if (ShowReal == 2 and u->Inactive())
         return 1;
 
     return 0;
@@ -528,7 +528,7 @@ int DisplayOk(Unit u)
 
 void GetCellScreenRect(MapData md, GridIndex X, GridIndex Y, RECT *r)
 {
-    if (!md)
+    if ( not md)
         return;
 
     r->left = POSX(X);
@@ -546,13 +546,13 @@ void RedrawCell(MapData md, GridIndex X, GridIndex Y)
     HDC DC;
     short scale = 1;
 
-    if (!md)
+    if ( not md)
         md = MainMapData;
 
-    if (!MainMapData)
+    if ( not MainMapData)
         return; // Map's not open
 
-    if (X < md->FX || X > md->LX || Y < md->FY || Y > md->LY)
+    if (X < md->FX or X > md->LX or Y < md->FY or Y > md->LY)
         return;
 
     GetCellScreenRect(md, X, Y, &r);
@@ -568,7 +568,7 @@ void RedrawCell(MapData md, GridIndex X, GridIndex Y)
 
     if (ShowReal == 1)
         u = FindUnitByXY(AllRealList, X, Y, 0);
-    else if (!ShowReal)
+    else if ( not ShowReal)
     {
         u = FindUnitByXY(AllParentList, X, Y, 0);
         scale = 3;
@@ -639,7 +639,7 @@ void ShowSAMs(MapData md, HDC DC)
         else
             range = e->GetWeaponRange(LowAir);
 
-        if (range > 0 && (e->IsObjective() || (e->GetDomain() != DOMAIN_AIR && e->IsUnit() && !((Unit)e)->Moving())))
+        if (range > 0 and (e->IsObjective() or (e->GetDomain() not_eq DOMAIN_AIR and e->IsUnit() and not ((Unit)e)->Moving())))
         {
             e->GetLocation(&x, &y);
             DisplaySideRange(DC, e->GetOwner(), (short)(POSX(x) + (md->CellSize >> 1)), (short)(POSY(y) + (md->CellSize >> 1)), range * md->CellSize);
@@ -842,10 +842,10 @@ void FindBorders(MapData md)
     tx = md->CenX - (xsize / md->CellSize) / 2;
     ty = md->CenY + (ysize / md->CellSize) / 2;
 
-    if (tx - md->FX > 1 || md->FX - tx > 1)
+    if (tx - md->FX > 1 or md->FX - tx > 1)
         md->FX = tx;
 
-    if (ty - md->LY > 1 || md->LY - ty > 1)
+    if (ty - md->LY > 1 or md->LY - ty > 1)
         md->LY = ty;
 
     md->LX = md->FX + (xsize / md->CellSize) + 1;
@@ -933,7 +933,7 @@ F4PFList GetSquadsFlightList(VU_ID id)
 
     while (u)
     {
-        if (u->GetUnitParentID() == id && u->GetDomain() == DOMAIN_AIR && u->GetType() == TYPE_FLIGHT)
+        if (u->GetUnitParentID() == id and u->GetDomain() == DOMAIN_AIR and u->GetType() == TYPE_FLIGHT)
         {
             list->ForcedInsert(u);
         }
@@ -967,7 +967,7 @@ void MakeCampaignNew(void)
 
         while (u)
         {
-            if (u->IsFlight() || u->IsPackage())
+            if (u->IsFlight() or u->IsPackage())
             {
                 u->KillUnit();
                 u->Remove();
@@ -1096,7 +1096,7 @@ void MatchObjectiveTypes(void)
     locs = new GridIndex[(MaxTextureType + 1)*NumEntities * 2]; //DSP
     memset(locs, 0, sizeof(GridIndex) * (MaxTextureType + 1)*NumEntities * 2);
 
-    while (FromObjective != NULL)
+    while (FromObjective not_eq NULL)
     {
         if (FromObjective->ManualSet())
         {
@@ -1123,7 +1123,7 @@ void MatchObjectiveTypes(void)
             {
                 oc = (ObjClassDataType*) Falcon4ClassTable[j].dataPtr;
 
-                if (oc && strncmp(oc->Name, file, 3) == 0)
+                if (oc and strncmp(oc->Name, file, 3) == 0)
                 {
                     //record values for matches, so we can choose later
 
@@ -1137,8 +1137,8 @@ void MatchObjectiveTypes(void)
         }
 
 
-        //if (!set) // no matching texture
-        if (!matches)
+        //if ( not set) // no matching texture
+        if ( not matches)
         {
             FromObjective->SetObjectiveSType(1);
             index = GetClassID(DOMAIN_LAND, CLASS_OBJECTIVE, (uchar)type, 1, 0, 0, 0, 0);
@@ -1172,16 +1172,16 @@ void MatchObjectiveTypes(void)
             index = GetClassID(DOMAIN_LAND, CLASS_OBJECTIVE, (uchar)i, (uchar)j, 0, 0, 0, 0);
             oc = (ObjClassDataType*) Falcon4ClassTable[index].dataPtr;
 
-            for (k = 0; k < MaxTextureType + 1 && index; k++)
+            for (k = 0; k < MaxTextureType + 1 and index; k++)
             {
-                if (!counts[k * NumEntities + index])
+                if ( not counts[k * NumEntities + index])
                     continue;
 
                 file = GetTextureId(k);
 
                 if (counts[k * NumEntities + index] > 0)
                     sprintf(buffer, "%s - %s on texture %s: %d - x: %d  y: %d\n", ObjectiveStr[i], oc->Name, file, counts[k * NumEntities + index], locs[(k * NumEntities + index) * 2], locs[(k * NumEntities + index) * 2 + 1]);
-                else if (counts[k * NumEntities + index] < 0 && index)
+                else if (counts[k * NumEntities + index] < 0 and index)
                     sprintf(buffer, "%s - %s on texture %s: %d - NEEDED x: %d  y: %d\n", ObjectiveStr[i], oc->Name, file, -counts[k * NumEntities + index], locs[(k * NumEntities + index) * 2], locs[(k * NumEntities + index) * 2 + 1]); //DSP
 
                 fwrite(buffer, strlen(buffer), 1, fp);
@@ -1206,7 +1206,7 @@ void RecalculateBrigadePositions(void)
     VuListIterator myit(AllParentList);
     unit = (Unit) myit.GetFirst();
 
-    while (unit != NULL)
+    while (unit not_eq NULL)
     {
         SumX = SumY = count = 0;
 
@@ -1379,7 +1379,7 @@ void AssignBattToBrigDiv(void)
     VuListIterator myit(AllParentList);
     unit = (Unit) myit.GetFirst();
 
-    while (unit != NULL)
+    while (unit not_eq NULL)
     {
         if (unit->GetType() == TYPE_BRIGADE)
         {
@@ -1399,7 +1399,7 @@ void AssignBattToBrigDiv(void)
 
 void DeleteUnit(Unit unit)
 {
-    if (!unit)
+    if ( not unit)
         return;
 
     Unit E;
@@ -1420,7 +1420,7 @@ void DeleteUnit(Unit unit)
     // Remove parent, if we're the last element
     E = unit->GetUnitParent();
 
-    if (E && !E->GetFirstUnitElement())
+    if (E and not E->GetFirstUnitElement())
         vuDatabase->Remove(E);
 
     GlobUnit = NULL;
@@ -1473,7 +1473,7 @@ void StartObjectiveEdit(void)
     CampEnterCriticalSection();
     OneObjective = GetObjectiveByXY(X, Y);
 
-    if (!OneObjective)
+    if ( not OneObjective)
     {
         OneObjective = AddObjectiveToCampaign(X, Y);
     }
@@ -1605,7 +1605,7 @@ void SetRefresh(MapData md)
 {
     RECT r;
 
-    if (!md || !md->hMapWnd)
+    if ( not md or not md->hMapWnd)
         return;
 
     RefreshAll = TRUE;
@@ -1671,7 +1671,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
             NLX = (md->PMFX / md->CellSize) + 1;
             NLY = md->LY;
             r.left = md->PMFX - md->PFX;
-            side |= 1;
+            side or_eq 1;
         }
 
         if (md->PFY < md->PMFY)
@@ -1680,7 +1680,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
             NLY = (md->PMFY / md->CellSize) + 1;
             NLX = md->LX;
             r.bottom = ysize - (md->PMFY - md->PFY);
-            side |= 2;
+            side or_eq 2;
         }
 
         if (md->PLX > md->PMLX)
@@ -1689,7 +1689,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
             NFX = md->PMLX / md->CellSize;
             NLY = md->LY;
             r.right = md->PMLX - md->PFX;
-            side |= 4;
+            side or_eq 4;
         }
 
         if (md->PLY > md->PMLY)
@@ -1698,22 +1698,22 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
             NFY = md->PMLY / md->CellSize;
             NLX = md->LX;
             r.top = ysize - (md->PMLY - md->PFY);
-            side |= 8;
+            side or_eq 8;
         }
 
-        if ((side & 0x5) == 0x5)
+        if ((side bitand 0x5) == 0x5)
         {
             NFX = md->FX;
             NLX = md->LX;
         }
 
-        if ((side & 0xa) == 0xa)
+        if ((side bitand 0xa) == 0xa)
         {
             NFY = md->FY;
             NLY = md->LY;
         }
 
-        if ((side & 0xC) == 0xC || (side & 0x3) == 0x3)
+        if ((side bitand 0xC) == 0xC or (side bitand 0x3) == 0x3)
         {
             NFX = md->FX;
             NFY = md->FY;
@@ -1774,11 +1774,11 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
 
         OneObjective = GetFirstObjective(&oit);
 
-        while (OneObjective != NULL)
+        while (OneObjective not_eq NULL)
         {
             OneObjective->GetLocation(&x, &y);
 
-            if (x > md->LX || x < md->FX || y < md->FY || y > md->LY)
+            if (x > md->LX or x < md->FX or y < md->FY or y > md->LY)
                 ; // Out of window bounds
             else
             {
@@ -1813,7 +1813,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
 
         if (ShowReal == 1)
             uit = new VuListIterator(AllRealList);
-        else if (!ShowReal)
+        else if ( not ShowReal)
         {
             uit = new VuListIterator(AllParentList);
             scale = 3;
@@ -1829,12 +1829,12 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
         {
             OneUnit = GetFirstUnit(uit);
 
-            while (OneUnit != NULL)
+            while (OneUnit not_eq NULL)
             {
                 OneUnit->GetLocation(&x, &y);
                 DisplayUnit(DC, OneUnit, (short)(POSX(x + xd) + (md->CellSize >> 3)*scale), (short)(POSY(y + yd) + (md->CellSize >> 2)*scale), (short)((md->CellSize >> 1)*scale));
 
-                if (ShowPaths && OneUnit->IsBattalion())
+                if (ShowPaths and OneUnit->IsBattalion())
                 {
                     if (OneUnit->GetType() == TYPE_BATTALION)
                     {
@@ -1848,7 +1848,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
 
 #ifdef USE_FLANKS
 
-                if (ShowFlanks && OneUnit->GetDomain() == DOMAIN_LAND)
+                if (ShowFlanks and OneUnit->GetDomain() == DOMAIN_LAND)
                 {
                     GridIndex fx, fy;
                     OneUnit->GetLeftFlank(&fx, &fy);
@@ -1869,7 +1869,7 @@ void RefreshMap(MapData md, HDC DC, RECT *rect)
 
     if (md->ShowWPs)
     {
-        if (!WPUnit || WPUnit->IsDead())
+        if ( not WPUnit or WPUnit->IsDead())
             WPUnit = NULL;
         else
         {
@@ -1993,7 +1993,7 @@ LRESULT CALLBACK ToolWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 _outgtext(DC, time);
 
                 if (OneUnit)
-                    if (OneUnit->GetType() == TYPE_BATTALION && OneUnit->GetDomain() == DOMAIN_LAND)
+                    if (OneUnit->GetType() == TYPE_BATTALION and OneUnit->GetDomain() == DOMAIN_LAND)
                     {
                         if (((GroundUnitClass *)OneUnit)->GetDivision())
                         {
@@ -2011,7 +2011,7 @@ LRESULT CALLBACK ToolWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                             sprintf(time, "%s               ", OneUnit->GetName(buffer, 60, FALSE));
                         }
                     }
-                    else if (OneUnit->GetType() == TYPE_BRIGADE && OneUnit->GetDomain() == DOMAIN_LAND)
+                    else if (OneUnit->GetType() == TYPE_BRIGADE and OneUnit->GetDomain() == DOMAIN_LAND)
                     {
                         if (((GroundUnitClass *)OneUnit)->GetDivision())
                         {
@@ -2035,7 +2035,7 @@ LRESULT CALLBACK ToolWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
                 if (Linking)
                     sprintf(time, "Linking..");
-                else if (LinkTool && FromObjective)
+                else if (LinkTool and FromObjective)
                     sprintf(time, "Linking #%d    ", FromObjective->GetCampID());
                 else
                     sprintf(time, "                                 ");
@@ -2231,167 +2231,167 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
 
         case ID_VIEW_BOTH:
             Mode = EditMode = 0;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND | MF_CHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND | MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND bitor MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND bitor MF_UNCHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_COVER:
             Mode = EditMode = 1;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND | MF_CHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND | MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND bitor MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND bitor MF_UNCHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_RELIEF:
             Mode = EditMode = 2;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND | MF_CHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND | MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND bitor MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND bitor MF_UNCHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_CLOUDS:
             Mode = EditMode = 5;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND | MF_CHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND | MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND bitor MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND bitor MF_UNCHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_LEVELS:
             Mode = EditMode = 6;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND | MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND bitor MF_CHECKED);
             SetRefresh(MainMapData);
 
         case ID_VIEW_ROADS:
-            RoadsOn = !RoadsOn;
+            RoadsOn = not RoadsOn;
 
             if (RoadsOn)
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_ROADS, MF_BYCOMMAND | MF_CHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_ROADS, MF_BYCOMMAND bitor MF_CHECKED);
             else
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_ROADS, MF_BYCOMMAND | MF_UNCHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_ROADS, MF_BYCOMMAND bitor MF_UNCHECKED);
 
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_RAILS:
-            RailsOn = !RailsOn;
+            RailsOn = not RailsOn;
 
             if (RailsOn)
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RAILS, MF_BYCOMMAND | MF_CHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RAILS, MF_BYCOMMAND bitor MF_CHECKED);
             else
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RAILS, MF_BYCOMMAND | MF_UNCHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RAILS, MF_BYCOMMAND bitor MF_UNCHECKED);
 
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_EMITTERS:
-            // MainMapData->Emitters = !MainMapData->Emitters;
+            // MainMapData->Emitters = not MainMapData->Emitters;
             Mode = 11;
 
             if (MainMapData->Emitters)
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_EMITTERS, MF_BYCOMMAND | MF_CHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_EMITTERS, MF_BYCOMMAND bitor MF_CHECKED);
             else
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_EMITTERS, MF_BYCOMMAND | MF_UNCHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_EMITTERS, MF_BYCOMMAND bitor MF_UNCHECKED);
 
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_SAMS:
-            // MainMapData->SAMs = !MainMapData->SAMs;
+            // MainMapData->SAMs = not MainMapData->SAMs;
             Mode = 10;
 
             if (MainMapData->SAMs)
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_SAMS, MF_BYCOMMAND | MF_CHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_SAMS, MF_BYCOMMAND bitor MF_CHECKED);
             else
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_SAMS, MF_BYCOMMAND | MF_UNCHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_SAMS, MF_BYCOMMAND bitor MF_UNCHECKED);
 
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_PLAYERBUBBLE:
-            PBubble = !PBubble;
+            PBubble = not PBubble;
 
             if (PBubble)
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PLAYERBUBBLE, MF_BYCOMMAND | MF_CHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PLAYERBUBBLE, MF_BYCOMMAND bitor MF_CHECKED);
             else
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PLAYERBUBBLE, MF_BYCOMMAND | MF_UNCHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PLAYERBUBBLE, MF_BYCOMMAND bitor MF_UNCHECKED);
 
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_OBJPRIORITY:
             ObjMode = 1;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJOWNER, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJPRIORITY, MF_BYCOMMAND | MF_CHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJTYPE, MF_BYCOMMAND | MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJOWNER, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJPRIORITY, MF_BYCOMMAND bitor MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJTYPE, MF_BYCOMMAND bitor MF_UNCHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_OBJOWNER:
             ObjMode = 0;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJOWNER, MF_BYCOMMAND | MF_CHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJPRIORITY, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJTYPE, MF_BYCOMMAND | MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJOWNER, MF_BYCOMMAND bitor MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJPRIORITY, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJTYPE, MF_BYCOMMAND bitor MF_UNCHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_OBJTYPE:
             ObjMode = 2;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJOWNER, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJPRIORITY, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJTYPE, MF_BYCOMMAND | MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJOWNER, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJPRIORITY, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJTYPE, MF_BYCOMMAND bitor MF_CHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_REALUNITS:
             ShowReal = 1;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REALUNITS, MF_BYCOMMAND | MF_CHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PARENTUNITS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REINFORCEMENTS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_DIVISIONS, MF_BYCOMMAND | MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REALUNITS, MF_BYCOMMAND bitor MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PARENTUNITS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REINFORCEMENTS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_DIVISIONS, MF_BYCOMMAND bitor MF_UNCHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_PARENTUNITS:
             ShowReal = 0;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REALUNITS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PARENTUNITS, MF_BYCOMMAND | MF_CHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REINFORCEMENTS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_DIVISIONS, MF_BYCOMMAND | MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REALUNITS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PARENTUNITS, MF_BYCOMMAND bitor MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REINFORCEMENTS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_DIVISIONS, MF_BYCOMMAND bitor MF_UNCHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_DIVISIONS:
             ShowReal = 3;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REALUNITS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PARENTUNITS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REINFORCEMENTS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_DIVISIONS, MF_BYCOMMAND | MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REALUNITS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PARENTUNITS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REINFORCEMENTS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_DIVISIONS, MF_BYCOMMAND bitor MF_CHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_REINFORCEMENTS:
             ShowReal = 2;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REALUNITS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PARENTUNITS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REINFORCEMENTS, MF_BYCOMMAND | MF_CHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_DIVISIONS, MF_BYCOMMAND | MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REALUNITS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PARENTUNITS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REINFORCEMENTS, MF_BYCOMMAND bitor MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_DIVISIONS, MF_BYCOMMAND bitor MF_UNCHECKED);
             SetRefresh(MainMapData);
             break;
 
@@ -2400,13 +2400,13 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             {
                 ShowCodes = 0;
                 CleanupConverter();
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_TEXTURECODES, MF_BYCOMMAND | MF_UNCHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_TEXTURECODES, MF_BYCOMMAND bitor MF_UNCHECKED);
             }
             else
             {
                 ShowCodes = 1;
                 InitConverter(TheCampaign.TheaterName);
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_TEXTURECODES, MF_BYCOMMAND | MF_CHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_TEXTURECODES, MF_BYCOMMAND bitor MF_CHECKED);
             }
 
             break;
@@ -2427,7 +2427,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                 VuListIterator oit(AllObjList);
                 FromObjective = GetFirstObjective(&oit);
 
-                while (FromObjective != NULL)
+                while (FromObjective not_eq NULL)
                 {
                     if (FromObjective->GetType() == TYPE_PORT)
                     {
@@ -2435,9 +2435,9 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                         SetRoadCell(GetCell(ox, oy), 1);
 
                         // Attempt to find an adjacent land space
-                        for (i = 0, done = 0; i < 8 && !done; i += 2)
+                        for (i = 0, done = 0; i < 8 and not done; i += 2)
                         {
-                            if (GetCover(ox + dx[i], oy + dy[i]) != Water)
+                            if (GetCover(ox + dx[i], oy + dy[i]) not_eq Water)
                             {
                                 SetRoadCell(GetCell(ox + dx[i], oy + dy[i]), 1);
                                 done = 1;
@@ -2445,9 +2445,9 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                         }
 
                         // Attempt to find a diagonal if no luck
-                        for (i = 1; i < 8 && !done; i += 2)
+                        for (i = 1; i < 8 and not done; i += 2)
                         {
-                            if (GetCover(ox + dx[i], oy + dy[i]) != Water)
+                            if (GetCover(ox + dx[i], oy + dy[i]) not_eq Water)
                             {
                                 SetRoadCell(GetCell(ox + dx[i], oy + dy[i]), 1);
                                 SetRoadCell(GetCell(ox + dx[i - 1], oy + dy[i - 1]), 1);
@@ -2466,7 +2466,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             memset(CampSearch, 0, sizeof(uchar)*MAX_CAMP_ENTITIES);
 
             /* FromObjective = GetFirstObjective(&oit);*/
-            while (FromObjective != NULL)
+            while (FromObjective not_eq NULL)
             {
                 CampSearch[FromObjective->GetCampID()] = 1;
 
@@ -2474,7 +2474,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                 {
                     ToObjective = FromObjective->GetNeighbor(i);
 
-                    if (ToObjective && !CampSearch[ToObjective->GetCampID()])
+                    if (ToObjective and not CampSearch[ToObjective->GetCampID()])
                         LinkCampaignObjectives(&path, FromObjective, ToObjective);
                 }
 
@@ -2490,12 +2490,12 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
         break;
 
         case ID_TOOLS_SETOBJTYPES:
-            if (!ShowCodes)
+            if ( not ShowCodes)
             {
                 // Load the texture codes
                 ShowCodes = 1;
                 InitConverter(TheCampaign.TheaterName);
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_TEXTURECODES, MF_BYCOMMAND | MF_CHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_TEXTURECODES, MF_BYCOMMAND bitor MF_CHECKED);
             }
 
             MatchObjectiveTypes();
@@ -2518,7 +2518,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                 VuListIterator myit(InactiveList);
                 unit = (Unit) myit.GetFirst();
 
-                while (unit != NULL)
+                while (unit not_eq NULL)
                 {
                     unit->GetLocation(&x, &y);
                     obj = GetObjectiveByXY(x, y);
@@ -2611,7 +2611,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                 VuListIterator myit(AllUnitList);
                 unit = (Unit) myit.GetFirst();
 
-                while (unit != NULL)
+                while (unit not_eq NULL)
                 {
                     unit->GetLocation(&x, &y);
                     obj = GetObjectiveByXY(x, y);
@@ -2704,7 +2704,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
 
             fp = OpenCampFile("Objloc", "txt", "w");
 
-            if (!fp)
+            if ( not fp)
             {
                 CampLeaveCriticalSection();
                 break;
@@ -2720,7 +2720,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                 VuListIterator oit(AllObjList);
                 FromObjective = GetFirstObjective(&oit);
 
-                while (FromObjective != NULL)
+                while (FromObjective not_eq NULL)
                 {
                     if (FromObjective->GetType() == type)
                     {
@@ -2772,24 +2772,24 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                 while (FromObjective)
                 {
                     // SAM Site logic
-                    if (FromObjective->GetType() == TYPE_AIRBASE ||
-                        FromObjective->GetType() == TYPE_ARMYBASE ||
-                        FromObjective->GetType() == TYPE_PORT ||
-                        FromObjective->GetType() == TYPE_FACTORY ||
-                        FromObjective->GetType() == TYPE_NUCLEAR ||
-                        FromObjective->GetType() == TYPE_POWERPLANT ||
-                        FromObjective->GetType() == TYPE_REFINERY ||
-                        FromObjective->GetType() == TYPE_CHEMICAL ||
-                        FromObjective->GetType() == TYPE_COM_CONTROL ||
-                        FromObjective->GetType() == TYPE_DEPOT ||
-                        FromObjective->GetType() == TYPE_RADAR ||
+                    if (FromObjective->GetType() == TYPE_AIRBASE or
+                        FromObjective->GetType() == TYPE_ARMYBASE or
+                        FromObjective->GetType() == TYPE_PORT or
+                        FromObjective->GetType() == TYPE_FACTORY or
+                        FromObjective->GetType() == TYPE_NUCLEAR or
+                        FromObjective->GetType() == TYPE_POWERPLANT or
+                        FromObjective->GetType() == TYPE_REFINERY or
+                        FromObjective->GetType() == TYPE_CHEMICAL or
+                        FromObjective->GetType() == TYPE_COM_CONTROL or
+                        FromObjective->GetType() == TYPE_DEPOT or
+                        FromObjective->GetType() == TYPE_RADAR or
                         FromObjective->GetType() == TYPE_SAM_SITE)
                         FromObjective->SetSamSite(1);
                     else
                         FromObjective->SetSamSite(0);
 
                     // HART Site logic
-                    if (FromObjective->GetType() == TYPE_HARTS ||
+                    if (FromObjective->GetType() == TYPE_HARTS or
                         FromObjective->GetType() == TYPE_HILL_TOP)
                         FromObjective->SetArtillerySite(1);
                     else
@@ -2802,7 +2802,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                         FromObjective->SetCommandoSite(0);
 
                     // Radar logic
-                    if (FromObjective->GetType() == TYPE_AIRBASE ||
+                    if (FromObjective->GetType() == TYPE_AIRBASE or
                         FromObjective->GetType() == TYPE_RADAR)
                         FromObjective->SetRadarSite(1);
                     else
@@ -2845,7 +2845,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                 {
                     role = u->GetUnitNormalRole();
 
-                    if (role == GRO_FIRESUPPORT || role == GRO_AIRDEFENSE)
+                    if (role == GRO_FIRESUPPORT or role == GRO_AIRDEFENSE)
                     {
                         u->GetLocation(&x, &y);
                         o = FindNearestObjective(x, y, NULL);
@@ -2875,7 +2875,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
 
                 while (o)
                 {
-                    if (o->SamSite() || o->RadarSite() || o->GetElectronicDetectionRange(LowAir) > 0)
+                    if (o->SamSite() or o->RadarSite() or o->GetElectronicDetectionRange(LowAir) > 0)
                     {
                         // This place needs arc data
                         ox = o->XPos();
@@ -2958,7 +2958,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
         }
 
         case ID_PB_CENTERONPLAYERBUBBLE:
-            if (PBubble && FalconLocalSession->GetPlayerEntity())
+            if (PBubble and FalconLocalSession->GetPlayerEntity())
             {
                 TheCampaign.GetPlayerLocation(&MainMapData->CenX, &MainMapData->CenY);
                 SetRefresh(MainMapData);
@@ -3006,7 +3006,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             ResizeCursor();
 
             // set up it's menu bar
-            EnableMenuItem(GetMenu(hMainWnd), ID_FILE_MYSAVE, MF_BYCOMMAND | MF_DISABLED);
+            EnableMenuItem(GetMenu(hMainWnd), ID_FILE_MYSAVE, MF_BYCOMMAND bitor MF_DISABLED);
 
             if (hMainMenu = GetSubMenu(GetMenu(hMainWnd), 0))
                 DrawMenuBar(hMainWnd);
@@ -3069,7 +3069,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
                     CenX = Map_Max_X;
             }
 
-            if (ReBlt && nScrollCode != 8)
+            if (ReBlt and nScrollCode not_eq 8)
             {
                 MainMapData->CenX = CenX;
                 MainMapData->CenY = CenY;
@@ -3131,7 +3131,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
                     CenY = 0;
             }
 
-            if (ReBlt && nScrollCode != 8)
+            if (ReBlt and nScrollCode not_eq 8)
             {
                 MainMapData->CenX = CenX;
                 MainMapData->CenY = CenY;
@@ -3151,7 +3151,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 
             fwKeys = wParam;         // key flags
             /*
-             if (fwKeys == MK_LBUTTON && Drawing)
+             if (fwKeys == MK_LBUTTON and Drawing)
              {
              xPos = LOWORD(lParam);
              yPos = HIWORD(lParam);
@@ -3166,7 +3166,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             CurX = (WORD)(xPos + MainMapData->PFX) / MainMapData->CellSize; // Get grid location in Campaign terms
             CurY = (MainMapData->PLY - 1 - yPos) / MainMapData->CellSize;
 
-            if (fwKeys == MK_LBUTTON && Drawing)
+            if (fwKeys == MK_LBUTTON and Drawing)
                 ChangeCell(CurX, CurY);
 
             coffx = xPos % CellSize; // Find our offset, if any
@@ -3186,7 +3186,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             else if (ShowReal == 2)
             {
                 OneUnit = FindUnitByXY(InactiveList, CurX, CurY, 0);
-                /* if (OneUnit && !OneUnit->Real())
+                /* if (OneUnit and not OneUnit->Real())
                  {
                  int foundone=0;
                  GridIndex x,y;
@@ -3195,16 +3195,16 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 
                  // Next unit in stack.
                  e = (Unit) myit.GetFirst();
-                 while (e && e != OneUnit)
+                 while (e and e not_eq OneUnit)
                  e = GetNextUnit(&myit); // Get to current location in list
                  // e should be OneUnit or be null here
                  if (e)
                  {
                  e = GetNextUnit(&myit);
-                 while (e && !foundone)
+                 while (e and not foundone)
                  {
                  e->GetLocation(&x,&y);
-                 if (x==CurX && y==CurY && e != OneUnit)
+                 if (x==CurX and y==CurY and e not_eq OneUnit)
                  foundone = 1;
                  else
                  e = GetNextUnit(&myit);
@@ -3242,10 +3242,10 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             if (C == 16)
                 shifted = TRUE;
 
-            //if(isalpha(C) && shifted)
+            //if(isalpha(C) and shifted)
             //C += 0x20;
 
-            if (isalpha(C) && !(GetKeyState(VK_SHIFT) & 0x80))
+            if (isalpha(C) and not (GetKeyState(VK_SHIFT) bitand 0x80))
                 C += 0x20;
 
             ProcessCommand(C);
@@ -3282,7 +3282,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             ReBlt = TRUE;
             GetClientRect(hMainWnd, &r);
 
-            if (nWidth % 16 != 0)
+            if (nWidth % 16 not_eq 0)
             {
                 trunc = 1 + nWidth / 16;
                 r.right = 16 * trunc;
@@ -3292,7 +3292,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
                     r.right = 304;
             }
 
-            if (nHeight % 16 != 0)
+            if (nHeight % 16 not_eq 0)
             {
                 if (r.right < 304)
                     r.right = 304;
@@ -3305,11 +3305,11 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             if (resize)
             {
                 // Note: This should work, but currently doesnt. MSVC++ bug?
-                // AdjustWindowRect(&r, WS_OVERLAPPEDWINDOW |  WS_HSCROLL | WS_VSCROLL, TRUE);
+                // AdjustWindowRect(&r, WS_OVERLAPPEDWINDOW bitor  WS_HSCROLL bitor WS_VSCROLL, TRUE);
                 AdjustWindowRect(&r, WS_OVERLAPPEDWINDOW, TRUE);
                 r.right += GetSystemMetrics(SM_CXVSCROLL);
                 r.bottom += GetSystemMetrics(SM_CYHSCROLL);
-                SetWindowPos(hMainWnd, HWND_TOP, 0, 0, r.right - r.left, r.bottom - r.top, SWP_NOMOVE | SWP_NOZORDER);
+                SetWindowPos(hMainWnd, HWND_TOP, 0, 0, r.right - r.left, r.bottom - r.top, SWP_NOMOVE bitor SWP_NOZORDER);
                 PostMessage(hMainWnd, WM_PAINT, 0, 0);
             }
             else
@@ -3343,7 +3343,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 
             // if (fwKeys=MK_SHIFT)
             // ;
-            if (MainMapData->ShowWPs && WPUnit)
+            if (MainMapData->ShowWPs and WPUnit)
             {
                 WayPoint w;
                 GridIndex x, y;
@@ -3354,7 +3354,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
                 {
                     w->GetWPLocation(&x, &y);
 
-                    if (x == CurX && y == CurY)
+                    if (x == CurX and y == CurY)
                     {
                         GlobWP = w;
                         WPDrag = TRUE;
@@ -3540,7 +3540,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'b':
-            SHOWSTATS = !SHOWSTATS;
+            SHOWSTATS = not SHOWSTATS;
             break;
 
         case 'B':
@@ -3570,7 +3570,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'd':
-            gDumping = ~gDumping;
+            gDumping = compl gDumping;
             break;
 
         case 'D':
@@ -3583,9 +3583,9 @@ void ProcessCommand(int Key)
             break;
 
         case 'E':
-            StateEdit = !StateEdit;
+            StateEdit = not StateEdit;
 
-            if (ThisTeam == 0 || !StateToEdit)
+            if (ThisTeam == 0 or not StateToEdit)
                 StateEdit = FALSE;
 
             SetRefresh(MainMapData);
@@ -3642,7 +3642,7 @@ void ProcessCommand(int Key)
         case 'l':
             if (OneObjective)
             {
-                if (!Linking)
+                if ( not Linking)
                 {
                     FromObjective = OneObjective;
                     Linking = TRUE;
@@ -3654,15 +3654,15 @@ void ProcessCommand(int Key)
                     ShowLinkCosts(FromObjective, ToObjective);
 
                     // CampEnterCriticalSection();
-                    if (!UnLinkCampaignObjectives(FromObjective, ToObjective))
+                    if ( not UnLinkCampaignObjectives(FromObjective, ToObjective))
                     {
                         PathClass path;
                         i = LinkCampaignObjectives(&path, FromObjective, ToObjective);
 
                         if (i < 1)
-                            MessageBox(NULL, "No valid path found!", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+                            MessageBox(NULL, "No valid path found", "Error", MB_OK bitor MB_ICONSTOP bitor MB_SETFOREGROUND);
 
-                        if (MainMapData->ShowLinks && i > 0)
+                        if (MainMapData->ShowLinks and i > 0)
                         {
                             RECT r;
                             PAINTSTRUCT ps;
@@ -3702,7 +3702,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'L':
-            MainMapData->ShowLinks = !MainMapData->ShowLinks;
+            MainMapData->ShowLinks = not MainMapData->ShowLinks;
             SetRefresh(MainMapData);
             break;
 
@@ -3721,7 +3721,7 @@ void ProcessCommand(int Key)
                 OneObjective = FindNearestObjective(X, Y, NULL);
                 OneObjective->GetLocation(&x, &y);
 
-                if (x == X && y == Y)
+                if (x == X and y == Y)
                 {
                     RedrawCell(MainMapData, X, Y);
                 }
@@ -3743,13 +3743,13 @@ void ProcessCommand(int Key)
             break;
 
         case 'O':
-            MainMapData->ShowObjectives = !MainMapData->ShowObjectives;
+            MainMapData->ShowObjectives = not MainMapData->ShowObjectives;
             RebuildParentsList();
             SetRefresh(MainMapData);
             break;
 
         case 'p':
-            if (!FindPath)
+            if ( not FindPath)
             {
                 Movx = X;
                 Movy = Y;
@@ -3771,7 +3771,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'P':
-            if (!FindPath)
+            if ( not FindPath)
             {
                 if (OneObjective)
                 {
@@ -3810,8 +3810,8 @@ void ProcessCommand(int Key)
             break;
 
         case 'R':
-            RoadsOn = !RoadsOn;
-            RailsOn = !RailsOn;
+            RoadsOn = not RoadsOn;
+            RailsOn = not RailsOn;
             SetRefresh(MainMapData);
             break;
 
@@ -3820,7 +3820,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'S':
-            ShowSearch = !ShowSearch;
+            ShowSearch = not ShowSearch;
             break;
 
         case 't':
@@ -3870,7 +3870,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'U':
-            MainMapData->ShowUnits = !MainMapData->ShowUnits;
+            MainMapData->ShowUnits = not MainMapData->ShowUnits;
             SetRefresh(MainMapData);
             break;
 
@@ -3896,11 +3896,11 @@ void ProcessCommand(int Key)
 
                 w = WPUnit->GetFirstUnitWP();
 
-                while (w && !gotone)
+                while (w and not gotone)
                 {
                     w->GetWPLocation(&x, &y);
 
-                    if (x == X && y == Y)
+                    if (x == X and y == Y)
                     {
                         GlobWP = w;
                         DialogBox(hInst, MAKEINTRESOURCE(IDD_WPDIALOG), hMainWnd, (DLGPROC)EditWayPoint);
@@ -3910,11 +3910,11 @@ void ProcessCommand(int Key)
                     w = w->GetNextWP();
                 }
 
-                if (!gotone)
+                if ( not gotone)
                 {
                     w = WPUnit->GetFirstUnitWP();
 
-                    if (!w)
+                    if ( not w)
                     {
                         // WPUnit->AddCurrentWP (X,Y,0,0,0.0F,0,WP_NOTHING);
                         w = WPUnit->GetFirstUnitWP();
@@ -3938,7 +3938,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'W':
-            if (WPUnit && !MainMapData->ShowWPs)
+            if (WPUnit and not MainMapData->ShowWPs)
                 MainMapData->ShowWPs = TRUE;
             else
                 MainMapData->ShowWPs = FALSE;
@@ -4077,7 +4077,7 @@ void CampMain(HINSTANCE hInstance, int nCmdShow)
     hCurPoint = LoadCursor(NULL, IDC_ARROW);
 
     // Set up the main window
-    mainwc.style = CS_HREDRAW | CS_VREDRAW;
+    mainwc.style = CS_HREDRAW bitor CS_VREDRAW;
     mainwc.lpfnWndProc = (WNDPROC)CampaignWndProc; // The client window procedure.
     mainwc.cbClsExtra = 0;                     // No room reserved for extra data.
     mainwc.cbWndExtra = sizeof(DWORD);
@@ -4092,13 +4092,13 @@ void CampMain(HINSTANCE hInstance, int nCmdShow)
     rect.right = 320;
     rect.bottom = 256;
     // Note: This should work, but currently doesnt. MSVC++ bug?
-    // AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW |  WS_HSCROLL | WS_VSCROLL, TRUE);
+    // AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW bitor  WS_HSCROLL bitor WS_VSCROLL, TRUE);
     AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, TRUE);
     rect.right += GetSystemMetrics(SM_CXVSCROLL);
     rect.bottom += GetSystemMetrics(SM_CYHSCROLL);
     hMainWnd = CreateWindow("CampTool",
                             "Campaign Tool",
-                            WS_OVERLAPPEDWINDOW |  WS_HSCROLL | WS_VSCROLL, // | WS_MAXIMIZE,
+                            WS_OVERLAPPEDWINDOW bitor  WS_HSCROLL bitor WS_VSCROLL, // bitor WS_MAXIMIZE,
                             CW_USEDEFAULT, //  WS_CLIPCHILDREN |
                             CW_USEDEFAULT,
                             rect.right - rect.left, /* init. x size */
@@ -4109,7 +4109,7 @@ void CampMain(HINSTANCE hInstance, int nCmdShow)
                             NULL);
 
     // set up data associated with this window
-    SetWindowPos(hMainWnd, HWND_TOP, 600, 400, 650, 600, SWP_NOSIZE | SWP_NOZORDER);
+    SetWindowPos(hMainWnd, HWND_TOP, 600, 400, 650, 600, SWP_NOSIZE bitor SWP_NOZORDER);
     ShowWindow(hMainWnd, SW_SHOW);
     UpdateWindow(hMainWnd);
     RefreshCampMap();
@@ -4120,7 +4120,7 @@ void CampaignWindow(HINSTANCE hInstance, int nCmdShow)
     WNDCLASS  toolwc;
 
     // Set up the time/location window
-    toolwc.style = CS_HREDRAW | CS_VREDRAW;
+    toolwc.style = CS_HREDRAW bitor CS_VREDRAW;
     toolwc.lpfnWndProc = (WNDPROC)ToolWndProc; // The client window procedure.
     toolwc.cbClsExtra = 0;                     // No room reserved for extra data.
     toolwc.cbWndExtra = sizeof(DWORD);
@@ -4144,7 +4144,7 @@ void CampaignWindow(HINSTANCE hInstance, int nCmdShow)
                             NULL);
 
     // set up data associated with this window
-    SetWindowPos(hToolWnd, HWND_TOP, 10, 10, 10, 10, SWP_NOSIZE | SWP_NOZORDER);
+    SetWindowPos(hToolWnd, HWND_TOP, 10, 10, 10, 10, SWP_NOSIZE bitor SWP_NOZORDER);
     ShowWindow(hToolWnd, SW_SHOW);
     UpdateWindow(hToolWnd);
 }

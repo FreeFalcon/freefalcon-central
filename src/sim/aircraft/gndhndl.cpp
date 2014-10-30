@@ -41,7 +41,7 @@ void AircraftClass::OnGroundInit(SimInitDataClass* initData)
 
     // set lights and gear
     SetAcStatusBits(
-        ACSTATUS_EXT_LIGHTS | ACSTATUS_GEAR_DOWN | ACSTATUS_EXT_NAVLIGHTS | ACSTATUS_EXT_NAVLIGHTSFLASH
+        ACSTATUS_EXT_LIGHTS bitor ACSTATUS_GEAR_DOWN bitor ACSTATUS_EXT_NAVLIGHTS bitor ACSTATUS_EXT_NAVLIGHTSFLASH
     );
 
     //curGroundPt = initData->ptIndex - 1;
@@ -58,11 +58,11 @@ void AircraftClass::OnGroundInit(SimInitDataClass* initData)
     ent = ((Flight)(initData->campBase))->GetUnitAirbase();
 
     // check to see if our entity airbase is really a task force
-    if ((ent) && (ent->IsTaskForce()))
+    if ((ent) and (ent->IsTaskForce()))
     {
         // try and get the carrier's position, otherwise just use the
         // task force position
-        if (!ent->IsAggregate() && ent->GetComponents() && (carrier = ent->GetComponentLead()) != NULL)
+        if ( not ent->IsAggregate() and ent->GetComponents() and (carrier = ent->GetComponentLead()) not_eq NULL)
         {
             psi = carrier->Yaw();
             af->initialX = nextX = af->x = initData->x = carrier->XPos();
@@ -117,7 +117,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
     float gearAbsorption;
     Tpoint pos, vec;
 
-    FeatureCollision(af->groundZ); // JPO force a check for onFlatFeature now!
+    FeatureCollision(af->groundZ); // JPO force a check for onFlatFeature now
     // Check for landing
     MonoPrint("LandingCheck onFlatFeature %s\n", onFlatFeature == TRUE ? "TRUE" : "FALSE");
 
@@ -134,19 +134,19 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
     if (IsSetFalcFlag(FEC_INVULNERABLE))
         sinkRate *= 2.0F;
 
-    if (groundType == COVERAGE_WATER ||
-        groundType == COVERAGE_RIVER ||
-        (!onFlatFeature &&
-         !af->IsSet(AirframeClass::OverRunway) &&
-         (groundType == COVERAGE_THINFOREST ||
-          groundType == COVERAGE_THICKFOREST ||
-          groundType == COVERAGE_ROCKY ||
+    if (groundType == COVERAGE_WATER or
+        groundType == COVERAGE_RIVER or
+        ( not onFlatFeature and 
+ not af->IsSet(AirframeClass::OverRunway) and 
+         (groundType == COVERAGE_THINFOREST or
+          groundType == COVERAGE_THICKFOREST or
+          groundType == COVERAGE_ROCKY or
           groundType == COVERAGE_URBAN)))
     {
         message = CreateGroundCollisionMessage(this, FloatToInt32(maxStrength));
 
         //we are not allowed to come to a stop on the water
-        if (af->vt < 0.5F && (groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER))
+        if (af->vt < 0.5F and (groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
             message->dataBlock.damageStrength = maxStrength;
         else if ((float)rand() / (float)RAND_MAX < 0.01F)
         {
@@ -157,18 +157,18 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
         }
         else
         {
-            if (groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER)
+            if (groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER)
                 message->dataBlock.damageStrength = min(1000.0F, af->vt * impactAngle * 0.1F +
                                                         af->vt * af->vt * impactAngle * impactAngle * 0.02F);
             else
                 message->dataBlock.damageStrength = min(1000.0F, af->vt * impactAngle * 0.1F +
                                                         af->vt * af->vt * impactAngle * impactAngle * 0.05F);
 
-            if (message->dataBlock.damageStrength < 1.0F && (float)rand() / (float)RAND_MAX < 0.2F)
+            if (message->dataBlock.damageStrength < 1.0F and (float)rand() / (float)RAND_MAX < 0.2F)
                 message->dataBlock.damageStrength = 1.0F;
         }
 
-        if (!IsSetFalcFlag(FEC_INVULNERABLE))
+        if ( not IsSetFalcFlag(FEC_INVULNERABLE))
         {
             af->SetFlag(AirframeClass::EngineOff);
             af->SetFlag(AirframeClass::EngineOff2);//TJL 01/22/04 multi-engine
@@ -185,8 +185,8 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
 
 
-    if (fabs(noseAngle) >= impactTest ||
-        (!af->IsSet(AirframeClass::OnObject) && platformAngles.sinthe < 0.0F || platformAngles.sinthe < -0.01F) || // JB carrier
+    if (fabs(noseAngle) >= impactTest or
+        ( not af->IsSet(AirframeClass::OnObject) and platformAngles.sinthe < 0.0F or platformAngles.sinthe < -0.01F) or // JB carrier
         platformAngles.cosphi < 0.94F)
     {
         // planted right into ground
@@ -196,7 +196,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
         message->dataBlock.damageStrength =  min(1000.0F, af->vt * impactAngle * 0.1F +
                                              af->vt * af->vt * impactAngle * impactAngle * 0.02F);
 
-        if (message->dataBlock.damageStrength < 1.0F && (float)rand() / (float)RAND_MAX < 0.2F)
+        if (message->dataBlock.damageStrength < 1.0F and (float)rand() / (float)RAND_MAX < 0.2F)
             message->dataBlock.damageStrength = 1.0F;
 
         vc = GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE);
@@ -209,7 +209,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
         FalconSendMessage(message, TRUE);
 
-        if (!IsSetFalcFlag(FEC_INVULNERABLE))
+        if ( not IsSetFalcFlag(FEC_INVULNERABLE))
         {
             af->SetFlag(AirframeClass::EngineOff);
             af->SetFlag(AirframeClass::EngineOff2);//TJL 01/22/04 multi-engine
@@ -221,10 +221,10 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
         return FALSE;
     }
 
-    if (af->gearPos > 0.8F && af->IsSet(AirframeClass::IsDigital))
+    if (af->gearPos > 0.8F and af->IsSet(AirframeClass::IsDigital))
     {
 
-        // if(!af->auxaeroData->animWheelRadius[0]) // only play the sound of the radius is 0, otherwise it'll be played in airframe::RunLandingGear()
+        // if( not af->auxaeroData->animWheelRadius[0]) // only play the sound of the radius is 0, otherwise it'll be played in airframe::RunLandingGear()
         SoundPos.Sfx(af->auxaeroData->sndTouchDown);
 
         pos.x = XPos();
@@ -237,7 +237,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
         /*
         OTWDriver.AddSfxRequest(
          new SfxClass ( SFX_LANDING_SMOKE, // type
-         SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_NO_DOWN_VECTOR | SFX_USES_GRAVITY,
+         SFX_MOVES bitor SFX_NO_GROUND_CHECK bitor SFX_NO_DOWN_VECTOR bitor SFX_USES_GRAVITY,
          &pos, // world pos
          &vec, // vel vector
          5.3f, // time to live
@@ -249,16 +249,16 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
         return TRUE;
     }
 
-    if (af->vt * impactAngle < sinkRate * (1.25F - (!
+    if (af->vt * impactAngle < sinkRate * (1.25F - ( not 
                                            (af->IsSet(AirframeClass::OverRunway)
-                                            || af->IsSet(AirframeClass::OnObject)) // JB carrier
-                                           &&
-                                           !onFlatFeature && groundType != COVERAGE_ROAD) * 0.5F) && af->gearPos > 0.8F)
+                                            or af->IsSet(AirframeClass::OnObject)) // JB carrier
+                                           and 
+ not onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.5F) and af->gearPos > 0.8F)
     {
         // ok touchdown
 
         if (af->vt * impactAngle > 1.0F)
-            //if(!af->auxaeroData->animWheelRadius[0])
+            //if( not af->auxaeroData->animWheelRadius[0])
             SoundPos.Sfx(af->auxaeroData->sndTouchDown);
 
         pos.x = XPos();
@@ -271,7 +271,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
         /*
         OTWDriver.AddSfxRequest(
          new SfxClass ( SFX_LANDING_SMOKE, // type
-         SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_NO_DOWN_VECTOR | SFX_USES_GRAVITY,
+         SFX_MOVES bitor SFX_NO_GROUND_CHECK bitor SFX_NO_DOWN_VECTOR bitor SFX_USES_GRAVITY,
          &pos, // world pos
          &vec, // vel vector
          5.3f, // time to live
@@ -285,14 +285,14 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
         return TRUE;
     }
-    else if (af->vt * impactAngle < sinkRate * 1.75F * (1.0F - (!
+    else if (af->vt * impactAngle < sinkRate * 1.75F * (1.0F - ( not 
              (af->IsSet(AirframeClass::OverRunway)
-              || af->IsSet(AirframeClass::OnObject)) // JB carrier
-             && !onFlatFeature && groundType != COVERAGE_ROAD) * 0.5F) && af->gearPos > 0.8F)
+              or af->IsSet(AirframeClass::OnObject)) // JB carrier
+            and not onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.5F) and af->gearPos > 0.8F)
     {
         //bounce
 
-        //if(!af->auxaeroData->animWheelRadius[0])
+        //if( not af->auxaeroData->animWheelRadius[0])
         SoundPos.Sfx(af->auxaeroData->sndTouchDown);
 
 
@@ -306,7 +306,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
         /*
         OTWDriver.AddSfxRequest(
          new SfxClass ( SFX_LANDING_SMOKE, // type
-         SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_NO_DOWN_VECTOR | SFX_USES_GRAVITY,
+         SFX_MOVES bitor SFX_NO_GROUND_CHECK bitor SFX_NO_DOWN_VECTOR bitor SFX_USES_GRAVITY,
          &pos, // world pos
          &vec, // vel vector
          5.3f, // time to live
@@ -323,30 +323,30 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
         return FALSE;
     }
-    else if (af->vt * impactAngle < sinkRate * 3.0F * (1.0F - (!af->IsSet(AirframeClass::OverRunway) && !onFlatFeature && groundType != COVERAGE_ROAD) * 0.5F) && af->gearPos > 0.8F)
+    else if (af->vt * impactAngle < sinkRate * 3.0F * (1.0F - ( not af->IsSet(AirframeClass::OverRunway) and not onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.5F) and af->gearPos > 0.8F)
     {
-        //we hit too hard for the landing gear, crunch!
+        //we hit too hard for the landing gear, crunch
 
-        //if(!af->auxaeroData->animWheelRadius[0])
+        //if( not af->auxaeroData->animWheelRadius[0])
         SoundPos.Sfx(af->auxaeroData->sndTouchDown);
 
         SoundPos.Sfx(SFX_IMPACTG3 + rand() % 4);
 
         // edg note: I would have liked to put this stuff in faults, but
         // as far as I can tell we don't know xyz position there.
-        if (!IsSetFalcFlag(FEC_INVULNERABLE) && !af->IsSet(AirframeClass::GearBroken))
+        if ( not IsSetFalcFlag(FEC_INVULNERABLE) and not af->IsSet(AirframeClass::GearBroken))
         {
             af->SetFlag(AirframeClass::EngineOff);
             af->SetFlag(AirframeClass::EngineOff2);//TJL 01/22/04 multi-engine
             mFaults->SetFault(FaultClass::eng_fault, FaultClass::fl_out, FaultClass::fail, FALSE);
 
-            if (!af->IsSet(AirframeClass::GearBroken))
+            if ( not af->IsSet(AirframeClass::GearBroken))
             {
                 af->gearPos = 0.2F;
 
                 for (int i = 0; i < af->NumGear(); i++)
                 {
-                    af->gear[i].flags |= GearData::GearProblem;
+                    af->gear[i].flags or_eq GearData::GearProblem;
                     SetDOF(ComplexGearDOF[i]/*COMP_NOS_GEAR + i*/, 0.0F);
                 }
 
@@ -367,18 +367,18 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
     {
         SoundPos.Sfx(SFX_IMPACTG3 + rand() % 4);
 
-        if (!IsSetFalcFlag(FEC_INVULNERABLE))
+        if ( not IsSetFalcFlag(FEC_INVULNERABLE))
         {
             // we're taking damage.....
             message = CreateGroundCollisionMessage(this, FloatToInt32(maxStrength));
 
-            gearAbsorption = sinkRate * 3.0F * !af->IsSet(AirframeClass::GearBroken) * af->gearPos;
+            gearAbsorption = sinkRate * 3.0F * not af->IsSet(AirframeClass::GearBroken) * af->gearPos;
 
             message->dataBlock.damageStrength = min(1000.0F, af->vt * impactAngle * 0.1F +
                                                     (af->vt * impactAngle - gearAbsorption) *
                                                     (af->vt * impactAngle - gearAbsorption) * 0.006F);
 
-            if (message->dataBlock.damageStrength < 1.0F && (float)rand() / (float)RAND_MAX < 0.2F)
+            if (message->dataBlock.damageStrength < 1.0F and (float)rand() / (float)RAND_MAX < 0.2F)
             {
                 message->dataBlock.damageStrength = 1.0F;
             }
@@ -405,13 +405,13 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
                                   FaultClass::fl_out, FaultClass::fail, FALSE);
             }
 
-            if (!af->IsSet(AirframeClass::GearBroken) &&  af->gearPos > 0.0F)
+            if ( not af->IsSet(AirframeClass::GearBroken) and af->gearPos > 0.0F)
             {
                 af->gearPos = 0.2F;
 
                 for (int i = 0; i < af->NumGear(); i++)
                 {
-                    af->gear[i].flags |= GearData::GearProblem;
+                    af->gear[i].flags or_eq GearData::GearProblem;
                 }
 
                 // JPO - change to only play for us.
@@ -453,13 +453,13 @@ AircraftClass::GroundFeatureCheck(float groundZ)
     FalconDamageMessage* message;
     SimBaseClass *hitFeature;
 
-    if (OnGround() && af->vcas <= 50.0f  && gCommsMgr && gCommsMgr->Online()) // JB 010107
+    if (OnGround() and af->vcas <= 50.0f and gCommsMgr and gCommsMgr->Online()) // JB 010107
         return; // JB 010107
 
     // Decide if we hit anything
     hitFeature = FeatureCollision(groundZ);
 
-    if (!hitFeature)
+    if ( not hitFeature)
     {
         if (onFlatFeature == TRUE)
             CheckPersistantCollision();
@@ -548,7 +548,7 @@ void AircraftClass::CheckPersistantCollision()
     for (i = 0; i < MAX_PERSISTANT_OBJECTS; i++)
     {
         // get the object
-        if (!PersistantObjects[i].InUse() || !PersistantObjects[i].drawPointer)
+        if ( not PersistantObjects[i].InUse() or not PersistantObjects[i].drawPointer)
         {
             continue;
         }
@@ -560,8 +560,8 @@ void AircraftClass::CheckPersistantCollision()
         testP->drawPointer->GetPosition(&fpos);
 
         // test with gross level bounds of object
-        if (fabs(XPos() - fpos.x) < radius  &&
-            fabs(YPos() - fpos.y) < radius  &&
+        if (fabs(XPos() - fpos.x) < radius  and 
+            fabs(YPos() - fpos.y) < radius  and 
             fabs(ZPos() - fpos.z) < radius)
         {
             message = new FalconDamageMessage(Id(), FalconLocalGame);

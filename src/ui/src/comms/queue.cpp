@@ -56,7 +56,7 @@ void CommsQueue::Add(short itemtype, VU_ID SessionID, VU_ID GameID)
     q->GameID = GameID;
     q->Next = NULL;
 
-    if (!Root_)
+    if ( not Root_)
         Root_ = q;
     else
     {
@@ -68,7 +68,7 @@ void CommsQueue::Add(short itemtype, VU_ID SessionID, VU_ID GameID)
         cur->Next = q;
     }
 
-    if (!PostPending)
+    if ( not PostPending)
     {
         PostMessage(appwin_, FM_UI_UPDATE_GAMELIST, 0, 0);
         PostPending = TRUE;
@@ -87,7 +87,7 @@ QUEUEITEM *CommsQueue::Remove()
     Root_ = Root_->Next;
     delete dl;
 
-    if (!Root_)
+    if ( not Root_)
         PostPending = FALSE;
 
     F4LeaveCriticalSection(QueueCritical);

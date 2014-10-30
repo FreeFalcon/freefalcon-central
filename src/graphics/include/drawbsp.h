@@ -43,7 +43,7 @@ public:
 
     BOOL IsLegalEmptySlot(int slotNumber)
     {
-        return (slotNumber < instance.ParentObject->nSlots) && (instance.SlotChildren) && (instance.SlotChildren[slotNumber] == NULL);
+        return (slotNumber < instance.ParentObject->nSlots) and (instance.SlotChildren) and (instance.SlotChildren[slotNumber] == NULL);
     };
 
     int GetNumSlots(void)

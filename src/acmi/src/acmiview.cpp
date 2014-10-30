@@ -163,7 +163,7 @@ void ACMIView::ToggleLockLines(int val)
 }
 void ACMIView::ToggleScreenShot()
 {
-    _takeScreenShot ^= 1;
+    _takeScreenShot xor_eq 1;
     _tape->SetScreenCapturing(_takeScreenShot);
 };
 
@@ -222,11 +222,11 @@ void ACMIView::SetupEntityUIMappings()
     // _tape->_simTapeEntities[i].name;
 
     F4Assert(_entityUIMappings == NULL);
-    F4Assert(_tape != NULL && _tape->IsLoaded());
+    F4Assert(_tape not_eq NULL and _tape->IsLoaded());
 
     numEntities = _tape->NumEntities();
     _entityUIMappings = new ACMIEntityUIMap[numEntities];
-    F4Assert(_entityUIMappings != NULL);
+    F4Assert(_entityUIMappings not_eq NULL);
 
     for (i = 0; i < numEntities; i++)
     {
@@ -237,7 +237,7 @@ void ACMIView::SetupEntityUIMappings()
         ep = Tape()->GetSimTapeEntity(i);
 
         // we don't want to put chaff and flares into the list boxes
-        if (ep->flags & (ENTITY_FLAG_CHAFF | ENTITY_FLAG_FLARE))
+        if (ep->flags bitand (ENTITY_FLAG_CHAFF bitor ENTITY_FLAG_FLARE))
             continue;
 
         GetObjectName(ep->objBase, _entityUIMappings[i].name);
@@ -272,10 +272,10 @@ BOOL ACMIView::LoadTape(char *fname, BOOL reload)
 
     // create the tape from the file
     _tape = new ACMITape(_fileName, _renderer, _viewPoint);
-    F4Assert(_tape != NULL);
+    F4Assert(_tape not_eq NULL);
 
     // do something go wrong?
-    if (!_tape->IsLoaded())
+    if ( not _tape->IsLoaded())
     {
         delete _tape;
         _tape = NULL;
@@ -448,7 +448,7 @@ void ACMIView::GetObjectName(SimBaseClass* theObject, char *tmpStr)
 
     memset(tmpStr, 0, 40);
 
-    if (classPtr->dataType == DTYPE_VEHICLE || classPtr->dataType == DTYPE_WEAPON)
+    if (classPtr->dataType == DTYPE_VEHICLE or classPtr->dataType == DTYPE_WEAPON)
     {
 
         strcpy(tmpStr, ((DrawableBSP*)theObject->drawPointer)->Label());

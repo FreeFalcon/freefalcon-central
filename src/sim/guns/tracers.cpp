@@ -16,7 +16,7 @@ void GunClass::InitTracers()
     float rgbScale;
     // Tpoint pos;
 
-    if (!(typeOfGun == GUN_TRACER || typeOfGun == GUN_TRACER_BALL))
+    if ( not (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL))
         return;
 
     // Tracers
@@ -65,7 +65,7 @@ void GunClass::UpdateTracers(int firing)
     GunTracerType *bulptr;
 
     // JB 010108 Update is being called without init
-    if (tracers == NULL || trailState == NULL)
+    if (tracers == NULL or trailState == NULL)
         return;
 
     // JB 010108
@@ -77,7 +77,7 @@ void GunClass::UpdateTracers(int firing)
     {
         for (i = 0; i < numFirstTracers; i++)
         {
-            if (!firstTracer[i]->InDisplayList())
+            if ( not firstTracer[i]->InDisplayList())
             {
                 OTWDriver.InsertObject(firstTracer[i]);
                 firstTracer[i]->SetAlpha(0.0f);
@@ -85,7 +85,7 @@ void GunClass::UpdateTracers(int firing)
 
             firstTracer[i]->SetAlpha(max(0.05f, muzzleAlpha[i] * 1.0f));
 
-            if (i & 1)
+            if (i bitand 1)
                 firstTracer[i]->SetRGB(1.0f, 0.2f, 0.0f);
             else
                 firstTracer[i]->SetRGB(1.0f, 1.0f, 0.2f);
@@ -135,7 +135,7 @@ void GunClass::UpdateTracers(int firing)
         }
         else
         {
-            if (trailState[i] != 0)
+            if (trailState[i] not_eq 0)
             {
                 trailState[i] = 0;
                 OTWDriver.RemoveObject(tracers[i]);
@@ -149,7 +149,7 @@ void GunClass::CleanupTracers()
 {
     int i;
 
-    if (!(typeOfGun == GUN_TRACER || typeOfGun == GUN_TRACER_BALL))
+    if ( not (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL))
     {
         FireShell(NULL);
         return;

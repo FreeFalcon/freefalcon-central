@@ -4,7 +4,7 @@
 #define _IDX_HASH_SIZE_ 10
 
 // MACRO to convert to screen format from TARGA format (0rrrrrgggggbbbbb)
-#define COLOR15BIT(color,rs,gs,bs) ((((color >> 10) & 0x1f) << rs) | (((color >> 5) & 0x1f) << gs) | (((color) & 0x1f) << bs))
+#define COLOR15BIT(color,rs,gs,bs) ((((color >> 10) bitand 0x1f) << rs) bitor (((color >> 5) bitand 0x1f) << gs) bitor (((color) bitand 0x1f) << bs))
 
 extern C_Parser *gMainParser;
 extern char FalconUIArtDirectory[];
@@ -30,10 +30,10 @@ void C_Resmgr::ConvertToScreen()
     WORD *color = NULL;
     long count = 0;
 
-    if (!Data_ || !Index_)
+    if ( not Data_ or not Index_)
         return;
 
-    if (reds == 10 && greens == 5 && !blues)
+    if (reds == 10 and greens == 5 and not blues)
         return;
 
     rec = (IMAGE_RSC*)Index_->GetFirst(&current, &curidx);
@@ -44,12 +44,12 @@ void C_Resmgr::ConvertToScreen()
         {
             hdr = rec->Header;
 
-            if (hdr->flags & _RSC_8_BIT_)
+            if (hdr->flags bitand _RSC_8_BIT_)
             {
                 count = hdr->palettesize;
                 color = (WORD*)(Data_ + hdr->paletteoffset);
             }
-            else if (hdr->flags & _RSC_16_BIT_)
+            else if (hdr->flags bitand _RSC_16_BIT_)
             {
                 count = hdr->w * hdr->h;
                 color = (WORD*)(Data_ + hdr->imageoffset);
@@ -86,7 +86,7 @@ C_Resmgr::C_Resmgr()
 
 C_Resmgr::~C_Resmgr()
 {
-    if (IDTable_ || Index_ || Data_)
+    if (IDTable_ or Index_ or Data_)
         Cleanup();
 }
 
@@ -142,10 +142,10 @@ void C_Resmgr::Cleanup()
 
 void C_Resmgr::AddIndex(long ID, IMAGE_RSC *resheader)
 {
-    if (!resheader || Type_ == _RSC_MULTIPLE_)
+    if ( not resheader or Type_ == _RSC_MULTIPLE_)
         return;
 
-    if (!Index_)
+    if ( not Index_)
     {
         Index_ = new C_Hash;
         Index_->Setup(1);
@@ -163,7 +163,7 @@ FILE *C_Resmgr::OpenResFile(const char *name, const char *sfx, const char *mode)
 
     sprintf(filename, "%s\\%s.%s", FalconUIArtThrDirectory, name, sfx);
 
-    if ((fp = fopen(filename, mode)) != NULL)
+    if ((fp = fopen(filename, mode)) not_eq NULL)
         return fp;
 
     sprintf(filename, "%s\\%s.%s", FalconUIArtDirectory, name, sfx);
@@ -188,7 +188,7 @@ void C_Resmgr::LoadIndex()
 
     fp = OpenResFile(name_, "idx", "rb");
 
-    if (!fp)
+    if ( not fp)
     {
         MonoPrint("Error opening index file (%s)\n", buffer);
         return;
@@ -196,7 +196,7 @@ void C_Resmgr::LoadIndex()
 
     fread(&size, sizeof(long), 1, fp);
 
-    if (!size)
+    if ( not size)
     {
         fclose(fp);
         return;
@@ -221,7 +221,7 @@ void C_Resmgr::LoadIndex()
     Idx_ = new char[size];
 #endif
 
-    if (!Idx_)
+    if ( not Idx_)
     {
         fclose(fp);
         Index_->Cleanup();
@@ -235,7 +235,7 @@ void C_Resmgr::LoadIndex()
 
     ptr = Idx_;
 
-    while (ptr && size)
+    while (ptr and size)
     {
         rectype = (long *)ptr;
 
@@ -381,7 +381,7 @@ void C_Resmgr::LoadData()
     FILE *fp;
     char buffer[MAX_PATH];
 
-    if (!Index_)
+    if ( not Index_)
         return;
 
     if (Data_)
@@ -392,7 +392,7 @@ void C_Resmgr::LoadData()
 
     fp = OpenResFile(name_, "rsc", "rb");
 
-    if (!fp)
+    if ( not fp)
     {
         MonoPrint("Error: Can't open Datafile (%s)\n", buffer);
         return;
@@ -400,7 +400,7 @@ void C_Resmgr::LoadData()
 
     fread(&size, sizeof(long), 1, fp);
 
-    if (!size)
+    if ( not size)
     {
         fclose(fp);
         return;

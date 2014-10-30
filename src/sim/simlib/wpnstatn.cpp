@@ -47,7 +47,7 @@ BasicWeaponStation::~BasicWeaponStation()
 
 GunClass* BasicWeaponStation::GetGun(void)
 {
-    if (weaponPointer && weaponPointer->IsGun())
+    if (weaponPointer and weaponPointer->IsGun())
         return (GunClass*) weaponPointer.get();
     else
         return NULL;
@@ -95,7 +95,7 @@ AdvancedWeaponStation::~AdvancedWeaponStation(void)
 void AdvancedWeaponStation::Cleanup(void)
 {
     // 2002-03-26 MN CTD fix, only delete when we used "new" below
-    if (xSub != &xPos && numPoints != 1)
+    if (xSub not_eq &xPos and numPoints not_eq 1)
     {
         if (xSub)
             delete [] xSub;
@@ -159,7 +159,7 @@ DrawableBSP* AdvancedWeaponStation::GetTopDrawable(void)
     if (theRack)
         return theRack;
 
-    if (weaponPointer && weaponPointer->drawPointer)
+    if (weaponPointer and weaponPointer->drawPointer)
         return (DrawableBSP *)weaponPointer->drawPointer;
 
     return NULL;
@@ -194,7 +194,7 @@ void AdvancedWeaponStation::SetParentDrawPtr(DrawableBSP* Parent)
     ShiAssert(hpId > 0);
     theParent = Parent;
 
-    if (theParent && hpId > 0)
+    if (theParent and hpId > 0)
     {
         Tpoint hpPos = {0, 0, 0};
 
@@ -223,10 +223,10 @@ void AdvancedWeaponStation::AttachPylonBSP(void)
     }
 
 
-    if (theParent &&
-        !thePylon &&
-        pylonId > 0 &&
-        pylonId < NumWeaponTypes &&
+    if (theParent and 
+ not thePylon and 
+        pylonId > 0 and 
+        pylonId < NumWeaponTypes and 
         WeaponDataTable[pylonId].Index >= 0)
     {
         thePylon = new DrawableBSP(Falcon4ClassTable[WeaponDataTable[pylonId].Index].visType[0],
@@ -247,7 +247,7 @@ void AdvancedWeaponStation::AttachPylonBSP(void)
     }
 
 
-    if (theParent && thePylon)
+    if (theParent and thePylon)
     {
         theParent->AttachChild(thePylon, hpId - 1); // for UI compatibility
     }
@@ -275,10 +275,10 @@ void AdvancedWeaponStation::AttachRackBSP(void)
         zPos += hpPos.z;
     }
 
-    if (theParent &&
-        !theRack &&
-        rackId > 0 &&
-        rackId < NumWeaponTypes &&
+    if (theParent and 
+ not theRack and 
+        rackId > 0 and 
+        rackId < NumWeaponTypes and 
         WeaponDataTable[rackId].Index >= 0)
     {
         theRack = new DrawableBSP(Falcon4ClassTable[WeaponDataTable[rackId].Index].visType[0],
@@ -338,10 +338,10 @@ void AdvancedWeaponStation::DeletePylonBSP(void)
 
 DrawableBSP *AdvancedWeaponStation::DetachPylonBSP(void)
 {
-    if (!thePylon)
+    if ( not thePylon)
         return NULL;
 
-    if (theParent && thePylon)
+    if (theParent and thePylon)
     {
         theParent->DetachChild(thePylon, hpId - 1);
 
@@ -379,7 +379,7 @@ void AdvancedWeaponStation::DeleteRackBSP(void)
 
 DrawableBSP *AdvancedWeaponStation::DetachRackBSP(void)
 {
-    if (!theRack)
+    if ( not theRack)
         return NULL;
 
     if (thePylon)
@@ -485,12 +485,12 @@ void AdvancedWeaponStation::AttachAllWeaponBSP(void)
 
 void BasicWeaponStation::AttachWeaponBSP(SimWeaponClass *weapPtr)
 {
-    if (!weapPtr || weapPtr != weaponPointer) // only attach 1st weapon
+    if ( not weapPtr or weapPtr not_eq weaponPointer) // only attach 1st weapon
         return;
 
     DrawableBSP *weapBSP = (DrawableBSP *)weapPtr->drawPointer;
 
-    if (!weapBSP)
+    if ( not weapBSP)
     {
         Tpoint hpPos;
         Trotation viewRot = IMatrix;
@@ -519,7 +519,7 @@ void BasicWeaponStation::AttachWeaponBSP(SimWeaponClass *weapPtr)
             weapBSP->SetSwitchMask(0, 1);
     }
 
-    if (weapBSP && theParent)
+    if (weapBSP and theParent)
     {
         theParent->AttachChild(weapBSP, hpId - 1);
     }
@@ -529,7 +529,7 @@ void AdvancedWeaponStation::AttachWeaponBSP(SimWeaponClass *weapPtr)
 {
     int weapslot;
 
-    if (!weapPtr)
+    if ( not weapPtr)
         return;
 
     weapslot = weapPtr->GetRackSlot();
@@ -564,7 +564,7 @@ void AdvancedWeaponStation::AttachWeaponBSP(SimWeaponClass *weapPtr)
 
     DrawableBSP *weapBSP = (DrawableBSP *)weapPtr->drawPointer;
 
-    if (!weapBSP)
+    if ( not weapBSP)
     {
         Tpoint hpPos;
         Trotation viewRot = IMatrix;
@@ -746,12 +746,12 @@ void AdvancedWeaponStation::DeleteAllWeaponBSP(void)
 
 void BasicWeaponStation::DetachWeaponBSP(SimWeaponClass *weapPtr)
 {
-    if (!weapPtr || weapPtr != weaponPointer)
+    if ( not weapPtr or weapPtr not_eq weaponPointer)
         return;
 
     DrawableBSP *weapBSP = (DrawableBSP *)weapPtr->drawPointer;
 
-    if (!weapBSP)
+    if ( not weapBSP)
         return;
 
 
@@ -764,12 +764,12 @@ void BasicWeaponStation::DetachWeaponBSP(SimWeaponClass *weapPtr)
 
 void AdvancedWeaponStation::DetachWeaponBSP(SimWeaponClass *weapPtr)
 {
-    if (!weapPtr)
+    if ( not weapPtr)
         return;
 
     DrawableBSP *weapBSP = (DrawableBSP *)weapPtr->drawPointer;
 
-    if (!weapBSP)
+    if ( not weapBSP)
         return;
 
     if (theRack)
@@ -792,7 +792,7 @@ void AdvancedWeaponStation::DetachWeaponBSP(SimWeaponClass *weapPtr)
     }
 
     // DetachChild won't place the BSP in the correct position when it is detached
-    // from thePylon or theRack, because thePylon & theRack  are the children of
+    // from thePylon or theRack, because thePylon bitand theRack  are the children of
     // another object.
     // DetachChild doesn't work for (great)grandchildren.
 
@@ -905,14 +905,14 @@ int AdvancedWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int Weap
         case wcCamera:
         case wcECM:
 
-            // rackDataFlags = RDF_SELECTIVE_JETT_RACK | RDF_SELECTIVE_JETT_WEAPON;
+            // rackDataFlags = RDF_SELECTIVE_JETT_RACK bitor RDF_SELECTIVE_JETT_WEAPON;
             // break;
         case wcAimWpn:
             rackDataFlags = 0;
             break;
 
         default:
-            rackDataFlags = RDF_EMERGENCY_JETT_RACK | RDF_SELECTIVE_JETT_RACK;
+            rackDataFlags = RDF_EMERGENCY_JETT_RACK bitor RDF_SELECTIVE_JETT_RACK;
     }
 
     // SP3 data
@@ -922,12 +922,12 @@ int AdvancedWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int Weap
         int rack = FindBestRackIDByPlaneAndWeapon(HPGroup, WeaponDataTable[weaponId].SimweapIndex, WeaponCount);
         ShiAssert(rack < MaxRackObjects); // -1 means nothing defined currently fallback to old scheme
 
-        if (rack > 0 && rack < MaxRackObjects)
+        if (rack > 0 and rack < MaxRackObjects)
         {
             RackObject *rackp = &RackObjectTable[rack];
             SetupPoints(rackp->maxoccupancy);
 
-            if ((wc->Flags & WEAP_ALWAYSRACK) == 0)
+            if ((wc->Flags bitand WEAP_ALWAYSRACK) == 0)
             {
                 int rackid = (short)(((int)
                                       Falcon4ClassTable[rackp->ctind].dataPtr - (int)WeaponDataTable) / sizeof(WeaponClassDataType)
@@ -941,7 +941,7 @@ int AdvancedWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int Weap
     }
 
     // fallback
-    // Find the proper rack id && max points
+    // Find the proper rack id and max points
 
     if (GetWeaponClass() == wcRocketWpn)
     {
@@ -961,7 +961,7 @@ int AdvancedWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int Weap
             SetRackId(gRackId_Single_Rack);
         }
     }
-    else if (WeaponCount <= 2 && GetWeaponClass() == wcAimWpn)
+    else if (WeaponCount <= 2 and GetWeaponClass() == wcAimWpn)
     {
         SetupPoints(2);
         SetRackId(gRackId_Two_Rack);
@@ -1003,7 +1003,7 @@ int AdvancedWeaponStation::GetRackDataFlags(void)
 
 int BasicWeaponStation::GetRackDataFlags(void)
 {
-    return RDF_EMERGENCY_JETT_RACK | RDF_SELECTIVE_JETT_RACK;
+    return RDF_EMERGENCY_JETT_RACK bitor RDF_SELECTIVE_JETT_RACK;
 }
 
 char *AdvancedWeaponStation::GetRackMnemonic(void)

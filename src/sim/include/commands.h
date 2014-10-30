@@ -4,7 +4,7 @@
 #define SHIFT_KEY  0x1
 #define CTRL_KEY   0x2
 #define ALT_KEY    0x4
-#define MODS_MASK  (CTRL_KEY | ALT_KEY | SHIFT_KEY)
+#define MODS_MASK  (CTRL_KEY bitor ALT_KEY bitor SHIFT_KEY)
 #define KEY_DOWN   0x8
 #define SECOND_KEY_SHIFT        8
 #define SECOND_KEY_MOD_SHIFT    16
@@ -1023,7 +1023,7 @@ void AWACSRequestHelp(unsigned long val, int state, void * pButton);
 void AWACSRequestRelief(unsigned long val, int state, void * pButton);
 
 // ---------------------------------------------------------------------------
-// End Flight Commands!
+// End Flight Commands
 // ---------------------------------------------------------------------------
 
 void SimSpeedyGonzalesUp(unsigned long val, int state, void *);

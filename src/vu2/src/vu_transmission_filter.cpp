@@ -32,7 +32,7 @@ VU_BOOL VuTransmissionFilter::Notice(VuMessage* event)
 
 VU_BOOL VuTransmissionFilter::Test(VuEntity* ent)
 {
-    return (VU_BOOL)(((ent->IsLocal() && (ent->UpdateRate() > (VU_TIME)0)) ? TRUE : FALSE));
+    return (VU_BOOL)(((ent->IsLocal() and (ent->UpdateRate() > (VU_TIME)0)) ? TRUE : FALSE));
 }
 
 VU_KEY VuTransmissionFilter::Key(const VuEntity* ent) const

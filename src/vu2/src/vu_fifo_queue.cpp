@@ -33,7 +33,7 @@ VU_ERRCODE VuFifoQueue::ForcedInsert(VuEntity* entity)
         VuLinkedList::Insert(entity);
 #if 0
 
-        if (head_ != tail_)
+        if (head_ not_eq tail_)
         {
             last_->next_ = new VuLinkNode(entity, tail_);
             last_        = last_->next_;

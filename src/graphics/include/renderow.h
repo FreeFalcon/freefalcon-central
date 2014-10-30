@@ -28,7 +28,7 @@ extern int  TWODSCALE;
 typedef struct TerrainVertex: public ThreeDVertex
 {
     /* ThreeDVertex provides:
-     float x, y, z;  // screen space x & y, camera space z
+     float x, y, z;  // screen space x bitand y, camera space z
      float q, u, v;
      float r, g, b, a;
      DWORD clipFlag;
@@ -298,7 +298,7 @@ protected:
     void DrawCloudsAndObjects(class ObjectDisplayList *clouds, class ObjectDisplayList *objects);
     void DrawWeather(const Trotation *orientation);
 
-    // These are overridden by the "green" displays (TV & IR)
+    // These are overridden by the "green" displays (TV bitand IR)
     virtual void ProcessColor(Tcolor *color);
     virtual void DrawSun(void);
     virtual void DrawMoon(void);

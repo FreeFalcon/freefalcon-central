@@ -114,7 +114,7 @@ void DrawableBridge::ReplacePiece(DrawableRoadbed *oldPiece, DrawableRoadbed *ne
 
     if (newPiece)
     {
-        ShiAssert(!newPiece->InDisplayList());
+        ShiAssert( not newPiece->InDisplayList());
         oldPiece->parentList->InsertObject(newPiece);
     }
 
@@ -152,7 +152,7 @@ float DrawableBridge::GetGroundLevel(float x, float y, Tpoint *normal)
         roadbed = (DrawableRoadbed*)roadbedObjects.GetNextAndAdvance();
     }
 
-    // We didn't find a containing segment!!!
+    // We didn't find a containing segment
     // We used to assert here, but in instant action, we let tanks go on water right now...
     // So, we use the position of the container object (presumably ground level)
     if (normal)
@@ -175,7 +175,7 @@ void DrawableBridge::Draw(class RenderOTW *renderer, int LOD)
     DrawableObject *obj;
 
     // See if we need to update our ground position
-    if (LOD != previousLOD)
+    if (LOD not_eq previousLOD)
     {
 
         // Update our position to reflect the terrain beneath us
@@ -298,7 +298,7 @@ void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr 
     {
 
         // Push the object back up to our parent list if it has moved beyond our area
-        if (!ObjectInside(obj))
+        if ( not ObjectInside(obj))
         {
             ShiAssert(obj->GetClass() == GroundVehicle);
             dynamicObjects.RemoveObject(obj);
@@ -313,13 +313,13 @@ void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr 
     checkDistance = distance + 2.0f * Radius();
     obj = prev;
 
-    while (obj && (obj->distance < checkDistance))
+    while (obj and (obj->distance < checkDistance))
     {
 
         // Pull object down from our parent list if it's inside our area
         objNext = obj->prev;
 
-        if (ObjectInside(obj) && (obj->GetClass() == GroundVehicle))
+        if (ObjectInside(obj) and (obj->GetClass() == GroundVehicle))
         {
             parentList->RemoveObject(obj);
             dynamicObjects.InsertObject(obj);
@@ -334,13 +334,13 @@ void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr 
     checkDistance = distance;
     obj = next;
 
-    while (obj && (obj->distance > checkDistance))
+    while (obj and (obj->distance > checkDistance))
     {
 
         // Pull object down from our parent list if it's inside our area
         objNext = obj->next;
 
-        if (ObjectInside(obj) && (obj->GetClass() == GroundVehicle))
+        if (ObjectInside(obj) and (obj->GetClass() == GroundVehicle))
         {
             parentList->RemoveObject(obj);
             dynamicObjects.InsertObject(obj);
@@ -385,7 +385,7 @@ BOOL DrawableBridge::ObjectInside(DrawableObject *obj)
     obj->GetPosition(&objPos);
 
     // return our conclusion
-    return ((objPos.x >= minX) && (objPos.x <= maxX) && (objPos.y >= minY) && (objPos.y <= maxY));
+    return ((objPos.x >= minX) and (objPos.x <= maxX) and (objPos.y >= minY) and (objPos.y <= maxY));
 }
 
 

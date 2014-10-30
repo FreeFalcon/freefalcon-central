@@ -295,18 +295,18 @@ BOOL ICPClass::CheckForHARM(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC || !playerAC->Sms)
+    if ( not playerAC or not playerAC->Sms)
         return FALSE;
 
-    if (playerAC->Sms->curWeapon && playerAC->Sms->curWeaponClass == wcHARMWpn)
+    if (playerAC->Sms->curWeapon and playerAC->Sms->curWeaponClass == wcHARMWpn)
         return TRUE;
     else
         return FALSE;
 
     return FALSE;
 }
-/* curWeapon && curWeaponClass == wcHARMWpn
- sms->hardPoint[hp] && sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->GetWeaponType() == wtAgm88)
+/* curWeapon and curWeaponClass == wcHARMWpn
+ sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->GetWeaponType() == wtAgm88)
  hasHARM += sms->hardPoint[hp]->weaponCount;
 }*/
 // Retro 3Jan2004 from here...
@@ -316,13 +316,13 @@ extern bool g_bPilotEntertainment; // Retro 3Jan2004
 void ICPClass::ExecWinAmpMode(void)
 {
 
-    if (!g_bPilotEntertainment)
+    if ( not g_bPilotEntertainment)
     {
-        ShiAssert(false); // we really shouldn´t be here then !
+        ShiAssert(false); // we really shouldn´t be here then 
         return;
     }
 
-    if (!winamp)
+    if ( not winamp)
         return;
 
     winamp->Refresh(vuxRealTime); // have to use real timer here, in case of pause etc..

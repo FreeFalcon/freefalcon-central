@@ -66,8 +66,8 @@ void AirframeClass::Yaw(void)
     float betcmd, nycmd, gsAvail, alphaError;
     Limiter *limiter = NULL;
 
-    //if( IsSet(Planted) || (IsSet(NoseSteerOn) && !(gear[0].flags & GearData::GearStuck)) )
-    if (!IsSet(InAir))
+    //if( IsSet(Planted) or (IsSet(NoseSteerOn) and not (gear[0].flags bitand GearData::GearStuck)) )
+    if ( not IsSet(InAir))
         return;
 
     if (platform->IsF16())
@@ -113,7 +113,7 @@ void AirframeClass::Yaw(void)
 
     limiter = gLimiterMgr->GetLimiter(CatIIICommandType, vehicleIndex);
 
-    if (fabs(yshape) >= 0.1F && (limiter))
+    if (fabs(yshape) >= 0.1F and (limiter))
         nycmd *= (5.0F / limiter->Limit(vcas * 0.8F));
 
     limiter = gLimiterMgr->GetLimiter(PitchYawControlDamper, vehicleIndex);
@@ -192,7 +192,7 @@ void AirframeClass::Yaw(void)
 
     YawIt(betcmd, SimLibMinorFrameTime);
 
-    if (!IsSet(InAir))
+    if ( not IsSet(InAir))
     {
         oldy03[0] *= 0.8F;
         oldy03[1] *= 0.8F;
@@ -224,5 +224,5 @@ void AirframeClass::YawIt(float betcmd, float dt)
     }
 
 
-    ShiAssert(!_isnan(beta));
+    ShiAssert( not _isnan(beta));
 }

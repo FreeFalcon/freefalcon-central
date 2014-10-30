@@ -73,15 +73,15 @@ public:
     // setting, querying gun fire state functions
     BOOL IsGunFiring(int i)
     {
-        return (gunFireFlags & (1 << i));
+        return (gunFireFlags bitand (1 << i));
     };
     void SetGunFiring(int i)
     {
-        gunFireFlags |= (1 << i);
+        gunFireFlags or_eq (1 << i);
     };
     void UnSetGunFiring(int i)
     {
-        gunFireFlags &= ~(1 << i);
+        gunFireFlags and_eq compl (1 << i);
     };
 
     void RunSensors(void);

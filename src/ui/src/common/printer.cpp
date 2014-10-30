@@ -20,7 +20,7 @@ SendStringToPrinter(_TCHAR *string, _TCHAR *title)
     ShiAssert(IsBadStringPtr(string, 8192) == 0);
     ShiAssert(IsBadStringPtr(title, 1024) == 0);
 
-    if ((g_nPrintToFile & 0x03) || g_bBriefHTML) // 0x01 + 0x02 means write to file ...and to it anyway if html is wanted
+    if ((g_nPrintToFile bitand 0x03) or g_bBriefHTML) // 0x01 + 0x02 means write to file ...and to it anyway if html is wanted
     {
         char filename[_MAX_PATH];
 
@@ -33,9 +33,9 @@ SendStringToPrinter(_TCHAR *string, _TCHAR *title)
         return 1;
     }
 
-    // if (!g_nPrintToFile || g_nPrintToFile & 0x02) // 0x00 + 0x02 means print out
+    // if ( not g_nPrintToFile or g_nPrintToFile bitand 0x02) // 0x00 + 0x02 means print out
     //THW 2004-04-12 Never print out if HTML-Briefings are enabled
-    if (!g_bBriefHTML || !g_nPrintToFile || (g_nPrintToFile & 0x02)) // 0x00 + 0x02 means print out
+    if ( not g_bBriefHTML or not g_nPrintToFile or (g_nPrintToFile bitand 0x02)) // 0x00 + 0x02 means print out
     {
         CoInitialize(NULL);
         ComSup::RegisterServer("GMPrint.dll");
@@ -78,7 +78,7 @@ SendStringToPrinter(_TCHAR *string, _TCHAR *title)
         CComBSTR bstr(title);
         p_prt->write(GMPRINTLib::GMP_LT_HEAD, (BSTR)bstr);
 
-        if (retval == 1 && FAILED(p_prt->print(GMPRINTLib::GMP_DEFAULT)))
+        if (retval == 1 and FAILED(p_prt->print(GMPRINTLib::GMP_DEFAULT)))
             retval = 0;
 
         p_prt.Release();
@@ -97,19 +97,19 @@ void PrintTime(char *output, FILETIME TimeToPrint)
 {
     WORD Date, Time;
 
-    if (FileTimeToLocalFileTime(&TimeToPrint, &TimeToPrint) &&
+    if (FileTimeToLocalFileTime(&TimeToPrint, &TimeToPrint) and 
         FileTimeToDosDateTime(&TimeToPrint, &Date, &Time))
     {
         // What a silly way to print out the file date/time. Oh well,
         // it works, and I'm not aware of a cleaner way to do it.
         if (g_bBriefHTML)
             wsprintf(output, "%d-%02d-%02d_%02d%02d%02d",
-                     (Date / 512) + 1980, (Date / 32) & 15, Date & 31,
-                     (Time / 2048), (Time / 32) & 63, (Time & 31) * 2);
+                     (Date / 512) + 1980, (Date / 32) bitand 15, Date bitand 31,
+                     (Time / 2048), (Time / 32) bitand 63, (Time bitand 31) * 2);
         else
             wsprintf(output, "%d/%d/%d %02d:%02d:%02d",
-                     (Date / 32) & 15, Date & 31, (Date / 512) + 1980,
-                     (Time / 2048), (Time / 32) & 63, (Time & 31) * 2);
+                     (Date / 32) bitand 15, Date bitand 31, (Date / 512) + 1980,
+                     (Time / 2048), (Time / 32) bitand 63, (Time bitand 31) * 2);
     }
     else
         output[0] = 0;
@@ -139,10 +139,10 @@ int WriteBriefingToFile(_TCHAR *string, char *fname)
     //It might be better for briefing processing programs to always have only one
     //briefing in the file...Make it configurable.
 
-    if (g_bAppendToBriefingFile && !g_bBriefHTML) //No sense in appending HTML briefings
+    if (g_bAppendToBriefingFile and not g_bBriefHTML) //No sense in appending HTML briefings
     {
         fileID = CreateFile(fullname, GENERIC_WRITE, 0, NULL, OPEN_ALWAYS,
-                            FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, NULL);
+                            FILE_ATTRIBUTE_NORMAL bitor FILE_FLAG_WRITE_THROUGH, NULL);
 
         if (fileID == INVALID_HANDLE_VALUE)
         {
@@ -171,7 +171,7 @@ int WriteBriefingToFile(_TCHAR *string, char *fname)
 
     WriteFile(fileID, tmpString, strsize, &bytes, NULL);
 
-    if (!g_bBriefHTML)
+    if ( not g_bBriefHTML)
     {
         strsize = sprintf(tmpString, "generated at %s.\r\n", TimeBuffer);
         WriteFile(fileID, tmpString, strsize, &bytes, NULL);
@@ -195,9 +195,9 @@ int WriteBriefingToFile(_TCHAR *string, char *fname)
         }
 
         //Write to file and append "\r\n" sequence.
-        if (!WriteFile(fileID, from, size, &bytes, NULL)) bytes = -1;
+        if ( not WriteFile(fileID, from, size, &bytes, NULL)) bytes = -1;
 
-        if (bytes != size)
+        if (bytes not_eq size)
         {
             MonoPrint("Failed to write to briefing output file\n");
             CloseHandle(fileID);

@@ -80,7 +80,7 @@ void SimMouseResumeProcessing(const int x, const int y)
 void OnSimMouseInput(HWND)
 {
     // sfr: touch buddy support
-    if (PlayerOptions.GetTouchBuddy() && !mouseIn)
+    if (PlayerOptions.GetTouchBuddy() and not mouseIn)
     {
         return;
     }
@@ -111,11 +111,11 @@ void OnSimMouseInput(HWND)
     dwElements = DMOUSE_BUFFERSIZE;
     hResult = gpDIDevice[SIM_MOUSE]->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), ObjData, &dwElements, 0);
 
-    if ((hResult == DIERR_INPUTLOST) || (hResult == DIERR_NOTACQUIRED))
+    if ((hResult == DIERR_INPUTLOST) or (hResult == DIERR_NOTACQUIRED))
     {
         hResult = gpDIDevice[SIM_MOUSE]->Acquire();
 
-        if (hResult != DI_OK)
+        if (hResult not_eq DI_OK)
         {
 #pragma warning(disable:4127)
             ShiAssert(false);
@@ -166,30 +166,30 @@ void OnSimMouseInput(HWND)
 
                 action = CP_CHECK_EVENT; //Wombat778 10-07-2003 apparently this is a fake event...seems like the right thing to do
             }
-            else if (ObjData[i].dwOfs == DIMOFS_BUTTON0 && !(ObjData[i].dwData & 0x80))
+            else if (ObjData[i].dwOfs == DIMOFS_BUTTON0 and not (ObjData[i].dwData bitand 0x80))
             {
                 action = CP_MOUSE_BUTTON0;
             }
-            else if (ObjData[i].dwOfs == DIMOFS_BUTTON1 && !(ObjData[i].dwData & 0x80))
+            else if (ObjData[i].dwOfs == DIMOFS_BUTTON1 and not (ObjData[i].dwData bitand 0x80))
             {
                 action = CP_MOUSE_BUTTON1;
                 oneDown = FALSE;
             }
-            else if (ObjData[i].dwOfs == DIMOFS_BUTTON1 && (ObjData[i].dwData & 0x80))
+            else if (ObjData[i].dwOfs == DIMOFS_BUTTON1 and (ObjData[i].dwData bitand 0x80))
             {
                 action = static_cast<unsigned long>(-1);
                 oneDown = TRUE;
             }
-            else if ((ObjData[i].dwOfs == DIMOFS_BUTTON3) && (ObjData[i].dwData & 0x80))   // Retro 22Jan2004
+            else if ((ObjData[i].dwOfs == DIMOFS_BUTTON3) and (ObjData[i].dwData bitand 0x80))   // Retro 22Jan2004
             {
 #if 0
-                PlayerOptions.SetClickablePitMode(!PlayerOptions.GetClickablePitMode()); //Wombat778 1-22-04 moved to playeroptions.
+                PlayerOptions.SetClickablePitMode( not PlayerOptions.GetClickablePitMode()); //Wombat778 1-22-04 moved to playeroptions.
 #else
-                clickableMouseMode = !clickableMouseMode; // Retro 15Feb2004
+                clickableMouseMode = not clickableMouseMode; // Retro 15Feb2004
 #endif
             } // Retro 22Jan2004
 
-            else if (ObjData[i].dwOfs == DIMOFS_BUTTON2 && (ObjData[i].dwData & 0x80))   //Wombat778 10-07-2003 Added for middle mouse button support
+            else if (ObjData[i].dwOfs == DIMOFS_BUTTON2 and (ObjData[i].dwData bitand 0x80))   //Wombat778 10-07-2003 Added for middle mouse button support
             {
                 if (middlebuttonfunc) middlebuttonfunc(1, KEY_DOWN, NULL);
 
@@ -203,7 +203,7 @@ void OnSimMouseInput(HWND)
                 continue;
             }
 
-            if (action == CP_MOUSE_BUTTON0 || action == CP_MOUSE_BUTTON1)
+            if (action == CP_MOUSE_BUTTON0 or action == CP_MOUSE_BUTTON1)
             {
                 passThru = OTWDriver.HandleMouseClick(gxPos, gyPos);
 
@@ -212,8 +212,8 @@ void OnSimMouseInput(HWND)
                     //Wombat778 10-11-2003  This is a hack because I couldnt get the
                     // button finding code to run from here. go figure
                     if (
-                        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit ||
-                        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockF3 ||
+                        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit or
+                        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockF3 or
                         OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockEFOV
                     )
                     {
@@ -257,7 +257,7 @@ void OnSimMouseInput(HWND)
         // reinit when I exit/enter the 3d. it´s also not init correctly for all
         // axis (it inits to 0 which can be bad for some axis, ie FOV)
         /************************************************************************/
-        if ((dz) && (IO.MouseWheelExists() == true))
+        if ((dz) and (IO.MouseWheelExists() == true))
         {
             // Retro 18Jan2004
             theMouseWheelAxis.AddToAxisValue(dz * PlayerOptions.GetMouseWheelSensitivity());
@@ -271,7 +271,7 @@ void OnSimMouseInput(HWND)
 #ifdef NEW_MOUSELOOK_HANDLING // Retro 16Jan2004
 #if 1 // Retro 22Jan2004 - reorganised the code somewhat
 
-        if (dx || dy)
+        if (dx or dy)
         {
             if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit)
             {
@@ -298,7 +298,7 @@ void OnSimMouseInput(HWND)
                 if (clickableMouseMode == false)
 #endif
                 {
-                    if (!oneDown) // Retro 22Jan2004 - the RMB can temporarily (when held down) force the 'opposite' mode
+                    if ( not oneDown) // Retro 22Jan2004 - the RMB can temporarily (when held down) force the 'opposite' mode
                     {
                         float MouseSensitivity = PlayerOptions.GetMouseLookSensitivity(); // Retro 16Jan2004
                         OTWDriver.ViewRelativePanTilt(dx * MouseSensitivity, dy * MouseSensitivity);
@@ -309,7 +309,7 @@ void OnSimMouseInput(HWND)
                 }
                 else // if we´re in clickable mode, move only the mousepointer
                 {
-                    if (!oneDown) // Retro 22Jan2004 - the RMB can temporarily (when held down) force the 'opposite' mode
+                    if ( not oneDown) // Retro 22Jan2004 - the RMB can temporarily (when held down) force the 'opposite' mode
                         UpdateCursorPosition(dx, dy);
                     else
                     {
@@ -399,7 +399,7 @@ void OnSimMouseInput(HWND)
                 }
             }
             // in most of the other views (external..)
-            else if ((!MouseMenuActive) && (PlayerOptions.GetMouseLook() == true))
+            else if (( not MouseMenuActive) and (PlayerOptions.GetMouseLook() == true))
             {
                 /************************************************************************/
                 // Retro 16Jan2004
@@ -464,7 +464,7 @@ void OnSimMouseInput(HWND)
         /************************************************************************/
         // This is wombat´s 3d cockpit mouselook
         /************************************************************************/
-        if (dx || dy)
+        if (dx or dy)
         {
             if (oneDown)
             {
@@ -473,7 +473,7 @@ void OnSimMouseInput(HWND)
                 /************************************************************************/
                 //Wombat778 10-09-2003 function only is true if in 3d cockpit
                 /************************************************************************/
-                if (!OTWDriver.ViewRelativePanTilt(dx * MouseSensitivity, dy * MouseSensitivity))
+                if ( not OTWDriver.ViewRelativePanTilt(dx * MouseSensitivity, dy * MouseSensitivity))
                 {
                     if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode2DCockpit)
                     {
@@ -577,8 +577,8 @@ void OnSimMouseInput(HWND)
                     }
                 }
 
-                if ((OTWDriver.GetOTWDisplayMode() != OTWDriverClass::Mode3DCockpit) ||
-                    (OTWDriver.GetOTWDisplayMode() != OTWDriverClass::Mode2DCockpit))
+                if ((OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode3DCockpit) or
+                    (OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode2DCockpit))
                 {
                     // Update cursor position otherwise
                     UpdateCursorPosition(dx, dy);
@@ -586,10 +586,10 @@ void OnSimMouseInput(HWND)
             }
 
             // we come here if 1) no RMB pressed 2) not in 2d pit mode
-            // aargh this (whole mouselook) code is a freaking mess !!!!
-            if ((PlayerOptions.GetMouseLook() == true) &&
-                (OTWDriver.GetOTWDisplayMode() != OTWDriverClass::Mode3DCockpit) &&
-                (OTWDriver.GetOTWDisplayMode() != OTWDriverClass::Mode2DCockpit))
+            // aargh this (whole mouselook) code is a freaking mess 
+            if ((PlayerOptions.GetMouseLook() == true) and 
+                (OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode3DCockpit) and 
+                (OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode2DCockpit))
             {
                 /************************************************************************/
                 // Retro 16Jan2004
@@ -643,7 +643,7 @@ void OnSimMouseInput(HWND)
 #endif
 #else
 
-        if (dx || dy)
+        if (dx or dy)
         {
             if (oneDown)
             {
@@ -651,7 +651,7 @@ void OnSimMouseInput(HWND)
 
                 //Wombat778 10-08-2003  The following function handles all of the crap below and makes mouselook smooth,
 
-                if (!OTWDriver.ViewRelativePanTilt(dx * g_fMouseLookSensitivity, dy * g_fMouseLookSensitivity)) //Wombat778 10-09-2003 function only is true if in 3d cockpit
+                if ( not OTWDriver.ViewRelativePanTilt(dx * g_fMouseLookSensitivity, dy * g_fMouseLookSensitivity)) //Wombat778 10-09-2003 function only is true if in 3d cockpit
                 {
                     //Retain old method for the 2d cockpit and external views because eyepan/eyetilt doesnt do anything in those views
 

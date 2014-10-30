@@ -4,7 +4,7 @@
 
 void *FLAT_RSC::GetData()
 {
-    if (!Owner || !Header)
+    if ( not Owner or not Header)
         return(NULL);
 
     return(Owner->GetData() + Header->offset);
@@ -17,16 +17,16 @@ BOOL SOUND_RSC::Play(int StreamID)
     char *snddata;
     RIFF_FILE RiffHeader;
 
-    if (!Owner)
+    if ( not Owner)
         return(FALSE);
 
-    if (!Owner->GetData())
+    if ( not Owner->GetData())
         return(FALSE);
 
     SndFlags = 0;
 
-    if (Header->flags & SOUND_LOOP)
-        SndFlags |= SND_STREAM_LOOP;
+    if (Header->flags bitand SOUND_LOOP)
+        SndFlags or_eq SND_STREAM_LOOP;
 
     snddata = Owner->GetData() + Header->offset;
 
@@ -42,10 +42,10 @@ BOOL SOUND_RSC::Loop(int StreamID)
     char *snddata;
     RIFF_FILE RiffHeader;
 
-    if (!Owner)
+    if ( not Owner)
         return(FALSE);
 
-    if (!Owner->GetData())
+    if ( not Owner->GetData())
         return(FALSE);
 
     SndFlags = SND_STREAM_LOOP;
@@ -63,13 +63,13 @@ BOOL SOUND_RSC::Stream(int StreamID)
     long SndFlags;
     char fname[MAX_PATH];
 
-    if (!Owner)
+    if ( not Owner)
         return(FALSE);
 
     SndFlags = 0;
 
-    if (Header->flags & SOUND_LOOP)
-        SndFlags |= SND_STREAM_LOOP;
+    if (Header->flags bitand SOUND_LOOP)
+        SndFlags or_eq SND_STREAM_LOOP;
 
     strcpy(fname, Owner->ResName());
     strcat(fname, ".rsc");

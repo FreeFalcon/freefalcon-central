@@ -57,7 +57,7 @@ int TMap::Setup(const char *mapPath)
     // Read the number of feet between the highest detail posts in this map
     retval = ReadFile(headerFile, &FeetPerPost, sizeof(FeetPerPost), &bytesRead, NULL);
 
-    if ((!retval) || (bytesRead != sizeof(FeetPerPost)))
+    if (( not retval) or (bytesRead not_eq sizeof(FeetPerPost)))
     {
         char string[80];
         char message[120];
@@ -66,7 +66,7 @@ int TMap::Setup(const char *mapPath)
         ShiError(message);
     }
 
-    ShiAssert((FeetPerPost > 0.0f) && (FeetPerPost < 50000.0f)); // 50,000 is arbitrary, just want to check reasonableness here.
+    ShiAssert((FeetPerPost > 0.0f) and (FeetPerPost < 50000.0f)); // 50,000 is arbitrary, just want to check reasonableness here.
 
 
     // Read the width and height of the MEA table
@@ -74,7 +74,7 @@ int TMap::Setup(const char *mapPath)
     retval = ReadFile(headerFile, &MEAheight,   sizeof(MEAheight),   &bytesRead, NULL);
     retval = ReadFile(headerFile, &FTtoMEAcell, sizeof(FTtoMEAcell), &bytesRead, NULL);
 
-    if ((!retval) || (bytesRead != sizeof(FTtoMEAcell)))
+    if (( not retval) or (bytesRead not_eq sizeof(FTtoMEAcell)))
     {
         char string[80];
         char message[120];
@@ -87,7 +87,7 @@ int TMap::Setup(const char *mapPath)
     // Read the number of levels we have available from the map header file
     retval = ReadFile(headerFile, &nLevels, sizeof(nLevels), &bytesRead, NULL);
 
-    if ((!retval) || (bytesRead != sizeof(nLevels)))
+    if (( not retval) or (bytesRead not_eq sizeof(nLevels)))
     {
         char string[80];
         char message[120];
@@ -96,13 +96,13 @@ int TMap::Setup(const char *mapPath)
         ShiError(message);
     }
 
-    ShiAssert((nLevels > 0) && (nLevels < 9)); // 9 is arbitrary, just want to check reasonableness here.
+    ShiAssert((nLevels > 0) and (nLevels < 9)); // 9 is arbitrary, just want to check reasonableness here.
 
 
     // Read the number of the last level which has conventional textures applied
     retval = ReadFile(headerFile, &lastNearTexturedLOD, sizeof(lastNearTexturedLOD), &bytesRead, NULL);
 
-    if ((!retval) || (bytesRead != sizeof(lastNearTexturedLOD)))
+    if (( not retval) or (bytesRead not_eq sizeof(lastNearTexturedLOD)))
     {
         char string[80];
         char message[120];
@@ -111,13 +111,13 @@ int TMap::Setup(const char *mapPath)
         ShiError(message);
     }
 
-    ShiAssert((lastNearTexturedLOD >= 0) && (lastNearTexturedLOD < nLevels));
+    ShiAssert((lastNearTexturedLOD >= 0) and (lastNearTexturedLOD < nLevels));
 
 
     // Read the number of the last level which has far textures applied
     retval = ReadFile(headerFile, &lastFarTexturedLOD, sizeof(lastFarTexturedLOD), &bytesRead, NULL);
 
-    if ((!retval) || (bytesRead != sizeof(lastFarTexturedLOD)))
+    if (( not retval) or (bytesRead not_eq sizeof(lastFarTexturedLOD)))
     {
         char string[80];
         char message[120];
@@ -126,7 +126,7 @@ int TMap::Setup(const char *mapPath)
         ShiError(message);
     }
 
-    ShiAssert((lastFarTexturedLOD >= lastNearTexturedLOD) && (lastFarTexturedLOD < nLevels));
+    ShiAssert((lastFarTexturedLOD >= lastNearTexturedLOD) and (lastFarTexturedLOD < nLevels));
 
 
     // Read the map's color table
@@ -136,7 +136,7 @@ int TMap::Setup(const char *mapPath)
     // Allocate memory for the map level objects
     Levels = new TLevel[ nLevels ];
 
-    if (!Levels)
+    if ( not Levels)
     {
         ShiError("Failed to allocate memory for map levels");
     }
@@ -149,12 +149,12 @@ int TMap::Setup(const char *mapPath)
         // Read the width and height in blocks of this level
         retval = ReadFile(headerFile, &width, sizeof(width), &bytesRead, NULL);
 
-        if ((retval) && (bytesRead == sizeof(nLevels)))
+        if ((retval) and (bytesRead == sizeof(nLevels)))
         {
             retval = ReadFile(headerFile, &height, sizeof(height), &bytesRead, NULL);
         }
 
-        if ((!retval) || (bytesRead != sizeof(nLevels)))
+        if (( not retval) or (bytesRead not_eq sizeof(nLevels)))
         {
             char string[80];
             char message[120];
@@ -163,8 +163,8 @@ int TMap::Setup(const char *mapPath)
             ShiError(message);
         }
 
-        ShiAssert((width  > 0) && (width  < 5000)); // 1000 is arbitrary, just want to check reasonableness here.
-        ShiAssert((height > 0) && (height < 5000)); // 1000 is arbitrary, just want to check reasonableness here.
+        ShiAssert((width  > 0) and (width  < 5000)); // 1000 is arbitrary, just want to check reasonableness here.
+        ShiAssert((height > 0) and (height < 5000)); // 1000 is arbitrary, just want to check reasonableness here.
 
         // Setup the level
         Levels[i].Setup(i, width, height, mapPath);
@@ -174,7 +174,7 @@ int TMap::Setup(const char *mapPath)
     float latitude, longitude;
     retval = ReadFile(headerFile, &flags, sizeof(flags), &bytesRead, NULL);
 
-    if (!retval  || bytesRead != sizeof(flags))
+    if ( not retval  or bytesRead not_eq sizeof(flags))
     {
         flags = 0;
         ResetLatLong();
@@ -184,7 +184,7 @@ int TMap::Setup(const char *mapPath)
         retval = ReadFile(headerFile, &longitude, sizeof(longitude), &bytesRead, NULL);
         retval = ReadFile(headerFile, &latitude, sizeof(latitude), &bytesRead, NULL);
 
-        if (retval && bytesRead == sizeof(latitude))
+        if (retval and bytesRead == sizeof(latitude))
         {
             SetLatLong(latitude, longitude);
         }
@@ -194,13 +194,13 @@ int TMap::Setup(const char *mapPath)
 
     GetLatLong(&latitude, &longitude);
 
-    if (flags & TMAP_LARGETERRAIN)   // big indexes in use
+    if (flags bitand TMAP_LARGETERRAIN)   // big indexes in use
     {
         g_LargeTerrainFormat = true;
     }
     else g_LargeTerrainFormat = false;
 
-    if (flags & TMAP_LARGEUIMAP)   // 128x128 theater
+    if (flags bitand TMAP_LARGEUIMAP)   // 128x128 theater
     {
         g_LargeTheater = true;
     }
@@ -209,7 +209,7 @@ int TMap::Setup(const char *mapPath)
     float maxtheateralt;
     retval = ReadFile(headerFile, &maxtheateralt, sizeof(maxtheateralt), &bytesRead, NULL);
 
-    if (!retval  || bytesRead != sizeof(maxtheateralt))
+    if ( not retval  or bytesRead not_eq sizeof(maxtheateralt))
     {
         g_MaximumTheaterAltitude = 12000.0F;
     }
@@ -273,7 +273,7 @@ void TMap::LoadColorTable(HANDLE inputFile)
     // Read the original color data
     retval = ReadFile(inputFile, palette, sizeof(palette), &bytesRead, NULL);
 
-    if ((!retval) || (bytesRead != sizeof(palette)))
+    if (( not retval) or (bytesRead not_eq sizeof(palette)))
     {
         char string[80];
         char message[120];
@@ -289,9 +289,9 @@ void TMap::LoadColorTable(HANDLE inputFile)
 
     while (dst < end)
     {
-        dst->r = ((*packedSrc)       & 0xFF) / 255.0f;
-        dst->g = ((*packedSrc >> 8)  & 0xFF) / 255.0f;
-        dst->b = ((*packedSrc >> 16) & 0xFF) / 255.0f;
+        dst->r = ((*packedSrc) bitand 0xFF) / 255.0f;
+        dst->g = ((*packedSrc >> 8) bitand 0xFF) / 255.0f;
+        dst->b = ((*packedSrc >> 16) bitand 0xFF) / 255.0f;
         packedSrc++;
         dst++;
     }
@@ -351,7 +351,7 @@ void TMap::LoadMEAtable(const char *mapPath)
         target = &MEAarray[row * MEAwidth];
         retval = ReadFile(dataFile, target, MEAwidth * sizeof(*MEAarray), &bytesRead, NULL);
 
-        if ((!retval) || (bytesRead != MEAwidth * sizeof(*MEAarray)))
+        if (( not retval) or (bytesRead not_eq MEAwidth * sizeof(*MEAarray)))
         {
             char string[80];
             char message[120];

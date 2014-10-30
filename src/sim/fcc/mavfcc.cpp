@@ -41,10 +41,10 @@ void FireControlComputer::AirGroundMissileMode(void)
             break;
 
         default:
-            if (!releaseConsent)
+            if ( not releaseConsent)
             {
                 // Check for regeneration of weapon
-                if (postDrop && Sms->curWeapon == NULL)
+                if (postDrop and Sms->curWeapon == NULL)
                 {
                     Sms->ResetCurrentWeapon();
                     Sms->WeaponStep();
@@ -91,8 +91,8 @@ void FireControlComputer::MaverickMode(void)
     // MD -- 20040110: adding for analog cursor support
     float xMove = 0.0F, yMove = 0.0F;
 
-    if ((cursorXCmd != 0) || (cursorYCmd != 0))
-        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+    if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
+        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
         {
             yMove = (float)cursorYCmd / 10000.0F;
             xMove = (float)cursorXCmd / 10000.0F;
@@ -115,7 +115,7 @@ void FireControlComputer::MaverickMode(void)
     // COBRA - RED - FIXING CTDs - Make the display to be available before using it...
     theMissile = (MissileClass *)(Sms->GetCurrentWeapon());
 
-    if (theMissile && (MaverickDisplayClass*)(theMissile->display) && Sms->CurHardpoint() >= 0)
+    if (theMissile and (MaverickDisplayClass*)(theMissile->display) and Sms->CurHardpoint() >= 0)
     {
         theDisplay = (MaverickDisplayClass*)(theMissile->display);
         // RV - Biker - Get WEZ max/min and convert to ft
@@ -124,7 +124,7 @@ void FireControlComputer::MaverickMode(void)
     }
 
     //sfr: added display check
-    if ((theDisplay != NULL) && systemTarget && systemTarget->BaseData()->IsAirplane()) // Cobra - Target only ground targets
+    if ((theDisplay not_eq NULL) and systemTarget and systemTarget->BaseData()->IsAirplane()) // Cobra - Target only ground targets
     {
         if (theDisplay) theDisplay->DropTarget();
 
@@ -135,7 +135,7 @@ void FireControlComputer::MaverickMode(void)
     }
 
     // Make sure relative geometry is updated for the system target
-    if (systemTarget && systemTarget->BaseData()->IsStatic())
+    if (systemTarget and systemTarget->BaseData()->IsStatic())
     {
         SimObjectType* tmpPtr = systemTarget->next;
         systemTarget->next = NULL;
@@ -160,12 +160,12 @@ void FireControlComputer::MaverickMode(void)
         // M.N. added full realism mode
         AircraftClass *pa = (AircraftClass *)platform;
 
-        if (!playerFCC || (pa->IsPlayer() && pa->AutopilotType() == AircraftClass::CombatAP) || ((PlayerOptions.GetAvionicsType() != ATRealistic && PlayerOptions.GetAvionicsType() != ATRealisticAV) && (subMode == SLAVE)))
+        if ( not playerFCC or (pa->IsPlayer() and pa->AutopilotType() == AircraftClass::CombatAP) or ((PlayerOptions.GetAvionicsType() not_eq ATRealistic and PlayerOptions.GetAvionicsType() not_eq ATRealisticAV) and (subMode == SLAVE)))
         {
-            if (systemTarget && systemTarget->BaseData()->OnGround())
+            if (systemTarget and systemTarget->BaseData()->OnGround())
             {
                 /* JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
-                 if (systemTarget->BaseData()->IsSim() && ((SimBaseClass*)systemTarget->BaseData())->IsAwake())
+                 if (systemTarget->BaseData()->IsSim() and ((SimBaseClass*)systemTarget->BaseData())->IsAwake())
                 {
                    ((SimBaseClass*)systemTarget->BaseData())->drawPointer->GetPosition (&pos);
                    systemTarget->BaseData()->SetPosition (systemTarget->BaseData()->XPos(),
@@ -254,7 +254,7 @@ void FireControlComputer::MaverickMode(void)
                     theDisplay->DropTarget();
                     preDesignate = TRUE;
 
-                    if (subMode != SLAVE)
+                    if (subMode not_eq SLAVE)
                         platform->SOIManager(SimVehicleClass::SOI_HUD);
                     else
                         platform->SOIManager(SimVehicleClass::SOI_RADAR);
@@ -380,7 +380,7 @@ void FireControlComputer::MaverickMode(void)
                         pitch += groundDesignateEl * trig.cos - groundDesignateAz * trig.sin;
                         yaw += groundDesignateEl * trig.sin + groundDesignateAz * trig.cos;
 
-                        if (!FindGroundIntersection(pitch, yaw, &tmpX, &tmpY, &tmpZ))
+                        if ( not FindGroundIntersection(pitch, yaw, &tmpX, &tmpY, &tmpZ))
                         {
                             groundDesignateX = 0.0F;
                             groundDesignateY = 0.0F;
@@ -408,7 +408,7 @@ void FireControlComputer::MaverickMode(void)
                     }
                 }
             }
-            else if (!preDesignate)
+            else if ( not preDesignate)
             {
                 if (theDisplay->IsLocked())
                 {
@@ -452,9 +452,9 @@ void FireControlComputer::MaverickMode(void)
                         isLimited = theMissile->SetSeekerPos(&yaw, &pitch);
                         theMissile->RunSeeker();
 
-                        if (!theMissile->targetPtr)
+                        if ( not theMissile->targetPtr)
                         {
-                            if (subMode != SLAVE)
+                            if (subMode not_eq SLAVE)
                                 platform->SOIManager(SimVehicleClass::SOI_HUD);
                             else
                                 platform->SOIManager(SimVehicleClass::SOI_RADAR);
@@ -465,7 +465,7 @@ void FireControlComputer::MaverickMode(void)
                     }
                     else
                     {
-                        if (subMode != SLAVE)
+                        if (subMode not_eq SLAVE)
                             platform->SOIManager(SimVehicleClass::SOI_HUD);
                         else
                             platform->SOIManager(SimVehicleClass::SOI_RADAR);
@@ -475,7 +475,7 @@ void FireControlComputer::MaverickMode(void)
                 }
                 else
                 {
-                    if ((cursorXCmd != 0) || (cursorYCmd != 0))
+                    if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
                     {
 
                         if (g_bMavFixes) // a.s. 20.Febr.2002. begin: New Code for slewing MAVs. With this code, not the angles are altered, but
@@ -577,7 +577,7 @@ void FireControlComputer::MaverickMode(void)
                                 yaw += xMove * g_fCursorSpeed * MAVERICK_SLEW_RATE * SimLibMajorFrameTime;
                             }
 
-                            if (!FindGroundIntersection(pitch, yaw, &tmpX, &tmpY, &tmpZ))
+                            if ( not FindGroundIntersection(pitch, yaw, &tmpX, &tmpY, &tmpZ))
                             {
                                 preDesignate = TRUE;
                                 groundPipperAz = 0.0F;
@@ -620,7 +620,7 @@ void FireControlComputer::MaverickMode(void)
                     yaw   = groundDesignateAz;
                     isLimited = theMissile->SetSeekerPos(&yaw, &pitch);
 
-                    if (!isLimited)
+                    if ( not isLimited)
                     {
                         curTarget = MavCheckLock(theMissile);
 
@@ -635,13 +635,13 @@ void FireControlComputer::MaverickMode(void)
                         curTarget = NULL;
                         preDesignate = TRUE;
 
-                        if (subMode != SLAVE)
+                        if (subMode not_eq SLAVE)
                             platform->SOIManager(SimVehicleClass::SOI_HUD);
                         else
                             platform->SOIManager(SimVehicleClass::SOI_RADAR);
                     }
 
-                    if (theMissile->targetPtr && designateCmd && !lastDesignate)
+                    if (theMissile->targetPtr and designateCmd and not lastDesignate)
                     {
                         SetTarget(curTarget);
                         theDisplay->LockTarget();
@@ -735,7 +735,7 @@ void FireControlComputer::MaverickMode(void)
     }
     else
     {
-        if (subMode != SLAVE)
+        if (subMode not_eq SLAVE)
             platform->SOIManager(SimVehicleClass::SOI_HUD);
         else
             platform->SOIManager(SimVehicleClass::SOI_RADAR);
@@ -744,7 +744,7 @@ void FireControlComputer::MaverickMode(void)
         missileTarget = FALSE;
     }
 
-    if (!releaseConsent)
+    if ( not releaseConsent)
     {
         postDrop = FALSE;
     }
@@ -772,16 +772,16 @@ void FireControlComputer::MaverickMode(void)
     MissileClass *curWeapon = NULL;
     curWeapon = ((MissileClass*)Sms->GetCurrentWeapon());
 
-    if (g_bRealisticAvionics && Sms && playerFCC)
+    if (g_bRealisticAvionics and Sms and playerFCC)
     {
         AircraftClass *pa = (AircraftClass *)curWeapon->parent.get();
 
         if (
-            curWeapon &&
-            (curWeapon->parent &&
-             pa->IsPlayer() &&
-             !(pa->AutopilotType() == AircraftClass::CombatAP) &&
-             (curWeapon->Covered || !Sms->Powered))
+            curWeapon and 
+            (curWeapon->parent and 
+             pa->IsPlayer() and 
+ not (pa->AutopilotType() == AircraftClass::CombatAP) and 
+             (curWeapon->Covered or not Sms->Powered))
         )
         {
             missileTarget = FALSE;
@@ -831,7 +831,7 @@ void FireControlComputer::CheckFeatures(MissileClass* theMissile)
     float groundRange;
     float curMin, dx, dy;
 
-    if (!targetPtr)
+    if ( not targetPtr)
     {
         groundRange = (float)sqrt((groundDesignateX - platform->XPos()) * (groundDesignateX - platform->XPos()) +
                                   (groundDesignateY - platform->YPos()) * (groundDesignateY - platform->YPos()) +
@@ -846,10 +846,10 @@ void FireControlComputer::CheckFeatures(MissileClass* theMissile)
                 dx = (float)fabs(testObject->XPos() - groundDesignateX);
                 dy = (float)fabs(testObject->YPos() - groundDesignateY);
                 //MI I don't know who did the original code below, but something must have been screwed
-                //in his head when he wrote this! Fix for the jumping cursors
+                //in his head when he wrote this Fix for the jumping cursors
                 float CurRange = (float)sqrt(dx * dx + dy * dy);
 
-                if ((CurRange < curMin) && !(testObject->IsDead() || testObject->IsExploding()))
+                if ((CurRange < curMin) and not (testObject->IsDead() or testObject->IsExploding()))
                 {
                     closestObj = testObject;
                     curMin = CurRange;
@@ -907,7 +907,7 @@ void FireControlComputer::UpdateGroundObjectRelativeGeometry(void)
     float tmp;
 
     /* JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
-     if (targetPtr->BaseData()->IsSim() && ((SimBaseClass*)targetPtr->BaseData())->IsAwake())
+     if (targetPtr->BaseData()->IsSim() and ((SimBaseClass*)targetPtr->BaseData())->IsAwake())
     {
        ((SimBaseClass*)targetPtr->BaseData())->drawPointer->GetPosition (&pos);
        targetPtr->BaseData()->SetPosition (pos.x, pos.y, pos.z);
@@ -937,7 +937,7 @@ SimObjectType* FireControlComputer::MavCheckLock(MissileClass* theMissile)
     //MI fix for better Maverick target selection
     AircraftClass *pa = (AircraftClass *)platform;
 
-    if (!playerFCC || (pa->IsPlayer() && pa->AutopilotType() == AircraftClass::CombatAP))
+    if ( not playerFCC or (pa->IsPlayer() and pa->AutopilotType() == AircraftClass::CombatAP))
         minDist = 1.0F * DTR;
     else
     {
@@ -966,10 +966,10 @@ SimObjectType* FireControlComputer::MavCheckLock(MissileClass* theMissile)
     // Look for a target
     while (curTarget)
     {
-        if (fabs(curTarget->localData->az - yaw) < minDist &&
-            fabs(curTarget->localData->el - pitch) < minDist &&
-            curTarget->BaseData()->IsSim() &&
-            !curTarget->BaseData()->IsWeapon() &&
+        if (fabs(curTarget->localData->az - yaw) < minDist and 
+            fabs(curTarget->localData->el - pitch) < minDist and 
+            curTarget->BaseData()->IsSim() and 
+ not curTarget->BaseData()->IsWeapon() and 
             curTarget->BaseData()->GetVt() <= 60 * KNOTS_TO_FTPSEC) //MI Maverik lockup fix
         {
             theMissile->SetTarget(curTarget);
@@ -986,7 +986,7 @@ SimObjectType* FireControlComputer::MavCheckLock(MissileClass* theMissile)
 
     curTarget = theMissile->targetPtr;
 
-    if (!theMissile->targetPtr)
+    if ( not theMissile->targetPtr)
     {
         CheckFeatures(theMissile);
         curTarget = theMissile->targetPtr;

@@ -139,7 +139,7 @@ int FalconSendVC::Process(uchar autodisp)
 
     MonoPrint("Got the VC Message %d\n", dataBlock.size);
 
-    if (TheCampaign.Flags & CAMP_NEED_VC)
+    if (TheCampaign.Flags bitand CAMP_NEED_VC)
     {
         count = dataBlock.size / sizeof(sent_vc);
 
@@ -184,7 +184,7 @@ int FalconSendVC::Process(uchar autodisp)
             }
         }
 
-        TheCampaign.Flags &= ~CAMP_NEED_VC;
+        TheCampaign.Flags and_eq compl CAMP_NEED_VC;
 
         // Let the UI know we've received some data
         if (gMainHandler)
@@ -235,7 +235,7 @@ void SendVCData(FalconSessionEntity *requester)
 
         ptr = (char *) msg->dataBlock.data;
 
-        while ((count) && (vc))
+        while ((count) and (vc))
         {
             *(int*)ptr = vc->get_team();
             ptr += 4;

@@ -174,7 +174,7 @@ HRESULT InitDirectPlay()
         goto LCleanup;
     }
     else
-        g_bLobbyLaunched = g_hLobbyHandle != NULL;
+        g_bLobbyLaunched = g_hLobbyHandle not_eq NULL;
 
     // Ensure that TCP/IP is a valid Service Provider
     if (FALSE == IsServiceProviderValid(&CLSID_DP8SP_TCPIP))
@@ -211,7 +211,7 @@ BOOL IsServiceProviderValid(const GUID* pGuidSP)
         hr = g_pDPClient->EnumServiceProviders(&CLSID_DP8SP_TCPIP, NULL, NULL, &dwSize, &dwItems, 0);
     }
 
-    if (hr != DPNERR_BUFFERTOOSMALL)
+    if (hr not_eq DPNERR_BUFFERTOOSMALL)
     {
         MonoPrint("Failed Enumerating Service Providers:  0x%x\n", hr);
         goto LCleanup;
@@ -423,7 +423,7 @@ HRESULT WINAPI DirectPlayMessageHandler(PVOID pvUserContext, DWORD dwMessageId, 
                 {
                     MonoPrint("voice SetClientListenFreqs");
 
-                    if (!g_bHost)
+                    if ( not g_bHost)
                         break;
 
                     COM_MESSAGE_SetClientListenFreqs* SetClientListenFreqsMessage;
@@ -469,7 +469,7 @@ HRESULT WINAPI DirectPlayMessageHandler(PVOID pvUserContext, DWORD dwMessageId, 
                 return hr;
             }
 
-            if (FAILED(hr) && hr != DPNERR_BUFFERTOOSMALL)
+            if (FAILED(hr) and hr not_eq DPNERR_BUFFERTOOSMALL)
             {
                 MonoPrint("Failed GetPeerInfo:  0x%X\n", hr);
                 return hr;
@@ -502,7 +502,7 @@ HRESULT WINAPI DirectPlayMessageHandler(PVOID pvUserContext, DWORD dwMessageId, 
                                                 0,                      // dwTimeOut
                                                 NULL,                   // pvAsyncContext
                                                 NULL,                   // pvAsyncHandle
-                                                DPNSEND_SYNC | DPNSEND_GUARANTEED)))    // dwFlags
+                                                DPNSEND_SYNC bitor DPNSEND_GUARANTEED)))    // dwFlags
             {
                 printf("Failed Sending Data:  0x%x\n", hr);
             }
@@ -568,7 +568,7 @@ HRESULT WINAPI LobbyAppMessageHandler(PVOID pvUserContext, DWORD dwMessageId, PV
 //-----------------------------------------------------------------------------
 HRESULT WINAPI DirectVoiceServerMessageHandler(PVOID pvUserContext, DWORD dwMessageId, PVOID pMsgBuffer)
 {
-    if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp)
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp)
         // switch(dwMessageId)
     {
 
@@ -593,7 +593,7 @@ HRESULT WINAPI DirectVoiceClientMessageHandler(PVOID pvUserContext, DWORD dwMess
     {
         case DVMSGID_RECORDSTART:
         {
-            if (!OTWDriver.pCockpitManager || !OTWDriver.pCockpitManager->mpIcp) break;
+            if ( not OTWDriver.pCockpitManager or not OTWDriver.pCockpitManager->mpIcp) break;
 
             if (g_itransmitfreq == 1)
             {
@@ -612,7 +612,7 @@ HRESULT WINAPI DirectVoiceClientMessageHandler(PVOID pvUserContext, DWORD dwMess
 
         case DVMSGID_RECORDSTOP:
         {
-            if (!OTWDriver.pCockpitManager || !OTWDriver.pCockpitManager->mpIcp) break;
+            if ( not OTWDriver.pCockpitManager or not OTWDriver.pCockpitManager->mpIcp) break;
 
             OTWDriver.pCockpitManager->mpIcp->transmitingvoicecom1 = FALSE;
             OTWDriver.pCockpitManager->mpIcp->transmitingvoicecom2 = FALSE;
@@ -733,7 +733,7 @@ HRESULT CreateDeviceAddress()
         goto LCleanup;
     }
 
-    if (g_bHost && g_ddwPorthost)
+    if (g_bHost and g_ddwPorthost)
     {
         if (FAILED(hr = g_pDeviceAddress->AddComponent(DPNA_KEY_PORT,             //pwszName
                         &g_ddwPorthost, sizeof(g_ddwPorthost),   //lpvData, dwDataSize
@@ -743,7 +743,7 @@ HRESULT CreateDeviceAddress()
             goto LCleanup;
         }
     }
-    else if (!g_bHost && g_ddwPortclient)
+    else if ( not g_bHost and g_ddwPortclient)
     {
         if (FAILED(hr = g_pDeviceAddress->AddComponent(DPNA_KEY_PORT,             //pwszName
                         &g_ddwPortclient, sizeof(g_ddwPortclient),   //lpvData, dwDataSize
@@ -835,7 +835,7 @@ HRESULT HostSession()
     dpAppDesc.dwSize = sizeof(DPN_APPLICATION_DESC);
     dpAppDesc.guidApplication = g_guidApp;
     dpAppDesc.pwszSessionName = wszSession;
-    dpAppDesc.dwFlags = DPNSESSION_NODPNSVR | DPNSESSION_CLIENT_SERVER; //|DPNSESSION_MIGRATE_HOST;
+    dpAppDesc.dwFlags = DPNSESSION_NODPNSVR bitor DPNSESSION_CLIENT_SERVER; //|DPNSESSION_MIGRATE_HOST;
 
     // We are now ready to host the app
     if (FAILED(hr = g_pDPServer->Host(&dpAppDesc,              // AppDesc
@@ -878,7 +878,7 @@ HRESULT ConnectToSession()
     // Simply connect to the first one in the list
     EnterCriticalSection(&g_csHostList);
 
-    if (g_pHostList && SUCCEEDED(hr = g_pHostList->pHostAddress->Duplicate(&pHostAddress)))
+    if (g_pHostList and SUCCEEDED(hr = g_pHostList->pHostAddress->Duplicate(&pHostAddress)))
     {
         hr = g_pDPClient->Connect(&dpnAppDesc,        // pdnAppDesc
                                   pHostAddress,       // pHostAddr
@@ -977,7 +977,7 @@ HRESULT Register()
     dplDesc.guidApplication = g_guidApp;
 
     // We need to parse out the path and the exe name from the input value
-    for (i = wcslen(g_wszPath); i >= 0 && g_wszPath[i] != L'\\'; i--);
+    for (i = wcslen(g_wszPath); i >= 0 and g_wszPath[i] not_eq L'\\'; i--);
 
     pwszPath = new WCHAR[i + 1];
 
@@ -1113,7 +1113,7 @@ HRESULT InitDirectPlayVoice()
 
         hr = pVoiceClient->GetCompressionTypes(pBuffer, &dwSize, &dwNumElements, 0);
 
-        if (hr != DVERR_BUFFERTOOSMALL && FAILED(hr))
+        if (hr not_eq DVERR_BUFFERTOOSMALL and FAILED(hr))
         {
             return 1;
         }
@@ -1221,7 +1221,7 @@ HRESULT InitDirectPlayVoice()
 
     ZeroMemory(&dvClientConfig, sizeof(DVCLIENTCONFIG));
     dvClientConfig.dwSize = sizeof(DVCLIENTCONFIG);
-    dvClientConfig.dwFlags = /*DVCLIENTCONFIG_AUTOVOICEACTIVATED | */DVCLIENTCONFIG_AUTORECORDVOLUME;
+    dvClientConfig.dwFlags = /*DVCLIENTCONFIG_AUTOVOICEACTIVATED bitor */DVCLIENTCONFIG_AUTORECORDVOLUME;
     dvClientConfig.lRecordVolume = DVRECORDVOLUME_LAST;
     dvClientConfig.lPlaybackVolume = DVPLAYBACKVOLUME_DEFAULT;
     dvClientConfig.dwThreshold = DVTHRESHOLD_UNUSED;
@@ -1373,7 +1373,7 @@ void CleanupDirectPlay()
     }
 
 
-    if (g_pLobbyApp && g_ipadress)
+    if (g_pLobbyApp and g_ipadress)
         g_pLobbyApp->Close(0);
 
     // Clean up Host list
@@ -1383,7 +1383,7 @@ void CleanupDirectPlay()
 
         pHostNode = g_pHostList;
 
-        while (pHostNode != NULL)
+        while (pHostNode not_eq NULL)
         {
             SAFE_RELEASE(pHostNode->pHostAddress);
             SAFE_DELETE(pHostNode->pAppDesc);
@@ -1401,7 +1401,7 @@ void CleanupDirectPlay()
 
         if (g_pHostAddress)SAFE_RELEASE(g_pHostAddress);
 
-        if (g_bHost && g_pDPServer)
+        if (g_bHost and g_pDPServer)
         {
             SAFE_RELEASE(g_pDPServer);
         }
@@ -1419,14 +1419,14 @@ void CleanupDirectPlay()
         if (g_wszPath)SAFE_DELETE_ARRAY(g_wszPath);
     }
 
-    if (g_bVoiceCom && !g_pDPServer && !g_pDPClient  && (g_ipadress))  // 2002-02-07 ADDED BY S.G. ONLY IF CREATED AND WE'RE IN g_bVoiceCom MODE
+    if (g_bVoiceCom and not g_pDPServer and not g_pDPClient and (g_ipadress))  // 2002-02-07 ADDED BY S.G. ONLY IF CREATED AND WE'RE IN g_bVoiceCom MODE
         DeleteCriticalSection(&g_csHostList);
 }
 
 /*VOID DXUtil_ConvertWideStringToGeneric( TCHAR* tstrDestination, const WCHAR* wstrSource,
                                         int cchDestChar )
 {
-    if( tstrDestination==NULL || wstrSource==NULL )
+    if( tstrDestination==NULL or wstrSource==NULL )
         return;
 
 #ifdef _UNICODE
@@ -1441,7 +1441,7 @@ void CleanupDirectPlay()
 VOID DXUtil_ConvertWideStringToAnsi( CHAR* strDestination, const WCHAR* wstrSource,
                                      int cchDestChar )
 {
-    if( strDestination==NULL || wstrSource==NULL )
+    if( strDestination==NULL or wstrSource==NULL )
         return;
 
     if( cchDestChar == -1 )
@@ -1465,7 +1465,7 @@ void startupvoice(char *ip)
     char hostIp[256];
     strcpy(hostIp, ip);
 
-    if (!strcmp(hostIp, "0.0.0.0")) g_bHost = TRUE;
+    if ( not strcmp(hostIp, "0.0.0.0")) g_bHost = TRUE;
     else g_bHost = FALSE;
 
     // Init COM so we can use CoCreateInstance
@@ -1511,7 +1511,7 @@ void startupvoice(char *ip)
     {
         // Get the necessary user input on whether they are hosting or connecting
 
-        if (!strcmp(hostIp, "0.0.0.0")) iUserChoice = USER_HOST;
+        if ( not strcmp(hostIp, "0.0.0.0")) iUserChoice = USER_HOST;
         else iUserChoice = USER_CONNECT;
 
         if (FAILED(hr = CreateDeviceAddress()))
@@ -1604,27 +1604,27 @@ void RefreshVoiceFreqs()
     static char* gamename;
 
 
-    if (!VM) return;
+    if ( not VM) return;
 
-    if (g_bHost && !g_pDPServer)return;
+    if (g_bHost and not g_pDPServer)return;
 
-    if (!g_bHost && !g_pDPClient)return;
+    if ( not g_bHost and not g_pDPClient)return;
 
-    if (!g_bconected) return;
+    if ( not g_bconected) return;
 
-    if (g_bHost && !g_dpnidLocalPlayer) return;
+    if (g_bHost and not g_dpnidLocalPlayer) return;
 
-    if (!g_bHost && (g_afreqarrey.Freq[0][0] == 0 || g_afreqarrey.Freq[1][0] == 0 || g_afreqarrey.Freq[2][0] == 0)) return;
+    if ( not g_bHost and (g_afreqarrey.Freq[0][0] == 0 or g_afreqarrey.Freq[1][0] == 0 or g_afreqarrey.Freq[2][0] == 0)) return;
 
-    if (!g_afreqarrey.count && !init)
+    if ( not g_afreqarrey.count and not init)
     {
         SetListenFreqsClient(11, 1234, 1);
         init = true;
     }
 
-    if (team == FalconLocalSession->GetTeam() && com1 == VM->radiofilter[0] && com2 == VM->radiofilter[1]
-        && FalconLocalSession->Game() && !strcmp(gamename, FalconLocalSession->Game()->GameName())) return;
-    else if (!FalconLocalSession->Game())return;
+    if (team == FalconLocalSession->GetTeam() and com1 == VM->radiofilter[0] and com2 == VM->radiofilter[1]
+       and FalconLocalSession->Game() and not strcmp(gamename, FalconLocalSession->Game()->GameName())) return;
+    else if ( not FalconLocalSession->Game())return;
     else
     {
         // something on the radio changed...lets update the groups
@@ -1664,12 +1664,12 @@ void RefreshVoiceFreqs()
         case rcfFromPackage:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1.num_ = pkg->Id();
@@ -1678,12 +1678,12 @@ void RefreshVoiceFreqs()
         case rcfPackage2:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1.num_ = pkg->Id() + 1;
@@ -1692,12 +1692,12 @@ void RefreshVoiceFreqs()
         case rcfPackage3:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1.num_ = pkg->Id() + 2;
@@ -1707,12 +1707,12 @@ void RefreshVoiceFreqs()
         case rcfPackage4:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1.num_ = pkg->Id() + 3;
@@ -1722,12 +1722,12 @@ void RefreshVoiceFreqs()
         case rcfPackage5:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1.num_ = pkg->Id() + 4;
@@ -1745,7 +1745,7 @@ void RefreshVoiceFreqs()
             break;
 
         case rcfTower:
-            if (gNavigationSys && SimDriver.GetPlayerEntity())
+            if (gNavigationSys and SimDriver.GetPlayerEntity())
             {
                 VU_ID ATCId;
                 gNavigationSys->GetAirbase(&ATCId);
@@ -1781,12 +1781,12 @@ void RefreshVoiceFreqs()
         case rcfFromPackage:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2.num_ = pkg->Id();
@@ -1795,12 +1795,12 @@ void RefreshVoiceFreqs()
         case rcfPackage2:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2.num_ = pkg->Id() + 1;
@@ -1809,12 +1809,12 @@ void RefreshVoiceFreqs()
         case rcfPackage3:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2.num_ = pkg->Id() + 2;
@@ -1823,12 +1823,12 @@ void RefreshVoiceFreqs()
         case rcfPackage4:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2.num_ = pkg->Id() + 3;
@@ -1837,12 +1837,12 @@ void RefreshVoiceFreqs()
         case rcfPackage5:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2.num_ = pkg->Id() + 4;
@@ -1860,7 +1860,7 @@ void RefreshVoiceFreqs()
             break;
 
         case rcfTower:
-            if (gNavigationSys && SimDriver.GetPlayerEntity())
+            if (gNavigationSys and SimDriver.GetPlayerEntity())
             {
                 VU_ID ATCId;
                 gNavigationSys->GetAirbase(&ATCId);
@@ -1874,7 +1874,7 @@ void RefreshVoiceFreqs()
 
     if (FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI)
     {
-        if (FalconLocalSession->GetTeam() != 255)
+        if (FalconLocalSession->GetTeam() not_eq 255)
             comvuid1.num_ = FalconLocalSession->GetTeam() + 10; //ui
         else comvuid1.num_ = 11;//ui
 
@@ -1895,13 +1895,13 @@ void Transmit(int com)
     static int com2 = NULL;
     bool doupdate = false;
 
-    if (!VM) return;
+    if ( not VM) return;
 
-    if (g_bHost && !g_pDPServer) return;
+    if (g_bHost and not g_pDPServer) return;
 
-    if (!g_bHost && !g_pDPClient) return;
+    if ( not g_bHost and not g_pDPClient) return;
 
-    if (g_bHost && !g_dpnidLocalPlayer) return;
+    if (g_bHost and not g_dpnidLocalPlayer) return;
 
 
     VU_ID comvuid1;
@@ -1933,12 +1933,12 @@ void Transmit(int com)
         case rcfFromPackage:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1 = pkg->Id();
@@ -1947,12 +1947,12 @@ void Transmit(int com)
         case rcfPackage2:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1.num_ = pkg->Id() + 1;
@@ -1961,12 +1961,12 @@ void Transmit(int com)
         case rcfPackage3:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1.num_ = pkg->Id() + 2;
@@ -1975,12 +1975,12 @@ void Transmit(int com)
         case rcfPackage4:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1.num_ = pkg->Id() + 3;
@@ -1989,12 +1989,12 @@ void Transmit(int com)
         case rcfPackage5:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid1.num_ = pkg->Id() + 4;
@@ -2012,7 +2012,7 @@ void Transmit(int com)
             break;
 
         case rcfTower:
-            if (gNavigationSys && SimDriver.GetPlayerEntity())
+            if (gNavigationSys and SimDriver.GetPlayerEntity())
             {
                 VU_ID ATCId;
                 gNavigationSys->GetAirbase(&ATCId);
@@ -2047,12 +2047,12 @@ void Transmit(int com)
         case rcfPackage1:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2 = pkg->Id();
@@ -2061,12 +2061,12 @@ void Transmit(int com)
         case rcfPackage2:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2.num_ = pkg->Id() + 1;
@@ -2075,12 +2075,12 @@ void Transmit(int com)
         case rcfPackage3:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2.num_ = pkg->Id() + 2;
@@ -2089,12 +2089,12 @@ void Transmit(int com)
         case rcfPackage4:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2.num_ = pkg->Id() + 3;
@@ -2103,12 +2103,12 @@ void Transmit(int com)
         case rcfPackage5:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2.num_ = pkg->Id() + 4;
@@ -2117,12 +2117,12 @@ void Transmit(int com)
         case rcfFromPackage:
             flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-            if (!flt)
+            if ( not flt)
                 break;
 
             pkg = (Package)flt->GetUnitParent();
 
-            if (!pkg)
+            if ( not pkg)
                 break;
 
             comvuid2 = pkg->Id();
@@ -2140,7 +2140,7 @@ void Transmit(int com)
             break;
 
         case rcfTower:
-            if (gNavigationSys && SimDriver.GetPlayerEntity())
+            if (gNavigationSys and SimDriver.GetPlayerEntity())
             {
                 VU_ID ATCId;
                 gNavigationSys->GetAirbase(&ATCId);
@@ -2152,7 +2152,7 @@ void Transmit(int com)
 
     if (FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI)
     {
-        if (FalconLocalSession->GetTeam() != 255)
+        if (FalconLocalSession->GetTeam() not_eq 255)
             comvuid1.num_ = FalconLocalSession->GetTeam() + 10; //ui
         else comvuid1.num_ = 11;//ui
 
@@ -2163,7 +2163,7 @@ void Transmit(int com)
     if (com == 0)
     {
         //DVID dvid = NULL;
-        if (!g_pVoiceClient || FAILED(g_pVoiceClient->SetTransmitTargets(0, 0, 0)))
+        if ( not g_pVoiceClient or FAILED(g_pVoiceClient->SetTransmitTargets(0, 0, 0)))
         {
             MonoPrint("Failed SetTransmitTargets:  0x%X\n");
         }
@@ -2197,7 +2197,7 @@ void TransmistoFreq(unsigned long transmitfreq)
 
     }
 
-    if (!found) SetListenFreqsClient(11, 1234, 1);
+    if ( not found) SetListenFreqsClient(11, 1234, 1);
 }
 
 void SetListenFreqsClient(unsigned long com1, unsigned long com2, unsigned long guard)
@@ -2260,7 +2260,7 @@ start:
 
         hr = g_pDPServer->EnumPlayersAndGroups(aGroupsDPNID, &dwCount, DPNENUM_GROUPS);
     }
-    while (hr == DPNERR_BUFFERTOOSMALL && dwCount != 0);
+    while (hr == DPNERR_BUFFERTOOSMALL and dwCount not_eq 0);
 
     // find the Freq if it's already there and join it
 
@@ -2274,7 +2274,7 @@ start:
         DPN_GROUP_INFO* pdpGroupInfo = NULL;
         hr = g_pDPServer->GetGroupInfo(aGroupsDPNID[i], pdpGroupInfo, &dwSize, 0);
 
-        if (FAILED(hr) && hr != DPNERR_BUFFERTOOSMALL)
+        if (FAILED(hr) and hr not_eq DPNERR_BUFFERTOOSMALL)
             return ;
 
         pdpGroupInfo = (DPN_GROUP_INFO*) new BYTE[ dwSize ];
@@ -2305,19 +2305,19 @@ start:
         if (guard == FreqVUID) guardok = TRUE;
     }
 
-    if (!com1ok && com1)
+    if ( not com1ok and com1)
     {
         CreateGroup(com1);
         com1ok = true;
         goto start;
     }
-    else if (!com2ok && com2)
+    else if ( not com2ok and com2)
     {
         CreateGroup(com2);
         com2ok = true;
         goto start;
     }
-    else if (!guardok)
+    else if ( not guardok)
     {
         CreateGroup(guard);
         guardok = true;
@@ -2336,7 +2336,7 @@ start:
         DPN_GROUP_INFO* pdpGroupInfo = NULL;
         hr = g_pDPServer->GetGroupInfo(aGroupsDPNID[i], pdpGroupInfo, &dwSize, 0);
 
-        if (FAILED(hr) && hr != DPNERR_BUFFERTOOSMALL)
+        if (FAILED(hr) and hr not_eq DPNERR_BUFFERTOOSMALL)
             return ;
 
         pdpGroupInfo = (DPN_GROUP_INFO*) new BYTE[ dwSize ];
@@ -2360,7 +2360,7 @@ start:
         unsigned long FreqVUID = strtoul(&str[0], &p, sizeof(long) * 8 + 1);
 
         //////////////////////////////
-        if (com1 == FreqVUID || com2 == FreqVUID || guard == FreqVUID)
+        if (com1 == FreqVUID or com2 == FreqVUID or guard == FreqVUID)
         {
             // Add player to this group
             DPNHANDLE hAsync;
@@ -2401,14 +2401,14 @@ void CreateGroup(unsigned long freq)
 
         hr = g_pDPServer->EnumPlayersAndGroups(aGroupsDPNID, &dwCount, DPNENUM_GROUPS);
     }
-    while (hr == DPNERR_BUFFERTOOSMALL && dwCount != 0);
+    while (hr == DPNERR_BUFFERTOOSMALL and dwCount not_eq 0);
 
     DPN_GROUP_INFO dpGroupInfo;
     DWORD* pdwData = new DWORD;
     *pdwData = dwCount + 1;
     ZeroMemory(&dpGroupInfo, sizeof(DPN_GROUP_INFO));
     dpGroupInfo.dwSize = sizeof(DPN_GROUP_INFO);
-    dpGroupInfo.dwInfoFlags = DPNINFO_NAME | DPNINFO_DATA ;
+    dpGroupInfo.dwInfoFlags = DPNINFO_NAME bitor DPNINFO_DATA ;
     dpGroupInfo.dwGroupFlags = DPNGROUP_AUTODESTRUCT;
     dpGroupInfo.pvData = pdwData;
     dpGroupInfo.dwDataSize = sizeof(DWORD);
@@ -2438,12 +2438,12 @@ void SendFreqid(DPNID dpnidplayer, DPNID dpnidgroup, unsigned long freq)
     dpnBuffer.pBufferData = (BYTE*) &comData;
     dpnBuffer.dwBufferSize = sizeof(COM_MESSAGE_SetFreqId);
 
-    if (!dpnidplayer && g_bHost)
+    if ( not dpnidplayer and g_bHost)
     {
         dpnidplayer = DPNID_ALL_PLAYERS_GROUP;
-        flags = DPNSEND_SYNC | DPNSEND_GUARANTEED;
+        flags = DPNSEND_SYNC bitor DPNSEND_GUARANTEED;
     }
-    else flags = DPNSEND_SYNC | DPNSEND_GUARANTEED | DPNSEND_NOLOOPBACK;
+    else flags = DPNSEND_SYNC bitor DPNSEND_GUARANTEED bitor DPNSEND_NOLOOPBACK;
 
     if (FAILED(hr = g_pDPServer->SendTo(dpnidplayer,    // dpnid
                                         &dpnBuffer,             // pBufferDesc

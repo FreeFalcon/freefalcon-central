@@ -2,6 +2,7 @@
 // FileMemMap - implementation
 // Julian Onions - initial revision
 
+#include <cISO646>
 #include "FileMemMap.h"
 
 FileMemMap::FileMemMap()
@@ -18,9 +19,9 @@ void FileMemMap::Close()
 {
     if (m_Data) UnmapViewOfFile(m_Data);
 
-    if (m_hMap != INVALID_HANDLE_VALUE) CloseHandle(m_hMap);
+    if (m_hMap not_eq INVALID_HANDLE_VALUE) CloseHandle(m_hMap);
 
-    if (m_hFile != INVALID_HANDLE_VALUE) CloseHandle(m_hFile);
+    if (m_hFile not_eq INVALID_HANDLE_VALUE) CloseHandle(m_hFile);
 
     Clear();
 }
@@ -41,7 +42,7 @@ BOOL FileMemMap::Open(const char *filename, BOOL rw, BOOL nomap)
                   rw == TRUE ? FILE_SHARE_WRITE : FILE_SHARE_READ,
                   NULL,
                   OPEN_EXISTING,
-                  FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS,
+                  FILE_ATTRIBUTE_NORMAL bitor FILE_FLAG_RANDOM_ACCESS,
                   NULL
               );
 
@@ -55,7 +56,7 @@ BOOL FileMemMap::Open(const char *filename, BOOL rw, BOOL nomap)
     m_hMap = CreateFileMapping(
                  m_hFile,
                  NULL,
-                 rw == TRUE ? (PAGE_READWRITE) : (PAGE_READONLY | SEC_COMMIT),
+                 rw == TRUE ? (PAGE_READWRITE) : (PAGE_READONLY bitor SEC_COMMIT),
                  0,
                  0,
                  NULL
@@ -77,7 +78,7 @@ BOOL FileMemMap::Open(const char *filename, BOOL rw, BOOL nomap)
 
 BYTE *FileMemMap::GetData(int offset, int len)
 {
-    if (m_hMap == INVALID_HANDLE_VALUE || offset < 0 || offset + len > m_len)
+    if (m_hMap == INVALID_HANDLE_VALUE or offset < 0 or offset + len > m_len)
         return NULL;
 
     return &m_Data[offset];
@@ -93,7 +94,7 @@ BOOL FileMemMap::ReadDataAt(DWORD offset, void *buffer, DWORD size)
     DWORD bytesRead;
     result = ReadFile(m_hFile, buffer, size, &bytesRead, NULL);
 
-    if (result == -1 || bytesRead != size)
+    if (result == -1 or bytesRead not_eq size)
         return FALSE;
 
     return TRUE;

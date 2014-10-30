@@ -12,6 +12,7 @@
 
 //___________________________________________________________________________
 
+#include <cISO646>
 #include "image.h"
 #include <ddraw.h> //JAM 22Sep03
 
@@ -52,7 +53,7 @@ GLubyte *ConvertImage(GLImageInfo *fi, GLint mode, GLuint *chromakey)
     sizebmp *= totalsize;
     bmpptr = (unsigned char *) glAllocateMemory(sizebmp, 0);
 
-    if (!bmpptr) return (0);
+    if ( not bmpptr) return (0);
 
     if (fi -> palette)   // bitmap has palette
     {
@@ -61,10 +62,10 @@ GLubyte *ConvertImage(GLImageInfo *fi, GLint mode, GLuint *chromakey)
         for (i = 0; i < 256; i++)
         {
             r = (GLint)(*lptr++);
-            g = (r >>  8) & 0xFF;
-            b = (r >> 16) & 0xFF;
-            a = (r >> 24) & 0xFF;
-            r &= 0xFF;
+            g = (r >>  8) bitand 0xFF;
+            b = (r >> 16) bitand 0xFF;
+            a = (r >> 24) bitand 0xFF;
+            r and_eq 0xFF;
             j = 0;
 
             switch (mode)
@@ -78,7 +79,7 @@ GLubyte *ConvertImage(GLImageInfo *fi, GLint mode, GLuint *chromakey)
                     break;
 
                 case COLOR_16M: // RGBA 32 bit color
-                    j = (a << 24) | (b << 16) | (g << 8) | r;
+                    j = (a << 24) bitor (b << 16) bitor (g << 8) bitor r;
                     break;
             }
 
@@ -181,13 +182,13 @@ GLint ReadTGA(CImageFileMemory *fi)
 
     fi -> glReadMem(&tgaheader, sizeof(tgaheader));
 
-    if (tgaheader.imagetype != 0x2) return BAD_FORMAT;
+    if (tgaheader.imagetype not_eq 0x2) return BAD_FORMAT;
 
     fi -> glSetFilePosMem((GLuint) tgaheader.identsize, SEEK_CUR);
 
     if (tgaheader.colormaptype) return BAD_FORMAT;
 
-    if (tgaheader.bits != 24) return BAD_FORMAT;
+    if (tgaheader.bits not_eq 24) return BAD_FORMAT;
 
     GLint i = tgaheader.height * tgaheader.width * 3;
     fi -> image.width = tgaheader.width;
@@ -195,7 +196,7 @@ GLint ReadTGA(CImageFileMemory *fi)
     fi -> image.palette = NULL;
     fi -> image.image = (GLubyte *) glAllocateMemory(i , 0);
 
-    if (!fi -> image.image) return BAD_ALLOC;
+    if ( not fi -> image.image) return BAD_ALLOC;
 
     fi -> glReadMem(fi -> image.image, i);
     return GOOD_READ;
@@ -209,24 +210,24 @@ GLint ReadDDS(CImageFileMemory *fi)
 
     fi->glReadMem(&dwMagic, sizeof(DWORD));
 
-    if (dwMagic != MAKEFOURCC('D', 'D', 'S', ' ')) return BAD_FORMAT;
+    if (dwMagic not_eq MAKEFOURCC('D', 'D', 'S', ' ')) return BAD_FORMAT;
 
-    if (!fi->glReadMem(&ddsd, sizeof(DDSURFACEDESC2))) return BAD_FORMAT;
+    if ( not fi->glReadMem(&ddsd, sizeof(DDSURFACEDESC2))) return BAD_FORMAT;
 
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
     {
-        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') ||
+        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') or
             ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '5'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth;
-            ddsd.dwFlags |= DDSD_LINEARSIZE;
+            ddsd.dwFlags or_eq DDSD_LINEARSIZE;
         }
 
         if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '1'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth / 2;
-            ddsd.dwFlags |= DDSD_LINEARSIZE;
+            ddsd.dwFlags or_eq DDSD_LINEARSIZE;
         }
     }
 
@@ -237,11 +238,11 @@ GLint ReadDDS(CImageFileMemory *fi)
     fi->image.palette = NULL;
 
     // Read first compressed mipmap
-    ShiAssert(ddsd.dwFlags & DDSD_LINEARSIZE);
+    ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE);
 
     fi->image.image = (GLubyte *)glAllocateMemory(ddsd.dwLinearSize, 0);
 
-    if (!fi->image.image) return BAD_ALLOC;
+    if ( not fi->image.image) return BAD_ALLOC;
 
     fi->glReadMem(fi->image.image, ddsd.dwLinearSize);
 
@@ -264,7 +265,7 @@ GLint ReadBMP(CImageFileMemory *fi)
 
     if (bmpinfo.biCompression) return (BAD_COMPRESSION);
 
-    if (bmpinfo.biBitCount != 8 && bmpinfo.biBitCount != 24)
+    if (bmpinfo.biBitCount not_eq 8 and bmpinfo.biBitCount not_eq 24)
         return (BAD_COLORDEPTH);
 
     i = bmpinfo.biClrUsed;
@@ -277,31 +278,31 @@ GLint ReadBMP(CImageFileMemory *fi)
     }
     else
     {
-        if (!i) i = 256;
+        if ( not i) i = 256;
 
         palptr = (GLulong *) glAllocateMemory(1024);
 
-        if (!palptr) return (BAD_ALLOC);
+        if ( not palptr) return (BAD_ALLOC);
 
         fi -> image.palette = palptr;
 
         for (j = 0; j < i; j++)
         {
             fi -> glReadMem(&bmprgb, sizeof(bmprgb));
-            *palptr++ = (bmprgb.rgbBlue << 16) | (bmprgb.rgbGreen << 8) | bmprgb.rgbRed;
+            *palptr++ = (bmprgb.rgbBlue << 16) bitor (bmprgb.rgbGreen << 8) bitor bmprgb.rgbRed;
         }
     }
 
     fi -> image.width = bmpinfo.biWidth;
     fi -> image.height = bmpinfo.biHeight;
 
-    padBytes = bmpinfo.biWidth & 0x3;
+    padBytes = bmpinfo.biWidth bitand 0x3;
 
     j = bmpinfo.biBitCount >> 3;
     i = j * (fi -> image.width * fi -> image.height);
     fi -> image.image = (GLubyte *) glAllocateMemory(i, 0);
 
-    if (!fi -> image.image) return (BAD_ALLOC);
+    if ( not fi -> image.image) return (BAD_ALLOC);
 
     ptr = (unsigned char *) fi -> image.image + i;
     i = j * fi -> image.width;
@@ -339,7 +340,7 @@ GLint ReadAPL(CImageFileMemory *fi)
     // Read and validate the image header
     fi -> glReadMem(&aplheader, sizeof(aplheader));
 
-    if (aplheader.magic != 0x030870)
+    if (aplheader.magic not_eq 0x030870)
     {
         return BAD_FORMAT;
     }
@@ -351,22 +352,22 @@ GLint ReadAPL(CImageFileMemory *fi)
     // Allocate memory for the image and its palette
     fi -> image.palette = (GLulong*)glAllocateMemory(1024, 0);
 
-    if (!fi -> image.palette)
+    if ( not fi -> image.palette)
     {
         return (BAD_ALLOC);
     }
 
     fi -> image.image = (GLubyte *)glAllocateMemory(imageSize, 0);
 
-    if (!fi -> image.image)
+    if ( not fi -> image.image)
     {
         glReleaseMemory(fi -> image.palette);
         return (BAD_ALLOC);
     }
 
     // Read the palette then the image data
-    if ((fi -> glReadMem(fi -> image.palette, 1024)      != 1024)       ||
-        (fi -> glReadMem(fi -> image.image,   imageSize) != imageSize))
+    if ((fi -> glReadMem(fi -> image.palette, 1024) not_eq 1024)       or
+        (fi -> glReadMem(fi -> image.image,   imageSize) not_eq imageSize))
     {
         glReleaseMemory(fi -> image.palette);
         glReleaseMemory(fi -> image.palette);
@@ -398,7 +399,7 @@ GLint UnpackGIF(CImageFileMemory *fi)
     GLubyte tempPalette[768];
 
     // make sure it's a GIF file
-    if (fi -> glReadMem((GLubyte *)&gh, sizeof(gh)) != sizeof(gh) || memcmp(gh.sig, "GIF", 3))
+    if (fi -> glReadMem((GLubyte *)&gh, sizeof(gh)) not_eq sizeof(gh) or memcmp(gh.sig, "GIF", 3))
     {
         return(BAD_FILE);
     }
@@ -409,18 +410,18 @@ GLint UnpackGIF(CImageFileMemory *fi)
     fi -> image.palette = NULL;
 
     // get colour map if there is one
-    if (gh.flags & 0x80)
+    if (gh.flags bitand 0x80)
     {
-        c = 3 * (1 << ((gh.flags & 7) + 1));
+        c = 3 * (1 << ((gh.flags bitand 7) + 1));
 
-        if (fi -> glReadMem(tempPalette, c) != c)
+        if (fi -> glReadMem(tempPalette, c) not_eq c)
         {
             return(BAD_READ);
         }
 
         palOut = (GLulong *) glAllocateMemory(1024);
 
-        if (!palOut)
+        if ( not palOut)
         {
             return BAD_ALLOC;
         }
@@ -431,16 +432,16 @@ GLint UnpackGIF(CImageFileMemory *fi)
 
         while (palOut < palStop)
         {
-            *palOut++ = 0xFF000000 | (palIn[2] << 16) | (palIn[1] << 8) | palIn[0];
+            *palOut++ = 0xFF000000 bitor (palIn[2] << 16) bitor (palIn[1] << 8) bitor palIn[0];
             palIn += 3;
         }
     }
 
-    while ((c = fi -> glReadCharMem()) == ',' || c == '!' || c == 0)
+    while ((c = fi -> glReadCharMem()) == ',' or c == '!' or c == 0)
     {
         if (c == ',')
         {
-            if (fi -> glReadMem(&iblk, sizeof(iblk)) !=  sizeof(iblk))
+            if (fi -> glReadMem(&iblk, sizeof(iblk)) not_eq sizeof(iblk))
             {
                 glReleaseMemory((char *) fi -> image.palette);
                 return(BAD_READ);
@@ -450,17 +451,17 @@ GLint UnpackGIF(CImageFileMemory *fi)
             fi -> image.height = iblk.height;
             fi -> image.image = (GLubyte *) glAllocateMemory(fi->image.width * fi->image.height, 0);
 
-            if (!fi -> image.image)
+            if ( not fi -> image.image)
             {
                 glReleaseMemory((char *) fi->image.palette);
                 return (BAD_ALLOC);
             }
 
-            if (iblk.flags & 0x80)
+            if (iblk.flags bitand 0x80)
             {
-                b = 3 * (1 << ((iblk.flags & 0x0007) + 1));
+                b = 3 * (1 << ((iblk.flags bitand 0x0007) + 1));
 
-                if (fi->glReadMem(tempPalette, b) != c)
+                if (fi->glReadMem(tempPalette, b) not_eq c)
                 {
                     glReleaseMemory((char *) fi->image.palette);
                     glReleaseMemory((char *) fi->image.image);
@@ -470,7 +471,7 @@ GLint UnpackGIF(CImageFileMemory *fi)
                 glReleaseMemory((char *) fi->image.palette);
                 palOut = (GLulong *) glAllocateMemory(1024);
 
-                if (!palOut)
+                if ( not palOut)
                 {
                     return BAD_ALLOC;
                 }
@@ -481,7 +482,7 @@ GLint UnpackGIF(CImageFileMemory *fi)
 
                 while (palOut < palStop)
                 {
-                    *palOut = 0xFF000000 | (palIn[2] << 16) | (palIn[1] << 8) | palIn[0];
+                    *palOut = 0xFF000000 bitor (palIn[2] << 16) bitor (palIn[1] << 8) bitor palIn[0];
                     palIn += 3;
                 }
             }
@@ -495,7 +496,7 @@ GLint UnpackGIF(CImageFileMemory *fi)
 
             t = GIF_UnpackImage(c, fi, iblk.flags);
 
-            if (t != GOOD_READ)
+            if (t not_eq GOOD_READ)
             {
                 glReleaseMemory((char *) fi->image.palette);
                 glReleaseMemory((char *) fi->image.image);
@@ -554,7 +555,7 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
     GLubyte  *u;             /* Stack pointer into firstcodestack */
     GLubyte  *buffer;        /* Pointer to image buffer */
 
-    if (bits < 2 || bits > 8) return(BAD_SYMBOLSIZE);
+    if (bits < 2 or bits > 8) return(BAD_SYMBOLSIZE);
 
     p = q = b;
     bitsleft = 8;
@@ -569,7 +570,7 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
     {
         if (bitsleft == 8)
         {
-            if (++p >= q && (((blocksize = fi->glReadCharMem()) < 1) ||
+            if (++p >= q and (((blocksize = fi->glReadCharMem()) < 1) or
                              (q = (p = b) + fi->glReadMem(b, blocksize)) < (b + blocksize)))
                 return(UNEXPECTED_EOF);
 
@@ -585,11 +586,11 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
         }
         else
         {
-            if (++p >= q && (((blocksize = fi->glReadCharMem()) < 1) ||
+            if (++p >= q and (((blocksize = fi->glReadCharMem()) < 1) or
                              (q = (p = b) + fi->glReadMem(b, blocksize)) < (b + blocksize)))
                 return(UNEXPECTED_EOF);
 
-            thiscode |= (*p << (8 - bitsleft));
+            thiscode or_eq (*p << (8 - bitsleft));
 
             if (currentcode <= 16)
             {
@@ -598,17 +599,17 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
             }
             else
             {
-                if (++p >= q && (((blocksize = fi->glReadCharMem()) < 1) ||
+                if (++p >= q and (((blocksize = fi->glReadCharMem()) < 1) or
                                  (q = (p = b) + fi->glReadMem(b, blocksize)) < (b + blocksize)))
                     return(UNEXPECTED_EOF);
 
-                thiscode |= (*p << (16 - bitsleft));
+                thiscode or_eq (*p << (16 - bitsleft));
                 bitsleft = currentcode - 16;
                 *p >>= bitsleft;
             }
         }
 
-        thiscode &= wordmasktable[codesize];
+        thiscode and_eq wordmasktable[codesize];
         currentcode = thiscode;
 
         if (thiscode == (bits2 + 1)) break;     /* found EOI */
@@ -657,7 +658,7 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
 
                 byte = 0;
 
-                if (currentFlag & 0x40)
+                if (currentFlag bitand 0x40)
                 {
                     line += inctable[pass];
 
@@ -691,7 +692,7 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
 
                 byte = 0;
 
-                if (currentFlag & 0x40)
+                if (currentFlag bitand 0x40)
                 {
                     line += inctable[pass];
 
@@ -704,12 +705,12 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
             thiscode = *--u;
         };
 
-        if (nextcode < 4096 && oldcode != NO_CODE)
+        if (nextcode < 4096 and oldcode not_eq NO_CODE)
         {
             codestack[nextcode] = oldcode;
             lastcodestack[nextcode] = (GLubyte) oldtoken;
 
-            if (++nextcode >= codesize2 && codesize < 12)
+            if (++nextcode >= codesize2 and codesize < 12)
                 codesize2 = 1 << ++codesize;
         }
 
@@ -743,12 +744,12 @@ void GIF_SkipExtension(CImageFileMemory *fi)
             {
                 do
                 {
-                    if ((n = fi->glReadCharMem()) != EOF)
+                    if ((n = fi->glReadCharMem()) not_eq EOF)
                     {
                         for (i = 0; i < n; ++i) fi->glReadCharMem();
                     }
                 }
-                while (n > 0 && n != EOF);
+                while (n > 0 and n not_eq EOF);
             }
 
             break;
@@ -760,12 +761,12 @@ void GIF_SkipExtension(CImageFileMemory *fi)
         case 0x00fe:            /* comment extension */
             do
             {
-                if ((n = fi->glReadCharMem()) != EOF)
+                if ((n = fi->glReadCharMem()) not_eq EOF)
                 {
                     for (i = 0; i < n; ++i) fi->glReadCharMem();
                 }
             }
-            while (n > 0 && n != EOF);
+            while (n > 0 and n not_eq EOF);
 
             break;
 
@@ -774,12 +775,12 @@ void GIF_SkipExtension(CImageFileMemory *fi)
             {
                 do
                 {
-                    if ((n = fi->glReadCharMem()) != EOF)
+                    if ((n = fi->glReadCharMem()) not_eq EOF)
                     {
                         for (i = 0; i < n; ++i) fi->glReadCharMem();
                     }
                 }
-                while (n > 0 && n != EOF);
+                while (n > 0 and n not_eq EOF);
             }
 
             break;
@@ -878,18 +879,18 @@ GLulong *ReadLBMColorMap(CImageFileMemory *fi)
 
         if (memcmp(header, (GLubyte *) "CMAP", 4))
         {
-            if (size & 1)   size++;                 // All offsets on an even boundary
+            if (size bitand 1)   size++;                 // All offsets on an even boundary
 
             fi->glSetFilePosMem(size, SEEK_CUR);
         }
         else CMAP = 1;
     }
-    while (!CMAP);
+    while ( not CMAP);
 
     fi->glReadMem(LBMPalette, size);
     finalPalette = (GLulong *)glAllocateMemory(1024);
 
-    if (!finalPalette)
+    if ( not finalPalette)
     {
         return NULL;
     }
@@ -900,7 +901,7 @@ GLulong *ReadLBMColorMap(CImageFileMemory *fi)
 
     while (palOut < palStop)
     {
-        *palOut++ = (palIn[2] << 16) | (palIn[1] << 8) | palIn[0];
+        *palOut++ = (palIn[2] << 16) bitor (palIn[1] << 8) bitor palIn[0];
         palIn += 3;
     }
 
@@ -931,13 +932,13 @@ GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF)
 
         if (memcmp((GLubyte *) header, (GLubyte *)  "BODY", 4))
         {
-            if (size & 1)   size++;                 // All offsets on an even boundary
+            if (size bitand 1)   size++;                 // All offsets on an even boundary
 
             fi->glSetFilePosMem(size, SEEK_CUR);
         }
         else BODY = 1;
     }
-    while (!BODY);
+    while ( not BODY);
 
     if (lpHeader->masking == 1)
         bytes = ((fi->image.width + 7) / 8) * (lpHeader->nPlanes + 1);
@@ -970,13 +971,13 @@ GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF)
 
             do
             {
-                c = fi->glReadCharMem() & 0xff;
+                c = fi->glReadCharMem() bitand 0xff;
 
-                if (c & 0x80)
+                if (c bitand 0x80)
                 {
-                    if (c != 0x80)
+                    if (c not_eq 0x80)
                     {
-                        j = ((~c) & 0xff) + 2;
+                        j = ((compl c) bitand 0xff) + 2;
                         c = fi->glReadCharMem();
 
                         while (j--) p[n++] = (GLubyte) c;
@@ -984,7 +985,7 @@ GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF)
                 }
                 else
                 {
-                    j = (c & 0xff) + 1;
+                    j = (c bitand 0xff) + 1;
 
                     while (j--)
                         p[n++] = (GLubyte) fi->glReadCharMem();
@@ -1004,7 +1005,7 @@ GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF)
 
             m = fi->image.width >> 3;
 
-            if (fi->image.width & 0x07) m++;
+            if (fi->image.width bitand 0x07) m++;
 
             for (k = 0; k < fi->image.width; k++)
             {
@@ -1013,8 +1014,8 @@ GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF)
 
                 for (l = 0; l < lpHeader->nPlanes; l++)
                 {
-                    if (line[k >> 3] & masktable[k & 0x0007])
-                        lpBmp[k] |= bittable[l];
+                    if (line[k >> 3] bitand masktable[k bitand 0x0007])
+                        lpBmp[k] or_eq bittable[l];
 
                     line += m;
                 }
@@ -1049,9 +1050,9 @@ GLint UnpackPCX(CImageFileMemory *fi)
     GLubyte *palIn;
     GLulong *palOut, *palStop;
 
-    if ((fi->glReadMem((GLubyte *)&pcx, sizeof(PCXHEAD)) != sizeof(PCXHEAD)) ||
-        (pcx.manufacturer != 10) ||
-        (pcx.version != 5))
+    if ((fi->glReadMem((GLubyte *)&pcx, sizeof(PCXHEAD)) not_eq sizeof(PCXHEAD)) or
+        (pcx.manufacturer not_eq 10) or
+        (pcx.version not_eq 5))
     {
 
         // The header data didn't match our expectations
@@ -1066,7 +1067,7 @@ GLint UnpackPCX(CImageFileMemory *fi)
     // Allocate memory for the image data
     fi->image.image = (GLubyte *) glAllocateMemory(totalsize, 0);
 
-    if (!fi->image.image)
+    if ( not fi->image.image)
     {
         return (BAD_ALLOC);
     }
@@ -1084,9 +1085,9 @@ GLint UnpackPCX(CImageFileMemory *fi)
         {
             c = (GLubyte) fi->glReadCharMem();
 
-            if ((c & 0xc0) == 0xc0)
+            if ((c bitand 0xc0) == 0xc0)
             {
-                j = c & 0x3f;
+                j = c bitand 0x3f;
                 c = (GLubyte) fi->glReadCharMem();
 
                 while (j--) image[n++] = c;
@@ -1100,7 +1101,7 @@ GLint UnpackPCX(CImageFileMemory *fi)
 
 
     // Read the palette data
-    if ((fi->glReadCharMem() != 0xc) || (!fi->glReadMem(pcxPalette, 768)))
+    if ((fi->glReadCharMem() not_eq 0xc) or ( not fi->glReadMem(pcxPalette, 768)))
     {
         glReleaseMemory((char *) fi->image.image);
         return (BAD_ALLOC);
@@ -1109,7 +1110,7 @@ GLint UnpackPCX(CImageFileMemory *fi)
     // Allocate memory for the palette
     fi->image.palette = (GLulong *) glAllocateMemory(1024);
 
-    if (!fi->image.palette)
+    if ( not fi->image.palette)
     {
         glReleaseMemory((char *) fi->image.image);
         return (BAD_ALLOC);
@@ -1122,7 +1123,7 @@ GLint UnpackPCX(CImageFileMemory *fi)
 
     while (palOut < palStop)
     {
-        *palOut++ = 0xFF000000 | (palIn[2] << 16) | (palIn[1] << 8) | palIn[0];
+        *palOut++ = 0xFF000000 bitor (palIn[2] << 16) bitor (palIn[1] << 8) bitor palIn[0];
         palIn += 3;
     }
 
@@ -1194,8 +1195,8 @@ GLint WritePCX(int fileHandle, GLImageInfo *image)
             ShiAssert(inP - image->image == i * image->width + c);
 
             // Add to the current run
-            while ((value == *inP) && // Must have same value
-                   (c < image->width) && // Must not cross row boundries
+            while ((value == *inP) and // Must have same value
+                   (c < image->width) and // Must not cross row boundries
                    (run + 1 < 64))   // Run less than 64 bytes
             {
                 inP++;
@@ -1206,7 +1207,7 @@ GLint WritePCX(int fileHandle, GLImageInfo *image)
             ShiAssert(inP - image->image == i * image->width + c);
 
             // Write out the run
-            if ((run == 1) && ((value & 0xC0) != 0xC0))
+            if ((run == 1) and ((value bitand 0xC0) not_eq 0xC0))
             {
                 // Can just write the value byte
                 *outP++ = value;
@@ -1214,7 +1215,7 @@ GLint WritePCX(int fileHandle, GLImageInfo *image)
             else
             {
                 // Require a count byte
-                *outP++ = (BYTE)(0xC0 | run);
+                *outP++ = (BYTE)(0xC0 bitor run);
                 *outP++ = value;
             }
 

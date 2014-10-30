@@ -6,6 +6,7 @@
 
  Main UI screen stuff for FreeFalcon
 \***************************************************************************/
+#include <cISO646>
 #include <windows.h>
 #include "falclib.h"
 
@@ -464,16 +465,16 @@ void CloseAllRenderers(long openID)
     C_Window *win;
     C_Button *btn;
 
-    if (gMainHandler->GetWindowFlags(openID) & C_BIT_ENABLED)
+    if (gMainHandler->GetWindowFlags(openID) bitand C_BIT_ENABLED)
         return;
 
     gMainHandler->EnterCritical();
 
-    if (openID != RECON_WIN && openID != RECON_LIST_WIN)
+    if (openID not_eq RECON_WIN and openID not_eq RECON_LIST_WIN)
     {
         win = gMainHandler->FindWindow(RECON_WIN);
 
-        if (win && (gMainHandler->GetWindowFlags(RECON_WIN) & C_BIT_ENABLED))
+        if (win and (gMainHandler->GetWindowFlags(RECON_WIN) bitand C_BIT_ENABLED))
         {
             btn = (C_Button*)win->FindControl(CLOSE_WINDOW);
 
@@ -483,7 +484,7 @@ void CloseAllRenderers(long openID)
 
         win = gMainHandler->FindWindow(RECON_LIST_WIN);
 
-        if (win && (gMainHandler->GetWindowFlags(RECON_LIST_WIN) & C_BIT_ENABLED))
+        if (win and (gMainHandler->GetWindowFlags(RECON_LIST_WIN) bitand C_BIT_ENABLED))
         {
             btn = (C_Button*)win->FindControl(CLOSE_WINDOW);
 
@@ -494,7 +495,7 @@ void CloseAllRenderers(long openID)
 
     win = gMainHandler->FindWindow(MUNITIONS_WIN);
 
-    if (win && (gMainHandler->GetWindowFlags(MUNITIONS_WIN) & C_BIT_ENABLED))
+    if (win and (gMainHandler->GetWindowFlags(MUNITIONS_WIN) bitand C_BIT_ENABLED))
     {
         btn = (C_Button*)win->FindControl(CLOSE_WINDOW);
 
@@ -529,7 +530,7 @@ void CloseAllRenderers(long openID)
 void LeaveCurrentGame()
 {
     // KCK: This needs to NOT be here.
-    // if (!FalconLocalGame)
+    // if ( not FalconLocalGame)
     // return;
 
     switch (FalconLocalGame->GetGameType())
@@ -543,8 +544,8 @@ void LeaveCurrentGame()
         case game_TacticalEngagement:
         default:
             SendMessage(FalconDisplay.appWin, FM_SHUTDOWN_CAMPAIGN, 0, 0);
-            TheCampaign.Flags &= ~CAMP_TACTICAL;
-            TheCampaign.Flags &= ~CAMP_TACTICAL_EDIT;
+            TheCampaign.Flags and_eq compl CAMP_TACTICAL;
+            TheCampaign.Flags and_eq compl CAMP_TACTICAL_EDIT;
             break;
 
         case game_Campaign:
@@ -562,7 +563,7 @@ __forceinline void Encrypt(uchar startkey, uchar *buffer, long length)
     uchar *ptr;
     uchar nextkey;
 
-    if (!buffer || length <= 0)
+    if ( not buffer or length <= 0)
         return;
 
     idx = 0;
@@ -572,8 +573,8 @@ __forceinline void Encrypt(uchar startkey, uchar *buffer, long length)
 
     for (i = 0; i < length; i++)
     {
-        *ptr ^= _cryptKey[(idx++) % xrlen];
-        *ptr ^= startkey;
+        *ptr xor_eq _cryptKey[(idx++) % xrlen];
+        *ptr xor_eq startkey;
         nextkey = *ptr++;
         startkey = nextkey;
     }
@@ -586,7 +587,7 @@ void Decrypt(uchar startkey, uchar *buffer, long length)
     uchar *ptr;
     uchar nextkey;
 
-    if (!buffer || length <= 0)
+    if ( not buffer or length <= 0)
         return;
 
     idx = 0;
@@ -597,8 +598,8 @@ void Decrypt(uchar startkey, uchar *buffer, long length)
     for (i = 0; i < length; i++)
     {
         nextkey = *ptr;
-        *ptr ^= startkey;
-        *ptr++ ^= _cryptKey[(idx++) % xrlen];
+        *ptr xor_eq startkey;
+        *ptr++ xor_eq _cryptKey[(idx++) % xrlen];
         startkey = nextkey;
     }
 }
@@ -649,7 +650,7 @@ void LoadMainWindow()
 
 static void ExitTheGameCB(long , short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     //Cobra 12/29/04 Attempt to shut down comms if someone exits but forgot to shut down comms
@@ -677,7 +678,7 @@ static void ExitTheGameCB(long , short hittype, C_Base *)
 
 void ExitCloseWindowCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // gMainHandler->SetOutputDelay(80);
@@ -695,7 +696,7 @@ static void ExitButtonCB(long , short hittype, C_Base *)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
 
@@ -711,7 +712,7 @@ static void ExitButtonCB(long , short hittype, C_Base *)
 
 void CloseWindowCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (control->GetGroup())
@@ -726,7 +727,7 @@ void CloseWindowCB(long , short hittype, C_Base *control)
 
 void GenericCloseWindowCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->HideWindow(control->Parent_);
@@ -734,7 +735,7 @@ void GenericCloseWindowCB(long , short hittype, C_Base *control)
 
 void MinMaxWindowCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (control->Parent_->Minimized())
@@ -849,7 +850,7 @@ void EnableScenarioInfo(long ID)
 
 static void OpenInstantActionCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     DisableScenarioInfo();
@@ -859,15 +860,15 @@ static void OpenInstantActionCB(long , short hittype, C_Base *control)
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    if (!IALoaded)
+    if ( not IALoaded)
         LoadInstantActionWindows();
 
-    if (MainLastGroup != 0 && MainLastGroup != control->GetGroup())
+    if (MainLastGroup not_eq 0 and MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->DisableWindowGroup(MainLastGroup);
     }
 
-    if (MainLastGroup != control->GetGroup())
+    if (MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->EnableWindowGroup(control->GetGroup());
         MainLastGroup = control->GetGroup();
@@ -878,7 +879,7 @@ static void OpenInstantActionCB(long , short hittype, C_Base *control)
 
 static void OpenDogFightCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     DisableScenarioInfo();
@@ -888,15 +889,15 @@ static void OpenDogFightCB(long , short hittype, C_Base *control)
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    if (!DFLoaded)
+    if ( not DFLoaded)
         LoadDogFightWindows();
 
-    if (MainLastGroup != 0 && MainLastGroup != control->GetGroup())
+    if (MainLastGroup not_eq 0 and MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->DisableWindowGroup(MainLastGroup);
     }
 
-    if (MainLastGroup != control->GetGroup())
+    if (MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->EnableWindowGroup(control->GetGroup());
         MainLastGroup = control->GetGroup();
@@ -908,24 +909,24 @@ static void OpenDogFightCB(long , short hittype, C_Base *control)
 //VP_changes
 static void OpenTacticalCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     DisableScenarioInfo();
     LeaveCurrentGame();
 
     RuleMode = rTACTICAL_ENGAGEMENT;
-    TheCampaign.Flags |= CAMP_TACTICAL;
+    TheCampaign.Flags or_eq CAMP_TACTICAL;
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    if (!TACSelLoaded)
+    if ( not TACSelLoaded)
         LoadTacEngSelectWindows();
 
-    if (MainLastGroup != 0 && MainLastGroup != control->GetGroup())
+    if (MainLastGroup not_eq 0 and MainLastGroup not_eq control->GetGroup())
         gMainHandler->DisableWindowGroup(MainLastGroup);
 
-    if (MainLastGroup != control->GetGroup())
+    if (MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->EnableWindowGroup(control->GetGroup());
         MainLastGroup = control->GetGroup();
@@ -939,7 +940,7 @@ void OpenMainCampaignCB(long , short hittype, C_Base *control)
     C_Button *btn;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     DisableScenarioInfo();
@@ -949,10 +950,10 @@ void OpenMainCampaignCB(long , short hittype, C_Base *control)
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    if (!CPSelectLoaded)
+    if ( not CPSelectLoaded)
         LoadCampaignSelectWindows();
 
-    if (MainLastGroup != 0 && MainLastGroup != control->GetGroup())
+    if (MainLastGroup not_eq 0 and MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->DisableWindowGroup(MainLastGroup);
     }
@@ -963,7 +964,7 @@ void OpenMainCampaignCB(long , short hittype, C_Base *control)
     {
         btn = (C_Button*)win->FindControl(CS_NEW_CTRL);
 
-        if (btn && btn->GetState())
+        if (btn and btn->GetState())
         {
             SetCampaignSelectCB(CS_NEW_CTRL, C_TYPE_LMOUSEUP, btn);
             SelectScenarioCB(CS_LOAD_SCENARIO1, C_TYPE_LMOUSEUP, NULL);
@@ -978,14 +979,14 @@ void OpenMainCampaignCB(long , short hittype, C_Base *control)
 
 void OpenCommsCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
 
     control->SetFlagBitOff(C_BIT_FORCEMOUSEOVER);
 
-    if (!gCommsMgr->Online())
+    if ( not gCommsMgr->Online())
     {
         gMainHandler->EnableWindowGroup(control->GetUserNumber(1));
     }
@@ -998,12 +999,12 @@ void OpenCommsCB(long , short hittype, C_Base *control)
 
 void OpenTacticalReferenceCB(long nID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    if (!TACREFLoaded)
+    if ( not TACREFLoaded)
         LoadTacticalReferenceWindows();
 
     CloseAllRenderers(TAC_REF_WIN);
@@ -1018,7 +1019,7 @@ void OpenTacticalReferenceCB(long nID, short hittype, C_Base *control)
 
 void OpenSetupCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetCursor(gCursors[CRSR_WAIT]);
@@ -1033,7 +1034,7 @@ void OpenSetupCB(long , short hittype, C_Base *control)
 
 void OpenFontToolCB(long , short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     InitFontTool();
@@ -1054,7 +1055,7 @@ void GenericTimerCB(long , short , C_Base *control)
 
 void InfoGroupCB(long , short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     F4CSECTIONHANDLE* Leave = UI_Enter(control->GetParent());
@@ -1077,7 +1078,7 @@ static void LoadArtwork()
 static void LoadSoundFiles()
 {
     gMainParser->LoadSoundList("sounds.lst");
-    gSoundMgr->SetFlags(SND_FLY, gSoundMgr->GetFlags(SND_FLY) ^ SOUND_STOPONEXIT);
+    gSoundMgr->SetFlags(SND_FLY, gSoundMgr->GetFlags(SND_FLY) xor SOUND_STOPONEXIT);
 }
 
 static void LoadStringFiles()
@@ -1316,7 +1317,7 @@ void GlobalSetup()
     gImageMgr->Setup();
     gImageMgr->SetColorKey(UI95_RGB24Bit(0x00ff00ff));
     UI95_GetScreenColorInfo(r_mask, r_shift, g_mask, g_shift, b_mask, b_shift);
-    //! UI95_GetScreenColorInfo(&r_mask,&r_shift,&g_mask,&g_shift,&b_mask,&b_shift);
+    //UI95_GetScreenColorInfo(&r_mask,&r_shift,&g_mask,&g_shift,&b_mask,&b_shift);
     gImageMgr->SetScreenFormat(r_shift, g_shift, b_shift);
 
     gFontList = new C_Font;
@@ -1372,21 +1373,21 @@ void SetStartupFlags()
     for (int i = 0; List1[i]; ++i)
         if (stricmp(List1[i], gUBuffer) == 0)
         {
-            gUI_Tracking_Flag |= _UI_TRACK_FLAG00;
+            gUI_Tracking_Flag or_eq _UI_TRACK_FLAG00;
             break;
         }
 
     for (int i = 0; List2[i]; ++i)
         if (stricmp(List2[i], gUBuffer) == 0)
         {
-            gUI_Tracking_Flag |= _UI_TRACK_FLAG01;
+            gUI_Tracking_Flag or_eq _UI_TRACK_FLAG01;
             break;
         }
 
     for (int i = 0; List3[i]; ++i)
         if (stricmp(List3[i], gUBuffer) == 0)
         {
-            gUI_Tracking_Flag |= _UI_TRACK_FLAG02;
+            gUI_Tracking_Flag or_eq _UI_TRACK_FLAG02;
             break;
         }
 }
@@ -1418,13 +1419,13 @@ void PlayUIMusic()
     MusicTypePlayed = 1; // Main UI Music
     LastTypePlayed = 1;
 
-    if (LastUIPlayed != SND_AMBIENT1 && LastUIPlayed != SND_AMBIENT2)
+    if (LastUIPlayed not_eq SND_AMBIENT1 and LastUIPlayed not_eq SND_AMBIENT2)
     {
-        if (rand() & 1)
+        if (rand() bitand 1)
             LastUIPlayed = SND_AMBIENT1;
     }
 
-    if (LastUIPlayed != SND_AMBIENT1)
+    if (LastUIPlayed not_eq SND_AMBIENT1)
     {
         gMusic->AddQ(SND_AMBIENT1);
         LastUIPlayed = SND_AMBIENT1;
@@ -1443,7 +1444,7 @@ void PlayCampaignMusic() // This function should figure out whether we are happy
 {
     // and play music accordingly
     // Team[MyTeam]... Initiative()  0->33 Bad 34->66 Medium 67->100 Good
-    if (!TeamInfo[FalconLocalSession->GetTeam()])
+    if ( not TeamInfo[FalconLocalSession->GetTeam()])
     {
         PlayUIMusic();
         return;
@@ -1466,13 +1467,13 @@ void PlayCampaignMusic() // This function should figure out whether we are happy
 
 void PlayThatFunkyMusicWhiteBoy()
 {
-    if (!gMusic || !MusicStopped)
+    if ( not gMusic or not MusicStopped)
         return;
 
     // if(GetCurrentTime() < (MusicStopped + 60000l))
     // return;
 
-    if (LastTypePlayed != 1)
+    if (LastTypePlayed not_eq 1)
     {
         if (MusicTypePlayed == 2)
             PlayCampaignMusic();
@@ -1481,7 +1482,7 @@ void PlayThatFunkyMusicWhiteBoy()
     }
     else
     {
-        gMusic->StartInteractive(rand() & 0x01, 0);
+        gMusic->StartInteractive(rand() bitand 0x01, 0);
         LastTypePlayed = 2;
     }
 }
@@ -1493,7 +1494,7 @@ void PlayUIMovie(long ID)
 
     win = gMainHandler->FindWindow(VIDEO_WIN);
 
-    if ((win) && (gMovieMgr->GetMovie(ID)))
+    if ((win) and (gMovieMgr->GetMovie(ID)))
     {
         gMoviePlaying = TRUE;
         gMusic->FadeOut_Pause();
@@ -1527,7 +1528,7 @@ void UI_LoadSkyWeatherData()
      [TOD file name] [Image1] [Image2] [Image3] [Image4]
      */
 
-    /* if(!(fp=fopen(file,"rt")))
+    /* if( not (fp=fopen(file,"rt")))
      return;
      NumberOfSkyColors = atoi(fgets(file,1024,fp));
 
@@ -1535,7 +1536,7 @@ void UI_LoadSkyWeatherData()
      while (i<NumberOfSkyColors) //for (int i=0; i<NumberOfSkyColors; i++)
      {
      fgets(file,1024,fp);
-     if (file[0] == '\r' || file[0] == '#' || file[0] == ';' || file[0] == '\n')
+     if (file[0] == '\r' or file[0] == '#' or file[0] == ';' or file[0] == '\n')
      continue;
 
      strcpy(name,file);
@@ -1544,13 +1545,13 @@ void UI_LoadSkyWeatherData()
      sscanf(file, "%s %s %s %s %s",filename,image1,image2,image3,image4);
      strcpy(skycolor[i].todname,filename);
      strcpy(skycolor[i].image1,image1);
-     if (!strlen(image2)) // If we have no entry, use the main image
+     if ( not strlen(image2)) // If we have no entry, use the main image
      strcpy(image2,image1);
      strcpy(skycolor[i].image2,image2);
-     if (!strlen(image3))
+     if ( not strlen(image3))
      strcpy(image3,image1);
      strcpy(skycolor[i].image3,image3);
-     if (!strlen(image4))
+     if ( not strlen(image4))
      strcpy(image4,image1);
      strcpy(skycolor[i].image4,image4);
      strcpy(image1,"");
@@ -1565,7 +1566,7 @@ void UI_LoadSkyWeatherData()
 
      sprintf(file,"%s\\weather\\weathertable.dat",FalconTerrainDataDir);
 
-     if(!(fp=fopen(file,"rt")))
+     if( not (fp=fopen(file,"rt")))
      return;
      NumWeatherPatterns = atoi(fgets(file,1024,fp));
      i = 0;
@@ -1574,7 +1575,7 @@ void UI_LoadSkyWeatherData()
     // for (i=0; i<NumWeatherPatterns; i++)
      {
      fgets(file,1024,fp);
-     if (file[0] == '\r' || file[0] == '#' || file[0] == ';' || file[0] == '\n')
+     if (file[0] == '\r' or file[0] == '#' or file[0] == ';' or file[0] == '\n')
      continue;
      strcpy(weatherPatternData[i].name,file);
      fgets(file,1024,fp);
@@ -1627,14 +1628,14 @@ int UI_Startup()
 
     UIBuildColorTable();
 
-    if (!gPlayerBook)
+    if ( not gPlayerBook)
     {
         gPlayerBook = new PhoneBook;
         gPlayerBook->Setup();
         gPlayerBook->Load("phonebkn.da2");
     }
 
-    // THESE 2 LINES ARE VERY VERY Important!
+    // THESE 2 LINES ARE VERY VERY Important
     ShowWindow(FalconDisplay.appWin, SW_SHOWNORMAL);
     UpdateWindow(FalconDisplay.appWin);
 
@@ -1690,7 +1691,7 @@ int UI_Startup()
         // Returning from the sim - Post eval our flight
         // KCK: Added the check for a pilot list so that we don't post-eval after a
         // discarded mission
-        if (TheCampaign.MissionEvaluator && TheCampaign.MissionEvaluator->flight_data)
+        if (TheCampaign.MissionEvaluator and TheCampaign.MissionEvaluator->flight_data)
             TheCampaign.MissionEvaluator->PostMissionEval();
 
         if (MainLastGroup == 1000)
@@ -1731,11 +1732,11 @@ int UI_Startup()
 
             DoResultsWindows();
             /*
-            if(MissionResult & PROMOTION)
+            if(MissionResult bitand PROMOTION)
              PromotionWindow();
-            if(MissionResult & AWARD_MEDAL)
+            if(MissionResult bitand AWARD_MEDAL)
              AwardWindow();
-            else if(MissionResult & COURT_MARTIAL)
+            else if(MissionResult bitand COURT_MARTIAL)
              CourtMartialWindow();
             */
 
@@ -1748,7 +1749,7 @@ int UI_Startup()
     else
         gMainHandler->EnableWindowGroup(100);
 
-    if (CampaignLastGroup != 4000)
+    if (CampaignLastGroup not_eq 4000)
         PlayUIMusic();
 
     gSoundMgr->SetAllVolumes(PlayerOptions.GroupVol[UI_SOUND_GROUP]);
@@ -1767,16 +1768,16 @@ int UI_Startup()
 
     SetCursor(gCursors[CRSR_F16]);
 
-    if (!(LogState & LB_LOADED_ONCE))
+    if ( not (LogState bitand LB_LOADED_ONCE))
     {
-        LogState |= LB_LOADED_ONCE;
+        LogState or_eq LB_LOADED_ONCE;
         LogBook.Initialize();
         UI_logbk.Initialize();
         PlayerOptions.Initialize();
         DisplayOptions.Initialize();
     }
 
-    if (!LogBook.CheckPassword(_T("")) && !(LogState & LB_CHECKED))
+    if ( not LogBook.CheckPassword(_T("")) and not (LogState bitand LB_CHECKED))
         PasswordWindow(TXT_LOG_IN, TXT_LOG_IN_MESSAGE, CheckPasswordCB, NoPasswordCB);
     else
     {
@@ -2003,7 +2004,7 @@ void UI_Cleanup()
         if (gCursors[i])
             DeleteObject(gCursors[i]);
 
-    if (gScreenShotEnabled && gScreenShotBuffer)
+    if (gScreenShotEnabled and gScreenShotBuffer)
     {
         delete gScreenShotBuffer;
         gScreenShotBuffer = NULL;
@@ -2066,7 +2067,7 @@ static void SelectTheater(TheaterDef *td);
 
 static void TheaterBackCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     TheaterDef *td = NULL;
@@ -2097,7 +2098,7 @@ static void TheaterBackCB(long, short hittype, C_Base *control)
 
 static void TheaterCancelCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->HideWindow(control->Parent_);
@@ -2110,7 +2111,7 @@ static void TheaterLoadCB(long ID, short hittype, C_Base *control)
     TREELIST *item;
     C_Button   *btn;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tree = (C_TreeList*)control;
@@ -2163,7 +2164,7 @@ static void FillTheaterTree(C_TreeList *tree)
     TREELIST *item;
     TheaterDef *cthr = g_theaters.GetCurrentTheater();
 
-    if (!UniqueID)
+    if ( not UniqueID)
         UniqueID++;
 
     for (int i = 0; td = g_theaters.GetTheater(i); i++)
@@ -2223,7 +2224,7 @@ static void SelectTheater(TheaterDef *td)
         btn->ClearImage(0, UI_THEATER_BITMAP);
         gImageMgr->RemoveImage(UI_THEATER_BITMAP);
 
-        if (td && td->m_bitmap)
+        if (td and td->m_bitmap)
         {
             gImageMgr->LoadImage(UI_THEATER_BITMAP, td->m_bitmap, 0, 0);
             btn->SetImage(0, UI_THEATER_BITMAP);
@@ -2259,7 +2260,7 @@ void TheaterButtonCB(long ID, short hittype, C_Base *control)
 {
     static bool theatersetupdone = false;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     C_Window *win;
@@ -2271,7 +2272,7 @@ void TheaterButtonCB(long ID, short hittype, C_Base *control)
     DisableScenarioInfo();
     LeaveCurrentGame();
 
-    if (MainLastGroup != 0 && MainLastGroup != control->GetGroup())
+    if (MainLastGroup not_eq 0 and MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->DisableWindowGroup(MainLastGroup);
     }
@@ -2279,7 +2280,7 @@ void TheaterButtonCB(long ID, short hittype, C_Base *control)
     MainLastGroup = 0;
 #if 0
 
-    if (MainLastGroup != control->GetGroup())
+    if (MainLastGroup not_eq control->GetGroup())
     {
         gMainHandler->EnableWindowGroup(control->GetGroup());
         MainLastGroup = control->GetGroup();

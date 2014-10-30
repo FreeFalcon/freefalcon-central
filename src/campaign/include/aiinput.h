@@ -133,7 +133,7 @@ extern int NewInitiativePoints; // New initiative point setting
 extern int CampBugFixes; // Smaller bugfixes
 extern float HitChanceAir; // 2D hitchance air target modulation
 extern float HitChanceGround; // 2D hitchance ground target modulation
-// These are in fact read from the trigger files now - no need to mess with the campaign files !
+// These are in fact read from the trigger files now - no need to mess with the campaign files 
 extern float FLOTDrawDistance; // Distance between FLOT objectives at which we won't draw a line anymore (2 front campaigns...)
 extern int FLOTSortDirection; // to sort FLOT by x or y objective coordinates
 extern int TheaterXPosition; // central theater x/y position for calculating new bullseye posit

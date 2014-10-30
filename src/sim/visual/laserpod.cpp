@@ -34,7 +34,7 @@ LaserPodClass::LaserPodClass(int idx, SimMoverClass* self) : VisualClass(idx, se
     visualType = TARGETINGPOD;
 
     //MI docs say it's different
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
         curFOV = 10.0F * DTR;
     else
         curFOV = 6.0F * DTR;
@@ -69,13 +69,13 @@ SimObjectType* LaserPodClass::Exec(SimObjectType*)
 
 void LaserPodClass::DisplayInit(ImageBuffer* image)
 {
-    if (!g_bGreyScaleMFD)
+    if ( not g_bGreyScaleMFD)
         g_bGreyMFD = false;
 
     privateDisplay =  new RenderIR;
     ((RenderTV*)privateDisplay)->Setup(image, OTWDriver.GetViewpoint());
 
-    if ((g_bGreyMFD) && (!bNVGmode))
+    if ((g_bGreyMFD) and ( not bNVGmode))
         privateDisplay->SetColor(GetMfdColor(MFD_WHITE));
     else
         privateDisplay->SetColor(0xff00ff00);
@@ -90,7 +90,7 @@ void LaserPodClass::DisplayInit(ImageBuffer* image)
 void LaserPodClass::ToggleFOV(void)
 {
     //MI Doc's say it's different
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         if (curFOV > 3.0F * DTR)
             // JB 010120 Fixed FOV
@@ -102,7 +102,7 @@ void LaserPodClass::ToggleFOV(void)
     }
     else
     {
-        if (curFOV < 3.0F * DTR && curFOV > 1.6F * DTR)
+        if (curFOV < 3.0F * DTR and curFOV > 1.6F * DTR)
             curFOV = 0.85F * DTR;
         else if (curFOV > 3.0F * DTR)
             curFOV = 1.7F * DTR;
@@ -121,18 +121,18 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
     display = newDisplay;
 
     // FRB - B&W display
-    if (g_bGreyMFD && !bNVGmode)
+    if (g_bGreyMFD and not bNVGmode)
         display->SetColor(0xffffffff);
 
     int tmpColor = display->Color();
 
     if (privateDisplay)
     {
-        if (viewPoint && display->type == VirtualDisplay::DISPLAY_GENERAL)
+        if (viewPoint and display->type == VirtualDisplay::DISPLAY_GENERAL)
         {
             display->EndDraw();
 
-            if (platform->IsAirplane() && ((AircraftClass*)platform)->Sms->MasterArm() != SMSBaseClass::Safe)
+            if (platform->IsAirplane() and ((AircraftClass*)platform)->Sms->MasterArm() not_eq SMSBaseClass::Safe)
             {
                 DrawTerrain();
             }
@@ -144,7 +144,7 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
         display->SetColor(tmpColor);
 
         //MI looks different in real
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             display->Line(0.0F, -1.0F, 0.0F, -0.1F);
             display->Line(0.0F,  1.0F, 0.0F,  0.1F);
@@ -156,7 +156,7 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
         }
         else
         {
-            if (!MenuMode)
+            if ( not MenuMode)
             {
                 float begin = 0.1F;
                 float end = 0.3F;
@@ -170,7 +170,7 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
         if (hasTarget == TargetLocked)
         {
             //MI
-            if (!g_bRealisticAvionics)
+            if ( not g_bRealisticAvionics)
             {
                 display->Line(-LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE,  LOCK_RING_MIN_SIZE);
                 display->Line(-LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE,  LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE);
@@ -180,15 +180,15 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
             else
             {
                 // FRB - B&W display
-                if (g_bGreyMFD && !bNVGmode)
+                if (g_bGreyMFD and not bNVGmode)
                     display->SetColor(0xffffffff);
 
                 //only if not in narrow view
                 if (curFOV > 3.0F * DTR)
                     DrawFOV(display);
 
-                if (playerAC && playerAC->FCC && !playerAC->FCC
-                    ->preDesignate && !IsLocked())
+                if (playerAC and playerAC->FCC and not playerAC->FCC
+                    ->preDesignate and not IsLocked())
                     display->TextCenter(0.0F, -0.4F, "AREA");
             }
 
@@ -196,15 +196,15 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
         else if (lockedTarget)
         {
             unsigned long tmp = vuxRealTime;
-            float offset = (float)(tmp & 0x3FF) / 0x400;
+            float offset = (float)(tmp bitand 0x3FF) / 0x400;
 
-            if (tmp & 0x400)
+            if (tmp bitand 0x400)
                 offset = 1.0F - offset;
 
             offset *= LOCK_RING_MAX_SIZE - LOCK_RING_MIN_SIZE;
 
             //MI
-            if (!g_bRealisticAvionics)
+            if ( not g_bRealisticAvionics)
             {
                 display->Line(-(LOCK_RING_MIN_SIZE + offset), -(LOCK_RING_MIN_SIZE + offset), -(LOCK_RING_MIN_SIZE + offset),   LOCK_RING_MIN_SIZE + offset);
                 display->Line(-(LOCK_RING_MIN_SIZE + offset), -(LOCK_RING_MIN_SIZE + offset),   LOCK_RING_MIN_SIZE + offset,  -(LOCK_RING_MIN_SIZE + offset));
@@ -217,15 +217,15 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
                 if (curFOV > 3.0F * DTR)
                     DrawFOV(display);
 
-                if (playerAC && playerAC->FCC && !playerAC->FCC
-                    ->preDesignate && !IsLocked())
+                if (playerAC and playerAC->FCC and not playerAC->FCC
+                    ->preDesignate and not IsLocked())
                     display->TextCenter(0.0F, -0.4F, "AREA");
             }
         }
         else
         {
             //MI
-            if (!g_bRealisticAvionics)
+            if ( not g_bRealisticAvionics)
             {
                 display->Line(-LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE,  LOCK_RING_MAX_SIZE);
                 display->Line(-LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE,  LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE);
@@ -235,25 +235,25 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
             else
             {
                 // FRB - B&W display
-                if (g_bGreyMFD && !bNVGmode)
+                if (g_bGreyMFD and not bNVGmode)
                     display->SetColor(0xffffffff);
 
                 //only if not in narrow view
                 if (curFOV > 3.0F * DTR)
                     DrawFOV(display);
 
-                if (playerAC && playerAC->FCC && !playerAC->FCC
-                    ->preDesignate && !IsLocked())
+                if (playerAC and playerAC->FCC and not playerAC->FCC
+                    ->preDesignate and not IsLocked())
                     display->TextCenter(0.0F, -0.4F, "AREA");
             }
         }
 
-        if (!IsSOI())
+        if ( not IsSOI())
         {
-            if (g_bRealisticAvionics && !MenuMode)
+            if (g_bRealisticAvionics and not MenuMode)
             {
                 // FRB - B&W display
-                if (g_bGreyMFD && !bNVGmode)
+                if (g_bGreyMFD and not bNVGmode)
                     display->SetColor(0xffffffff);
                 else
                     display->SetColor(GetMfdColor(MFD_GREEN));
@@ -261,7 +261,7 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
                 //Not here in real
                 //display->TextCenter(0.0F, 0.4F, "NOT SOI");
             }
-            else if (!g_bRealisticAvionics)
+            else if ( not g_bRealisticAvionics)
             {
                 display->SetColor(GetMfdColor(MFD_GREEN));
                 display->TextCenter(0.0F, 0.4F, "NOT SOI");
@@ -270,7 +270,7 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
         else
         {
             // FRB - B&W display
-            if (g_bGreyMFD && !bNVGmode)
+            if (g_bGreyMFD and not bNVGmode)
                 display->SetColor(0xffffffff);
             else
                 display->SetColor(GetMfdColor(MFD_GREEN));
@@ -279,7 +279,7 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
         }
 
         //MI not here in real, according to docs and MFD vids from Kosovo bombings
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             display->AdjustOriginInViewport(seekerAzCenter / LGB_GIMBAL_MAX, seekerElCenter / LGB_GIMBAL_MAX);
             display->Line(0.0F,  0.2F,  0.0F, -0.2F);
@@ -288,10 +288,10 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
         }
         else //but instead, there's a small square
         {
-            if (!MenuMode)
+            if ( not MenuMode)
             {
                 // FRB - B&W display
-                if (g_bGreyMFD && !bNVGmode)
+                if (g_bGreyMFD and not bNVGmode)
                     display->SetColor(0xffffffff);
                 else
                     display->SetColor(GetMfdColor(MFD_GREEN));
@@ -307,15 +307,15 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
         //MI
         if (g_bRealisticAvionics)
         {
-            if (playerAC && playerAC->FCC)
+            if (playerAC and playerAC->FCC)
             {
                 // FRB - B&W display
-                if (g_bGreyMFD && !bNVGmode)
+                if (g_bGreyMFD and not bNVGmode)
                     display->SetColor(0xffffffff);
                 else
                     display->SetColor(GetMfdColor(MFD_GREEN));
 
-                if (playerAC->FCC->designateCmd || IsLocked())
+                if (playerAC->FCC->designateCmd or IsLocked())
                     DrawBox(display);
             }
         }
@@ -409,7 +409,7 @@ void LaserPodClass::SetDesiredTarget(SimObjectType *newTarget)
         return;
 
     // Undesignate the current target
-    if (lockedTarget && lockedTarget->BaseData()->IsSim())
+    if (lockedTarget and lockedTarget->BaseData()->IsSim())
     {
         msg = new FalconLaserDesignateMsg(platform->Id(), FalconLocalGame);
         msg->dataBlock.source   = platform->Id();
@@ -418,7 +418,7 @@ void LaserPodClass::SetDesiredTarget(SimObjectType *newTarget)
         FalconSendMessage(msg, TRUE);
     }
 
-    if (newTarget && newTarget->BaseData()->IsSim() && CanSeeObject(newTarget) && CanDetectObject(newTarget))
+    if (newTarget and newTarget->BaseData()->IsSim() and CanSeeObject(newTarget) and CanDetectObject(newTarget))
     {
         SetSensorTarget(newTarget);
 
@@ -447,7 +447,7 @@ int LaserPodClass::SetDesiredSeekerPos(float* az, float* el)
 
     //MI original code
     // Looking down or left your total angle is limited to 160 Degrees
-    if (*el < 5.0F * DTR || *az < 5.0F * DTR)
+    if (*el < 5.0F * DTR or *az < 5.0F * DTR)
     {
         tmp = (float)(cos(*az) * cos(*el));
         totalAngle = (float)atan2(sqrt(1 - tmp * tmp), tmp);
@@ -475,10 +475,10 @@ int LaserPodClass::SetDesiredSeekerPos(float* az, float* el)
 #endif
 
     // 2001-09-07 ADDED BY S.G. RP5 DEALS WITH THE LIMIT DIFFERENTLY
-    if (!g_bRP5Comp)
+    if ( not g_bRP5Comp)
     {
         // Looking down or left/right your total angle is limited to 150 Degrees
-        if (*el < 35.0F * DTR || *az > 5.0F * DTR)
+        if (*el < 35.0F * DTR or *az > 5.0F * DTR)
         {
             tmp = (float)(cos(*az) * cos(*el));
             totalAngle = (float)atan2(sqrt(1 - tmp * tmp), tmp);
@@ -502,7 +502,7 @@ int LaserPodClass::SetDesiredSeekerPos(float* az, float* el)
         // az goes from -PI to PI (-180 to 180) and el goes from -PI/2 to PI/2 (-90 to 90).
         // If el needs to go lower than -90 or higher than 90, az is moved to the next quadrant so el is readjusted accordingly.
         // First for the front section of the plane (right side will have better elevation after 20 degrees)
-        if (*az >= -90.0f * DTR && *az <= 20.0f * DTR)
+        if (*az >= -90.0f * DTR and *az <= 20.0f * DTR)
         {
             if (*el > 20.0f * DTR)
             {
@@ -511,7 +511,7 @@ int LaserPodClass::SetDesiredSeekerPos(float* az, float* el)
             }
         }
         // Then the right side of the plane
-        else if (*az > 20.0f * DTR && *az < 120.0f * DTR)
+        else if (*az > 20.0f * DTR and *az < 120.0f * DTR)
         {
             if (*el > 60.0f * DTR)
             {
@@ -523,7 +523,7 @@ int LaserPodClass::SetDesiredSeekerPos(float* az, float* el)
         else
         {
             // If we're limited on the azimuth, simulate the pod looking back and limited at -150 degrees elevation)
-            if (*az > 150.0f * DTR || *az < -150.0f * DTR)
+            if (*az > 150.0f * DTR or *az < -150.0f * DTR)
             {
                 if (*el > -30.f * DTR)
                 {
@@ -543,7 +543,7 @@ int LaserPodClass::SetDesiredSeekerPos(float* az, float* el)
     }
 
     // Send the new values to the base class
-    if (!retval)
+    if ( not retval)
         SetSeekerPos(*az, *el);
 
     // Tell the caller if he hit the limits
@@ -569,16 +569,16 @@ SensorClass* FindLaserPod(SimMoverClass* theObject)
     ShiAssert(theObject);
     SensorClass* retval = NULL;
 
-    if (!theObject) return retval;//me123 ctd
+    if ( not theObject) return retval;//me123 ctd
 
     for (i = 0; i < theObject->numSensors; i++)
     {
-        if (theObject->sensorArray && theObject->sensorArray[i] && theObject->sensorArray[i]->Type() == SensorClass::TargetingPod)
+        if (theObject->sensorArray and theObject->sensorArray[i] and theObject->sensorArray[i]->Type() == SensorClass::TargetingPod)
         {
             retval = theObject->sensorArray[i];
             break;
         }
-        else if (theObject->sensorArray && theObject->sensorArray[i] && theObject->sensorArray[i]->Type() == SensorClass::Visual)
+        else if (theObject->sensorArray and theObject->sensorArray[i] and theObject->sensorArray[i]->Type() == SensorClass::Visual)
         {
             if (((VisualClass*)theObject->sensorArray[i])->VisualType() == VisualClass::TARGETINGPOD)
             {

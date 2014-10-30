@@ -38,7 +38,7 @@ ObjectDisplayList::ObjectDisplayList()
 ObjectDisplayList::~ObjectDisplayList()
 {
     // Commented out because it doesn't crash and we're desperate
-    // ShiAssert ( !head );
+    // ShiAssert ( not head );
 
     // KCK: This is kept around for shits and grins (and release, I guess)
     while (head)
@@ -47,8 +47,8 @@ ObjectDisplayList::~ObjectDisplayList()
     }
 
     // Commented out because it doesn't crash and we're desperate
-    // ShiAssert ( !head ); ShiAssert( !head );
-    // ShiAssert( !tail );
+    // ShiAssert ( not head ); ShiAssert( not head );
+    // ShiAssert( not tail );
 }
 
 
@@ -58,7 +58,7 @@ ObjectDisplayList::~ObjectDisplayList()
 void ObjectDisplayList::InsertObject(DrawableObject *object)
 {
     ShiAssert(object);
-    ShiAssert(!object->InDisplayList());
+    ShiAssert( not object->InDisplayList());
 
 #ifdef _SANITY_CHECK_
 
@@ -87,7 +87,7 @@ void ObjectDisplayList::InsertObject(DrawableObject *object)
     head = object;
 #ifdef _SANITY_CHECK_
 
-    if (head->prev != NULL)
+    if (head->prev not_eq NULL)
         head->prev = NULL;
 
 #endif
@@ -108,10 +108,10 @@ void ObjectDisplayList::RemoveObject(DrawableObject* object)
 
 #ifdef _SANITY_CHECK_
 
-    if (!object->parentList)
+    if ( not object->parentList)
         return;
 
-    if (object->parentList != this)
+    if (object->parentList not_eq this)
         return;
 
 #endif
@@ -125,7 +125,7 @@ void ObjectDisplayList::RemoveObject(DrawableObject* object)
     // Take the given object out of the active list
     if (object->prev)
     {
-        if (!F4IsBadWritePtr(object->prev, sizeof(DrawableObject)))  // JB 010221 CTD
+        if ( not F4IsBadWritePtr(object->prev, sizeof(DrawableObject)))  // JB 010221 CTD
             object->prev->next = object->next;
     }
     else
@@ -136,7 +136,7 @@ void ObjectDisplayList::RemoveObject(DrawableObject* object)
 
     if (object->next)
     {
-        if (!F4IsBadWritePtr(object->next, sizeof(DrawableObject)))  // JB 010221 CTD
+        if ( not F4IsBadWritePtr(object->next, sizeof(DrawableObject)))  // JB 010221 CTD
             object->next->prev = object->prev;
     }
     else
@@ -168,17 +168,17 @@ void ObjectDisplayList::UpdateMetrics(const Tpoint *pos)
     DrawableObject *p;
 
     // Quit now if we don't have at least one list entry
-    if (!head) return;
+    if ( not head) return;
 
     // Run through the whole list and compute the sorting metrics for each entry
     p = head;
 
     //while ( p )
-    while (p && !F4IsBadReadPtr(p, sizeof(DrawableObject)))  // JB 010318 CTD
+    while (p and not F4IsBadReadPtr(p, sizeof(DrawableObject)))  // JB 010318 CTD
     {
         // Update the distance metric (not less than 0)
         p->distance = max((float)fabs(x - p->position.x), (float)fabs(y - p->position.y));
-        ShiAssert(!_isnan(p->distance));
+        ShiAssert( not _isnan(p->distance));
 
         if (_isnan(p->distance))
         {
@@ -215,7 +215,7 @@ void ObjectDisplayList::UpdateMetrics(long listNo, const Tpoint *pos, TransportS
     long i;
 
     // Quit now if we don't have at least one list entry
-    if (!head) return;
+    if ( not head) return;
 
 
 #ifdef _SANITY_CHECK_
@@ -226,7 +226,7 @@ void ObjectDisplayList::UpdateMetrics(long listNo, const Tpoint *pos, TransportS
         long count = 0;
 
         // Sanity checks
-        if (head->parentList != this)
+        if (head->parentList not_eq this)
             return;
 
         if (head->prev)
@@ -237,9 +237,9 @@ void ObjectDisplayList::UpdateMetrics(long listNo, const Tpoint *pos, TransportS
 
         _cur_ = head;
 
-        while (_cur_ && count < 10000)
+        while (_cur_ and count < 10000)
         {
-            if (_cur_->parentList != this)
+            if (_cur_->parentList not_eq this)
                 return;
 
             _cur_ = _cur_->next;
@@ -265,7 +265,7 @@ void ObjectDisplayList::UpdateMetrics(long listNo, const Tpoint *pos, TransportS
 
         // Update the distance metric (not less than 0)
         p->distance = max((float)fabs(x - p->position.x), (float)fabs(y - p->position.y));
-        ShiAssert(!_isnan(p->distance));
+        ShiAssert( not _isnan(p->distance));
 
         if (_isnan(p->distance))
         {
@@ -282,11 +282,11 @@ void ObjectDisplayList::UpdateMetrics(long listNo, const Tpoint *pos, TransportS
 
         if (transList)
         {
-            if (p->position.z >= transList->bottom[listNo] && listNo)
+            if (p->position.z >= transList->bottom[listNo] and listNo)
             {
                 i = listNo - 1;
 
-                while (i > 0 && p->position.z >= transList->bottom[i])
+                while (i > 0 and p->position.z >= transList->bottom[i])
                     i--;
 
                 // remove object from objectList
@@ -295,11 +295,11 @@ void ObjectDisplayList::UpdateMetrics(long listNo, const Tpoint *pos, TransportS
                 p->next = transList->list[i];
                 transList->list[i] = p;
             }
-            else if (p->position.z < transList->top[listNo] && listNo < (_NUM_OBJECT_LISTS_ - 1))
+            else if (p->position.z < transList->top[listNo] and listNo < (_NUM_OBJECT_LISTS_ - 1))
             {
                 i = listNo + 1;
 
-                while (i < (_NUM_OBJECT_LISTS_ - 1) && p->position.z < transList->top[i])
+                while (i < (_NUM_OBJECT_LISTS_ - 1) and p->position.z < transList->top[i])
                     i++;
 
                 // remove object from objectList
@@ -326,7 +326,7 @@ void ObjectDisplayList::UpdateMetrics(long listNo, const Tpoint *pos, TransportS
 
         _cur_ = head;
 
-        while (_cur_ && count < 10000)
+        while (_cur_ and count < 10000)
         {
             _cur_ = _cur_->next;
             count++;
@@ -355,11 +355,11 @@ void ObjectDisplayList::InsertionSortLink(DrawableObject **listhead, DrawableObj
     newlist = listend;
     walk = *listhead;
 
-    for (; walk != listend; walk = save)
+    for (; walk not_eq listend; walk = save)
     {
         DrawableObject **pnewlink;
 
-        for (pnewlink = &newlist; *pnewlink != listend && walk->distance <= (*pnewlink)->distance; pnewlink = &((*pnewlink)->next));
+        for (pnewlink = &newlist; *pnewlink not_eq listend and walk->distance <= (*pnewlink)->distance; pnewlink = &((*pnewlink)->next));
 
         save = walk->next;
         walk->next = *pnewlink;
@@ -375,7 +375,7 @@ void ObjectDisplayList::QuickSortLink(DrawableObject **head, DrawableObject *end
     DrawableObject **left_walk, *pivot, *old;
     DrawableObject **right_walk, *right;
 
-    if (*head != end)
+    if (*head not_eq end)
     {
         do
         {
@@ -384,7 +384,7 @@ void ObjectDisplayList::QuickSortLink(DrawableObject **head, DrawableObject *end
             right_walk = &right;
             left_count = right_count = 0;
 
-            for (old = (*head)->next; old != end; old = old->next)
+            for (old = (*head)->next; old not_eq end; old = old->next)
             {
                 if (old->distance > pivot->distance)
                 {
@@ -444,7 +444,7 @@ void ObjectDisplayList::SortForViewpoint(void)
 #endif
 
     // Quit now if we don't have at least one list entry
-    if (!head) return;
+    if ( not head) return;
 
 #ifdef _SANITY_CHECK_
 
@@ -456,7 +456,7 @@ void ObjectDisplayList::SortForViewpoint(void)
 
     _cur_ = head;
 
-    while (_cur_ && count < 10000)
+    while (_cur_ and count < 10000)
     {
         _cur_ = _cur_->next;
         count++;
@@ -505,7 +505,7 @@ void ObjectDisplayList::SortForViewpoint(void)
     _cur_ = head;
     count = 0;
 
-    while (_cur_ && count < 10000)
+    while (_cur_ and count < 10000)
     {
         _cur_ = _cur_->next;
         count++;
@@ -539,23 +539,23 @@ void ObjectDisplayList::SortForViewpoint(void)
 
 
     // Quit now if we don't have at least one list entry
-    if (!head) return;
+    if ( not head) return;
 
     // Now sort the list laterally from far to near
-    for (p = head->next; p != NULL; p = p->next)
+    for (p = head->next; p not_eq NULL; p = p->next)
     {
 
         // Decide where to place this element in the list
         q = p;
 
-        while ((q->prev) && (q->prev->distance < p->distance)) // JB 010306 CTD
-            //while ((q->prev) && (!F4IsBadReadPtr(q->prev, sizeof(DrawableObject))) && (q->prev->distance < p->distance)) // JB 010306 CTD (too much CPU)
+        while ((q->prev) and (q->prev->distance < p->distance)) // JB 010306 CTD
+            //while ((q->prev) and ( not F4IsBadReadPtr(q->prev, sizeof(DrawableObject))) and (q->prev->distance < p->distance)) // JB 010306 CTD (too much CPU)
         {
             q = q->prev;
         }
 
         // Only adjust the list if we need to
-        if (q != p)
+        if (q not_eq p)
         {
             // Remove the element under consideration (p) from its current location
             if (p->prev)
@@ -623,7 +623,7 @@ void ObjectDisplayList::PreLoad(class RenderOTW *renderer)
 void ObjectDisplayList::DrawBeyond(float ringDistance, int LOD, class RenderOTW *renderer)
 {
     //START_PROFILE("-->DRAW LIST");
-    while (nextToDraw && (nextToDraw->distance >= ringDistance))
+    while (nextToDraw and (nextToDraw->distance >= ringDistance))
     {
         //COUNT_PROFILE("DRAW OBJECTS");
         // setup the object remove as false
@@ -660,7 +660,7 @@ void ObjectDisplayList::DrawBeyond(float ringDistance, int LOD, class RenderOTW 
 \*****************************************************************************/
 void ObjectDisplayList::DrawBeyond(float ringDistance, class Render3D *renderer)
 {
-    while (nextToDraw && (nextToDraw->distance >= ringDistance))
+    while (nextToDraw and (nextToDraw->distance >= ringDistance))
     {
         nextToDraw->Draw(renderer);
         nextToDraw = nextToDraw->next;

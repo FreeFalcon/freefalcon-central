@@ -238,7 +238,7 @@ public:
     };
     ~TrailElement()
     {
-        if (!F4IsBadWritePtr(next, sizeof(TrailElement))) // JB 010304 CTD
+        if ( not F4IsBadWritePtr(next, sizeof(TrailElement))) // JB 010304 CTD
         {
             delete next;
             next = NULL;

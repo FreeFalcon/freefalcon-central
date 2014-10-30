@@ -67,7 +67,7 @@ BOOL CreateSimCursors()
         return (FALSE);
     }
 
-    if (fscanf(pCursorFile, "%d", &gTotalCursors) != 1)
+    if (fscanf(pCursorFile, "%d", &gTotalCursors) not_eq 1)
     {
         return(FALSE);
     }
@@ -78,7 +78,7 @@ BOOL CreateSimCursors()
     {
         // Note, the %hu is to read in unsigned shorts instead of unsigned ints
         if (fscanf(pCursorFile, "\t%hu %hu %hu %hu %s\n", &gpSimCursors[i].Width, &gpSimCursors[i].Height,
-                   &gpSimCursors[i].xHotspot, &gpSimCursors[i].yHotspot, pFileName) != NUM_FIELDS)
+                   &gpSimCursors[i].xHotspot, &gpSimCursors[i].yHotspot, pFileName) not_eq NUM_FIELDS)
         {
             return(FALSE);
         }
@@ -101,7 +101,7 @@ BOOL CreateSimCursors()
 
         // Make sure we recognize this file type
         texFile.imageType = CheckImageType(pFilePath);
-        ShiAssert(texFile.imageType != IMAGE_TYPE_UNKNOWN);
+        ShiAssert(texFile.imageType not_eq IMAGE_TYPE_UNKNOWN);
 
         // Open the input file
         result = texFile.glOpenFileMem(pFilePath);
@@ -111,7 +111,7 @@ BOOL CreateSimCursors()
         texFile.glReadFileMem();
         result = ReadTextureImage(&texFile);
 
-        if (result != GOOD_READ)
+        if (result not_eq GOOD_READ)
         {
             ShiError("Failed to read bitmap.  CD Error?");
         }
@@ -169,23 +169,23 @@ BOOL CreateSimCursors()
                 const DWORD dwMaxTextureHeight = OTWDriver.OTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
                 gpSimCursors[i].CursorRenderPalette = new PaletteHandle(OTWDriver.OTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
 
-                if (!gpSimCursors[i].CursorRenderPalette)
+                if ( not gpSimCursors[i].CursorRenderPalette)
                     throw _com_error(E_OUTOFMEMORY);
 
                 // Check if we can use a single texture
-                if (dwMaxTextureWidth >= gpSimCursors[i].Width && dwMaxTextureHeight >= gpSimCursors[i].Height)
+                if (dwMaxTextureWidth >= gpSimCursors[i].Width and dwMaxTextureHeight >= gpSimCursors[i].Height)
                 {
                     TextureHandle *pTex = new TextureHandle;
 
-                    if (!pTex)
+                    if ( not pTex)
                         throw _com_error(E_OUTOFMEMORY);
 
                     gpSimCursors[i].CursorRenderPalette->AttachToTexture(pTex);
 
-                    if (!pTex->Create("CPHsi", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, gpSimCursors[i].Width, gpSimCursors[i].Height))
+                    if ( not pTex->Create("CPHsi", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8, gpSimCursors[i].Width, gpSimCursors[i].Height))
                         throw _com_error(E_FAIL);
 
-                    if (!pTex->Load(0, 0xFFFF0000, (BYTE*) gpSimCursors[i].CursorRenderBuffer, true, true)) // soon to be re-loaded by CPSurface::Translate3D
+                    if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) gpSimCursors[i].CursorRenderBuffer, true, true)) // soon to be re-loaded by CPSurface::Translate3D
                         throw _com_error(E_FAIL);
 
                     gpSimCursors[i].CursorRenderTexture.push_back(pTex);
@@ -270,7 +270,7 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
     RECT CursorSrc;
     RECT CursorDest;
 
-    if (gSelectedCursor < 0 || gSelectedCursor >= gTotalCursors)
+    if (gSelectedCursor < 0 or gSelectedCursor >= gTotalCursors)
     {
         return;
     }
@@ -313,7 +313,7 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
         CursorDest.bottom = displayHeight - 1;
     }
 
-    if (!DisplayOptions.bRender2DCockpit)
+    if ( not DisplayOptions.bRender2DCockpit)
         OTWDriver.OTWImage->ComposeTransparent(gpSimCursors[gSelectedCursor].CursorBuffer, &CursorSrc, &CursorDest);
     else
     {
@@ -359,7 +359,7 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
 
         OTWDriver.renderer->context.RestoreState(STATE_ALPHA_TEXTURE_NOFILTER);
         OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
-        OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
+        OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
         OTWDriver.renderer->EndDraw();
 
         //Wombat778 3-24-04 end

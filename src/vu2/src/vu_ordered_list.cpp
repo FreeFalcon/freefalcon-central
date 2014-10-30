@@ -11,7 +11,7 @@ VuOrderedList::~VuOrderedList()
 
 VU_ERRCODE VuOrderedList::PrivateInsert(VuEntity* entity)
 {
-    for (VuLinkedList::iterator it = l_.begin(); it != l_.end(); ++it)
+    for (VuLinkedList::iterator it = l_.begin(); it not_eq l_.end(); ++it)
     {
         VuEntityBin &b = *it;
 
@@ -28,7 +28,7 @@ VU_ERRCODE VuOrderedList::PrivateInsert(VuEntity* entity)
 
 VU_ERRCODE VuOrderedList::PrivateRemove(VuEntity* entity)
 {
-    for (VuLinkedList::iterator it = l_.begin(); it != l_.end(); ++it)
+    for (VuLinkedList::iterator it = l_.begin(); it not_eq l_.end(); ++it)
     {
         VuEntityBin &b = *it;
         int res = GetFilter()->Compare(*b, entity);
@@ -50,7 +50,7 @@ VU_ERRCODE VuOrderedList::PrivateRemove(VuEntity* entity)
 
 bool VuOrderedList::PrivateFind(VuEntity* entity)
 {
-    for (VuLinkedList::iterator it = l_.begin(); it != l_.end(); ++it)
+    for (VuLinkedList::iterator it = l_.begin(); it not_eq l_.end(); ++it)
     {
         VuEntityBin &b = *it;
         int res = GetFilter()->Compare(*b, entity);
@@ -89,7 +89,7 @@ VU_ERRCODE VuOrderedList::ForcedInsert(VuEntity* entity)
 
     if (filter_->RemoveTest(entity))
     {
-        for (VuLinkedList::iterator it = l_.begin(); it != l_.end(); ++it)
+        for (VuLinkedList::iterator it = l_.begin(); it not_eq l_.end(); ++it)
         {
             VuEntityBin &b = *it;
 

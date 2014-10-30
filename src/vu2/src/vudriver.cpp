@@ -303,7 +303,7 @@ unsigned int VuMaster::SendsPerPlayer()
 {
     int otherPlayers = vuLocalSessionEntity->Game()->SessionCount() - 1;
     // avoids division by zero
-    return ((otherPlayers > 0) && (toSend > 0)) ? (MaxSends() / otherPlayers) : 0;
+    return ((otherPlayers > 0) and (toSend > 0)) ? (MaxSends() / otherPlayers) : 0;
 }
 
 VuMaster::VuMaster(VuEntity* entity) : VuDeadReckon(entity)
@@ -358,11 +358,11 @@ VU_ERRCODE VuMaster::GeneratePositionUpdate(bool reliable, bool oob, VU_TIME tim
 inline bool VuMaster::ToleranceReached()
 {
     return
-        (abs(entity_->XPos() - xsent_) >= MOVE_TOLERANCE) ||
-        (abs(entity_->YPos() - ysent_) >= MOVE_TOLERANCE) ||
-        (abs(entity_->ZPos() - zsent_) >= MOVE_TOLERANCE) ||
-        (abs(entity_->Yaw()   - yawsent_) >= TURN_TOLERANCE) ||
-        (abs(entity_->Pitch() - pitchsent_) >= TURN_TOLERANCE) ||
+        (abs(entity_->XPos() - xsent_) >= MOVE_TOLERANCE) or
+        (abs(entity_->YPos() - ysent_) >= MOVE_TOLERANCE) or
+        (abs(entity_->ZPos() - zsent_) >= MOVE_TOLERANCE) or
+        (abs(entity_->Yaw()   - yawsent_) >= TURN_TOLERANCE) or
+        (abs(entity_->Pitch() - pitchsent_) >= TURN_TOLERANCE) or
         (abs(entity_->Roll()  - rollsent_) >= TURN_TOLERANCE)
         ;
 }
@@ -372,7 +372,7 @@ void VuMaster::Exec(VU_TIME timestamp)
     ResetToSendIfTime();
 
     // exec model, if fails, exec DR
-    if (!ExecModel(timestamp))
+    if ( not ExecModel(timestamp))
     {
         ExecDR(timestamp);
     }
@@ -384,9 +384,9 @@ void VuMaster::Exec(VU_TIME timestamp)
     VU_TIME timeDelta = vuxRealTime - updateSentRealTime_;
     VuSessionsIterator iter(vuLocalGame);
 
-    for (VuSessionEntity *s = iter.GetFirst(); s != NULL; s = iter.GetNext())
+    for (VuSessionEntity *s = iter.GetFirst(); s not_eq NULL; s = iter.GetNext())
     {
-        // dont send to ourselves!
+        // dont send to ourselves
         if (s == vuLocalSessionEntity)
         {
             continue;
@@ -400,7 +400,7 @@ void VuMaster::Exec(VU_TIME timestamp)
             s->EnqueueOobPositionUpdate(entity_);
             --toSend;
         }
-        else if ((score.first == ENQUEUE_SEND) && (toSend > 0))
+        else if ((score.first == ENQUEUE_SEND) and (toSend > 0))
         {
             // enqeue send, dont decrement to sent (will be done during enqueued sends)
             // do this to optimize enqueued PU (they wont be sent if OOB)

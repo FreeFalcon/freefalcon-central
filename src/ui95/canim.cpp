@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -25,7 +25,7 @@ C_Anim::C_Anim() : C_Base()
     Anim_ = NULL;
     _SetCType_(_CNTL_ANIMATION_);
     SetReady(0);
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_TIMER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_TIMER;
 }
 
 C_Anim::C_Anim(char **stream) : C_Base(stream)
@@ -101,7 +101,7 @@ void C_Anim::SetFlags(long flags)
 
 void C_Anim::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL || !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL or not Ready())
         return;
 
     if (Anim_)
@@ -110,7 +110,7 @@ void C_Anim::Refresh()
 
 void C_Anim::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL || !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL or not Ready())
         return;
 
     if (Anim_)
@@ -119,10 +119,10 @@ void C_Anim::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
 BOOL C_Anim::TimerUpdate()
 {
-    if (!(GetFlags() & C_BIT_ENABLED))
+    if ( not (GetFlags() bitand C_BIT_ENABLED))
         return(FALSE);
 
-    if (!Ready()) return(FALSE);
+    if ( not Ready()) return(FALSE);
 
     switch (GetType())
     {
@@ -159,7 +159,7 @@ BOOL C_Anim::TimerUpdate()
         case C_TYPE_PINGPONG:
             Anim_->SetFrame(Anim_->GetFrame() + Anim_->GetDirection());
 
-            if ((Anim_->GetFrame() < 0) || (Anim_->GetFrame() >= Anim_->GetAnim()->Anim->Frames))
+            if ((Anim_->GetFrame() < 0) or (Anim_->GetFrame() >= Anim_->GetAnim()->Anim->Frames))
             {
                 Anim_->SetFrame(Anim_->GetFrame() - Anim_->GetDirection());
                 Anim_->SetDirection(-Anim_->GetDirection());
@@ -189,7 +189,7 @@ short C_Anim::LocalFind(char *token)
 }
 
 void C_Anim::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
-//!void C_Anim::LocalFunction(short ID,long P[],_TCHAR *str,C_Handler *Hndlr)
+// not void C_Anim::LocalFunction(short ID,long P[],_TCHAR *str,C_Handler *Hndlr)
 {
 
     switch (ID)

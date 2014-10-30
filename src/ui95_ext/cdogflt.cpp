@@ -15,7 +15,7 @@ C_Dog_Flight::C_Dog_Flight() : C_Control()
     Image_[1] = NULL;
     vuID = FalconNullId;
 
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER;
 }
 
 C_Dog_Flight::C_Dog_Flight(char **stream) : C_Control(stream)
@@ -99,7 +99,7 @@ void C_Dog_Flight::SetAircraft(short x, short y, _TCHAR *text)
 
 void C_Dog_Flight::SetState(short state)
 {
-    state_ = static_cast<short>(state & 1);
+    state_ = static_cast<short>(state bitand 1);
     Icon_->SetImage(Image_[state_]);
     Callsign_->SetFgColor(Color_[state_]);
     Aircraft_->SetFgColor(Color_[state_]);
@@ -108,10 +108,10 @@ void C_Dog_Flight::SetState(short state)
 
 long C_Dog_Flight::CheckHotSpots(long relx, long rely)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
         return(0);
 
-    if (relx >= GetX() && rely >= GetY() && relx <= (GetX() + GetW()) && rely <= GetY() + GetH())
+    if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= GetY() + GetH())
         return(GetID());
 
     return(0);
@@ -129,7 +129,7 @@ BOOL C_Dog_Flight::Process(long ID, short HitType)
 
 void C_Dog_Flight::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -137,7 +137,7 @@ void C_Dog_Flight::Refresh()
 
 void C_Dog_Flight::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Icon_)
@@ -149,7 +149,7 @@ void C_Dog_Flight::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (Aircraft_)
         Aircraft_->Draw(surface, cliprect);
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 
@@ -157,7 +157,7 @@ void C_Dog_Flight::SetSubParents(C_Window *)
 {
     long w, h;
 
-    if (!Icon_ || !Callsign_ || !Aircraft_)
+    if ( not Icon_ or not Callsign_ or not Aircraft_)
         return;
 
     Callsign_->SetFont(Font_);

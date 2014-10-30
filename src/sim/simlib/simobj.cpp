@@ -134,7 +134,7 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
     {
         retval = AddFeatureToSim(initData);
 
-        if (gACMIRec.IsRecording() && retval)
+        if (gACMIRec.IsRecording() and retval)
         {
             featPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
             featPos.data.type = retval->Type();
@@ -149,7 +149,7 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
             featPos.data.specialFlags = initData->specialFlags;
             leadObject = initData->campBase->GetComponentLead();
 
-            if (leadObject && leadObject->Id().num_ != retval->Id().num_)
+            if (leadObject and leadObject->Id().num_ not_eq retval->Id().num_)
             {
                 featPos.data.leadUniqueID = (leadObject->Id());//.num_;
             }
@@ -183,16 +183,16 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
                 ShiWarning("Unknown sim object initiater.\n");
         }
 
-        if (initData->createFlags & SIDC_REMOTE_OWNER)
+        if (initData->createFlags bitand SIDC_REMOTE_OWNER)
         {
             retval->ChangeOwner(initData->owner->Id());
         }
 
         // Inherit certain attributes from campaign parent
-        // HACK HACK HACK HACK HACK!!!
-        if (FalconLocalGame->GetGameType() == game_Dogfight && initData->campBase->IsUnit())
-            //    if ((initData->campUnit && initData->campUnit->IsSetFalcFlag(FEC_REGENERATING)) ||
-            //    (initData->campObj && initData->campObj->IsSetFalcFlag(FEC_REGENERATING)))
+        // HACK HACK HACK HACK HACK
+        if (FalconLocalGame->GetGameType() == game_Dogfight and initData->campBase->IsUnit())
+            //    if ((initData->campUnit and initData->campUnit->IsSetFalcFlag(FEC_REGENERATING)) or
+            //    (initData->campObj and initData->campObj->IsSetFalcFlag(FEC_REGENERATING)))
             // END HACK
         {
             retval->SetFalcFlag(FEC_REGENERATING);
@@ -201,8 +201,8 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
         }
 
         if (
-            initData->playerSlot != NO_PILOT &&
-            initData->campBase->IsUnit() &&
+            initData->playerSlot not_eq NO_PILOT and 
+            initData->campBase->IsUnit() and 
             initData->campBase->IsSetFalcFlag(FEC_PLAYERONLY)
         )
         {
@@ -210,8 +210,8 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
         }
 
         if (
-            initData->playerSlot != NO_PILOT &&
-            initData->campBase->IsUnit() &&
+            initData->playerSlot not_eq NO_PILOT and 
+            initData->campBase->IsUnit() and 
             initData->campBase->IsSetFalcFlag(FEC_HOLDSHORT)
         )
         {
@@ -219,10 +219,10 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
         }
 
         /*
-        if (initData->createFlags & SIDC_SILENT_INSERT){
+        if (initData->createFlags bitand SIDC_SILENT_INSERT){
          vuDatabase->SilentInsert (retval);
         }
-        else if (!(initData->createFlags & SIDC_NO_INSERT)){
+        else if ( not (initData->createFlags bitand SIDC_NO_INSERT)){
          vuDatabase->QuickInsert (retval);
         }*/
         // sfr: flags now take care of sending creation events
@@ -336,7 +336,7 @@ SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self, F
             switch (SimCompare(curInUse->BaseData(), curUpdate))
             {
                 case 0: // curUpdate == curInUse -- Means the current entry is still active
-                    if (!curUpdate->IsExploding() && CheckForConcern(curUpdate, self))
+                    if ( not curUpdate->IsExploding() and CheckForConcern(curUpdate, self))
                     {
                         lastInUse = curInUse;
                         curInUse = curInUse->next;
@@ -404,7 +404,7 @@ SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self, F
                     break;
 
                 case -1: // curUpdate < curInUse -- Insert into the list
-                    if (!curUpdate->IsDead() && CheckForConcern(curUpdate, self))
+                    if ( not curUpdate->IsDead() and CheckForConcern(curUpdate, self))
                     {
                         // Add before curInUse
                         tmpInUse = new SimObjectType(curUpdate);
@@ -440,8 +440,8 @@ SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self, F
             // Check and add to the end of the list if needed
             // sfr: removed JB hack
             if (
-                // !F4IsBadReadPtr(curUpdate, sizeof(SimBaseClass)) &&
-                !curUpdate->IsDead() && CheckForConcern(curUpdate, self)
+                // not F4IsBadReadPtr(curUpdate, sizeof(SimBaseClass)) and 
+ not curUpdate->IsDead() and CheckForConcern(curUpdate, self)
             )
             {
                 // Add after lastInUse
@@ -473,7 +473,7 @@ SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self, F
     } // while curUpdate
 
     // Ensure the last valid target has a NULL for its "next" pointer
-    if (curInUse && curInUse->prev)
+    if (curInUse and curInUse->prev)
     {
         curInUse->prev->next = NULL;
     }
@@ -526,7 +526,7 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
     }
 
     // Make sure we keep anything currently locked up in the target list
-    if (self->targetPtr && self->targetPtr->BaseData() == curUpdate)
+    if (self->targetPtr and self->targetPtr->BaseData() == curUpdate)
     {
         return TRUE;
     }
@@ -540,17 +540,17 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
 
     // edg: I'm going to try this out -- don't put anything into target
     // lists that are hidden (should only affect helos and grnd vehicles)
-    if (curUpdate->IsSim() && ((SimBaseClass*)curUpdate)->IsSetLocalFlag(IS_HIDDEN))
+    if (curUpdate->IsSim() and ((SimBaseClass*)curUpdate)->IsSetLocalFlag(IS_HIDDEN))
     {
         return FALSE;
     }
 
     // KCK: Don't target ejected entities
     // edg: We HAVE to put ejected pilots into the target list so they
-    // can be shot and collided with!  Missile logic may have to be changed...
+    // can be shot and collided with  Missile logic may have to be changed...
     // to reduce possible crashes and other anomalies I'm doing this only
     // for player vehicle
-    if (curUpdate->EntityType()->classInfo_[VU_TYPE] == TYPE_EJECT && self != SimDriver.GetPlayerEntity())
+    if (curUpdate->EntityType()->classInfo_[VU_TYPE] == TYPE_EJECT and self not_eq SimDriver.GetPlayerEntity())
     {
         return FALSE;
     }
@@ -596,30 +596,30 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
     {
         return FALSE;
     }
-    else if (self->IsAirplane() && (self->OnGround() /*|| curUpdate->IsHelicopter()*/)) // 2002-03-05 MODIFIED BY S.G. Choppers are fare game now under some condition so don't screen them out
+    else if (self->IsAirplane() and (self->OnGround() /*or curUpdate->IsHelicopter()*/)) // 2002-03-05 MODIFIED BY S.G. Choppers are fare game now under some condition so don't screen them out
     {
         return FALSE;
     }
-    else if (self->IsHelicopter() && curUpdate->IsAirplane())
+    else if (self->IsHelicopter() and curUpdate->IsAirplane())
     {
         return FALSE;
     }
-    else if (self->IsAirplane() && (curUpdate->IsAirplane() || curUpdate->IsFlight() || curUpdate->IsHelicopter())) // 2002-03-05 MODIFIED BY S.G. Choppers are fare game now under some condition so don't screen them out
+    else if (self->IsAirplane() and (curUpdate->IsAirplane() or curUpdate->IsFlight() or curUpdate->IsHelicopter())) // 2002-03-05 MODIFIED BY S.G. Choppers are fare game now under some condition so don't screen them out
     {
         if (self->GetTeam() == curUpdate->GetTeam())
             airRange = 100.0F * 100.0F;
-        else if (curUpdate->IsSim() &&
-                 (((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER ||
-                  ((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER_BOMBER ||
+        else if (curUpdate->IsSim() and 
+                 (((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER or
+                  ((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER_BOMBER or
                   // 2002-03-05 MODIFIED BY S.G. Duh, it's missionClass, not missionType that holds AAMission
                   //   ((AircraftClass*)self)->DBrain()->MissionType() == DigitalBrain::AAMission) )
                   ((AircraftClass*)self)->DBrain()->MissionClass() == DigitalBrain::AAMission))
         {
             airRange = 20.0F * NM_TO_FT * 20.0F * NM_TO_FT;
         }
-        else if (curUpdate->IsCampaign() &&
-                 (((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER ||
-                  ((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER_BOMBER ||
+        else if (curUpdate->IsCampaign() and 
+                 (((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER or
+                  ((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER_BOMBER or
                   // 2002-03-05 MODIFIED BY S.G. Duh, it's missionClass, not missionType that holds AAMission
                   //   ((AircraftClass*)self)->DBrain()->MissionType() == DigitalBrain::AAMission) )
                   ((AircraftClass*)self)->DBrain()->MissionClass() == DigitalBrain::AAMission))
@@ -637,7 +637,7 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
     {
         if (self->GetTeam() == curUpdate->GetTeam())
             airRange = 100.0F * 100.0F;
-        else if (self->IsGroundVehicle() && ((GroundClass*)self)->isAirCapable)
+        else if (self->IsGroundVehicle() and ((GroundClass*)self)->isAirCapable)
             airRange = 20.0F * NM_TO_FT * 20.0F * NM_TO_FT;
         else
             // MODIFIED BY S.G. FOR THE MISSILE TO FIND A LOCK WITH THIS SET TO 10 NM INSTEAD OF 8 NM
@@ -650,8 +650,8 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
         // ground untis into their target list and at a maximum of 1 NM.
         // I extended this for to include helicopters and made the range
         // go out to 5NM.  Also: Aren't aircraft AI going to need to detect
-        // ground units?!
-        if (self->IsGroundVehicle() || self->IsHelicopter())
+        // ground units?
+        if (self->IsGroundVehicle() or self->IsHelicopter())
             gndRange = 15.0f * NM_TO_FT * 15.0f * NM_TO_FT;
         else
             gndRange = 0.0F;

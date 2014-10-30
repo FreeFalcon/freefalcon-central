@@ -71,14 +71,14 @@ static void PrintTime(char *output, FILETIME TimeToPrint)
 {
     WORD Date, Time;
 
-    if (FileTimeToLocalFileTime(&TimeToPrint, &TimeToPrint) &&
+    if (FileTimeToLocalFileTime(&TimeToPrint, &TimeToPrint) and 
         FileTimeToDosDateTime(&TimeToPrint, &Date, &Time))
     {
         // What a silly way to print out the file date/time. Oh well,
         // it works, and I'm not aware of a cleaner way to do it.
         wsprintf(output, "%d/%d/%d %02d:%02d:%02d",
-                 (Date / 32) & 15, Date & 31, (Date / 512) + 1980,
-                 (Time / 2048), (Time / 32) & 63, (Time & 31) * 2);
+                 (Date / 32) bitand 15, Date bitand 31, (Date / 512) + 1980,
+                 (Time / 2048), (Time / 32) bitand 63, (Time bitand 31) * 2);
     }
     else
         output[0] = 0;
@@ -100,13 +100,13 @@ static void ShowModuleInfo(HANDLE LogFile, HINSTANCE ModuleHandle)
             // our way through its structures to find the link time stamp.
             IMAGE_DOS_HEADER *DosHeader = (IMAGE_DOS_HEADER*)ModuleHandle;
 
-            if (IMAGE_DOS_SIGNATURE != DosHeader->e_magic)
+            if (IMAGE_DOS_SIGNATURE not_eq DosHeader->e_magic)
                 return;
 
             IMAGE_NT_HEADERS *NTHeader = (IMAGE_NT_HEADERS*)((char *)DosHeader
                                          + DosHeader->e_lfanew);
 
-            if (IMAGE_NT_SIGNATURE != NTHeader->Signature)
+            if (IMAGE_NT_SIGNATURE not_eq NTHeader->Signature)
                 return;
 
             // Open the code module file so that we can get its file date
@@ -117,7 +117,7 @@ static void ShowModuleInfo(HANDLE LogFile, HINSTANCE ModuleHandle)
             char TimeBuffer[100] = "";
             DWORD FileSize = 0;
 
-            if (ModuleFile != INVALID_HANDLE_VALUE)
+            if (ModuleFile not_eq INVALID_HANDLE_VALUE)
             {
                 FileSize = GetFileSize(ModuleFile, 0);
                 FILETIME LastWriteTime;
@@ -150,7 +150,7 @@ static void ShowModuleInfo(HANDLE LogFile, HINSTANCE ModuleHandle)
 
 static void RecordModuleList(HANDLE LogFile)
 {
-    if (!g_bModuleList)
+    if ( not g_bModuleList)
         return;
 
     hprintf(LogFile, "\r\n"
@@ -177,7 +177,7 @@ static void RecordModuleList(HANDLE LogFile)
                 // Adjust the page number to skip over this block of memory.
                 pageNum += MemInfo.RegionSize / PageSize;
 
-                if (MemInfo.State == MEM_COMMIT && MemInfo.AllocationBase >
+                if (MemInfo.State == MEM_COMMIT and MemInfo.AllocationBase >
                     LastAllocationBase)
                 {
                     // Look for new blocks of committed memory, and try
@@ -216,7 +216,7 @@ static void RecordSystemInformation(HANDLE LogFile)
     char UserName[200];
     DWORD UserNameSize = sizeof(UserName);
 
-    if (!GetUserName(UserName, &UserNameSize))
+    if ( not GetUserName(UserName, &UserNameSize))
         lstrcpy(UserName, "Unknown");
 
     hprintf(LogFile, "%s, run by %s.\r\n", ModuleName, UserName);
@@ -244,7 +244,7 @@ static void RecordSystemInformation(HANDLE LogFile)
     if (g_CardDetails[0])
         hprintf(LogFile, "Card: %s\r\n", g_CardDetails);
 
-    if (vuLocalSessionEntity && FalconLocalGame)
+    if (vuLocalSessionEntity and FalconLocalGame)
     {
         __try   // just in case this is screwd up
         {
@@ -274,7 +274,7 @@ static void RecordSystemInformation(HANDLE LogFile)
             }
 
             hprintf(LogFile, "Game is %s type %s\r\n", gtype,
-                    gCommsMgr && gCommsMgr->Online() ? "Networked" : "Local");
+                    gCommsMgr and gCommsMgr->Online() ? "Networked" : "Local");
         }
         __except (EXCEPTION_EXECUTE_HANDLER)
         {
@@ -358,7 +358,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
 #endif
     static int BeenHere;
 
-    if (BeenHere) // Going recursive! That must mean this routine crashed!
+    if (BeenHere) // Going recursive That must mean this routine crashed
         return EXCEPTION_CONTINUE_SEARCH;
 
     BeenHere = TRUE;
@@ -409,7 +409,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
     // Replace the executable filename with our error log file name.
     lstrcpy(FilePart, "crashlog.txt");
     HANDLE LogFile = CreateFile(ModuleName, GENERIC_WRITE, 0, 0,
-                                OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, 0);
+                                OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL bitor FILE_FLAG_WRITE_THROUGH, 0);
 
     if (LogFile == INVALID_HANDLE_VALUE)
     {
@@ -424,7 +424,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
     PEXCEPTION_RECORD Exception = data->ExceptionRecord;
     PCONTEXT Context = data->ContextRecord;
 
-    if (!hinstDbgHelp)
+    if ( not hinstDbgHelp)
     {
         char CrashModulePathName[MAX_PATH];
         char *CrashModuleFileName = "Unknown";
@@ -433,7 +433,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
         // VirtualQuery can be used to get the allocation base associated with a
         // code address, which is the same as the ModuleHandle. This can be used
         // to get the filename of the module that the crash happened in.
-        if (VirtualQuery((void*)Context->Eip, &MemInfo, sizeof(MemInfo)) &&
+        if (VirtualQuery((void*)Context->Eip, &MemInfo, sizeof(MemInfo)) and 
             GetModuleFileName((HINSTANCE)MemInfo.AllocationBase,
                               CrashModulePathName,
                               sizeof(CrashModulePathName)) > 0)
@@ -447,7 +447,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
     hprintf(LogFile, "%s\r\n", GetFaultReason(data));
     hprintf(LogFile, "Exception handler called in %s.\r\n", Message);
 
-    if (Exception->ExceptionCode == STATUS_ACCESS_VIOLATION &&
+    if (Exception->ExceptionCode == STATUS_ACCESS_VIOLATION and 
         Exception->NumberParameters >= 2)
     {
         char DebugMessage[1000];
@@ -497,7 +497,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
         // us to figure out the call stack, parameters, local variables, etc.
         hprintf(LogFile, "Stack dump:\r\n");
         // lets try for everything
-        DWORD options = GSTSO_PARAMS | GSTSO_MODULE | GSTSO_SYMBOL | GSTSO_SRCLINE;
+        DWORD options = GSTSO_PARAMS bitor GSTSO_MODULE bitor GSTSO_SYMBOL bitor GSTSO_SRCLINE;
 
         const char *stackmsg = GetFirstStackTraceString(options, data);
 
@@ -549,7 +549,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
 
                     char *Suffix = " ";
 
-                    if ((++Count % StackColumns) == 0 || pStack + 2 > pStackTop)
+                    if ((++Count % StackColumns) == 0 or pStack + 2 > pStackTop)
                         Suffix = "\r\n";
 
                     output += wsprintf(output, "%08x%s", *pStack, Suffix);

@@ -7,7 +7,7 @@
 #include "vutypes.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// statics & globals
+// statics bitand globals
 // static VuListIterator* vuTargetListIter     = 0;
 #if VU_ALL_FILTERED
 VuLinkedList*        vuGameList           = 0;
@@ -27,7 +27,7 @@ VU_TIME                vuTransmitTime       = 0;
 VU_ID vuLocalSession(0, 0);
 //VU_ID_NUMBER vuAssignmentId   = VU_FIRST_ENTITY_ID;
 //VU_ID_NUMBER vuLowWrapNumber  = VU_FIRST_ENTITY_ID;
-//VU_ID_NUMBER vuHighWrapNumber = ~((VU_ID_NUMBER)0);
+//VU_ID_NUMBER vuHighWrapNumber = compl ((VU_ID_NUMBER)0);
 //int VuMainThread::bytesSent_ = 0;
 extern VU_TIME VuRandomTime(VU_TIME max);
 

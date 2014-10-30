@@ -25,7 +25,7 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
 
 
     // Quit now if we're turned off
-    if (!isEmitting)
+    if ( not isEmitting)
     {
         return NULL;
     }
@@ -38,7 +38,7 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
     {
 
         // Only track air objects
-        if (!lockedTarget->BaseData()->OnGround())
+        if ( not lockedTarget->BaseData()->OnGround())
         {
             // Don't track when the signal strength is too low
             if (ReturnStrength(lockedTarget) > 0.5f)
@@ -54,7 +54,7 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
                 else
                 {
                     // Reacquire lock only inside our seek FOV cone
-                    // 2000-08-31 MODIFIED BY S.G. SINCE THE RADAR IS STILL POINTING WHERE WHEN WE STILL HAD A LOCK, WE NEED TO OFFSET OUR BeamHalfAngle ACCORDINGLY!
+                    // 2000-08-31 MODIFIED BY S.G. SINCE THE RADAR IS STILL POINTING WHERE WHEN WE STILL HAD A LOCK, WE NEED TO OFFSET OUR BeamHalfAngle ACCORDINGLY
                     // WARNING: In the 1.08i2 patch, I forgot to add '* 2.0F' after 'radarData->BeamHalfAngle'. I'll do it in the source since it SHOULD be this way anyhow (see the other line similar below)
                     // if (fabs(lockedTarget->localData->ata) <= radarData->BeamHalfAngle)
                     if (fabs(lockedTarget->localData->ata - (float)acos(cos(platform->RdrAzCenter()) * cos(platform->RdrElCenter()))) <= radarData->BeamHalfAngle * 2.0F)
@@ -77,7 +77,7 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
         while (newLock)
         {
             // Only track air objects
-            if (!newLock->BaseData()->OnGround())
+            if ( not newLock->BaseData()->OnGround())
             {
                 // Don't track when the signal strength is too low
                 if (ReturnStrength(newLock) > 1.0f)
@@ -94,7 +94,7 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
                     else
                     {
                         // Reacquire lock only inside our seek FOV cone
-                        // 2000-08-31 MODIFIED BY S.G. SINCE THE RADAR IS STILL POINTING WHERE WHEN WE STILL HAD A LOCK, WE NEED TO OFFSET OUR BeamHalfAngle ACCORDINGLY!
+                        // 2000-08-31 MODIFIED BY S.G. SINCE THE RADAR IS STILL POINTING WHERE WHEN WE STILL HAD A LOCK, WE NEED TO OFFSET OUR BeamHalfAngle ACCORDINGLY
                         //    if (fabs(newLock->localData->ata) <= radarData->BeamHalfAngle * 2.0F)
                         if (fabs(newLock->localData->ata - (float)acos(cos(platform->RdrAzCenter()) * cos(platform->RdrElCenter()))) <= radarData->BeamHalfAngle * 2.0F)
                         {
@@ -111,14 +111,14 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
 
 
     // If we changed locks, update our pointers, otherwise see if its time for another "paint" message
-    if (newLock != lockedTarget)
+    if (newLock not_eq lockedTarget)
     {
         SetDesiredTarget(newLock);
     }
-    else if (lockedTarget && canGuide && (SimLibElapsedTime - lastTargetLockSend > TrackUpdateTime))
+    else if (lockedTarget and canGuide and (SimLibElapsedTime - lastTargetLockSend > TrackUpdateTime))
     {
         // Tell our current target he's locked (if he's not a countermeasure)
-        if (!lockedTarget->BaseData()->IsWeapon())
+        if ( not lockedTarget->BaseData()->IsWeapon())
         {
             SendTrackMsg(lockedTarget, Track_Launch);
 
@@ -204,7 +204,7 @@ SimObjectType* RadarMissileClass::ConsiderDecoy(SimObjectType *target, BOOL canG
     int dummy = 0;
 
     // No counter measures deployed by campaign things
-    if (!target || !target->BaseData()->IsSim())
+    if ( not target or not target->BaseData()->IsSim())
     {
         return target;
     }
@@ -213,7 +213,7 @@ SimObjectType* RadarMissileClass::ConsiderDecoy(SimObjectType *target, BOOL canG
     id = ((SimBaseClass*)target->BaseData())->NewestChaffID();
 
     // If we have a new chaff bundle to deal with
-    if (id != lastChaffID)
+    if (id not_eq lastChaffID)
     {
         // Stop here if there isn't a counter measure in play
         if (id == FalconNullId)
@@ -227,7 +227,7 @@ SimObjectType* RadarMissileClass::ConsiderDecoy(SimObjectType *target, BOOL canG
 
         // MonoPrint ("ConsiderDecoy %08x %f: ", cm, target->localData->range);
 
-        if (!cm)
+        if ( not cm)
         {
             // We'll have to wait until next time
             // (probably because the create event hasn't been processed locally yet)
@@ -252,7 +252,7 @@ SimObjectType* RadarMissileClass::ConsiderDecoy(SimObjectType *target, BOOL canG
         // }
 
         // If we've beaten the missile guidance, countermeasures work two times better
-        if (!canGuide)
+        if ( not canGuide)
         {
             chance *= 2.0f;
         }

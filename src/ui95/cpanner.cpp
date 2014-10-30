@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -42,7 +42,7 @@ C_Panner::C_Panner() : C_Control()
     for (i = 0; i < PAN_MAX_IMAGES; i++)
         Image_[i] = NULL;
 
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_DRAGABLE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_DRAGABLE bitor C_BIT_MOUSEOVER;
 }
 
 C_Panner::C_Panner(char **stream) : C_Control(stream)
@@ -125,7 +125,7 @@ void C_Panner::SetImage(short state, long ImageID)
             //Image_[state]->SetXY(tmp->x,tmp->y);
         }
 
-        if (!state && Image_[state])
+        if ( not state and Image_[state])
             SetWH(Image_[state]->GetW(), Image_[state]->GetH());
 
         if (Image_[0]->Ready())
@@ -135,7 +135,7 @@ void C_Panner::SetImage(short state, long ImageID)
 
 long C_Panner::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Ready() || !Parent_)
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready() or not Parent_)
     {
         return(0);
     }
@@ -162,9 +162,9 @@ long C_Panner::CheckHotSpots(long relX, long relY)
 
     // check image hotspot
     if (
-        relX >= (GetX() - image->GetX()) &&
-        relX <= (GetX() + GetW() - image->GetX()) &&
-        relY >= (GetY() - image->GetY()) &&
+        relX >= (GetX() - image->GetX()) and 
+        relX <= (GetX() + GetW() - image->GetX()) and 
+        relY >= (GetY() - image->GetY()) and 
         relY <= (GetY() + GetH() - image->GetY())
     )
     {
@@ -250,21 +250,21 @@ BOOL C_Panner::Process(long, short HitType)
                     break;
 
                 case C_TYPE_DRAGXY:
-                    if (SX_ < 0 && SY_ < 0)
+                    if (SX_ < 0 and SY_ < 0)
                         state_ = 2;
-                    else if (SX_ == 0 && SY_ < 0)
+                    else if (SX_ == 0 and SY_ < 0)
                         state_ = 3;
-                    else if (SX_ > 0 && SY_ < 0)
+                    else if (SX_ > 0 and SY_ < 0)
                         state_ = 4;
-                    else if (SX_ < 0 && SY_ == 0)
+                    else if (SX_ < 0 and SY_ == 0)
                         state_ = 5;
-                    else if (SX_ > 0 && SY_ == 0)
+                    else if (SX_ > 0 and SY_ == 0)
                         state_ = 6;
-                    else if (SX_ < 0 && SY_ > 0)
+                    else if (SX_ < 0 and SY_ > 0)
                         state_ = 7;
-                    else if (SX_ == 0 && SY_ > 0)
+                    else if (SX_ == 0 and SY_ > 0)
                         state_ = 8;
-                    else if (SX_ > 0 && SY_ > 0)
+                    else if (SX_ > 0 and SY_ > 0)
                         state_ = 9;
                     else
                         state_ = 1;
@@ -300,7 +300,7 @@ BOOL C_Panner::Process(long, short HitType)
 
 void C_Panner::Refresh()
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (BgImage_)
@@ -314,9 +314,9 @@ void C_Panner::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     int i;
 
-    if (!Ready()) return;
+    if ( not Ready()) return;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
     if (BgImage_)
@@ -329,7 +329,7 @@ void C_Panner::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (Image_[i])
         Image_[i]->Draw(surface, cliprect);
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }
 
@@ -341,19 +341,19 @@ BOOL C_Panner::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
 
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return(FALSE);
 
     Leave = UI_Enter(Parent_);
     w = (Image_[0]->GetW());
     h = (Image_[0]->GetH());
 
-    SX_ = (short)(MouseX - Parent_->GetX() - GetX() - DeadX_); //!
-    SY_ = (short)(MouseY - Parent_->GetY() - GetY() - DeadY_); //!
+    SX_ = (short)(MouseX - Parent_->GetX() - GetX() - DeadX_); 
+    SY_ = (short)(MouseY - Parent_->GetY() - GetY() - DeadY_); 
 
-    if (SX_ > -DeadW_ && SX_ < DeadW_) SX_ = 0;
+    if (SX_ > -DeadW_ and SX_ < DeadW_) SX_ = 0;
 
-    if (SY_ > -DeadH_ && SY_ < DeadH_) SY_ = 0;
+    if (SY_ > -DeadH_ and SY_ < DeadH_) SY_ = 0;
 
     switch (GetType())
     {
@@ -382,21 +382,21 @@ BOOL C_Panner::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
         case C_TYPE_DRAGXY:
             state_ = 1;
 
-            if (SX_ < 0 && SY_ < 0)
+            if (SX_ < 0 and SY_ < 0)
                 state_ = 2;
-            else if (SX_ == 0 && SY_ < 0)
+            else if (SX_ == 0 and SY_ < 0)
                 state_ = 3;
-            else if (SX_ > 0 && SY_ < 0)
+            else if (SX_ > 0 and SY_ < 0)
                 state_ = 4;
-            else if (SX_ < 0 && SY_ == 0)
+            else if (SX_ < 0 and SY_ == 0)
                 state_ = 5;
-            else if (SX_ > 0 && SY_ == 0)
+            else if (SX_ > 0 and SY_ == 0)
                 state_ = 6;
-            else if (SX_ < 0 && SY_ > 0)
+            else if (SX_ < 0 and SY_ > 0)
                 state_ = 7;
-            else if (SX_ == 0 && SY_ > 0)
+            else if (SX_ == 0 and SY_ > 0)
                 state_ = 8;
-            else if (SX_ > 0 && SY_ > 0)
+            else if (SX_ > 0 and SY_ > 0)
                 state_ = 9;
 
             Refresh();

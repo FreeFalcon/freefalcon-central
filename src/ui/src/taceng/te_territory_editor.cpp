@@ -93,7 +93,7 @@ void UpdateOccupationMap(void);
 
 void tactical_territory_editor_clear(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (TheCampaign.CampMapData)
@@ -109,10 +109,10 @@ void tactical_territory_editor_clear(long, short hittype, C_Base *)
 
 void tactical_territory_editor_restore(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if ((TheCampaign.CampMapData) && (te_restore_map))
+    if ((TheCampaign.CampMapData) and (te_restore_map))
     {
         memcpy(TheCampaign.CampMapData, te_restore_map, TheCampaign.CampMapSize);
         UpdateOccupationMap();
@@ -152,7 +152,7 @@ static int get_group_cover(int x, int y)
         {
             cover = GetCover(static_cast<short>(x + dx), static_cast<short>(y + dy));
 
-            if (cover != Water)
+            if (cover not_eq Water)
             {
                 return cover;
             }
@@ -182,32 +182,32 @@ static void flood_fill_team(int x, int y)
     unsigned char
     cover;
 
-    if (x < 0 || y < 0 || x >= fill_width || y >= fill_height)
+    if (x < 0 or y < 0 or x >= fill_width or y >= fill_height)
         return;
 
-    if (x & 1)
+    if (x bitand 1)
     {
-        old_team = (fill_src[(y * fill_width + x) / 2] & 0xf0) >> 4;
+        old_team = (fill_src[(y * fill_width + x) / 2] bitand 0xf0) >> 4;
     }
     else
     {
-        old_team = fill_src[(y * fill_width + x) / 2] & 0x0f;
+        old_team = fill_src[(y * fill_width + x) / 2] bitand 0x0f;
     }
 
-    if ((old_team == gDrawTeam) || (old_team != fill_team))
+    if ((old_team == gDrawTeam) or (old_team not_eq fill_team))
     {
         return;
     }
 
     cover = static_cast<uchar>(get_group_cover(x * MAP_RATIO, y * MAP_RATIO));
 
-    if (cover != Water)
+    if (cover not_eq Water)
     {
 
-        if (x & 1)
+        if (x bitand 1)
         {
-            fill_src[(y * fill_width + x) / 2] &= 0x0f;
-            fill_src[(y * fill_width + x) / 2] |= gDrawTeam  << 4;
+            fill_src[(y * fill_width + x) / 2] and_eq 0x0f;
+            fill_src[(y * fill_width + x) / 2] or_eq gDrawTeam  << 4;
 
             flood_fill_team(x + 0, y - 1);
             flood_fill_team(x - 1, y + 0);
@@ -216,8 +216,8 @@ static void flood_fill_team(int x, int y)
         }
         else
         {
-            fill_src[(y * fill_width + x) / 2] &= 0xf0;
-            fill_src[(y * fill_width + x) / 2] |= gDrawTeam ;
+            fill_src[(y * fill_width + x) / 2] and_eq 0xf0;
+            fill_src[(y * fill_width + x) / 2] or_eq gDrawTeam ;
 
             flood_fill_team(x + 0, y - 1);
             flood_fill_team(x - 1, y + 0);
@@ -271,13 +271,13 @@ void tactical_territory_map_edit(long, short hittype, C_Base *control)
             fill_height = height;
             fill_src = src;
 
-            if (x & 1)
+            if (x bitand 1)
             {
-                fill_team = (fill_src[(y * fill_width + x) / 2] & 0xf0) >> 4;
+                fill_team = (fill_src[(y * fill_width + x) / 2] bitand 0xf0) >> 4;
             }
             else
             {
-                fill_team = fill_src[(y * fill_width + x) / 2] & 0x0f;
+                fill_team = fill_src[(y * fill_width + x) / 2] bitand 0x0f;
             }
 
             flood_fill_team(x, y);
@@ -286,7 +286,7 @@ void tactical_territory_map_edit(long, short hittype, C_Base *control)
             control->Refresh();
         }
     }
-    else if ((hittype == C_TYPE_LMOUSEDOWN) || (hittype == C_TYPE_DRAGXY))
+    else if ((hittype == C_TYPE_LMOUSEDOWN) or (hittype == C_TYPE_DRAGXY))
     {
         if (hittype == C_TYPE_LMOUSEDOWN)
             save_territory_editor();
@@ -316,24 +316,24 @@ void tactical_territory_map_edit(long, short hittype, C_Base *control)
                 {
                     py = y + ly;
 
-                    if ((px >= 0) && (px < width) && (py >= 0) && (py < height))
+                    if ((px >= 0) and (px < width) and (py >= 0) and (py < height))
                     {
                         cover = static_cast<uchar>(get_group_cover(px * MAP_RATIO, py * MAP_RATIO));
 
-                        if (cover != Water)
+                        if (cover not_eq Water)
                         {
                             // Update the ownership for all objectives/squadrons/battalions in the area
 
 
-                            if (px & 1)
+                            if (px bitand 1)
                             {
-                                src[(py * width + px) / 2] &= 0x0f;
-                                src[(py * width + px) / 2] |= gDrawTeam << 4;
+                                src[(py * width + px) / 2] and_eq 0x0f;
+                                src[(py * width + px) / 2] or_eq gDrawTeam << 4;
                             }
                             else
                             {
-                                src[(py * width + px) / 2] &= 0xf0;
-                                src[(py * width + px) / 2] |= gDrawTeam;
+                                src[(py * width + px) / 2] and_eq 0xf0;
+                                src[(py * width + px) / 2] or_eq gDrawTeam;
                             }
                         }
                     }
@@ -362,7 +362,7 @@ void SetupOccupationMap(void)
     C_Button *but;
     C_Bitmap *bmp;
 
-    if (gOccupationMap == NULL && (TheCampaign.TheaterSizeX && TheCampaign.TheaterSizeY && TheCampaign.CampMapData))
+    if (gOccupationMap == NULL and (TheCampaign.TheaterSizeX and TheCampaign.TheaterSizeY and TheCampaign.CampMapData))
     {
         // Create Occupation map...
         gOccupationMap = CreateOccupationMap(1, TheCampaign.TheaterSizeX / MAP_RATIO, TheCampaign.TheaterSizeY / MAP_RATIO, 16);
@@ -373,7 +373,7 @@ void SetupOccupationMap(void)
 
     win = gMainHandler->FindWindow(TAC_TEAM_WIN);
 
-    if (win != NULL)
+    if (win not_eq NULL)
     {
         but = (C_Button *)win->FindControl(TAC_MAP_TE);
 
@@ -420,14 +420,14 @@ void UpdateOccupationMap(void)
     C_Button *but;
     C_Bitmap *bmp;
 
-    if (!gOccupationMap)
+    if ( not gOccupationMap)
         return;
 
     MakeOccupationMap(gOccupationMap);
 
     win = gMainHandler->FindWindow(TAC_TEAM_WIN);
 
-    if (win != NULL)
+    if (win not_eq NULL)
     {
         but = (C_Button *)win->FindControl(TAC_MAP_TE);
 
@@ -466,7 +466,7 @@ void save_territory_editor(void)
 {
     if (TheCampaign.CampMapData)
     {
-        if (!te_restore_map)
+        if ( not te_restore_map)
             te_restore_map = new uchar[TheCampaign.CampMapSize];
 
         if (te_restore_map)
@@ -489,18 +489,18 @@ short GetMapTeam(short x, short y)
     uchar pixel;
     int width;
 
-    if (!TheCampaign.CampMapData)
+    if ( not TheCampaign.CampMapData)
         return(0);
 
     width = MRX >> 1;
     x = static_cast<short>(x / MAP_RATIO);
     y = static_cast<short>(y / MAP_RATIO);
-    bit = x & 1;
+    bit = x bitand 1;
     x >>= 1;
     pixel = TheCampaign.CampMapData[y * width + x];
-    pixel = static_cast<uchar>((pixel >>(bit * 4)) & 0x0f);
+    pixel = static_cast<uchar>((pixel >>(bit * 4)) bitand 0x0f);
 
-    if (pixel > 0 && pixel < NUM_TEAMS)
+    if (pixel > 0 and pixel < NUM_TEAMS)
         return(pixel);
 
     // KCK: Added this to try and avoid accidental painting of team 0 stuff
@@ -509,12 +509,12 @@ short GetMapTeam(short x, short y)
     {
         indx = (y + tryy[i]) * width + x + tryx[i];
 
-        if (indx >= 0 && indx < TheCampaign.CampMapSize)
+        if (indx >= 0 and indx < TheCampaign.CampMapSize)
         {
             pixel = TheCampaign.CampMapData[indx];
-            pixel = static_cast<uchar>((pixel >>(bit * 4)) & 0x0f);
+            pixel = static_cast<uchar>((pixel >>(bit * 4)) bitand 0x0f);
 
-            if (pixel > 0 && pixel < NUM_TEAMS)
+            if (pixel > 0 and pixel < NUM_TEAMS)
                 return(pixel);
         }
     }
@@ -531,26 +531,26 @@ void UpdateObjectiveOwnership()
 
     obj = (Objective) myit.GetFirst();
 
-    while (obj != NULL)
+    while (obj not_eq NULL)
     {
         obj->GetLocation(&x, &y);
 
         team = static_cast<uchar>(GetMapTeam(x, y));
 
-        if ((team < NUM_TEAMS) && (TeamInfo[team]))
+        if ((team < NUM_TEAMS) and (TeamInfo[team]))
         {
-            if (obj->GetOwner() != team)
+            if (obj->GetOwner() not_eq team)
                 obj->SetOwner(team);
 
-            if (obj->GetObjectiveOldown() != team)
+            if (obj->GetObjectiveOldown() not_eq team)
                 obj->SetObjectiveOldown(team);
         }
         else
         {
-            if (obj->GetOwner() != 0)
+            if (obj->GetOwner() not_eq 0)
                 obj->SetOwner(0);
 
-            if (obj->GetObjectiveOldown() != 0)
+            if (obj->GetObjectiveOldown() not_eq 0)
                 obj->SetObjectiveOldown(0);
         }
 
@@ -577,11 +577,11 @@ void UpdateUnitOwnership(void)
 
     theUnit = GetFirstUnit(&myit);
 
-    while (theUnit != NULL)
+    while (theUnit not_eq NULL)
     {
         theUnit->GetLocation(&unitX, &unitY);
         team = GetOwner(TheCampaign.CampMapData, unitX, unitY);
-        ShiAssert(team < NUM_TEAMS && TeamInfo[team]);
+        ShiAssert(team < NUM_TEAMS and TeamInfo[team]);
         theUnit->SetOwner(team);
 
         theUnit = GetNextUnit(&myit);

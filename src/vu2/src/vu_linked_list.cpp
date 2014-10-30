@@ -24,7 +24,7 @@ VU_ERRCODE VuLinkedList::PrivateRemove(VuEntity* entity)
 {
     VuScopeLock lk(GetMutex());
 
-    for (VuEntityBinList::iterator it = l_.begin(); it != l_.end(); ++it)
+    for (VuEntityBinList::iterator it = l_.begin(); it not_eq l_.end(); ++it)
     {
         VuEntityBin &eb = *it;
 
@@ -42,7 +42,7 @@ bool VuLinkedList::PrivateFind(VuEntity* entity) const
 {
     VuScopeLock l(GetMutex());
 
-    for (VuEntityBinList::const_iterator it = l_.begin(); it != l_.end(); ++it)
+    for (VuEntityBinList::const_iterator it = l_.begin(); it not_eq l_.end(); ++it)
     {
         VuEntity *e = it->get();
 
@@ -87,7 +87,7 @@ VU_ERRCODE VuLinkedList::Remove(VuEntity* entity)
 
     VuScopeLock lk(GetMutex());
 
-    for (VuEntityBinList::iterator it = l_.begin(); it != l_.end(); ++it)
+    for (VuEntityBinList::iterator it = l_.begin(); it not_eq l_.end(); ++it)
     {
         VuEntityBin eb = *it;
 
@@ -108,7 +108,7 @@ VU_ERRCODE VuLinkedList::Remove(VU_ID eid)
     VU_ERRCODE ret = VU_NO_OP;
 
     // run removing all with given id
-    for (VuEntityBinList::iterator it = l_.begin(); it != l_.end();)
+    for (VuEntityBinList::iterator it = l_.begin(); it not_eq l_.end();)
     {
         VuEntityBin &eb = *it;
 
@@ -136,7 +136,7 @@ VuEntity* VuLinkedList::Find(VuEntity* entity) const
 
     VuScopeLock l(GetMutex());
 
-    for (VuEntityBinList::const_iterator it = l_.begin(); it != l_.end(); ++it)
+    for (VuEntityBinList::const_iterator it = l_.begin(); it not_eq l_.end(); ++it)
     {
         VuEntity *e = it->get();
 
@@ -153,11 +153,11 @@ VuEntity* VuLinkedList::Find(VU_ID eid) const
 {
     VuScopeLock l(GetMutex());
 
-    for (VuEntityBinList::const_iterator it = l_.begin(); it != l_.end(); ++it)
+    for (VuEntityBinList::const_iterator it = l_.begin(); it not_eq l_.end(); ++it)
     {
         VuEntity *e = it->get();
 
-        if (e->Id() == eid && e->VuState() == VU_MEM_ACTIVE)
+        if (e->Id() == eid and e->VuState() == VU_MEM_ACTIVE)
         {
             return e;
         }
@@ -177,11 +177,11 @@ unsigned int VuLinkedList::Purge(VU_BOOL all)
     // its component list is removed and its this list... guess what happens
     std::list<VuEntityBin> toBePurged;
 
-    for (VuEntityBinList::iterator it = l_.begin(); it != l_.end();)
+    for (VuEntityBinList::iterator it = l_.begin(); it not_eq l_.end();)
     {
         VuEntityBin &ent = *it;
 
-        if (!all && (ent->IsGlobal() || (ent->IsPrivate() && ent->IsPersistent())))
+        if ( not all and (ent->IsGlobal() or (ent->IsPrivate() and ent->IsPersistent())))
         {
             // dont remove global or private pesistant
             ++it;
@@ -203,7 +203,7 @@ unsigned int VuLinkedList::Count() const
     VuScopeLock l(GetMutex());
     unsigned int count = 0;
 
-    for (VuEntityBinList::const_iterator it = l_.begin(); it != l_.end(); ++it)
+    for (VuEntityBinList::const_iterator it = l_.begin(); it not_eq l_.end(); ++it)
     {
         VuEntity *e = it->get();
 

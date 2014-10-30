@@ -104,7 +104,7 @@ void HudClass::DrawCCIP(void)
     // NOTE:  In reality there would never be a locked target since the radar would be in AGR, but
     // if we allow a radar lock, we might as well allow a TD box...
     //MI
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
         DrawTDBox();
 
     // Compute and set the viewport offset to get 0,0 at the boresight cross
@@ -156,7 +156,7 @@ void HudClass::DrawCCIP(void)
 
 
     // See if the computed impact point is visible on the HUD
-    if (!FCC->groundPipperOnHud)
+    if ( not FCC->groundPipperOnHud)
     {
         // Draw the Delay Cue Tick half way along the fall line
         // me123 status ok. x and y definitions are inset in the formula below instead so the original x/y's can be used below
@@ -178,7 +178,7 @@ void HudClass::DrawCCIP(void)
 
             // draw the puac on the bomb fall line
             //MI vids show it stays below the FPM
-            if (!g_bRealisticAvionics)
+            if ( not g_bRealisticAvionics)
                 x = ((puacY - 1) * drollTrig.sin  + betaHudUnits);
             else
                 x = betaHudUnits;
@@ -201,7 +201,7 @@ void HudClass::DrawCCIP(void)
             // draw the puac on the bomb fall line
             //  x = (x  + betaHudUnits) * -((puacY-1)/y ) ;//me123 this might crash when the bombline length (y) is zero.
             //MI vids show it stays below the FPM
-            if (!g_bRealisticAvionics)
+            if ( not g_bRealisticAvionics)
                 x = ((puacY - 1) * drollTrig.sin  + betaHudUnits);
             else
                 x = betaHudUnits;
@@ -252,7 +252,7 @@ void HudClass::DrawRCKT(void)
     // NOTE:  In reality there would never be a locked target since the radar would be in AGR, but
     // if we allow a radar lock, we might as well allow a TD box...
     //MI
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
         DrawTDBox();
 
     // FRB - Try not compensating for screen aspect.
@@ -297,7 +297,7 @@ void HudClass::DrawRCKT(void)
     float maxRng = 36500.0f;
     float minRng = 18500.0F;
 
-    if (fabs(pipperEl) < 0.90F && fabs(pipperAz + vOffset) < 0.90F && FCC->airGroundRange < maxRng && !FCC->noSolution)
+    if (fabs(pipperEl) < 0.90F and fabs(pipperAz + vOffset) < 0.90F and FCC->airGroundRange < maxRng and not FCC->noSolution)
     {
         if (FCC->airGroundRange < minRng)
         {
@@ -365,14 +365,14 @@ void HudClass::DrawRCKT(void)
 #if 0 // FRB - Removed PUAC for rockets.
 
     //PUAC for max Range
-    if (FCC->airGroundRange < maxRng && FCC->airGroundRange >= minRng)
+    if (FCC->airGroundRange < maxRng and FCC->airGroundRange >= minRng)
     {
         // now we use the PUAC to "count down" to in-range
         puacY = ((FCC->airGroundRange - minRng) / (maxRng - minRng));
 
         // draw the puac on the bomb fall line
         //MI vids show it stays below the FPM
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
             x = ((puacY - 1) * drollTrig.sin  + betaHudUnits);
         else
             x = betaHudUnits;
@@ -429,8 +429,8 @@ void HudClass::DrawStrafe(void)
     display->AdjustOriginInViewport(0.0F, hudWinY[BORESIGHT_CROSS_WINDOW] +
                                     hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F);
 
-    if (fabs(pipperEl) < 0.90F && fabs(pipperAz + hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                       hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) < 0.90F && !FCC->noSolution)
+    if (fabs(pipperEl) < 0.90F and fabs(pipperAz + hudWinY[BORESIGHT_CROSS_WINDOW] +
+                                       hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) < 0.90F and not FCC->noSolution)
     {
         if (FCC->airGroundRange < 8000.0F)// me123 status ok. changed from 8000. TJL 11/20/03 Back to 8000 per MIRV
         {
@@ -466,7 +466,7 @@ void HudClass::DrawStrafe(void)
         // draw the puac on the bomb fall line
         //  x = (x  + betaHudUnits) * -((puacY-1)/y ) ;//me123 this might crash when the bombline length (y) is zero.
         //MI vids show it stays below the FPM
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
             x = ((puacY - 1) * drollTrig.sin  + betaHudUnits);
         else
             x = betaHudUnits;
@@ -490,7 +490,7 @@ void HudClass::DrawStrafe(void)
     ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
 
     //MI
-    if (!g_bRealisticAvionics) //done in the routines below
+    if ( not g_bRealisticAvionics) //done in the routines below
         DrawWindowString(10, tmpStr);
 
     //else
@@ -526,7 +526,7 @@ void HudClass::DrawDTOSS(void)
     // if we allow a radar lock, we might as well allow a TD box...
 
     //MI changed
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
         DrawTDBox();
     else
         DrawDTOSSBox();
@@ -535,7 +535,7 @@ void HudClass::DrawDTOSS(void)
     display->AdjustOriginInViewport(0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
                                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
         DrawDesignateMarker(Square, FCC->groundDesignateAz, FCC->groundDesignateEl, FCC->groundDesignateDroll);
     else //JPG 13 Aug 04 - the "other" DTOS/TDMarker box doesn't yield the proper TLL (since it's method is really for AA, so let's use the DrawDesignateMarker
         /*DrawTDMarker*/DrawDesignateMarker(Square, FCC->groundDesignateAz, FCC->groundDesignateEl, FCC->groundDesignateDroll /*0.03F*/);
@@ -603,7 +603,7 @@ void HudClass::DrawTargetingPod(void)
     {
         LaserPodClass* laserPod = (LaserPodClass*)FindLaserPod(playerAC);
 
-        if (laserPod && FCC->LaserArm)
+        if (laserPod and FCC->LaserArm)
         {
             //armed and fired
             if (FCC->LaserFire)
@@ -649,12 +649,12 @@ void HudClass::DrawSteeringToRelease(void)
     {
         BombClass* theBomb = (BombClass *)FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()]->weaponPointer.get();
 
-        if (theBomb && theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
+        if (theBomb and theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
             isJSOW = true;
     }
 
     // Steering Line
-    if (FCC->inRange && !isJSOW)
+    if (FCC->inRange and not isJSOW)
     {
         steeringLineX = FCC->airGroundBearing / (20.0F * DTR);
         steeringLineX += betaHudUnits;
@@ -666,9 +666,9 @@ void HudClass::DrawSteeringToRelease(void)
                 alphaHudUnits);
 
         // Solution Cue
-        if (FCC->tossAnticipationCue != FireControlComputer::NoCue)
+        if (FCC->tossAnticipationCue not_eq FireControlComputer::NoCue)
         {
-            if (FCC->tossAnticipationCue == FireControlComputer::PullUp ||
+            if (FCC->tossAnticipationCue == FireControlComputer::PullUp or
                 FCC->tossAnticipationCue == FireControlComputer::AwaitingRelease)
                 solutionCueY = min(FCC->airGroundDelayTime / 60.0F, 1.0F);
             else
@@ -681,8 +681,8 @@ void HudClass::DrawSteeringToRelease(void)
         }
 
         // Toss Anticipation Cue
-        if (FCC->tossAnticipationCue == FireControlComputer::PreToss ||
-            (FCC->tossAnticipationCue == FireControlComputer::PullUp && flash))
+        if (FCC->tossAnticipationCue == FireControlComputer::PreToss or
+            (FCC->tossAnticipationCue == FireControlComputer::PullUp and flash))
         {
             display->Circle(0.0F, RadToHudUnits(-3.0F * DTR) +
                             hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F,
@@ -703,7 +703,7 @@ void HudClass::DrawSteeringToRelease(void)
 
                 // draw the puac on the bomb fall line
                 //MI vids show it stays below the FPM
-                /*if(!g_bRealisticAvionics)
+                /*if( not g_bRealisticAvionics)
                  x = ((puacY-1) * drollTrig.sin  + betaHudUnits);
                 else*/ //Cobra removed (droll not initialized and why do this for non-realistic?)
                 x = betaHudUnits;
@@ -726,7 +726,7 @@ void HudClass::DrawSteeringToRelease(void)
                 // draw the puac on the bomb fall line
                 //  x = (x  + betaHudUnits) * -((puacY-1)/y ) ;//me123 this might crash when the bombline length (y) is zero.
                 //MI vids show it stays below the FPM
-                /*if(!g_bRealisticAvionics)
+                /*if( not g_bRealisticAvionics)
                  x = ((puacY-1) * drollTrig.sin  + betaHudUnits);
                 else*/ //Cobra removed (droll not initialized and why do this for non-realistic?)
                 x = betaHudUnits;
@@ -778,9 +778,9 @@ void HudClass::DrawSteeringToRelease(void)
         {
             HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(ownship, SensorClass::HTS);
 
-            if (harmPod && harmPod->GetSubMode() == HarmTargetingPod::HAS ||
-                harmPod && harmPod->GetSubMode() == HarmTargetingPod::Handoff ||
-                harmPod && harmPod->GetSubMode() == HarmTargetingPod::FilterMode)
+            if (harmPod and harmPod->GetSubMode() == HarmTargetingPod::HAS or
+                harmPod and harmPod->GetSubMode() == HarmTargetingPod::Handoff or
+                harmPod and harmPod->GetSubMode() == HarmTargetingPod::FilterMode)
             {
                 displayRange = false;
             }
@@ -802,7 +802,7 @@ void HudClass::DrawSteeringToRelease(void)
         ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
 
         //MI
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             DrawWindowString(10, tmpStr);
         }
@@ -824,7 +824,7 @@ void HudClass::DrawSteeringToRelease(void)
         ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
 
         //MI
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             DrawWindowString(13, tmpStr);
         }
@@ -850,13 +850,13 @@ void HudClass::DrawSteeringToRelease(void)
         ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
 
         //MI
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
             DrawWindowString(14, tmpStr);
         else
             display->TextLeft(0.45F, -0.50F, tmpStr);
     }
     // RV - Biker - Some diff HUD symboligy for JSOWs
-    else if (FCC->Sms->JDAMPowered && FCC->Sms->JDAMInitTimer <= 4.0f)
+    else if (FCC->Sms->JDAMPowered and FCC->Sms->JDAMInitTimer <= 4.0f)
     {
         steeringLineX = FCC->airGroundBearing / (20.0F * DTR);
         steeringLineX += betaHudUnits;
@@ -1046,9 +1046,9 @@ void HudClass::DrawSteeringToReleaseLADD(void)
                 alphaHudUnits);
 
         // Solution Cue
-        if (FCC->laddAnticipationCue != FireControlComputer::NoLADDCue)
+        if (FCC->laddAnticipationCue not_eq FireControlComputer::NoLADDCue)
         {
-            if (FCC->laddAnticipationCue == FireControlComputer::LADDPullUp ||
+            if (FCC->laddAnticipationCue == FireControlComputer::LADDPullUp or
                 FCC->laddAnticipationCue == FireControlComputer::LADDAwaitingRelease)
                 solutionCueY = min(FCC->airGroundDelayTime / 60.0F, 1.0F);
             else

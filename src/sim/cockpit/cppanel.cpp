@@ -26,7 +26,7 @@ void TestBounds(int position, int dimension, int* pcursorIndex, int cursor0, int
 
     if (position <= dimension / 4)
     {
-        if (cursor0 != -1)
+        if (cursor0 not_eq -1)
         {
             *pcursorIndex = cursor0;
         }
@@ -35,13 +35,13 @@ void TestBounds(int position, int dimension, int* pcursorIndex, int cursor0, int
             *pcursorIndex = cursor1;
         }
     }
-    else if (position > dimension / 4 && position < 3 * dimension / 4)
+    else if (position > dimension / 4 and position < 3 * dimension / 4)
     {
         *pcursorIndex = cursor1;
     }
     else
     {
-        if (cursor2 != -1)
+        if (cursor2 not_eq -1)
         {
             *pcursorIndex = cursor2;
         }
@@ -173,7 +173,7 @@ CPPanel::~CPPanel()
 
     for (
         vector<CPObject*>::iterator it = mpObjects.begin();
-        it != mpObjects.end();
+        it not_eq mpObjects.end();
         ++it
     )
     {
@@ -182,7 +182,7 @@ CPPanel::~CPPanel()
 
     mpObjects.clear();
 
-    for (vector<CPButtonView*>::iterator it = mpButtonViews.begin(); it != mpButtonViews.end(); ++it)
+    for (vector<CPButtonView*>::iterator it = mpButtonViews.begin(); it not_eq mpButtonViews.end(); ++it)
     {
         delete *it;
     }
@@ -230,13 +230,13 @@ void CPPanel::Exec(SimBaseClass* pOwnship, int CycleBit)
 
     for (i = 0; i < mNumObjects; i++)
     {
-        if (mpObjects[i]->mCycleBits & CycleBit)
+        if (mpObjects[i]->mCycleBits bitand CycleBit)
         {
             mpObjects[i]->Exec(pOwnship);
         }
     }
 
-    if (CycleBit & END_CYCLE)
+    if (CycleBit bitand END_CYCLE)
     {
         for (i = 0; i < mNumButtonViews; i++)
         {
@@ -272,7 +272,7 @@ void CPPanel::DisplayBlit()
 {
     int i;
 
-    if (!DisplayOptions.bRender2DCockpit) // OW: dont loop in fast 2d mode ("blitting" handled by DisplayBlit3D)
+    if ( not DisplayOptions.bRender2DCockpit) // OW: dont loop in fast 2d mode ("blitting" handled by DisplayBlit3D)
     {
         // loop thru and display all surfaces for this panel
         F4EnterCriticalSection(OTWDriver.pCockpitManager->mpCockpitCritSec);
@@ -443,19 +443,19 @@ BOOL CPPanel::Dispatch(int* cursorIndex, int event, int xpos, int ypos)
 
     if (mDefaultCursor >= 0)
     {
-        while ((!found) && (i < mNumButtonViews))
+        while (( not found) and (i < mNumButtonViews))
         {
             found = mpButtonViews[i]->HandleEvent(cursorIndex, event, xpos, ypos);
             i++;
         }
 
-        if (!found)  //check directional cursors
+        if ( not found)  //check directional cursors
         {
             border = OTWDriver.pCockpitManager->mMouseBorder;
             height = DisplayOptions.DispHeight;
             width  = DisplayOptions.DispWidth;
 
-            if (event == CP_MOUSE_BUTTON0 || event == CP_MOUSE_BUTTON1)
+            if (event == CP_MOUSE_BUTTON0 or event == CP_MOUSE_BUTTON1)
             {
 
                 if (ypos < border)
@@ -690,14 +690,14 @@ void CPPanel::SetPalette()
 
     for (int i = mNumObjects - 1; i >= 0; i--)
     {
-        if (dynamic_cast<CPLight*>(mpObjects[i]) != NULL)
+        if (dynamic_cast<CPLight*>(mpObjects[i]) not_eq NULL)
         {
             mpObjects[i]->Translate3D(lightPlt);
         }
         else if (
-            (dynamic_cast<CPHsi*>(mpObjects[i]) != NULL) ||
-            (dynamic_cast<CPAdi*>(mpObjects[i]) != NULL) ||
-            (dynamic_cast<CPIndicator*>(mpObjects[i]) != NULL)
+            (dynamic_cast<CPHsi*>(mpObjects[i]) not_eq NULL) or
+            (dynamic_cast<CPAdi*>(mpObjects[i]) not_eq NULL) or
+            (dynamic_cast<CPIndicator*>(mpObjects[i]) not_eq NULL)
         )
         {
             mpObjects[i]->Translate3D(adiHsiPlt);
@@ -738,7 +738,7 @@ void CPPanel::SetTOD(float lightLevel)
 
     // Just copy the chromakey color without lighting it
 
-    if (!gpTemplateSurface)
+    if ( not gpTemplateSurface)
         *palTgt++ = TemplateInfo->Pixel32toPixel32(*palData++);
     else
         *palTgt++ = gpTemplateSurface->Pixel32toPixel32(*palData++);
@@ -757,16 +757,16 @@ void CPPanel::SetTOD(float lightLevel)
         {
             inColor = *palData;
 
-            outColor  = ((((inColor)     & 0xFF) * lighting) >> 16);
-            outColor |= ((((inColor >> 8)  & 0xFF) * lighting) >> 8) & 0x0000FF00;
-            outColor |= ((((inColor >> 16) & 0xFF) * lighting))      & 0x00FF0000;
+            outColor  = ((((inColor) bitand 0xFF) * lighting) >> 16);
+            outColor or_eq ((((inColor >> 8) bitand 0xFF) * lighting) >> 8) bitand 0x0000FF00;
+            outColor or_eq ((((inColor >> 16) bitand 0xFF) * lighting)) bitand 0x00FF0000;
 
-            blue = (BYTE)(((outColor) >> 16) & 0xFF);
-            green = (BYTE)(((outColor) >> 8)  & 0xFF);
-            red = (BYTE)((outColor)     & 0xFF);
-            outColor = (((BYTE)(0.299F * red + 0.587F * green + 0.114 * blue)) & 0xFF) << 8;
+            blue = (BYTE)(((outColor) >> 16) bitand 0xFF);
+            green = (BYTE)(((outColor) >> 8) bitand 0xFF);
+            red = (BYTE)((outColor) bitand 0xFF);
+            outColor = (((BYTE)(0.299F * red + 0.587F * green + 0.114 * blue)) bitand 0xFF) << 8;
 
-            if (!gpTemplateSurface)
+            if ( not gpTemplateSurface)
                 *palTgt = TemplateInfo->Pixel32toPixel32(outColor);
             else
                 *palTgt = gpTemplateSurface->Pixel32toPixel32(outColor);
@@ -782,12 +782,12 @@ void CPPanel::SetTOD(float lightLevel)
 
         do
         {
-            blue = (BYTE)(((*palData) >> 16) & 0xFF);
-            green = (BYTE)(((*palData) >> 8)  & 0xFF);
-            red = (BYTE)((*palData)        & 0xFF);
-            outColor = ((int)(0.299F * red + 0.587F * green + 0.114 * blue) & 0xFF) << 8;
+            blue = (BYTE)(((*palData) >> 16) bitand 0xFF);
+            green = (BYTE)(((*palData) >> 8) bitand 0xFF);
+            red = (BYTE)((*palData) bitand 0xFF);
+            outColor = ((int)(0.299F * red + 0.587F * green + 0.114 * blue) bitand 0xFF) << 8;
 
-            if (!gpTemplateSurface)
+            if ( not gpTemplateSurface)
                 *palTgt = TemplateInfo->Pixel32toPixel32(outColor);
             else
                 *palTgt = gpTemplateSurface->Pixel32toPixel32(outColor);
@@ -811,14 +811,14 @@ void CPPanel::SetTOD(float lightLevel)
         {
             inColor = *palData;
 
-            outColor  = ((((inColor)     & 0xFF) * lighting) >> 16);
-            outColor |= ((((inColor >> 8)  & 0xFF) * lighting) >> 8) & 0x0000FF00;
-            outColor |= ((((inColor >> 16) & 0xFF) * lighting))      & 0x00FF0000;
+            outColor  = ((((inColor) bitand 0xFF) * lighting) >> 16);
+            outColor or_eq ((((inColor >> 8) bitand 0xFF) * lighting) >> 8) bitand 0x0000FF00;
+            outColor or_eq ((((inColor >> 16) bitand 0xFF) * lighting)) bitand 0x00FF0000;
 
-            if (!gpTemplateSurface)
-                *palTgt = TemplateInfo->Pixel32toPixel32(outColor & mask);
+            if ( not gpTemplateSurface)
+                *palTgt = TemplateInfo->Pixel32toPixel32(outColor bitand mask);
             else
-                *palTgt = gpTemplateSurface->Pixel32toPixel32(outColor & mask);
+                *palTgt = gpTemplateSurface->Pixel32toPixel32(outColor bitand mask);
 
             palData++;
             palTgt++;
@@ -830,10 +830,10 @@ void CPPanel::SetTOD(float lightLevel)
 
         do
         {
-            if (!gpTemplateSurface)
-                *palTgt = TemplateInfo->Pixel32toPixel32(*palData & mask);
+            if ( not gpTemplateSurface)
+                *palTgt = TemplateInfo->Pixel32toPixel32(*palData bitand mask);
             else
-                *palTgt = gpTemplateSurface->Pixel32toPixel32(*palData & mask);
+                *palTgt = gpTemplateSurface->Pixel32toPixel32(*palData bitand mask);
 
             palData++;
             palTgt++;
@@ -842,7 +842,7 @@ void CPPanel::SetTOD(float lightLevel)
     }
 
     // Now convert all the 8 bit sources to 16 bit lit versions
-    if (gpTemplateSurface && gpTemplateImage)
+    if (gpTemplateSurface and gpTemplateImage)
         Translate8to32(palette16,
                        gpTemplateImage, // 8 bit color indexes of template
                        gpTemplateSurface); // 16 bit ImageBuffer
@@ -884,15 +884,15 @@ void CPPanel::SetTOD(float lightLevel)
             {
                 inColor = *palData;
 
-                outColor  = ((((inColor)     & 0xFF) * lighting) >> 16);
-                outColor |= ((((inColor >> 8)  & 0xFF) * lighting) >> 8) & 0x0000FF00;
-                outColor |= ((((inColor >> 16) & 0xFF) * lighting))      & 0x00FF0000;
+                outColor  = ((((inColor) bitand 0xFF) * lighting) >> 16);
+                outColor or_eq ((((inColor >> 8) bitand 0xFF) * lighting) >> 8) bitand 0x0000FF00;
+                outColor or_eq ((((inColor >> 16) bitand 0xFF) * lighting)) bitand 0x00FF0000;
 
-                blue = (BYTE)(((outColor) >> 16) & 0xFF);
-                green = (BYTE)(((outColor) >> 8)  & 0xFF);
-                red = (BYTE)((outColor)     & 0xFF);
-                outColor = (((BYTE)(0.299F * red + 0.587F * green + 0.114 * blue)) & 0xFF) << 8;
-                outColor |= 0xff000000; // OW add alpha
+                blue = (BYTE)(((outColor) >> 16) bitand 0xFF);
+                green = (BYTE)(((outColor) >> 8) bitand 0xFF);
+                red = (BYTE)((outColor) bitand 0xFF);
+                outColor = (((BYTE)(0.299F * red + 0.587F * green + 0.114 * blue)) bitand 0xFF) << 8;
+                outColor or_eq 0xff000000; // OW add alpha
 
                 *palTgt = outColor;
 
@@ -906,13 +906,13 @@ void CPPanel::SetTOD(float lightLevel)
 
             do
             {
-                blue = (BYTE)(((*palData) >> 16) & 0xFF);
-                green = (BYTE)(((*palData) >> 8)  & 0xFF);
-                red = (BYTE)((*palData)        & 0xFF);
-                outColor = ((int)(0.299F * red + 0.587F * green + 0.114 * blue) & 0xFF) << 8;
-                outColor |= 0xff000000; // OW add alpha
+                blue = (BYTE)(((*palData) >> 16) bitand 0xFF);
+                green = (BYTE)(((*palData) >> 8) bitand 0xFF);
+                red = (BYTE)((*palData) bitand 0xFF);
+                outColor = ((int)(0.299F * red + 0.587F * green + 0.114 * blue) bitand 0xFF) << 8;
+                outColor or_eq 0xff000000; // OW add alpha
 
-                if (!gpTemplateSurface)
+                if ( not gpTemplateSurface)
                     *palTgt = TemplateInfo->Pixel32toPixel32(outColor);
                 else
                     *palTgt = gpTemplateSurface->Pixel32toPixel32(outColor);
@@ -936,12 +936,12 @@ void CPPanel::SetTOD(float lightLevel)
             {
                 inColor = *palData;
 
-                outColor  = ((((inColor)     & 0xFF) * lighting) >> 16);
-                outColor |= ((((inColor >> 8)  & 0xFF) * lighting) >> 8) & 0x0000FF00;
-                outColor |= ((((inColor >> 16) & 0xFF) * lighting))      & 0x00FF0000;
-                outColor |= 0xff000000; // OW add alpha
+                outColor  = ((((inColor) bitand 0xFF) * lighting) >> 16);
+                outColor or_eq ((((inColor >> 8) bitand 0xFF) * lighting) >> 8) bitand 0x0000FF00;
+                outColor or_eq ((((inColor >> 16) bitand 0xFF) * lighting)) bitand 0x00FF0000;
+                outColor or_eq 0xff000000; // OW add alpha
 
-                *palTgt = outColor & mask;
+                *palTgt = outColor bitand mask;
 
                 palData++;
                 palTgt++;
@@ -953,7 +953,7 @@ void CPPanel::SetTOD(float lightLevel)
 
             do
             {
-                *palTgt = *palData & mask;
+                *palTgt = *palData bitand mask;
                 palData++;
                 palTgt++;
             }

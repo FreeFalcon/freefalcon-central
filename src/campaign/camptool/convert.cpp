@@ -43,12 +43,12 @@ char* GetFilename(short x, short y)
 {
     int index, i;
 
-    if (!Tiles || !TexCodes)
+    if ( not Tiles or not TexCodes)
         return "INVALID";
 
     i = (Map_Max_Y - (y + 1)) * Map_Max_X + x;
 
-    if (x >= Map_Max_X || x < 0 || y >= Map_Max_Y || y < 0)
+    if (x >= Map_Max_X or x < 0 or y >= Map_Max_Y or y < 0)
         return "OFF MAP";
 
     index = Tiles[i];
@@ -60,12 +60,12 @@ int GetTextureIndex(short x, short y)
 {
     int i;
 
-    if (!Tiles)
+    if ( not Tiles)
         return 0;
 
     i = (Map_Max_Y - (y + 1)) * Map_Max_X + x;
 
-    if (x >= Map_Max_X || x < 0 || y >= Map_Max_Y || y < 0)
+    if (x >= Map_Max_X or x < 0 or y >= Map_Max_Y or y < 0)
         return 0;
 
     return Tiles[i];
@@ -76,7 +76,7 @@ char* GetTextureId(int index)
     char *file;
     static char ret[20] = { "NON" };
 
-    if (!TexCodes)
+    if ( not TexCodes)
         return ret;
 
     file = &TexCodes[index * FILENAMELEN];
@@ -120,7 +120,7 @@ int readTexCodes(char *codeFile)
 
     for (i = 0; i < TEXCODELEN; i++)
     {
-        if ((ret = fscanf(texCodesFile, "%x", &id)) != 1)
+        if ((ret = fscanf(texCodesFile, "%x", &id)) not_eq 1)
             break;
 
         if (id == 0xffff)
@@ -135,7 +135,7 @@ int readTexCodes(char *codeFile)
             return -1;
         }
 
-        if (ret = fscanf(texCodesFile, "%s %*[^\n]", &tempCodes[id * FILENAMELEN]) != 1)
+        if (ret = fscanf(texCodesFile, "%s %*[^\n]", &tempCodes[id * FILENAMELEN]) not_eq 1)
             break;
 
         lid = id;
@@ -166,7 +166,7 @@ int readMap(char *mapFile)
 {
     FILE *in;
 
-    if ((in = OpenCampFile(mapFile, "tm", "rb")) != NULL)
+    if ((in = OpenCampFile(mapFile, "tm", "rb")) not_eq NULL)
     {
         Tiles = new short[Map_Max_X * Map_Max_Y];
 

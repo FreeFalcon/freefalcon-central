@@ -1388,9 +1388,9 @@ SIM_FLOAT SIMLIB_MATH_CLASS::OnedInterp(SIM_FLOAT x, const SIM_FLOAT *xarray,
     /*-------------------------------------------------*/
     /* If there is a last x use it as a starting point */
     /*-------------------------------------------------*/
-    if (*lastx != 0)
+    if (*lastx not_eq 0)
     {
-        if (xinpt >= xarray[*lastx] && xinpt <= xarray[*lastx + 1])
+        if (xinpt >= xarray[*lastx] and xinpt <= xarray[*lastx + 1])
         {
             x0 = xarray[*lastx];
             dx = xarray[*lastx + 1] - x0;
@@ -1404,7 +1404,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::OnedInterp(SIM_FLOAT x, const SIM_FLOAT *xarray,
             /*-----------------------*/
             for (i = *lastx; i > 0; i--)
             {
-                if (xinpt <= xarray[i] && xinpt >= xarray[i - 1])
+                if (xinpt <= xarray[i] and xinpt >= xarray[i - 1])
                 {
                     *lastx = i - 1;
                     x0 = xarray[i - 1];
@@ -1419,7 +1419,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::OnedInterp(SIM_FLOAT x, const SIM_FLOAT *xarray,
         {
             for (i = *lastx + 1; i < numx - 1; i++)
             {
-                if (xinpt >= xarray[i] && xinpt <= xarray[i + 1])
+                if (xinpt >= xarray[i] and xinpt <= xarray[i + 1])
                 {
                     *lastx = i;
                     x0 = xarray[i];
@@ -1438,7 +1438,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::OnedInterp(SIM_FLOAT x, const SIM_FLOAT *xarray,
         /*--------------------------------------------*/
         for (i = 0; i < numx - 1; i++)
         {
-            if (xinpt >= xarray[i] && xinpt <= xarray[i + 1])
+            if (xinpt >= xarray[i] and xinpt <= xarray[i + 1])
             {
                 *lastx = i;
                 x0 = xarray[i];
@@ -1501,10 +1501,10 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
     numx --;
     numy --;
 
-    //if (numx >= 0 && numy >= 0) // JB 010220 CTD
-    if (numx >= 0 && numy >= 0 &&
-        xarray && //!F4IsBadReadPtr(xarray, sizeof(SIM_FLOAT)) && // (too much CPU)
-        yarray //!F4IsBadReadPtr(yarray, sizeof(SIM_FLOAT)) // JB 010318 CTD (too much CPU)
+    //if (numx >= 0 and numy >= 0) // JB 010220 CTD
+    if (numx >= 0 and numy >= 0 and 
+        xarray and // not F4IsBadReadPtr(xarray, sizeof(SIM_FLOAT)) and // (too much CPU)
+        yarray // not F4IsBadReadPtr(yarray, sizeof(SIM_FLOAT)) // JB 010318 CTD (too much CPU)
        )
     {
         xinpt = min(max(x, xarray[0]), xarray[numx]);
@@ -1515,16 +1515,16 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
     /* If there is a last x use it as a starting point */
     /*-------------------------------------------------*/
     ix = *lastx;
-    ShiAssert(ix >= 0 && ix < numx); // JPO CTD
+    ShiAssert(ix >= 0 and ix < numx); // JPO CTD
 
-    if (ix != 0)
+    if (ix not_eq 0)
     {
         if (xinpt <= xarray[ix])
         {
             /*-----------------------*/
             /* Look down in the data */
             /*-----------------------*/
-            while ((ix > 0) && (xinpt < xarray[ix]))
+            while ((ix > 0) and (xinpt < xarray[ix]))
                 ix --;
         }
         else if (xinpt > xarray[ix + 1])
@@ -1532,7 +1532,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
             /*---------------------*/
             /* Look up in the data */
             /*---------------------*/
-            while ((ix < numx) && (xinpt > xarray[ix + 1]))
+            while ((ix < numx) and (xinpt > xarray[ix + 1]))
                 ix ++;
         }
     }
@@ -1541,13 +1541,13 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
         /*--------------------------------------------*/
         /* No Previous value so start at the begining */
         /*--------------------------------------------*/
-        while ((ix < numx) && (xinpt > xarray[ix + 1]))
+        while ((ix < numx) and (xinpt > xarray[ix + 1]))
             ix ++;
     }
 
-    ShiAssert(ix >= 0 && ix < numx); // JPO CTD  check again
+    ShiAssert(ix >= 0 and ix < numx); // JPO CTD  check again
 
-    if (ix < 0 || ix >= numx)
+    if (ix < 0 or ix >= numx)
         return 0.0f;
 
     *lastx = ix;
@@ -1559,16 +1559,16 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
     /* If there is a last y use it as a starting point */
     /*-------------------------------------------------*/
     iy = *lasty;
-    ShiAssert(iy >= 0 && iy < numy); // JPO CTD
+    ShiAssert(iy >= 0 and iy < numy); // JPO CTD
 
-    if (iy != 0)
+    if (iy not_eq 0)
     {
         if (yinpt <= yarray[iy])
         {
             /*-----------------------*/
             /* Look down in the data */
             /*-----------------------*/
-            while ((iy > 0) && (yinpt < yarray[iy]))
+            while ((iy > 0) and (yinpt < yarray[iy]))
                 iy --;
         }
         else if (yinpt > yarray[iy + 1])
@@ -1576,7 +1576,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
             /*---------------------*/
             /* Look up in the data */
             /*---------------------*/
-            while ((iy < numy) && (yinpt > yarray[iy + 1]))
+            while ((iy < numy) and (yinpt > yarray[iy + 1]))
                 iy ++;
         }
     }
@@ -1585,11 +1585,11 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
         /*--------------------------------------------*/
         /* No Previous value so start at the begining */
         /*--------------------------------------------*/
-        while ((iy < numy) && (yinpt > yarray[iy + 1]))
+        while ((iy < numy) and (yinpt > yarray[iy + 1]))
             iy ++;
     }
 
-    ShiAssert(iy >= 0 && iy < numy); // JPO CTD  check again
+    ShiAssert(iy >= 0 and iy < numy); // JPO CTD  check again
     *lasty = iy;
     y1 = yarray[iy];
     y2 = yarray[iy + 1];
@@ -1683,9 +1683,9 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
     /*-------------------------------------------------*/
     /* If there is a last x use it as a starting point */
     /*-------------------------------------------------*/
-    if (*lastx != 0)
+    if (*lastx not_eq 0)
     {
-        if (xinpt >= xarray[*lastx] && xinpt <= xarray[*lastx + 1])
+        if (xinpt >= xarray[*lastx] and xinpt <= xarray[*lastx + 1])
         {
             ix = *lastx;
             x1 = xarray[*lastx];
@@ -1698,7 +1698,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
             /*-----------------------*/
             for (i = *lastx; i > 0; i--)
             {
-                if (xinpt <= xarray[i] && xinpt >= xarray[i - 1])
+                if (xinpt <= xarray[i] and xinpt >= xarray[i - 1])
                 {
                     *lastx = i - 1;
                     ix = i - 1;
@@ -1712,7 +1712,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
         {
             for (i = *lastx + 1; i < numx - 1; i++)
             {
-                if (xinpt >= xarray[i] && xinpt <= xarray[i + 1])
+                if (xinpt >= xarray[i] and xinpt <= xarray[i + 1])
                 {
                     *lastx = i;
                     ix = i;
@@ -1730,7 +1730,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
         /*--------------------------------------------*/
         for (i = 0; i < numx - 1; i++)
         {
-            if (xinpt >= xarray[i] && xinpt <= xarray[i + 1])
+            if (xinpt >= xarray[i] and xinpt <= xarray[i + 1])
             {
                 *lastx = i;
                 ix = i;
@@ -1744,14 +1744,14 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
 
     dx = x2 - x1;
 
-    if (!dx) dx = 1; //me123 incase theres only one number in the dat file
+    if ( not dx) dx = 1; //me123 incase theres only one number in the dat file
 
     /*-------------------------------------------------*/
     /* If there is a last y use it as a starting point */
     /*-------------------------------------------------*/
-    if (*lasty != 0)
+    if (*lasty not_eq 0)
     {
-        if (yinpt >= yarray[*lasty] && yinpt <= yarray[*lasty + 1])
+        if (yinpt >= yarray[*lasty] and yinpt <= yarray[*lasty + 1])
         {
             iy = *lasty;
             y1 = yarray[*lasty];
@@ -1764,7 +1764,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
             /*-----------------------*/
             for (i = *lasty; i > 0; i--)
             {
-                if (yinpt <= yarray[i] && yinpt >= yarray[i - 1])
+                if (yinpt <= yarray[i] and yinpt >= yarray[i - 1])
                 {
                     *lasty = i - 1;
                     iy = i - 1;
@@ -1778,7 +1778,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
         {
             for (i = *lasty + 1; i < numy - 1; i++)
             {
-                if (yinpt >= yarray[i] && yinpt <= yarray[i + 1])
+                if (yinpt >= yarray[i] and yinpt <= yarray[i + 1])
                 {
                     *lasty = i;
                     iy = i;
@@ -1796,7 +1796,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
         /*--------------------------------------------*/
         for (i = 0; i < numy - 1; i++)
         {
-            if (yinpt >= yarray[i] && yinpt <= yarray[i + 1])
+            if (yinpt >= yarray[i] and yinpt <= yarray[i + 1])
             {
                 *lasty = i;
                 iy = i;
@@ -1810,14 +1810,14 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
 
     dy = y2 - y1;
 
-    if (!dy) dy = 1; //me123 incase theres only one number in the dat file
+    if ( not dy) dy = 1; //me123 incase theres only one number in the dat file
 
     /*-------------------------------------------------*/
     /* If there is a last z use it as a starting point */
     /*-------------------------------------------------*/
-    if (*lastz != 0)
+    if (*lastz not_eq 0)
     {
-        if (zinpt >= zarray[*lastz] && zinpt <= zarray[*lastz + 1])
+        if (zinpt >= zarray[*lastz] and zinpt <= zarray[*lastz + 1])
         {
             iz = *lastz;
             z1 = zarray[*lastz];
@@ -1830,7 +1830,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
             /*-----------------------*/
             for (i = *lastz; i > 0; i--)
             {
-                if (zinpt <= zarray[i] && zinpt >= zarray[i - 1])
+                if (zinpt <= zarray[i] and zinpt >= zarray[i - 1])
                 {
                     *lastz = i - 1;
                     iz = i - 1;
@@ -1844,7 +1844,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
         {
             for (i = *lastz + 1; i < numz - 1; i++)
             {
-                if (zinpt >= zarray[i] && zinpt <= zarray[i + 1])
+                if (zinpt >= zarray[i] and zinpt <= zarray[i + 1])
                 {
                     *lastz = i;
                     iz = i;
@@ -1862,7 +1862,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
         /*--------------------------------------------*/
         for (i = 0; i < numz - 1; i++)
         {
-            if (zinpt >= zarray[i] && zinpt <= zarray[i + 1])
+            if (zinpt >= zarray[i] and zinpt <= zarray[i + 1])
             {
                 *lastz = i;
                 iz = i;
@@ -1876,7 +1876,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
 
     dz = z2 - z1;
 
-    if (!dz) dz = 1; //me123 incase theres only one number in the dat file
+    if ( not dz) dz = 1; //me123 incase theres only one number in the dat file
 
     /*----------------------------------*/
     /* x INTERPOLATION AT z BREAKPOINT  */

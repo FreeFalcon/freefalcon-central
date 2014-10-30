@@ -21,7 +21,7 @@ static const long CALLBACK_TIME_STEP = CALLBACK_CYCLE_TIME / MAX_TOD_CALLBACKS;
 
 void TimeManager::Setup(int startYear, int startDayOfYear)
 {
-    ShiAssert(!IsReady());
+    ShiAssert( not IsReady());
 
     // Store the day the clock started
     year = startYear;
@@ -42,10 +42,10 @@ void TimeManager::Cleanup()
 
     for (nextCallToMake = 0; nextCallToMake < MAX_TOD_CALLBACKS; nextCallToMake++)
     {
-        if (CBlist[nextCallToMake].fn != NULL)
+        if (CBlist[nextCallToMake].fn not_eq NULL)
         {
             //VP_changes This should be fixed, we have an error here Oct 8, 2002.
-            ShiWarning("TimeManager dieing with callbacks still registered!");
+            ShiWarning("TimeManager dieing with callbacks still registered");
             break;
         }
     }

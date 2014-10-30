@@ -196,7 +196,7 @@ int IsValidMission(int dindex, int mission)
         case AMIS_STSTRIKE:
             uc = (UnitClassDataType*)(Falcon4ClassTable[dindex].dataPtr);
 
-            if (uc->Scores[role] && (uc->Flags & VEH_STEALTH))
+            if (uc->Scores[role] and (uc->Flags bitand VEH_STEALTH))
                 return TRUE;
 
             break;
@@ -208,7 +208,7 @@ int IsValidMission(int dindex, int mission)
             // Helo only
             uc = (UnitClassDataType*)(Falcon4ClassTable[dindex].dataPtr);
 
-            if (uc->Scores[role]) //  && 0) // Need to check for helo types
+            if (uc->Scores[role]) // and 0) // Need to check for helo types
                 return TRUE;
 
             break;
@@ -230,9 +230,9 @@ int IsValidTarget(Team team, int mission, CampEntity target)
     if (mission < 0)
         return FALSE;
 
-    if (!target && (MissionData[mission].target == AMIS_TAR_LOCATION || MissionData[mission].target == AMIS_TAR_NONE))
+    if ( not target and (MissionData[mission].target == AMIS_TAR_LOCATION or MissionData[mission].target == AMIS_TAR_NONE))
         return TRUE;
-    else if (target && target->IsUnit() && ((Unit)target)->Real() && !target->IsSquadron() && MissionData[mission].target == AMIS_TAR_UNIT)
+    else if (target and target->IsUnit() and ((Unit)target)->Real() and not target->IsSquadron() and MissionData[mission].target == AMIS_TAR_UNIT)
     {
         switch (mission)
         {
@@ -241,7 +241,7 @@ int IsValidTarget(Team team, int mission, CampEntity target)
             case AMIS_SEADESCORT:
 
                 // Friendly air units only
-                if (target->GetTeam() == team && target->IsFlight())
+                if (target->GetTeam() == team and target->IsFlight())
                     return TRUE;
 
                 break;
@@ -249,7 +249,7 @@ int IsValidTarget(Team team, int mission, CampEntity target)
             case AMIS_INTERCEPT:
 
                 // Enemy air units only
-                if (target->IsFlight() && GetRoE(team, target->GetTeam(), ROE_AIR_FIRE) == ROE_ALLOWED)
+                if (target->IsFlight() and GetRoE(team, target->GetTeam(), ROE_AIR_FIRE) == ROE_ALLOWED)
                     return TRUE;
 
                 break;
@@ -257,7 +257,7 @@ int IsValidTarget(Team team, int mission, CampEntity target)
             case AMIS_PRPLANCAS:
 
                 // Enemy ground units only
-                if (target->IsBattalion() && GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE) == ROE_ALLOWED)
+                if (target->IsBattalion() and GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE) == ROE_ALLOWED)
                     return TRUE;
 
                 break;
@@ -265,35 +265,35 @@ int IsValidTarget(Team team, int mission, CampEntity target)
             case AMIS_SEADSTRIKE:
 
                 // Enemy air defense units only
-                if (target->IsBattalion() && ((Unit)target)->GetUnitNormalRole() == GRO_AIRDEFENSE && GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE) == ROE_ALLOWED)
+                if (target->IsBattalion() and ((Unit)target)->GetUnitNormalRole() == GRO_AIRDEFENSE and GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE) == ROE_ALLOWED)
                     return TRUE;
 
                 break;
 
             case AMIS_ASW:
             case AMIS_ASHIP:
-                if (target->IsTaskForce() && GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE) == ROE_ALLOWED)
+                if (target->IsTaskForce() and GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE) == ROE_ALLOWED)
                     return TRUE;
 
                 break;
 
             case AMIS_AIRCAV:
-                if (target->IsBattalion() && ((Unit)target)->GetSType() == STYPE_UNIT_AIRMOBILE)
+                if (target->IsBattalion() and ((Unit)target)->GetSType() == STYPE_UNIT_AIRMOBILE)
                     return TRUE;
 
             default:
                 break;
         }
     }
-    else if (target && target->IsObjective() && MissionData[mission].target == AMIS_TAR_OBJECTIVE)
+    else if (target and target->IsObjective() and MissionData[mission].target == AMIS_TAR_OBJECTIVE)
     {
         switch (mission)
         {
             case AMIS_OCASTRIKE:
 
-                // Enemy airbases, airstrips, radar, & CCC
-                if (GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE) &&
-                    (target->GetType() == TYPE_AIRBASE || target->GetType() == TYPE_AIRSTRIP || target->GetType() == TYPE_RADAR || target->GetType() == TYPE_COM_CONTROL))
+                // Enemy airbases, airstrips, radar, bitand CCC
+                if (GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE) and 
+                    (target->GetType() == TYPE_AIRBASE or target->GetType() == TYPE_AIRSTRIP or target->GetType() == TYPE_RADAR or target->GetType() == TYPE_COM_CONTROL))
                     return TRUE;
 
                 break;
@@ -301,9 +301,9 @@ int IsValidTarget(Team team, int mission, CampEntity target)
             case AMIS_INTSTRIKE:
 
                 // Enemy bridges, production facilities, ports, depots, etc.
-                if (GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE) &&
-                    (target->GetType() == TYPE_BRIDGE || target->GetType() == TYPE_CHEMICAL || target->GetType() == TYPE_DEPOT || target->GetType() == TYPE_FACTORY ||
-                     target->GetType() == TYPE_NUCLEAR || target->GetType() == TYPE_PORT || target->GetType() == TYPE_POWERPLANT || target->GetType() == TYPE_RAIL_TERMINAL ||
+                if (GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE) and 
+                    (target->GetType() == TYPE_BRIDGE or target->GetType() == TYPE_CHEMICAL or target->GetType() == TYPE_DEPOT or target->GetType() == TYPE_FACTORY or
+                     target->GetType() == TYPE_NUCLEAR or target->GetType() == TYPE_PORT or target->GetType() == TYPE_POWERPLANT or target->GetType() == TYPE_RAIL_TERMINAL or
                      target->GetType() == TYPE_REFINERY))
                     return TRUE;
 
@@ -388,16 +388,16 @@ int IsValidEnrouteAction(int mission, int action)
 // This is pretty hackish, but hey.. it works
 int GetMissionFromTarget(Team team, int dindex, CampEntity target)
 {
-    if (target && target->IsObjective())
+    if (target and target->IsObjective())
     {
-        if (!GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE))
+        if ( not GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE))
             target = NULL;
-        else if ((target->GetType() == TYPE_AIRBASE || target->GetType() == TYPE_AIRSTRIP || target->GetType() == TYPE_RADAR || target->GetType() == TYPE_COM_CONTROL) &&
+        else if ((target->GetType() == TYPE_AIRBASE or target->GetType() == TYPE_AIRSTRIP or target->GetType() == TYPE_RADAR or target->GetType() == TYPE_COM_CONTROL) and 
                  IsValidMission(dindex, AMIS_OCASTRIKE))
             return AMIS_OCASTRIKE;
-        else if ((target->GetType() == TYPE_BRIDGE || target->GetType() == TYPE_CHEMICAL || target->GetType() == TYPE_DEPOT || target->GetType() == TYPE_FACTORY ||
-                  target->GetType() == TYPE_NUCLEAR || target->GetType() == TYPE_PORT || target->GetType() == TYPE_POWERPLANT || target->GetType() == TYPE_RAIL_TERMINAL ||
-                  target->GetType() == TYPE_REFINERY) &&
+        else if ((target->GetType() == TYPE_BRIDGE or target->GetType() == TYPE_CHEMICAL or target->GetType() == TYPE_DEPOT or target->GetType() == TYPE_FACTORY or
+                  target->GetType() == TYPE_NUCLEAR or target->GetType() == TYPE_PORT or target->GetType() == TYPE_POWERPLANT or target->GetType() == TYPE_RAIL_TERMINAL or
+                  target->GetType() == TYPE_REFINERY) and 
                  IsValidMission(dindex, AMIS_INTSTRIKE))
             return AMIS_INTSTRIKE;
         else if (IsValidMission(dindex, AMIS_STRIKE))
@@ -406,28 +406,28 @@ int GetMissionFromTarget(Team team, int dindex, CampEntity target)
         target = NULL;
     }
 
-    if (target && target->IsUnit())
+    if (target and target->IsUnit())
     {
-        if (!GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE))
+        if ( not GetRoE(team, target->GetTeam(), ROE_GROUND_FIRE))
         {
-            if (target->IsFlight() && IsValidMission(dindex, AMIS_HAVCAP))
+            if (target->IsFlight() and IsValidMission(dindex, AMIS_HAVCAP))
                 return AMIS_HAVCAP;
             else
                 target = NULL;
         }
-        else if (target->IsFlight() && IsValidMission(dindex, AMIS_INTERCEPT))
+        else if (target->IsFlight() and IsValidMission(dindex, AMIS_INTERCEPT))
             return AMIS_INTERCEPT;
-        else if (target->IsBattalion() && ((Unit)target)->GetUnitNormalRole() == GRO_AIRDEFENSE && IsValidMission(dindex, AMIS_SEADSTRIKE))
+        else if (target->IsBattalion() and ((Unit)target)->GetUnitNormalRole() == GRO_AIRDEFENSE and IsValidMission(dindex, AMIS_SEADSTRIKE))
             return AMIS_SEADSTRIKE;
-        else if (target->IsBattalion() && IsValidMission(dindex, AMIS_PRPLANCAS))
+        else if (target->IsBattalion() and IsValidMission(dindex, AMIS_PRPLANCAS))
             return AMIS_PRPLANCAS;
-        else if (target->IsTaskForce() && IsValidMission(dindex, AMIS_ASHIP))
+        else if (target->IsTaskForce() and IsValidMission(dindex, AMIS_ASHIP))
             return AMIS_ASHIP;
 
         target = NULL;
     }
 
-    if (!target)
+    if ( not target)
     {
         if (IsValidMission(dindex, AMIS_BARCAP))
             return AMIS_BARCAP;

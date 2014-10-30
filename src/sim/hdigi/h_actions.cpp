@@ -7,14 +7,14 @@
 void HeliBrain::Actions(void)
 {
     // stick/throttle commands based on current mode
-    if (lastMode != curMode)
+    if (lastMode not_eq curMode)
         onStation = NotThereYet;
 
     // RV - Biker - Switch to next WP if flight lead already did
     if (self->flightLead->curWaypoint->GetWPArrivalTime() > self->curWaypoint->GetWPArrivalTime())
         SelectNextWaypoint();
 
-    if (self->flightLead != self && (targetPtr == NULL || !anyWeapons || targetPtr->localData->range > 5.0f * NM_TO_FT))
+    if (self->flightLead not_eq self and (targetPtr == NULL or not anyWeapons or targetPtr->localData->range > 5.0f * NM_TO_FT))
     {
         // if ( modeStack.curMode == GunsEngageMode )
         // GunsEngage();

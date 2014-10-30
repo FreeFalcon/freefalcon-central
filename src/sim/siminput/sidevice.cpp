@@ -115,11 +115,11 @@ BOOL SetupDIDevice(HWND hWnd, BOOL Exclusive, int DeviceIndex,
 
     if (Exclusive)
     {
-        CooperationFlags |= DISCL_EXCLUSIVE;
+        CooperationFlags or_eq DISCL_EXCLUSIVE;
     }
     else
     {
-        CooperationFlags |= DISCL_NONEXCLUSIVE;
+        CooperationFlags or_eq DISCL_NONEXCLUSIVE;
     }
 
     // Obtain an interface to the system mouse device
@@ -149,7 +149,7 @@ BOOL SetupDIDevice(HWND hWnd, BOOL Exclusive, int DeviceIndex,
     if (SetupResult)
     {
         gphDeviceEvent[DeviceIndex] = CreateEvent(0, 0, 0, 0);
-        SetupResult = (gphDeviceEvent[DeviceIndex] != NULL);
+        SetupResult = (gphDeviceEvent[DeviceIndex] not_eq NULL);
     }
 
     // Associate the event with the device

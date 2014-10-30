@@ -33,7 +33,7 @@ int VisualClass::CanSeeObject(SimObjectType* obj)
     // 2002-04-17 MN "GPS type" weapons can see and detect always
 
     // RV - Biker - Add check for bomb or missile to avoid AI AC to always see target
-    if ((g_nMissileFix & 0x100) && (platform->IsBomb() || platform->IsMissile()))
+    if ((g_nMissileFix bitand 0x100) and (platform->IsBomb() or platform->IsMissile()))
     {
 
         Falcon4EntityClassType* classPtr = NULL;
@@ -47,16 +47,16 @@ int VisualClass::CanSeeObject(SimObjectType* obj)
 
         ShiAssert(wc);
 
-        if (wc && (wc->Flags & WEAP_BOMBGPS))
+        if (wc and (wc->Flags bitand WEAP_BOMBGPS))
             return true;
     }
 
     SimObjectLocalData* objData = obj->localData;
 
     // This test seems a little weird.  Could it be optimized by moving the adds and using fabs()?
-    if (objData->az < (seekerAzCenter + typeData->right) &&
-        objData->az > (seekerAzCenter + typeData->left) &&
-        objData->el < (seekerElCenter + typeData->top) &&
+    if (objData->az < (seekerAzCenter + typeData->right) and 
+        objData->az > (seekerAzCenter + typeData->left) and 
+        objData->el < (seekerElCenter + typeData->top) and 
         objData->el > (seekerElCenter + typeData->bottom))
         return TRUE;
     else
@@ -66,9 +66,9 @@ int VisualClass::CanSeeObject(SimObjectType* obj)
 inline int VisualClass::CanSeeObject(float az, float el)
 {
     // This test seems a little weird.  Could it be optimized by moving the adds and using fabs()?
-    if (az < (seekerAzCenter + typeData->right) &&
-        az > (seekerAzCenter + typeData->left) &&
-        el < (seekerElCenter + typeData->top) &&
+    if (az < (seekerAzCenter + typeData->right) and 
+        az > (seekerAzCenter + typeData->left) and 
+        el < (seekerElCenter + typeData->top) and 
         el > (seekerElCenter + typeData->bottom))
         return TRUE;
     else
@@ -102,7 +102,7 @@ float VisualClass::GetSignature(SimObjectType*)
 int VisualClass::CanDetectObject(SimObjectType* obj)
 {
     // 2002-04-17 MN "GPS type" weapons can see and detect always
-    if (g_nMissileFix & 0x100)
+    if (g_nMissileFix bitand 0x100)
     {
         Falcon4EntityClassType* classPtr = NULL;
         classPtr = (Falcon4EntityClassType*)platform->EntityType();
@@ -118,7 +118,7 @@ int VisualClass::CanDetectObject(SimObjectType* obj)
 
             ShiAssert(wc);
 
-            if (wc && (wc->Flags & WEAP_BOMBGPS))
+            if (wc and (wc->Flags bitand WEAP_BOMBGPS))
                 return true;
         }
     }
@@ -129,7 +129,7 @@ int VisualClass::CanDetectObject(SimObjectType* obj)
     // object is a ground vehicle.  If so, see if it has its inView variable
     // set.  If not return FALSE immediately since that vehicle will be LOD'd
     // out
-    if (obj->BaseData()->IsSim() && ((SimBaseClass *)obj->BaseData())->IsSetLocalFlag(IS_HIDDEN))
+    if (obj->BaseData()->IsSim() and ((SimBaseClass *)obj->BaseData())->IsSetLocalFlag(IS_HIDDEN))
     {
         return FALSE;
     }

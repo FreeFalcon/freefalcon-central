@@ -20,7 +20,7 @@
 // ===================================================
 
 // Mission defines for aircraft
-enum MissionTypeEnum          // NOTE: This must fit int a uchar!
+enum MissionTypeEnum          // NOTE: This must fit int a uchar
 {
     AMIS_NONE           = 0,
     AMIS_BARCAP         = 1, // BARCAP missions to protect a target area
@@ -35,10 +35,10 @@ enum MissionTypeEnum          // NOTE: This must fit int a uchar!
     AMIS_ESCORT         = 10,
     AMIS_SEADSTRIKE     = 11,
     AMIS_SEADESCORT     = 12,
-    AMIS_OCASTRIKE      = 13, // OCA strike (direct w/escort & sead)
+    AMIS_OCASTRIKE      = 13, // OCA strike (direct w/escort bitand sead)
     AMIS_INTSTRIKE      = 14, // Interdiction (direct, alone)
     AMIS_STRIKE         = 15, //
-    AMIS_DEEPSTRIKE     = 16, // Deep strike (safe path, w/escort & sead)
+    AMIS_DEEPSTRIKE     = 16, // Deep strike (safe path, w/escort bitand sead)
     AMIS_STSTRIKE       = 17, // Stealth strike (safe path, alone)
     AMIS_STRATBOMB      = 18,
     AMIS_FAC            = 19,
@@ -70,16 +70,16 @@ enum MissionTypeEnum          // NOTE: This must fit int a uchar!
 enum MissionRollEnum
 {
     ARO_CA              = 1,
-    ARO_TACTRANS        = 2,     // AMIS_SAR | AMIS_AIRCAV
-    ARO_S               = 3,     // AMIS_OCASTRIKE | AMIS_INTSTRIKE |  // Strike target
-    ARO_GA              = 4,     // AMIS_SAD | AMIS_BAI | AMIS_ONCALLCAS | AMIS_PRPLANCAS   // Ground attack
+    ARO_TACTRANS        = 2,     // AMIS_SAR bitor AMIS_AIRCAV
+    ARO_S               = 3,     // AMIS_OCASTRIKE bitor AMIS_INTSTRIKE bitor  // Strike target
+    ARO_GA              = 4,     // AMIS_SAD bitor AMIS_BAI bitor AMIS_ONCALLCAS bitor AMIS_PRPLANCAS   // Ground attack
     ARO_SB              = 5,     // AMIS_STRATBOMB            // Strategic bomb
     ARO_ECM             = 6,     // AMIS_ELJAM            // Jam radar
-    ARO_SEAD            = 7,     // AMIS_SEADSTRIKE | AMIS_SEADESCORT // SEAD
+    ARO_SEAD            = 7,     // AMIS_SEADSTRIKE bitor AMIS_SEADESCORT // SEAD
     ARO_ASW             = 8,    // AMIS_ASW
     ARO_ASHIP           = 9,     // AMIS_ASHIP
-    ARO_REC             = 10,    // AMIS_BDA | AMIS_RECON | AMIS_PATROL // Recon
-    ARO_TRANS           = 11,    // AMIS_AIRBORNE | AMIS_AIRLIFT           // Drop off cargo
+    ARO_REC             = 10,    // AMIS_BDA bitor AMIS_RECON bitor AMIS_PATROL // Recon
+    ARO_TRANS           = 11,    // AMIS_AIRBORNE bitor AMIS_AIRLIFT           // Drop off cargo
     ARO_ELINT           = 12,    // AMIS_AWACS
     ARO_AWACS           = 12,
     ARO_JSTAR           = 13,    // AMIS_JSTAR

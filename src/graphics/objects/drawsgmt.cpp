@@ -145,12 +145,12 @@ void LoadTrails()
 
     while (fgets(buffer, sizeof buffer, fp))
     {
-        if (buffer[0] == '#' || buffer[0] == ';' || buffer[0] == '\n')
+        if (buffer[0] == '#' or buffer[0] == ';' or buffer[0] == '\n')
             continue;
 
         ind = TokenI(buffer, -1);
 
-        if (ind < 0 || ind >= nTypes)
+        if (ind < 0 or ind >= nTypes)
             continue;
 
         types[ind].posVariationStart = TokenF(0, 0);
@@ -175,7 +175,7 @@ void LoadTrails()
 
         types[ind].trimAmt = 1.0f;
 
-        if (!types[ind].lodBiasFactor)
+        if ( not types[ind].lodBiasFactor)
         {
             float msize;
             msize = max(types[ind].radiusStart , types[ind].radiusStart + types[ind].radiusChange);
@@ -243,7 +243,7 @@ public:
     AList list;
 };
 
-AList gTrailNodeStorage; // need to clean this up!
+AList gTrailNodeStorage; // need to clean this up
 int   gStorageCount = 0;
 #include <falclib/include/debuggr.h>
 
@@ -286,7 +286,7 @@ DrawableTrail::DrawableTrail(int trailType, float scale)
     TrailTexture = TrailTex[Type->texID];
 
     //JAM 03Feb04
-    if (!TrailTexture)
+    if ( not TrailTexture)
         TrailTexture = TrailTex[0];
 
     Something = 0;
@@ -372,7 +372,7 @@ void DrawableTrail::AddPointAtHead(Tpoint *worldPos, DWORD)
     // new TrailNodes are added to the head ChunkNode
     cn = (ChunkNode *)List.GetHead();
 
-    if (Something > 500 && cn && !(Type->flags & TTF_LINE))
+    if (Something > 500 and cn and not (Type->flags bitand TTF_LINE))
     {
         // time to make a new chunk node...
         ChunkNode *cn2;
@@ -392,13 +392,13 @@ void DrawableTrail::AddPointAtHead(Tpoint *worldPos, DWORD)
         }
     }
 
-    if (!cn)
+    if ( not cn)
     {
         // if there's no chunk nodes, or if the previous
         // chunk node has more than X nodes, add a new ChunkNode
         cn = new ChunkNode(Type);
 
-        if (!cn) // out of ram?
+        if ( not cn) // out of ram?
             return;
 
         List.AddHead(cn);
@@ -407,7 +407,7 @@ void DrawableTrail::AddPointAtHead(Tpoint *worldPos, DWORD)
 
     n = (TrailNode *)cn->list.GetHead();
 
-    if (n && n->connected)
+    if (n and n->connected)
     {
         int lbit = n->lodBit;
         lbit = lbit << 1;
@@ -419,7 +419,7 @@ void DrawableTrail::AddPointAtHead(Tpoint *worldPos, DWORD)
 
         float spacing = Type->spacing + NRANDPOS * Type->spcVariation;
 
-        if (Type->flags & TTF_TIMESPACED)
+        if (Type->flags bitand TTF_TIMESPACED)
         {
             if ((now - n->NowTime) >= (spacing) * 1000)
             {
@@ -458,7 +458,7 @@ void DrawableTrail::AddPointAtHead(Tpoint *worldPos, DWORD)
             }
 
 
-            // first check the distance between the worldPos & the first node.
+            // first check the distance between the worldPos bitand the first node.
             // if its less then the spacing amount, don't add a new node.
             double q = 0.0;
 
@@ -563,7 +563,7 @@ int DrawableTrail::RewindTrail(DWORD now)
             n = n2;
         }
 
-        if (!cn->list.GetHead())
+        if ( not cn->list.GetHead())
         {
             // empty
             cn->Remove();
@@ -590,7 +590,7 @@ int DrawableTrail::RewindTrail(DWORD now)
 /**************************************************************************
     Cut the trail off after the specified number of points.
 ***************************************************************************/
-void DrawableTrail::TrimTrail(int len)   // len in seconds!
+void DrawableTrail::TrimTrail(int len)   // len in seconds
 {
     // shit-o function
     // most cases it's called with zero - in that case I cause an interuption
@@ -603,7 +603,7 @@ void DrawableTrail::TrimTrail(int len)   // len in seconds!
         Link->TrimTrail(len);
     }
 
-    if (type == TRAIL_LWING || type == TRAIL_RWING)
+    if (type == TRAIL_LWING or type == TRAIL_RWING)
     {
         // only do it for these types
         // 30, 60, 120, 240 seconds of trails
@@ -619,7 +619,7 @@ void DrawableTrail::TrimTrail(int len)   // len in seconds!
         }
         */
     }
-    else if (!len)
+    else if ( not len)
     {
         // if 0, do not connect the head node to the next addition visually
         ChunkNode *cn;
@@ -699,7 +699,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
 
         n = (TrailNode *)cn->list.GetHead();
 
-        if (!n)
+        if ( not n)
         {
             // chunk is empty
             // remove it.
@@ -708,7 +708,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
         }
         else
         {
-            if (Type->flags & TTF_LINE)
+            if (Type->flags bitand TTF_LINE)
             {
                 // draw the trail as a simple line
                 Tpoint prevpos;
@@ -769,7 +769,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
 
                     n->GetAge();
 
-                    if ((n->Age > Type->lifespan) && (!keepStaleSegs))
+                    if ((n->Age > Type->lifespan) and ( not keepStaleSegs))
                     {
                         n->Remove();
                         delete n;
@@ -783,7 +783,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
                 if (n)
                 {
                     // draw a segmented trail
-                    if (Type->flags & TTF_SEGMENTED)
+                    if (Type->flags bitand TTF_SEGMENTED)
                     {
                         if (greenMode)
                         {
@@ -860,10 +860,10 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
 
                             while (n)
                             {
-                                if (n->lodBit & LODPattern[LOD])
+                                if (n->lodBit bitand LODPattern[LOD])
                                 {
 
-                                    if (prevnodetype != n->Type)
+                                    if (prevnodetype not_eq n->Type)
                                     {
                                         prevnodetype = n->Type;
 
@@ -904,7 +904,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
 
                                 /*
                                  // skip some nodes based on LOD level
-                                 for(int l=0;l<LOD && n;l++)
+                                 for(int l=0;l<LOD and n;l++)
                                  {
                                  n=(TrailNode *)n->GetSucc();
                                  }
@@ -920,7 +920,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
                             start = (TrailNode *)cn->list.GetHead();
                             end   = (TrailNode *)cn->list.GetTail();
 
-                            if (start && end)
+                            if (start and end)
                             {
                                 start->Update();
                                 end->Update();
@@ -951,7 +951,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
 
                                 int seglod;
 
-                                if (LOD < 10 && TrailSideTex[Type->texID])
+                                if (LOD < 10 and TrailSideTex[Type->texID])
                                 {
                                     seglod = 1;
                                     renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD);
@@ -1335,7 +1335,7 @@ void DrawableTrail::ReleaseTexturesOnDevice(DXContext *rc)
 
 /*
 // just draw a line
-// it seems slower to draw a line between each node than it is to draw the polys!
+// it seems slower to draw a line between each node than it is to draw the polys
 // so we are going to draw one line every 25 nodes
 Tpoint prevpos;
 int connected;
@@ -1359,7 +1359,7 @@ connected=n->connected;
 n=(TrailNode *)n->GetSucc();
 
 
-while(n && c>0)
+while(n and c>0)
 {
  n2=n;
  n=(TrailNode *)n->GetSucc();
@@ -1484,17 +1484,17 @@ typedef struct TrailTypeEntry
 } TrailTypeEntry;
 
 
-// !!! Have to manually add new textures here
+//  Have to manually add new textures here
 static Texture MissleTrailTexture;
 static Texture FireTrailTexture;
 static Texture SmokeTrailTexture;
 static Texture GunTrailTexture;
 
 
-// !!! Have to manually add new trail types here
+//  Have to manually add new trail types here
 static TrailTypeEntry types[] =
 {
-    //   silum ilight lfade     tile    radius   rmax  expand   decay/s   red    green  blue   alpha  NA    NA  NA    texture
+    //   silum ilight lfade     tile    radius   rmax  expand decay/s   red    green  blue   alpha  NA    NA  NA    texture
     {FALSE, 1.0f, 0.0040f, 3.0f,  10.0f, 20.0f,  0.018f,  0.0003f,  1.00f, 1.00f, 1.00f, 1.00f, 0.0f, 0.0f, 0.0f, &MissleTrailTexture, 7 }, // 0 Contrail
     {FALSE, 1.0f, 0.0040f, 3.0f,   2.0f, 20.0f,  0.000f,  0.0016f,  0.90f, 0.90f, 0.90f, 0.50f, 0.0f, 0.0f, 0.0f, &MissleTrailTexture, 7 }, // 1 Vortex
 
@@ -1555,16 +1555,16 @@ void LoadTrails()
 
     while (fgets(path, sizeof path, fp))
     {
-        if (path[0] == '#' || path[0] == ';' || path[0] == '\n')
+        if (path[0] == '#' or path[0] == ';' or path[0] == '\n')
             continue;
 
         if (sscanf(path, "%d %g %g %g %g %g %g %g %g %g %g %g",
                    &ind,
                    &initLight, &lightFade, &tileAmt, &radiusStart,
-                   &maxRadius, &expandRate, &disipation, &r, &g, &b, &a) != 12)
+                   &maxRadius, &expandRate, &disipation, &r, &g, &b, &a) not_eq 12)
             continue;
 
-        if (ind < 0 || ind >= nTypes)
+        if (ind < 0 or ind >= nTypes)
             continue;
 
         tp = &types[ind];
@@ -1585,7 +1585,7 @@ void LoadTrails()
 }
 
 
-// !! Add any type ids which are NOT self-illuminating here
+//  Add any type ids which are NOT self-illuminating here
 static TrailTypeEntry* liteTypes[] =
 {
     &types[0],
@@ -1604,7 +1604,7 @@ static TrailTypeEntry* liteTypes[] =
 static const int nLiteTypes = sizeof(liteTypes) / sizeof(liteTypes[0]);
 
 
-// !! Add any textures which are NOT self-illuminating here
+//  Add any textures which are NOT self-illuminating here
 static const Texture* liteTextures[] =
 {
     &MissleTrailTexture,
@@ -1696,7 +1696,7 @@ int DrawableTrail::RewindTrail(DWORD now)
     DWORD htime;
     int numremoved = 0;
 
-    if (!head)
+    if ( not head)
         return numremoved;
 
     // get last absolute time
@@ -1797,14 +1797,14 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
     ShiAssert(type < sizeof(types) / sizeof(TrailTypeEntry));
 
     // If we don't have a least two points, we have nothing to do
-    if ((!head) || (!head->next))
+    if (( not head) or ( not head->next))
     {
         return;
     }
 
 
     // Set up our drawing mode
-    if (renderer->GetObjectTextureState() && types[type].tex)// && !sGreenMode )
+    if (renderer->GetObjectTextureState() and types[type].tex)// and not sGreenMode )
     {
         gTextured = TRUE;
 
@@ -1857,7 +1857,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
 
     // Compute the screen space location of the starting corners
     // (Note:  since we're passing in the start and end points backward, we swap left
-    //  and right in the output)
+    // and right in the output)
     cpos.x = current->next->point.x - renderer->X();
     cpos.y = current->next->point.y - renderer->Y();
     cpos.z = current->next->point.z - renderer->Z();
@@ -1946,13 +1946,13 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
             gV1[i].a = vE.a * a * a;
             a += aStep;
 
-            if (a > 0.7f || a < 0.0f)
+            if (a > 0.7f or a < 0.0f)
             {
                 aStep = -aStep;
                 a += aStep;
             }
 
-            if (gV1[i].clipFlag & CLIP_NEAR)
+            if (gV1[i].clipFlag bitand CLIP_NEAR)
             {
                 gV1[i].a = 0.0f;
             }
@@ -1983,16 +1983,16 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
         }
 
         // Update the alpha value for the end point now under consideration
-        if (type >= 0 && type < sizeof(types) / sizeof(TrailTypeEntry) && !F4IsBadReadPtr(current->next, sizeof(TrailElement))) // JB 010220 CTD
-            // Somehow the next line can CTD.  Wacky!  Let's do more checks and see if the CTD moves.
+        if (type >= 0 and type < sizeof(types) / sizeof(TrailTypeEntry) and not F4IsBadReadPtr(current->next, sizeof(TrailElement))) // JB 010220 CTD
+            // Somehow the next line can CTD.  Wacky  Let's do more checks and see if the CTD moves.
             alpha  -= types[type].disipation * current->next->time;
 
         radius += types[type].expandRate * current->next->time;
         radius = min(radius, types[type].maxRadius);
 
-        if (gTextured && !types[type].selfIlum)
+        if (gTextured and not types[type].selfIlum)
         {
-            if (!types[type].selfIlum)
+            if ( not types[type].selfIlum)
             {
                 lightIntensity -= types[type].lightFade * current->next->time;
                 vE.r = max(gLight.r, lightIntensity);
@@ -2041,13 +2041,13 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
                 gV1[i].a = vE.a * a * a;
                 a += aStep;
 
-                if (a > 0.7f || a < 0.0f)
+                if (a > 0.7f or a < 0.0f)
                 {
                     aStep = -aStep;
                     a += aStep;
                 }
 
-                if (gV1[i].clipFlag & CLIP_NEAR)
+                if (gV1[i].clipFlag bitand CLIP_NEAR)
                 {
                     gV1[i].a = 0.0f;
                 }
@@ -2065,12 +2065,12 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
         }
 
         // just draw a line?
-        if (gTextured == FALSE && width1 < 0.9f && width2 < 0.9f)
+        if (gTextured == FALSE and width1 < 0.9f and width2 < 0.9f)
         {
             // TODO: lineColor should be precalc'd class member(?)
             if (lineColor == 0)
             {
-                if (!sGreenMode)
+                if ( not sGreenMode)
                 {
                     lineColor = ((unsigned int)(alpha * 255.0f) << 24) + // alpha
                                 ((unsigned int)(types[type].bLite * 255.0f) << 16) + // blue
@@ -2098,7 +2098,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
 
                 if (keepStaleSegs == FALSE)
                 {
-                    if (current->next && current->next->next && !F4IsBadReadPtr(current->next, sizeof(TrailElement)) && !F4IsBadReadPtr(current->next->next, sizeof(TrailElement))) // JB 010220 CTD
+                    if (current->next and current->next->next and not F4IsBadReadPtr(current->next, sizeof(TrailElement)) and not F4IsBadReadPtr(current->next->next, sizeof(TrailElement))) // JB 010220 CTD
                         delete current->next->next; // Recursivly deletes the rest of the trail
 
                     current->next->next = NULL; // Terminate the trail at the current point
@@ -2119,7 +2119,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
 
             if (keepStaleSegs == FALSE)
             {
-                if (!F4IsBadWritePtr(current->next, sizeof(TrailElement))) // JB 010222 CTD
+                if ( not F4IsBadWritePtr(current->next, sizeof(TrailElement))) // JB 010222 CTD
                     delete current->next->next; // Recursivly deletes the rest of the trail
 
                 current->next->next = NULL; // Terminate the trail at the current point
@@ -2139,7 +2139,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
         else if (type == 16)
         {
             // 2nd point
-            if (i & 1)
+            if (i bitand 1)
                 vE.a = alpha * 0.2f;
             else
                 vE.a = alpha;
@@ -2185,13 +2185,13 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
                 gV1[i].a = vE.a * a * a;
                 a += aStep;
 
-                if (a > 0.7f || a < 0.0f)
+                if (a > 0.7f or a < 0.0f)
                 {
                     aStep = -aStep;
                     a += aStep;
                 }
 
-                if (gV1[i].clipFlag & CLIP_NEAR)
+                if (gV1[i].clipFlag bitand CLIP_NEAR)
                 {
                     gV1[i].a = 0.0f;
                 }
@@ -2203,17 +2203,17 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
         }
 
 
-        // HACK HACK HACK!  Take this out when Marc fixes MPR for patch 1.
+        // HACK HACK HACK  Take this out when Marc fixes MPR for patch 1.
 #if 0
         {
             DWORD color;
 
             color = 0xFF000000 |
-                    ((FloatToInt32(vS.r * 255.9f) & 0xFF)) |
-                    ((FloatToInt32(vS.g * 255.9f) & 0xFF) << 8) |
-                    ((FloatToInt32(vS.b * 255.9f) & 0xFF) << 16);
+                    ((FloatToInt32(vS.r * 255.9f) bitand 0xFF)) |
+                    ((FloatToInt32(vS.g * 255.9f) bitand 0xFF) << 8) |
+                    ((FloatToInt32(vS.b * 255.9f) bitand 0xFF) << 16);
 
-            renderer->context.SelectForegroundColor(~color);
+            renderer->context.SelectForegroundColor(compl color);
             renderer->context.SelectForegroundColor(color);
         }
 #endif
@@ -2259,7 +2259,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
 
             renderer->context.SelectTexture1(types[type].tex->TexHandle());
         }
-        else if (width2 >= HIGH_LOD_VAL && gTextured && !sGreenMode)
+        else if (width2 >= HIGH_LOD_VAL and gTextured and not sGreenMode)
         {
             if (width1 >= HIGH_LOD_VAL)
             {
@@ -2325,7 +2325,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
             }
 
         }
-        else if (width1 >= HIGH_LOD_VAL && gTextured && !sGreenMode)
+        else if (width1 >= HIGH_LOD_VAL and gTextured and not sGreenMode)
         {
             float vStep = 1.0f / (float)HALF_HIGH_LOD_VERTS;
             float v = 0.0;
@@ -2424,7 +2424,7 @@ void DrawableTrail::ConstructSegmentEnd(RenderOTW *renderer, Tpoint *start, Tpoi
     AT.y = end->y - start->y;
     AT.z = end->z - start->z;
 
-    if (AT.x == 0.0f && AT.y == 0.0f && AT.z == 0.0f)
+    if (AT.x == 0.0f and AT.y == 0.0f and AT.z == 0.0f)
     {
         renderer->GetAt(&AT);
     }
@@ -2476,7 +2476,7 @@ void DrawableTrail::ConstructSegmentEnd(RenderOTW *renderer, Tpoint *start, Tpoi
     renderer->TransformCameraCentricPoint(&left,  xformLeft);
     renderer->TransformCameraCentricPoint(&right, xformRight);
 
-    if (!gTextured || sGreenMode)
+    if ( not gTextured or sGreenMode)
         return;
 
     // test for highest LOD
@@ -2555,7 +2555,7 @@ void DrawableTrail::ConstructSegmentEnd(RenderOTW *renderer, Tpoint *start, Tpoi
     mag = end->x * LOOK.x + end->y * LOOK.y + end->z * LOOK.z;
     mag2 = start->x * LOOK.x + start->y * LOOK.y + start->z * LOOK.z;
 
-    if (mag < 1.0f && mag2 < 1.0f)
+    if (mag < 1.0f and mag2 < 1.0f)
         return;
 
     if (mag < 20.0f)
@@ -2664,12 +2664,12 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
 
 
     // Load our textures
-    MissleTrailTexture.LoadAndCreate("MisTrail.gif", MPR_TI_CHROMAKEY | MPR_TI_PALETTE | MPR_TI_ALPHA);
+    MissleTrailTexture.LoadAndCreate("MisTrail.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
 
     for (j = 0; j < 256; j++)
     {
         intalp = (MissleTrailTexture.palette->paletteData[j] >> 24);
-        MissleTrailTexture.palette->paletteData[j] &= 0x00ffffff;
+        MissleTrailTexture.palette->paletteData[j] and_eq 0x00ffffff;
 
         if (j == 0)
             continue;
@@ -2677,9 +2677,9 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
         alp = (float)intalp;
         alp = alp * 0.3f + alp * 0.7f * NRANDPOS;
         intalp = FloatToInt32(alp);
-        r = (MissleTrailTexture.palette->paletteData[j] & 0x000000ff);
-        g = (MissleTrailTexture.palette->paletteData[j] & 0x0000ff00) >> 8;
-        b = (MissleTrailTexture.palette->paletteData[j] & 0x00ff0000) >> 16;
+        r = (MissleTrailTexture.palette->paletteData[j] bitand 0x000000ff);
+        g = (MissleTrailTexture.palette->paletteData[j] bitand 0x0000ff00) >> 8;
+        b = (MissleTrailTexture.palette->paletteData[j] bitand 0x00ff0000) >> 16;
         intalp = (r + b + g) / 3;
 
         /*
@@ -2695,17 +2695,17 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
         */
         MissleTrailTexture.palette->paletteData[j] = (intalp << 24) |
                 (b      << 16) |
-                (g      << 8) | r ;
+                (g      << 8) bitor r ;
     }
 
     MissleTrailTexture.palette->UpdateMPR(MissleTrailTexture.palette->paletteData);
 
-    FireTrailTexture.LoadAndCreate("FireTrail.gif", MPR_TI_CHROMAKEY | MPR_TI_PALETTE | MPR_TI_ALPHA);
+    FireTrailTexture.LoadAndCreate("FireTrail.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
 
     for (j = 0; j < 256; j++)
     {
         intalp = (FireTrailTexture.palette->paletteData[j] >> 24);
-        FireTrailTexture.palette->paletteData[j] &= 0x00ffffff;
+        FireTrailTexture.palette->paletteData[j] and_eq 0x00ffffff;
 
         if (j == 0)
             continue;
@@ -2713,9 +2713,9 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
         alp = (float)intalp;
         alp = alp * 0.3f + alp * 0.7f * NRANDPOS;
         intalp = FloatToInt32(alp);
-        r = (FireTrailTexture.palette->paletteData[j] & 0x000000ff);
-        g = (FireTrailTexture.palette->paletteData[j] & 0x0000ff00) >> 8;
-        b = (FireTrailTexture.palette->paletteData[j] & 0x00ff0000) >> 16;
+        r = (FireTrailTexture.palette->paletteData[j] bitand 0x000000ff);
+        g = (FireTrailTexture.palette->paletteData[j] bitand 0x0000ff00) >> 8;
+        b = (FireTrailTexture.palette->paletteData[j] bitand 0x00ff0000) >> 16;
         intalp = (r + b + g) / 3;
 
         /*
@@ -2732,17 +2732,17 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
 
         FireTrailTexture.palette->paletteData[j] = (intalp << 24) |
                 (b      << 16) |
-                (g      << 8) | r ;
+                (g      << 8) bitor r ;
     }
 
     FireTrailTexture.palette->UpdateMPR(FireTrailTexture.palette->paletteData);
 
-    SmokeTrailTexture.LoadAndCreate("SmokeTrail.gif", MPR_TI_CHROMAKEY | MPR_TI_PALETTE | MPR_TI_ALPHA);
+    SmokeTrailTexture.LoadAndCreate("SmokeTrail.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
 
     for (j = 0; j < 256; j++)
     {
         intalp = (SmokeTrailTexture.palette->paletteData[j] >> 24);
-        SmokeTrailTexture.palette->paletteData[j] &= 0x00ffffff;
+        SmokeTrailTexture.palette->paletteData[j] and_eq 0x00ffffff;
 
         if (j == 0)
             continue;
@@ -2750,9 +2750,9 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
         alp = (float)intalp;
         alp = alp * 0.3f + alp * 0.7f * NRANDPOS;
         intalp = FloatToInt32(alp);
-        r = (SmokeTrailTexture.palette->paletteData[j] & 0x000000ff);
-        g = (SmokeTrailTexture.palette->paletteData[j] & 0x0000ff00) >> 8;
-        b = (SmokeTrailTexture.palette->paletteData[j] & 0x00ff0000) >> 16;
+        r = (SmokeTrailTexture.palette->paletteData[j] bitand 0x000000ff);
+        g = (SmokeTrailTexture.palette->paletteData[j] bitand 0x0000ff00) >> 8;
+        b = (SmokeTrailTexture.palette->paletteData[j] bitand 0x00ff0000) >> 16;
 
         // the draker the smoke, the higher the alpha
         // normalize from 0.0 to 1.0f
@@ -2760,17 +2760,17 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
         intalp = 100 + FloatToInt32(85.0f * alp);
         SmokeTrailTexture.palette->paletteData[j] = (intalp << 24) |
                 (b      << 16) |
-                (g      << 8) | r ;
+                (g      << 8) bitor r ;
     }
 
     SmokeTrailTexture.palette->UpdateMPR(SmokeTrailTexture.palette->paletteData);
 
-    GunTrailTexture.LoadAndCreate("GunTrail.apl", MPR_TI_CHROMAKEY | MPR_TI_PALETTE);
+    GunTrailTexture.LoadAndCreate("GunTrail.apl", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE);
 
     for (j = 0; j < 256; j++)
     {
         intalp = (GunTrailTexture.palette->paletteData[j] >> 24);
-        GunTrailTexture.palette->paletteData[j] &= 0x00ffffff;
+        GunTrailTexture.palette->paletteData[j] and_eq 0x00ffffff;
 
         if (j == 0)
             continue;
@@ -2778,7 +2778,7 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
         alp = (float)intalp;
         alp = alp * 0.3f + alp * 0.7f * NRANDPOS;
         intalp = FloatToInt32(alp);
-        GunTrailTexture.palette->paletteData[j] |= (intalp << 24);
+        GunTrailTexture.palette->paletteData[j] or_eq (intalp << 24);
     }
 
     GunTrailTexture.palette->UpdateMPR(GunTrailTexture.palette->paletteData);

@@ -27,7 +27,7 @@ void InitClassTableAndData(char *name, char *objset)
     FILE* filePtr;
     char  fileName[MAX_PATH];
 
-    if (stricmp(objset, "objects") != 0)
+    if (stricmp(objset, "objects") not_eq 0)
     {
         //Check for correct object data version
         ShiAssert(stricmp("ObjectSet0708", objset) == 0);

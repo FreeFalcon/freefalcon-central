@@ -155,7 +155,7 @@ int AddParticleEffect(int SfxId, Tpoint *pos, Tpoint *vec)
     {
         Tpoint z = {0, 0, 0};
 
-        if (!vec)
+        if ( not vec)
         {
             vec = &z;
         }
@@ -175,7 +175,7 @@ int AddParticleEffect(char *name, Tpoint *pos, Tpoint *vec)
     {
         Tpoint zero = {0, 0, 0};
 
-        if (!vec)
+        if ( not vec)
         {
             vec = &zero;
         }
@@ -197,7 +197,7 @@ int SfxClass::TryParticleEffect(void)
     SimBaseClass *otwPlatform = OTWDriver.GraphicsOwnship();
 
     // Cobra - Use old dust trails?
-    if (type == SFX_VEHICLE_DUST && g_bOldDustTrail)
+    if (type == SFX_VEHICLE_DUST and g_bOldDustTrail)
     {
         return 0;
     }
@@ -207,7 +207,7 @@ int SfxClass::TryParticleEffect(void)
         // Cobra - Kludge to fix no PS effects above overcast layer
         /*
         if (
-         otwPlatform && realWeather->weatherCondition > FAIR &&
+         otwPlatform and realWeather->weatherCondition > FAIR and 
          (otwPlatform->ZPos() < (realWeather->stratusZ-realWeather->stratusDepth)))
          return 0;
         */
@@ -330,7 +330,7 @@ SfxClass::SfxClass(FalconMissileEndMessage *endM,
 
     inACMI = FALSE;
     type = SFX_MESSAGE_TIMER;
-    flags = SFX_TIMER_FLAG | SFX_SECONDARY_DRIVER;
+    flags = SFX_TIMER_FLAG bitor SFX_SECONDARY_DRIVER;
     endMessage = endM;
     damMessage = damM;
     vec.x = 0.0f;
@@ -409,14 +409,14 @@ SfxClass::SfxClass(int  typeSfx,
     endMessage = NULL;
     damMessage = NULL;
 
-    if (pos.x > -10000.0f && pos.x < 10000000.0f &&
-        pos.y > -10000.0f && pos.y < 10000000.0f &&
-        pos.z < 8000.0f && pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f and 
+        pos.y > -10000.0f and pos.y < 10000000.0f and 
+        pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
     {
-        MonoPrint("Bad SFX Position Passed in!");
+        MonoPrint("Bad SFX Position Passed in");
         pos.x = 0.0f;
         pos.y = 0.0f;
         pos.z = 0.0f;
@@ -552,8 +552,8 @@ SfxClass::SfxClass(int  typeSfx,
             break;
 
         case SFX_GROUND_EXPLOSION:
-            if (gTotSfx >= gSfxLODTotCutoff ||
-                gSfxCount[ SFX_CAT_STEAM ] > gSfxLODCutoff ||
+            if (gTotSfx >= gSfxLODTotCutoff or
+                gSfxCount[ SFX_CAT_STEAM ] > gSfxLODCutoff or
                 gSfxCount[ SFX_FIRE5 ] > gSfxLODCutoff)
             {
                 scale *= 0.20f;
@@ -787,7 +787,7 @@ SfxClass::SfxClass(int  typeSfx,
             secondaryCount = 1;
             pos.z -= scale * 0.5f;
 
-            if ((rand() & 3) == 3)
+            if ((rand() bitand 3) == 3)
                 obj2d = new Drawable2D(DRAW2D_GROUND_STRIKE, scale, &pos, 4, gGroundVerts, gFireUvs);
             else
                 obj2d = new Drawable2D(DRAW2D_ARTILLERY_EXPLOSION, scale, &pos, 4, gFireVerts, gFireUvs);
@@ -798,8 +798,8 @@ SfxClass::SfxClass(int  typeSfx,
         case SFX_GROUND_STRIKE:
             secondaryCount = 1;
 
-            if (gTotSfx >= gSfxLODTotCutoff ||
-                gSfxCount[ SFX_CAT_STEAM ] > gSfxLODCutoff ||
+            if (gTotSfx >= gSfxLODTotCutoff or
+                gSfxCount[ SFX_CAT_STEAM ] > gSfxLODCutoff or
                 gSfxCount[ SFX_FIRE5 ] > gSfxLODCutoff)
             {
                 obj2d = new Drawable2D(DRAW2D_GROUND_STRIKE, scale, &pos, 4, gGroundVerts, gFireUvs);
@@ -927,14 +927,14 @@ SfxClass::SfxClass(int typeSfx,
     endMessage = NULL;
     damMessage = NULL;
 
-    if (pos.x > -10000.0f && pos.x < 10000000.0f &&
-        pos.y > -10000.0f && pos.y < 10000000.0f &&
-        pos.z < 8000.0f && pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f and 
+        pos.y > -10000.0f and pos.y < 10000000.0f and 
+        pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
     {
-        MonoPrint("Bad SFX Position Passed in!");
+        MonoPrint("Bad SFX Position Passed in");
         pos.x = 0.0f;
         pos.y = 0.0f;
         pos.z = 0.0f;
@@ -1015,14 +1015,14 @@ SfxClass::SfxClass(int typeSfx,
     endMessage = NULL;
     damMessage = NULL;
 
-    if (pos.x > -10000.0f && pos.x < 10000000.0f &&
-        pos.y > -10000.0f && pos.y < 10000000.0f &&
-        pos.z < 8000.0f && pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f and 
+        pos.y > -10000.0f and pos.y < 10000000.0f and 
+        pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
     {
-        MonoPrint("Bad SFX Position Passed in!");
+        MonoPrint("Bad SFX Position Passed in");
         pos.x = 0.0f;
         pos.y = 0.0f;
         pos.z = 0.0f;
@@ -1119,16 +1119,16 @@ SfxClass::SfxClass(
     damMessage = NULL;
 
     viewPoint = OTWDriver.GetViewpoint();
-    flags = SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES;
+    flags = SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES;
 
-    if (pos.x > -10000.0f && pos.x < 10000000.0f &&
-        pos.y > -10000.0f && pos.y < 10000000.0f &&
-        pos.z < 8000.0f && pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f and 
+        pos.y > -10000.0f and pos.y < 10000000.0f and 
+        pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
     {
-        //ShiAssert( !"Bad SFX Position Passed in!" );
+        //ShiAssert( "Bad SFX Position Passed in" );
         pos.x = 0.0f;
         pos.y = 0.0f;
         pos.z = 0.0f;
@@ -1248,14 +1248,14 @@ SfxClass::SfxClass(int  typeSfx,
     damMessage = NULL;
     travelDist = 0.0f;
 
-    if (pos.x > -10000.0f && pos.x < 10000000.0f &&
-        pos.y > -10000.0f && pos.y < 10000000.0f &&
-        pos.z < 8000.0f && pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f and 
+        pos.y > -10000.0f and pos.y < 10000000.0f and 
+        pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
     {
-        MonoPrint("Bad SFX Position Passed in!");
+        MonoPrint("Bad SFX Position Passed in");
         pos.x = 0.0f;
         pos.y = 0.0f;
         pos.z = 0.0f;
@@ -1422,14 +1422,14 @@ SfxClass::SfxClass(int  typeSfx,
     endMessage = NULL;
     damMessage = NULL;
 
-    if (pos.x > -10000.0f && pos.x < 10000000.0f &&
-        pos.y > -10000.0f && pos.y < 10000000.0f &&
-        pos.z < 8000.0f && pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f and 
+        pos.y > -10000.0f and pos.y < 10000000.0f and 
+        pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
     {
-        MonoPrint("Bad SFX Position Passed in!");
+        MonoPrint("Bad SFX Position Passed in");
         pos.x = 0.0f;
         pos.y = 0.0f;
         pos.z = 0.0f;
@@ -1554,7 +1554,7 @@ SfxClass::SfxClass(int  typeSfx,
         case SFX_GROUNDBURST:
 
             // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
-            if (rand() & 1)
+            if (rand() bitand 1)
                 obj2d = new Drawable2D(DRAW2D_LIGHT_DEBRIS, scale, &pos);
             else
                 obj2d = new Drawable2D(DRAW2D_DARK_DEBRIS, scale, &pos);
@@ -1600,11 +1600,11 @@ SfxClass::SfxClass(int  typeSfx,
 
             //RV - I-Hawk - Removing old trails calls, not needed anymore
             //objTrail = new DrawableTrail(TRAIL_DARKSMOKE);
-            if ((rand() & 3) == 3)
+            if ((rand() bitand 3) == 3)
                 obj2d = new Drawable2D(DRAW2D_DARK_DEBRIS, 12.0f, &pos);
 
             /*
-            if ( gTotSfx >= gSfxLODTotCutoff ||
+            if ( gTotSfx >= gSfxLODTotCutoff or
               gSfxCount[ SFX_TRAILSMOKE ] > gSfxLODCutoff )
             {
              objTrail = new DrawableTrail(TRAIL_SMOKE);
@@ -1624,7 +1624,7 @@ SfxClass::SfxClass(int  typeSfx,
             break;
 
         case SFX_DEBRISTRAIL_DUST:
-            if (gTotSfx >= gSfxLODTotCutoff ||
+            if (gTotSfx >= gSfxLODTotCutoff or
                 gSfxCount[ SFX_VEHICLE_DUST ] > gSfxLODCutoff)
             {
                 //RV - I-Hawk - Removing old trails calls, not needed anymore
@@ -1647,8 +1647,8 @@ SfxClass::SfxClass(int  typeSfx,
             // obj2d = new Drawable2D( DRAW2D_DARK_DEBRIS, 10.0f, &pos );
 
             /*
-            if ( gTotSfx >= gSfxLODTotCutoff ||
-              gSfxCount[ SFX_FIRE_EXPAND ] > gSfxLODCutoff ||
+            if ( gTotSfx >= gSfxLODTotCutoff or
+              gSfxCount[ SFX_FIRE_EXPAND ] > gSfxLODCutoff or
               gSfxCount[ SFX_FIRE_EXPAND_NOSMOKE ] > gSfxLODCutoff )
             {
              objTrail = new DrawableTrail(TRAIL_MEDIUM_SAM);
@@ -1695,8 +1695,8 @@ SfxClass::SfxClass(int  typeSfx,
             break;
 
         case SFX_WATERTRAIL:
-            if (gTotSfx >= gSfxLODTotCutoff ||
-                gSfxCount[ SFX_WATER_CLOUD ] > gSfxLODCutoff ||
+            if (gTotSfx >= gSfxLODTotCutoff or
+                gSfxCount[ SFX_WATER_CLOUD ] > gSfxLODCutoff or
                 gSfxCount[ SFX_BLUE_CLOUD ] > gSfxLODCutoff)
             {
                 //RV - I-Hawk - Removing old trails calls, not needed anymore
@@ -1726,7 +1726,7 @@ SfxClass::SfxClass(int  typeSfx,
             break;
 
         case SFX_FIRESMOKE:
-            if (rand() & 1)
+            if (rand() bitand 1)
                 obj2d = new Drawable2D(DRAW2D_FIRESMOKE, scale, &pos);
             else
                 obj2d = new Drawable2D(DRAW2D_SMOKECLOUD1, scale, &pos);
@@ -1744,7 +1744,7 @@ SfxClass::SfxClass(int  typeSfx,
             break;
 
         case SFX_BIG_SMOKE:
-            if (rand() & 1)
+            if (rand() bitand 1)
                 obj2d = new Drawable2D(DRAW2D_BIG_SMOKE1, scale, &pos);
             else
                 obj2d = new Drawable2D(DRAW2D_BIG_SMOKE2, scale, &pos);
@@ -1776,7 +1776,7 @@ SfxClass::SfxClass(int  typeSfx,
             break;
 
         case SFX_GROUND_DUSTCLOUD:
-            if (gSfxCount[ SFX_GROUND_DUSTCLOUD ] < gSfxLODCutoff &&
+            if (gSfxCount[ SFX_GROUND_DUSTCLOUD ] < gSfxLODCutoff and 
                 gTotSfx < gSfxLODTotCutoff)
             {
                 obj2d = new Drawable2D(DRAW2D_GROUND_DUSTCLOUD, scale, &pos);
@@ -1934,7 +1934,7 @@ SfxClass::SfxClass(int  typeSfx,
                    float scaleSfx)
 {
 
-    // ShiAssert(baseobjSfx && !vuDatabase->Find(baseobjSfx->Id()) && baseobjSfx->VuState() == VU_MEM_CREATED);
+    // ShiAssert(baseobjSfx and not vuDatabase->Find(baseobjSfx->Id()) and baseobjSfx->VuState() == VU_MEM_CREATED);
 
     inACMI = FALSE;
     type = typeSfx;
@@ -1958,17 +1958,17 @@ SfxClass::SfxClass(int  typeSfx,
     damMessage = NULL;
     travelDist = 0.0f;
 
-    F4Assert(vec.x > -10000.0F && vec.y > -10000.0F && vec.z > -10000.0F);
-    F4Assert(vec.x <  10000.0F && vec.y <  10000.0F && vec.z <  10000.0F);
+    F4Assert(vec.x > -10000.0F and vec.y > -10000.0F and vec.z > -10000.0F);
+    F4Assert(vec.x <  10000.0F and vec.y <  10000.0F and vec.z <  10000.0F);
 
-    if (pos.x > -10000.0f && pos.x < 10000000.0f &&
-        pos.y > -10000.0f && pos.y < 10000000.0f &&
-        pos.z < 8000.0f && pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f and 
+        pos.y > -10000.0f and pos.y < 10000000.0f and 
+        pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
     {
-        //ShiAssert( !"Bad SFX Position Passed in!" );
+        //ShiAssert( "Bad SFX Position Passed in" );
         pos.x = 0.0f;
         pos.y = 0.0f;
         pos.z = 0.0f;
@@ -1982,7 +1982,7 @@ SfxClass::SfxClass(int  typeSfx,
 
             //RV - I-Hawk - Removing old trails calls, not needed anymore
             //objTrail = new DrawableTrail(TRAIL_SMOKE);
-            if (gTotSfx <= gSfxLODTotCutoff &&
+            if (gTotSfx <= gSfxLODTotCutoff and 
                 gSfxCount[ SFX_AIR_SMOKECLOUD ] < gSfxLODCutoff)
             {
                 // for smoking part, randomly allow piece to smoke for a
@@ -1990,7 +1990,7 @@ SfxClass::SfxClass(int  typeSfx,
                 if (PRANDInt3() == 0)
                 {
                     timeToLive += 90.0f;
-                    flags &= ~SFX_EXPLODE_WHEN_DONE;
+                    flags and_eq compl SFX_EXPLODE_WHEN_DONE;
                 }
 
                 secondaryInterval = 1.0f;
@@ -2000,7 +2000,7 @@ SfxClass::SfxClass(int  typeSfx,
             break;
 
         case SFX_FLAMING_PART:
-            if (gTotSfx >= gSfxLODTotCutoff ||
+            if (gTotSfx >= gSfxLODTotCutoff or
                 gSfxCount[ SFX_FIRE1 ] > gSfxLODCutoff)
             {
                 //RV - I-Hawk - Removing old trails calls, not needed anymore
@@ -2129,10 +2129,10 @@ SfxClass::SfxClass(int typeSfx,
 
             //RV - I-Hawk - Removing old trails calls, not needed anymore
             //objTrail = new DrawableTrail(TRAIL_SMOKE);
-            if (gTotSfx <= gSfxLODTotCutoff && gSfxCount[ SFX_AIR_SMOKECLOUD ] < gSfxLODCutoff)
+            if (gTotSfx <= gSfxLODTotCutoff and gSfxCount[ SFX_AIR_SMOKECLOUD ] < gSfxLODCutoff)
             {
                 timeToLive += 90.0f;
-                flags &= ~SFX_EXPLODE_WHEN_DONE;
+                flags and_eq compl SFX_EXPLODE_WHEN_DONE;
                 secondaryInterval = 1.0f;
                 secondaryCount = FloatToInt32(timeToLive);
             }
@@ -2206,7 +2206,7 @@ SfxClass::~SfxClass(void)
 
         if (baseObj)
         {
-            if (type != SFX_SMOKING_FEATURE && type != SFX_STEAMING_FEATURE)
+            if (type not_eq SFX_SMOKING_FEATURE and type not_eq SFX_STEAMING_FEATURE)
             {
                 if (baseObj->drawPointer)
                 {
@@ -2298,7 +2298,7 @@ SfxClass::~SfxClass(void)
     // update counters
     gTotSfx--;
 
-    if (type >= 0 && !F4IsBadReadPtr(gSfxCount, sizeof(int))) // JB 010318 CTD
+    if (type >= 0 and not F4IsBadReadPtr(gSfxCount, sizeof(int))) // JB 010318 CTD
         gSfxCount[ type ]--;
 }
 
@@ -2315,7 +2315,7 @@ SfxClass::Start(void)
     float sinAng, cosAng;
 
     // if it's got a trajectory, we need to recalc
-    if (flags & SFX_TRAJECTORY)
+    if (flags bitand SFX_TRAJECTORY)
     {
         timeToLive = min(timeToLive * 2.0f, MAX_TIME_TO_LIVE);
 
@@ -2341,7 +2341,7 @@ SfxClass::Start(void)
             acmiStatSfx.data.scale = scale;
             gACMIRec.StationarySfxRecord(&acmiStatSfx);
         }
-        else if (flags & SFX_MOVES || type == SFX_BURNING_PART)
+        else if (flags bitand SFX_MOVES or type == SFX_BURNING_PART)
         {
             acmiMoveSfx.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
             acmiMoveSfx.data.type = type;
@@ -2374,7 +2374,7 @@ SfxClass::Start(void)
     GetApproxViewDist((float)SIM_ELAPSED_SEC);
 
     // timers don't get added to draw list
-    if (flags & SFX_TIMER_FLAG)
+    if (flags bitand SFX_TIMER_FLAG)
         return;
 
     // insert the effect's object into the display list
@@ -2415,7 +2415,7 @@ SfxClass::Start(void)
 
     if (baseObj)
     {
-        if (type != SFX_SMOKING_FEATURE && type != SFX_STEAMING_FEATURE)   // MLR 12/20/2003 - added
+        if (type not_eq SFX_SMOKING_FEATURE and type not_eq SFX_STEAMING_FEATURE)   // MLR 12/20/2003 - added
         {
             OTWDriver.InsertObject(baseObj->drawPointer);
         }
@@ -2565,7 +2565,7 @@ void PlayCrashSound(int mask, int soundindex, int flag = 1, int time = 0, Tpoint
 
         for (i = 0; i < F16CRASH_MAXSOUND; i++)
         {
-            if (mask & 1)
+            if (mask bitand 1)
             {
                 SoundIndex[index] = soundindex;
                 break;
@@ -2581,7 +2581,7 @@ void PlayCrashSound(int mask, int soundindex, int flag = 1, int time = 0, Tpoint
 
         for (i = 0; i < F16CRASH_MAXSOUND; i++)
         {
-            if (mask & 1)
+            if (mask bitand 1)
             {
                 if (timePlaying[index] > time + DelayTime[index]) timePlaying[index] = 0;
 
@@ -2640,7 +2640,7 @@ BOOL SfxClass::Exec()
 
     // special case smoking feature -- they continue to run until the
     // feature goes to sleep
-    if (type == SFX_SMOKING_FEATURE || type == SFX_STEAMING_FEATURE)
+    if (type == SFX_SMOKING_FEATURE or type == SFX_STEAMING_FEATURE)
     {
         // if we'vee got no base object return FALSE
         if (baseObj == NULL)
@@ -2650,9 +2650,9 @@ BOOL SfxClass::Exec()
 
         // check to see if the object is awake or if its state
         // is no longer OK
-        if (!baseObj->IsAwake() ||
-            (baseObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED ||
-            (baseObj->Status() & VIS_TYPE_MASK) == VIS_DAMAGED ||
+        if ( not baseObj->IsAwake() or
+            (baseObj->Status() bitand VIS_TYPE_MASK) == VIS_DESTROYED or
+            (baseObj->Status() bitand VIS_TYPE_MASK) == VIS_DAMAGED or
             baseObj->IsDead())
         {
             // deref the entity
@@ -2706,7 +2706,7 @@ BOOL SfxClass::Exec()
 
 
     // run any secondary effects here
-    if (secondaryCount > 0 && SIM_ELAPSED_SEC >= secondaryTimer)
+    if (secondaryCount > 0 and SIM_ELAPSED_SEC >= secondaryTimer)
     {
         secondaryCount--;
         secondaryTimer =
@@ -2717,7 +2717,7 @@ BOOL SfxClass::Exec()
 
     // if this effect is only drives other secondary effects, see if
     // the count has reached 0, then kill it if so
-    if (flags & SFX_SECONDARY_DRIVER)
+    if (flags bitand SFX_SECONDARY_DRIVER)
     {
         if (secondaryCount <= 0)
         {
@@ -2731,7 +2731,7 @@ BOOL SfxClass::Exec()
     }
 
     ///////////////////////////////////////
-    if (baseObj && flags & SFX_F16CRASHLANDING)
+    if (baseObj and flags bitand SFX_F16CRASHLANDING)
     {
 
         Tpoint GroundNormal;
@@ -2743,18 +2743,18 @@ BOOL SfxClass::Exec()
             groundType = OTWDriver.GetGroundType(pos.x, pos.y);
         }
 
-        int coverage = (groundType == COVERAGE_WATER) || (groundType == COVERAGE_RIVER);
+        int coverage = (groundType == COVERAGE_WATER) or (groundType == COVERAGE_RIVER);
 
         int curtime = static_cast<int>(SIM_ELAPSED_SEC);
         int lastHit = hitGround;
         int CrashSoundMask = 0;
 
-        if (hitGround && coverage)
+        if (hitGround and coverage)
         {
-            flags &= ~SFX_F16CRASHLANDING;
-            flags &= ~SFX_MOVES;
+            flags and_eq compl SFX_F16CRASHLANDING;
+            flags and_eq compl SFX_MOVES;
         }
-        else if (hitGround && !coverage)
+        else if (hitGround and not coverage)
         {
             hitGround = FALSE;
             float scale = 15.0f;
@@ -2773,17 +2773,17 @@ BOOL SfxClass::Exec()
 
             if (vec.z > GRAVITY) vec.z = -vec.z;
 
-            if (!(flags & SFX_F16CRASH_HITGROUND))
+            if ( not (flags bitand SFX_F16CRASH_HITGROUND))
             {
                 int i = FloatToInt32(9.99f * PRANDFloatPos());
 
                 if (i < 5) i = SFX_BOOMA1 + i;
                 else i = SFX_BOOMG1 + i - 5;
 
-                CrashSoundMask |= F16CRASH_BOOMMASK;
+                CrashSoundMask or_eq F16CRASH_BOOMMASK;
                 PlayCrashSound(F16CRASH_BOOMMASK, i);
 
-                flags |= SFX_F16CRASH_HITGROUND;
+                flags or_eq SFX_F16CRASH_HITGROUND;
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass(SFX_GROUND_STRIKE_NOFIRE, // type
@@ -2797,14 +2797,14 @@ BOOL SfxClass::Exec()
             }
             else
             {
-                if (fabs(vec.x) > 1.0f &&
-                    fabs(vec.y) > 1.0f &&
+                if (fabs(vec.x) > 1.0f and 
+                    fabs(vec.y) > 1.0f and 
                     fabs(vec.z) > 5.0f)
                 {
 
-                    if (flags & SFX_F16CRASH_OBJECT)
+                    if (flags bitand SFX_F16CRASH_OBJECT)
                     {
-                        CrashSoundMask |= F16CRASH_BUMPMASK;
+                        CrashSoundMask or_eq F16CRASH_BUMPMASK;
                         PlayCrashSound(F16CRASH_BUMPMASK, SFX_GROUND_CRUNCH);
                     }
 
@@ -2825,22 +2825,22 @@ BOOL SfxClass::Exec()
                 }
             }
 
-            if ((flags & SFX_MOVES) && !(flags & SFX_F16CRASH_STOP))
+            if ((flags bitand SFX_MOVES) and not (flags bitand SFX_F16CRASH_STOP))
             {
-                flags |= SFX_F16CRASH_ADJUSTANGLE;
+                flags or_eq SFX_F16CRASH_ADJUSTANGLE;
             }
         }
 
 
         // lived long enough?
-        if (curtime > timeToLive || hitGround)
+        if (curtime > timeToLive or hitGround)
         {
             RunSfxCompletion(hitGround, groundZ, groundType);
             // done with this effect
             return FALSE;
         }
 
-        if (flags & SFX_F16CRASH_ADJUSTANGLE)
+        if (flags bitand SFX_F16CRASH_ADJUSTANGLE)
         {
             if (pos.z - groundZ > -30.0f)
             {
@@ -2867,18 +2867,18 @@ BOOL SfxClass::Exec()
 
                 if (stopit == 3)
                 {
-                    flags &= ~SFX_F16CRASH_ADJUSTANGLE;
+                    flags and_eq compl SFX_F16CRASH_ADJUSTANGLE;
                     baseObj->SetYPR(yaw, pitch, roll);
                 }
                 else baseObj->SetYPR(yaw, pitch1, roll1);
             }
-            else flags &= ~SFX_F16CRASH_ADJUSTANGLE;
+            else flags and_eq compl SFX_F16CRASH_ADJUSTANGLE;
         }
 
         // update position based on vector
-        if (flags & SFX_MOVES)
+        if (flags bitand SFX_MOVES)
         {
-            if (fabs(vec.x) < 2.0f && fabs(vec.y) < 2.0f)
+            if (fabs(vec.x) < 2.0f and fabs(vec.y) < 2.0f)
             {
                 baseObj->SetYPRDelta(
                     baseObj->YawDelta() * 0.95f,
@@ -2886,7 +2886,7 @@ BOOL SfxClass::Exec()
                     baseObj->RollDelta() * 0.9f);//75f);
             }
 
-            if (!(flags & SFX_F16CRASH_STOP))
+            if ( not (flags bitand SFX_F16CRASH_STOP))
             {
                 if (lastHit)
                 {
@@ -2895,15 +2895,15 @@ BOOL SfxClass::Exec()
                         baseObj->Pitch(),
                         baseObj->Roll());
 
-                    if ((flags & SFX_F16CRASH_OBJECT) && (fabs(baseObj->YawDelta()) > 20.0f * DTR))
+                    if ((flags bitand SFX_F16CRASH_OBJECT) and (fabs(baseObj->YawDelta()) > 20.0f * DTR))
                     {
-                        CrashSoundMask |= F16CRASH_DRAGMASK;
+                        CrashSoundMask or_eq F16CRASH_DRAGMASK;
                         PlayCrashSound(F16CRASH_DRAGMASK, SFX_TAILSCRAPE);
                     }
                 }
                 else
                 {
-                    if (flags & SFX_F16CRASH_ADJUSTANGLE)
+                    if (flags bitand SFX_F16CRASH_ADJUSTANGLE)
                     {
                         baseObj->SetYPR(
                             baseObj->Yaw() + baseObj->YawDelta() * sfxFrameTime,
@@ -2924,17 +2924,17 @@ BOOL SfxClass::Exec()
             vec.y *= 0.99f;
             vec.z *= 0.99f;
 
-            if (fabs(vec.x) < 1.0f &&
-                fabs(vec.y) < 1.0f &&
-                lastHit &&
-                !(flags & SFX_F16CRASH_ADJUSTANGLE) &&
-                fabs(baseObj->YawDelta()) < 15.0f * DTR &&
-                fabs(baseObj->PitchDelta()) < 15.0f * DTR &&
-                fabs(baseObj->RollDelta()) < 15.0f * DTR &&
+            if (fabs(vec.x) < 1.0f and 
+                fabs(vec.y) < 1.0f and 
+                lastHit and 
+ not (flags bitand SFX_F16CRASH_ADJUSTANGLE) and 
+                fabs(baseObj->YawDelta()) < 15.0f * DTR and 
+                fabs(baseObj->PitchDelta()) < 15.0f * DTR and 
+                fabs(baseObj->RollDelta()) < 15.0f * DTR and 
                 fabs(vec.z) < 5.0f)
             {
 
-                flags |= SFX_F16CRASH_STOP;
+                flags or_eq SFX_F16CRASH_STOP;
                 float pitch = baseObj->Pitch();
                 int stopit = RestPiece(&pitch, RestPitch);
                 float roll = baseObj->Roll();
@@ -2942,20 +2942,20 @@ BOOL SfxClass::Exec()
 
                 if (stopit == 3)
                 {
-                    flags &= ~SFX_MOVES;
-                    flags &= ~SFX_F16CRASH_STOP;
+                    flags and_eq compl SFX_MOVES;
+                    flags and_eq compl SFX_F16CRASH_STOP;
                     vec.x = vec.y = vec.z = 0.0f;
                 }
 
                 baseObj->SetYPR(baseObj->Yaw(), pitch, roll);
 
-                if (flags & SFX_F16CRASH_OBJECT)
+                if (flags bitand SFX_F16CRASH_OBJECT)
                 {
-                    CrashSoundMask |= F16CRASH_FELLMASK;
+                    CrashSoundMask or_eq F16CRASH_FELLMASK;
                     PlayCrashSound(F16CRASH_FELLMASK, SFX_FLAPLOOP);
                 }
             }
-            else if (!lastHit && !(flags & SFX_F16CRASH_SKIPGRAVITY)) vec.z += GRAVITY * sfxFrameTime;
+            else if ( not lastHit and not (flags bitand SFX_F16CRASH_SKIPGRAVITY)) vec.z += GRAVITY * sfxFrameTime;
 
             CalcTransformMatrix(baseObj.get());
             Tpoint point;
@@ -2976,9 +2976,9 @@ BOOL SfxClass::Exec()
             {
                 pos.z = gZ;
 
-                if (fabs(vec.x) < 1.0f && fabs(vec.y) < 1.0f && vec.z < GRAVITY)
+                if (fabs(vec.x) < 1.0f and fabs(vec.y) < 1.0f and vec.z < GRAVITY)
                 {
-                    flags |= SFX_F16CRASH_SKIPGRAVITY;
+                    flags or_eq SFX_F16CRASH_SKIPGRAVITY;
                     vec.z = 0.0f;
                 }
                 else if (vec.z > GRAVITY) vec.z = -vec.z;
@@ -2995,26 +2995,26 @@ BOOL SfxClass::Exec()
             baseObj->SetDelta(vec.x, vec.y, vec.z);
 
             /*
-             if (fabs( vec.x ) > 10.0f &&
-             fabs( vec.y ) > 10.0f &&
-             fabs( vec.z ) > 10.0f &&
-             curtime & 8) {
+             if (fabs( vec.x ) > 10.0f and 
+             fabs( vec.y ) > 10.0f and 
+             fabs( vec.z ) > 10.0f and 
+             curtime bitand 8) {
              OTWDriver.AddSfxRequest(
              new SfxClass(SFX_AAA_EXPLOSION, // type
              &pos, // world pos
              1.0f, // time to live
              5.0f) ); // scale
 
-             CrashSoundMask |= F16CRASH_FLOATMASK;
+             CrashSoundMask or_eq F16CRASH_FLOATMASK;
              PlayCrashSound (F16CRASH_FLOATMASK, SFX_IMPACTG6);
              }
             */
         }
         else
         {
-            if (!(flags & SFX_F16CRASH_STOP))
+            if ( not (flags bitand SFX_F16CRASH_STOP))
             {
-                flags |= SFX_F16CRASH_STOP;
+                flags or_eq SFX_F16CRASH_STOP;
                 float mat[3][3], mat1[3][3];
                 Tpoint normal;
                 CalculateRestingObjectMatrix(RestPitch, RestRoll, mat1);
@@ -3028,7 +3028,7 @@ BOOL SfxClass::Exec()
 
         PlayCrashSound(CrashSoundMask, 0, 0, SimLibElapsedTime, &pos);
 
-        if (flags & SFX_F16CRASH_OBJECT)
+        if (flags bitand SFX_F16CRASH_OBJECT)
         {
             OTWDriver.SetOwnshipPosition(CrashPos.x, CrashPos.y, CrashPos.z);
             OTWDriver.SetEndFlightPoint(
@@ -3064,7 +3064,7 @@ BOOL SfxClass::Exec()
 
 
     // check for hit with ground
-    if ((flags & SFX_MOVES) && !(flags & SFX_NO_GROUND_CHECK))
+    if ((flags bitand SFX_MOVES) and not (flags bitand SFX_NO_GROUND_CHECK))
     {
         // 1st get approximation
         groundZ = OTWDriver.GetApproxGroundLevel(pos.x, pos.y);
@@ -3081,17 +3081,17 @@ BOOL SfxClass::Exec()
         }
     }
 
-    int coverage = (groundType == COVERAGE_WATER) || (groundType == COVERAGE_RIVER);
+    int coverage = (groundType == COVERAGE_WATER) or (groundType == COVERAGE_RIVER);
 
     // does this object bounce?
-    if (hitGround && (flags & (SFX_BOUNCES | SFX_BOUNCES_HARD)) && !coverage)
+    if (hitGround and (flags bitand (SFX_BOUNCES bitor SFX_BOUNCES_HARD)) and not coverage)
     {
         // calcuate the new movement vector
         GroundReflection();
         pos.z = groundZ - 4.0f;
 
         // momentum loss
-        if (flags & SFX_BOUNCES)
+        if (flags bitand SFX_BOUNCES)
         {
             vec.x *= 0.30f;
             vec.y *= 0.30f;
@@ -3104,9 +3104,9 @@ BOOL SfxClass::Exec()
             vec.z *= 0.80f;
         }
 
-        if (fabs(vec.x) < 10.0f && fabs(vec.y) < 10.0f && fabs(vec.z) < 10.0f)
+        if (fabs(vec.x) < 10.0f and fabs(vec.y) < 10.0f and fabs(vec.z) < 10.0f)
         {
-            flags &= ~SFX_MOVES;
+            flags and_eq compl SFX_MOVES;
         }
 
         hitGround = FALSE;
@@ -3117,7 +3117,7 @@ BOOL SfxClass::Exec()
 
 
     // lived long enough?
-    if (SIM_ELAPSED_SEC > timeToLive || hitGround)
+    if (SIM_ELAPSED_SEC > timeToLive or hitGround)
     {
         RunSfxCompletion(hitGround, groundZ, groundType);
 
@@ -3133,13 +3133,13 @@ BOOL SfxClass::Exec()
     }
 
     // do we need to move it?
-    if (!(flags & SFX_MOVES) || (flags & SFX_TIMER_FLAG))
+    if ( not (flags bitand SFX_MOVES) or (flags bitand SFX_TIMER_FLAG))
     {
         Draw();
         return TRUE;
     }
 
-    if (flags & SFX_USES_GRAVITY)
+    if (flags bitand SFX_USES_GRAVITY)
     {
         // gravity also assumes air friction
         vec.x *= 0.999F;
@@ -3151,13 +3151,13 @@ BOOL SfxClass::Exec()
             vec.z += GRAVITY * sfxFrameTime;
 
     }
-    else if (flags & SFX_TRAJECTORY)
+    else if (flags bitand SFX_TRAJECTORY)
     {
         // trajectory has no air friction
         vec.z += GRAVITY * sfxFrameTime;
     }
 
-    if ((flags & SFX_NO_DOWN_VECTOR) && vec.z > 0.0f)
+    if ((flags bitand SFX_NO_DOWN_VECTOR) and vec.z > 0.0f)
     {
         vec.z = 0.0f;
     }
@@ -3197,11 +3197,11 @@ SfxClass::Draw(void)
 
     // do we need to move it?
     // this type has no drawing
-    if (type == SFX_SMOKING_FEATURE || type == SFX_STEAMING_FEATURE)
+    if (type == SFX_SMOKING_FEATURE or type == SFX_STEAMING_FEATURE)
         return TRUE;
 
     // this type has no drawing
-    if ((!(flags & SFX_F16CRASHLANDING) && !(flags & SFX_MOVES)) || (flags & SFX_TIMER_FLAG))
+    if (( not (flags bitand SFX_F16CRASHLANDING) and not (flags bitand SFX_MOVES)) or (flags bitand SFX_TIMER_FLAG))
     {
         if (obj2d)
         {
@@ -3237,7 +3237,7 @@ SfxClass::Draw(void)
 
         if (type == SFX_EJECT1)
         {
-            // hack! ejection is sideways
+            // hack ejection is sideways
             rot.M11 = 1.0f;
             rot.M12 = 0.0f;
             rot.M13 = 0.0f;
@@ -3343,7 +3343,7 @@ SfxClass::GetApproxViewDist(float currTime)
     float absmax, absmid, absmin, tmp;
     Tpoint viewLoc;
 
-    if (!viewPoint) // JB 010528
+    if ( not viewPoint) // JB 010528
         return;
 
     if (F4IsBadReadPtr(viewPoint, sizeof * viewPoint)) return; // JPO CTD fix?
@@ -3392,7 +3392,7 @@ SfxClass::RunSecondarySfx(void)
 {
     Tpoint mpos, mvec, vec2;
     float distScale = 0.0F;
-    int mflags = SFX_MOVES | SFX_USES_GRAVITY | SFX_EXPLODE_WHEN_DONE;
+    int mflags = SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_EXPLODE_WHEN_DONE;
     int numBursts = 0, i = 0;
     float rads = 0.0F, radstep = 0.0F;
 
@@ -3481,7 +3481,7 @@ SfxClass::RunSecondarySfx(void)
             mvec.y = 20.0f * PRANDFloat();
             mvec.z = -80.0f;
 
-            if (rand() & 1)
+            if (rand() bitand 1)
                 //RV - I-Hawk - Remming all unused PS calls...
                 /*
                 OTWDriver.AddSfxRequest(
@@ -3550,7 +3550,7 @@ SfxClass::RunSecondarySfx(void)
                                                   &pos,
                                                   &mvec);
 
-            if (gSfxCount[ SFX_GROUNDBURST ] > gSfxLODCutoff ||
+            if (gSfxCount[ SFX_GROUNDBURST ] > gSfxLODCutoff or
                 gTotSfx >= gSfxLODTotCutoff)
             {
                 numBursts = 10 + FloatToInt32(PRANDFloatPos() * 20.0f);
@@ -3572,7 +3572,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_GROUNDBURST, // type
-                 SFX_MOVES | SFX_USES_GRAVITY,
+                 SFX_MOVES bitor SFX_USES_GRAVITY,
                  &pos, // world pos
                  &mvec, // vel vector
                  20.0f, // time to live
@@ -3604,7 +3604,7 @@ SfxClass::RunSecondarySfx(void)
 
              OTWDriver.AddSfxRequest(
              new SfxClass( SFX_GROUNDBURST, // type
-             SFX_MOVES | SFX_USES_GRAVITY,
+             SFX_MOVES bitor SFX_USES_GRAVITY,
              &pos, // world pos
              &mvec, // vel vector
              20.0f, // time to live
@@ -3633,10 +3633,10 @@ SfxClass::RunSecondarySfx(void)
 
         case SFX_SPARKS:
         case SFX_SPARKS_NO_DEBRIS:
-            if (gSfxCount[ SFX_WATER_WAKE_LARGE ] > gSfxLODCutoff ||
-                gSfxCount[ SFX_SPARK_TRACER ] > gSfxLODCutoff ||
-                gTotSfx >= gSfxLODTotCutoff ||
-                (approxDist > 30000.0f && scale < 50.0f))
+            if (gSfxCount[ SFX_WATER_WAKE_LARGE ] > gSfxLODCutoff or
+                gSfxCount[ SFX_SPARK_TRACER ] > gSfxLODCutoff or
+                gTotSfx >= gSfxLODTotCutoff or
+                (approxDist > 30000.0f and scale < 50.0f))
             {
                 break;
             }
@@ -3651,7 +3651,7 @@ SfxClass::RunSecondarySfx(void)
 
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_EXPLSTAR_GLOW, // type
-             SFX_MOVES | SFX_BOUNCES | SFX_USES_GRAVITY, // flags
+             SFX_MOVES bitor SFX_BOUNCES bitor SFX_USES_GRAVITY, // flags
              &mpos, // world pos
              &mvec, // vector
              1.3f, // time to live
@@ -3669,7 +3669,7 @@ SfxClass::RunSecondarySfx(void)
             /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_SPARK_TRACER, // type
-             SFX_MOVES | SFX_BOUNCES | SFX_USES_GRAVITY, // flags
+             SFX_MOVES bitor SFX_BOUNCES bitor SFX_USES_GRAVITY, // flags
              &mpos, // world pos
              &mvec, // vector
              1.3f, // time to live
@@ -3690,7 +3690,7 @@ SfxClass::RunSecondarySfx(void)
             /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_SPARK_TRACER, // type
-             SFX_MOVES | SFX_BOUNCES | SFX_USES_GRAVITY, // flags
+             SFX_MOVES bitor SFX_BOUNCES bitor SFX_USES_GRAVITY, // flags
              &mpos, // world pos
              &mvec, // vector
              1.3f, // time to live
@@ -3709,14 +3709,14 @@ SfxClass::RunSecondarySfx(void)
             mpos.y = pos.y + PRANDFloat() * 30.0f;
             mpos.z = pos.z;
 
-            if (gSfxCount[ SFX_FIRESMOKE ] > gSfxLODCutoff ||
-                gSfxCount[ SFX_TRAILSMOKE ] > gSfxLODCutoff ||
+            if (gSfxCount[ SFX_FIRESMOKE ] > gSfxLODCutoff or
+                gSfxCount[ SFX_TRAILSMOKE ] > gSfxLODCutoff or
                 gTotSfx >= gSfxLODTotCutoff)
             {
                 break;
             }
 
-            if (rand() & 1)
+            if (rand() bitand 1)
             {
                 /*
                 OTWDriver.AddSfxRequest(
@@ -3763,7 +3763,7 @@ SfxClass::RunSecondarySfx(void)
             mpos.y = pos.y + PRANDFloat() * 30.0f;
             mpos.z = pos.z - scale * 0.65f;
 
-            if ((rand() & 3) == 3)
+            if ((rand() bitand 3) == 3)
             {
                 mvec.x *= 0.5f;
                 mvec.y *= 0.5f;
@@ -3771,7 +3771,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_FIRE2, // type
-                 SFX_NO_GROUND_CHECK | SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR, // flags
+                 SFX_NO_GROUND_CHECK bitor SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR, // flags
                  &mpos, // world pos
                  &mvec, // vector
                  3.5f, // time to live
@@ -3782,8 +3782,8 @@ SfxClass::RunSecondarySfx(void)
             else
             {
                 // try a reduction in the number of effects running
-                // if ( approxDist > 10000.0f && gSfxCount[ SFX_FIRESMOKE ] > gSfxLODCutoff )
-                if (gSfxCount[ SFX_FIRESMOKE ] > gSfxLODCutoff ||
+                // if ( approxDist > 10000.0f and gSfxCount[ SFX_FIRESMOKE ] > gSfxLODCutoff )
+                if (gSfxCount[ SFX_FIRESMOKE ] > gSfxLODCutoff or
                     gTotSfx >= gSfxLODTotCutoff)
                     break;
 
@@ -3797,7 +3797,7 @@ SfxClass::RunSecondarySfx(void)
                  scale ) ); // scale
                  */
 
-                if (gSfxCount[ SFX_SHIP_BURNING_FIRE ] > gSfxLODCutoff / 2 ||
+                if (gSfxCount[ SFX_SHIP_BURNING_FIRE ] > gSfxLODCutoff / 2 or
                     gTotSfx >= gSfxLODTotCutoff / 2)
                     break;
 
@@ -3807,7 +3807,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( FIRE2, // type
-                 SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR, // flags
+                 SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR, // flags
                  &mpos, // world pos
                  &mvec, // vector
                  3.5f, // time to live
@@ -3865,7 +3865,7 @@ SfxClass::RunSecondarySfx(void)
             }
             else if (mpos.x > 0.85f)
             {
-                if ((rand() & 1))
+                if ((rand() bitand 1))
                 {
                     mvec.x = PRANDFloat() * 25.0f;
                     mvec.y = PRANDFloat() * 25.0f;
@@ -3893,7 +3893,7 @@ SfxClass::RunSecondarySfx(void)
             }
             else if (mpos.x > 0.70f)
             {
-                if ((rand() & 1))
+                if ((rand() bitand 1))
                 {
                     mvec.x = PRANDFloat() * 25.0f;
                     mvec.y = PRANDFloat() * 25.0f;
@@ -3940,7 +3940,7 @@ SfxClass::RunSecondarySfx(void)
                 mvec.y = PRANDFloat() * 25.0f;
                 mvec.z = -5.0f;
 
-                if ((rand() & 1))
+                if ((rand() bitand 1))
                 {
                     /*
                     OTWDriver.AddSfxRequest(
@@ -3971,7 +3971,7 @@ SfxClass::RunSecondarySfx(void)
                 mvec.y = PRANDFloat() * 25.0f;
                 mvec.z = -10.0f;
 
-                if ((rand() & 3) == 3)
+                if ((rand() bitand 3) == 3)
                 {
                     /*
                     OTWDriver.AddSfxRequest(
@@ -4035,7 +4035,7 @@ SfxClass::RunSecondarySfx(void)
                 mvec.y = PRANDFloat() * 25.0f;
                 mvec.z = -25.0f;
 
-                if ((rand() & 3) == 3)
+                if ((rand() bitand 3) == 3)
                 {
                     /*
                     OTWDriver.AddSfxRequest(
@@ -4097,7 +4097,7 @@ SfxClass::RunSecondarySfx(void)
                 mvec.y = PRANDFloat() * 25.0f;
                 mvec.z = -25.0f;
 
-                if ((rand() & 3) == 3)
+                if ((rand() bitand 3) == 3)
                 {
                     /*
                     OTWDriver.AddSfxRequest(
@@ -4122,7 +4122,7 @@ SfxClass::RunSecondarySfx(void)
             }
             else if (mpos.x > 0.50f)
             {
-                if ((rand() & 3) == 3)
+                if ((rand() bitand 3) == 3)
                 {
                     /*
                     OTWDriver.AddSfxRequest(
@@ -4149,7 +4149,7 @@ SfxClass::RunSecondarySfx(void)
                 mvec.y = PRANDFloat() * 25.0f;
                 mvec.z = -25.0f;
 
-                if ((rand() & 3) == 3)
+                if ((rand() bitand 3) == 3)
                 {
                     /*
                     OTWDriver.AddSfxRequest(
@@ -4193,7 +4193,7 @@ SfxClass::RunSecondarySfx(void)
             break;
 
         case SFX_SMOKING_PART:
-            if (gSfxCount[ SFX_TRAILSMOKE ] < gSfxLODCutoff &&
+            if (gSfxCount[ SFX_TRAILSMOKE ] < gSfxLODCutoff and 
                 gTotSfx < gSfxLODTotCutoff)
             {
                 mvec.x = PRANDFloat() * 25.0f;
@@ -4284,7 +4284,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass (SFX_STEAM_CLOUD, // type
-                 SFX_USES_GRAVITY | SFX_MOVES | SFX_NO_DOWN_VECTOR | SFX_NO_GROUND_CHECK,  // flags
+                 SFX_USES_GRAVITY bitor SFX_MOVES bitor SFX_NO_DOWN_VECTOR bitor SFX_NO_GROUND_CHECK,  // flags
                  &mpos, // world pos
                  &mvec, // vector
                  2.0f, // time to live
@@ -4331,8 +4331,8 @@ SfxClass::RunSecondarySfx(void)
             mvec.y = 0.0f;
             mvec.z = -40.0f;
 
-            if (gSfxCount[ SFX_TRAILSMOKE ] < gSfxLODCutoff &&
-                gSfxCount[ SFX_FIRESMOKE ] < gSfxLODCutoff &&
+            if (gSfxCount[ SFX_TRAILSMOKE ] < gSfxLODCutoff and 
+                gSfxCount[ SFX_FIRESMOKE ] < gSfxLODCutoff and 
                 gTotSfx < gSfxLODTotCutoff)
             {
                 switch (PRANDInt5())
@@ -4341,7 +4341,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_FIRESMOKE, // type
-                         SFX_MOVES | SFX_NO_DOWN_VECTOR | SFX_NO_GROUND_CHECK,  // flags
+                         SFX_MOVES bitor SFX_NO_DOWN_VECTOR bitor SFX_NO_GROUND_CHECK,  // flags
                          &mpos, // world pos
                          &mvec, // vector
                          3.5f, // time to live
@@ -4353,7 +4353,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_TRAILSMOKE, // type
-                         SFX_MOVES | SFX_NO_DOWN_VECTOR | SFX_NO_GROUND_CHECK,  // flags
+                         SFX_MOVES bitor SFX_NO_DOWN_VECTOR bitor SFX_NO_GROUND_CHECK,  // flags
                          &mpos, // world pos
                          &mvec, // vector
                          3.5f, // time to live
@@ -4375,7 +4375,7 @@ SfxClass::RunSecondarySfx(void)
              */
 
             /*
-            if ( rand() & 1 )
+            if ( rand() bitand 1 )
             {
              OTWDriver.AddSfxRequest(
              new SfxClass( SFX_SHOCK_RING_SMALL, // type
@@ -4400,7 +4400,7 @@ SfxClass::RunSecondarySfx(void)
             /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_FIRESMOKE, // type
-             SFX_MOVES | SFX_NO_DOWN_VECTOR | SFX_NO_GROUND_CHECK,  // flags
+             SFX_MOVES bitor SFX_NO_DOWN_VECTOR bitor SFX_NO_GROUND_CHECK,  // flags
              &mpos, // world pos
              &mvec, // vector
              3.5f, // time to live
@@ -4452,7 +4452,7 @@ SfxClass::RunSecondarySfx(void)
              */
             // StartRandomDebris();
             // if there'2 no 2d animation, we do a firetrail
-            if (!obj2d)
+            if ( not obj2d)
             {
                 mpos.x = pos.x;
                 mpos.y = pos.y;
@@ -4466,12 +4466,12 @@ SfxClass::RunSecondarySfx(void)
                     mvec.x = 90.0f * PRANDFloat();
                     mvec.y = 90.0f * PRANDFloat();
 
-                    if ((i & 3) == 3)
+                    if ((i bitand 3) == 3)
                     {
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_FIRE4, // type
-                         SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                         SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
                          &mpos, // world pos
                          &mvec, // vel vector
                          1.5, // time to live
@@ -4480,13 +4480,13 @@ SfxClass::RunSecondarySfx(void)
                     }
                     else
                     {
-                        if (gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff &&
+                        if (gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff and 
                             gTotSfx < gSfxLODTotCutoff)
                         {
                             /*
                             OTWDriver.AddSfxRequest(
                              new SfxClass( SFX_DEBRISTRAIL, // type
-                             SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                             SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                              &mpos, // world pos
                              &mvec, // vel vector
                              5.0, // time to live
@@ -4499,7 +4499,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_FIREBALL, // type
-                 SFX_MOVES | SFX_NO_GROUND_CHECK,
+                 SFX_MOVES bitor SFX_NO_GROUND_CHECK,
                  &mpos, // world pos
                  &mvec, // vel vector
                  3.0, // time to live
@@ -4553,11 +4553,11 @@ SfxClass::RunSecondarySfx(void)
                     mvec.y = 30.0f * PRANDFloat() * scale * 0.01f;
 
                     /*
-                    if ( i & 1)
+                    if ( i bitand 1)
                     {
                      OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_WATER_FIREBALL, // type
-                     SFX_MOVES | SFX_USES_GRAVITY,
+                     SFX_MOVES bitor SFX_USES_GRAVITY,
                      &mpos, // world pos
                      &mvec, // vel vector
                      3.0, // time to live
@@ -4570,7 +4570,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_WATERTRAIL, // type
-                         SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                         SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                          &mpos, // world pos
                          &mvec, // vel vector
                          3.0, // time to live
@@ -4614,24 +4614,24 @@ SfxClass::RunSecondarySfx(void)
                 mvec.x = 20.0f * PRANDFloat() * scale * 0.01f;
                 mvec.y = 20.0f * PRANDFloat() * scale * 0.01f;
 
-                if ((i & 7) == 7)
+                if ((i bitand 7) == 7)
                 {
                     /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_FIRE5, // type
-                     SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                     SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
                      &mpos, // world pos
                      &mvec, // vel vector
                      3.0, // time to live
                      scale * 0.05f ) ); // scale
                      */
                 }
-                else if ((rand() & 3) == 3)
+                else if ((rand() bitand 3) == 3)
                 {
                     /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_DEBRISTRAIL_DUST, // type
-                     SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                     SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                      &mpos, // world pos
                      &mvec, // vel vector
                      3.0, // time to live
@@ -4643,7 +4643,7 @@ SfxClass::RunSecondarySfx(void)
                     /*
                      OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_DEBRISTRAIL, // type
-                     SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                     SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                      &mpos, // world pos
                      &mvec, // vel vector
                      8.0, // time to live
@@ -4670,7 +4670,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_DEBRISTRAIL, // type
-                 SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                 SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                  &mpos, // world pos
                  &mvec, // vel vector
                  3.0, // time to live
@@ -4682,7 +4682,7 @@ SfxClass::RunSecondarySfx(void)
 
         case SFX_GROUND_EXPLOSION:
 
-            if (secondaryCount == 9 || obj2d)
+            if (secondaryCount == 9 or obj2d)
             {
                 StartRandomDebris();
                 pos.z = OTWDriver.GetGroundLevel(pos.x, pos.y);
@@ -4716,8 +4716,8 @@ SfxClass::RunSecondarySfx(void)
             {
                 // mvec.z = -20.0f * scale * 0.02f;
 
-                if (gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff &&
-                    gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff &&
+                if (gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff and 
+                    gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff and 
                     gTotSfx < gSfxLODTotCutoff)
                 {
                     numBursts = 8 + FloatToInt32(PRANDFloatPos() * 6.0f);
@@ -4740,13 +4740,13 @@ SfxClass::RunSecondarySfx(void)
                     /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass(SFX_FIRE_EXPAND_NOSMOKE, // type
-                     SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                     SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
                      &mpos, // world pos
                      &mvec, // vel vector
                      1.5, // time to live
                      scale * PRANDFloatPos() * 0.2f ) ); // scale
                     */
-                    if ((rand() & 3) == 3)
+                    if ((rand() bitand 3) == 3)
                     {
                         /*
                         OTWDriver.AddSfxRequest(
@@ -4765,17 +4765,17 @@ SfxClass::RunSecondarySfx(void)
                     mvec.y = 10.0f * PRANDFloat() * scale * 0.01f;
                     mvec.z = -18.0f * PRANDFloatPos() * scale * 0.01f;
 
-                    if (approxDist < SFX_LOD_DIST &&
-                        gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff &&
-                        gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff &&
+                    if (approxDist < SFX_LOD_DIST and 
+                        gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff and 
+                        gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff and 
                         gTotSfx < gSfxLODTotCutoff)
                     {
-                        if (rand() & 1)
+                        if (rand() bitand 1)
                         {}
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_FIRETRAIL, // type
-                         SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                         SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                          &mpos, // world pos
                          &mvec, // vel vector
                          4.0, // time to live
@@ -4787,7 +4787,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                          OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_DEBRISTRAIL, // type
-                         SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                         SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                          &mpos, // world pos
                          &mvec, // vel vector
                          6.0, // time to live
@@ -4801,8 +4801,8 @@ SfxClass::RunSecondarySfx(void)
             else
             {
                 // vec.z -= scale * 0.15f;
-                // if ( (rand() & 3) == 3 )
-                if (secondaryCount & 1)
+                // if ( (rand() bitand 3) == 3 )
+                if (secondaryCount bitand 1)
                 {
                     vec.z -= scale * 0.20f;
                     mpos.x = pos.x + PRANDFloat() * scale * 0.21f;
@@ -4813,7 +4813,7 @@ SfxClass::RunSecondarySfx(void)
                     mvec.y = 10.0f * PRANDFloat() * scale * 0.01f;
                     mvec.z = -10.0f * PRANDFloatPos() * scale * 0.01f;
 
-                    if ((rand() & 1) == 1)
+                    if ((rand() bitand 1) == 1)
                     {
                         mpos.z = pos.z + vec.z * 0.3F;
                         /*
@@ -4824,12 +4824,12 @@ SfxClass::RunSecondarySfx(void)
                          scale * 0.2f + scale * PRANDFloatPos() * 0.3f ) ); // scale
                          */
                     }
-                    else if ((rand() & 1) == 1)
+                    else if ((rand() bitand 1) == 1)
                     {}
                     /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_BIG_DUST, // type
-                     SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                     SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
                      &mpos, // world pos
                      &mvec, // vel vector
                      1.5, // time to live
@@ -4841,7 +4841,7 @@ SfxClass::RunSecondarySfx(void)
                     /*
                      OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_BIG_SMOKE, // type
-                     SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                     SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
                      &mpos, // world pos
                      &mvec, // vel vector
                      1.5, // time to live
@@ -4850,7 +4850,7 @@ SfxClass::RunSecondarySfx(void)
                 }
                 else
                 {
-                    if ((rand() & 1) == 1)
+                    if ((rand() bitand 1) == 1)
                     {
                         mpos.x = pos.x + PRANDFloat() * scale * 0.21f;
                         mpos.y = pos.y + PRANDFloat() * scale * 0.21f;
@@ -4864,9 +4864,9 @@ SfxClass::RunSecondarySfx(void)
                          */
                     }
 
-                    if (approxDist < SFX_LOD_DIST &&
-                        gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff &&
-                        gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff &&
+                    if (approxDist < SFX_LOD_DIST and 
+                        gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff and 
+                        gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff and 
                         gTotSfx < gSfxLODTotCutoff)
                     {
 
@@ -4883,7 +4883,7 @@ SfxClass::RunSecondarySfx(void)
                             /*
                             OTWDriver.AddSfxRequest(
                              new SfxClass( SFX_DEBRISTRAIL, // type
-                             SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                             SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                              &mpos, // world pos
                              &mvec, // vel vector
                              6.0, // time to live
@@ -4914,8 +4914,8 @@ SfxClass::RunSecondarySfx(void)
             break;
 
         case SFX_ROCKET_BURST:
-            if (gSfxCount[ SFX_SPARKS ] < gSfxLODCutoff &&
-                gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff &&
+            if (gSfxCount[ SFX_SPARKS ] < gSfxLODCutoff and 
+                gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff and 
                 gTotSfx < gSfxLODTotCutoff)
             {
                 numBursts = 24 + FloatToInt32(PRANDFloatPos() * 10.0f);
@@ -4931,11 +4931,11 @@ SfxClass::RunSecondarySfx(void)
                 mvec.y = vec.y + 200.0f * PRANDFloat();
                 mvec.z = vec.z + 200.0f * PRANDFloat();
                 /*
-                if ( (rand() & 3) == 3 )
+                if ( (rand() bitand 3) == 3 )
                 {
                  OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_EXPLCIRC_GLOW, // type
-                 SFX_MOVES | SFX_USES_GRAVITY,
+                 SFX_MOVES bitor SFX_USES_GRAVITY,
                  &pos, // world pos
                  &mvec, // vel vector
                  3.5f, // time to live
@@ -4947,7 +4947,7 @@ SfxClass::RunSecondarySfx(void)
                     /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_SPARKS, // type
-                     SFX_MOVES | SFX_USES_GRAVITY,
+                     SFX_MOVES bitor SFX_USES_GRAVITY,
                      &pos, // world pos
                      &mvec, // vel vector
                      3.5f, // time to live
@@ -4996,7 +4996,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_SMOKETRAIL, // type
-                 SFX_MOVES | SFX_USES_GRAVITY,
+                 SFX_MOVES bitor SFX_USES_GRAVITY,
                  &pos, // world pos
                  &mvec, // vel vector
                  1.0, // time to live
@@ -5013,7 +5013,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_SMOKETRAIL, // type
-                 SFX_MOVES | SFX_USES_GRAVITY,
+                 SFX_MOVES bitor SFX_USES_GRAVITY,
                  &pos, // world pos
                  &mvec, // vel vector
                  1.0, // time to live
@@ -5029,7 +5029,7 @@ SfxClass::RunSecondarySfx(void)
             mvec.z = -20.0f;
             StartRandomDebris();
 
-            if (rand() & 1)
+            if (rand() bitand 1)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_LONG_HANGING_SMOKE2, // type
@@ -5063,7 +5063,7 @@ SfxClass::RunSecondarySfx(void)
              1.8f, // time to live
              scale ) ); // scale
              */
-            if (rand() & 1)
+            if (rand() bitand 1)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_LONG_HANGING_SMOKE2, // type
@@ -5106,9 +5106,9 @@ SfxClass::RunSecondarySfx(void)
                 mvec.y = 60.0f * PRANDFloat();
                 mvec.z = -80.0f * PRANDFloatPos();
 
-                if (approxDist < SFX_LOD_DIST &&
-                    gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff &&
-                    gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff &&
+                if (approxDist < SFX_LOD_DIST and 
+                    gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff and 
+                    gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff and 
                     gTotSfx < gSfxLODTotCutoff)
                 {
                     if (PRANDInt3() == 1)
@@ -5116,7 +5116,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_DEBRISTRAIL, // type
-                         SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                         SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                          &pos, // world pos
                          &mvec, // vel vector
                          6.0, // time to live
@@ -5128,7 +5128,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_FIRETRAIL, // type
-                         SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                         SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                          &pos, // world pos
                          &mvec, // vel vector
                          6.0, // time to live
@@ -5257,7 +5257,7 @@ SfxClass::RunSecondarySfx(void)
                     break;
             }
 
-            if (gSfxCount[ SFX_LONG_HANGING_SMOKE2 ] < gSfxLODCutoff &&
+            if (gSfxCount[ SFX_LONG_HANGING_SMOKE2 ] < gSfxLODCutoff and 
                 gTotSfx < gSfxLODTotCutoff)
             {
                 /*
@@ -5399,7 +5399,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_FIRE4, // type
-                         SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                         SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
                          &mpos, // world pos
                          &vec2, // vel vector
                          1.5, // time to live
@@ -5490,7 +5490,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_TRACER_FIRE, // type
-                         SFX_EXPLODE_WHEN_DONE | SFX_MOVES | SFX_NO_GROUND_CHECK , // flags
+                         SFX_EXPLODE_WHEN_DONE bitor SFX_MOVES bitor SFX_NO_GROUND_CHECK , // flags
                          &mpos, // world pos
                          &mvec, // vector for movement
                          travelDist/TRACER_VELOCITY, // time to live
@@ -5583,7 +5583,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_TRACER_FIRE, // type
-                         SFX_EXPLODE_WHEN_DONE | SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR, // flags
+                         SFX_EXPLODE_WHEN_DONE bitor SFX_MOVES bitor SFX_NO_GROUND_CHECK bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR, // flags
                          &mpos, // world pos
                          &mvec, // vector for movement
                          travelDist/TRACER_VELOCITY, // time to live
@@ -5673,7 +5673,7 @@ SfxClass::RunSecondarySfx(void)
              */
 
 
-            if (!PRANDInt3())
+            if ( not PRANDInt3())
             {
                 // vec is normalized, further away = faster
                 // mvec.x = vec.x * ( 150.0f + 1000.0f * distScale );
@@ -5704,7 +5704,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_TRACER_FIRE, // type
-                 SFX_EXPLODE_WHEN_DONE | SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR, // flags
+                 SFX_EXPLODE_WHEN_DONE bitor SFX_MOVES bitor SFX_NO_GROUND_CHECK bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR, // flags
                  &mpos, // world pos
                  &mvec, // vector for movement
                  travelDist/TRACER_VELOCITY, // time to live
@@ -5734,7 +5734,7 @@ SfxClass::RunSecondarySfx(void)
             mpos.y = pos.y + 2000.0f * PRANDFloat() * distScale;
             mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 50.0f;
 
-            if (!PRANDInt3())
+            if ( not PRANDInt3())
             {
                 // vec is normalized, further away = faster
                 // mvec.x = vec.x * ( 150.0f + 1000.0f * distScale );
@@ -5765,7 +5765,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_TRACER_FIRE, // type
-                 SFX_EXPLODE_WHEN_DONE | SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR, // flags
+                 SFX_EXPLODE_WHEN_DONE bitor SFX_MOVES bitor SFX_NO_GROUND_CHECK bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR, // flags
                  &mpos, // world pos
                  &mvec, // vector for movement
                  travelDist/TRACER_VELOCITY, // time to live
@@ -5789,7 +5789,7 @@ SfxClass::RunSecondarySfx(void)
         case SFX_NAPALM:
             // send up some fire trails
             /*
-            ** EDG: Broken right now!
+            ** EDG: Broken right now
             */
             numBursts =  2 + (int)(2.0f * gSfxLOD);
             rads = OTWDriver.GetGroundLevel(pos.x, pos.y);
@@ -5820,7 +5820,7 @@ SfxClass::RunSecondarySfx(void)
             // mpos.y = pos.y + vec.y * PRANDFloat();
             int randint;
 
-            randint = rand() & 0x03;
+            randint = rand() bitand 0x03;
 
             if (randint == 1)
                 mpos.x = pos.x - vec.x;
@@ -5829,7 +5829,7 @@ SfxClass::RunSecondarySfx(void)
             else
                 mpos.x = pos.x + vec.x * PRANDFloat();
 
-            randint = rand() & 0x03;
+            randint = rand() bitand 0x03;
 
             if (randint == 1)
                 mpos.y = pos.y - vec.y;
@@ -5880,15 +5880,15 @@ void
 SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
 {
     // do we explode at end?
-    if (flags & SFX_EXPLODE_WHEN_DONE)
+    if (flags bitand SFX_EXPLODE_WHEN_DONE)
     {
-        // add new effect!
+        // add new effect
         if (hitGround)
         {
             pos.z -= 40.0f;
 
             //  water river is 1-2
-            if ((groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER))
+            if ((groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
             {
                 F4SoundFXSetPos(SFX_SPLASH, TRUE, pos.x, pos.y, pos.z, 1.0f);
                 /*
@@ -5935,9 +5935,9 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
                 */
             }
         }
-        else if (type == SFX_GUNFIRE ||
-                 type == SFX_SMOKING_PART ||
-                 type == SFX_FLAMING_PART ||
+        else if (type == SFX_GUNFIRE or
+                 type == SFX_SMOKING_PART or
+                 type == SFX_FLAMING_PART or
                  type == SFX_MISSILE_LAUNCH)
         {
             /*
@@ -5979,9 +5979,9 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
     {
         pos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 10.0f;
 
-        if ((groundType == COVERAGE_WATER ||
-             groundType == COVERAGE_RIVER) &&
-            type != SFX_FLARE_GFX)
+        if ((groundType == COVERAGE_WATER or
+             groundType == COVERAGE_RIVER) and 
+            type not_eq SFX_FLARE_GFX)
         {
             F4SoundFXSetPos(SFX_SPLASH, TRUE, pos.x, pos.y, pos.z, 1.0f);
             /*
@@ -6015,7 +6015,7 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_FIRE4, // type
-                         SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                         SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
                          &pos, // world pos
                          &vec, // vel vector
                          1.5, // time to live
@@ -6122,7 +6122,7 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
     */
 
     // all trails get timed out
-    if (objTrail && type != SFX_TIMER)
+    if (objTrail and type not_eq SFX_TIMER)
     {
         OTWDriver.AddSfxRequest(
             new SfxClass(
@@ -6177,7 +6177,7 @@ SfxClass::ACMIStart(RViewPoint *acmiView, float startTime, float currTime)
     GetApproxViewDist(currTime);
 
     // timers don't get added to draw list
-    if (flags & SFX_TIMER_FLAG)
+    if (flags bitand SFX_TIMER_FLAG)
         return;
 
     // insert the effect's object into the display list
@@ -6261,13 +6261,13 @@ SfxClass::ACMIExec(float currTime)
     // if this effect is only drives other secondary effects, see if
     // the count has reached 0, then kill it if so
     // shouldn't have these in ACMI
-    if (flags & SFX_SECONDARY_DRIVER)
+    if (flags bitand SFX_SECONDARY_DRIVER)
     {
         return FALSE;
     }
 
     // check for hit with ground
-    if ((flags & SFX_MOVES) && !(flags & SFX_NO_GROUND_CHECK))
+    if ((flags bitand SFX_MOVES) and not (flags bitand SFX_NO_GROUND_CHECK))
     {
         // 1st get approximation
         groundZ = OTWDriver.GetApproxGroundLevel(pos.x, pos.y);
@@ -6286,7 +6286,7 @@ SfxClass::ACMIExec(float currTime)
 
     // does this object bounce?
     /*
-    if ( hitGround && (flags & SFX_BOUNCES) && groundType > 2 )
+    if ( hitGround and (flags bitand SFX_BOUNCES) and groundType > 2 )
     {
      // calcuate the new movement vector
      GroundReflection();
@@ -6300,7 +6300,7 @@ SfxClass::ACMIExec(float currTime)
     */
 
     // lived long enough?
-    if (currTime > timeToLive || hitGround)
+    if (currTime > timeToLive or hitGround)
     {
         // probably will need to remove from draw list here ...
         // done with this effect
@@ -6309,12 +6309,12 @@ SfxClass::ACMIExec(float currTime)
     }
 
     // do we need to move it?
-    if (!(flags & SFX_MOVES) || (flags & SFX_TIMER_FLAG))
+    if ( not (flags bitand SFX_MOVES) or (flags bitand SFX_TIMER_FLAG))
         return TRUE;
 
     newvec = vec;
 
-    if (flags & (SFX_USES_GRAVITY | SFX_TRAJECTORY))
+    if (flags bitand (SFX_USES_GRAVITY bitor SFX_TRAJECTORY))
     {
         // gravity = 32 ft/secSq
         newvec.z += 32.0f * dT;
@@ -6324,7 +6324,7 @@ SfxClass::ACMIExec(float currTime)
     newpos.x = pos.x + vec.x * dT;
     newpos.y = pos.y + vec.y * dT;
 
-    if (flags & (SFX_USES_GRAVITY | SFX_TRAJECTORY))
+    if (flags bitand (SFX_USES_GRAVITY bitor SFX_TRAJECTORY))
     {
         // pos(t) = p0 + v0(t) + 1/2a(t^2)
         newpos.z = pos.z + vec.z * dT + 0.5f * 32.0f * dT * dT;
@@ -6352,7 +6352,7 @@ SfxClass::ACMIExec(float currTime)
 
         if (type == SFX_EJECT1)
         {
-            // hack! ejection is sideways
+            // hack ejection is sideways
             rot.M11 = 1.0f;
             rot.M12 = 0.0f;
             rot.M13 = 0.0f;
@@ -6382,7 +6382,7 @@ SfxClass::ACMIExec(float currTime)
         baseObj->SetPosition(newpos.x, newpos.y, newpos.z);
         baseObj->SetDelta(newvec.x, newvec.y, newvec.z);
 
-        if (newvec.x == 0.0f && newvec.y == 0.0f && newvec.z == 0.0f)
+        if (newvec.x == 0.0f and newvec.y == 0.0f and newvec.z == 0.0f)
         {
             baseObj->SetYPR(0.0f, 0.0f, 0.0f);
         }
@@ -6485,7 +6485,7 @@ SfxClass::StartRandomDebris(void)
                  gSfxCount[ SFX_FIRETRAIL ] +
                  gSfxCount[ SFX_CAT_LAUNCH ];
 
-    if (numRunning > gSfxLODCutoff * 3 ||
+    if (numRunning > gSfxLODCutoff * 3 or
         gTotSfx >= gSfxLODTotCutoff)
         return;
 
@@ -6493,10 +6493,10 @@ SfxClass::StartRandomDebris(void)
     timetl = 0.5f + 2.0f * debrisScale / 10.0f;
     mpos = pos;
 
-    if (type == SFX_WATER_EXPLOSION ||
-        type == SFX_GROUND_STRIKE ||
-        type == SFX_WATER_STRIKE ||
-        type == SFX_ARTILLERY_EXPLOSION ||
+    if (type == SFX_WATER_EXPLOSION or
+        type == SFX_GROUND_STRIKE or
+        type == SFX_WATER_STRIKE or
+        type == SFX_ARTILLERY_EXPLOSION or
         type == SFX_GROUND_EXPLOSION)
     {
         debrisScale = min(7.0f, scale * 0.1f);
@@ -6543,13 +6543,13 @@ SfxClass::StartRandomDebris(void)
             mvec.z = 90.0f * PRANDFloat();
         }
 
-        if (type == SFX_WATER_EXPLOSION ||
+        if (type == SFX_WATER_EXPLOSION or
             type == SFX_WATER_STRIKE)
         {
             /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_FLARE_GFX, // type
-             SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+             SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
              &mpos, // world pos
              &mvec, // vel vector
              timetl, // time to live
@@ -6558,12 +6558,12 @@ SfxClass::StartRandomDebris(void)
         }
         else if (type == SFX_SPARKS)
         {
-            if ((rand() & 1) || groundHit)
+            if ((rand() bitand 1) or groundHit)
             {}
             /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_AC_DEBRIS, // type
-             SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+             SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
              &mpos, // world pos
              &mvec, // vel vector
              timetl, // time to live
@@ -6575,7 +6575,7 @@ SfxClass::StartRandomDebris(void)
             /*
              OTWDriver.AddSfxRequest(
              new SfxClass( SFX_EXPLSTAR_GLOW, // type
-             SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+             SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
              &mpos, // world pos
              &mvec, // vel vector
              timetl, // time to live
@@ -6587,7 +6587,7 @@ SfxClass::StartRandomDebris(void)
             /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_AC_DEBRIS, // type
-             SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+             SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
              &mpos, // world pos
              &mvec, // vel vector
              timetl, // time to live

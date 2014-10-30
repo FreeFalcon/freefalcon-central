@@ -55,7 +55,7 @@ DrawableBuilding::DrawableBuilding(int ID, Tpoint *pos, float heading, float s)
 void DrawableBuilding::Draw(class RenderOTW *renderer, int LOD)
 {
     // See if we need to update our ground position
-    if (LOD != previousLOD)
+    if (LOD not_eq previousLOD)
     {
         // Update our position to reflect the terrain beneath us
         //position.z = renderer->viewpoint->GetGroundLevel(position.x,position.y);

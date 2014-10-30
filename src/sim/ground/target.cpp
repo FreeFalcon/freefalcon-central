@@ -57,7 +57,7 @@ void GroundClass::SelectWeapon(int gun_only)
             }
         }
         else if (
-            !targetPtr->BaseData()->IsStatic() &&
+ not targetPtr->BaseData()->IsStatic() and 
             ((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject()
         )
         {

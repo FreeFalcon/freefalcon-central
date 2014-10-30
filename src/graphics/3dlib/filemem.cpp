@@ -14,7 +14,7 @@ GLint CFileMemory::glOpenFileMem(const char *filename)
     ShiAssert(buffer == NULL);
 
     // Open the file and get its size
-    if (!CurrentFile.openread(filename))
+    if ( not CurrentFile.openread(filename))
         return -1; // JPO fail it.
 
     bytesLeft = CurrentFile.getfilesize();
@@ -28,7 +28,7 @@ GLint CFileMemory::glOpenFileMem(const char *filename)
     // Allocate memory for the whole file contents
     buffer = (GLubyte*)glAllocateMemory(bytesLeft);
 
-    if (!buffer)
+    if ( not buffer)
     {
         CurrentFile.closefile();
         bytesLeft = 0;

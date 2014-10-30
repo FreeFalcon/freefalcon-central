@@ -2,6 +2,7 @@
 #define _AIRCRAFT_CLASS_H
 
 
+#include <cISO646>
 #include "simVeh.h"
 #include "hardpnt.h"
 #include "fsound.h"
@@ -183,11 +184,11 @@ public:
     };
     void StationFailed(StationFlags fl)
     {
-        StationsFailed |= fl;
+        StationsFailed or_eq fl;
     };
     int GetStationFailed(StationFlags fl)
     {
-        return (StationsFailed & fl) == (unsigned int)fl ? 1 : 0;
+        return (StationsFailed bitand fl) == (unsigned int)fl ? 1 : 0;
     };
 
     /** status bits for the aircraft */
@@ -218,7 +219,7 @@ public:
     void ClearAcStatusBits(int bits);
     bool IsAcStatusBitsSet(int bits) const
     {
-        return (status_bits & bits) == bits;
+        return (status_bits bitand bits) == bits;
     }
 private:
     int status_bits;    ///< bitwise of DirtyAircraft
@@ -269,15 +270,15 @@ public:
     };
     void INSOn(INSAlignFlags fl)
     {
-        INSFlags |= fl;
+        INSFlags or_eq fl;
     };
     void INSOff(INSAlignFlags fl)
     {
-        INSFlags &= ~fl;
+        INSFlags and_eq compl fl;
     };
     int INSState(INSAlignFlags fl)
     {
-        return (INSFlags & fl) == (unsigned int)fl ? 1 : 0;
+        return (INSFlags bitand fl) == (unsigned int)fl ? 1 : 0;
     };
     void RunINS(void);
     void DoINSAlign(void);
@@ -331,15 +332,15 @@ public:
     };
     void AVTROn(AVTRStateFlags fl)
     {
-        AVTRFlags |= fl;
+        AVTRFlags or_eq fl;
     };
     void AVTROff(AVTRStateFlags fl)
     {
-        AVTRFlags &= ~fl;
+        AVTRFlags and_eq compl fl;
     };
     int AVTRState(AVTRStateFlags fl)
     {
-        return (AVTRFlags & fl) == (unsigned int)fl ? 1 : 0;
+        return (AVTRFlags bitand fl) == (unsigned int)fl ? 1 : 0;
     };
 
 
@@ -364,15 +365,15 @@ public:
     };
     void LEFOn(LEFStateFlags fl)
     {
-        LEFFlags |= fl;
+        LEFFlags or_eq fl;
     };
     void LEFOff(LEFStateFlags fl)
     {
-        LEFFlags &= ~fl;
+        LEFFlags and_eq compl fl;
     };
     int LEFState(LEFStateFlags fl)
     {
-        return (LEFFlags & fl) == (unsigned int)fl ? 1 : 0;
+        return (LEFFlags bitand fl) == (unsigned int)fl ? 1 : 0;
     };
     float CheckLEF(int side);
 
@@ -441,11 +442,11 @@ public:
     void           DropProgramed(void);
     int            IsF16(void)
     {
-        return (acFlags & isF16 ? TRUE : FALSE);
+        return (acFlags bitand isF16 ? TRUE : FALSE);
     }
     int            IsComplex(void)
     {
-        return ((acFlags & isComplex) ? TRUE : FALSE);
+        return ((acFlags bitand isComplex) ? TRUE : FALSE);
     }
     // 2000-11-17 ADDED BY S.G. SO AIRCRAFT CAN HAVE A ENGINE TEMPERATURE AS WELL AS 'POWER' (RPM) OUTPUT
     void SetPowerOutput(float powerOutput); //me123 changed back
@@ -544,7 +545,7 @@ public:
     float RALTCoolTime; //Cooling is in progress
     int RaltReady()
     {
-        return (RALTCoolTime < 0.0F && RALTStatus == RON) ? 1 : 0;
+        return (RALTCoolTime < 0.0F and RALTStatus == RON) ? 1 : 0;
     };
     void RaltOn()
     {
@@ -578,15 +579,15 @@ public:
     unsigned int APFlag;
     int IsOn(APFlags flag)
     {
-        return APFlag & flag ? 1 : 0;
+        return APFlag bitand flag ? 1 : 0;
     };
     void SetAPFlag(APFlags flag)
     {
-        APFlag |= flag;
+        APFlag or_eq flag;
     };
     void ClearAPFlag(APFlags flag)
     {
-        APFlag &= ~flag;
+        APFlag and_eq compl flag;
     };
     void SetAPParameters(void);
     void SetNewRoll(void);
@@ -613,7 +614,7 @@ public:
     //DrawableTrail     *engineTrails[MAXENGINES];
     //DrawableTrail *rwingvortex, *lwingvortex;
     //DrawableTrail   *wingvapor;
-    //DrawableTrail   *dustTrail; // MLR 1/3/2004 - for the dumbass dust/mist trail effect!
+    //DrawableTrail   *dustTrail; // MLR 1/3/2004 - for the dumbass dust/mist trail effect
     // ********** NEW TRAIL STUFF *************
     DWORD       smokeTrail[TRAIL_MAX];
     DWORD       smokeTrail_trail[TRAIL_MAX];
@@ -659,20 +660,20 @@ public:
     unsigned int powerFlags;
     void PowerOn(AvionicsPowerFlags fl)
     {
-        powerFlags |= fl;
+        powerFlags or_eq fl;
     };
     int HasPower(AvionicsPowerFlags fl);
     void PowerOff(AvionicsPowerFlags fl)
     {
-        powerFlags &= ~fl;
+        powerFlags and_eq compl fl;
     };
     void PowerToggle(AvionicsPowerFlags fl)
     {
-        powerFlags ^= fl;
+        powerFlags xor_eq fl;
     };
     int PowerSwitchOn(AvionicsPowerFlags fl)
     {
-        return (powerFlags & fl) ? TRUE : FALSE;
+        return (powerFlags bitand fl) ? TRUE : FALSE;
     };
 
     void PreFlight();  // JPO - do preflight checks.
@@ -707,15 +708,15 @@ public:
     unsigned int elecLights;
     bool ElecIsSet(ElectricLights lt)
     {
-        return (elecLights & lt) ? true : false;
+        return (elecLights bitand lt) ? true : false;
     };
     void ElecSet(ElectricLights lt)
     {
-        elecLights |= lt;
+        elecLights or_eq lt;
     };
     void ElecClear(ElectricLights lt)
     {
-        elecLights &= ~lt;
+        elecLights and_eq compl lt;
     };
     void DoElectrics();
     static const unsigned long systemStates[PowerMaxState];
@@ -736,7 +737,7 @@ public:
     void IncEWSProg();
     void SetEWSProg(int num)
     {
-        if ((num >= 0) && (num <= 3)) EWSProgNum = num;    // MD: 4 position knob
+        if ((num >= 0) and (num <= 3)) EWSProgNum = num;    // MD: 4 position knob
     }
     //Prog select switch
     unsigned int EWSProgNum;

@@ -84,10 +84,10 @@ void TBlockList::Update(float x, float y)
     ourBlockCol = col;
 
     // Skip the block managment stuff if we didn't cross a block boundry
-    if (vx || vy)
+    if (vx or vy)
     {
         // Call the appropriate worker function based on how far we moved
-        if ((abs(vx) <= 1) && (abs(vy) <= 1))
+        if ((abs(vx) <= 1) and (abs(vy) <= 1))
         {
             UpdateBlockList(vx, vy);
         }
@@ -336,7 +336,7 @@ void TBlockList::ReleaseDistantBlocks()
         dx = abs(entry->virtualRow - ourBlockRow);
         dy = abs(entry->virtualCol - ourBlockCol);
 
-        if ((dx < outBlockDistance) && (dy < outBlockDistance))
+        if ((dx < outBlockDistance) and (dy < outBlockDistance))
         {
 
             // This ones okay, so move on to the next entry in the list
@@ -388,7 +388,7 @@ void TBlockList::InsertBlock(int row, int col)
     // Allocate memory for the new block list entry
     entry = new TListEntry;
 
-    if (!entry)
+    if ( not entry)
     {
         ShiError("Failed to allocate memory for terrain block list entry");
     }
@@ -399,9 +399,9 @@ void TBlockList::InsertBlock(int row, int col)
     entry->virtualCol = col;
     entry->block = myLevelPtr->RequestBlockOwnership(row, col);
 
-    if (!entry->block)
+    if ( not entry->block)
     {
-        ShiError("I failed to find a terrain block!");
+        ShiError("I failed to find a terrain block");
     }
 
 
@@ -416,7 +416,7 @@ void TBlockList::InsertBlock(int row, int col)
 
     head = entry;
 
-    if (!tail)
+    if ( not tail)
     {
         tail = entry;
     }

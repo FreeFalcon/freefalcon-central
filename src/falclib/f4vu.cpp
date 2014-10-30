@@ -114,20 +114,20 @@ void InitVU(void)
 #endif
 
     // Make sure we're using the right VU
-#if (VU_VERSION_USED  != VU_VERSION)
+#if (VU_VERSION_USED not_eq VU_VERSION)
 #error "Incorrect VU Version"
 #endif
 
-#if (VU_REVISION_USED != VU_REVISION)
+#if (VU_REVISION_USED not_eq VU_REVISION)
 #error "Incorrect VU Revision"
 #endif
 
-#if (VU_PATCH_USED    != VU_PATCH)
+#if (VU_PATCH_USED not_eq VU_PATCH)
 #error "Incorrect VU Patch"
 #endif
 
 extern const char* FREE_FALCON_VERSION;
-#ifdef DEBUG // Differentiate Debug & Release versions so they can't be seen by each other (PJW)
+#ifdef DEBUG // Differentiate Debug bitand Release versions so they can't be seen by each other (PJW)
 	sprintf(tmpStr, "K %s\0", FREE_FALCON_VERSION);
 #else
 	sprintf(tmpStr, "R %s\0", FREE_FALCON_VERSION);
@@ -187,7 +187,7 @@ VuEntity* VuxCreateEntity(ushort type, ushort size, VU_BYTE *dataPtr)
 {
     VuEntity *retval = 0;
     VuEntityType* classPtr = VuxType(type);
-    F4Assert(classPtr != NULL);
+    F4Assert(classPtr not_eq NULL);
 
     //sfr: rem for compatibility reasons
     long rem = size;
@@ -221,7 +221,7 @@ VuEntity* VuxCreateEntity(ushort type, ushort size, VU_BYTE *dataPtr)
 
             // This is a valid creation call only if this entity is still owned by
             // the owner of our game
-            if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
+            if ( not FalconLocalGame or FalconLocalGame->OwnerId() not_eq retval->OwnerId())
             {
                 VuReferenceEntity(retval);
                 VuDeReferenceEntity(retval);
@@ -237,7 +237,7 @@ VuEntity* VuxCreateEntity(ushort type, ushort size, VU_BYTE *dataPtr)
 
             // This is a valid creation call only if this entity is still owned by
             // the owner of our game
-            if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
+            if ( not FalconLocalGame or FalconLocalGame->OwnerId() not_eq retval->OwnerId())
             {
                 VuReferenceEntity(retval);
                 VuDeReferenceEntity(retval);
@@ -253,7 +253,7 @@ VuEntity* VuxCreateEntity(ushort type, ushort size, VU_BYTE *dataPtr)
 
             // This is a valid creation call only if this entity is still owned by
             // the owner of our game
-            if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
+            if ( not FalconLocalGame or FalconLocalGame->OwnerId() not_eq retval->OwnerId())
             {
                 VuReferenceEntity(retval);
                 VuDeReferenceEntity(retval);
@@ -310,7 +310,7 @@ VuEntity* VuxCreateEntity(ushort type, ushort size, VU_BYTE *dataPtr)
      retval = (VuEntity*) NewUnit (type, &data);
      // This is a valid creation call only if this entity is still owned by
      // the owner of our game
-     if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
+     if ( not FalconLocalGame or FalconLocalGame->OwnerId() not_eq retval->OwnerId())
      {
      VuReferenceEntity(retval);
      VuDeReferenceEntity(retval);
@@ -322,7 +322,7 @@ VuEntity* VuxCreateEntity(ushort type, ushort size, VU_BYTE *dataPtr)
      retval = (VuEntity*) NewManager (type, data);
      // This is a valid creation call only if this entity is still owned by
      // the owner of our game
-     if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
+     if ( not FalconLocalGame or FalconLocalGame->OwnerId() not_eq retval->OwnerId())
      {
      VuReferenceEntity(retval);
      VuDeReferenceEntity(retval);
@@ -334,7 +334,7 @@ VuEntity* VuxCreateEntity(ushort type, ushort size, VU_BYTE *dataPtr)
      retval = (VuEntity*) NewObjective (type, &data);
      // This is a valid creation call only if this entity is still owned by
      // the owner of our game
-     if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
+     if ( not FalconLocalGame or FalconLocalGame->OwnerId() not_eq retval->OwnerId())
      {
      VuReferenceEntity(retval);
      VuDeReferenceEntity(retval);
@@ -371,10 +371,10 @@ VuEntityType* VuxType(ushort id)
 {
     VuEntityType *retval = 0;
 
-    F4Assert(id >= VU_LAST_ENTITY_TYPE && id - VU_LAST_ENTITY_TYPE < NumEntities);
+    F4Assert(id >= VU_LAST_ENTITY_TYPE and id - VU_LAST_ENTITY_TYPE < NumEntities);
 
-    if (id >= VU_LAST_ENTITY_TYPE && id - VU_LAST_ENTITY_TYPE < NumEntities)
-        retval = (VuEntityType*) & (Falcon4ClassTable[id - VU_LAST_ENTITY_TYPE]);
+    if (id >= VU_LAST_ENTITY_TYPE and id - VU_LAST_ENTITY_TYPE < NumEntities)
+        retval = (VuEntityType*) bitand (Falcon4ClassTable[id - VU_LAST_ENTITY_TYPE]);
 
     return retval;
 }
@@ -382,7 +382,7 @@ VuEntityType* VuxType(ushort id)
 void VuxRetireEntity(VuEntity* theEntity)
 {
     F4Assert(theEntity);
-    MonoPrint("You dropped an entity, better find it!!!\n");
+    MonoPrint("You dropped an entity, better find it\n");
 }
 
 VuSessionEntity* vuxCreateSession(void)
@@ -433,7 +433,7 @@ void VuxGetIdAndWraps(const VuEntity *ce, VU_ID_NUMBER &id, VU_ID_NUMBER &low, V
  VU_ID_NUMBER *idp;
  ushort type = e->Type();
  if (
- (type > VU_PLAYER_POOL_GROUP_ENTITY_TYPE) ||
+ (type > VU_PLAYER_POOL_GROUP_ENTITY_TYPE) or
  (type < VU_SESSION_ENTITY_TYPE)
  ){
  FalconEntity *fe = static_cast<FalconEntity*>(e);
@@ -455,7 +455,7 @@ void VuxGetIdAndWraps(const VuEntity *ce, VU_ID_NUMBER &id, VU_ID_NUMBER &low, V
  hi = LAST_NON_VOLATILE_VU_ID_NUMBER;
  goto end;
  }
- else if (fe->IsBrigade() || fe->IsBattalion()){
+ else if (fe->IsBrigade() or fe->IsBattalion()){
  idp = &++lastNonVolatileId;
  low = FIRST_NON_VOLATILE_VU_ID_NUMBER;
  hi = LAST_NON_VOLATILE_VU_ID_NUMBER;
@@ -481,7 +481,7 @@ void VuxGetIdAndWraps(const VuEntity *ce, VU_ID_NUMBER &id, VU_ID_NUMBER &low, V
 
 end:
  // cover wrap
- if ((*idp < low) || (*idp > hi)){
+ if ((*idp < low) or (*idp > hi)){
  *idp = low;
  }
  // return the id

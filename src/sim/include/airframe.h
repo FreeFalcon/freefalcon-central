@@ -1,6 +1,7 @@
 #ifndef _SIXDOF_H
 #define _SIXDOF_H
 
+#include <cISO646>
 #include "mathlib/math.h"
 #include "mathlib/vector.h"
 #include "mathlib/matrix.h"
@@ -1201,11 +1202,11 @@ public:
         WheelBrakes   = 0x8,
         Refueling     = 0x10,
         AOACmdMode    = 0x20,
-        AutoCommand   = 0x40,
-        GCommand      = 0x80,
-        ErrorCommand  = 0x100,
+        AutoCommand = 0x40,
+        GCommand = 0x80,
+        ErrorCommand = 0x100,
         GroundCommand = 0x200,
-        AlphaCommand  = 0x400,
+        AlphaCommand = 0x400,
         GearBroken    = 0x800,
         Planted       = 0x1000,
         Simplified    = 0x2000,
@@ -1372,11 +1373,11 @@ public:
     unsigned char epuBurnState;
     void EpuSetHydrazine()
     {
-        epuBurnState |= EpuHydrazine;
+        epuBurnState or_eq EpuHydrazine;
     };
     void EpuSetAir()
     {
-        epuBurnState |= EpuAir;
+        epuBurnState or_eq EpuAir;
     };
     void EpuClear()
     {
@@ -1384,27 +1385,27 @@ public:
     };
     BOOL EpuIsAir()
     {
-        return (epuBurnState & EpuAir) ? TRUE : FALSE;
+        return (epuBurnState bitand EpuAir) ? TRUE : FALSE;
     };
     BOOL EpuIsHydrazine()
     {
-        return (epuBurnState & EpuHydrazine) ? TRUE : FALSE;
+        return (epuBurnState bitand EpuHydrazine) ? TRUE : FALSE;
     };
 
     unsigned char hydrAB; // JPO - state of the hydraulics system
     enum
     {
         HYDR_A_SYSTEM = 0x01, HYDR_B_SYSTEM = 0x02,
-        HYDR_ALL = HYDR_A_SYSTEM | HYDR_B_SYSTEM,
+        HYDR_ALL = HYDR_A_SYSTEM bitor HYDR_B_SYSTEM,
         HYDR_A_BROKE = 0x04, HYDR_B_BROKE = 0x08, // whats permanently broke?
     };
     int HydraulicA()
     {
-        return (hydrAB & HYDR_A_SYSTEM);
+        return (hydrAB bitand HYDR_A_SYSTEM);
     };
     int HydraulicB()
     {
-        return (hydrAB & HYDR_B_SYSTEM);
+        return (hydrAB bitand HYDR_B_SYSTEM);
     };
     int HydraulicOK()
     {
@@ -1417,7 +1418,7 @@ public:
     void HydrBreak(int sys);
     void HydrDown(int sys)
     {
-        hydrAB &= ~(sys & HYDR_ALL);
+        hydrAB and_eq compl (sys bitand HYDR_ALL);
     };
     void HydrRestore(int sys);
 
@@ -1447,19 +1448,19 @@ public:
     unsigned int engineFlags;
     int IsEngineFlag(EngineFlags ef)
     {
-        return (engineFlags & ef) ? 1 : 0;
+        return (engineFlags bitand ef) ? 1 : 0;
     };
     void SetEngineFlag(EngineFlags ef)
     {
-        engineFlags |= ef;
+        engineFlags or_eq ef;
     };
     void ClearEngineFlag(EngineFlags ef)
     {
-        engineFlags &= ~ ef;
+        engineFlags and_eq compl ef;
     };
     void ToggleEngineFlag(EngineFlags ef)
     {
-        engineFlags ^= ef;
+        engineFlags xor_eq ef;
     };
     enum FuelSwitch
     {
@@ -1542,23 +1543,23 @@ public:
     unsigned int generators;
     BOOL GeneratorRunning(Generator gen)
     {
-        return (generators & gen) ? TRUE : FALSE;
+        return (generators bitand gen) ? TRUE : FALSE;
     };
     BOOL GeneratorOK(Generator gen)
     {
-        return (generators & (gen << 1)) ? FALSE : TRUE;
+        return (generators bitand (gen << 1)) ? FALSE : TRUE;
     };
     void GeneratorOn(Generator gen)
     {
-        if (GeneratorOK(gen)) generators |= gen;
+        if (GeneratorOK(gen)) generators or_eq gen;
     };
     void GeneratorOff(Generator gen)
     {
-        generators &= ~gen;
+        generators and_eq compl gen;
     };
     void GeneratorBreak(Generator gen)
     {
-        generators |= (gen << 1);
+        generators or_eq (gen << 1);
         GeneratorOff(gen);
     };
 
@@ -1737,15 +1738,15 @@ public:
     void ResetAlpha(void);
     void SetFlag(int newFlag)
     {
-        flags |= newFlag;
+        flags or_eq newFlag;
     };
     void ClearFlag(int newFlag)
     {
-        flags &= ~newFlag;
+        flags and_eq compl newFlag;
     };
     int IsSet(int testFlag) const
     {
-        return flags & testFlag ? 1 : 0;
+        return flags bitand testFlag ? 1 : 0;
     }
     // KCK added function - this is really only needed temporarily
     void SetPosition(float x, float y, float z);

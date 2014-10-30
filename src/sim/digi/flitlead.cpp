@@ -18,12 +18,12 @@ void DigitalBrain::CommandFlight(void)
         // 2002-03-08 MODIFIED BY S.G. If in WaypointMode it means we don't care so why should our wing care but flag us as having a target switch so if we ever get out of WaypointMode, send the target to our wings
         if (targetPtr)
         {
-            if (((moreFlags & KeepTryingAttack) || lastTarget == NULL || (lastTarget && (targetPtr->BaseData() != lastTarget->BaseData()))))
+            if (((moreFlags bitand KeepTryingAttack) or lastTarget == NULL or (lastTarget and (targetPtr->BaseData() not_eq lastTarget->BaseData()))))
             {
-                if (curMode != WaypointMode)
+                if (curMode not_eq WaypointMode)
                 {
-                    moreFlags &= ~KeepTryingAttack;
-                    moreFlags &= ~KeepTryingRejoin;
+                    moreFlags and_eq compl KeepTryingAttack;
+                    moreFlags and_eq compl KeepTryingRejoin;
 
                     // KCK: I added the GetCampaignObject() check because BaseData() was observed to be a MissileClass
                     // But why would we be targetting a missile class?
@@ -32,13 +32,13 @@ void DigitalBrain::CommandFlight(void)
                     // just respond defensivly.
                     if (targetPtr->BaseData()->IsSim())
                     {
-                        if (!targetPtr->BaseData()->IsWeapon())
+                        if ( not targetPtr->BaseData()->IsWeapon())
                             targetId = ((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject()->Id();
                     }
                     else
                         targetId = targetPtr->BaseData()->Id();
 
-                    if (targetId != FalconNullId)
+                    if (targetId not_eq FalconNullId)
                     {
 
                         if (SimLibElapsedTime > mLastOrderTime + 5000)
@@ -50,10 +50,10 @@ void DigitalBrain::CommandFlight(void)
                     }
                 }
                 else
-                    moreFlags |= KeepTryingAttack;
+                    moreFlags or_eq KeepTryingAttack;
             }
         }
-        else if ((moreFlags & KeepTryingRejoin) || lastTarget && targetPtr == NULL) // 2002-03-08 MODIFIED BY S.G. keep trying to rejoin until it can
+        else if ((moreFlags bitand KeepTryingRejoin) or lastTarget and targetPtr == NULL) // 2002-03-08 MODIFIED BY S.G. keep trying to rejoin until it can
         {
             int usComponents = self->GetCampaignObject()->NumberOfComponents();
             int i;
@@ -65,9 +65,9 @@ void DigitalBrain::CommandFlight(void)
             {
                 flightMember = (AircraftClass *)self->GetCampaignObject()->GetComponentEntity(i);
 
-                if (flightMember && (flightMember->IsDigital() || flightMember->IsLocal()))
+                if (flightMember and (flightMember->IsDigital() or flightMember->IsLocal()))
                 {
-                    if (flightMember->DBrain() && flightMember->DBrain()->GetAGDoctrine() != AGD_NONE)
+                    if (flightMember->DBrain() and flightMember->DBrain()->GetAGDoctrine() not_eq AGD_NONE)
                     {
                         stillengaging = true;
                         break;
@@ -75,16 +75,16 @@ void DigitalBrain::CommandFlight(void)
                 }
             }
 
-            if (!stillengaging && !threatPtr) // If we are threatened, call the wingmen back regardless what they do
+            if ( not stillengaging and not threatPtr) // If we are threatened, call the wingmen back regardless what they do
             {
                 AiSendCommand(self, FalconWingmanMsg::WMRejoin, AiFlight, FalconNullId);
                 AiSendCommand(self, FalconWingmanMsg::WMCoverMode, AiFlight, FalconNullId);
 
-                moreFlags &= ~KeepTryingAttack;
-                moreFlags &= ~KeepTryingRejoin;
+                moreFlags and_eq compl KeepTryingAttack;
+                moreFlags and_eq compl KeepTryingRejoin;
             }
             else
-                moreFlags |= KeepTryingRejoin;
+                moreFlags or_eq KeepTryingRejoin;
         }
     }
 }

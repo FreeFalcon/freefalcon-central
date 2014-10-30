@@ -100,7 +100,7 @@ void AirframeClass::Roll(void)
         if (vcas < speedswitch)
             pscmd *= (vcas / speedswitch);
 
-        if (gearPos && g_bNewFm)
+        if (gearPos and g_bNewFm)
             pscmd *= 0.6f;
         else if (gearPos)
             pscmd *= 0.5f;
@@ -125,7 +125,7 @@ void AirframeClass::Roll(void)
     }
 
 
-    if (!IsSet(Simplified))
+    if ( not IsSet(Simplified))
     {
         switch (stallMode)
         {
@@ -166,7 +166,7 @@ void AirframeClass::Roll(void)
     }
 
     //TJL 01/14/03 Multi-engine asymmetric thrust roll
-    if (auxaeroData->nEngines == 2 && IsSet(InAir))
+    if (auxaeroData->nEngines == 2 and IsSet(InAir))
     {
         float asymmRoll = 0.0f;
         float engine1 = thrust1;
@@ -271,36 +271,36 @@ float AirframeClass::RollInertia(float inertia)
     for (i = 0; i < platform->Sms->NumHardpoints(); i++)
     {
         // Check for various stores
-        if (platform->Sms->hardPoint[i]->weaponPointer && platform->Sms->hardPoint[i]->GetWeaponClass() == wcAgmWpn)
+        if (platform->Sms->hardPoint[i]->weaponPointer and platform->Sms->hardPoint[i]->GetWeaponClass() == wcAgmWpn)
         {
             hasAGMissile += 1;
         }
-        else if (platform->Sms->hardPoint[i]->weaponPointer && platform->Sms->hardPoint[i]->GetWeaponClass() == wcHARMWpn)
+        else if (platform->Sms->hardPoint[i]->weaponPointer and platform->Sms->hardPoint[i]->GetWeaponClass() == wcHARMWpn)
         {
             hasHARM += 1;
         }
-        else if (platform->Sms->hardPoint[i]->weaponPointer && platform->Sms->hardPoint[i]->GetWeaponClass() == wcBombWpn)
+        else if (platform->Sms->hardPoint[i]->weaponPointer and platform->Sms->hardPoint[i]->GetWeaponClass() == wcBombWpn)
         {
             hasBomb += 1;
         }
 
-        else if (platform->Sms->hardPoint[i]->weaponPointer && platform->Sms->hardPoint[i]->GetWeaponClass() == wcGbuWpn)
+        else if (platform->Sms->hardPoint[i]->weaponPointer and platform->Sms->hardPoint[i]->GetWeaponClass() == wcGbuWpn)
         {
             hasGBU += 1;
         }
-        else if (platform->Sms->hardPoint[i]->weaponPointer && platform->Sms->hardPoint[i]->GetWeaponClass() == wcRocketWpn)
+        else if (platform->Sms->hardPoint[i]->weaponPointer and platform->Sms->hardPoint[i]->GetWeaponClass() == wcRocketWpn)
         {
             hasRocket += 1;
         }
-        else if (platform->Sms->hardPoint[i]->weaponPointer && platform->Sms->hardPoint[i]->GetWeaponClass() == wcCamera)
+        else if (platform->Sms->hardPoint[i]->weaponPointer and platform->Sms->hardPoint[i]->GetWeaponClass() == wcCamera)
         {
             hasCamera += 1;
         }
-        else if (platform->Sms->hardPoint[i]->weaponPointer && platform->Sms->hardPoint[i]->GetWeaponClass() == wcSamWpn)
+        else if (platform->Sms->hardPoint[i]->weaponPointer and platform->Sms->hardPoint[i]->GetWeaponClass() == wcSamWpn)
         {
             hasSamWpn += 1;
         }
-        else if (platform->Sms->hardPoint[i]->weaponPointer && platform->Sms->hardPoint[i]->GetWeaponClass() == wcTank)
+        else if (platform->Sms->hardPoint[i]->weaponPointer and platform->Sms->hardPoint[i]->GetWeaponClass() == wcTank)
         {
             haswcTank += 1;
             //Add this so we can divide the inertia by the number of tanks
@@ -353,25 +353,25 @@ float AirframeClass::RollInertia(float inertia)
         hasSamWpn--;
     }
 
-    while (haswcTank > 0 && externalFuel > 4000)
+    while (haswcTank > 0 and externalFuel > 4000)
     {
         inertiaTank += 0.5f;
         haswcTank--;
     }
 
-    while (haswcTank > 0 && (externalFuel <= 4000 && externalFuel > 2000))
+    while (haswcTank > 0 and (externalFuel <= 4000 and externalFuel > 2000))
     {
         inertiaTank += 0.4f;
         haswcTank--;
     }
 
-    while (haswcTank > 0 && (externalFuel <= 2000 && externalFuel > 500))
+    while (haswcTank > 0 and (externalFuel <= 2000 and externalFuel > 500))
     {
         inertiaTank += 0.3f;
         haswcTank--;
     }
 
-    while (haswcTank > 0 && (externalFuel <= 500))
+    while (haswcTank > 0 and (externalFuel <= 500))
     {
         inertiaTank += 0.2f;
         haswcTank--;

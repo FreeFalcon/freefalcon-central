@@ -8,6 +8,7 @@
 #ifndef _GMRADAR_H_
 #define _GMRADAR_H_
 
+#include <cISO646>
 #include "Render3D.h"
 
 
@@ -46,7 +47,7 @@ public:
     BOOL SetRange(float newRange, int newLOD);
     void SetGain(float newGain)
     {
-        if (newGain <= 1000.0F && newGain >= 0.0F) gain = newGain;
+        if (newGain <= 1000.0F and newGain >= 0.0F) gain = newGain;
     };
 
     float GetRange(void)

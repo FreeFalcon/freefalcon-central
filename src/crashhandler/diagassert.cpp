@@ -42,7 +42,7 @@ typedef vector<ULONG> ADDRVECTOR ;
 static HINSTVECTOR g_HMODVector ;
 
 // The DiagAssert display options.
-static DWORD g_DiagAssertOptions = DA_SHOWMSGBOX | DA_SHOWODS ;
+static DWORD g_DiagAssertOptions = DA_SHOWMSGBOX bitor DA_SHOWODS ;
 
 // The symbol engine.
 static CSymbolEngine g_cSym ;
@@ -110,10 +110,10 @@ DiagAssert(DWORD     dwOverrideOpts  ,
     HINSTVECTOR::iterator loop ;
 
     for (loop =  g_HMODVector.begin() ;
-         loop != g_HMODVector.end()   ;
+         loop not_eq g_HMODVector.end()   ;
          loop++)
     {
-        if (0 != FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER    |
+        if (0 not_eq FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER    |
                                FORMAT_MESSAGE_IGNORE_INSERTS   |
                                FORMAT_MESSAGE_FROM_HMODULE      ,
                                *loop                              ,
@@ -144,13 +144,13 @@ DiagAssert(DWORD     dwOverrideOpts  ,
     // Make sure the message got translated into something.
     LPTSTR szRealLastErr ;
 
-    if (NULL != szFmtMsg)
+    if (NULL not_eq szFmtMsg)
     {
         szRealLastErr = szFmtMsg ;
     }
     else
     {
-        szRealLastErr = _T("**Last error code does not exist!!!!") ;
+        szRealLastErr = _T("**Last error code does not exist") ;
     }
 
     // Get the module name.
@@ -161,7 +161,7 @@ DiagAssert(DWORD     dwOverrideOpts  ,
 
     // Build the message.
     pCurrPos += (wsprintf(szBuff                                 ,
-                          _T("Debug Assertion Failed!\n\n"  \
+                          _T("Debug Assertion Failed\n\n"  \
                              "Program : %s\n"               \
                              "File : %s\n"                  \
                              "Line : %d\n"                  \
@@ -176,13 +176,13 @@ DiagAssert(DWORD     dwOverrideOpts  ,
                  * sizeof(TCHAR)) ;
 
     // Get rid of the allocated memory from FormatMessage.
-    if (NULL != szFmtMsg)
+    if (NULL not_eq szFmtMsg)
     {
         LocalFree((LPVOID)szFmtMsg) ;
     }
 
     // Am I supposed to show the stack trace too?
-    if (DA_SHOWSTACKTRACE == (DA_SHOWSTACKTRACE & dwOpts))
+    if (DA_SHOWSTACKTRACE == (DA_SHOWSTACKTRACE bitand dwOpts))
     {
         DoStackTrace(pCurrPos ,
                      sizeof(szBuff) -
@@ -191,7 +191,7 @@ DiagAssert(DWORD     dwOverrideOpts  ,
     }
 
     // Is this supposed to go to ODS?
-    if (DA_SHOWODS == (DA_SHOWODS & dwOpts))
+    if (DA_SHOWODS == (DA_SHOWODS bitand dwOpts))
     {
         OutputDebugString(szBuff) ;
     }
@@ -200,11 +200,11 @@ DiagAssert(DWORD     dwOverrideOpts  ,
     //  the case the user does not want the MessageBox.
     int iRet = IDIGNORE ;
 
-    if (DA_SHOWMSGBOX == (DA_SHOWMSGBOX & dwOpts))
+    if (DA_SHOWMSGBOX == (DA_SHOWMSGBOX bitand dwOpts))
     {
         HWND hWndParent = GetActiveWindow() ;
 
-        if (NULL != hWndParent)
+        if (NULL not_eq hWndParent)
         {
             hWndParent = GetLastActivePopup(hWndParent) ;
         }
@@ -229,7 +229,7 @@ DiagAssert(DWORD     dwOverrideOpts  ,
 
     if (IDRETRY == iRet)
     {
-        // This will trigger DebugBreak!!
+        // This will trigger DebugBreak
         return (TRUE) ;
     }
 
@@ -274,7 +274,7 @@ static DWORD __stdcall GetModBase(HANDLE hProcess , DWORD dwAddr)
         // Let's go fishing.
         MEMORY_BASIC_INFORMATION stMBI ;
 
-        if (0 != VirtualQueryEx(hProcess         ,
+        if (0 not_eq VirtualQueryEx(hProcess         ,
                                 (LPCVOID)dwAddr  ,
                                 &stMBI           ,
                                 sizeof(stMBI)))
@@ -290,7 +290,7 @@ static DWORD __stdcall GetModBase(HANDLE hProcess , DWORD dwAddr)
 
             HANDLE hFile = NULL ;
 
-            if (0 != dwNameLen)
+            if (0 not_eq dwNameLen)
             {
                 hFile = CreateFile(szFile       ,
                                    GENERIC_READ    ,
@@ -348,12 +348,12 @@ static DWORD ConvertAddress(DWORD dwAddr , LPTSTR szOutBuff)
     pCurrPos += wsprintf(pCurrPos , _T("0x%08X ") , dwAddr) ;
 
     // Get the module name.
-    if (0 != g_cSym.SymGetModuleInfo(dwAddr , &stIHM))
+    if (0 not_eq g_cSym.SymGetModuleInfo(dwAddr , &stIHM))
     {
         // Strip off the path.
         LPTSTR szName = _tcsrchr(stIHM.ImageName , _T('\\')) ;
 
-        if (NULL != szName)
+        if (NULL not_eq szName)
         {
             szName++ ;
         }
@@ -372,7 +372,7 @@ static DWORD ConvertAddress(DWORD dwAddr , LPTSTR szOutBuff)
     // Get the function.
     DWORD dwDisp ;
 
-    if (0 != g_cSym.SymGetSymFromAddr(dwAddr , &dwDisp , pIHS))
+    if (0 not_eq g_cSym.SymGetSymFromAddr(dwAddr , &dwDisp , pIHS))
     {
         if (0 == dwDisp)
         {
@@ -393,7 +393,7 @@ static DWORD ConvertAddress(DWORD dwAddr , LPTSTR szOutBuff)
 
         stIHL.SizeOfStruct = sizeof(IMAGEHLP_LINE) ;
 
-        if (0 != g_cSym.SymGetLineFromAddr(dwAddr  ,
+        if (0 not_eq g_cSym.SymGetLineFromAddr(dwAddr  ,
                                            &dwDisp ,
                                            &stIHL))
         {
@@ -403,7 +403,7 @@ static DWORD ConvertAddress(DWORD dwAddr , LPTSTR szOutBuff)
                                  stIHL.FileName             ,
                                  stIHL.LineNumber) ;
 
-            if (0 != dwDisp)
+            if (0 not_eq dwDisp)
             {
                 pCurrPos += wsprintf(pCurrPos             ,
                                      _T(" + %d bytes") ,
@@ -480,7 +480,7 @@ static void DoStackTrace(LPTSTR szString  ,
         dwMachine                = IMAGE_FILE_MACHINE_ALPHA ;
         stFrame.AddrPC.Offset    = (unsigned long)stCtx.Fir ;
 #else
-#error ( "Unknown machine!" )
+#error ( "Unknown machine" )
 #endif
 
         // Loop for the first 512 stack elements.
@@ -503,7 +503,7 @@ static void DoStackTrace(LPTSTR szString  ,
             {
                 // Also check that the address is not zero.  Sometimes
                 //  StackWalk returns TRUE with a frame of zero.
-                if (0 != stFrame.AddrPC.Offset)
+                if (0 not_eq stFrame.AddrPC.Offset)
                 {
                     vAddrs.push_back(stFrame.AddrPC.Offset) ;
                 }
@@ -520,7 +520,7 @@ static void DoStackTrace(LPTSTR szString  ,
         ADDRVECTOR::iterator loop ;
 
         for (loop =  vAddrs.begin() ;
-             loop != vAddrs.end()   ;
+             loop not_eq vAddrs.end()   ;
              loop++)
         {
 

@@ -73,12 +73,12 @@ CRITICAL_SECTION  RadioSubTitle::cs_radiosubtitle;
 RadioSubTitle::RadioSubTitle(const int MaximumMessageNum, const unsigned long TTL)
 {
 
-    if (MaximumMessageNum != 0)
+    if (MaximumMessageNum not_eq 0)
         MaxMessageNum = MaximumMessageNum;
     else
         MaxMessageNum = 20;
 
-    if (TTL != 0)
+    if (TTL not_eq 0)
         messageTTL = TTL;
     else
         messageTTL = MESSAGE_TTL;
@@ -125,7 +125,7 @@ RadioSubTitle::RadioSubTitle(const int MaximumMessageNum, const unsigned long TT
 
 #endif // DYNAMIC_LINE_NUM
 
-    if (!ReadNewFile(THE_INPUT_FILE_NAME))
+    if ( not ReadNewFile(THE_INPUT_FILE_NAME))
     {
         throw Init_Error("Error reading the subtitles input file");
     }
@@ -191,12 +191,12 @@ RadioSubTitle::~RadioSubTitle(void)
 /*****************************************************************************/
 void RadioSubTitle::SetTTLAndMessageNum(const int MessageNum, const unsigned long TTL)
 {
-    if (MessageNum != 0)
+    if (MessageNum not_eq 0)
         MaxMessageNum = MessageNum;
     else
         MaxMessageNum = 20;
 
-    if (TTL != 0)
+    if (TTL not_eq 0)
         messageTTL = TTL;
     else
         messageTTL = MESSAGE_TTL;
@@ -232,7 +232,7 @@ void RadioSubTitle::NewMessage(const int theTalker, const int theFrag, const uns
 
     currentlyEditedNode = new SubTitleNode();
 
-    if (!currentlyEditedNode)
+    if ( not currentlyEditedNode)
     {
 #pragma warning(disable:4127)
         ShiAssert(false);
@@ -275,7 +275,7 @@ void RadioSubTitle::NewMessage(const int theTalker, const int theFrag, const uns
 
     SubTitleNode* index = (SubTitleNode*)theRadioChatterList->GetHead();
 
-    while ((index) && (index->messageStartTime < thePlayTime))
+    while ((index) and (index->messageStartTime < thePlayTime))
     {
         index = (SubTitleNode*)index->GetSucc();
     }
@@ -297,7 +297,7 @@ void RadioSubTitle::AddToMessage(const int theTalker, const int theFrag)
 
     char* rchunk = GetRadioChunk(theTalker, theFrag);
 
-    if ((rchunk) && (currentlyEditedNode))
+    if ((rchunk) and (currentlyEditedNode))
     {
         AppendToString(&currentlyEditedNode->theSpokenLine, " ");
         AppendToString(&currentlyEditedNode->theSpokenLine, rchunk);
@@ -314,7 +314,7 @@ char* RadioSubTitle::GetRadioChunk(const int theTalker, const int theFrag)
 {
 #ifdef SHOW_FRAG_AND_TALKER___BUT_MEM_LEAK
 
-    if ((theStrings[theFrag]) && (theTalker < MAX_VOICE_NUM))
+    if ((theStrings[theFrag]) and (theTalker < MAX_VOICE_NUM))
     {
         char* bla = (char*)malloc(strlen(theStrings[theFrag]->Voices[theTalker]) + 30); // mem leak but it´s only for test anyway
 
@@ -337,14 +337,14 @@ char* RadioSubTitle::GetRadioChunk(const int theTalker, const int theFrag)
 #else
 #ifdef NDEBUG
 
-    if ((theFrag < FragCount) && (theStrings[theFrag]) && (theTalker < MAX_VOICE_NUM) && !F4IsBadReadPtr(theStrings[theFrag], sizeof(csvLine)))
+    if ((theFrag < FragCount) and (theStrings[theFrag]) and (theTalker < MAX_VOICE_NUM) and not F4IsBadReadPtr(theStrings[theFrag], sizeof(csvLine)))
     {
         return theStrings[theFrag]->Voices[theTalker];
     }
 
 #else
 
-    if ((theFrag < FragCount) && (theStrings[theFrag]) && (theTalker < MAX_VOICE_NUM))
+    if ((theFrag < FragCount) and (theStrings[theFrag]) and (theTalker < MAX_VOICE_NUM))
     {
         if (F4IsBadReadPtr(theStrings[theFrag], sizeof(csvLine)))
         {
@@ -377,7 +377,7 @@ ColouredSubTitle** RadioSubTitle::GetTimeSortedMessages(const unsigned long theT
     // Get the oldest message in the list..
     SubTitleNode* node = (SubTitleNode*)theRadioChatterList->GetHead();
 
-    if (!node)
+    if ( not node)
     {
         LeaveCriticalSection(&cs_radiosubtitle);
         return 0; // no messages to play..
@@ -389,7 +389,7 @@ ColouredSubTitle** RadioSubTitle::GetTimeSortedMessages(const unsigned long theT
     // these messages are going to be removed actually..
     // this is done for every message (node) till I find one that is still to be drawn - and as the list is
     // sorted by time, all following ones have also to be drawn so I break from the loop
-    while ((node) && (node->messageStartTime  + messageTTL < theTime))
+    while ((node) and (node->messageStartTime  + messageTTL < theTime))
     {
         SubTitleNode* nodeToDelete = (SubTitleNode*)theRadioChatterList->RemHead();
 
@@ -402,7 +402,7 @@ ColouredSubTitle** RadioSubTitle::GetTimeSortedMessages(const unsigned long theT
         node = (SubTitleNode*)theRadioChatterList->GetHead();
     }
 
-    if (!node)
+    if ( not node)
     {
         LeaveCriticalSection(&cs_radiosubtitle);
         return 0; // no messages to play.. (all messages were outdated)
@@ -411,7 +411,7 @@ ColouredSubTitle** RadioSubTitle::GetTimeSortedMessages(const unsigned long theT
     // the calling routine has to delete that array..
     ColouredSubTitle** theMessages = (ColouredSubTitle**)calloc(sizeof(ColouredSubTitle*), LinkedListCount + 1);
 
-    if (!theMessages)
+    if ( not theMessages)
     {
         LeaveCriticalSection(&cs_radiosubtitle);
         return 0;
@@ -428,7 +428,7 @@ ColouredSubTitle** RadioSubTitle::GetTimeSortedMessages(const unsigned long theT
             break;
         }
 
-        if ((node->messageStartTime < theTime) && (theTime < node->messageStartTime + messageTTL))
+        if ((node->messageStartTime < theTime) and (theTime < node->messageStartTime + messageTTL))
         {
 #if 0 // Retro 23May2004
             theMessages[i] = (ColouredSubTitle*)malloc(sizeof(ColouredSubTitle));
@@ -552,19 +552,19 @@ void RadioSubTitle::WriteOut(void)
 /*****************************************************************************/
 unsigned long RadioSubTitle::FindChannelColour(const char theChannel)
 {
-    if (theChannel & TOFROM_TOWER)
+    if (theChannel bitand TOFROM_TOWER)
         return colour_Tower;
-    else if (theChannel & TOFROM_FLIGHT)
+    else if (theChannel bitand TOFROM_FLIGHT)
         return colour_Flight;
-    else if (theChannel & TO_PACKAGE)
+    else if (theChannel bitand TO_PACKAGE)
         return colour_ToPackage;
-    else if (theChannel & TOFROM_PACKAGE)
+    else if (theChannel bitand TOFROM_PACKAGE)
         return colour_ToFromPackage;
-    else if (theChannel & TO_TEAM)
+    else if (theChannel bitand TO_TEAM)
         return colour_Team;
-    else if (theChannel & IN_PROXIMITY)
+    else if (theChannel bitand IN_PROXIMITY)
         return colour_Proximity;
-    else if (theChannel & TO_WORLD)
+    else if (theChannel bitand TO_WORLD)
         return colour_World;
     else
         return colour_Standard;
@@ -575,19 +575,19 @@ unsigned long RadioSubTitle::FindChannelColour(const char theChannel)
 /*****************************************************************************/
 char* RadioSubTitle::FindChannelName(const char theChannel)
 {
-    if (theChannel & TOFROM_TOWER)
+    if (theChannel bitand TOFROM_TOWER)
         return "[Tower] ";
-    else if (theChannel & TOFROM_FLIGHT)
+    else if (theChannel bitand TOFROM_FLIGHT)
         return "[Flight] ";
-    else if (theChannel & TO_PACKAGE)
+    else if (theChannel bitand TO_PACKAGE)
         return "[To Package] ";
-    else if (theChannel & TOFROM_PACKAGE)
+    else if (theChannel bitand TOFROM_PACKAGE)
         return "[To/From Package] ";
-    else if (theChannel & TO_TEAM)
+    else if (theChannel bitand TO_TEAM)
         return "[Guard] ";
-    else if (theChannel & IN_PROXIMITY)
+    else if (theChannel bitand IN_PROXIMITY)
         return "[Proximity] ";
-    else if (theChannel & TO_WORLD)
+    else if (theChannel bitand TO_WORLD)
         return "[Broadcast] ";
     else
         return "[Unknown] ";
@@ -600,22 +600,22 @@ void RadioSubTitle::SetChannelColours(unsigned long flight, unsigned long toPack
                                       unsigned long Team, unsigned long Proximity, unsigned long World,
                                       unsigned long Tower, unsigned long Standard)
 {
-    if (flight != 0) colour_Flight = flight;
+    if (flight not_eq 0) colour_Flight = flight;
 
-    if (toPackage != 0) colour_ToPackage = toPackage;
+    if (toPackage not_eq 0) colour_ToPackage = toPackage;
 
-    if (ToFromPackage != 0) colour_ToFromPackage = ToFromPackage;
+    if (ToFromPackage not_eq 0) colour_ToFromPackage = ToFromPackage;
 
     // 'Team' is the guard channel
-    if (Team != 0) colour_Team = Team;
+    if (Team not_eq 0) colour_Team = Team;
 
-    if (Proximity != 0) colour_Proximity = Proximity;
+    if (Proximity not_eq 0) colour_Proximity = Proximity;
 
-    if (World != 0) colour_World = World;
+    if (World not_eq 0) colour_World = World;
 
-    if (Tower != 0) colour_Tower = Tower;
+    if (Tower not_eq 0) colour_Tower = Tower;
 
-    if (Standard != 0) colour_Standard = Standard;
+    if (Standard not_eq 0) colour_Standard = Standard;
 }
 
 /*****************************************************************************/
@@ -679,7 +679,7 @@ void RadioSubTitle::SetChannelColours(char* flight, char* toPackage, char* ToFro
 /*****************************************************************************/
 inline void RadioSubTitle::AppendToString(char** theOldOne, const char* theNewOne)
 {
-    if ((!theOldOne) || (!*theOldOne) || (!theNewOne))
+    if (( not theOldOne) or ( not *theOldOne) or ( not theNewOne))
     {
         assert(false);
         return;
@@ -705,7 +705,7 @@ inline void RadioSubTitle::AppendToString(char** theOldOne, const char* theNewOn
 /*****************************************************************************/
 inline void RadioSubTitle::OverWriteString(char** theOldOne, const char* theNewOne)
 {
-    if (!theNewOne)
+    if ( not theNewOne)
     {
         assert(false);
         return;
@@ -845,18 +845,18 @@ void RadioSubTitle::breakDownLine(csvLine_t* theTextString, char* theLine, const
             {
                 end++;
             }
-            while (*end != QUOTAS/*'"'*/);
+            while (*end not_eq QUOTAS/*'"'*/);
 
             inDoubleQuotes = true;
         }
 
         // look for SEPERATOR
         // set end pointer
-        if ((*end == SEPARATOR/*','*/) || (*end == '\0'))
+        if ((*end == SEPARATOR/*','*/) or (*end == '\0'))
         {
             if (end > start)
             {
-                if (!inDoubleQuotes)
+                if ( not inDoubleQuotes)
                 {
                     len = end - start + 1;
                     char* tmp = (char*)malloc(len);
@@ -927,7 +927,7 @@ bool RadioSubTitle::ReadNewFile(const char* theFileName)
         char tmp[MAX_READ_LEN];
         int j = 0;
 
-        while (fgets(&tmp[0], MAX_READ_LEN, fp) != NULL)
+        while (fgets(&tmp[0], MAX_READ_LEN, fp) not_eq NULL)
         {
             if (j == 0)
             {
@@ -964,7 +964,7 @@ int RadioSubTitle::CountLinesInFile(const char* theFileName)
         char tmp[MAX_READ_LEN];
         int linecount = 0;
 
-        while (fgets(&tmp[0], MAX_READ_LEN, fp) != NULL)
+        while (fgets(&tmp[0], MAX_READ_LEN, fp) not_eq NULL)
         {
             linecount++;
         }

@@ -22,15 +22,15 @@
 #define F_TO_A(a) ((F_I32( a * 255.9f))<<24)
 #define F_TO_G(g) ((F_I32( g * 255.9f))<<8)
 #define F_TO_B(b) ((F_I32( b * 255.9f)))
-#define F_TO_RGB(r,g,b) ( F_TO_R(r) | F_TO_G(g) | F_TO_B(b))
-#define F_TO_ARGB(a,r,g,b) ( F_TO_A(a) | F_TO_RGB(r,g,b))
+#define F_TO_RGB(r,g,b) ( F_TO_R(r) bitor F_TO_G(g) bitor F_TO_B(b))
+#define F_TO_ARGB(a,r,g,b) ( F_TO_A(a) bitor F_TO_RGB(r,g,b))
 
 #define F_TO_UR(r) ((F_I32( r))<<16)
 #define F_TO_UA(a) ((F_I32( a))<<24)
 #define F_TO_UG(g) ((F_I32( g))<<8)
 #define F_TO_UB(b) ((F_I32( b)))
-#define F_TO_URGB(r,g,b) ( F_TO_UR(r) | F_TO_UG(g) | F_TO_UB(b))
-#define F_TO_UARGB(a,r,g,b) ( F_TO_UA(a) | F_TO_URGB(r,g,b))
+#define F_TO_URGB(r,g,b) ( F_TO_UR(r) bitor F_TO_UG(g) bitor F_TO_UB(b))
+#define F_TO_UARGB(a,r,g,b) ( F_TO_UA(a) bitor F_TO_URGB(r,g,b))
 
 
 
@@ -90,7 +90,7 @@ typedef union
         DWORD SWLightOwner: 8; // The Static Light Owner for this surface... ignored in runtime/used in editing
     } b;
     // *** WARNING *** THIS MUST BE THE BIT SIZE OF THE NUMEBR OF
-    // FLAGS DEFINING THE RENDERING STATE !!!!!
+    // FLAGS DEFINING THE RENDERING STATE 
     char StateFlags;
     //***********************************************************
     DWORD w;
@@ -336,32 +336,34 @@ typedef union
 
 inline DWORD XMM_ARGB(XMMColor *Source)
 {
-    DWORD r;
-    _asm
-    {
-        push eax
-        push edx
-        mov edx, DWORD PTR Source
-        fld [edx]
-        fistp r
-        mov eax, r
-        sal eax, 8
-        fld [edx+4]
-        fistp r
-        or eax, r
-        sal eax, 8
-        fld [edx+8]
-        fistp r
-        or eax, r
-        sal eax, 8
-        fld [edx+16]
-        fistp r
-        or eax, r
-        mov r, eax
-        pop edx
-        pop eax
-    }
-    return r;
+#undef or
+	DWORD r;
+	_asm
+	{
+		push eax
+			push edx
+			mov edx, DWORD PTR Source
+			fld[edx]
+			fistp r
+			mov eax, r
+			sal eax, 8
+			fld[edx + 4]
+			fistp r
+			or eax, r
+			sal eax, 8
+			fld[edx + 8]
+			fistp r
+			or eax, r
+			sal eax, 8
+			fld[edx + 16]
+			fistp r
+			or eax, r
+			mov r, eax
+			pop edx
+			pop eax
+	}
+	return r;
+#define or ||
 }
 
 

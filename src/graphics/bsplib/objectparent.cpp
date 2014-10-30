@@ -5,6 +5,7 @@
 
     Provides structures and definitions for 3D objects.
 \***************************************************************************/
+#include <cISO646>
 #include "stdafx.h"
 #include <io.h>
 #include <fcntl.h>
@@ -79,7 +80,7 @@ void ObjectParent::SetupTable(char *basename)
     // Open the master object file
     strcat(filename, ".DXH");
 
-    file = open(filename, _O_RDONLY | _O_BINARY | _O_SEQUENTIAL);
+    file = open(filename, _O_RDONLY bitor _O_BINARY bitor _O_SEQUENTIAL);
 
     if (file < 0)
     {
@@ -135,7 +136,7 @@ void ObjectParent::CleanupTable(void)
 
 #ifdef USE_SH_POOLS
 
-    if (gBSPLibMemPool != NULL)
+    if (gBSPLibMemPool not_eq NULL)
     {
         MemPoolFree(gBSPLibMemPool);
         gBSPLibMemPool = NULL;
@@ -261,7 +262,7 @@ void ObjectParent::ReadParentList(int file)
         }
 
         // Allocate and read this parent's slot and dynamic position array
-        if (objParent->nSlots || objParent->nDynamicCoords)
+        if (objParent->nSlots or objParent->nDynamicCoords)
         {
 
 #ifdef USE_SH_POOLS
@@ -333,7 +334,7 @@ void ObjectParent::VerifyVersion(int file)
     result = read(file, &fileVersion, sizeof(fileVersion));
 
     // If the version doesn't match our expectations, report an error
-    if (fileVersion != FORMAT_VERSION)
+    if (fileVersion not_eq FORMAT_VERSION)
     {
         //Beep( 2000, 500 );
         //Beep( 2000, 500 );
@@ -342,7 +343,7 @@ void ObjectParent::VerifyVersion(int file)
     }
 
     // New version of KO,dxh which uses UINT's for nSwitches and nDOFs to handle the increased number of Switch and DOF ID's.
-    if (nVer != (int)DXver)
+    if (nVer not_eq (int)DXver)
         nVer = 0; // old KO.dxh version
 }
 
@@ -353,7 +354,7 @@ void ObjectParent::FlushReferences(void)
     for (int i = 0; i < TheObjectListLength; i++)
     {
         // if any Ref still present, or locked, release WITH UNLOCK
-        if (TheObjectList[i].refCount || TheObjectList[i].Locked)
+        if (TheObjectList[i].refCount or TheObjectList[i].Locked)
         {
             TheObjectList[i].Release(true);
         }
@@ -389,7 +390,7 @@ void ObjectParent::ReleaseTexSet(DWORD TexSet, DWORD MaxTexSet)
 void ObjectParent::Reference(void)
 {
     // RED - Possible CTD Fix, if no LODs, exit
-    if (!nLODs) return;
+    if ( not nLODs) return;
 
     if (refCount == 0)
     {
@@ -402,8 +403,8 @@ void ObjectParent::Reference(void)
         {
             ShiAssert(FALSE == F4IsBadReadPtr(record, sizeof(*record)));  // JPO CTD check
 
-            //if (record && !F4IsBadReadPtr(record, sizeof(LODrecord)) && record->objLOD && !F4IsBadCodePtr((FARPROC) record->objLOD)) // JB 010221 CTD
-            if (record && !F4IsBadReadPtr(record, sizeof(LODrecord)) && record->objLOD && !F4IsBadReadPtr(record->objLOD, sizeof(ObjectLOD))) // JB 010318 CTD
+            //if (record and not F4IsBadReadPtr(record, sizeof(LODrecord)) and record->objLOD and not F4IsBadCodePtr((FARPROC) record->objLOD)) // JB 010221 CTD
+            if (record and not F4IsBadReadPtr(record, sizeof(LODrecord)) and record->objLOD and not F4IsBadReadPtr(record->objLOD, sizeof(ObjectLOD))) // JB 010318 CTD
                 record->objLOD->Reference();
 
             record--;
@@ -417,7 +418,7 @@ void ObjectParent::Reference(void)
 void ObjectParent::ReferenceWithFetch(void)
 {
     // RED - Possible CTD Fix, if no LODs, exit
-    if (!nLODs) return;
+    if ( not nLODs) return;
 
     if (refCount == 0)
     {
@@ -453,7 +454,7 @@ void ObjectParent::Release(bool Unlock)
         Locked = false;
 
     // RED - Release if count eraches 0, and OBJECT IS NOT LOCKED
-    if (refCount == 0 && !Locked)
+    if (refCount == 0 and not Locked)
     {
         // Dereference each of our child LODs
         while (record >= pLODs)
@@ -477,7 +478,7 @@ ObjectLOD* ObjectParent::ChooseLOD(float range, int *used, float *max_range)
     // 2002-03-29 MN possible CTD fix
     ShiAssert(FALSE == F4IsBadReadPtr(pLODs, sizeof * pLODs));
 
-    if (!pLODs)
+    if ( not pLODs)
         return NULL;
 
     MaxLOD = nLODs;
@@ -485,7 +486,7 @@ ObjectLOD* ObjectParent::ChooseLOD(float range, int *used, float *max_range)
     record = pLODs;
 
     // COBRA - RED - Check each LOD from HIGHEST detail to LOWEST appropriate
-    while (record && MaxLOD--)
+    while (record and MaxLOD--)
     {
         ShiAssert(FALSE == F4IsBadReadPtr(record, sizeof * record)); // JPO CTD check
 
@@ -503,7 +504,7 @@ ObjectLOD* ObjectParent::ChooseLOD(float range, int *used, float *max_range)
 
         LOD ++;
         record++;
-        ShiAssert(record == NULL || FALSE == F4IsBadReadPtr(record, sizeof * record));
+        ShiAssert(record == NULL or FALSE == F4IsBadReadPtr(record, sizeof * record));
     }
 
     // Return our final drawing candidate (if any)

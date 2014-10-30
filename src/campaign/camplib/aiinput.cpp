@@ -154,7 +154,7 @@ void ReadCampAIInputs(char * name)
 
     sprintf(tmpName, "%s.AII", name);
 
-    if(!F4FindFile(tmpName, fileName, 256, &off, &len))
+    if( not F4FindFile(tmpName, fileName, 256, &off, &len))
         exit(0);
 
     /* ATM Inputs */

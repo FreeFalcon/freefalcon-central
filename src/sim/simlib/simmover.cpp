@@ -46,7 +46,7 @@ static inline LPVOID MemAlloc2HeapAlloc(HANDLE heap, DWORD dwSize, DWORD dwFlags
 void GraphicsDataPoolInitializeStorage(void)
 {
 #ifdef USE_SH_POOLS
-    graphicsDOFDataPool = MemPoolInit(MEM_POOL_DEFAULT | MEM_POOL_SERIALIZE);
+    graphicsDOFDataPool = MemPoolInit(MEM_POOL_DEFAULT bitor MEM_POOL_SERIALIZE);
 #else
     graphicsDOFDataPool = HeapCreate(NULL, 0, 0);
 #endif
@@ -147,7 +147,7 @@ SimMoverClass::SimMoverClass(VU_BYTE** stream, long *rem) : SimBaseClass(stream,
         switchChange = NULL;
     }
 
-    // KCK: This shit needs to be sent too!
+    // KCK: This shit needs to be sent too
     memcpychk(&vehicleInUnit, stream, sizeof(uchar), rem);
     memcpychk(&pilotSlot, stream, sizeof(uchar), rem);
 
@@ -177,7 +177,7 @@ void SimMoverClass::MakeSimple()
     numVertices = AIRCRAFT_MAX_DVERTEX;
     AllocateSwitchAndDof();
 
-    for (i = 2; i < 6 && i < numDofs; i++)
+    for (i = 2; i < 6 and i < numDofs; i++)
     {
         DOFType[i] = NoDof;
     }
@@ -282,7 +282,7 @@ void SimMoverClass::InitLocalData()
         {
             if (GetType() == TYPE_AIRPLANE)
             {
-                if (GetSType() == STYPE_AIR_FIGHTER_BOMBER && GetSPType() == SPTYPE_F16C)
+                if (GetSType() == STYPE_AIR_FIGHTER_BOMBER and GetSPType() == SPTYPE_F16C)
                 {
                     MakeComplex();
                 }
@@ -400,7 +400,7 @@ void SimMoverClass::CleanupData()
 void SimMoverClass::CleanupLocalData()
 {
     // sfr: @TODO remove this shit (for now im just calling base class cleanup)
-    if (numSensors > 0 && (!sensorArray || F4IsBadReadPtr(sensorArray, sizeof(SensorClass*))))
+    if (numSensors > 0 and ( not sensorArray or F4IsBadReadPtr(sensorArray, sizeof(SensorClass*))))
     {
         // JB 010223 CTD
         return; // JB 010223 CTD
@@ -462,9 +462,9 @@ void SimMoverClass::PositionUpdateDone()
 bool SimMoverClass::UpdatePositionFromLastOwner(unsigned long ms)
 {
     if (
-        (FalconLocalGame == NULL) ||
-        (lastOwnerId == FalconNullId) ||
-        (lastOwnerId == FalconLocalSessionId) ||
+        (FalconLocalGame == NULL) or
+        (lastOwnerId == FalconNullId) or
+        (lastOwnerId == FalconLocalSessionId) or
         (vuDatabase->Find(lastOwnerId) == NULL)
     )
     {
@@ -485,7 +485,7 @@ bool SimMoverClass::UpdatePositionFromLastOwner(unsigned long ms)
         ::Sleep(SLEEP_IVAL_MS);
         delay += SLEEP_IVAL_MS;
     }
-    while (waitingUpdateFromServer && delay < ms);
+    while (waitingUpdateFromServer and delay < ms);
 
     waitingUpdateFromServer = false;
     return delay < ms ? true : false;
@@ -506,7 +506,7 @@ int SimMoverClass::Wake(void)
     // SetDelta(0.0F, 0.0F, 0.0F);
     // SetYPRDelta(0.0F, 0.0F, 0.0F);
 
-    if (drawPointer && !IsExploding())
+    if (drawPointer and not IsExploding())
     {
         for (i = 0; i < numSwitches; i++)
         {
@@ -620,7 +620,7 @@ void SimMoverClass::MakeLocal()
 
     VuDriver *oldd = SetDriver(NULL);
 
-    if (oldd != NULL)
+    if (oldd not_eq NULL)
     {
         if (this == FalconLocalSession->GetPlayerEntity())
         {
@@ -667,7 +667,7 @@ int SimMoverClass::Exec(void)
     if (GetCampaignObject())
         ((UnitClass*)GetCampaignObject())->SetUnitLastMove(TheCampaign.CurrentTime);
 
-    if (drawPointer && !IsExploding())
+    if (drawPointer and not IsExploding())
     {
         for (i = 0; i < numSwitches; i++)
         {
@@ -694,7 +694,7 @@ int SimMoverClass::Exec(void)
 
     if (IsLocal())
     {
-        if ((requestCount > 0 && (SimLibFrameCount & 0x2F) == 0) || ((SimLibFrameCount & 0x1FF) == 0))
+        if ((requestCount > 0 and (SimLibFrameCount bitand 0x2F) == 0) or ((SimLibFrameCount bitand 0x1FF) == 0))
         {
             //newControlData = new FalconControlSurfaceMsg(Id(), FalconLocalGame);
             //newControlData->dataBlock.gameTime = SimLibElapsedTime;
@@ -719,13 +719,13 @@ int SimMoverClass::Exec(void)
             // machine controlling the entity locally
             if (IsFiring())
             {
-                if (nonLocalData->flags & NONLOCAL_GUNS_FIRING)
+                if (nonLocalData->flags bitand NONLOCAL_GUNS_FIRING)
                 {
                     // already firing, is it time to stop or fire another?
                     if (nonLocalData->timer2 <= SimLibElapsedTime)
                     {
                         // stop firing
-                        nonLocalData->flags &= ~NONLOCAL_GUNS_FIRING;
+                        nonLocalData->flags and_eq compl NONLOCAL_GUNS_FIRING;
 
                         // check for active smoketrail and send it to sfx for
                         // later removal
@@ -773,7 +773,7 @@ int SimMoverClass::Exec(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass(SFX_GUN_TRACER, // type
-                         SFX_MOVES | SFX_USES_GRAVITY, // flags
+                         SFX_MOVES bitor SFX_USES_GRAVITY, // flags
                          &pos, // world pos
                          &vec, // vector
                          3.0f, // time to live
@@ -785,10 +785,10 @@ int SimMoverClass::Exec(void)
 
                     }
                 }
-                else if (!nonLocalData->timer2)
+                else if ( not nonLocalData->timer2)
                 {
                     // we haven't yet started firing....
-                    // will be set when recieving a fire message nonLocalData->flags |= NONLOCAL_GUNS_FIRING;
+                    // will be set when recieving a fire message nonLocalData->flags or_eq NONLOCAL_GUNS_FIRING;
 
                     // timer1 is the time to fire next tracer
                     // timer2 is the maximum time we'll allow firing to continue
@@ -828,7 +828,7 @@ int SimMoverClass::Exec(void)
                     /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass(SFX_GUN_TRACER, // type
-                     SFX_MOVES | SFX_USES_GRAVITY, // flags
+                     SFX_MOVES bitor SFX_USES_GRAVITY, // flags
                      &pos, // world pos
                      &vec, // vector
                      3.0f, // time to live
@@ -842,10 +842,10 @@ int SimMoverClass::Exec(void)
             }
             else // not firing
             {
-                if (nonLocalData->flags & NONLOCAL_GUNS_FIRING)
+                if (nonLocalData->flags bitand NONLOCAL_GUNS_FIRING)
                 {
                     // stop firing
-                    nonLocalData->flags &= ~NONLOCAL_GUNS_FIRING;
+                    nonLocalData->flags and_eq compl NONLOCAL_GUNS_FIRING;
 
                     // check for active smoketrail and send it to sfx for
                     // later removal
@@ -1008,7 +1008,7 @@ int SimMoverClass::Handle(VuFullUpdateEvent *event)
 
     for (i = 0; i < numSwitches; i++)
     {
-        if (switchData[i] != tmpMover->switchData[i])
+        if (switchData[i] not_eq tmpMover->switchData[i])
         {
             switchData[i] = tmpMover->switchData[i];
             switchChange[i] = TRUE;
@@ -1022,7 +1022,7 @@ int SimMoverClass::Handle(VuPositionUpdateEvent *event)
 {
     UnitClass *campObj = (UnitClass*) GetCampaignObject();
 
-    if (campObj && campObj->IsLocal() && campObj->GetComponentLead() == this)
+    if (campObj and campObj->IsLocal() and campObj->GetComponentLead() == this)
     {
         campObj->SimSetLocation(event->x_, event->y_, event->z_);
 
@@ -1150,7 +1150,7 @@ void SimMoverClass::UpdateLOS(SimObjectType *obj)
     OTWDriver.GetAreaFloorAndCeiling(&bottom, &top);
 
     if (
-        (ZPos() < top && obj->BaseData()->ZPos() < top) ||
+        (ZPos() < top and obj->BaseData()->ZPos() < top) or
         (OTWDriver.CheckLOS(this, obj->BaseData()))
     )
     {
@@ -1170,11 +1170,11 @@ void SimMoverClass::UpdateLOS(SimObjectType *obj)
         obj->localData->SetCloudLOS(FALSE);
     }
 
-    if (!OnGround())
+    if ( not OnGround())
     {
         obj->localData->nextLOSCheck = SimLibElapsedTime + 200;
     }
-    else if (!obj->BaseData()->OnGround())
+    else if ( not obj->BaseData()->OnGround())
     {
         obj->localData->nextLOSCheck = SimLibElapsedTime + 1000;
     }
@@ -1186,7 +1186,7 @@ void SimMoverClass::UpdateLOS(SimObjectType *obj)
 
 int SimMoverClass::CheckLOS(SimObjectType *obj)
 {
-    if (!obj || !obj->BaseData())
+    if ( not obj or not obj->BaseData())
         return FALSE;
 
     if (SimLibElapsedTime > obj->localData->nextLOSCheck)
@@ -1197,7 +1197,7 @@ int SimMoverClass::CheckLOS(SimObjectType *obj)
 
 int SimMoverClass::CheckCompositeLOS(SimObjectType *obj)
 {
-    if (!obj || !obj->BaseData())
+    if ( not obj or not obj->BaseData())
         return FALSE;
 
     if (SimLibElapsedTime > obj->localData->nextLOSCheck)
@@ -1282,8 +1282,8 @@ SimBaseClass *SimMoverClass::FeatureCollision(float groundZ)
                     testFeature->drawPointer->GetPosition(&fpos);
 
                     // test with gross level bounds of object
-                    if (fabs(pos.x - fpos.x) < radius + p3.x &&
-                        fabs(pos.y - fpos.y) < radius + p3.y &&
+                    if (fabs(pos.x - fpos.x) < radius + p3.x and 
+                        fabs(pos.y - fpos.y) < radius + p3.y and 
                         fabs(pos.z - fpos.z) < radius + p3.z)
                     {
                         // if we're on the ground make sure we have a downward vector if
@@ -1330,7 +1330,7 @@ SimBaseClass *SimMoverClass::FeatureCollision(float groundZ)
                                 }
                                 else
                                 {
-                                    if (FalconLocalSession && this == FalconLocalSession->GetPlayerEntity())
+                                    if (FalconLocalSession and this == FalconLocalSession->GetPlayerEntity())
                                         g_intellivibeData.CollisionCounter++;
 
                                     return testFeature;
@@ -1348,7 +1348,7 @@ SimBaseClass *SimMoverClass::FeatureCollision(float groundZ)
         objective = (CampBaseClass*)gridIt.GetNext();
     }
 
-    if (foundFeature && FalconLocalSession && this == FalconLocalSession->GetPlayerEntity())
+    if (foundFeature and FalconLocalSession and this == FalconLocalSession->GetPlayerEntity())
         g_intellivibeData.CollisionCounter++;
 
     return foundFeature;

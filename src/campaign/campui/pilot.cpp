@@ -64,10 +64,10 @@ void PilotClass::ResetStats(uchar airExperience)
     pilot_id = 0;
     pilot_status = PILOT_AVAILABLE;
     // MODIFIED BY S.G. SO PILOT SKILL ARE NOT JUST VETERAN AND ACE BUT BASED ON THE SQUADRON SKILL +-1
-    // pilot_skill_and_rating = 0x03 | (rand()%PILOT_SKILL_RANGE);
+    // pilot_skill_and_rating = 0x03 bitor (rand()%PILOT_SKILL_RANGE);
     airExperience -= 60; // From 60 to 100 (recruit to ace) down to 0 to 40
     airExperience /= 10; // Now from 0 to 4 like 'pilot_skill_and_rating' likes it
-    pilot_skill_and_rating = 0x30 | ((rand() % 3 - 1) + airExperience); // pilot_skill_and_rating will have +-1 from 'airExperience' base level
+    pilot_skill_and_rating = 0x30 bitor ((rand() % 3 - 1) + airExperience); // pilot_skill_and_rating will have +-1 from 'airExperience' base level
     // END OF MODIFIED SECTION
     aa_kills = 0;
     ag_kills = 0;
@@ -231,7 +231,7 @@ void DisposePilotInfo(void)
 int GetAvailablePilot(int first, int last, int owner)
 {
     int best_pilot = -1;
-    ushort best = ~0;
+    ushort best = compl 0;
 
     if (last > NumPilots)
         last = NumPilots;
@@ -261,7 +261,7 @@ int PilotAvailable (int pn)
  {
  if (pn >= NumPilots)
  return 0;
- if (!PilotData[pn].flags)
+ if ( not PilotData[pn].flags)
  return 1;
  return 0;
  }
@@ -284,15 +284,15 @@ void SetPilotStatus (int pn, int f)
  {
  if (pn >= NumPilots)
  return;
- PilotData[pn].flags |= f;
+ PilotData[pn].flags or_eq f;
  }
 
 void UnsetPilotStatus (int pn, int f)
  {
  if (pn >= NumPilots)
  return;
- PilotData[pn].flags |= f;
- PilotData[pn].flags ^= f;
+ PilotData[pn].flags or_eq f;
+ PilotData[pn].flags xor_eq f;
  }
 */
 
@@ -309,7 +309,7 @@ void GetCallsignID(uchar* id, uchar* num, int range)
     {
         for (i = (int) * id; i < (int)*id + range; i++)
         {
-            if (i < NumCallsigns && !((CallsignData[i] >> (j - 1)) & 0x01))
+            if (i < NumCallsigns and not ((CallsignData[i] >> (j - 1)) bitand 0x01))
             {
                 *id = (uchar)i;
                 *num = (uchar)j;
@@ -323,7 +323,7 @@ void GetCallsignID(uchar* id, uchar* num, int range)
 
     for (i = (int) * id; i < (int)*id + range; i++)
     {
-        if (i < NumCallsigns && !(rand() % range))
+        if (i < NumCallsigns and not (rand() % range))
         {
             *id = (uchar)i;
             return;
@@ -334,13 +334,13 @@ void GetCallsignID(uchar* id, uchar* num, int range)
 void SetCallsignID(int id, int num)
 {
     int temp = (0x01 << (num - 1));
-    CallsignData[id] |= (uchar)(temp);
+    CallsignData[id] or_eq (uchar)(temp);
 }
 
 void UnsetCallsignID(int id, int num)
 {
     int temp = (0x01 << (num - 1));
-    CallsignData[id] &= (uchar)(~temp);
+    CallsignData[id] and_eq (uchar)(compl temp);
 }
 
 void GetCallsign(int id, int num, _TCHAR* callsign)
@@ -387,7 +387,7 @@ void GetDogfightCallsign(Flight flight)
         {
             checkid = calltable[flight->GetTeam()][i];
 
-            if (checkid < NumCallsigns && !((CallsignData[checkid] >> (num - 1)) & 0x01))
+            if (checkid < NumCallsigns and not ((CallsignData[checkid] >> (num - 1)) bitand 0x01))
             {
                 flight->callsign_id = (uchar)checkid;
                 flight->callsign_num = (uchar)num;

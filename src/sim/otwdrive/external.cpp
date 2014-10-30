@@ -64,7 +64,7 @@ float OTWDriverClass::GetDoppler(float x, float y, float z, float dx, float dy, 
     dPos.z /= dist;
 
     // Decide on the camera's motion vector
-    if (otwPlatform.get() == NULL || GetOTWDisplayMode() == ModeFlyby)
+    if (otwPlatform.get() == NULL or GetOTWDisplayMode() == ModeFlyby)
     {
         camVec.x = 0.0f;
         camVec.y = 0.0f;
@@ -119,14 +119,14 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
     float platRoll;
 
     // Display is outside the aircraft....
-    ShiAssert(!DisplayInCockpit());
+    ShiAssert( not DisplayInCockpit());
 
     // Retro 17Jan2004
-    if ((!actionCameraMode) && (IO.AnalogIsUsed(AXIS_ZOOM) == true))
+    if (( not actionCameraMode) and (IO.AnalogIsUsed(AXIS_ZOOM) == true))
     {
         chaseRange = -IO.GetAxisValue(AXIS_ZOOM) / 15000.f * 900.f;
 
-        if (otwPlatform && otwPlatform->drawPointer)
+        if (otwPlatform and otwPlatform->drawPointer)
             // Retro: the "-4.f" is the max displacement (3.f) of the displacementcam with a bit of a buffer ;)
             chaseRange = min(-otwPlatform->drawPointer->Radius() - 4.F, chaseRange);
         else
@@ -140,7 +140,7 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
     if (PlayerOptions.GetMouseLook() == true) // Retro 18Jan2004
         theMouseView.Compute(slewRate * dT);
 
-    if (!otwPlatform)
+    if ( not otwPlatform)
     {
 
         cameraVel.x = cameraVel.y = cameraVel.z = 0; // MLR 12/2/2003 -
@@ -216,7 +216,7 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
                               &cameraPos, &cameraRot);
 
         // Retro 25Dec2003
-        if ((otwPlatform->IsAirplane()) && (displaceCamera) && (!otwPlatform->OnGround()))
+        if ((otwPlatform->IsAirplane()) and (displaceCamera) and ( not otwPlatform->OnGround()))
         {
             DisplaceTheCamera(dT);
         }
@@ -232,7 +232,7 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
         chaseEl += elDir * slewRate * dT;
 
         // put limiter or range of allowable adjustable motion.
-        // it's supposed to be a satellite!
+        // it's supposed to be a satellite
         if (chaseEl > 75.0f * DTR)
             chaseEl = 75.0f * DTR;
         else if (chaseEl < -75.0f * DTR)
@@ -263,18 +263,18 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
     }
 
     // handle various cases of chase camera
-    else if (GetOTWDisplayMode() == ModeChase ||
+    else if (GetOTWDisplayMode() == ModeChase or
              (
-                 (GetOTWDisplayMode() == ModeAirFriendly ||
-                  GetOTWDisplayMode() == ModeAirEnemy ||
-                  GetOTWDisplayMode() == ModeGroundEnemy ||
-                  GetOTWDisplayMode() == ModeGroundFriendly ||
-                  GetOTWDisplayMode() == ModeTarget ||
-                  GetOTWDisplayMode() == ModeTargetToSelf ||
-                  GetOTWDisplayMode() == ModeTargetToWeapon ||
-                  GetOTWDisplayMode() == ModeIncoming ||
-                  GetOTWDisplayMode() == ModeWeapon) &&
-                 (otwTrackPlatform.get() == NULL || otwTrackPlatform == otwPlatform)
+                 (GetOTWDisplayMode() == ModeAirFriendly or
+                  GetOTWDisplayMode() == ModeAirEnemy or
+                  GetOTWDisplayMode() == ModeGroundEnemy or
+                  GetOTWDisplayMode() == ModeGroundFriendly or
+                  GetOTWDisplayMode() == ModeTarget or
+                  GetOTWDisplayMode() == ModeTargetToSelf or
+                  GetOTWDisplayMode() == ModeTargetToWeapon or
+                  GetOTWDisplayMode() == ModeIncoming or
+                  GetOTWDisplayMode() == ModeWeapon) and 
+                 (otwTrackPlatform.get() == NULL or otwTrackPlatform == otwPlatform)
              ))
     {
 
@@ -385,11 +385,11 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
         else
             platRoll = 0.0f;
 
-        if (platRoll < -90.0f * DTR && chaseCamRoll > 90.0f * DTR)
+        if (platRoll < -90.0f * DTR and chaseCamRoll > 90.0f * DTR)
         {
             dRoll = platRoll + (360.0f * DTR) - chaseCamRoll;
         }
-        else if (platRoll > 90.0f * DTR && chaseCamRoll < -90.0f * DTR)
+        else if (platRoll > 90.0f * DTR and chaseCamRoll < -90.0f * DTR)
         {
             dRoll = platRoll - (360.0f * DTR) - chaseCamRoll;
         }
@@ -420,14 +420,14 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
     }
 
     // various cameras (with tracked object)
-    else if (GetOTWDisplayMode() == ModeWeapon ||
-             GetOTWDisplayMode() == ModeAirFriendly ||
-             GetOTWDisplayMode() == ModeAirEnemy ||
-             GetOTWDisplayMode() == ModeTarget ||
-             GetOTWDisplayMode() == ModeTargetToSelf ||
-             GetOTWDisplayMode() == ModeTargetToWeapon ||
-             GetOTWDisplayMode() == ModeIncoming ||
-             GetOTWDisplayMode() == ModeGroundEnemy ||
+    else if (GetOTWDisplayMode() == ModeWeapon or
+             GetOTWDisplayMode() == ModeAirFriendly or
+             GetOTWDisplayMode() == ModeAirEnemy or
+             GetOTWDisplayMode() == ModeTarget or
+             GetOTWDisplayMode() == ModeTargetToSelf or
+             GetOTWDisplayMode() == ModeTargetToWeapon or
+             GetOTWDisplayMode() == ModeIncoming or
+             GetOTWDisplayMode() == ModeGroundEnemy or
              GetOTWDisplayMode() == ModeGroundFriendly)
     {
         // get look-at vector to tracked object
@@ -493,7 +493,7 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
     {
         // (If we never hit this assert, then the "else if" above could/should
         // become a simple "else".
-        // ShiAssert( !"Illegal view mode.  Shouldn't get here.  SCR." );
+        // ShiAssert( "Illegal view mode.  Shouldn't get here.  SCR." );
     }
 }
 #include "profiler.h"
@@ -505,17 +505,17 @@ extern int targetCompressionRatio;
 // This function moves the camera slighly to simulate the relative movement of
 // an imaginary formation-flying airplane that holds the camera in order to
 // heighten immersion (or such).
-// THIS function IMPLICITLY changes the cameraPos !!!
+// THIS function IMPLICITLY changes the cameraPos 
 /*****************************************************************************/
 void OTWDriverClass::DisplaceTheCamera(float dT)
 {
     Prof(DisplaceTheCamera);
 
-    if ((!xDir) || (!yDir) || (!zDir))
+    if (( not xDir) or ( not yDir) or ( not zDir))
         return;
 
     // only compute any additional displacement when NOT paused..
-    if (targetCompressionRatio && SimDriver.MotionOn()) // Retro 29Feb2004 - hope that takes care of 'FREEZE' state too
+    if (targetCompressionRatio and SimDriver.MotionOn()) // Retro 29Feb2004 - hope that takes care of 'FREEZE' state too
     {
         // have to keep dT in check.. too long (or too short ?) values mess up the movement of the cam..
         // dT is in seconds.. be sure..
@@ -533,7 +533,7 @@ void OTWDriverClass::DisplaceTheCamera(float dT)
             // 'scale' scales the movement speed of the cam, it should get slower as it
             // nears its maximum displacement.. for this, I elected to use a cos() function
             // as cos(90°) is 0 while cos(0°) is 1. So, if our displacement is equal to our
-            // max displacement the cos returns 0 (cam moves very slow),  and if our
+            // max displacement the cos returns 0 (cam moves very slow), and if our
             // displacement is very small compared to the max displacement I get 1
             // (cam moves normally)
             // the 'offset' at the beginning makes sure that the cam NEVER ceases moving as
@@ -547,7 +547,7 @@ void OTWDriverClass::DisplaceTheCamera(float dT)
             float thisFrameScale = 0.1F + (float)FabsF((dir[i])->scale * Cos(dir[i]->Displ / dir[i]->maxDispl * HALF_PI));
             (dir[i])->Displ += (thisFramewobbleDistance * thisFrameScale * dir[i]->direction);
 
-            if (FabsF((dir[i])->Displ) > FabsF((dir[i])->maxDispl)) // bumped into a limit.. limits are symmetric (duh!)
+            if (FabsF((dir[i])->Displ) > FabsF((dir[i])->maxDispl)) // bumped into a limit.. limits are symmetric (duh)
             {
                 // so now we select a new cam-direction and speed (randomly)
                 ReInitDisplacement(dir[i]);
@@ -598,7 +598,7 @@ void OTWDriverClass::ReInitDisplacement(CamDisplacement* theDisp)
 
 void OTWDriverClass::toggleDisplaceCamera(void)
 {
-    displaceCamera = !displaceCamera;
+    displaceCamera = not displaceCamera;
 }
 #pragma warning(pop)
 // Retro 23Dec2003 end
@@ -681,7 +681,7 @@ void OTWDriverClass::BuildExternalNearList(void)
     FlushNearList();
 
     // Drop out if we have nothing to do...
-    if (!SimDriver.objectList || DisplayInCockpit() || !otwPlatform || otwPlatform->OnGround() || !otwPlatform->drawPointer)
+    if ( not SimDriver.objectList or DisplayInCockpit() or not otwPlatform or otwPlatform->OnGround() or not otwPlatform->drawPointer)
         return;
 
     // Compute the real world camera position
@@ -706,10 +706,10 @@ void OTWDriverClass::BuildExternalNearList(void)
     )
     {
         // Skip things on the groud, without draw pointers, hidden, or exploding
-        if (theObject->OnGround() ||
-            theObject->IsSetLocalFlag(IS_HIDDEN) ||
-            !theObject->drawPointer ||
-            theObject->IsExploding() ||
+        if (theObject->OnGround() or
+            theObject->IsSetLocalFlag(IS_HIDDEN) or
+ not theObject->drawPointer or
+            theObject->IsExploding() or
             otwPlatform.get() == theObject)
         {
             continue;
@@ -741,7 +741,7 @@ void OTWDriverClass::DrawExternalViewTarget(void)
     static int LODlie = 0; // A way to force an object to update its terrain data every frame.
 
     // Make sure we don't get in here when we shouldn't.
-    if (otwPlatform.get() == NULL || otwPlatform->drawPointer == NULL)
+    if (otwPlatform.get() == NULL or otwPlatform->drawPointer == NULL)
     {
         return;
     }
@@ -815,7 +815,7 @@ void OTWDriverClass::DrawExternalViewTarget(void)
 void OTWDriverClass::StartEjectCam(EjectedPilotClass *ejectedPilot, int startChaseMode)
 {
     // F4Assert(ejectCam == 0);
-    F4Assert(ejectedPilot != NULL);
+    F4Assert(ejectedPilot not_eq NULL);
 
     // Set ownship to the ejected pilot
     lastotwPlatform = otwPlatform;

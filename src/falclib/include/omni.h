@@ -1,3 +1,4 @@
+#include <cISO646>
 #ifndef OMNI_HEADER
 #   define  OMNI_HEADER 1
 
@@ -68,10 +69,10 @@ does for watcom, etc.
 # define MEM_DEBUG_PRINTF               YES         /* console i/o to print 
 debug information       */
 
-# define MEM_REPLACE_MALLOC             NO          /* redefine malloc & free as
+# define MEM_REPLACE_MALLOC             NO          /* redefine malloc bitand free as
 MemMalloc, MemFree */
 
-# define MEM_TRAP_MALLOC                NO          /* redefine malloc & free as
+# define MEM_TRAP_MALLOC                NO          /* redefine malloc bitand free as
 #error             */
 
 /* ----- RESOURCE MANAGER GUIDE ----- */
@@ -217,7 +218,7 @@ properly  */
 
 #if MEM_ENABLED
 //#  include "memmgr.h"
-#elif !defined _SMARTHEAP_H
+#elif not defined _SMARTHEAP_H
 #  define MemFree(p)        free(p)
 #  define MemFreePtr        free
 #  define MemMalloc(n, s)   malloc(n)
@@ -225,7 +226,7 @@ properly  */
 #  define MemRealloc(p, s)  realloc(p,s)
 #endif /* MEM_ENABLED */
 
-#if( !SND_USE_RESMGR )
+#if( not SND_USE_RESMGR )
 #   define RES_FOPEN        fopen
 #   define RES_FCLOSE       fclose
 #   define RES_FTELL        ftell

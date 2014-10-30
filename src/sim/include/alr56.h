@@ -16,7 +16,7 @@ public :
     // State Control Functions
     virtual void ToggleAutoDrop(void)
     {
-        dropPattern = !dropPattern;
+        dropPattern = not dropPattern;
     };
 
 protected:

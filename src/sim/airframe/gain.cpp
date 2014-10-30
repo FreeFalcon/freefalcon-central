@@ -67,9 +67,9 @@ void AirframeClass::Gains(void)
     cosphiLim = max(0.0F, platform->platformAngles.cosphi);
     cosmuLim  = max(0.0F, platform->platformAngles.cosmu);
 
-    //landingGains = gearPos != 0 || IsEngineFlag(FuelDoorOpen) || IsSet(Refueling);
+    //landingGains = gearPos not_eq 0 or IsEngineFlag(FuelDoorOpen) or IsSet(Refueling);
     //TJL 10/20/03 Added TEFExtend. Per the F-16-1 ALT FLAPS sets Landing Gains
-    landingGains = gearPos != 0 || IsEngineFlag(FuelDoorOpen) || IsSet(Refueling) || platform->TEFExtend;
+    landingGains = gearPos not_eq 0 or IsEngineFlag(FuelDoorOpen) or IsSet(Refueling) or platform->TEFExtend;
 
 
 
@@ -78,7 +78,7 @@ void AirframeClass::Gains(void)
     /* AOA bias for aoa command system */
     /*---------------------------------*/
     /*
-    if (clalph0 == 0.0F || IsSet(Planted) )
+    if (clalph0 == 0.0F or IsSet(Planted) )
        aoabias = 0.0F;
     else
     {
@@ -87,7 +87,7 @@ void AirframeClass::Gains(void)
        //aoabias = (GRAVITY * platform->platformAngles.costhe *
      // cosphiLim / qsom + 0.1F*gearPos - clift0 * (1.0F + tefFactor * 0.05F)) / clalph0 - tefFactor + lefFactor;
 
-       if(!IsSet(InAir))
+       if( not IsSet(InAir))
        {
         float bleed = max(0.0F , min(aoabias*(vt - minVcas*KNOTS_TO_FTPSEC*0.5F)/(minVcas*KNOTS_TO_FTPSEC*0.25F), 1.0F));
         aoabias = max(0.0F,min (bleed, aoamax));
@@ -130,9 +130,9 @@ void AirframeClass::Gains(void)
     {
         limiter = gLimiterMgr->GetLimiter(CatIIICommandType, vehicleIndex);
 
-        if (IsSet(CATLimiterIII) && limiter)
+        if (IsSet(CATLimiterIII) and limiter)
         {
-            if (alpha  < limiter->Limit(vcas) && (!gearPos || IsSet(GearBroken)))
+            if (alpha  < limiter->Limit(vcas) and ( not gearPos or IsSet(GearBroken)))
                 ClearFlag(AOACmdMode);
             else
                 SetFlag(AOACmdMode);
@@ -143,12 +143,12 @@ void AirframeClass::Gains(void)
 
             if (limiter)
             {
-                if (alpha < limiter->Limit(alpha) && (!gearPos || IsSet(GearBroken)))
+                if (alpha < limiter->Limit(alpha) and ( not gearPos or IsSet(GearBroken)))
                     ClearFlag(AOACmdMode);
                 else
                     SetFlag(AOACmdMode);
             }
-            else if (gsAvail > maxGs && (!gearPos || IsSet(GearBroken)))
+            else if (gsAvail > maxGs and ( not gearPos or IsSet(GearBroken)))
                 ClearFlag(AOACmdMode);
             else
                 SetFlag(AOACmdMode);
@@ -181,7 +181,7 @@ void AirframeClass::Gains(void)
     tp01 = 0.200F;
     zp01 = 0.900F;
 
-    if (!IsSet(Simplified) && simpleMode != SIMPLE_MODE_AF)
+    if ( not IsSet(Simplified) and simpleMode not_eq SIMPLE_MODE_AF)
     {
         //tp01 *= (1.0F + (loadingFraction - 1.3F) *0.1F);
         zp01 *= (1.0F - 0.15F * (max(0.0F, 1.0F - qbar / 25.0F)) - zpdamp - max(0.0F, (loadingFraction - 1.3F) * 0.01F));
@@ -203,7 +203,7 @@ void AirframeClass::Gains(void)
     omegasp1 = max(1.0F, omegasp1);
     omegasp = omegasp1 ;
 
-    if (stallMode > Recovering || !IsSet(InAir))
+    if (stallMode > Recovering or not IsSet(InAir))
     {
         omegasp *= 2.0F;
     }
@@ -237,7 +237,7 @@ void AirframeClass::Gains(void)
 
     tp03   = max(tp03, 0.5F);
 
-    if (IsSet(AOACmdMode) || !(qsom * cnalpha))
+    if (IsSet(AOACmdMode) or not (qsom * cnalpha))
         kp05 = tp02 * tp03 * wp01 * wp01;
     else
         kp05 = GRAVITY * tp02 * tp03 * wp01 * wp01 /
@@ -246,12 +246,12 @@ void AirframeClass::Gains(void)
     if (landingGains)
         kp05 *= auxaeroData->pitchGearGain;
 
-    if (!IsSet(InAir))
+    if ( not IsSet(InAir))
     {
         kp05 *= max(0.0f, min(1.0F, (qbar - 20.0F) / 45.0F));
     }
 
-    F4Assert(!_isnan(kp05));
+    F4Assert( not _isnan(kp05));
 
     /*---------------------------------------*/
     /* roll axis gains and filter parameters */
@@ -289,7 +289,7 @@ void AirframeClass::Gains(void)
     //wy01 = (0.8F/tr01);
     wy01 = (0.3F / tr01);
 
-    if (!IsSet(Simplified) && simpleMode != SIMPLE_MODE_AF)
+    if ( not IsSet(Simplified) and simpleMode not_eq SIMPLE_MODE_AF)
         wy01 *= (1.0F - loadingFraction * 0.1F);
 
     ky01 = 1.000F;
@@ -314,7 +314,7 @@ void AirframeClass::Gains(void)
     ty01   =  1 / yfreq1;
     ty02   =  1 / yfreq2;
 
-    if (cy != 0.0F)
+    if (cy not_eq 0.0F)
     {
         ky05   = -GRAVITY * wy01 * wy01 / (qsom * cy * yfreq1 * yfreq2);
     }

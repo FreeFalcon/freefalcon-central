@@ -25,13 +25,13 @@ bool AssignField(const InputDataDesc *field, void *dataPtr, const char *value)
             int *ip = (int *)cp;
             int n;
 
-            if (*value == '0' && (value[1] == 'x' || value[1] == 'X'))
+            if (*value == '0' and (value[1] == 'x' or value[1] == 'X'))
             {
                 if (sscanf(value + 2, "%x", &n) == 1)
                     *ip = n;
                 else return false;
             }
-            else if (isdigit(*value) || *value == '-')
+            else if (isdigit(*value) or *value == '-')
                 *ip = atoi(value);
             else return false;
         }
@@ -41,7 +41,7 @@ bool AssignField(const InputDataDesc *field, void *dataPtr, const char *value)
         {
             float *fp = (float *)cp;
 
-            if (isdigit(*value) || *value == '.' || *value == '-' || *value == '+')
+            if (isdigit(*value) or *value == '.' or *value == '-' or *value == '+')
                 *fp = (float)atof(value);
             else
                 return false;
@@ -69,8 +69,8 @@ bool AssignField(const InputDataDesc *field, void *dataPtr, const char *value)
         {
             Tpoint *tp = (Tpoint *)cp;
 
-            if (sscanf(value, "%g %g %g", &tp->x, &tp->y, &tp->z) != 3)
-                if (sscanf(value, "%g, %g, %g", &tp->x, &tp->y, &tp->z) != 3) // MLR 12/4/2003 - Make the vector reading a little more flexible
+            if (sscanf(value, "%g %g %g", &tp->x, &tp->y, &tp->z) not_eq 3)
+                if (sscanf(value, "%g, %g, %g", &tp->x, &tp->y, &tp->z) not_eq 3) // MLR 12/4/2003 - Make the vector reading a little more flexible
                 {
                     return false;
 
@@ -122,7 +122,7 @@ bool AssignField(const InputDataDesc *field, void *dataPtr, const char *value)
 
 
         default:
-            F4Assert(!"Bad format type");
+            F4Assert( not "Bad format type");
             return false;
     }
 
@@ -151,11 +151,11 @@ bool ParseField(void *dataPtr, const char *line, const InputDataDesc *desc)
     while (isspace(*line)) // skip leanding white space
         line ++;
 
-    if (*line == '\0' || *line == '\n') return true; // just ignore blank lines
+    if (*line == '\0' or *line == '\n') return true; // just ignore blank lines
 
     const char *cp = line;
 
-    while (*cp && !isspace(*cp))
+    while (*cp and not isspace(*cp))
         cp ++;
 
     if (*cp == '\0') // bad data
@@ -222,7 +222,7 @@ bool ParseSimlibFile(void *dataPtr, const InputDataDesc *desc, SimlibFileClass* 
         if (fr.ParseField(dataPtr, buffer) == false)
         {
             // MLR 12/16/2003 -
-            // Who cares if one line failed!  This breaks files that have obsolete/unsupported data in them.
+            // Who cares if one line failed  This breaks files that have obsolete/unsupported data in them.
             // return false;
         }
     }

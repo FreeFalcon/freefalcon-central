@@ -154,7 +154,7 @@ void MakeDogfightTopTen(int mode)
         {
             for (j = 0; j < i; j++)
             {
-                if (score[i] > score[j] || !active[j])
+                if (score[i] > score[j] or not active[j])
                 {
                     _tcscpy(tmpn, gScoreName[i]);
                     tmps = score[i];

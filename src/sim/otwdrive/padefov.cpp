@@ -76,7 +76,7 @@ void OTWDriverClass::PadlockEFOV_Draw(void)
     visObj = ((SimMoverClass*)otwPlatform.get())->targetList;
 
     // Walk the target list and search for the padlock priority object
-    while (visObj != NULL && found == FALSE)
+    while (visObj not_eq NULL and found == FALSE)
     {
 
         // If the padlock priority object is in the list safe some important angle values.
@@ -95,7 +95,7 @@ void OTWDriverClass::PadlockEFOV_Draw(void)
 
     // If we have a padlock priority object, but didn't find it in the target list,
     // we'll have to calculate the angles ourselves.
-    if (visObj == NULL && mpPadlockPriorityObject)
+    if (visObj == NULL and mpPadlockPriorityObject)
     {
         CalcRelValues((SimBaseClass*) SimDriver.GetPlayerAircraft(),
                       mpPadlockPriorityObject,
@@ -110,7 +110,7 @@ void OTWDriverClass::PadlockEFOV_Draw(void)
     viewDelta = (tmpFov * 0.5F) - viewLimit;
 
     // If I have something to draw and it's off screen
-    if (found == TRUE && (ata > viewLimit + viewDelta * (float)sin(fabs(droll))))
+    if (found == TRUE and (ata > viewLimit + viewDelta * (float)sin(fabs(droll))))
     {
         if (PlayerOptions.GetPadlockMode() == PDRealistic)
         {
@@ -130,7 +130,7 @@ void OTWDriverClass::PadlockEFOV_Draw(void)
 
         // renderer->SetSmoothShadingMode( FALSE );
         // Draw the contents of the Padlock window
-        if (mpPadlockPriorityObject && mpPadlockPriorityObject->IsSim())
+        if (mpPadlockPriorityObject and mpPadlockPriorityObject->IsSim())
         {
             PadlockEFOV_DrawBox(mpPadlockPriorityObject, efovBoxSize, az, el, ata, ataFrom, droll);
         }
@@ -359,7 +359,7 @@ void OTWDriverClass::PadlockEFOV_DrawBox(
     {
         tmpStr[0] = 0;
 
-        if ((bcBSP = (DrawableBSP *)base->drawPointer) != NULL)
+        if ((bcBSP = (DrawableBSP *)base->drawPointer) not_eq NULL)
         {
             sprintf(tmpStr, "%s", bcBSP->Label());
         }

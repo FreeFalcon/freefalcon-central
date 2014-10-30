@@ -41,7 +41,7 @@ void CTimeOfDay::Setup(char *dataPath)
     char starfile[_MAX_PATH];
     FILE *in;
 
-    ShiAssert(!IsReady());
+    ShiAssert( not IsReady());
 
     // Construct the input filename we need
     if (skycolor)
@@ -49,11 +49,11 @@ void CTimeOfDay::Setup(char *dataPath)
 
     sprintf(starfile, "%s\\star.dat", dataPath);
 
-    if (!skycolor || !(in = fopen(todfile, "r"))) // Oops, the todfile is not there ? Use default one
+    if ( not skycolor or not (in = fopen(todfile, "r"))) // Oops, the todfile is not there ? Use default one
     {
         sprintf(todfile, "%s\\tod\\tod.lst.default", dataPath);
 
-        if (!(in = fopen(todfile, "r"))) // Oops, the todfile is not there ? Use default one
+        if ( not (in = fopen(todfile, "r"))) // Oops, the todfile is not there ? Use default one
             sprintf(todfile, "%s\\tod.lst", dataPath);
         else
             fclose(in);
@@ -76,7 +76,7 @@ void CTimeOfDay::Setup(char *dataPath)
     TimeOfDayStruct temptod;
     TotalTimeOfDay = ReadTODFile(in, &temptod, 1);
 
-    if (!TotalTimeOfDay)
+    if ( not TotalTimeOfDay)
     {
         fclose(in);
         char string[256];
@@ -86,7 +86,7 @@ void CTimeOfDay::Setup(char *dataPath)
 
     TimeOfDay = new TimeOfDayStruct[TotalTimeOfDay];
 
-    if (!TimeOfDay)
+    if ( not TimeOfDay)
     {
         fclose(in);
         ShiError("Failed TOD memory allocation");
@@ -148,18 +148,18 @@ void CTimeOfDay::Setup(char *dataPath)
 
         if (j >= TotalTimeOfDay) j = 0;
 
-        if (!(TimeOfDay[j].Flag & GL_TIME_OF_DAY_USE_SUN))
-            TimeOfDay[i].Flag &= ~GL_TIME_OF_DAY_USE_SUN;
+        if ( not (TimeOfDay[j].Flag bitand GL_TIME_OF_DAY_USE_SUN))
+            TimeOfDay[i].Flag and_eq compl GL_TIME_OF_DAY_USE_SUN;
 
-        if (!(TimeOfDay[j].Flag & GL_TIME_OF_DAY_USE_MOON))
-            TimeOfDay[i].Flag &= ~GL_TIME_OF_DAY_USE_MOON;
+        if ( not (TimeOfDay[j].Flag bitand GL_TIME_OF_DAY_USE_MOON))
+            TimeOfDay[i].Flag and_eq compl GL_TIME_OF_DAY_USE_MOON;
 
         int k = 0;
 
         if (TimeOfDay[i].StarIntensity > 0.0f) k = 1;
         else if (TimeOfDay[j].StarIntensity > 0.0f) k = 1;
 
-        if (k) TimeOfDay[i].Flag |= GL_TIME_OF_DAY_USE_STAR;
+        if (k) TimeOfDay[i].Flag or_eq GL_TIME_OF_DAY_USE_STAR;
     }
 
 
@@ -221,7 +221,7 @@ void CTimeOfDay::UpdateSkyProperties()
 
     if (curtime)
     {
-        if (lastMoonTime == 0 || lastMoonTime > curtime || ((curtime - lastMoonTime) > 60 * 60 * 1000))
+        if (lastMoonTime == 0 or lastMoonTime > curtime or ((curtime - lastMoonTime) > 60 * 60 * 1000))
         {
             lastMoonTime = curtime;
             MoonPhase = -1;
@@ -258,7 +258,7 @@ void CTimeOfDay::UpdateSkyProperties()
     // No two table entries should have the same time stamp
     c = tod -> Time;
     n = ntod -> Time;
-    ShiAssert(c != n);
+    ShiAssert(c not_eq n);
 
     // Calculate the time between the two table entries
     if (n < c)
@@ -339,7 +339,7 @@ void CTimeOfDay::UpdateSkyProperties()
     IMoonYaw = FloatToInt32(radtoangle(az));
     IMoonPitch = FloatToInt32(radtoangle(alt));
 
-    if (ISunPitch < 256 || ISunPitch > (8192 - 256))
+    if (ISunPitch < 256 or ISunPitch > (8192 - 256))
     {
         // Adjust the light level for the moon
         // (original levels are assumed to have been for a full moon)
@@ -380,7 +380,7 @@ void CTimeOfDay::UpdateSkyProperties()
      BadWeatherLighting.b = max(BadWeatherLighting.b/1.5f,0.01f);
      }
 
-     if(realWeather->InsideOvercast() || realWeather->UnderOvercast())
+     if(realWeather->InsideOvercast() or realWeather->UnderOvercast())
      {
      if(realWeather->weatherCondition > POOR)
       Specular = 0.f;
@@ -475,7 +475,7 @@ void CTimeOfDay::UpdateWeatherColors(DWORD weatherCondition)
             BadWeatherLighting.b = m_BadWeatherLighting.b;
         }
 
-        if (realWeather->InsideOvercast() || realWeather->UnderOvercast())
+        if (realWeather->InsideOvercast() or realWeather->UnderOvercast())
         {
 
             if (realWeather->weatherCondition > POOR) Specular = 0.f;
@@ -628,7 +628,7 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
         {
             DWORD ivar1, ivar2, ivar3;
 
-            if (total != 0)
+            if (total not_eq 0)
             {
                 SetDefaultColor(&tod->RainColor, &tod->HazeGroundColor);
                 SetDefaultColor(&tod->SnowColor, &tod->HazeGroundColor);
@@ -637,7 +637,7 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
 
             ++total;
 
-            if (!countflag)
+            if ( not countflag)
                 ++tod;
 
             fscanf(in, "%ld:%ld:%ld", &ivar1, &ivar2, &ivar3);
@@ -695,13 +695,13 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
         {
             fscanf(in, "%f", &tod->SunPitch);
             tod->SunPitch = glConvertFromDegreef(tod->SunPitch);
-            tod->Flag |= GL_TIME_OF_DAY_USE_SUN;
+            tod->Flag or_eq GL_TIME_OF_DAY_USE_SUN;
         }
         else if (stricmp(buffer, "MoonPitch") == 0)
         {
             fscanf(in, "%f", &tod->MoonPitch);
             tod->MoonPitch = glConvertFromDegreef(tod->MoonPitch);
-            tod->Flag |= GL_TIME_OF_DAY_USE_MOON;
+            tod->Flag or_eq GL_TIME_OF_DAY_USE_MOON;
         }
         else if (stricmp(buffer, "Star") == 0)
             tod->StarIntensity = 1.0f;
@@ -910,7 +910,7 @@ void CTimeOfDay::CreateMoonPhaseMask(unsigned char *image, int phase)
                 {
                     c <<= 1;
 
-                    if ((col2 < start) || (col2 >= stop)) c |= 1;
+                    if ((col2 < start) or (col2 >= stop)) c or_eq 1;
 
                     col2++;
                 }
@@ -964,12 +964,12 @@ void CTimeOfDay::RotateMoonMask(int angle)
                 uuu += duu;
                 vvv += duv;
 
-                if (tu >= 0 && tu < 64 && tv >= 0 && tv < 64)
+                if (tu >= 0 and tu < 64 and tv >= 0 and tv < 64)
                 {
                     int l = (tv << 3) + (tu >> 3);
-                    unsigned char c = (unsigned char)(1 << (7 - (tu & 7)));
+                    unsigned char c = (unsigned char)(1 << (7 - (tu bitand 7)));
 
-                    if (MoonPhaseMask[l] & c) c1 |= 1;
+                    if (MoonPhaseMask[l] bitand c) c1 or_eq 1;
                 }
             }
 
@@ -1032,11 +1032,11 @@ void CTimeOfDay::CreateMoonPhase(unsigned char *src, unsigned char *dest)
                 unsigned char c1 = *src++;
 #ifdef USE_TRANSPARENT_MOON
 
-                if (c1 && !(c & 0x80)) c1 = 0;
+                if (c1 and not (c bitand 0x80)) c1 = 0;
 
 #else
 
-                if (c1 && !(c & 0x80)) c1 += 48;
+                if (c1 and not (c bitand 0x80)) c1 += 48;
 
 #endif
                 c <<= 1;
@@ -1049,8 +1049,8 @@ void CTimeOfDay::CreateMoonPhase(unsigned char *src, unsigned char *dest)
 DWORD CTimeOfDay::MakeColor(Tcolor *col)
 {
     return
-        (FloatToInt32(col->r * 255.9f) & 0xFF) |
-        ((FloatToInt32(col->g * 255.9f) & 0xFF) <<  8) |
-        ((FloatToInt32(col->b * 255.9f) & 0xFF) << 16) |
+        (FloatToInt32(col->r * 255.9f) bitand 0xFF) |
+        ((FloatToInt32(col->g * 255.9f) bitand 0xFF) <<  8) |
+        ((FloatToInt32(col->b * 255.9f) bitand 0xFF) << 16) |
         0xff000000;
 }

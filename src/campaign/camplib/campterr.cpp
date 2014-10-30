@@ -113,7 +113,7 @@ int SaveTheaterTerrain(char* name)
 {
     FILE *fp;
 
-    if (!TheaterCells)
+    if ( not TheaterCells)
         return 0;
 
     if ((fp = OpenCampFile(name, "thr", "wb")) == NULL)
@@ -128,34 +128,34 @@ int SaveTheaterTerrain(char* name)
 
 CellData GetCell(GridIndex x, GridIndex y)
 {
-    ShiAssert(x >= 0 && x < Map_Max_X && y >= 0 && y < Map_Max_Y);
+    ShiAssert(x >= 0 and x < Map_Max_X and y >= 0 and y < Map_Max_Y);
     return &TheaterCells[x * Map_Max_Y + y];
 }
 
 ReliefType GetRelief(GridIndex x, GridIndex y)
 {
-    ShiAssert(x >= 0 && x < Map_Max_X && y >= 0 && y < Map_Max_Y);
-    return (ReliefType)((TheaterCells[x * Map_Max_Y + y] & ReliefMask) >> ReliefShift);
+    ShiAssert(x >= 0 and x < Map_Max_X and y >= 0 and y < Map_Max_Y);
+    return (ReliefType)((TheaterCells[x * Map_Max_Y + y] bitand ReliefMask) >> ReliefShift);
 }
 
 CoverType GetCover(GridIndex x, GridIndex y)
 {
-    if ((x < 0) || (x >= Map_Max_X) || (y < 0) || (y >= Map_Max_Y))
+    if ((x < 0) or (x >= Map_Max_X) or (y < 0) or (y >= Map_Max_Y))
         return (CoverType) Water;
     else
-        return (CoverType)((TheaterCells[x * Map_Max_Y + y] & GroundCoverMask) >> GroundCoverShift);
+        return (CoverType)((TheaterCells[x * Map_Max_Y + y] bitand GroundCoverMask) >> GroundCoverShift);
 }
 
 char GetRoad(GridIndex x, GridIndex y)
 {
-    ShiAssert(x >= 0 && x < Map_Max_X && y >= 0 && y < Map_Max_Y);
-    return (char)((TheaterCells[x * Map_Max_Y + y] & RoadMask) >> RoadShift);
+    ShiAssert(x >= 0 and x < Map_Max_X and y >= 0 and y < Map_Max_Y);
+    return (char)((TheaterCells[x * Map_Max_Y + y] bitand RoadMask) >> RoadShift);
 }
 
 char GetRail(GridIndex x, GridIndex y)
 {
-    ShiAssert(x >= 0 && x < Map_Max_X && y >= 0 && y < Map_Max_Y);
-    return (char)((TheaterCells[x * Map_Max_Y + y] & RailMask) >> RailShift);
+    ShiAssert(x >= 0 and x < Map_Max_X and y >= 0 and y < Map_Max_Y);
+    return (char)((TheaterCells[x * Map_Max_Y + y] bitand RailMask) >> RailShift);
 }
 
 

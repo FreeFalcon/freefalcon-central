@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "chandler.h"
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -36,7 +36,7 @@ C_Cursor::C_Cursor() : C_Control()
     MaxX_ = 0;
     MaxY_ = 0;
     Percent_ = 40;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_DRAGABLE;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_DRAGABLE;
 }
 
 C_Cursor::C_Cursor(char **stream) : C_Control(stream)
@@ -70,7 +70,7 @@ void C_Cursor::Cleanup()
 
 void C_Cursor::Refresh()
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(MinX_, MinY_, MaxX_ + 2, MaxY_ + 2, GetFlags(), GetClient());
@@ -80,14 +80,14 @@ void C_Cursor::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     UI95_RECT s, rect;
 
-    if (!Ready())
+    if ( not Ready())
         return;
 
-    if (GetFlags() & C_BIT_INVISIBLE || !Parent_)
+    if (GetFlags() bitand C_BIT_INVISIBLE or not Parent_)
         return;
 
 
-    if (Flags_ & C_BIT_TRANSLUCENT)
+    if (Flags_ bitand C_BIT_TRANSLUCENT)
     {
         rect.left = GetX();
         rect.top = GetY();
@@ -95,7 +95,7 @@ void C_Cursor::Draw(SCREEN *surface, UI95_RECT *cliprect)
         rect.bottom = rect.top + GetH() + 2;
         s = rect; // just so its set to something JPO
 
-        if (!Parent_->ClipToArea(&s, &rect, cliprect))
+        if ( not Parent_->ClipToArea(&s, &rect, cliprect))
             return;
 
         Parent_->BlitTranslucent(surface, BoxColor_, Percent_, &rect, Flags_, Client_);
@@ -114,10 +114,10 @@ void C_Cursor::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
 long C_Cursor::CheckHotSpots(long relx, long rely)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED))
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED))
         return(0);
 
-    if (relx >= (GetX()) && rely >= (GetY()) && relx <= (GetX() + GetW()) && rely <= (GetY() + GetH()))
+    if (relx >= (GetX()) and rely >= (GetY()) and relx <= (GetX() + GetW()) and rely <= (GetY() + GetH()))
     {
         SetRelXY(relx - GetX(), rely - GetY());
         return(GetID());
@@ -141,7 +141,7 @@ BOOL C_Cursor::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
     long x, y;
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !(GetFlags() & C_BIT_DRAGABLE))
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not (GetFlags() bitand C_BIT_DRAGABLE))
         return(FALSE);
 
     Leave = UI_Enter(Parent_);
@@ -197,11 +197,11 @@ void C_Cursor::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CCUR_SETCOLOR:
-            SetColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CCUR_SETBOXCOLOR:
-            SetBoxColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetBoxColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CCUR_SETPERCENTAGE:

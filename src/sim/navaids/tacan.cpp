@@ -122,7 +122,7 @@ TacanList::TacanList()
         }
 
         // check for comments.
-        if (buffer[0] == ';' || buffer[0] == '#' || buffer[0] == '\n')
+        if (buffer[0] == ';' or buffer[0] == '#' or buffer[0] == '\n')
             continue;
 
         result = sscanf(buffer, "%d %d %c %d %d %d %f",
@@ -149,11 +149,11 @@ TacanList::TacanList()
                 break;
         }
 
-        if (bandChar == 'x' || bandChar == 'X')
+        if (bandChar == 'x' or bandChar == 'X')
         {
             band = X;
         }
-        else if (bandChar == 'y' || bandChar == 'Y')
+        else if (bandChar == 'y' or bandChar == 'Y')
         {
             band = Y;
         }
@@ -162,7 +162,7 @@ TacanList::TacanList()
             ShiWarning("Invalid Tacan band\n"); // Band can only be type X or Y
         }
 
-        F4Assert(channel > 0 && channel <= NUM_CHANNELS); // Channel must be between 1 - 126 inclusive
+        F4Assert(channel > 0 and channel <= NUM_CHANNELS); // Channel must be between 1 - 126 inclusive
 
         if (StoreStation(&p_stations, (short)stationId, channel, band, callsign,
                          range, tactype, ilsfreq))   // Insert into ordered linked list
@@ -234,7 +234,7 @@ void TacanList::AddTacan(CampBaseClass *p_campEntity)
     LinkedTacanVUStr** p_next = NULL;
     LinkedTacanVUStr* p_previous = NULL;
 
-    if (p_campEntity->IsObjective() &&
+    if (p_campEntity->IsObjective() and 
         p_campEntity->GetType() == TYPE_AIRBASE) // If inserting an airbase
     {
         domain = AG;
@@ -247,7 +247,7 @@ void TacanList::AddTacan(CampBaseClass *p_campEntity)
                 p_previous = NULL;
                 InsertIntoTacanList(&p_previous, p_next, p_campEntity->Id(), p_campEntity->GetCampID(), channel, set, domain);
             }
-            else if (!GetPointerFromVUID(mpTList, p_campEntity->Id(), &p_previous, &p_tacanVUStr))
+            else if ( not GetPointerFromVUID(mpTList, p_campEntity->Id(), &p_previous, &p_tacanVUStr))
             {
                 // Check the sorted mpTList (tacan) list for duplicate entries stop ...
                 // searching when we find a VU_ID greater than the one we are searching for.
@@ -257,15 +257,15 @@ void TacanList::AddTacan(CampBaseClass *p_campEntity)
             }
         }
     }
-    else if (p_campEntity->EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT &&
-             p_campEntity->EntityType()->classInfo_[VU_TYPE] == TYPE_FLIGHT &&
+    else if (p_campEntity->EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT and 
+             p_campEntity->EntityType()->classInfo_[VU_TYPE] == TYPE_FLIGHT and 
              ((Unit) p_campEntity)->GetUnitMission() == AMIS_TANKER)// If inserting a tanker
     {
         ((FlightClass*)p_campEntity)->tacan_channel = (uchar) AssignChannel(p_campEntity->Id(), AA, p_campEntity->GetCampID()); // assign a unique channel
         ((FlightClass*)p_campEntity)->tacan_band = 'Y';
     }
-    else if (p_campEntity->EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT &&
-             p_campEntity->EntityType()->classInfo_[VU_TYPE] == TYPE_TASKFORCE &&
+    else if (p_campEntity->EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT and 
+             p_campEntity->EntityType()->classInfo_[VU_TYPE] == TYPE_TASKFORCE and 
              p_campEntity->GetSType() == STYPE_UNIT_CARRIER) // If inserting a carrier
     {
         ((TaskForceClass*)p_campEntity)->tacan_channel = (uchar) AssignChannel(p_campEntity->Id(), AG, p_campEntity->GetCampID()); // assign a unique channel
@@ -388,11 +388,11 @@ BOOL TacanList::GetVUIDFromChannel(int channel, StationSet set, Domain domain,
     *ttype = 0;
     *ilsfreq = 0;
 
-    if (set == X && domain == AG)
+    if (set == X and domain == AG)
     {
         p_current = mpTList;
 
-        while (p_current && (p_current->channel != channel || p_current->set != set || p_current->domain != domain))
+        while (p_current and (p_current->channel not_eq channel or p_current->set not_eq set or p_current->domain not_eq domain))
         {
             p_current = p_current->p_next;
         }
@@ -412,12 +412,12 @@ BOOL TacanList::GetVUIDFromChannel(int channel, StationSet set, Domain domain,
             result = TRUE;
         }
     }
-    else if (set == Y && domain == AA)   // Note this only works for the host machine
+    else if (set == Y and domain == AA)   // Note this only works for the host machine
     {
 
         p_current = mpAssigned;
 
-        while (p_current && (p_current->channel != channel || p_current->set != set || p_current->domain != domain))
+        while (p_current and (p_current->channel not_eq channel or p_current->set not_eq set or p_current->domain not_eq domain))
         {
             p_current = p_current->p_next;
         }
@@ -430,12 +430,12 @@ BOOL TacanList::GetVUIDFromChannel(int channel, StationSet set, Domain domain,
             result = TRUE;
         }
     }
-    else if (set == Y && domain == AG)   // M.N. for Carrier Tacans
+    else if (set == Y and domain == AG)   // M.N. for Carrier Tacans
     {
 
         p_current = mpAssigned;
 
-        while (p_current && (p_current->channel != channel || p_current->set != set || p_current->domain != domain))
+        while (p_current and (p_current->channel not_eq channel or p_current->set not_eq set or p_current->domain not_eq domain))
         {
             p_current = p_current->p_next;
         }
@@ -487,7 +487,7 @@ BOOL TacanList::GetVUIDFromLocation(float x, float y, Domain domain,
 
             distance = DistSqu(tacanX, tacanY, x, y);
 
-            if (distance < bestDistance || bestDistance < 0.0F)
+            if (distance < bestDistance or bestDistance < 0.0F)
             {
                 bestDistance = distance;
                 bestTacan = p_current->vuID;
@@ -524,7 +524,7 @@ BOOL TacanList::GetPointerFromVUID(LinkedTacanVUStr* p_list, VU_ID id, LinkedTac
     LinkedTacanVUStr* p_previous = NULL;
 
 
-    while (p_current && p_current->vuID < id)
+    while (p_current and p_current->vuID < id)
     {
         p_previous = p_current;
         p_current = p_current->p_next;
@@ -533,7 +533,7 @@ BOOL TacanList::GetPointerFromVUID(LinkedTacanVUStr* p_list, VU_ID id, LinkedTac
     *p_after = p_current;
     *p_before = p_previous;
 
-    if (*p_after && (*p_after)->vuID == id)
+    if (*p_after and (*p_after)->vuID == id)
     {
         result = TRUE;
     }
@@ -603,7 +603,7 @@ void TacanList::InsertIntoTacanList(LinkedTacanVUStr** p_previous,
     p_tacanVUStr->p_previous = NULL;
     p_tacanVUStr->p_next = NULL;
 
-    if (*p_previous && *p_next)   // If there are links that follow this link
+    if (*p_previous and *p_next)   // If there are links that follow this link
     {
         p_tacanVUStr->p_previous = *p_previous;
         p_tacanVUStr->p_next = *p_next; // The link that follows is the next link
@@ -722,14 +722,14 @@ BOOL TacanList::StoreStation(LinkedCampStationStr** p_list,
                              int range, int tactype, float ilsfreq)
 {
 
-    if (channel < 1 || channel > 126)   // Note: the value of channel should be
+    if (channel < 1 or channel > 126)   // Note: the value of channel should be
     {
         //F4Assert(FALSE); // constrained to 1 - 126
         ShiWarning("invalid channel\n");
         return FALSE;
     }
 
-    if (band != X && band != Y)   // Channels are constrained to
+    if (band not_eq X and band not_eq Y)   // Channels are constrained to
     {
         //F4Assert(FALSE); // X or Y band.
         ShiWarning("invalid band\n");
@@ -1059,7 +1059,7 @@ void TacanList::RetireChannel(VU_ID vuID)
 
     pTacanStr = mpAssigned;
 
-    while (!found && pTacanStr)
+    while ( not found and pTacanStr)
     {
 
         if (pTacanStr->vuID == vuID)

@@ -86,15 +86,15 @@ public:
     }
     short GetState()
     {
-        return static_cast<short>(state_);    //!
+        return static_cast<short>(state_);    
     }
     long GetHRange()
     {
-        return(SX_);    //!
+        return(SX_);    
     }
     long GetVRange()
     {
-        return(SY_);    //!
+        return(SY_);    
     }
     void GetItemXY(long, long *x, long *y);
     BOOL Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *);

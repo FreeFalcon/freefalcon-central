@@ -123,7 +123,7 @@ VuMessage::VuMessage(
 
     if (loopback)
     {
-        flags_ |= VU_LOOPBACK_MSG_FLAG;
+        flags_ or_eq VU_LOOPBACK_MSG_FLAG;
     }
 
     // note: msg id is set only for external messages which are sent out
@@ -210,13 +210,13 @@ int VuMessage::Send()
 {
     int retval = -1;
 
-    if (Target() && Target() != vuLocalSessionEntity)
+    if (Target() and Target() not_eq vuLocalSessionEntity)
     {
         retval = Target()->SendMessage(this);
 
         if (retval <= 0)
         {
-            flags_ |= VU_SEND_FAILED_MSG_FLAG;
+            flags_ or_eq VU_SEND_FAILED_MSG_FLAG;
         }
     }
 
@@ -227,9 +227,9 @@ VU_ERRCODE VuMessage::Dispatch(VU_BOOL autod)
 {
     int retval = VU_NO_OP;
 
-    if (!IsLocal() || (flags_ & VU_LOOPBACK_MSG_FLAG))
+    if ( not IsLocal() or (flags_ bitand VU_LOOPBACK_MSG_FLAG))
     {
-        if (!Entity())
+        if ( not Entity())
         {
             // try to find ent again -- may have been in queue
             VuEntity *ent = vuDatabase->Find(entityId_);
@@ -243,7 +243,7 @@ VU_ERRCODE VuMessage::Dispatch(VU_BOOL autod)
         retval = Process(autod);
         vuDatabase->Handle(this);
         // mark as sent
-        flags_ |= VU_PROCESSED_MSG_FLAG;
+        flags_ or_eq VU_PROCESSED_MSG_FLAG;
     }
 
     return retval;
@@ -332,9 +332,9 @@ VU_ERRCODE VuRequestDummyBlockMessage::Process(VU_BOOL autod)
     VuSessionsIterator iter(vuGlobalGroup);
     VuSessionEntity *s;
 
-    for (s = iter.GetFirst(); (s != NULL); s = iter.GetNext())
+    for (s = iter.GetFirst(); (s not_eq NULL); s = iter.GetNext())
     {
-        if (s->GetCommsHandle() != NULL)
+        if (s->GetCommsHandle() not_eq NULL)
         {
             break;
         }
@@ -349,7 +349,7 @@ VU_ERRCODE VuRequestDummyBlockMessage::Process(VU_BOOL autod)
         sendAddress.ip = s->GetAddress().ip;
     }
 
-    if (s != NULL)
+    if (s not_eq NULL)
     {
         ComAPISendDummy(s->GetCommsHandle(), sendAddress.ip, sendAddress.recvPort);
         ComAPISendDummy(s->GetCommsHandle(), sendAddress.ip, sendAddress.recvPort + 1);
@@ -491,7 +491,7 @@ VU_ERRCODE VuGetRequest::Process(VU_BOOL autod)
     VuTargetEntity* sender = (VuTargetEntity *)vuDatabase->Find(Sender());
 
     //sfr: took sender out of if and return noop here
-    if (IsLocal() || (sender == NULL))
+    if (IsLocal() or (sender == NULL))
     {
         return VU_NO_OP;
     }
@@ -508,7 +508,7 @@ VU_ERRCODE VuGetRequest::Process(VU_BOOL autod)
         // get ALL ents
         else if (entityId_ == vuNullId)
         {
-            if ((tgtid_ == vuGlobalGroup->Id()) || (tgtid_ == vuLocalSession))
+            if ((tgtid_ == vuGlobalGroup->Id()) or (tgtid_ == vuLocalSession))
             {
                 // get all _global_ ents
                 VuDatabaseIterator iter;
@@ -516,9 +516,9 @@ VU_ERRCODE VuGetRequest::Process(VU_BOOL autod)
 
                 while (ent)
                 {
-                    if (!ent->IsPrivate() && ent->IsGlobal())
+                    if ( not ent->IsPrivate() and ent->IsGlobal())
                     {
-                        if (ent->Id() != sender->Id())
+                        if (ent->Id() not_eq sender->Id())
                         {
                             if (ent->IsLocal())
                             {
@@ -552,9 +552,9 @@ VU_ERRCODE VuGetRequest::Process(VU_BOOL autod)
 
                 while (ent)
                 {
-                    if (!ent->IsPrivate() && ent->IsLocal() && !ent->IsGlobal())
+                    if ( not ent->IsPrivate() and ent->IsLocal() and not ent->IsGlobal())
                     {
-                        if (ent->Id() != sender->Id())
+                        if (ent->Id() not_eq sender->Id())
                         {
                             resp = new VuFullUpdateEvent(ent, sender);
                             resp->RequestReliableTransmit();
@@ -568,7 +568,7 @@ VU_ERRCODE VuGetRequest::Process(VU_BOOL autod)
                 return VU_SUCCESS;
             }
         }
-        else if (Entity() && (Entity()->OwnerId() == vuLocalSession))
+        else if (Entity() and (Entity()->OwnerId() == vuLocalSession))
         {
             resp = new VuFullUpdateEvent(Entity(), sender);
         }
@@ -599,9 +599,9 @@ VU_ERRCODE VuGetRequest::Process(VU_BOOL autod)
 
             while (ent)
             {
-                if (!ent->IsPrivate() && ent->IsGlobal())
+                if ( not ent->IsPrivate() and ent->IsGlobal())
                 {
-                    if ((ent->Id() != sender->Id()))
+                    if ((ent->Id() not_eq sender->Id()))
                     {
                         if (ent->IsLocal())
                         {
@@ -623,7 +623,7 @@ VU_ERRCODE VuGetRequest::Process(VU_BOOL autod)
 
             return VU_SUCCESS;
         }
-        else if ((Entity()) && (Entity()->IsLocal()))
+        else if ((Entity()) and (Entity()->IsLocal()))
         {
             VuMessage *resp = 0;
             resp = new VuFullUpdateEvent(Entity(), sender);
@@ -663,7 +663,7 @@ VuPushRequest::Process(VU_BOOL)
 {
     int retval = VU_NO_OP;
 
-    if (!IsLocal() && Destination() == vuLocalSession)
+    if ( not IsLocal() and Destination() == vuLocalSession)
     {
         if (Entity())
         {
@@ -673,7 +673,7 @@ VuPushRequest::Process(VU_BOOL)
         {
             VuTargetEntity* sender = (VuTargetEntity*)vuDatabase->Find(Sender());
 
-            if (sender && sender->IsTarget())
+            if (sender and sender->IsTarget())
             {
                 VuMessage* resp = new VuErrorMessage(VU_NO_SUCH_ENTITY_ERROR, Sender(),
                                                      EntityId(), sender);
@@ -712,7 +712,7 @@ VuPullRequest::Process(VU_BOOL)
 {
     int retval = VU_NO_OP;
 
-    if (!IsLocal() && Destination() == vuLocalSession)
+    if ( not IsLocal() and Destination() == vuLocalSession)
     {
         if (Entity())
         {
@@ -722,7 +722,7 @@ VuPullRequest::Process(VU_BOOL)
         {
             VuTargetEntity* sender = (VuTargetEntity*)vuDatabase->Find(Sender());
 
-            if (sender && sender->IsTarget())
+            if (sender and sender->IsTarget())
             {
                 VuMessage* resp = new VuErrorMessage(VU_NO_SUCH_ENTITY_ERROR, Sender(),
                                                      EntityId(), sender);
@@ -756,7 +756,7 @@ int VuEvent::Activate(VuEntity* ent)
 {
     SetEntity(ent);
 
-    if (IsLocal() && ent)
+    if (IsLocal() and ent)
     {
         updateTime_ = ent->LastUpdateTime();
     }
@@ -880,10 +880,10 @@ VuCreateEvent::~VuCreateEvent()
     // sfr: no more antidb
     /*
     if (
-     Entity() && // we have an ent ...
-     Entity()->VuState() == VU_MEM_ACTIVE &&                // & have not yet removed it...
-     Entity()->Id().creator_ == vuLocalSession.creator_ &&  // & it has our session tag...
-     vuDatabase->Find(Entity()->Id()) == 0                 // & it's not in the DB...
+     Entity() and // we have an ent ...
+     Entity()->VuState() == VU_MEM_ACTIVE and // bitand have not yet removed it...
+     Entity()->Id().creator_ == vuLocalSession.creator_ and // bitand it has our session tag...
+     vuDatabase->Find(Entity()->Id()) == 0                 // bitand it's not in the DB...
     ) {
      vuAntiDB->Insert(Entity()); // ==> put it in the anti DB
     }
@@ -927,7 +927,7 @@ int VuCreateEvent::Decode(VU_BYTE** buf, long *rem)
     memcpychk(&vutype_,   buf, sizeof(vutype_), rem);
     memcpychk(&size_,     buf, sizeof(size_), rem);
 
-    if (!data_ || oldsize != size_)
+    if ( not data_ or oldsize not_eq size_)
     {
         delete [] data_;
         data_ = new VU_BYTE[size_];
@@ -941,7 +941,7 @@ int VuCreateEvent::Decode(VU_BYTE** buf, long *rem)
 
 VU_BOOL VuCreateEvent::DoSend()
 {
-    if (Entity() && Entity()->VuState() == VU_MEM_ACTIVE)
+    if (Entity() and Entity()->VuState() == VU_MEM_ACTIVE)
     {
         return TRUE;
     }
@@ -958,7 +958,7 @@ int VuCreateEvent::Encode(VU_BYTE** buf)
         size_ = static_cast<ushort>(Entity()->SaveSize());
     }
 
-    if (Entity() && size_)
+    if (Entity() and size_)
     {
         // copying ent in save allows multiple send's of same event
         if (size_ > oldsize)
@@ -1020,15 +1020,15 @@ VU_ERRCODE VuCreateEvent::Process(VU_BOOL)
         return VU_ERROR;
     }
 
-    if (!expandedData_->IsLocal())
+    if ( not expandedData_->IsLocal())
     {
         expandedData_->SetTransmissionTime(postTime_);
     }
 
     if (
-        Entity() &&
-        (Entity()->OwnerId() != expandedData_->OwnerId()) &&
-        Entity() != expandedData_
+        Entity() and 
+        (Entity()->OwnerId() not_eq expandedData_->OwnerId()) and 
+        Entity() not_eq expandedData_
     )
     {
         if (Entity()->IsPrivate())
@@ -1080,7 +1080,7 @@ VU_ERRCODE VuCreateEvent::Process(VU_BOOL)
 
                     if (Entity()->VuState() == VU_MEM_ACTIVE)
                     {
-                        // note: this will cause a memory leak! (but is extrememly rare)
+                        // note: this will cause a memory leak (but is extrememly rare)
                         //   Basically, we have two ents with the same id, and we cannot
                         //   keep track of both, even to know when it is safe to delete
                         //   the abandoned entity -- so we remove it from VU, but don't
@@ -1100,12 +1100,12 @@ VU_ERRCODE VuCreateEvent::Process(VU_BOOL)
         }
     }
 
-    if (Entity() && (type_ == VU_FULL_UPDATE_EVENT))
+    if (Entity() and (type_ == VU_FULL_UPDATE_EVENT))
     {
         Entity()->Handle((VuFullUpdateEvent *)this);
         return VU_SUCCESS;
     }
-    else if (!Entity())
+    else if ( not Entity())
     {
         // received a session entity
         if (expandedData_->IsSession())
@@ -1211,7 +1211,7 @@ VU_ERRCODE VuDeleteEvent::Activate(VuEntity* ent)
 #endif
             return VU_SUCCESS;
         }
-        else if (!Entity()->IsLocal())
+        else if ( not Entity()->IsLocal())
         {
             // prevent duplicate delete event from remote source
             SetEntity(0);
@@ -1301,7 +1301,7 @@ VU_ERRCODE VuUnmanageEvent::Process(VU_BOOL)
 #endif
 
 //--------------------------------------------------
-#if !NO_RELEASE_EVENT
+#if not NO_RELEASE_EVENT
 VuReleaseEvent::VuReleaseEvent(VuEntity* entity)
     : VuEvent(VU_RELEASE_EVENT, entity->Id(), vuLocalSessionEntity.get(), TRUE)
 {
@@ -1343,7 +1343,7 @@ VU_ERRCODE VuReleaseEvent::Activate(VuEntity* ent)
         SetEntity(ent);
     }
 
-    if (Entity() && Entity()->VuState() == VU_MEM_ACTIVE)
+    if (Entity() and Entity()->VuState() == VU_MEM_ACTIVE)
     {
         Entity()->share_.ownerId_ = vuNullId;
         vuDatabase->DeleteRemove(Entity());
@@ -1681,11 +1681,11 @@ VU_ERRCODE VuBroadcastGlobalEvent::Process(VU_BOOL autod)
             // TODO  check if we can get vuGlobalGroup owner...
             VuSessionEntity *server = static_cast<VuSessionEntity*>(vuDatabase->Find(vuGlobalGroup->OwnerId()));
 
-            if (server != NULL)
+            if (server not_eq NULL)
             {
                 VU_ADDRESS serverAdd = server->GetAddress();
 
-                if ((entityAddress.IsPrivate()) && (!serverAdd.IsPrivate()))
+                if ((entityAddress.IsPrivate()) and ( not serverAdd.IsPrivate()))
                 {
                     entityAddress.ip = serverAdd.ip;
                 }
@@ -1696,7 +1696,7 @@ VU_ERRCODE VuBroadcastGlobalEvent::Process(VU_BOOL autod)
         VuxAddDanglingSession(EntityId(), entityAddress);
 
         // someone broadcasted an event (not a session)
-        if (EntityId().num_ != VU_SESSION_ENTITY_ID)
+        if (EntityId().num_ not_eq VU_SESSION_ENTITY_ID)
         {
             // Send a get request for the entity if its not a session
             VuGetRequest *msg = new VuGetRequest(EntityId(), vuGlobalGroup);
@@ -1756,7 +1756,7 @@ VuFullUpdateEvent::~VuFullUpdateEvent()
 VU_ERRCODE
 VuFullUpdateEvent::Activate(VuEntity* ent)
 {
-    if (!ent)
+    if ( not ent)
     {
         // morph this into a create event
         type_ = VU_CREATE_EVENT;
@@ -2012,7 +2012,7 @@ VU_ERRCODE VuSessionEvent::Process(VU_BOOL)
 {
     VuEntity *e = Entity();
 
-    if (e && e->VuState() == VU_MEM_ACTIVE)
+    if (e and e->VuState() == VU_MEM_ACTIVE)
     {
         Entity()->Handle(this);
         return VU_SUCCESS;
@@ -2039,7 +2039,7 @@ VuTimerEvent::VuTimerEvent(
 
 VuTimerEvent::~VuTimerEvent()
 {
-    // sfr: FUCK!! wheres unref?
+    // sfr: FUCK wheres unref?
     if (event_)
     {
         event_->UnRef();
@@ -2084,7 +2084,7 @@ VU_ERRCODE VuTimerEvent::Process(VU_BOOL)
         {
             VuMessageQueue::PostVuMessage(event_);
         }
-        else if ((event_->Target()) && (event_->Target() != vuLocalSessionEntity))
+        else if ((event_->Target()) and (event_->Target() not_eq vuLocalSessionEntity))
         {
             //me123 from Target() to event_->Target()
             retval = event_->Send();
@@ -2101,7 +2101,7 @@ VU_ERRCODE VuTimerEvent::Process(VU_BOOL)
         retval = VU_SUCCESS;
     }
 
-    if (EntityId() != vuNullId)
+    if (EntityId() not_eq vuNullId)
     {
         if (Entity())
         {
@@ -2151,7 +2151,7 @@ int VuShutdownEvent::Encode(VU_BYTE **)
 
 VU_ERRCODE VuShutdownEvent::Process(VU_BOOL)
 {
-    if (!done_)
+    if ( not done_)
     {
         vuCollectionManager->Shutdown(shutdownAll_);
         done_ = TRUE;

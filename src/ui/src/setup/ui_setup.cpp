@@ -229,7 +229,7 @@ void LoadSetupWindows()
 
     win = gMainHandler->FindWindow(SETUP_WIN);
 
-    if (win != NULL)
+    if (win not_eq NULL)
     {
         //timer to update joystick bmp on controls tab
         tmr = new C_TimerHook;
@@ -264,7 +264,7 @@ void LoadSetupWindows()
 
         bmap = (C_Bitmap *)win->FindControl(JOY_INDICATOR);
 
-        if (bmap != NULL)
+        if (bmap not_eq NULL)
         {
             size = bmap->GetH() + 1;
         }
@@ -284,9 +284,9 @@ void LoadSetupWindows()
         //setup scale for manipulating rudder control on controls tab
         line = (C_Line *)win->FindControl(RUDDER);
 
-        if (line != NULL)
+        if (line not_eq NULL)
         {
-            if (!IO.AnalogIsUsed(AXIS_YAW)) // Retro 31Dec2003
+            if ( not IO.AnalogIsUsed(AXIS_YAW)) // Retro 31Dec2003
                 line->SetColor(RGB(130, 130, 130)); //grey
 
             //if(Calibration.calibrated)
@@ -303,9 +303,9 @@ void LoadSetupWindows()
         //setup scale for manipulating throttle control on controls tab
         line = (C_Line *)win->FindControl(THROTTLE);
 
-        if (line != NULL)
+        if (line not_eq NULL)
         {
-            if (!IO.AnalogIsUsed(AXIS_THROTTLE)) // Retro 31Dec2003
+            if ( not IO.AnalogIsUsed(AXIS_THROTTLE)) // Retro 31Dec2003
                 line->SetColor(RGB(130, 130, 130)); //grey
 
             //if(Calibration.calibrated)
@@ -325,7 +325,7 @@ void LoadSetupWindows()
         //setup scale for manipulating rudder control on controls tab
         line = (C_Line *)win->FindControl(RUDDER);
 
-        if (line != NULL)
+        if (line not_eq NULL)
         {
             RudderScale = (line->GetH()) / 2.0F;
             Rudder.left = line->GetX();
@@ -337,7 +337,7 @@ void LoadSetupWindows()
         //setup scale for manipulating throttle control on controls tab
         line = (C_Line *)win->FindControl(THROTTLE);
 
-        if (line != NULL)
+        if (line not_eq NULL)
         {
             ThrottleScale = (float)line->GetH();
             Throttle.left = line->GetX();
@@ -357,11 +357,11 @@ void LoadSetupWindows()
         // others are (or rather: should be) aligned to this one
         C_Window* win2 = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
 
-        if (!win2) return;
+        if ( not win2) return;
 
         C_Line* line = (C_Line *)win2->FindControl(SETUP_ADVANCED_THROTTLE_VAL);
 
-        if (line != NULL)
+        if (line not_eq NULL)
         {
             AxisValueBox.left = line->GetX();
             AxisValueBox.right = line->GetX() + line->GetW();
@@ -391,7 +391,7 @@ void LoadSetupWindows()
 
 void SetupOpenLogBookCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     InitSoundSetup();
@@ -417,7 +417,7 @@ void STPSetupControls(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_FLTMOD);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         if (PlayerOptions.GetFlightModelType() == FMAccurate)
             lbox->SetValue(SET_FLTMOD_1);
@@ -429,7 +429,7 @@ void STPSetupControls(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_RADAR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (PlayerOptions.GetAvionicsType())
         {
@@ -456,7 +456,7 @@ void STPSetupControls(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_WEAPEFF);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (PlayerOptions.GetWeaponEffectiveness())
         {
@@ -478,7 +478,7 @@ void STPSetupControls(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_AUTOPILOT);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (PlayerOptions.GetAutopilotMode())
         {
@@ -500,7 +500,7 @@ void STPSetupControls(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_REFUELING);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (PlayerOptions.GetRefuelingMode())
         {
@@ -522,7 +522,7 @@ void STPSetupControls(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_PADLOCK);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (PlayerOptions.GetPadlockMode())
         {
@@ -547,7 +547,7 @@ void STPSetupControls(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_CANOPY_CUE);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (PlayerOptions.GetVisualCueMode())
         {
@@ -573,7 +573,7 @@ void STPSetupControls(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_VIDEO_DRIVER);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         BuildVideoDriverList(lbox);
 
@@ -584,7 +584,7 @@ void STPSetupControls(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_VIDEO_CARD);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         BuildVideoCardList(lbox);
 
@@ -594,7 +594,7 @@ void STPSetupControls(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_RESOLUTION);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         BuildResolutionList(lbox);
 
@@ -606,7 +606,7 @@ void STPSetupControls(void)
         if (pDI)
         {
             int nIndex = pDI->FindDisplayMode(DisplayOptions.DispWidth, DisplayOptions.DispHeight, DisplayOptions.DispDepth);
-            lbox->SetValue(nIndex != -1 ? nIndex : 0);
+            lbox->SetValue(nIndex not_eq -1 ? nIndex : 0);
         }
 
 #else
@@ -619,7 +619,7 @@ void STPSetupControls(void)
     //JAM 20Nov03
     lbox = (C_ListBox *)win->FindControl(SETUP_REALWEATHER);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         if (TheCampaign.InMainUI)
         {
@@ -644,7 +644,7 @@ void STPSetupControls(void)
     /*
      //THW 2004-01-18
      lbox=(C_ListBox *)win->FindControl(SETUP_SEASON);
-     if(lbox != NULL)
+     if(lbox not_eq NULL)
      {
      lbox->SetValue(PlayerOptions.Season+70313);
      lbox->Refresh();
@@ -653,7 +653,7 @@ void STPSetupControls(void)
     */
     button = (C_Button *)win->FindControl(SET_LOGBOOK);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         button->SetText(0, UI_logbk.Callsign());
         button->Refresh();
@@ -661,7 +661,7 @@ void STPSetupControls(void)
 
     button = (C_Button *)win->FindControl(SET_ORDNANCE);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.UnlimitedAmmo())
             button->SetState(C_STATE_1);
@@ -673,7 +673,7 @@ void STPSetupControls(void)
 
     button = (C_Button *)win->FindControl(SET_FUEL);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.UnlimitedFuel())
             button->SetState(C_STATE_1);
@@ -685,7 +685,7 @@ void STPSetupControls(void)
 
     button = (C_Button *)win->FindControl(SET_CHAFFLARES);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.UnlimitedChaff())
             button->SetState(C_STATE_1);
@@ -698,7 +698,7 @@ void STPSetupControls(void)
 
     button = (C_Button *)win->FindControl(SET_COLLISIONS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.CollisionsOn())
             button->SetState(C_STATE_0);
@@ -710,7 +710,7 @@ void STPSetupControls(void)
 
     button = (C_Button *)win->FindControl(SET_BLACKOUT);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.BlackoutOn())
             button->SetState(C_STATE_0);
@@ -723,7 +723,7 @@ void STPSetupControls(void)
 
     button = (C_Button *)win->FindControl(SET_IDTAGS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.NameTagsOn())
             button->SetState(C_STATE_1);
@@ -735,7 +735,7 @@ void STPSetupControls(void)
 
     button = (C_Button *)win->FindControl(SET_BULLSEYE_CALLS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.BullseyeOn())
             button->SetState(C_STATE_1);
@@ -747,7 +747,7 @@ void STPSetupControls(void)
 
     button = (C_Button *)win->FindControl(SET_INVULNERABILITY); //should be SET_INVULNERABLITY
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.InvulnerableOn())
             button->SetState(C_STATE_1);
@@ -760,7 +760,7 @@ void STPSetupControls(void)
     // Retro 25Dec2003
     button = (C_Button *)win->FindControl(SETUP_SIM_INFOBAR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.getInfoBar())
             button->SetState(C_STATE_1);
@@ -772,7 +772,7 @@ void STPSetupControls(void)
 
     button = (C_Button *)win->FindControl(SETUP_SIM_SUBTITLES);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.getSubtitles())
             button->SetState(C_STATE_1);
@@ -794,7 +794,7 @@ void STPSetupControls(void)
 
     button = (C_Button *)win->FindControl(AUTO_SCALE);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.ObjectDynScalingOn())
             button->SetState(C_STATE_1);
@@ -806,7 +806,7 @@ void STPSetupControls(void)
 
     button = (C_Button *)win->FindControl(GOUROUD); //GOUROUD
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.GouraudOn())
             button->SetState(C_STATE_1);
@@ -818,7 +818,7 @@ void STPSetupControls(void)
 
     button = (C_Button *)win->FindControl(HAZING);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.HazingOn())
             button->SetState(C_STATE_1);
@@ -831,7 +831,7 @@ void STPSetupControls(void)
     //JAM 07Dec03
     button = (C_Button *)win->FindControl(SETUP_REALWEATHER_SHADOWS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.ShadowsOn())
             button->SetState(C_STATE_1);
@@ -843,7 +843,7 @@ void STPSetupControls(void)
 
     button = (C_Button *)win->FindControl(SETUP_SPECULAR_LIGHTING);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (DisplayOptions.bSpecularLighting)
             button->SetState(C_STATE_1);
@@ -854,7 +854,7 @@ void STPSetupControls(void)
     }
 
     /* button=(C_Button *)win->FindControl(OBJECT_TEXTURES);
-     if(button != NULL)
+     if(button not_eq NULL)
      {
      if(PlayerOptions.ObjectTexturesOn())
      button->SetState(C_STATE_1);
@@ -866,7 +866,7 @@ void STPSetupControls(void)
     // M.N.
     button = (C_Button *)win->FindControl(PLAYERVOICE);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.PlayerRadioVoice)
             button->SetState(C_STATE_1);
@@ -878,7 +878,7 @@ void STPSetupControls(void)
 
     button = (C_Button *)win->FindControl(UICOMMS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.UIComms)
             button->SetState(C_STATE_1);
@@ -891,14 +891,14 @@ void STPSetupControls(void)
 
     text = (C_Text *)win->FindControl(CAL_TEXT);
 
-    if (text != NULL)
+    if (text not_eq NULL)
         text->SetText("");
 
     InitSoundSetup();
 
     slider = (C_Slider *)win->FindControl(OBJECT_DETAIL);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         ebox = (C_EditBox *)win->FindControl(OBJECT_DETAIL_READOUT);
 
@@ -916,7 +916,7 @@ void STPSetupControls(void)
 
     slider = (C_Slider *)win->FindControl(SFX_LEVEL);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         ebox = (C_EditBox *)win->FindControl(SFX_LEVEL_READOUT);
 
@@ -932,7 +932,7 @@ void STPSetupControls(void)
 
     slider = (C_Slider *)win->FindControl(DISAGG_LEVEL);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         ebox = (C_EditBox *)win->FindControl(DISAGG_LEVEL_READOUT);
 
@@ -949,7 +949,7 @@ void STPSetupControls(void)
 
     slider = (C_Slider *)win->FindControl(VEHICLE_SIZE);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         slider->SetSliderPos(FloatToInt32((slider->GetSliderMax() - slider->GetSliderMin()) * (PlayerOptions.ObjMagnification - 1.0F) / 4.0F));
         ebox = (C_EditBox *)win->FindControl(VEHICLE_SIZE_READOUT);
@@ -963,7 +963,7 @@ void STPSetupControls(void)
     }
 
     /* slider=(C_Slider *)win->FindControl(TEXTURE_DISTANCE);
-     if(slider != NULL)
+     if(slider not_eq NULL)
      {
      ebox = (C_EditBox *)win->FindControl(TEX_DISTANCE_READOUT);
      if(ebox)
@@ -977,7 +977,7 @@ void STPSetupControls(void)
     */
     slider = (C_Slider *)win->FindControl(PLAYER_BUBBLE_SLIDER);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         ebox = (C_EditBox *)win->FindControl(PLAYER_BUBBLE_READOUT);
 
@@ -995,7 +995,7 @@ void STPSetupControls(void)
 
     slider = (C_Slider *)win->FindControl(TERRAIN_DETAIL);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         int step;
         step = (slider->GetSliderMax() - slider->GetSliderMin()) / (6 * GraphicSettingMult);
@@ -1030,12 +1030,12 @@ void STPSetupControls(void)
         lbox->Refresh();
     }
 
-    //if (S_joycaps.wCaps & JOYCAPS_HASZ)
+    //if (S_joycaps.wCaps bitand JOYCAPS_HASZ)
     if (IO.AnalogIsUsed(AXIS_THROTTLE)) // Retro 31Dec2003
     {
         button = (C_Button *)win->FindControl(THROTTLE_CHECK);
 
-        if (button != NULL)
+        if (button not_eq NULL)
         {
             button->SetFlagBitOn(C_BIT_INVISIBLE);
             button->SetState(C_STATE_1);
@@ -1047,7 +1047,7 @@ void STPSetupControls(void)
     {
         button = (C_Button *)win->FindControl(RUDDER_CHECK);
 
-        if (button != NULL)
+        if (button not_eq NULL)
         {
             button->SetFlagBitOn(C_BIT_INVISIBLE);
             button->SetState(C_STATE_1);
@@ -1060,7 +1060,7 @@ void STPSetupControls(void)
     /* // M.N. Sky Color Stuff
     #if 0
      win=gMainHandler->FindWindow(SETUP_SKY_WIN);
-     if (!win)
+     if ( not win)
      return;
      lbox = (C_ListBox *) win->FindControl(SETUP_SKY_COLOR);
      if (lbox)
@@ -1070,7 +1070,7 @@ void STPSetupControls(void)
      }
     #else
      win=gMainHandler->FindWindow(SETUP_SKY_WIN);
-     if(!win) return;
+     if( not win) return;
      lbox=(C_ListBox *)win->FindControl(SETUP_SKY_COLOR);
      if (lbox)
      {
@@ -1088,7 +1088,7 @@ void STPSetupControls(void)
 
     // SetSkyColor();
 
-    if (!SetupCritSection)
+    if ( not SetupCritSection)
         SetupCritSection = F4CreateCriticalSection("SetupCrit");
 
     KeyVar.EditKey = FALSE;
@@ -1100,7 +1100,7 @@ void SetupRadioCB(long, short hittype, C_Base *control)
     int i;
     C_Button *button;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     /*
@@ -1126,7 +1126,7 @@ void SetupRadioCB(long, short hittype, C_Base *control)
         F4LeaveCriticalSection(SetupCritSection);
         button = (C_Button *)control->Parent_->FindControl(RENDER);
 
-        if (button != NULL)
+        if (button not_eq NULL)
         {
             button->SetState(C_STATE_0);
         }
@@ -1155,7 +1155,7 @@ void SetupRadioCB(long, short hittype, C_Base *control)
         int hasPOV = FALSE;
         extern AxisMapping AxisMap;
 
-        if ((gTotalJoy) && (AxisMap.FlightControlDevice != -1))
+        if ((gTotalJoy) and (AxisMap.FlightControlDevice not_eq -1))
         {
             DIDEVCAPS devcaps;
             devcaps.dwSize = sizeof(DIDEVCAPS);
@@ -1180,9 +1180,9 @@ void SetupRadioCB(long, short hittype, C_Base *control)
         {
             button = (C_Button *)control->Parent_->FindControl(POVSymbols[i]);
 
-            if (button != NULL)
+            if (button not_eq NULL)
             {
-                if (!hasPOV)
+                if ( not hasPOV)
                     button->SetFlagBitOn(C_BIT_INVISIBLE);
                 else
                     button->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -1196,7 +1196,7 @@ void SetupRadioCB(long, short hittype, C_Base *control)
 //JAM 13Oct03
 void RestartCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     PostMessage(gMainHandler->GetAppWnd(), FM_EXIT_GAME, 0, 0);
@@ -1220,7 +1220,7 @@ static void SaveValues(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_FLTMOD);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         if ((lbox->GetTextID()) == SET_FLTMOD_1)
             PlayerOptions.SimFlightModel = FMAccurate;
@@ -1232,7 +1232,7 @@ static void SaveValues(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_RADAR);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (lbox->GetTextID())
         {
@@ -1259,7 +1259,7 @@ static void SaveValues(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_WEAPEFF);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (lbox->GetTextID())
         {
@@ -1281,7 +1281,7 @@ static void SaveValues(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_AUTOPILOT);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (lbox->GetTextID())
         {
@@ -1303,7 +1303,7 @@ static void SaveValues(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_PADLOCK);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (lbox->GetTextID())
         {
@@ -1328,7 +1328,7 @@ static void SaveValues(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_REFUELING);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (lbox->GetTextID())
         {
@@ -1350,7 +1350,7 @@ static void SaveValues(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_CANOPY_CUE);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         switch (lbox->GetTextID())
         {
@@ -1376,7 +1376,7 @@ static void SaveValues(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_VIDEO_CARD);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         DisplayOptions.DispVideoCard = static_cast<uchar>(lbox->GetTextID() - 1);
         lbox->Refresh();
@@ -1384,7 +1384,7 @@ static void SaveValues(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_VIDEO_DRIVER);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         DisplayOptions.DispVideoDriver = static_cast<uchar>(lbox->GetTextID() - 1);
         lbox->Refresh();
@@ -1392,7 +1392,7 @@ static void SaveValues(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_RESOLUTION);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         // OW
 #if 1
@@ -1422,7 +1422,7 @@ static void SaveValues(void)
     {
         lbox = (C_ListBox *)win->FindControl(SETUP_REALWEATHER);
 
-        if (lbox != NULL)
+        if (lbox not_eq NULL)
         {
             PlayerOptions.weatherCondition = lbox->GetTextID() - 70207;
             ((WeatherClass *)realWeather)->UpdateCondition(PlayerOptions.weatherCondition, true);
@@ -1434,7 +1434,7 @@ static void SaveValues(void)
 
     //THW 2004-01-17
     /* lbox=(C_ListBox *)win->FindControl(SETUP_SEASON);
-     if(lbox != NULL)
+     if(lbox not_eq NULL)
      {
      //PlayerOptions.Season = lbox->GetTextID()-70312;
      lbox->Refresh();
@@ -1443,7 +1443,7 @@ static void SaveValues(void)
     */
     button = (C_Button *)win->FindControl(SET_ORDNANCE);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1)
             PlayerOptions.SetSimFlag(SIM_UNLIMITED_AMMO);
@@ -1453,7 +1453,7 @@ static void SaveValues(void)
 
     button = (C_Button *)win->FindControl(SET_FUEL);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1)
             PlayerOptions.SetSimFlag(SIM_UNLIMITED_FUEL);
@@ -1463,7 +1463,7 @@ static void SaveValues(void)
 
     button = (C_Button *)win->FindControl(SET_CHAFFLARES);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1)
             PlayerOptions.SetSimFlag(SIM_UNLIMITED_CHAFF);
@@ -1474,7 +1474,7 @@ static void SaveValues(void)
 
     button = (C_Button *)win->FindControl(SET_COLLISIONS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1)
             PlayerOptions.SetSimFlag(SIM_NO_COLLISIONS);
@@ -1484,7 +1484,7 @@ static void SaveValues(void)
 
     button = (C_Button *)win->FindControl(SET_BLACKOUT);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1)
             PlayerOptions.SetSimFlag(SIM_NO_BLACKOUT);
@@ -1495,7 +1495,7 @@ static void SaveValues(void)
 
     button = (C_Button *)win->FindControl(SET_IDTAGS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1)
             PlayerOptions.SetSimFlag(SIM_NAMETAGS);
@@ -1505,7 +1505,7 @@ static void SaveValues(void)
 
     button = (C_Button *)win->FindControl(SET_BULLSEYE_CALLS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1)
             PlayerOptions.SetSimFlag(SIM_BULLSEYE_CALLS);
@@ -1515,7 +1515,7 @@ static void SaveValues(void)
 
     button = (C_Button *)win->FindControl(SET_INVULNERABILITY); //should be SET_INVULNERABLITY
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1)
             PlayerOptions.SetSimFlag(SIM_INVULNERABLE);
@@ -1526,7 +1526,7 @@ static void SaveValues(void)
     // Retro 25Dec2003
     button = (C_Button *)win->FindControl(SETUP_SIM_INFOBAR);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1)
             PlayerOptions.SetInfoBar(true);
@@ -1545,7 +1545,7 @@ static void SaveValues(void)
 
     button = (C_Button *)win->FindControl(AUTO_SCALE);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1)
             PlayerOptions.SetObjFlag(DISP_OBJ_DYN_SCALING);
@@ -1555,7 +1555,7 @@ static void SaveValues(void)
 
     button = (C_Button *)win->FindControl(GOUROUD); //GOUROUD
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1)
             PlayerOptions.SetDispFlag(DISP_GOURAUD);
@@ -1565,7 +1565,7 @@ static void SaveValues(void)
 
     button = (C_Button *)win->FindControl(HAZING);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1)
             PlayerOptions.SetDispFlag(DISP_HAZING);
@@ -1576,7 +1576,7 @@ static void SaveValues(void)
     //JAM 07Dec03
     button = (C_Button *)win->FindControl(SETUP_REALWEATHER_SHADOWS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1)
             PlayerOptions.SetDispFlag(DISP_SHADOWS);
@@ -1586,7 +1586,7 @@ static void SaveValues(void)
 
     button = (C_Button *)win->FindControl(SETUP_SPECULAR_LIGHTING);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1)
             DisplayOptions.bSpecularLighting = TRUE;
@@ -1595,7 +1595,7 @@ static void SaveValues(void)
     }
 
     /* button=(C_Button *)win->FindControl(BILINEAR_FILTERING);
-     if(button != NULL)
+     if(button not_eq NULL)
      {
      if(button->GetState() == C_STATE_1)
      PlayerOptions.SetDispFlag(DISP_BILINEAR);
@@ -1604,31 +1604,31 @@ static void SaveValues(void)
      }
     */
     /* button=(C_Button *)win->FindControl(OBJECT_TEXTURES);
-     if(button != NULL)
+     if(button not_eq NULL)
      {
      if(button->GetState() == C_STATE_1)
-     PlayerOptions.ObjFlags |= DISP_OBJ_TEXTURES;
+     PlayerOptions.ObjFlags or_eq DISP_OBJ_TEXTURES;
      else
-     PlayerOptions.ObjFlags &= ~DISP_OBJ_TEXTURES;
+     PlayerOptions.ObjFlags and_eq compl DISP_OBJ_TEXTURES;
      }
     */
     slider = (C_Slider *)win->FindControl(OBJECT_DETAIL);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         PlayerOptions.ObjDetailLevel = ((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f * GraphicSettingMult + 0.5f);
     }
 
     slider = (C_Slider *)win->FindControl(SFX_LEVEL);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         PlayerOptions.SfxLevel = ((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 4.0f + 1.0F);
     }
 
     slider = (C_Slider *)win->FindControl(PLAYER_BUBBLE_SLIDER);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         PlayerOptions.PlayerBubble = ((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f * GraphicSettingMult + 0.5f);
         FalconLocalSession->SetBubbleRatio(PlayerOptions.PlayerBubble);
@@ -1636,7 +1636,7 @@ static void SaveValues(void)
 
     slider = (C_Slider *)win->FindControl(DISAGG_LEVEL);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         PlayerOptions.BldDeaggLevel = FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 5 + 0.5F);
         PlayerOptions.ObjDeaggLevel = FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 100 + 0.5F);
@@ -1644,20 +1644,20 @@ static void SaveValues(void)
 
     slider = (C_Slider *)win->FindControl(VEHICLE_SIZE);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         PlayerOptions.ObjMagnification = static_cast<float>(FloatToInt32((float)slider->GetSliderPos() / (float)(slider->GetSliderMax() - slider->GetSliderMin()) * 4.0F + 1.0F));
     }
 
     /* slider=(C_Slider *)win->FindControl(TEXTURE_DISTANCE);
-     if(slider != NULL)
+     if(slider not_eq NULL)
      {
      PlayerOptions.DispTextureLevel = FloatToInt32((float)slider->GetSliderPos()/(slider->GetSliderMax()-slider->GetSliderMin()) * 4.0F + 0.5F);
      }
     */
     slider = (C_Slider *)win->FindControl(TERRAIN_DETAIL);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         int step;
         step = (slider->GetSliderMax() - slider->GetSliderMin()) / (6 * GraphicSettingMult);
@@ -1676,7 +1676,7 @@ static void SaveValues(void)
 
     text = (C_Text *)win->FindControl(CAL_TEXT);
 
-    if (text != NULL)
+    if (text not_eq NULL)
         text->SetText("");
 
     button = (C_Button *) win->FindControl(PLAYERVOICE);
@@ -1711,7 +1711,7 @@ static void SaveValues(void)
 
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
-    if (!win) return;
+    if ( not win) return;
 
     //JAM 28Oct03
     button = (C_Button *)win->FindControl(SETUP_ADVANCED_ANISOTROPIC_FILTERING);
@@ -1817,7 +1817,7 @@ void CloseSetupWindowCB(long ID, short hittype, C_Base *control)
 {
     C_Button *button;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     ShutdownSetup();
@@ -1830,7 +1830,7 @@ void CloseSetupWindowCB(long ID, short hittype, C_Base *control)
 
     button = (C_Button *)control->Parent_->FindControl(RENDER);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         button->SetState(C_STATE_0);
     }
@@ -1846,7 +1846,7 @@ void DoSyncWindowCB(long ID, short hittype, C_Base *control)
 {
     // C_Window *win;
     /*
-     if(hittype != C_TYPE_LMOUSEUP)
+     if(hittype not_eq C_TYPE_LMOUSEUP)
      return;
 
      if( DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS )
@@ -1881,7 +1881,7 @@ void SetupOkCB(long ID, short hittype, C_Base *control)
 {
     C_Button *button;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
 
@@ -1897,7 +1897,7 @@ void SetupOkCB(long ID, short hittype, C_Base *control)
 
     button = (C_Button *)control->Parent_->FindControl(RENDER);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         button->SetState(C_STATE_0);
     }
@@ -1909,7 +1909,7 @@ void SetupOkCB(long ID, short hittype, C_Base *control)
 //JAM 28Oct03
 void AApplySetupCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SaveValues();
@@ -1920,7 +1920,7 @@ void AApplySetupCB(long ID, short hittype, C_Base *control)
 
 void ApplySetupCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SaveValues();
@@ -1934,7 +1934,7 @@ void CancelSetupCB(long ID, short hittype, C_Base *control)
 {
     C_Button *button;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     ShutdownSetup();
@@ -1947,7 +1947,7 @@ void CancelSetupCB(long ID, short hittype, C_Base *control)
 
     button = (C_Button *)control->Parent_->FindControl(RENDER);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         button->SetState(C_STATE_0);
     }
@@ -1981,160 +1981,160 @@ static void HookupSetupControls(long ID)
     // Hook up Close Button
     button = (C_Button *)win->FindControl(CLOSE_WINDOW);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(CloseSetupWindowCB);
 
     //JAM 24Oct03
     // button=(C_Button *)win->FindControl(DO_SYNC);
-    // if(button != NULL)
+    // if(button not_eq NULL)
     // button->SetCallback(DoSyncWindowCB);
 
     button = (C_Button *)win->FindControl(OK);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(SetupOkCB);
 
     button = (C_Button *)win->FindControl(APPLY);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(ApplySetupCB);
 
     button = (C_Button *)win->FindControl(CANCEL);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(CancelSetupCB);
 
     button = (C_Button *)win->FindControl(SET_LOGBOOK);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(SetupOpenLogBookCB);
 
     button = (C_Button *)win->FindControl(SIM_TAB);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(SetupRadioCB);
 
     button = (C_Button *)win->FindControl(GRAPHICS_TAB);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(SetupRadioCB);
 
     button = (C_Button *)win->FindControl(SOUND_TAB);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(SetupRadioCB);
 
     button = (C_Button *)win->FindControl(CONTROLLERS_TAB);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(SetupRadioCB);
 
 
     //Sim Tab
     listbox = (C_ListBox *)win->FindControl(SET_SKILL);
 
-    if (listbox != NULL)
+    if (listbox not_eq NULL)
         listbox->SetCallback(SetSkillCB);
 
     listbox = (C_ListBox *)win->FindControl(SET_FLTMOD);
 
-    if (listbox != NULL)
+    if (listbox not_eq NULL)
         listbox->SetCallback(SimControlCB);
 
     listbox = (C_ListBox *)win->FindControl(SET_RADAR);
 
-    if (listbox != NULL)
+    if (listbox not_eq NULL)
         listbox->SetCallback(SimControlCB);
 
     listbox = (C_ListBox *)win->FindControl(SET_WEAPEFF);
 
-    if (listbox != NULL)
+    if (listbox not_eq NULL)
         listbox->SetCallback(SimControlCB);
 
     listbox = (C_ListBox *)win->FindControl(SET_AUTOPILOT);
 
-    if (listbox != NULL)
+    if (listbox not_eq NULL)
         listbox->SetCallback(SimControlCB);
 
     listbox = (C_ListBox *)win->FindControl(SET_REFUELING);
 
-    if (listbox != NULL)
+    if (listbox not_eq NULL)
         listbox->SetCallback(SimControlCB);
 
     listbox = (C_ListBox *)win->FindControl(SET_PADLOCK);
 
-    if (listbox != NULL)
+    if (listbox not_eq NULL)
         listbox->SetCallback(SimControlCB);
 
     button = (C_Button *)win->FindControl(SET_INVULNERABILITY);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(SimControlCB);
 
     button = (C_Button *)win->FindControl(SET_FUEL);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(SimControlCB);
 
     button = (C_Button *)win->FindControl(SET_CHAFFLARES);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(SimControlCB);
 
     button = (C_Button *)win->FindControl(SET_COLLISIONS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(SimControlCB);
 
     button = (C_Button *)win->FindControl(SET_BLACKOUT);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(SimControlCB);
 
     button = (C_Button *)win->FindControl(SET_IDTAGS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(SimControlCB);
 
 
     //Controllers Tab
 
     //button=(C_Button *)win->FindControl(SET_DEFAULTS);
-    //if(button != NULL)
+    //if(button not_eq NULL)
     // button->SetCallback(SetKeyDefaultCB);
 
     button = (C_Button *)win->FindControl(CALIBRATE);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(RecenterJoystickCB);
 
     button = (C_Button *)win->FindControl(SET_AB_DETENT);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(SetABDetentCB);
 
 
     button = (C_Button *)win->FindControl(KEYMAP_SAVE);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(SaveKeyButtonCB);
 
     button = (C_Button *)win->FindControl(KEYMAP_LOAD);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(LoadKeyButtonCB);
 
     win->SetKBCallback(KeystrokeCB);
 
     listbox = (C_ListBox *)win->FindControl(70137);//JOYSTICK_SELECT
 
-    if (listbox != NULL)
+    if (listbox not_eq NULL)
         listbox->SetCallback(ControllerSelectCB);
 
     // Retro 31Dec2003 - callback function for the new advanced controls button
     button = (C_Button *)win->FindControl(SETUP_CONTROL_ADVANCED);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(AdvancedControlCB);
 
     //Sound Tab
@@ -2182,12 +2182,12 @@ static void HookupSetupControls(long ID)
     // M.N.
     button = (C_Button *)win->FindControl(PLAYERVOICE);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(TogglePlayerVoiceCB);
 
     button = (C_Button *)win->FindControl(UICOMMS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
         button->SetCallback(ToggleUICommsCB);
 
     slider = (C_Slider*)win->FindControl(ENGINE_VOLUME);
@@ -2264,36 +2264,36 @@ static void HookupSetupControls(long ID)
 
     listbox = (C_ListBox *)win->FindControl(SET_VIDEO_CARD);
 
-    if (listbox != NULL)
+    if (listbox not_eq NULL)
         listbox->SetCallback(VideoCardCB);
 
     listbox = (C_ListBox *)win->FindControl(SET_VIDEO_DRIVER);
 
-    if (listbox != NULL)
+    if (listbox not_eq NULL)
         listbox->SetCallback(VideoDriverCB);
 
     listbox = (C_ListBox *)win->FindControl(SET_RESOLUTION);
 
-    if (listbox != NULL)
+    if (listbox not_eq NULL)
         listbox->SetCallback(ResolutionCB);
 
     //JAM 20Nov03
     listbox = (C_ListBox *)win->FindControl(SETUP_REALWEATHER);
 
-    if (listbox != NULL)
+    if (listbox not_eq NULL)
         listbox->SetCallback(RealWeatherCB);
 
     //JAM
     /*
      //THW 2004-01-17
      listbox = (C_ListBox *)win->FindControl(SETUP_SEASON);
-     if(listbox != NULL)
+     if(listbox not_eq NULL)
      listbox->SetCallback(SeasonCB);
      //THW
     */
     button = (C_Button *)win->FindControl(SET_GRAPHICS_DEFAULTS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         button->SetCallback(GraphicsDefaultsCB);
     }
@@ -2301,7 +2301,7 @@ static void HookupSetupControls(long ID)
     // OW
     button = (C_Button *)win->FindControl(SET_GRAPHICS_ADVANCED);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         button->SetCallback(AdvancedCB);
     }
@@ -2309,28 +2309,28 @@ static void HookupSetupControls(long ID)
     // JPO
     button = (C_Button *)win->FindControl(ADVANCED_GAME_OPTIONS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         button->SetCallback(AdvancedGameCB);
     }
 
     // M.N.
     /* button=(C_Button *)win->FindControl(SET_SKY_COLOR);
-     if(button != NULL)
+     if(button not_eq NULL)
      {
      button->SetCallback(SkyColorCB);
      }
     */
     button = (C_Button *)win->FindControl(RENDER);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         button->SetCallback(RenderViewCB);
     }
 
     button = (C_Button *)win->FindControl(AUTO_SCALE);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         button->SetCallback(ScalingCB);
     }
@@ -2338,7 +2338,7 @@ static void HookupSetupControls(long ID)
     // Retro 25Dec2003
     button = (C_Button*)win->FindControl(SETUP_SIM_SUBTITLES);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         button->SetCallback(SubTitleCB);
     }
@@ -2346,82 +2346,82 @@ static void HookupSetupControls(long ID)
     // ..ends
 
     /* button=(C_Button *)win->FindControl(70136);//GOUROUD
-     if(button != NULL)
+     if(button not_eq NULL)
      {
      button->SetCallback(GouraudCB);
      }
     */
     button = (C_Button *)win->FindControl(HAZING);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         button->SetCallback(HazingCB);
     }
 
     button = (C_Button *)win->FindControl(SETUP_REALWEATHER_SHADOWS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         button->SetCallback(RealWeatherShadowsCB);
     }
 
     /*
      button=(C_Button *)win->FindControl(BILINEAR_FILTERING);
-     if(button != NULL)
+     if(button not_eq NULL)
      {
      button->SetCallback(BilinearFilterCB);
      }
     */
     /* button=(C_Button *)win->FindControl(OBJECT_TEXTURES);
-     if(button != NULL)
+     if(button not_eq NULL)
      {
      button->SetCallback(ObjectTextureCB);
      }
     */
     slider = (C_Slider *)win->FindControl(DISAGG_LEVEL);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         slider->SetCallback(BuildingDetailCB);
     }
 
     slider = (C_Slider *)win->FindControl(OBJECT_DETAIL);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         slider->SetCallback(ObjectDetailCB);
     }
 
     slider = (C_Slider *)win->FindControl(PLAYER_BUBBLE_SLIDER);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         slider->SetCallback(PlayerBubbleCB);
     }
 
     slider = (C_Slider *)win->FindControl(VEHICLE_SIZE);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         slider->SetCallback(VehicleSizeCB);
     }
 
     slider = (C_Slider *)win->FindControl(TERRAIN_DETAIL);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         slider->SetCallback(TerrainDetailCB);
     }
 
     /* slider=(C_Slider *)win->FindControl(TEXTURE_DISTANCE);
-     if(slider != NULL)
+     if(slider not_eq NULL)
      {
      slider->SetCallback(TextureDistanceCB);
      }
     */
     slider = (C_Slider *)win->FindControl(SFX_LEVEL);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         slider->SetCallback(SfxLevelCB);
     }
@@ -2429,7 +2429,7 @@ static void HookupSetupControls(long ID)
     // OW new stuff
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
-    if (!win) return;
+    if ( not win) return;
 
     // disable parent notification for close and cancel button
     button = (C_Button *)win->FindControl(AAPPLY);
@@ -2445,7 +2445,7 @@ static void HookupSetupControls(long ID)
 
     // M.N. SkyColor stuff
     /* win = gMainHandler->FindWindow(SETUP_SKY_WIN);
-     if(!win) return;
+     if( not win) return;
 
      // disable parent notification for close and cancel button
      listbox=(C_ListBox *)win->FindControl(SETUP_SKY_COLOR);

@@ -94,7 +94,7 @@ void C_SoundBite::Add(long CatID, long SoundID)
     }
     else
     {
-        if (!Root)
+        if ( not Root)
         {
             Root = new CATLIST;
             Root->CatID = CatID;
@@ -135,7 +135,7 @@ long C_SoundBite::Pick(long CatID)
         num = rand() % cur->Count;
         snds = cur->Root;
 
-        while (snds && num > 0)
+        while (snds and num > 0)
         {
             num--;
             snds = snds->Next;
@@ -169,7 +169,7 @@ long C_SoundBite::PickAlways(long CatID)
 
         snds = cur->Root;
 
-        while (snds && num > 0)
+        while (snds and num > 0)
         {
             num--;
             snds = snds->Next;

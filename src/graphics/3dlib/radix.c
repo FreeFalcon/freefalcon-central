@@ -1,3 +1,4 @@
+#include <cISO646>
 #include "radix.h"
 
 static radix_sort_t *sortTable[512];
@@ -71,7 +72,7 @@ __inline radix_sort_t *RadixRelink(void)
 
     scanh = RadixFindNext(scanh);
 
-    while (scanh != 0UL)
+    while (scanh not_eq 0UL)
     {
         tail->pNext = scanh[0];
         scanh[0] = 0;
@@ -94,7 +95,7 @@ __inline radix_sort_t *RadixRRelink(void)
 
     scanh = RadixRFindNext(scanh);
 
-    while (scanh != 0UL)
+    while (scanh not_eq 0UL)
     {
         tail->pNext = scanh[0];
         tail = scanh[256];
@@ -115,7 +116,7 @@ radix_sort_t *RadixSortAscending(radix_sort_t *iptr, int offset)
 
     if (ptr->pNext == 0UL) return ptr;
 
-    while (ptr != 0UL)
+    while (ptr not_eq 0UL)
     {
         byteval = ((unsigned char *)ptr) + offset;
         index = *byteval;
@@ -135,7 +136,7 @@ radix_sort_t *RadixSortAscending(radix_sort_t *iptr, int offset)
 
     offset++;
 
-    while (ptr != 0UL)
+    while (ptr not_eq 0UL)
     {
         byteval = ((unsigned char *)ptr) + offset;
         index = *byteval;
@@ -166,7 +167,7 @@ radix_sort_t *RadixSortDescending(radix_sort_t *iptr, int offset)
 
     if (ptr->pNext == 0UL) return ptr;
 
-    while (ptr != 0UL)
+    while (ptr not_eq 0UL)
     {
         byteval = ((unsigned char *)ptr) + offset;
         index = *byteval;
@@ -185,27 +186,7 @@ radix_sort_t *RadixSortDescending(radix_sort_t *iptr, int offset)
     ptr = RadixRRelink();
     offset++;
 
-    while (ptr != 0UL)
-    {
-        byteval = ((unsigned char *)ptr) + offset;
-        index = *byteval;
-        nxt = ptr->pNext;
-
-        if (0UL == sortTable[index])
-            sortTable[index] = ptr;
-        else
-            sortTable[index + 256]->pNext = ptr;
-
-        sortTable[index + 256] = ptr;
-        ptr->pNext = 0UL;
-        ptr = nxt;
-    }
-
-    ptr = RadixRRelink();
-
-    offset++;
-
-    while (ptr != 0UL)
+    while (ptr not_eq 0UL)
     {
         byteval = ((unsigned char *)ptr) + offset;
         index = *byteval;
@@ -225,7 +206,27 @@ radix_sort_t *RadixSortDescending(radix_sort_t *iptr, int offset)
 
     offset++;
 
-    while (ptr != 0UL)
+    while (ptr not_eq 0UL)
+    {
+        byteval = ((unsigned char *)ptr) + offset;
+        index = *byteval;
+        nxt = ptr->pNext;
+
+        if (0UL == sortTable[index])
+            sortTable[index] = ptr;
+        else
+            sortTable[index + 256]->pNext = ptr;
+
+        sortTable[index + 256] = ptr;
+        ptr->pNext = 0UL;
+        ptr = nxt;
+    }
+
+    ptr = RadixRRelink();
+
+    offset++;
+
+    while (ptr not_eq 0UL)
     {
         byteval = ((unsigned char *)ptr) + offset;
         index = *byteval;

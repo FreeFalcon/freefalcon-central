@@ -61,7 +61,7 @@ void MissileClass::InitTrail(void)
     if (distSq > 100.0f)
     {
         // the notification
-        ShiWarning("Something wrong with missile!  Contact Engineer!");
+        ShiWarning("Something wrong with missile  Contact Engineer");
 
         // the bandaid
         newPoint = origPoint;
@@ -74,7 +74,7 @@ void MissileClass::InitTrail(void)
     // 2002-03-28 MN if we need the engine to model "lift", don't display trails or engine glows...
     wc = (WeaponClassDataType*)classPtr->dataPtr;
 
-    if (wc && (wc->Flags & WEAP_NO_TRAIL))
+    if (wc and (wc->Flags bitand WEAP_NO_TRAIL))
         return;
 
     // 2002-03-28 MN externalised missile trail types
@@ -89,7 +89,7 @@ void MissileClass::InitTrail(void)
     }
 
 
-    if (mistrail == 0 && misengGlow == 0 && misengGlowBSP == 0 && misgroundGlow == 0)
+    if (mistrail == 0 and misengGlow == 0 and misengGlowBSP == 0 and misgroundGlow == 0)
     {
         // differentiate trails and missile types
         if (g_nmissiletrial)
@@ -108,8 +108,8 @@ void MissileClass::InitTrail(void)
             engGlow = new Drawable2D(DRAW2D_MISSILE_GLOW, 2.0, &newPoint);
             engGlowBSP1 = new DrawableBSP(MapVisId(VIS_MFLAME_S), &newPoint, &rot, 1.0f);
         }
-        else if (classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AIM9M ||
-                 classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AIM9P ||
+        else if (classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AIM9M or
+                 classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AIM9P or
                  classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AIM9R)
         {
             // smallish trail
@@ -118,9 +118,9 @@ void MissileClass::InitTrail(void)
             engGlow = new Drawable2D(DRAW2D_MISSILE_GLOW, 5.0, &newPoint);
             engGlowBSP1 = new DrawableBSP(MapVisId(VIS_MFLAME_S), &newPoint, &rot, 1.0f);
         }
-        else if (classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AIM120 ||
-                 classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AA12 ||
-                 classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AA11 ||
+        else if (classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AIM120 or
+                 classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AA12 or
+                 classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AA11 or
                  classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AA10C
                 )
         {
@@ -150,7 +150,7 @@ void MissileClass::InitTrail(void)
         engGlowBSP1 = new DrawableBSP(MapVisId(misengGlowBSP), &newPoint, &rot, 1.0f);
         //RV - I-Hawk - disabling old ground glow stuff...
         /*
-        if (misgroundGlow != -1)
+        if (misgroundGlow not_eq -1)
          groundGlow = new Drawable2D( misgroundGlow, 1.0, &newPoint );
          */
     }
@@ -180,7 +180,7 @@ void MissileClass::UpdateTrail(void)
     //   if (trail)
     if (TrailId)
     {
-        if (PowerOutput() > 0.25F || g_nmissiletrial)
+        if (PowerOutput() > 0.25F or g_nmissiletrial)
         {
             newPoint.x = XPos();
             newPoint.y = YPos();
@@ -229,14 +229,14 @@ void MissileClass::UpdateTrail(void)
             bool contrail = false;
 
             //JAM 24Nov03
-            if (objAlt > ((WeatherClass*)realWeather)->contrailLow &&
+            if (objAlt > ((WeatherClass*)realWeather)->contrailLow and 
                 objAlt < ((WeatherClass*)realWeather)->contrailHigh)
                 contrail = true;
 
             //RV - I-Hawk - AIM-120 had no trail, it should have a weak trail
             /*
-            if (classPtr->vuClassData.classInfo_[VU_SPTYPE] != SPTYPE_AIM120 ||
-            contrail ||
+            if (classPtr->vuClassData.classInfo_[VU_SPTYPE] not_eq SPTYPE_AIM120 or
+            contrail or
              g_nmissiletrial)
             */
             // add new head to trail
@@ -266,7 +266,7 @@ void MissileClass::UpdateTrail(void)
             /*
             if ( agl < 1000.0f )
             {
-              if ( !groundGlow->InDisplayList() )
+              if ( not groundGlow->InDisplayList() )
               {
               OTWDriver.InsertObject(groundGlow );
               }
@@ -287,29 +287,29 @@ void MissileClass::UpdateTrail(void)
         else// if (trail->GetHead()) // MLR 12/11/2003 - commented out for new smoke trails
         {
 
-            if (engGlow && engGlow->InDisplayList())
+            if (engGlow and engGlow->InDisplayList())
             {
                 OTWDriver.RemoveObject(engGlow, FALSE);
             }
 
-            if (engGlowBSP1 && engGlowBSP1->InDisplayList())
+            if (engGlowBSP1 and engGlowBSP1->InDisplayList())
             {
                 OTWDriver.RemoveObject(engGlowBSP1, FALSE);
             }
 
-            if (groundGlow && groundGlow->InDisplayList())
+            if (groundGlow and groundGlow->InDisplayList())
             {
                 OTWDriver.RemoveObject(groundGlow, FALSE);
             }
         }
     }
-    else if (!IsExploding())
+    else if ( not IsExploding())
     {
         InitTrail();
 
         //if (trail)
         //OTWDriver.InsertObject(trail);
-        if (engGlow && !g_bDisableMissleEngGlow) // MLR 2003-10-11 Disble the star
+        if (engGlow and not g_bDisableMissleEngGlow) // MLR 2003-10-11 Disble the star
             OTWDriver.InsertObject(engGlow);
 
         if (engGlowBSP1)

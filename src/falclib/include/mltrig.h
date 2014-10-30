@@ -49,7 +49,7 @@ inline double checked_atan2(double y, double x)
     if (x == -0.0)
         x = 0.0;
 
-    if (x != 0)
+    if (x not_eq 0)
         z = atan(y / x);
     else if (y > 0)
         z = HALF_DPI;

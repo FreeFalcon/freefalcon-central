@@ -11,6 +11,7 @@
    Programmed by Kuswara Pranawahadi               September 5, 1996
 */
 
+#include <cISO646>
 #include <windows.h>
 #include "fsound.h" //psound
 #include "riffio.h"
@@ -19,9 +20,9 @@
    MACRO to switch from big to little endian.
 */
 
-#define  RIFFCODE(a,b,c,d) ((((long) d) << 24) | \
-                           (((long) c) << 16) | \
-                           (((long) b) << 8) | \
+#define  RIFFCODE(a,b,c,d) ((((long) d) << 24) bitor \
+                           (((long) c) << 16) bitor \
+                           (((long) b) << 8) bitor \
                            (((long) a)))
 
 #define  RIFF_TOKEN_SIZE      4
@@ -58,10 +59,10 @@ int aviOpen(char *aviFileName, char *audioFileName,
     int               blockSize, i, remainder;
     long              token;
 
-    if (!aviFileName)
+    if ( not aviFileName)
         return RIFF_BAD_FILENAME;
 
-    streams->handle = AVI_OPEN(aviFileName, _O_RDONLY | _O_BINARY);
+    streams->handle = AVI_OPEN(aviFileName, _O_RDONLY bitor _O_BINARY);
 
     if (streams->handle == -1)
         return RIFF_OPEN_FAILED;
@@ -75,26 +76,26 @@ int aviOpen(char *aviFileName, char *audioFileName,
     */
 
     if (AVI_READ(streams->handle, &aviHeader,
-                 RIFF_AVI_HEADER) != RIFF_AVI_HEADER)
+                 RIFF_AVI_HEADER) not_eq RIFF_AVI_HEADER)
         return RIFF_BAD_FORMAT;
 
-    if (aviHeader.avi.chunkID != RIFFCODE('R', 'I', 'F', 'F'))
+    if (aviHeader.avi.chunkID not_eq RIFFCODE('R', 'I', 'F', 'F'))
         return RIFF_BAD_FORMAT;
 
-    if (aviHeader.avi.chunkType != RIFFCODE('A', 'V', 'I', ' '))
+    if (aviHeader.avi.chunkType not_eq RIFFCODE('A', 'V', 'I', ' '))
         return RIFF_BAD_FORMAT;
 
-    if (aviHeader.hdrl.chunkID != RIFFCODE('L', 'I', 'S', 'T'))
+    if (aviHeader.hdrl.chunkID not_eq RIFFCODE('L', 'I', 'S', 'T'))
         return RIFF_BAD_FORMAT;
 
-    if (aviHeader.hdrl.chunkType != RIFFCODE('h', 'd', 'r', 'l'))
+    if (aviHeader.hdrl.chunkType not_eq RIFFCODE('h', 'd', 'r', 'l'))
         return RIFF_BAD_FORMAT;
 
-    if (aviHeader.avih.subChunkID != RIFFCODE('a', 'v', 'i', 'h'))
+    if (aviHeader.avih.subChunkID not_eq RIFFCODE('a', 'v', 'i', 'h'))
         return RIFF_BAD_FORMAT;
 
     if (AVI_READ(streams->handle, &(streams->mainAVIHeader),
-                 aviHeader.avih.subChunkLength) !=
+                 aviHeader.avih.subChunkLength) not_eq 
         aviHeader.avih.subChunkLength)
         return RIFF_BAD_FORMAT;
 
@@ -108,37 +109,37 @@ int aviOpen(char *aviFileName, char *audioFileName,
 
     currentFilePointer = AVI_SEEK(streams->handle, 0, SEEK_CUR);
 
-    if (AVI_READ(streams->handle, &chunk, RIFF_CHUNK) !=
+    if (AVI_READ(streams->handle, &chunk, RIFF_CHUNK) not_eq 
         RIFF_CHUNK)
         return RIFF_BAD_FORMAT;
 
-    if (chunk.chunkID != RIFFCODE('L', 'I', 'S', 'T'))
+    if (chunk.chunkID not_eq RIFFCODE('L', 'I', 'S', 'T'))
         return RIFF_BAD_FORMAT;
 
-    if (chunk.chunkType != RIFFCODE('s', 't', 'r', 'l'))
+    if (chunk.chunkType not_eq RIFFCODE('s', 't', 'r', 'l'))
         return RIFF_BAD_FORMAT;
 
-    if (AVI_READ(streams->handle, &subChunk, RIFF_SUB_CHUNK) !=
+    if (AVI_READ(streams->handle, &subChunk, RIFF_SUB_CHUNK) not_eq 
         RIFF_SUB_CHUNK)
         return RIFF_BAD_FORMAT;
 
-    if (subChunk.subChunkID != RIFFCODE('s', 't', 'r', 'h'))
+    if (subChunk.subChunkID not_eq RIFFCODE('s', 't', 'r', 'h'))
         return RIFF_BAD_FORMAT;
 
     if (AVI_READ(streams->handle, &(streams->strh1),
-                 subChunk.subChunkLength) !=
+                 subChunk.subChunkLength) not_eq 
         subChunk.subChunkLength)
         return RIFF_BAD_FORMAT;
 
     if (AVI_READ(streams->handle, &subChunk,
-                 RIFF_SUB_CHUNK) != RIFF_SUB_CHUNK)
+                 RIFF_SUB_CHUNK) not_eq RIFF_SUB_CHUNK)
         return RIFF_BAD_FORMAT;
 
-    if (subChunk.subChunkID != RIFFCODE('s', 't', 'r', 'f'))
+    if (subChunk.subChunkID not_eq RIFFCODE('s', 't', 'r', 'f'))
         return RIFF_BAD_FORMAT;
 
     if (AVI_READ(streams->handle, &(streams->bihIn),
-                 subChunk.subChunkLength) !=
+                 subChunk.subChunkLength) not_eq 
         subChunk.subChunkLength)
         return RIFF_BAD_FORMAT;
 
@@ -146,9 +147,9 @@ int aviOpen(char *aviFileName, char *audioFileName,
        Read audio stream header.
     */
 
-    if (streams->audioFlag & STREAM_AUDIO_ON)
+    if (streams->audioFlag bitand STREAM_AUDIO_ON)
     {
-        if (streams->audioFlag & STREAM_AUDIO_EXTERNAL)
+        if (streams->audioFlag bitand STREAM_AUDIO_EXTERNAL)
         {
 
             /*
@@ -160,38 +161,38 @@ int aviOpen(char *aviFileName, char *audioFileName,
             */
 
             streams->externalSoundHandle =
-                AVI_OPEN(audioFileName, _O_RDONLY | _O_BINARY);
+                AVI_OPEN(audioFileName, _O_RDONLY bitor _O_BINARY);
 
             if (streams->externalSoundHandle == -1)
                 return RIFF_OPEN_AUDIO_FAILED;
 
-            if (AVI_READ(streams->externalSoundHandle, &chunk, RIFF_CHUNK) !=
+            if (AVI_READ(streams->externalSoundHandle, &chunk, RIFF_CHUNK) not_eq 
                 RIFF_CHUNK)
                 return RIFF_BAD_AUDIO_FORMAT;
 
-            if (chunk.chunkID != RIFFCODE('R', 'I', 'F', 'F'))
+            if (chunk.chunkID not_eq RIFFCODE('R', 'I', 'F', 'F'))
                 return RIFF_BAD_AUDIO_FORMAT;
 
-            if (chunk.chunkType != RIFFCODE('W', 'A', 'V', 'E'))
+            if (chunk.chunkType not_eq RIFFCODE('W', 'A', 'V', 'E'))
                 return RIFF_BAD_AUDIO_FORMAT;
 
             if (AVI_READ(streams->externalSoundHandle, &subChunk, \
-                         RIFF_SUB_CHUNK) != RIFF_SUB_CHUNK)
+                         RIFF_SUB_CHUNK) not_eq RIFF_SUB_CHUNK)
                 return RIFF_BAD_AUDIO_FORMAT;
 
-            if (subChunk.subChunkID != RIFFCODE('f', 'm', 't', ' '))
+            if (subChunk.subChunkID not_eq RIFFCODE('f', 'm', 't', ' '))
                 return RIFF_BAD_AUDIO_FORMAT;
 
             if (AVI_READ(streams->externalSoundHandle, \
-                         & (streams->waveFormat), subChunk.subChunkLength)
-                != subChunk.subChunkLength)
+ bitand (streams->waveFormat), subChunk.subChunkLength)
+ not_eq subChunk.subChunkLength)
                 return RIFF_BAD_AUDIO_FORMAT;
 
             if (AVI_READ(streams->externalSoundHandle, &subChunk, \
-                         RIFF_SUB_CHUNK) != RIFF_SUB_CHUNK)
+                         RIFF_SUB_CHUNK) not_eq RIFF_SUB_CHUNK)
                 return RIFF_BAD_AUDIO_FORMAT;
 
-            if (subChunk.subChunkID != RIFFCODE('d', 'a', 't', 'a'))
+            if (subChunk.subChunkID not_eq RIFFCODE('d', 'a', 't', 'a'))
                 return RIFF_BAD_AUDIO_FORMAT;
 
             streams->totalAudioRemaining = subChunk.subChunkLength;
@@ -203,7 +204,7 @@ int aviOpen(char *aviFileName, char *audioFileName,
             */
 
             if (streams->mainAVIHeader.dwStreams == 1)
-                streams->audioFlag &= ~STREAM_AUDIO_ON;
+                streams->audioFlag and_eq compl STREAM_AUDIO_ON;
             else
             {
                 /*
@@ -225,37 +226,37 @@ int aviOpen(char *aviFileName, char *audioFileName,
                             'strf' ( <WAVEFORMATEX> )
                 */
 
-                if (AVI_READ(streams->handle, &chunk, RIFF_CHUNK) !=
+                if (AVI_READ(streams->handle, &chunk, RIFF_CHUNK) not_eq 
                     RIFF_CHUNK)
                     return RIFF_BAD_FORMAT;
 
-                if (chunk.chunkID != RIFFCODE('L', 'I', 'S', 'T'))
+                if (chunk.chunkID not_eq RIFFCODE('L', 'I', 'S', 'T'))
                     return RIFF_BAD_FORMAT;
 
-                if (chunk.chunkType != RIFFCODE('s', 't', 'r', 'l'))
+                if (chunk.chunkType not_eq RIFFCODE('s', 't', 'r', 'l'))
                     return RIFF_BAD_FORMAT;
 
-                if (AVI_READ(streams->handle, &subChunk, RIFF_SUB_CHUNK) !=
+                if (AVI_READ(streams->handle, &subChunk, RIFF_SUB_CHUNK) not_eq 
                     RIFF_SUB_CHUNK)
                     return RIFF_BAD_FORMAT;
 
-                if (subChunk.subChunkID != RIFFCODE('s', 't', 'r', 'h'))
+                if (subChunk.subChunkID not_eq RIFFCODE('s', 't', 'r', 'h'))
                     return RIFF_BAD_FORMAT;
 
                 if (AVI_READ(streams->handle, &(streams->strh2),
-                             subChunk.subChunkLength) !=
+                             subChunk.subChunkLength) not_eq 
                     subChunk.subChunkLength)
                     return RIFF_BAD_FORMAT;
 
                 if (AVI_READ(streams->handle, &subChunk,
-                             RIFF_SUB_CHUNK) != RIFF_SUB_CHUNK)
+                             RIFF_SUB_CHUNK) not_eq RIFF_SUB_CHUNK)
                     return RIFF_BAD_FORMAT;
 
-                if (subChunk.subChunkID != RIFFCODE('s', 't', 'r', 'f'))
+                if (subChunk.subChunkID not_eq RIFFCODE('s', 't', 'r', 'f'))
                     return RIFF_BAD_FORMAT;
 
                 if (AVI_READ(streams->handle, &(streams->waveFormat),
-                             subChunk.subChunkLength) !=
+                             subChunk.subChunkLength) not_eq 
                     subChunk.subChunkLength)
                     return RIFF_BAD_FORMAT;
             }
@@ -290,11 +291,11 @@ int aviOpen(char *aviFileName, char *audioFileName,
                             SubChunk1
     */
 
-    if (AVI_READ(streams->handle, &subChunk, RIFF_SUB_CHUNK) !=
+    if (AVI_READ(streams->handle, &subChunk, RIFF_SUB_CHUNK) not_eq 
         RIFF_SUB_CHUNK)
         return RIFF_BAD_FORMAT;
 
-    while (subChunk.subChunkID != RIFFCODE('L', 'I', 'S', 'T'))
+    while (subChunk.subChunkID not_eq RIFFCODE('L', 'I', 'S', 'T'))
     {
         if (subChunk.subChunkID == RIFFCODE('J', 'U', 'N', 'K'))
         {
@@ -302,18 +303,18 @@ int aviOpen(char *aviFileName, char *audioFileName,
                      SEEK_CUR);
 
             if (AVI_READ(streams->handle, &subChunk, \
-                         RIFF_SUB_CHUNK) != RIFF_SUB_CHUNK)
+                         RIFF_SUB_CHUNK) not_eq RIFF_SUB_CHUNK)
                 return RIFF_BAD_FORMAT;
         }
         else
             return RIFF_BAD_FORMAT;
     }
 
-    if (AVI_READ(streams->handle, &token, RIFF_TOKEN_SIZE) !=
+    if (AVI_READ(streams->handle, &token, RIFF_TOKEN_SIZE) not_eq 
         RIFF_TOKEN_SIZE)
         return RIFF_BAD_FORMAT;
 
-    if (token != RIFFCODE('m', 'o', 'v', 'i'))
+    if (token not_eq RIFFCODE('m', 'o', 'v', 'i'))
         return RIFF_BAD_FORMAT;
 
     /*
@@ -323,10 +324,10 @@ int aviOpen(char *aviFileName, char *audioFileName,
     if (streams->mainAVIHeader.dwStreams > 1)
     {
         if (AVI_READ(streams->handle, &(streams->preRECSubChunk),
-                     RIFF_SUB_CHUNK) != RIFF_SUB_CHUNK)
+                     RIFF_SUB_CHUNK) not_eq RIFF_SUB_CHUNK)
             return RIFF_BAD_FORMAT;
 
-        if (streams->preRECSubChunk.subChunkID !=
+        if (streams->preRECSubChunk.subChunkID not_eq 
             RIFFCODE('L', 'I', 'S', 'T'))
             return RIFF_BAD_FORMAT;
     }
@@ -338,7 +339,7 @@ int aviOpen(char *aviFileName, char *audioFileName,
     videoBlock = &(streams->videoBlock[0]);
     blockSize = streams->strh1.dwSuggestedBufferSize;
 
-    if (!blockSize)
+    if ( not blockSize)
         blockSize = DEFAULT_BLOCK_SIZE;
 
     if (streams->mainAVIHeader.dwTotalFrames > MAX_VIDBLOCKS)
@@ -352,7 +353,7 @@ int aviOpen(char *aviFileName, char *audioFileName,
         //      videoBlock[i].buffer = AVI_MALLOC( blockSize );
         videoBlock[i].buffer = new char[blockSize];
 
-        if (!videoBlock[i].buffer)
+        if ( not videoBlock[i].buffer)
             return RIFF_MALLOC_FAILED;
 
         if (i < (streams->numOfVidBlocks - 1))
@@ -370,9 +371,9 @@ int aviOpen(char *aviFileName, char *audioFileName,
     streams->timePerFrame = (ONE_SECOND + streams->frameRate - 1) / streams->frameRate;
     streams->initialFrames = streams->mainAVIHeader.dwInitialFrames ;
 
-    if (streams->audioFlag & STREAM_AUDIO_ON)
+    if (streams->audioFlag bitand STREAM_AUDIO_ON)
     {
-        if (streams->audioFlag & STREAM_AUDIO_PRELOAD)
+        if (streams->audioFlag bitand STREAM_AUDIO_PRELOAD)
         {
             i = streams->audioToReadPerFrame = streams->totalAudioRemaining;
 
@@ -395,8 +396,8 @@ int aviOpen(char *aviFileName, char *audioFileName,
         }
         else
         {
-            if ((streams->audioFlag & STREAM_AUDIO_EXTERNAL) &&
-                !streams->initialFrames)
+            if ((streams->audioFlag bitand STREAM_AUDIO_EXTERNAL) and 
+ not streams->initialFrames)
                 streams->initialFrames = 1 + (streams->frameRate * 3 / 4);
 
             streams->audioSizePerFrame = (streams->waveFormat.nAvgBytesPerSec +
@@ -429,7 +430,7 @@ int aviOpen(char *aviFileName, char *audioFileName,
         //      streams->waveBuffer = AVI_MALLOC( i );
         streams->waveBuffer = new char[i];
 
-        if (!streams->waveBuffer)
+        if ( not streams->waveBuffer)
             return RIFF_MALLOC_FAILED;
 
         streams->waveBufferLen = i;
@@ -509,7 +510,7 @@ int aviReadRecord(PAVISTREAMS streams)
            No 'rec ' header if single stream.
         */
 
-        if (AVI_READ(streams->handle, &subChunk, RIFF_SUB_CHUNK) !=
+        if (AVI_READ(streams->handle, &subChunk, RIFF_SUB_CHUNK) not_eq 
             RIFF_SUB_CHUNK)
             return RIFF_BAD_FORMAT;
 
@@ -528,7 +529,7 @@ int aviReadRecord(PAVISTREAMS streams)
             //         nextBlock->buffer = AVI_MALLOC( subChunk.subChunkLength );
             nextBlock->buffer = new char[subChunk.subChunkLength];
 
-            if (!(nextBlock->buffer))
+            if ( not (nextBlock->buffer))
                 return RIFF_REALLOC_FAILED;
 
             nextBlock->bufferSize = subChunk.subChunkLength;
@@ -538,7 +539,7 @@ int aviReadRecord(PAVISTREAMS streams)
                        nextBlock->buffer, \
                        subChunk.subChunkLength);
 
-        if (len != subChunk.subChunkLength)
+        if (len not_eq subChunk.subChunkLength)
             return RIFF_BAD_FORMAT;
 
         nextBlock->currentBlockSize = len;
@@ -562,10 +563,10 @@ int aviReadRecord(PAVISTREAMS streams)
         recordLen = streams->preRECSubChunk.subChunkLength - 4;
 
         if (AVI_READ(streams->handle, &token,
-                     RIFF_TOKEN_SIZE) != RIFF_TOKEN_SIZE)
+                     RIFF_TOKEN_SIZE) not_eq RIFF_TOKEN_SIZE)
             return RIFF_BAD_FORMAT;
 
-        if (token != RIFFCODE('r', 'e', 'c', ' '))
+        if (token not_eq RIFFCODE('r', 'e', 'c', ' '))
             return RIFF_BAD_FORMAT;
 
         while (streamCount--)
@@ -573,7 +574,7 @@ int aviReadRecord(PAVISTREAMS streams)
             if (recordLen > RIFF_SUB_CHUNK)
             {
                 if (AVI_READ(streams->handle, &subChunk, \
-                             RIFF_SUB_CHUNK) != RIFF_SUB_CHUNK)
+                             RIFF_SUB_CHUNK) not_eq RIFF_SUB_CHUNK)
                     return RIFF_BAD_FORMAT;
 
                 token = subChunk.subChunkID;
@@ -584,8 +585,8 @@ int aviReadRecord(PAVISTREAMS streams)
                 AVI_SEEK(streams->handle, recordLen, SEEK_CUR);
 
                 if (AVI_READ(streams->handle, \
-                             & (streams->preRECSubChunk), \
-                             RIFF_SUB_CHUNK) != RIFF_SUB_CHUNK)
+ bitand (streams->preRECSubChunk), \
+                             RIFF_SUB_CHUNK) not_eq RIFF_SUB_CHUNK)
                     return RIFF_BAD_FORMAT;
 
                 token = streams->preRECSubChunk.subChunkID;
@@ -600,7 +601,7 @@ int aviReadRecord(PAVISTREAMS streams)
                     return RIFF_END_FILE;
                 else
                 {
-                    token &= 0xffff;
+                    token and_eq 0xffff;
                 }
             }
 
@@ -612,8 +613,8 @@ int aviReadRecord(PAVISTREAMS streams)
 
                 recordLen -= (chunkLength + 8);
 
-                if ((streams->audioFlag & STREAM_AUDIO_EXTERNAL) ||
-                    !(streams->audioFlag & STREAM_AUDIO_ON))
+                if ((streams->audioFlag bitand STREAM_AUDIO_EXTERNAL) or
+ not (streams->audioFlag bitand STREAM_AUDIO_ON))
                     AVI_SEEK(streams->handle, chunkLength, \
                              SEEK_CUR);
                 else
@@ -629,7 +630,7 @@ int aviReadRecord(PAVISTREAMS streams)
                                                  streams->waveBufferWrite)), \
                                        chunkLength);
 
-                        if (len != chunkLength)
+                        if (len not_eq chunkLength)
                             return RIFF_BAD_FORMAT;
 
                         streams->waveBufferWrite += chunkLength;
@@ -651,7 +652,7 @@ int aviReadRecord(PAVISTREAMS streams)
                                                  streams->waveBufferWrite)), \
                                        size);
 
-                        if (len != size)
+                        if (len not_eq size)
                             return RIFF_BAD_FORMAT;
 
                         streams->waveBufferWrite = 0;
@@ -662,7 +663,7 @@ int aviReadRecord(PAVISTREAMS streams)
                                                  streams->waveBufferWrite)), \
                                        size);
 
-                        if (len != size)
+                        if (len not_eq size)
                             return RIFF_BAD_FORMAT;
 
                         streams->waveBufferWrite += size;
@@ -692,7 +693,7 @@ int aviReadRecord(PAVISTREAMS streams)
                         //                  nextBlock->buffer = AVI_MALLOC( chunkLength );
                         nextBlock->buffer = new char[chunkLength];
 
-                        if (!(nextBlock->buffer))
+                        if ( not (nextBlock->buffer))
                             return RIFF_REALLOC_FAILED;
 
                         nextBlock->bufferSize = chunkLength;
@@ -702,7 +703,7 @@ int aviReadRecord(PAVISTREAMS streams)
                                    nextBlock->buffer, \
                                    chunkLength);
 
-                    if (len != chunkLength)
+                    if (len not_eq chunkLength)
                         return RIFF_BAD_FORMAT;
 
                     nextBlock->currentBlockSize = len;
@@ -723,10 +724,10 @@ int aviReadRecord(PAVISTREAMS streams)
                      SEEK_CUR);
 
         if (AVI_READ(streams->handle, &(streams->preRECSubChunk),
-                     RIFF_SUB_CHUNK) != RIFF_SUB_CHUNK)
+                     RIFF_SUB_CHUNK) not_eq RIFF_SUB_CHUNK)
             return RIFF_BAD_FORMAT;
 
-        if (streams->preRECSubChunk.subChunkID !=
+        if (streams->preRECSubChunk.subChunkID not_eq 
             RIFFCODE('L', 'I', 'S', 'T'))
             return RIFF_BAD_FORMAT;
     }
@@ -752,7 +753,7 @@ int waveReadBlock(PAVISTREAMS streams)
     long           ptr, newPtr, len, size;
     long           blockLen;
 
-    if (!(streams->audioFlag & STREAM_AUDIO_ON))
+    if ( not (streams->audioFlag bitand STREAM_AUDIO_ON))
         return RIFF_OK;
 
     blockLen = streams->audioToReadPerFrame;
@@ -760,7 +761,7 @@ int waveReadBlock(PAVISTREAMS streams)
     if (streams->totalAudioRemaining < blockLen)
         blockLen = streams->totalAudioRemaining;
 
-    if (!blockLen)
+    if ( not blockLen)
         return RIFF_AUDIO_END_FILE;
 
     streams->totalAudioRemaining -= blockLen;
@@ -776,7 +777,7 @@ int waveReadBlock(PAVISTREAMS streams)
                                  streams->waveBufferWrite)), \
                        blockLen);
 
-        if (len != blockLen)
+        if (len not_eq blockLen)
             return RIFF_BAD_AUDIO_FORMAT;
 
         streams->waveBufferWrite += blockLen;
@@ -798,7 +799,7 @@ int waveReadBlock(PAVISTREAMS streams)
                                  streams->waveBufferWrite)), \
                        size);
 
-        if (len != size)
+        if (len not_eq size)
             return RIFF_BAD_AUDIO_FORMAT;
 
         streams->waveBufferWrite = 0;
@@ -809,7 +810,7 @@ int waveReadBlock(PAVISTREAMS streams)
                                  streams->waveBufferWrite)), \
                        size);
 
-        if (len != size)
+        if (len not_eq size)
             return RIFF_BAD_AUDIO_FORMAT;
 
         streams->waveBufferWrite += size;

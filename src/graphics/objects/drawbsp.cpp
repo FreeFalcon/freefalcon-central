@@ -67,7 +67,7 @@ DrawableBSP::~DrawableBSP(void)
 {
     ShiAssert(id >= 0);
 
-    // HACK!!!
+    // HACK
     // This check should go as soon as Drawable2D stops inheriting from
     // this class.
     // if (id < 0)  return;
@@ -84,12 +84,12 @@ void DrawableBSP::Update(const Tpoint *pos, const Trotation *rot)
 {
     ShiAssert(id >= 0);
 
-    ShiAssert(!_isnan(position.x));
+    ShiAssert( not _isnan(position.x));
     // Update the location of this object
     position.x = pos->x;
     position.y = pos->y;
 
-    if (GetClass() != GroundVehicle)
+    if (GetClass() not_eq GroundVehicle)
         position.z = pos->z;
 
     orientation = *rot;
@@ -105,15 +105,15 @@ void DrawableBSP::AttachChild(DrawableBSP *child, int slotNumber)
     ShiAssert(child);
     ShiAssert(slotNumber >= 0);
     ShiAssert(slotNumber < instance.ParentObject->nSlots);
-    ShiAssert((instance.SlotChildren) && (instance.SlotChildren[slotNumber] == NULL));
+    ShiAssert((instance.SlotChildren) and (instance.SlotChildren[slotNumber] == NULL));
 
     // THIS IS A HACK TO TOLERATE OBJECTS WHICH DON'T YET HAVE SLOTS
     // THIS SHOULD BE REMOVED IN THE LATE BETA AND SHIPPING VERSIONS
-    if (!instance.SlotChildren) return;
+    if ( not instance.SlotChildren) return;
 
     if (slotNumber >= instance.ParentObject->nSlots) return;
 
-    if (!child) return;
+    if ( not child) return;
 
     instance.SetSlotChild(slotNumber, &child->instance);
 }
@@ -130,7 +130,7 @@ void DrawableBSP::DetachChild(DrawableBSP *child, int slotNumber)
     ShiAssert(child);
     ShiAssert(slotNumber >= 0);
     ShiAssert(slotNumber < instance.ParentObject->nSlots);
-    ShiAssert((instance.SlotChildren) && (instance.SlotChildren[slotNumber] == &child->instance));
+    ShiAssert((instance.SlotChildren) and (instance.SlotChildren[slotNumber] == &child->instance));
 
     Tpoint offset;
     Tpoint pos;
@@ -142,7 +142,7 @@ void DrawableBSP::DetachChild(DrawableBSP *child, int slotNumber)
         return;
     }
 
-    if ((!instance.SlotChildren) || (instance.SlotChildren[slotNumber] != &child->instance))
+    if (( not instance.SlotChildren) or (instance.SlotChildren[slotNumber] not_eq &child->instance))
     {
         //(*(int*)0) = 0;
         return;
@@ -417,7 +417,7 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
     }
 
     // calculate T distances to candidate planes and accumulate the largest
-    if (quadrant[0] != MIDDLE && vec.x != 0.0f)
+    if (quadrant[0] not_eq MIDDLE and vec.x not_eq 0.0f)
     {
         tMax = (candidatePlane[0] - origin.x) / vec.x;
         whichPlane = 0;
@@ -427,7 +427,7 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
         tMax = -1.0f;
     }
 
-    if (quadrant[1] != MIDDLE && vec.y != 0.0f)
+    if (quadrant[1] not_eq MIDDLE and vec.y not_eq 0.0f)
     {
         t = (candidatePlane[1] - origin.y) / vec.y;
 
@@ -438,7 +438,7 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
         }
     }
 
-    if (quadrant[2] != MIDDLE && vec.z != 0.0f)
+    if (quadrant[2] not_eq MIDDLE and vec.z not_eq 0.0f)
     {
         t = (candidatePlane[2] - origin.z) / vec.z;
 
@@ -450,7 +450,7 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
     }
 
     // Check final candidate is within the segment of interest
-    if (tMax < 0.0f || tMax > 1.0f)
+    if (tMax < 0.0f or tMax > 1.0f)
     {
         return FALSE;
     }
@@ -462,11 +462,11 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
 
     for (i = 0; i < 3; i++, vecp++, orgp++, collp++)
     {
-        if (whichPlane != i)
+        if (whichPlane not_eq i)
         {
             *collp = *orgp + tMax * (*vecp);
 
-            if (*collp < minB[i] ||  *collp > maxB[i])
+            if (*collp < minB[i] or  *collp > maxB[i])
             {
                 // outside box
                 return FALSE;
@@ -506,7 +506,7 @@ bool DrawableBSP::SetupVisibility(RenderOTW *renderer)
     z = renderer->ZDistanceFromCamera(&position);
 
     // RED - Linear Fog, if inside the layer, modulate with Hze, we can not use linear fog there
-    if (realWeather->weatherCondition > FAIR && position.z > (realWeather->HiOvercast))
+    if (realWeather->weatherCondition > FAIR and position.z > (realWeather->HiOvercast))
     {
         alpha = 1.0f - (-realWeather->HiOvercast + position.z) / (realWeather->stratusDepth / 2.0f);
         alpha *= alpha * alpha;
@@ -570,16 +570,16 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
         return;
     }
 
-    if (!SetupVisibility(renderer)) return;
+    if ( not SetupVisibility(renderer)) return;
 
     // JB 010112
     float scalefactor = 1;
 
-    if (g_bSmartScaling || PlayerOptions.ObjectDynScalingOn())
+    if (g_bSmartScaling or PlayerOptions.ObjectDynScalingOn())
     {
         renderer->TransformPoint(&position, &labelPoint);
 
-        if (radius <= 150 && (GetClass() == Guys || GetClass() == GroundVehicle || GetClass() == BSP))
+        if (radius <= 150 and (GetClass() == Guys or GetClass() == GroundVehicle or GetClass() == BSP))
             scalefactor = (labelPoint.csZ - 1200) / 6076 + 1;
 
         if (scalefactor < 1)
@@ -595,7 +595,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
 
     BOOL isShadow = FALSE;
 
-    if (PlayerOptions.ShadowsOn() && realWeather->weatherCondition == FAIR)
+    if (PlayerOptions.ShadowsOn() and realWeather->weatherCondition == FAIR)
     {
         Tpoint pv;
         Tcolor light;
@@ -631,7 +631,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
         }
     }
 
-    if (g_bSmartScaling || PlayerOptions.ObjectDynScalingOn())
+    if (g_bSmartScaling or PlayerOptions.ObjectDynScalingOn())
         TheStateStack.DrawObject(&instance, &orientation, &position, scale * scalefactor);  // JB 010112 added scalefactor
     else
         TheStateStack.DrawObject(&instance, &orientation, &position, scale);
@@ -648,7 +648,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
 #ifdef DEBUG_LOD_ID
 
     // Now compute the starting location for our label text
-    if (drawLabels && TheDXEngine.GetLodUsedLabel()[0])
+    if (drawLabels and TheDXEngine.GetLodUsedLabel()[0])
     {
         renderer->TransformPoint(&position, &labelPoint);
 
@@ -665,9 +665,9 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
 #else
 
     // Now compute the starting location for our label text
-    if (drawLabels && labelLen)
+    if (drawLabels and labelLen)
     {
-        if (!g_bSmartScaling && !PlayerOptions.ObjectDynScalingOn())
+        if ( not g_bSmartScaling and not PlayerOptions.ObjectDynScalingOn())
             renderer->TransformPoint(&position, &labelPoint);   // JB 010112
 
         // JB 000807 Add near label limit and labels that get brighter as they get closer
@@ -682,7 +682,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
         // RV - RED - If ACMI force Label Limit to 150 nMiles
         long limit = (renderACMI ? 150 : g_nNearLabelLimit) * 6076 + 8, limitcheck;
 
-        if (!DrawablePoint::drawLabels)
+        if ( not DrawablePoint::drawLabels)
             limitcheck = (renderACMI ? 150 : g_nNearLabelLimit) * 6076 + 8;
         else limitcheck = 300 * 6076 + 8; //
 
@@ -692,8 +692,8 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
         // since labelPoint is local and .csZ is not used afterwards)
         // Besides no need to calculate radial distance is Z distance is already greater
         if (g_bLabelRadialFix)
-            if (labelPoint.clipFlag == ON_SCREEN &&
-                labelPoint.csZ < limitcheck) //Same condition as below!!!
+            if (labelPoint.clipFlag == ON_SCREEN and 
+                labelPoint.csZ < limitcheck) //Same condition as below
             {
                 float dx = position.x - renderer->X();
                 float dy = position.y - renderer->Y();
@@ -703,7 +703,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
 
         //end LabelRadialDistanceFix
 
-        if (labelPoint.clipFlag == ON_SCREEN &&
+        if (labelPoint.clipFlag == ON_SCREEN and 
             labelPoint.csZ < limitcheck)
         {
             int colorsub = int((labelPoint.csZ / (limit >> 3))) << 5;
@@ -711,14 +711,14 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
             if (colorsub > 180) // let's not reduce brightness too much, keep a glimpse of the original color
                 colorsub = 180;
 
-            int red = (labelColor & 0x000000ff);
+            int red = (labelColor bitand 0x000000ff);
             red -= min(red, colorsub);
-            int green = (labelColor & 0x0000ff00) >> 8;
+            int green = (labelColor bitand 0x0000ff00) >> 8;
             green -= min(green, colorsub + 30); // green would be too light -> +30
-            int blue = (labelColor & 0x00ff0000) >> 16;
+            int blue = (labelColor bitand 0x00ff0000) >> 16;
             blue -= min(blue, colorsub);
 
-            long newlabelColor = blue << 16 | green << 8 | red;
+            long newlabelColor = blue << 16 bitor green << 8 bitor red;
 
             x = labelPoint.x - renderer->ScreenTextWidth(label) / 2; // Centers text
             y = labelPoint.y - 12; // Place text above center of object
@@ -763,7 +763,7 @@ void DrawableBSP::Draw(Render3D *renderer)
 
     ShiAssert(id >= 0);
 
-    if (!renderer)
+    if ( not renderer)
         return;
 
     // RED - NOPE - must be similar to any object
@@ -775,7 +775,7 @@ void DrawableBSP::Draw(Render3D *renderer)
 #ifdef DEBUG_LOD_ID
 
     // Now compute the starting location for our label text
-    if (drawLabels && TheDXEngine.GetLodUsedLabel()[0])
+    if (drawLabels and TheDXEngine.GetLodUsedLabel()[0])
     {
         renderer->TransformPoint(&position, &labelPoint);
 
@@ -792,7 +792,7 @@ void DrawableBSP::Draw(Render3D *renderer)
 #else
 
     // Now compute the starting location for our label text
-    if (drawLabels && labelLen)
+    if (drawLabels and labelLen)
     {
         renderer->TransformPoint(&position, &labelPoint);
 

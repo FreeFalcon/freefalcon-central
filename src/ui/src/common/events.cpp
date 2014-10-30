@@ -59,12 +59,12 @@ void AddtoEventList(EventElement *theEvent)
 
         cur = SortedEventList;
 
-        while (cur && cur->eventTime < newone->eventTime)
+        while (cur and cur->eventTime < newone->eventTime)
         {
             last = cur;
 
             // Sanity check
-            if (cur->next && cur->next->eventTime < cur->eventTime)
+            if (cur->next and cur->next->eventTime < cur->eventTime)
             {
                 ShiAssert(0);
                 break;
@@ -138,7 +138,7 @@ static void AddMessageToWindow(C_Window *win, long client, int *y, CampaignTime 
     txt->SetW(wrap_w);
     txt->SetFGColor(0x00f0f0f0);
     txt->SetFont(win->Font_);
-    txt->SetFlagBitOn(C_BIT_LEFT | C_BIT_WORDWRAP);
+    txt->SetFlagBitOn(C_BIT_LEFT bitor C_BIT_WORDWRAP);
     txt->SetClient(static_cast<short>(client));
     txt->SetText(eventstr);
     win->AddControl(txt);
@@ -246,10 +246,10 @@ void ProcessEventArray(C_Window *win, void *events, int count)
     {
         cur = &evList[i];
 
-        if (!F4IsBadReadPtr(cur->timeStr, sizeof(_TCHAR)))
+        if ( not F4IsBadReadPtr(cur->timeStr, sizeof(_TCHAR)))
             Time_str = (_TCHAR *)cur->timeStr;
 
-        if (!F4IsBadReadPtr(cur->msgStr, sizeof(_TCHAR)))
+        if ( not F4IsBadReadPtr(cur->msgStr, sizeof(_TCHAR)))
             Message_str = (_TCHAR *)cur->msgStr;
 
         txt = new C_Text;
@@ -272,7 +272,7 @@ void ProcessEventArray(C_Window *win, void *events, int count)
         txt->SetW(wrap_w);
         txt->SetFGColor(0x00f0f0f0);
         txt->SetFont(win->Font_);
-        txt->SetFlagBitOn(C_BIT_LEFT | C_BIT_WORDWRAP);
+        txt->SetFlagBitOn(C_BIT_LEFT bitor C_BIT_WORDWRAP);
         txt->SetUserNumber(_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_);
         txt->SetText(Message_str);
         win->AddControl(txt);
@@ -454,10 +454,10 @@ BOOL CheckAlreadyCollided(VU_ID ID1, VU_ID ID2, long gameTime)
 {
     if ((gameTime - SaveCollidedTime) < 3000)
     {
-        if (ID1 == SaveCollided1 && ID2 == SaveCollided2)
+        if (ID1 == SaveCollided1 and ID2 == SaveCollided2)
             return(TRUE);
 
-        if (ID2 == SaveCollided1 && ID1 == SaveCollided2)
+        if (ID2 == SaveCollided1 and ID1 == SaveCollided2)
             return(TRUE);
     }
 
@@ -505,13 +505,13 @@ BOOL CheckAlreadyCollided(VU_ID ID1, VU_ID ID2, long gameTime)
  mask[y]=0;
 
  // Desired messages
- mask[WeaponFireMsg >> 3] |= 0x01 << (WeaponFireMsg & 0x0007);
- mask[DeathMessage >> 3] |= 0x01 << (DeathMessage & 0x0007);
- mask[DamageMsg >> 3] |= 0x01 << (DamageMsg & 0x0007);
- mask[MissileEndMsg >> 3] |= 0x01 << (MissileEndMsg & 0x0007);
- mask[LandingMessage >> 3] |= 0x01 << (LandingMessage & 0x0007);
- mask[EjectMsg >> 3] |= 0x01 << (EjectMsg & 0x0007);
- mask[PlayerStatusMsg >> 3] |= 0x01 << (PlayerStatusMsg & 0x0007);
+ mask[WeaponFireMsg >> 3] or_eq 0x01 << (WeaponFireMsg bitand 0x0007);
+ mask[DeathMessage >> 3] or_eq 0x01 << (DeathMessage bitand 0x0007);
+ mask[DamageMsg >> 3] or_eq 0x01 << (DamageMsg bitand 0x0007);
+ mask[MissileEndMsg >> 3] or_eq 0x01 << (MissileEndMsg bitand 0x0007);
+ mask[LandingMessage >> 3] or_eq 0x01 << (LandingMessage bitand 0x0007);
+ mask[EjectMsg >> 3] or_eq 0x01 << (EjectMsg bitand 0x0007);
+ mask[PlayerStatusMsg >> 3] or_eq 0x01 << (PlayerStatusMsg bitand 0x0007);
 
 */
 
@@ -522,7 +522,7 @@ static void AddMessageToFile(FILE *ofp, long eventID, _TCHAR output[][32], BOOL 
 
     eventstr = AssembleEventString(eventID, output);
 
-    if (!eventstr)
+    if ( not eventstr)
         return;
 
     // Add it to window
@@ -539,13 +539,13 @@ static void AddMessageToFile(FILE *ofp, long eventID, _TCHAR output[][32], BOOL 
  mask[y]=0;
 
  // Desired messages
- mask[WeaponFireMsg >> 3] |= 0x01 << (WeaponFireMsg & 0x0007);
- mask[DeathMessage >> 3] |= 0x01 << (DeathMessage & 0x0007);
- mask[DamageMsg >> 3] |= 0x01 << (DamageMsg & 0x0007);
- mask[MissileEndMsg >> 3] |= 0x01 << (MissileEndMsg & 0x0007);
- mask[LandingMessage >> 3] |= 0x01 << (LandingMessage & 0x0007);
- mask[EjectMsg >> 3] |= 0x01 << (EjectMsg & 0x0007);
- mask[PlayerStatusMsg >> 3] |= 0x01 << (PlayerStatusMsg & 0x0007);
+ mask[WeaponFireMsg >> 3] or_eq 0x01 << (WeaponFireMsg bitand 0x0007);
+ mask[DeathMessage >> 3] or_eq 0x01 << (DeathMessage bitand 0x0007);
+ mask[DamageMsg >> 3] or_eq 0x01 << (DamageMsg bitand 0x0007);
+ mask[MissileEndMsg >> 3] or_eq 0x01 << (MissileEndMsg bitand 0x0007);
+ mask[LandingMessage >> 3] or_eq 0x01 << (LandingMessage bitand 0x0007);
+ mask[EjectMsg >> 3] or_eq 0x01 << (EjectMsg bitand 0x0007);
+ mask[PlayerStatusMsg >> 3] or_eq 0x01 << (PlayerStatusMsg bitand 0x0007);
 
 */
 
@@ -573,13 +573,13 @@ void SaveEventList(FILE *ofp,unsigned char mask[],int DebriefType)
  {
  TrackFlag=FALSE;
  Done=FALSE;
- while(eventMessage && !Done)
+ while(eventMessage and not Done)
  {
  if(TrackID == FalconNullId)
  Done=TRUE;
  AddMessageToFile(ofp,eventMessage,UIEventOutput,TrackFlag);
  TrackFlag=TRUE;
- if(!Done)
+ if( not Done)
  eventMessage=BuildMessage(cur,UIEventOutput,DebriefType,&TrackID,&TrackTime,&dummy);
  }
 

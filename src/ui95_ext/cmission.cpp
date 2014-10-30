@@ -15,7 +15,7 @@ C_Mission::C_Mission() : C_Control()
     Color_[0] = 0xe0e0e0; // Not Selected
     Color_[1] = 0x00ff00; // Selected
     Color_[2] = 0xffff00; // Player is in this mission
-    Color_[3] = 0x00ff00; // Player is in this mission & current mission
+    Color_[3] = 0x00ff00; // Player is in this mission bitand current mission
 
     TakeOff_ = NULL;
     Mission_ = NULL;
@@ -26,7 +26,7 @@ C_Mission::C_Mission() : C_Control()
     vuID = FalconNullId;
     Owner_ = NULL;
 
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER;
 }
 
 C_Mission::C_Mission(char **stream) : C_Control(stream)
@@ -204,10 +204,10 @@ void C_Mission::SetPriority(_TCHAR *txt)
 
 long C_Mission::CheckHotSpots(long relx, long rely)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
         return(0);
 
-    if (relx >= GetX() && rely >= GetY() && relx <= (GetX() + GetW()) && rely <= (GetY() + GetH()))
+    if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= (GetY() + GetH()))
         return(GetID());
 
     return(0);
@@ -219,7 +219,7 @@ BOOL C_Mission::Process(long ID, short HitType)
 
     if (HitType == C_TYPE_LMOUSEUP)
     {
-        SetState(static_cast<short>(GetState() | 1));
+        SetState(static_cast<short>(GetState() bitor 1));
         Refresh();
     }
 
@@ -232,7 +232,7 @@ BOOL C_Mission::Process(long ID, short HitType)
 
 void C_Mission::Refresh()
 {
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
@@ -242,7 +242,7 @@ void C_Mission::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     short i;
 
-    if (GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL || !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL or not Ready())
         return;
 
     i = GetState();
@@ -277,6 +277,6 @@ void C_Mission::Draw(SCREEN *surface, UI95_RECT *cliprect)
         Priority_->Draw(surface, cliprect);
     }
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }

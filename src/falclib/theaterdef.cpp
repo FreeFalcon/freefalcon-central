@@ -145,7 +145,7 @@ void LoadTheaterList()
 
     while (fgets(line, sizeof line, fp))
     {
-        if (line[0] == '\r' || line[0] == '#' || line[0] == ';' || line[0] == '\n')
+        if (line[0] == '\r' or line[0] == '#' or line[0] == ';' or line[0] == '\n')
             continue;
 
         char *cp;
@@ -306,7 +306,7 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
 
     //======================================================
     // Cobra - Add "sim" path if Korea theater
-    if ((!strnicmp(td->m_name, "Korea", 5)) || (!strnicmp(td->m_name, "Eurowar", 7)))
+    if (( not strnicmp(td->m_name, "Korea", 5)) or ( not strnicmp(td->m_name, "Eurowar", 7)))
     {
         char tmpPath[256];
         sprintf(tmpPath, "%s\\sim", FalconDataDirectory); // JPO - so we can find raw sim files
@@ -327,7 +327,7 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
     sprintf(tmpPath, "%s\\%s", FalconDataDirectory, ZIPFILE_NAME);
     zipFile = fopen(tmpPath, "r");
 
-    if (!zipFile)
+    if ( not zipFile)
     {
         char string[300];
         sprintf(string, "Failed to open %s\n", tmpPath);
@@ -346,10 +346,10 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
             fscanf(zipFile, "%*c%s", tmp);
             sprintf(tmpPath, "%s\\%s", FalconZipsThrDirectory, tmp);
 
-            if (!strnicmp(td->m_name, "Korea", 5))
+            if ( not strnicmp(td->m_name, "Korea", 5))
                 resourceHandle[i] = ResAttach(FalconDataDirectory, tmpPath, FALSE);
             else
-                // FRB - Must use FalconDataDirectory and not FalconZipsThrDirectory (don't know why!?)
+                // FRB - Must use FalconDataDirectory and not FalconZipsThrDirectory (don't know why?)
                 //resourceHandle[i] = ResAttach (FalconZipsThrDirectory, tmpPath, TRUE);
                 resourceHandle[i] = ResAttach(FalconDataDirectory, tmpPath, TRUE);
         }
@@ -399,9 +399,9 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
     return true;
 }
 
-void TheaterList::DoSoundSetup() // must be done after END_UI !!
+void TheaterList::DoSoundSetup() // must be done after END_UI 
 {
-    if (g_nSoundSwitchFix & 0x01)
+    if (g_nSoundSwitchFix bitand 0x01)
     {
         ExitSoundManager();
         InitSoundManager(FalconDisplay.appWin, 0, FalconDataDirectory);
@@ -419,11 +419,11 @@ void TheaterList::DoSoundSetup() // must be done after END_UI !!
 // helper function so we can have full pathnames if we want.
 void TheaterList::SetPathName(char *dest, char *src, char *reldir)
 {
-    //if (src == NULL || src[0] == 0) return; // leave alone
-    if (src == NULL || src[0] == 0)
+    //if (src == NULL or src[0] == 0) return; // leave alone
+    if (src == NULL or src[0] == 0)
         strcpy(dest, reldir);
-    else if ((src[1] == ':' && isalpha(src[0])) ||
-             (src[0] == '\\' && src[1] == '\\')) // probably full pathname
+    else if ((src[1] == ':' and isalpha(src[0])) or
+             (src[0] == '\\' and src[1] == '\\')) // probably full pathname
         strcpy(dest, src);
     else
         sprintf(dest, "%s\\%s", reldir, src);
@@ -449,7 +449,7 @@ TheaterDef * TheaterList::GetCurrentTheater()
 
     size = sizeof(TheaterName);
 
-    if (RegQueryValueEx(theKey, "curTheater", 0, &type, (LPBYTE)TheaterName, &size) !=  ERROR_SUCCESS)
+    if (RegQueryValueEx(theKey, "curTheater", 0, &type, (LPBYTE)TheaterName, &size) not_eq ERROR_SUCCESS)
     {
         //TheaterName[0] = '\0';
         strcpy(TheaterName, "Korea");

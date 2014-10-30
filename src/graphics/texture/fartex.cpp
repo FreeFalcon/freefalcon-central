@@ -94,7 +94,7 @@ BOOL FarTexDB::Setup(DXContext *hrc, const char* path)
     // Read the palette data shared by all the distant textures
     result = ReadFile(listFile, &palette, sizeof(palette), &bytesRead, NULL);
 
-    if (!result)
+    if ( not result)
     {
         char string[80];
         char message[120];
@@ -123,7 +123,7 @@ BOOL FarTexDB::Setup(DXContext *hrc, const char* path)
     // Allocate memory for the texture records
     texArray = new FarTexEntry[texCount];
 
-    if (!texArray)
+    if ( not texArray)
         ShiError("Failed to allocate memory for the distant texture array.");
 
     // Set up the texture array
@@ -140,7 +140,7 @@ BOOL FarTexDB::Setup(DXContext *hrc, const char* path)
 
     // Open and hang onto the distant texture composite image file
     sprintf(filename, "%s%s", path, "FarTiles.RAW");
-    fartexFile.Open(filename, FALSE, !g_bUseMappedFiles);
+    fartexFile.Open(filename, FALSE, not g_bUseMappedFiles);
 
     // Initialize the lighting conditions and register for future time of day updates
     TimeUpdateCallback(this);
@@ -156,17 +156,17 @@ BOOL FarTexDB::Setup(DXContext *hrc, const char* path)
         sprintf(szRawName, "%s.dds", texturePath);
         fp = fopen(szRawName, "rb");
 
-        if (!fp) return TRUE;
+        if ( not fp) return TRUE;
 
         fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
-        ShiAssert(ddsd.dwFlags & DDSD_LINEARSIZE)
+        ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE)
 
         linearSize = ddsd.dwLinearSize;
 
         fclose(fp);
 
         // Open and hang onto the distant texture DDS image file
-        fartexDDSFile.Open(szRawName, FALSE, !g_bUseMappedFiles);
+        fartexDDSFile.Open(szRawName, FALSE, not g_bUseMappedFiles);
     }
 
     return TRUE;
@@ -181,7 +181,7 @@ void FarTexDB::Cleanup(void)
 
     // sfr: changed casting here
     // Free the entire texture list
-    for (DWORD i = 0; (texCount > 0) && (i < ((DWORD)texCount)); ++i)
+    for (DWORD i = 0; (texCount > 0) and (i < ((DWORD)texCount)); ++i)
     {
         Deactivate(i);
         Free(i);
@@ -247,7 +247,7 @@ void FarTexDB::SetLightLevel(void)
         TheTimeOfDay.GetTextureLightingColor(&lightColor);
     }
 
-    if (DisplayOptions.m_texMode != DisplayOptionsClass::TEX_MODE_DDS)
+    if (DisplayOptions.m_texMode not_eq DisplayOptionsClass::TEX_MODE_DDS)
     {
         // Apply the current lighting
         from = (BYTE *)palette;
@@ -271,18 +271,18 @@ void FarTexDB::SetLightLevel(void)
 
             if (PlayerOptions.Season == 1) //Autumn
             {
-                if (!((tmpR == tmpG && tmpG == tmpB) || tmpG < 60 || (tmpR + tmpG + tmpB) / 3 > 225)) //Not Greyscale / green / not very bright
+                if ( not ((tmpR == tmpG and tmpG == tmpB) or tmpG < 60 or (tmpR + tmpG + tmpB) / 3 > 225)) //Not Greyscale / green / not very bright
                 {
                     RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
-                    if (h >= 30 && h <= 165)  //Green
+                    if (h >= 30 and h <= 165)  //Green
                     {
                         //h *= 0.6f; // min27 (yellow/orange/terracota/brown)
                         h = h * 0.33f + 15; //Shift to brown
                         s *= 1.2f; //more saturated (intenser brown, just mudy green otherwise
                         v *= 0.9f; //darker
                     }
-                    else if (!(v > 0.9 && s > 0.9)) //Not a strong green, but neither very bright
+                    else if ( not (v > 0.9 and s > 0.9)) //Not a strong green, but neither very bright
                     {
                         s *= 0.9f; //less saturated
                         v *= 0.85f; //darken a bit
@@ -297,13 +297,13 @@ void FarTexDB::SetLightLevel(void)
             }
             else if (PlayerOptions.Season == 2) //Winter
             {
-                if (!(tmpR == tmpG && tmpR == tmpB) || tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //|| (tmpR == 255 && tmpG == 255))) //Greyscale //or pure color
+                if ( not (tmpR == tmpG and tmpR == tmpB) or tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //or (tmpR == 255 and tmpG == 255))) //Greyscale //or pure color
                 {
                     RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
-                    if (!(s <= 0.2 || h == -1))  //If Not Greyscale
+                    if ( not (s <= 0.2 or h == -1))  //If Not Greyscale
                     {
-                        if (h >= 45 && h <= 150) //If Green
+                        if (h >= 45 and h <= 150) //If Green
                         {
                             s = 0;
                             v = 255; //Make white
@@ -317,7 +317,7 @@ void FarTexDB::SetLightLevel(void)
                     //else if (v<=200) v *= 0.9f; //Greyscale, but not white: darken a bit (to increase contrast)
                     //else if (v>=200) v *= 1.2f; //bright...make even brighter
 
-                    //if (s==0 && v < 240) v *= 0.85f; //Greyscale, but not white: darken a bit (to increase contrast)
+                    //if (s==0 and v < 240) v *= 0.85f; //Greyscale, but not white: darken a bit (to increase contrast)
                     //if (s>230) s = 255; //bright...make even brighter
                     if (v > 255) v = 255;
 
@@ -328,9 +328,9 @@ void FarTexDB::SetLightLevel(void)
             {
                 RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
-                if (!(s <= 0.1 || h == -1))  //Not Greyscale
+                if ( not (s <= 0.1 or h == -1))  //Not Greyscale
                 {
-                    if (h >= 45 && h <= 160) //Green
+                    if (h >= 45 and h <= 160) //Green
                     {
                         s *= 0.8f;
                         v *= 1.2f;
@@ -358,7 +358,7 @@ void FarTexDB::SetLightLevel(void)
         // Turn on the lights if it is dark enough
         if (lightLevel < 0.5f)
         {
-            to = (BYTE *) & (scratchPal[252]);
+            to = (BYTE *) bitand (scratchPal[252]);
 
             if (TheTimeOfDay.GetNVGmode())
             {
@@ -465,7 +465,7 @@ void FarTexDB::Request(TextureID texID)
     ShiAssert(texArray);
 
     // 2002-04-13 MN CTD fix
-    if (!texArray) return;
+    if ( not texArray) return;
 
     // If this is the first reference, we need to load the data
     needToLoad = (texArray[texID].refCount == 0);
@@ -517,7 +517,7 @@ void FarTexDB::Load(DWORD offset, bool forceNoDDS)
     ShiAssert(offset < (DWORD) texCount);
     ShiAssert(texArray[offset].bits == NULL);
 
-    if (!forceNoDDS && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+    if ( not forceNoDDS and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
     {
 #ifdef USE_SH_POOLS
         texArray[offset].bits = (BYTE *)MemAllocFS(gFartexMemPool);
@@ -527,7 +527,7 @@ void FarTexDB::Load(DWORD offset, bool forceNoDDS)
         ShiAssert(texArray[offset].bits);
 
         // Read the image data
-        if (!fartexDDSFile.ReadDataAt(sizeof(DDSURFACEDESC2) + (offset * linearSize), texArray[offset].bits, linearSize))
+        if ( not fartexDDSFile.ReadDataAt(sizeof(DDSURFACEDESC2) + (offset * linearSize), texArray[offset].bits, linearSize))
         {
             char string[80];
             char message[120];
@@ -554,7 +554,7 @@ void FarTexDB::Load(DWORD offset, bool forceNoDDS)
             ShiAssert(texArray[offset].bits);
 
             // Read the image data
-            if (!fartexFile.ReadDataAt(offset * IMAGE_SIZE * IMAGE_SIZE, texArray[offset].bits, IMAGE_SIZE * IMAGE_SIZE))
+            if ( not fartexFile.ReadDataAt(offset * IMAGE_SIZE * IMAGE_SIZE, texArray[offset].bits, IMAGE_SIZE * IMAGE_SIZE))
             {
                 char string[80];
                 char message[120];
@@ -576,7 +576,7 @@ void FarTexDB::Activate(DWORD offset)
     ShiAssert(IsReady());
     ShiAssert(offset >= 0);
     ShiAssert(offset < (DWORD) texCount);
-    ShiAssert(texArray[offset].bits != NULL);
+    ShiAssert(texArray[offset].bits not_eq NULL);
     ShiAssert(texArray[offset].handle == NULL);
 
     if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
@@ -585,8 +585,8 @@ void FarTexDB::Activate(DWORD offset)
         ShiAssert(texArray[offset].handle);
 
         DWORD info = MPR_TI_DDS;
-        info |= MPR_TI_DXT1;
-        info |= MPR_TI_32;
+        info or_eq MPR_TI_DXT1;
+        info or_eq MPR_TI_32;
 
         ((TextureHandle *)texArray[offset].handle)->Create("FarTexDB", info, 32, IMAGE_SIZE, IMAGE_SIZE);
         ((TextureHandle *)texArray[offset].handle)->Load(0, 0, texArray[offset].bits, false, true, linearSize);
@@ -601,7 +601,7 @@ void FarTexDB::Activate(DWORD offset)
         WORD info = MPR_TI_PALETTE;
 
         if (g_bEnableStaticTerrainTextures)
-            dwFlags |= TextureHandle::FLAG_HINT_STATIC;
+            dwFlags or_eq TextureHandle::FLAG_HINT_STATIC;
 
         ((TextureHandle *)texArray[offset].handle)->Create("FarTexDB", info, 8, IMAGE_SIZE, IMAGE_SIZE, dwFlags);
 
@@ -646,7 +646,7 @@ void FarTexDB::Deactivate(DWORD offset)
 
     if (texArray[offset].bits)
     {
-        if (!g_bUseMappedFiles)
+        if ( not g_bUseMappedFiles)
 #ifdef USE_SH_POOLS
             MemFreeFS(texArray[offset].bits);
 
@@ -678,7 +678,7 @@ void FarTexDB::Free(DWORD offset)
     // Release the image memory
 #ifndef _DONOT_COPY_BITS
 
-    if (!g_bUseMappedFiles)
+    if ( not g_bUseMappedFiles)
 #ifdef USE_SH_POOLS
         MemFreeFS(texArray[offset].bits);
 
@@ -744,17 +744,17 @@ void FarTexDB::FlushHandles()
         sprintf(szRawName, "%s.dds", texturePath);
         fp = fopen(szRawName, "rb");
 
-        if (!fp) return;
+        if ( not fp) return;
 
         fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
-        ShiAssert(ddsd.dwFlags & DDSD_LINEARSIZE)
+        ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE)
 
         linearSize = ddsd.dwLinearSize;
 
         fclose(fp);
 
         // Open and hang onto the distant texture DDS image file
-        fartexDDSFile.Open(szRawName, FALSE, !g_bUseMappedFiles);
+        fartexDDSFile.Open(szRawName, FALSE, not g_bUseMappedFiles);
     }
 }
 
@@ -777,7 +777,7 @@ bool FarTexDB::SyncDDSTextures(bool bForce)
     {
         fclose(fpRaw);
 
-        if (!bForce)
+        if ( not bForce)
             return false;
     }
 
@@ -803,7 +803,7 @@ bool FarTexDB::SyncDDSTextures(bool bForce)
         fread(pBuf, 1, ddsd.dwLinearSize, fpDDS);
 
         // One header only, all textures are the same linear size
-        if (!bOnce)
+        if ( not bOnce)
         {
             fwrite(&ddsd, 1, sizeof(ddsd), fpRaw);
             bOnce = true;
@@ -821,7 +821,7 @@ bool FarTexDB::SyncDDSTextures(bool bForce)
     fclose(fpRaw);
     RemoveDirectory(texturePath);
 
-    fartexDDSFile.Open(szRawName, FALSE, !g_bUseMappedFiles);
+    fartexDDSFile.Open(szRawName, FALSE, not g_bUseMappedFiles);
 
     return true;
 }
@@ -839,12 +839,12 @@ bool FarTexDB::DumpImageToFile(DWORD offset)
     ShiAssert(offset < (DWORD) texCount);
     ShiAssert(texArray[offset].bits);
 
-    if (!texArray[offset].bits) return false;
+    if ( not texArray[offset].bits) return false;
 
     sprintf(szFileName, "%s\\%d.dds", texturePath, offset);
     fp = fopen(szFileName, "rb");
 
-    if (!fp)
+    if ( not fp)
     {
         dwSize = IMAGE_SIZE * IMAGE_SIZE;
 
@@ -883,7 +883,7 @@ bool FarTexDB::SaveDDS_DXTn(const char *szFileName, BYTE* pDst, int dimensions)
 
 #if _MSC_VER >= 1300
 
-    fileout = _open(szFileName, O_WRONLY | O_BINARY | O_CREAT, S_IWRITE);
+    fileout = _open(szFileName, O_WRONLY bitor O_BINARY bitor O_CREAT, S_IWRITE);
 
     options.MipMapType = dNoMipMaps;
     options.bBinaryAlpha = false;
@@ -930,11 +930,11 @@ void FarTexDB::RGBtoHSV(float r, float g, float b, float *h, float *s, float *v)
     else
     {
         if (r == *v)
-            *h = (g - b) / delta; // between yellow & magenta
+            *h = (g - b) / delta; // between yellow bitand magenta
         else if (g == *v)
-            *h = 2 + (b - r) / delta; // between cyan & yellow
+            *h = 2 + (b - r) / delta; // between cyan bitand yellow
         else
-            *h = 4 + (r - g) / delta; // between magenta & cyan
+            *h = 4 + (r - g) / delta; // between magenta bitand cyan
     }
 
     *h *= 60; // degrees
@@ -947,7 +947,7 @@ void FarTexDB::HSVtoRGB(float *r, float *g, float *b, float h, float s, float v)
     int i;
     float f, p, q, t;
 
-    if (s == 0 || h == -1)
+    if (s == 0 or h == -1)
     {
         // achromatic (grey)
         *r = *g = *b = v;

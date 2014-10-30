@@ -167,7 +167,7 @@ private:
     BOOL OldInputMessage();
     void HelpOff();
     void CheckHelpText(SCREEN *surface);
-    void Fill(SCREEN *surface, COLORREF Color, long x1, long y1, long x2, long y2); //!
+    void Fill(SCREEN *surface, COLORREF Color, long x1, long y1, long x2, long y2); 
     void Fill(SCREEN *surface, COLORREF Color, UI95_RECT *dst);
 
 public:
@@ -299,7 +299,7 @@ public:
     }
     long UpdateWaiting()
     {
-        return(UpdateFlag & C_DRAW_UPDATE);
+        return(UpdateFlag bitand C_DRAW_UPDATE);
     }
     void PostUpdate();
     void SendUpdate();
@@ -327,18 +327,18 @@ public:
     void RemovingControl(C_Base *control);
     void DropControl();
     void StartDrag();
-    //! short GetDragX(WORD MouseX);
-    //! short GetDragY(WORD MouseY);
+    //short GetDragX(WORD MouseX);
+    //short GetDragY(WORD MouseY);
     long GetDragX(WORD MouseX);
     long GetDragY(WORD MouseY);
     BOOL Dragging(void)
     {
-        if (Drag_.Control_ != NULL || Drag_.Window_ != NULL) return(TRUE);
+        if (Drag_.Control_ not_eq NULL or Drag_.Window_ not_eq NULL) return(TRUE);
 
         return(FALSE);
     }
     BOOL GrabItem(WORD MouseX, WORD MouseY, C_Window *overme, long GrabType);
-    //! BOOL GrabItem(WORD MouseX,WORD MouseY,C_Window *overme,short GrabType);
+    //BOOL GrabItem(WORD MouseX,WORD MouseY,C_Window *overme,short GrabType);
     BOOL DragItem(WORD MouseX, WORD MouseY, C_Window *overme);
     BOOL DropItem(WORD MouseX, WORD MouseY, C_Window *overme);
 };

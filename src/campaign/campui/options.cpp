@@ -87,7 +87,7 @@ void AdjustSquadronPilotSkills(Squadron u)
         if (skill < 0)
             skill = 0;
 
-        u->GetPilotData(i)->pilot_skill_and_rating = 0x30 | skill;
+        u->GetPilotData(i)->pilot_skill_and_rating = 0x30 bitor skill;
         u->GetPilotData(i)->pilot_status = PILOT_AVAILABLE;
         u->GetPilotData(i)->missions_flown = 0;
     }
@@ -145,7 +145,7 @@ void AdjustForceRatios(void)
         // LoadCampaign, so these are fresh scenarios - Also, flights shouldn't be filled.
         u->SetLosses(0);
 
-        if (!u->IsFlight())
+        if ( not u->IsFlight())
         {
             UnitClassDataType *uc = u->GetUnitClassData();
 
@@ -208,7 +208,7 @@ void AdjustForceRatios(void)
         }
 
         // Resupply to the team's supply level
-        if (u->Real() && (u->GetDomain() == DOMAIN_LAND || u->GetDomain() == DOMAIN_SEA))
+        if (u->Real() and (u->GetDomain() == DOMAIN_LAND or u->GetDomain() == DOMAIN_SEA))
             u->SetUnitSupply(TeamInfo[u->GetTeam()]->startStats.supplyLevel);
         else if (u->IsSquadron())
         {

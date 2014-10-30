@@ -47,13 +47,13 @@ Radar360Class::Radar360Class(int type, SimMoverClass* parentPlatform) : RadarCla
 void Radar360Class::ExecModes(int newDesignate, int newDrop)
 {
     // Stick in AUTO mode until we are commaned out or get a lock
-    if ((lockCmd == AUTO) && (lockedTarget == NULL))
+    if ((lockCmd == AUTO) and (lockedTarget == NULL))
     {
         wantLock = AUTO;
     }
 
     // Change modes if such has been requested
-    if (mode != wantMode)
+    if (mode not_eq wantMode)
     {
         mode = wantMode;
         wantLock = NOCHANGE;
@@ -63,11 +63,11 @@ void Radar360Class::ExecModes(int newDesignate, int newDrop)
     }
 
     // Change ranges if such has been requested
-    if (wantRange != rangeNM)
+    if (wantRange not_eq rangeNM)
     {
-        if ((wantRange >= 5.0f) && (wantRange <= max(40.0, maxRangeNM * 1.5)))
+        if ((wantRange >= 5.0f) and (wantRange <= max(40.0, maxRangeNM * 1.5)))
         {
-            if (!(flags & CursorMoving))
+            if ( not (flags bitand CursorMoving))
             {
                 cursorY = 0.0F;
             }
@@ -99,34 +99,34 @@ void Radar360Class::ExecModes(int newDesignate, int newDrop)
 void Radar360Class::UpdateState(int cursorXCmd, int cursorYCmd)
 {
     // Handle any requests for cursor movement
-    if (cursorXCmd != 0)
+    if (cursorXCmd not_eq 0)
     {
-        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
             cursorX += (cursorXCmd / 10000.0F) * CursorRate * SimLibMajorFrameTime;
         else
             cursorX += cursorXCmd * CursorRate * SimLibMajorFrameTime;
 
         cursorX = min(max(cursorX, -1.0F), 1.0F);
 
-        if (!AWACSMode && fabs(cursorX) > cursorY * TAN_RADAR_CONE_ANGLE)
+        if ( not AWACSMode and fabs(cursorX) > cursorY * TAN_RADAR_CONE_ANGLE)
         {
             cursorY = (float)fabs(cursorX) / TAN_RADAR_CONE_ANGLE;
         }
     }
 
-    if (cursorYCmd != 0)
+    if (cursorYCmd not_eq 0)
     {
-        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) && (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
             cursorY += (cursorYCmd / 10000.0F) * CursorRate * SimLibMajorFrameTime;
         else
             cursorY += cursorYCmd * CursorRate * SimLibMajorFrameTime;
 
-        if (!AWACSMode)
+        if ( not AWACSMode)
             cursorY = min(max(cursorY,  0.0F), 1.0F);
         else
             cursorY = min(max(cursorY,  -1.0F), 1.0F);
 
-        if (!AWACSMode && fabs(cursorX) > cursorY * TAN_RADAR_CONE_ANGLE)
+        if ( not AWACSMode and fabs(cursorX) > cursorY * TAN_RADAR_CONE_ANGLE)
         {
             if (cursorX >= 0.0f)
             {
@@ -139,10 +139,10 @@ void Radar360Class::UpdateState(int cursorXCmd, int cursorYCmd)
         }
     }
 
-    if ((cursorXCmd != 0) || (cursorYCmd != 0))
-        flags |= CursorMoving;
+    if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
+        flags or_eq CursorMoving;
     else
-        flags &= ~CursorMoving;
+        flags and_eq compl CursorMoving;
 }
 
 
@@ -153,7 +153,7 @@ SimObjectType* Radar360Class::Exec(SimObjectType*)
     CheckLockedTarget();
 
     // Quit now if we're turned off
-    if (!isEmitting)
+    if ( not isEmitting)
     {
         SetSensorTargetHack(NULL);
         return NULL;
@@ -263,7 +263,7 @@ void Radar360Class::ExecAA(void)
         }
 
         // Can't lock onto weapons in flight
-        if (object->BaseData()->IsMissile() || object->BaseData()->IsBomb())
+        if (object->BaseData()->IsMissile() or object->BaseData()->IsBomb())
         {
             continue;
         }
@@ -291,13 +291,13 @@ void Radar360Class::ExecAA(void)
         }
 
         // We're done unless we need to lock something up
-        if ((!lockCmd) || (range > rangeFT))
+        if (( not lockCmd) or (range > rangeFT))
         {
             continue;
         }
 
         // Skip the object if it can't be locked
-        if (!AWACSMode && !InAALockZone(object, x, y))   // M.N. in AWACS mode, allow 360° locking
+        if ( not AWACSMode and not InAALockZone(object, x, y))   // M.N. in AWACS mode, allow 360° locking
         {
             continue;
         }
@@ -345,7 +345,7 @@ void Radar360Class::ExecAA(void)
             case NEXT:
                 if (range < bestSoFar)
                 {
-                    if ((!lockedTarget) || (range > lockedTarget->localData->range))
+                    if (( not lockedTarget) or (range > lockedTarget->localData->range))
                     {
                         if (TeamInfo[platform->GetTeam()]->TStance(object->BaseData()->GetTeam()) == War)
                         {
@@ -360,7 +360,7 @@ void Radar360Class::ExecAA(void)
             case PREV:
                 if (range > bestSoFar)
                 {
-                    if ((!lockedTarget) || (range < lockedTarget->localData->range))
+                    if (( not lockedTarget) or (range < lockedTarget->localData->range))
                     {
                         if (TeamInfo[platform->GetTeam()]->TStance(object->BaseData()->GetTeam()) == War)
                         {
@@ -379,7 +379,7 @@ void Radar360Class::ExecAA(void)
 
 
     // If we changed locks, tell our previous target he's off the hook
-    if (newLock != lockedTarget)
+    if (newLock not_eq lockedTarget)
     {
         SetDesiredTarget(newLock);
         sendThisFrame = TRUE;
@@ -391,7 +391,7 @@ void Radar360Class::ExecAA(void)
     }
 
     // Tell our current target he's locked
-    if (sendThisFrame && lockedTarget)
+    if (sendThisFrame and lockedTarget)
     {
         SendTrackMsg(lockedTarget, Track_Lock);
         lastTargetLockSend = SimLibElapsedTime;
@@ -508,7 +508,7 @@ void Radar360Class::ExecAG(void)
     {
 
         // Skip air objects in AG mode
-        if (!object->OnGround())
+        if ( not object->OnGround())
         {
             goto NextObject;
         }
@@ -516,14 +516,14 @@ void Radar360Class::ExecAG(void)
         // Skip sleeping sim objects
         if (object->IsSim())
         {
-            if (!((SimBaseClass*)object)->IsAwake())
+            if ( not ((SimBaseClass*)object)->IsAwake())
             {
                 goto NextObject;
             }
         }
 
         // Fow now we skip missles -- might want to display them eventually...
-        if (object->IsMissile() || object->IsBomb())
+        if (object->IsMissile() or object->IsBomb())
         {
             goto NextObject;
         }
@@ -550,14 +550,14 @@ void Radar360Class::ExecAG(void)
 
 
         // We're done unless we need to lock something up
-        if (!lockCmd)
+        if ( not lockCmd)
         {
             goto NextObject;
         }
 
 
         // Skip the object if it can't be locked
-        if ((range > rangeFT) || !InAGLockZone(cosATA, x, y))
+        if ((range > rangeFT) or not InAGLockZone(cosATA, x, y))
         {
             goto NextObject;
         }
@@ -605,7 +605,7 @@ void Radar360Class::ExecAG(void)
             case NEXT:
                 if (range < bestSoFar)
                 {
-                    if ((!lockedTarget) || (range > lockedTarget->localData->range))
+                    if (( not lockedTarget) or (range > lockedTarget->localData->range))
                     {
                         if (TeamInfo[platform->GetTeam()]->TStance(object->GetTeam()) == War)
                         {
@@ -620,7 +620,7 @@ void Radar360Class::ExecAG(void)
             case PREV:
                 if (range > bestSoFar)
                 {
-                    if ((!lockedTarget) || (range < lockedTarget->localData->range))
+                    if (( not lockedTarget) or (range < lockedTarget->localData->range))
                     {
                         if (TeamInfo[platform->GetTeam()]->TStance(object->GetTeam()) == War)
                         {
@@ -640,7 +640,7 @@ void Radar360Class::ExecAG(void)
         // Advance to the next object for consideration
         object = (FalconEntity*)walker->GetNext();
 
-        if ((!object) && (walker == &featureWalker))
+        if (( not object) and (walker == &featureWalker))
         {
             walker = &vehicleWalker;
             object = (FalconEntity*)vehicleWalker.GetFirst();
@@ -717,7 +717,7 @@ void Radar360Class::Display(VirtualDisplay *activeDisplay)
 
 
     // Quit now if we're turned off
-    if (!isEmitting)
+    if ( not isEmitting)
     {
         return;
         display->TextCenter(0.0f, 0.0f, "RADAR OFF");
@@ -732,7 +732,7 @@ void Radar360Class::Display(VirtualDisplay *activeDisplay)
     display->Circle(0.0f, 0.0f, 0.99f);
 
     // Draw the radar lock sector
-    if (!AWACSMode) // JB 011213
+    if ( not AWACSMode) // JB 011213
     {
         display->Line(0.0f, 0.0f,  SIN_RADAR_CONE_ANGLE, COS_RADAR_CONE_ANGLE);
         display->Line(0.0f, 0.0f, -SIN_RADAR_CONE_ANGLE, COS_RADAR_CONE_ANGLE);
@@ -783,7 +783,7 @@ void Radar360Class::Display(VirtualDisplay *activeDisplay)
     {
         classPtr = (Falcon4EntityClassType*)lockedTarget->BaseData()->EntityType();
 
-        if (lockedTarget->BaseData()->IsSim() && !((SimBaseClass*)lockedTarget->BaseData())->IsExploding())
+        if (lockedTarget->BaseData()->IsSim() and not ((SimBaseClass*)lockedTarget->BaseData())->IsExploding())
         {
             if (classPtr->dataType == DTYPE_VEHICLE)
             {
@@ -886,7 +886,7 @@ void Radar360Class::DisplayAATargets(float scaledSinYaw, float scaledCosYaw)
         // Desaturate and brighten the target under the cursor
         if (object->BaseData()->Id() == targetUnderCursor)
         {
-            color |= 0x00404040;
+            color or_eq 0x00404040;
         }
 
         // Draw the target symbol
@@ -944,7 +944,7 @@ void Radar360Class::DisplayAGTargets(float scaledSinYaw, float scaledCosYaw)
     {
 
         // Skip air objects in AG mode
-        if (!object->OnGround())
+        if ( not object->OnGround())
         {
             goto NextObject;
         }
@@ -952,7 +952,7 @@ void Radar360Class::DisplayAGTargets(float scaledSinYaw, float scaledCosYaw)
         // Skip sleeping sim objects
         if (object->IsSim())
         {
-            if (!((SimBaseClass*)object)->IsAwake())
+            if ( not ((SimBaseClass*)object)->IsAwake())
             {
                 goto NextObject;
             }
@@ -967,7 +967,7 @@ void Radar360Class::DisplayAGTargets(float scaledSinYaw, float scaledCosYaw)
         y = dy * scaledSinYaw + dx * scaledCosYaw; // and scale from feet into viewport space
 
         // Skip if the object is off screen
-        if ((fabs(x) > 1.0f) || (fabs(y) > 1.0f))
+        if ((fabs(x) > 1.0f) or (fabs(y) > 1.0f))
         {
             goto NextObject;
         }
@@ -991,7 +991,7 @@ void Radar360Class::DisplayAGTargets(float scaledSinYaw, float scaledCosYaw)
         // Desaturate and brighten the target under the cursor
         if (object->Id() == targetUnderCursor)
         {
-            color |= 0x00404040;
+            color or_eq 0x00404040;
         }
 
         // Draw the target symbol
@@ -1005,7 +1005,7 @@ void Radar360Class::DisplayAGTargets(float scaledSinYaw, float scaledCosYaw)
         // Advance to the next object for consideration
         object = (FalconEntity*)walker->GetNext();
 
-        if ((!object) && (walker == &featureWalker))
+        if (( not object) and (walker == &featureWalker))
         {
             walker = &vehicleWalker;
             blipSize = BLIP_SIZE / 2.0f;
@@ -1023,7 +1023,7 @@ BOOL Radar360Class::InAALockZone(SimObjectType *object, float x, float y)
         return TRUE;
 
     // See if the object is within the God's eye pie slice about our heading
-    if ((y > 0.0f) && (fabs(x) < y * TAN_RADAR_CONE_ANGLE))
+    if ((y > 0.0f) and (fabs(x) < y * TAN_RADAR_CONE_ANGLE))
         return TRUE;
 
     // Not in either area, so not "lockable"
@@ -1038,7 +1038,7 @@ BOOL Radar360Class::InAGLockZone(float cosATA, float x, float y)
         return TRUE;
 
     // See if the object is within the God's eye pie slice about our heading
-    if ((y > 0.0f) && (fabs(x) < y * TAN_RADAR_CONE_ANGLE))
+    if ((y > 0.0f) and (fabs(x) < y * TAN_RADAR_CONE_ANGLE))
         return TRUE;
 
     // Not in either area, so not "lockable"

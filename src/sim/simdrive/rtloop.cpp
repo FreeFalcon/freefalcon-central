@@ -35,7 +35,7 @@ void RealTimeFunction(unsigned long, void*)
     static unsigned long update_time = 0, send_time = 0;
 
     // Check to see if some time events have occured (compression ratio change, etc)
-    if ((vuxRealTime > send_time) && (FalconLocalGame))
+    if ((vuxRealTime > send_time) and (FalconLocalGame))
     {
         ResyncTimes();
         send_time = vuxRealTime + RESYNC_TIME;
@@ -81,7 +81,7 @@ void RealTimeFunction(unsigned long, void*)
 
 #if NEW_END_CAMPAIGN
 
-    if (TheCampaign.Flags & CAMP_SHUTDOWN_REQUEST)
+    if (TheCampaign.Flags bitand CAMP_SHUTDOWN_REQUEST)
     {
         // sfr: this is the only safe place to really end the campaign
         TheCampaign.ReallyEndCampaign();

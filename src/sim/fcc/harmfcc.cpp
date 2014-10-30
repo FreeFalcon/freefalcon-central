@@ -24,17 +24,17 @@ void FireControlComputer::HarmMode(void)
 
     if (theHTS)
     {
-        if (!(platform->IsPlayer()))
+        if ( not (platform->IsPlayer()))
         {
             theHTS->SetRange(FloatToInt32(HSDRange)); // RV - I-Hawk - HTS controls range on its own
         }
         else
             platform->SOIManager(SimVehicleClass::SOI_WEAPON);  // FRB - Test
 
-        if (designateCmd && !lastDesignate)
+        if (designateCmd and not lastDesignate)
         {
             // In POS mode the Lock is done via WPN OSBs
-            if (theHTS->GetSubMode() == HarmTargetingPod::HAS || theHTS->GetSubMode() == HarmTargetingPod::HAD)
+            if (theHTS->GetSubMode() == HarmTargetingPod::HAS or theHTS->GetSubMode() == HarmTargetingPod::HAD)
             {
                 theHTS->LockTargetUnderCursor();
             }
@@ -51,12 +51,12 @@ void FireControlComputer::HarmMode(void)
         }
 
         //MI why is this here??
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
             platform->SOIManager(SimVehicleClass::SOI_WEAPON);
 
         if (theHTS->CurrentTarget())
         {
-            if (!targetPtr || targetPtr->BaseData() != theHTS->CurrentTarget()->BaseData())
+            if ( not targetPtr or targetPtr->BaseData() not_eq theHTS->CurrentTarget()->BaseData())
             {
                 SetTarget(theHTS->CurrentTarget());
             }
@@ -74,7 +74,7 @@ void FireControlComputer::HarmMode(void)
             if (theMissile)
             {
                 /* JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
-                if (targetPtr->BaseData()->IsSim() && ((SimBaseClass*)targetPtr->BaseData())->IsAwake())
+                if (targetPtr->BaseData()->IsSim() and ((SimBaseClass*)targetPtr->BaseData())->IsAwake())
                 {
                  ((SimBaseClass*)targetPtr->BaseData())->drawPointer->GetPosition (&pos);
                  ((SimBaseClass*)targetPtr->BaseData())->SetPosition (pos.x, pos.y, pos.z);
@@ -155,7 +155,7 @@ void FireControlComputer::HarmMode(void)
         missileTarget = FALSE;
     }
 
-    if (!releaseConsent)
+    if ( not releaseConsent)
     {
         postDrop = FALSE;
     }

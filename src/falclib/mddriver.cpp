@@ -312,7 +312,7 @@ int FileVerify(void)
 
     if (retval)
     {
-        sprintf(outStr, "%d Error(s) found !!!!!\n", retval);
+        sprintf(outStr, "%d Error(s) found \n", retval);
         MonoPrint(outStr);
         outStr[strlen(outStr) - 1] = 0;
 
@@ -416,10 +416,10 @@ Encode(unsigned char *output, u_int32_t *input, unsigned int len)
 
     for (i = 0, j = 0; j < len; i++, j += 4)
     {
-        output[j] = (unsigned char)(input[i] & 0xff);
-        output[j + 1] = (unsigned char)((input[i] >> 8) & 0xff);
-        output[j + 2] = (unsigned char)((input[i] >> 16) & 0xff);
-        output[j + 3] = (unsigned char)((input[i] >> 24) & 0xff);
+        output[j] = (unsigned char)(input[i] bitand 0xff);
+        output[j + 1] = (unsigned char)((input[i] >> 8) bitand 0xff);
+        output[j + 2] = (unsigned char)((input[i] >> 16) bitand 0xff);
+        output[j + 3] = (unsigned char)((input[i] >> 24) bitand 0xff);
     }
 }
 
@@ -434,8 +434,8 @@ Decode(u_int32_t *output, const unsigned char *input, unsigned int len)
     unsigned int i, j;
 
     for (i = 0, j = 0; j < len; i++, j += 4)
-        output[i] = ((u_int32_t)input[j]) | (((u_int32_t)input[j + 1]) << 8) |
-                    (((u_int32_t)input[j + 2]) << 16) | (((u_int32_t)input[j + 3]) << 24);
+        output[i] = ((u_int32_t)input[j]) bitor (((u_int32_t)input[j + 1]) << 8) |
+                    (((u_int32_t)input[j + 2]) << 16) bitor (((u_int32_t)input[j + 3]) << 24);
 }
 #endif /* i386 */
 
@@ -447,13 +447,13 @@ static unsigned char PADDING[64] =
 };
 
 /* F, G, H and I are basic MD5 functions. */
-#define F(x, y, z) (((x) & (y)) | ((~x) & (z)))
-#define G(x, y, z) (((x) & (z)) | ((y) & (~z)))
-#define H(x, y, z) ((x) ^ (y) ^ (z))
-#define I(x, y, z) ((y) ^ ((x) | (~z)))
+#define F(x, y, z) (((x) bitand (y)) bitor ((compl x) bitand (z)))
+#define G(x, y, z) (((x) bitand (z)) bitor ((y) bitand (compl z)))
+#define H(x, y, z) ((x) xor (y) xor (z))
+#define I(x, y, z) ((y) xor ((x) bitor (compl z)))
 
 /* ROTATE_LEFT rotates x left n bits. */
-#define ROTATE_LEFT(x, n) (((x) << (n)) | ((x) >> (32-(n))))
+#define ROTATE_LEFT(x, n) (((x) << (n)) bitor ((x) >> (32-(n))))
 
 /*
  * FF, GG, HH, and II transformations for rounds 1, 2, 3, and 4.
@@ -507,7 +507,7 @@ MD5Update(MD5_CTX *context, const unsigned char *input, unsigned int inputLen)
     unsigned int i, index, partLen;
 
     /* Compute number of bytes mod 64 */
-    index = (unsigned int)((context->count[0] >> 3) & 0x3F);
+    index = (unsigned int)((context->count[0] >> 3) bitand 0x3F);
 
     /* Update number of bits */
     if ((context->count[0] += ((u_int32_t)inputLen << 3))
@@ -553,7 +553,7 @@ MD5Final(unsigned char digest[16], MD5_CTX *context)
     Encode(bits, context->count, 8);
 
     /* Pad out to 56 mod 64. */
-    index = (unsigned int)((context->count[0] >> 3) & 0x3f);
+    index = (unsigned int)((context->count[0] >> 3) bitand 0x3f);
     padLen = (index < 56) ? (56 - index) : (120 - index);
     MD5Update(context, PADDING, padLen);
 
@@ -680,10 +680,10 @@ char *MD5End(MD5_CTX *ctx, char *buf)
     unsigned char digest[16];
     static const char hex[] = "0123456789abcdef";
 
-    if (!buf)
+    if ( not buf)
         buf = (char *)malloc(33);
 
-    if (!buf)
+    if ( not buf)
         return 0;
 
     MD5Final(digest, ctx);
@@ -691,7 +691,7 @@ char *MD5End(MD5_CTX *ctx, char *buf)
     for (i = 0; i < 16; i++)
     {
         buf[i + i] = hex[digest[i] >> 4];
-        buf[i + i + 1] = hex[digest[i] & 0x0f];
+        buf[i + i + 1] = hex[digest[i] bitand 0x0f];
     }
 
     buf[i + i] = '\0';

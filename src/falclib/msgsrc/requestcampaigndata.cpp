@@ -103,7 +103,7 @@ int FalconRequestCampaignData::Encode(VU_BYTE **buf)
     *buf += sizeof(uchar);
     size += sizeof(uchar);
 
-    if (dataBlock.size > 0 && dataBlock.data)
+    if (dataBlock.size > 0 and dataBlock.data)
     {
         memcpy(*buf, dataBlock.data, dataBlock.size);
         *buf += dataBlock.size;
@@ -122,7 +122,7 @@ int FalconRequestCampaignData::Process(uchar autodisp)
 
     MonoPrint("Process %08x\n", dataBlock.dataNeeded);
 
-    if (dataBlock.dataNeeded & CAMP_GAME_FULL)
+    if (dataBlock.dataNeeded bitand CAMP_GAME_FULL)
     {
         MonoPrint("Bang Crash Whollop\n");
 
@@ -130,7 +130,7 @@ int FalconRequestCampaignData::Process(uchar autodisp)
             PostMessage(gMainHandler->GetAppWnd(), FM_GAME_FULL, 0, 0);
     }
 
-    if (dataBlock.dataNeeded & DF_MATCH_IN_PROGRESS)
+    if (dataBlock.dataNeeded bitand DF_MATCH_IN_PROGRESS)
     {
         MonoPrint("Whollop Crash Bang\n");
 
@@ -138,7 +138,7 @@ int FalconRequestCampaignData::Process(uchar autodisp)
             PostMessage(gMainHandler->GetAppWnd(), FM_MATCH_IN_PROGRESS, 0, 0);
     }
 
-    if (!TheCampaign.IsLoaded())
+    if ( not TheCampaign.IsLoaded())
         return -1;
 
     // KCK TODO: Check if a request from this machine is already on the queue,
@@ -167,17 +167,17 @@ void SendRequestedData(void)
 
     CampEnterCriticalSection();
 
-    for (FalconRequestCampaignData *request = gRequestQueue; request != NULL; request = gRequestQueue)
+    for (FalconRequestCampaignData *request = gRequestQueue; request not_eq NULL; request = gRequestQueue)
     {
         VU_BYTE *buf;
         uchar *dataptr = request->dataBlock.data;
         FalconSessionEntity *requester = (FalconSessionEntity*)vuDatabase->Find(request->dataBlock.who);
 
-        if ((requester != NULL) && TheCampaign.IsLoaded())
+        if ((requester not_eq NULL) and TheCampaign.IsLoaded())
         {
             TheCampaign.SetOnlineStatus(1);
 
-            if ((!(request->dataBlock.dataNeeded & CAMP_NEED_PRELOAD)) && (CheckNumberPlayers() < 0))
+            if (( not (request->dataBlock.dataNeeded bitand CAMP_NEED_PRELOAD)) and (CheckNumberPlayers() < 0))
             {
                 FalconRequestCampaignData *msg;
                 MonoPrint("Too Many Players");
@@ -186,7 +186,7 @@ void SendRequestedData(void)
                 msg->dataBlock.dataNeeded = CAMP_GAME_FULL;
                 FalconSendMessage(msg, TRUE);
             }
-            else if ((!(request->dataBlock.dataNeeded & CAMP_NEED_PRELOAD)) && (MatchPlayStarted()))
+            else if (( not (request->dataBlock.dataNeeded bitand CAMP_NEED_PRELOAD)) and (MatchPlayStarted()))
             {
                 FalconRequestCampaignData *msg;
                 MonoPrint("Send Match Play In Progress");
@@ -200,7 +200,7 @@ void SendRequestedData(void)
                 MonoPrint("Data Needed %08x\n", request->dataBlock.dataNeeded);
 
                 // Send back what was requested:
-                if (request->dataBlock.dataNeeded & CAMP_NEED_PRELOAD)
+                if (request->dataBlock.dataNeeded bitand CAMP_NEED_PRELOAD)
                 {
                     MonoPrint("Sending Preload\n");
                     FalconSendCampaign* msg = new FalconSendCampaign(request->dataBlock.who, requester);
@@ -210,13 +210,13 @@ void SendRequestedData(void)
                     FalconSendMessage(msg, TRUE);
                 }
 
-                if (request->dataBlock.dataNeeded & CAMP_NEED_WEATHER)
+                if (request->dataBlock.dataNeeded bitand CAMP_NEED_WEATHER)
                 {
                     MonoPrint("Sending Weather\n");
                     ((WeatherClass*)realWeather)->SendWeather(requester);
                 }
 
-                if (request->dataBlock.dataNeeded & CAMP_NEED_PERSIST)
+                if (request->dataBlock.dataNeeded bitand CAMP_NEED_PERSIST)
                 {
                     MonoPrint("Sending Persist\n");
                     FalconSendPersistantList* msg = new FalconSendPersistantList(request->dataBlock.who, requester);
@@ -228,7 +228,7 @@ void SendRequestedData(void)
                     FalconSendMessage(msg, TRUE);
                 }
 
-                if (request->dataBlock.dataNeeded & CAMP_NEED_OBJ_DELTAS)
+                if (request->dataBlock.dataNeeded bitand CAMP_NEED_OBJ_DELTAS)
                 {
                     MonoPrint("Sending Obj Deltas\n");
                     SendObjectiveDeltas(requester, requester, dataptr);
@@ -246,7 +246,7 @@ void SendRequestedData(void)
                     requester->objDataSendSet = 0;
                 }
 
-                if (request->dataBlock.dataNeeded & CAMP_NEED_UNIT_DATA)
+                if (request->dataBlock.dataNeeded bitand CAMP_NEED_UNIT_DATA)
                 {
                     MonoPrint("Sending Unit Data\n");
                     SendCampaignUnitData(requester, requester, dataptr);
@@ -264,7 +264,7 @@ void SendRequestedData(void)
                     requester->unitDataSendSet = 0;
                 }
 
-                if (request->dataBlock.dataNeeded & CAMP_NEED_ENTITIES && request->dataBlock.who != vuLocalSession)
+                if (request->dataBlock.dataNeeded bitand CAMP_NEED_ENTITIES and request->dataBlock.who not_eq vuLocalSession)
                 {
                     MonoPrint("Sending Entity Data\n");
                     // KCK: I don't think there's anything we need here -
@@ -278,7 +278,7 @@ void SendRequestedData(void)
                      ent = iter.GetFirst();
                      while (ent)
                      {
-                     if (!ent->IsPrivate() && ent->IsLocal() && (ent->EntityType())->classInfo_[VU_CLASS] != CLASS_OBJECTIVE && (ent->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT && (ent->EntityType())->classInfo_[VU_CLASS] != CLASS_MANAGER)
+                     if ( not ent->IsPrivate() and ent->IsLocal() and (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE and (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT and (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_MANAGER)
                      {
                      resp = new VuFullUpdateEvent(ent, requester);
                      resp->RequestReliableTransmit();
@@ -289,27 +289,27 @@ void SendRequestedData(void)
                     */
                 }
 
-                if (request->dataBlock.dataNeeded & CAMP_NEED_TEAM_DATA && request->dataBlock.who != vuLocalSession)
+                if (request->dataBlock.dataNeeded bitand CAMP_NEED_TEAM_DATA and request->dataBlock.who not_eq vuLocalSession)
                 {
                     MonoPrint("Sending Team Data\n");
 
-                    // We really only want to send manager entities && team entities
+                    // We really only want to send manager entities and team entities
                     for (int t = 0; t < NUM_TEAMS; t++)
                     {
-                        if (TeamInfo[t] && TeamInfo[t]->IsLocal())
+                        if (TeamInfo[t] and TeamInfo[t]->IsLocal())
                         {
                             TeamInfo[t]->DoFullUpdate(requester);
                         }
                     }
                 }
 
-                if (request->dataBlock.dataNeeded & CAMP_NEED_VC && request->dataBlock.who != vuLocalSession)
+                if (request->dataBlock.dataNeeded bitand CAMP_NEED_VC and request->dataBlock.who not_eq vuLocalSession)
                 {
                     MonoPrint("Sending VC Data\n");
                     SendVCData(requester);
                 }
 
-                if (request->dataBlock.dataNeeded & CAMP_NEED_PRIORITIES)
+                if (request->dataBlock.dataNeeded bitand CAMP_NEED_PRIORITIES)
                 {
                     MonoPrint("Sending Priorities\n");
                     // Send priorities for all teams
@@ -343,8 +343,8 @@ void SendRequestedData(void)
 int MatchPlayStarted(void)
 {
     if (
-        (FalconLocalGame->GetGameType() == game_Dogfight) &&
-        (SimDogfight.GetGameType() == dog_TeamMatchplay) &&
+        (FalconLocalGame->GetGameType() == game_Dogfight) and 
+        (SimDogfight.GetGameType() == dog_TeamMatchplay) and 
         SimDogfight.GameStarted()
     )
     {

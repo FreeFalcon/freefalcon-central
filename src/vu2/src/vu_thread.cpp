@@ -114,7 +114,7 @@ void VuBaseThread::Update(int mxTime)
         DWORD now = GetTickCount();
         timeRemaining = now - start > limit ? false : true;
     }
-    while (nm && timeRemaining);
+    while (nm and timeRemaining);
 }
 #else
 void VuBaseThread::Update()
@@ -173,9 +173,9 @@ VuMainThread::VuMainThread(
 #endif
     )
 {
-    if (vuCollectionManager || vuDatabase)
+    if (vuCollectionManager or vuDatabase)
     {
-        VU_PRINT("VU: Warning:  creating second VuMainThread!\n");
+        VU_PRINT("VU: Warning:  creating second VuMainThread\n");
     }
     else
     {
@@ -282,19 +282,19 @@ void VuMainThread::Update()
     vuTransmitTime = vuxRealTime;
 
     //START_PROFILE("RT_UPDATE_PU");
-    if (game != NULL)
+    if (game not_eq NULL)
     {
         // sfr: send enqueued position updates, before garbage collector to avoid invalid pointers
         // computes sends allowed and iterate over sessions
         unsigned int allowed = VuMaster::SendsPerPlayer();
 
-        if (vuLocalGame != NULL)
+        if (vuLocalGame not_eq NULL)
         {
             VuSessionsIterator sit(vuLocalGame);
 
-            for (VuSessionEntity *se = sit.GetFirst(); se != NULL; se = sit.GetNext())
+            for (VuSessionEntity *se = sit.GetFirst(); se not_eq NULL; se = sit.GetNext())
             {
-                if (se != vuLocalSessionEntity.get())
+                if (se not_eq vuLocalSessionEntity.get())
                 {
                     se->SendBestEnqueuedPositionUpdatesAndClear(allowed, vuxGameTime);
                 }
@@ -318,7 +318,7 @@ void VuMainThread::Update()
     //REPORT_VALUE("sim obj", SimObjects);
 
     // if no game, do dispatch and quite
-    if (!game)
+    if ( not game)
     {
 #if CAP_DISPATCH
 
@@ -376,20 +376,20 @@ void VuMainThread::Update()
 
         for (
             VuGameEntity* game = (VuGameEntity*)grp_iter.GetFirst(), *nextGame;
-            game != NULL;
+            game not_eq NULL;
             game = nextGame
         )
         {
             nextGame = (VuGameEntity*)grp_iter.GetNext();
 
             // removes empty games that are not player pool
-            if (game->IsLocal() && (game != vuPlayerPoolGroup) && (game->SessionCount() == 0))
+            if (game->IsLocal() and (game not_eq vuPlayerPoolGroup) and (game->SessionCount() == 0))
             {
                 vuDatabase->Remove(game);
             }
 
             // broadcast game data if its our game
-            if (game->IsLocal() && ((game->LastTransmissionTime() + game->UpdateRate()) < vuxRealTime))
+            if (game->IsLocal() and ((game->LastTransmissionTime() + game->UpdateRate()) < vuxRealTime))
             {
                 if (game->IsDirty())
                 {
@@ -462,7 +462,7 @@ void VuMainThread::Update()
     // if no game, nothing else
     VuGameEntity  *game = vuLocalSessionEntity->Game();
 
-    if (!game)
+    if ( not game)
     {
         return;
     }
@@ -486,13 +486,13 @@ void VuMainThread::Update()
     // iterate sessions
     unsigned int allowed = VuMaster::SendsPerPlayer(); //TODO
 
-    if (vuLocalGame != NULL)
+    if (vuLocalGame not_eq NULL)
     {
         VuSessionsIterator sit(vuLocalGame);
 
-        for (VuSessionEntity *se = sit.GetFirst(); se != NULL; se = sit.GetNext())
+        for (VuSessionEntity *se = sit.GetFirst(); se not_eq NULL; se = sit.GetNext())
         {
-            if (se != vuLocalSessionEntity.get())
+            if (se not_eq vuLocalSessionEntity.get())
             {
                 se->SendBestEnqueuedPositionUpdatesAndClear(allowed, vuxGameTime);
             }
@@ -528,20 +528,20 @@ void VuMainThread::Update()
         // sfr: removed loop increment from the for, since remove can kill it
         for (
             VuGameEntity* game = (VuGameEntity*)grp_iter.GetFirst(), *nextGame;
-            game != NULL;
+            game not_eq NULL;
             game = nextGame
         )
         {
             nextGame = (VuGameEntity*)grp_iter.GetNext();
 
             // removes empty games that are not player pool
-            if (game->IsLocal() && (game != vuPlayerPoolGroup) && (game->SessionCount() == 0))
+            if (game->IsLocal() and (game not_eq vuPlayerPoolGroup) and (game->SessionCount() == 0))
             {
                 vuDatabase->Remove(game);
             }
 
             // broadcast game data if its our game
-            if (game->IsLocal() && ((game->LastTransmissionTime() + game->UpdateRate()) < vuxRealTime))
+            if (game->IsLocal() and ((game->LastTransmissionTime() + game->UpdateRate()) < vuxRealTime))
             {
                 if (game->IsDirty())
                 {
@@ -595,12 +595,12 @@ VU_ERRCODE VuMainThread::InitComms
     int resendQueueSize
 )
 {
-    if ((vuGlobalGroup->GetCommsHandle() != NULL) || (vuPlayerPoolGroup != NULL) || (handle == NULL))
+    if ((vuGlobalGroup->GetCommsHandle() not_eq NULL) or (vuPlayerPoolGroup not_eq NULL) or (handle == NULL))
     {
         return VU_ERROR;
     }
 
-    if (!relhandle)
+    if ( not relhandle)
     {
         relhandle   = handle;
         relBufSize  = bufSize;
@@ -636,7 +636,7 @@ VU_ERRCODE VuMainThread::DeinitComms()
 
             for (
                 VuTargetEntity* target = (VuTargetEntity*)iter.GetFirst(), *nextTarget;
-                target != NULL;
+                target not_eq NULL;
                 target = nextTarget
             )
             {
@@ -688,7 +688,7 @@ void VuMainThread::FlushOutboundMessages()
     target = static_cast<VuTargetEntity*>(tli.GetFirst());
 
     // attempt to send one packet for each comhandle
-    while (target && (current = target->FlushOutboundMessageBuffer()) != 0)
+    while (target and (current = target->FlushOutboundMessageBuffer()) not_eq 0)
     {
         if (current > 0)
         {
@@ -704,11 +704,11 @@ void VuMainThread::UpdateGroupData(VuGroupEntity* group)
     // sfr: placing next inside loop because close can kill it.
     VuSessionsIterator iter(group);
 
-    for (VuSessionEntity *sess = iter.GetFirst(), *next; sess != NULL; sess = next)
+    for (VuSessionEntity *sess = iter.GetFirst(), *next; sess not_eq NULL; sess = next)
     {
         next = iter.GetNext();
 
-        if ((sess != vuLocalSessionEntity) && (sess->GetReliableCommsStatus() == VU_CONN_ERROR))
+        if ((sess not_eq vuLocalSessionEntity) and (sess->GetReliableCommsStatus() == VU_CONN_ERROR))
         {
             // time out this session
             sess->CloseSession();
@@ -728,7 +728,7 @@ int VuMainThread::GetMessages()
 
     for (
         VuTargetEntity* target = static_cast<VuTargetEntity*>(iter.GetFirst());
-        target != NULL;
+        target not_eq NULL;
         target = static_cast<VuTargetEntity*>(iter.GetNext())
     )
     {
@@ -808,9 +808,9 @@ int VuMainThread::SendQueuedMessages()
             int best = -1;
             int size = 0x7fffffff;
 
-            for (index = 0; (targets[index]) && (index < MAX_TARGETS); ++index)
+            for (index = 0; (targets[index]) and (index < MAX_TARGETS); ++index)
             {
-                if ((!used[index]) && (lru_size[index] < size))
+                if (( not used[index]) and (lru_size[index] < size))
                 {
                     best = index;
                     size = lru_size[index];

@@ -24,7 +24,7 @@ void CBExSpeedAlt(void* ptext)
     hat = cockpitFlightData.z - OTWDriver.GetGroundLevel(SimDriver.GetPlayerEntity()->XPos(), SimDriver.GetPlayerEntity()->YPos());
 
     // Max hat if no rad alt
-    if (playerAC->mFaults && playerAC->mFaults->GetFault(FaultClass::ralt_fault))
+    if (playerAC->mFaults and playerAC->mFaults->GetFault(FaultClass::ralt_fault))
     {
         hat = -999999.9F;
     }
@@ -40,7 +40,7 @@ void CBExSpeedAlt(void* ptext)
     }
     else
     {
-        if (hat > -1200.0F || (cockpitFlightData.zDot < 0.0F && hat > -1500.0F))
+        if (hat > -1200.0F or (cockpitFlightData.zDot < 0.0F and hat > -1500.0F))
         {
             theAlt = -hat;
         }

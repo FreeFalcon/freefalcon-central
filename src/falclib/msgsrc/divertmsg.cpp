@@ -86,7 +86,7 @@ int FalconDivertMessage::Process(uchar autodisp)
     Flight flight = (Flight)FindUnit(EntityId());
     CampEntity target = NULL;
 
-    if (autodisp || !flight || !TheCampaign.IsLoaded())
+    if (autodisp or not flight or not TheCampaign.IsLoaded())
         return 0;
 
     if (dataBlock.mission > 0)
@@ -94,10 +94,10 @@ int FalconDivertMessage::Process(uchar autodisp)
         // Check for target viability
         target = (CampEntity)vuDatabase->Find(dataBlock.targetID);
 
-        if (target && target->IsUnit() && ((Unit)target)->Father())
+        if (target and target->IsUnit() and ((Unit)target)->Father())
             target = ((Unit)target)->GetFirstUnitElement();
 
-        if ((!target || (target->IsUnit() && ((UnitClass*)target)->IsDead())) && dataBlock.mission > 0)
+        if (( not target or (target->IsUnit() and ((UnitClass*)target)->IsDead())) and dataBlock.mission > 0)
             return 0;
 
         // Set with new element's ID
@@ -107,7 +107,7 @@ int FalconDivertMessage::Process(uchar autodisp)
         PlayDivertRadioCalls(target, dataBlock.mission, flight, 0);
 
         // Return receipt
-        if (flight->IsLocal() && (dataBlock.flags & REQF_NEEDRESPONSE))
+        if (flight->IsLocal() and (dataBlock.flags bitand REQF_NEEDRESPONSE))
         {
             CampEntity e = (CampEntity) vuDatabase->Find(dataBlock.requesterID);
 
@@ -117,11 +117,11 @@ int FalconDivertMessage::Process(uchar autodisp)
 
         // KCK: This is kinda hackish - Basically, for player leads, keep reposting this message
         // (every few seconds) until the player replies.
-        if (flight->GetComponentLead() == FalconLocalSession->GetPlayerEntity() && flight == FalconLocalSession->GetPlayerFlight())
+        if (flight->GetComponentLead() == FalconLocalSession->GetPlayerEntity() and flight == FalconLocalSession->GetPlayerFlight())
         {
             // Trying to track down a potential bug here.. It's hard enough to
             // get diverts I figure I'll let QA do the testing..
-            // ShiAssert (!"Show this to Kevin K.");
+            // ShiAssert ( not "Show this to Kevin K.");
             memcpy(&sLastDivert.dataBlock, &dataBlock, sizeof(dataBlock));
             sDivertFlight = flight->Id();
             sLastReply = DIVERT_WAIT_FOR_REPLY;
@@ -146,9 +146,9 @@ int FalconDivertMessage::Process(uchar autodisp)
 // Returns -1 if no divert was pending, 0 if divert is no longer valid, 1 if reply accepted
 int CheckDivertStatus(int reply)
 {
-    if (!sNextRepost)
+    if ( not sNextRepost)
         return -1;
-    else if (sNextRepost < vuxGameTime || reply != DIVERT_NO_DIVERT)
+    else if (sNextRepost < vuxGameTime or reply not_eq DIVERT_NO_DIVERT)
     {
         Flight flight = (Flight) vuDatabase->Find(sDivertFlight);
         CampEntity target = NULL;
@@ -156,16 +156,16 @@ int CheckDivertStatus(int reply)
         // Clear repost time
         sNextRepost = 0;
 
-        if (!flight)
+        if ( not flight)
             return 0;
 
         // Check for target viability
         target = (CampEntity)vuDatabase->Find(sLastDivert.dataBlock.targetID);
 
-        if (!target || (target->IsUnit() && (((Unit)target)->IsDead() || ((Unit)target)->Broken())))
+        if ( not target or (target->IsUnit() and (((Unit)target)->IsDead() or ((Unit)target)->Broken())))
             return 0;
 
-        if (flight != FalconLocalSession->GetPlayerFlight())
+        if (flight not_eq FalconLocalSession->GetPlayerFlight())
         {
             sLastReply = DIVERT_REPLY_YES;
             ApplyDivert(flight, &sLastDivert);
@@ -225,14 +225,14 @@ void ApplyDivert(Flight flight, FalconDivertMessage *fdm)
 
         // Trying to track down a potential bug here.. It's hard enough to
         // get diverts I figure I'll let QA do the testing..
-        ShiAssert(flight != FalconLocalSession->GetPlayerFlight());
+        ShiAssert(flight not_eq FalconLocalSession->GetPlayerFlight());
 
         flight->BuildMission(&mis);
     }
 
     // Generate a scramble message dialog box if this is an intercept divert on one of the
     // player squadron's alert missions.
-    if (doUI && oldmission == AMIS_ALERT && fdm->dataBlock.mission == AMIS_INTERCEPT && flight->GetUnitSquadronID() == FalconLocalSession->GetPlayerSquadronID())
+    if (doUI and oldmission == AMIS_ALERT and fdm->dataBlock.mission == AMIS_INTERCEPT and flight->GetUnitSquadronID() == FalconLocalSession->GetPlayerSquadronID())
     {
         gInterceptersId = flight->Id();
         PostMessage(FalconDisplay.appWin, FM_ATTACK_WARNING, 0, 0);
@@ -273,7 +273,7 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
             newTarget = 0;
     }
 
-    if (mission <= 0 || !target)
+    if (mission <= 0 or not target)
     {
         if (mission == DIVERT_DENIGNED)
             SendCallFromAwacs(flight, rcNOTASKING, to); // Divert denigned
@@ -284,7 +284,7 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
 
         return;
     }
-    else if (!newTarget)
+    else if ( not newTarget)
     {
         // Just a position update
         if (target->GetDomain() == DOMAIN_AIR)
@@ -340,7 +340,7 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
     {
         msg = CreateCallFromAwacs(flight, rcATTACKMYTARGET, to);
 
-        if (target->IsUnit() && ((Unit)target)->GetUnitFormation() == GFORM_COLUMN)
+        if (target->IsUnit() and ((Unit)target)->GetUnitFormation() == GFORM_COLUMN)
             msg->dataBlock.edata[4] = (short)((target->Type() - VU_LAST_ENTITY_TYPE) * 6 + 1); // "X column"
         else
             msg->dataBlock.edata[4] = (short)((target->Type() - VU_LAST_ENTITY_TYPE) * 6 + 2); // "X unit"
@@ -371,7 +371,7 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
     }
 
     // This is the flight saying that they're diverting (should be delayed a little..)
-    if (SimDriver.GetPlayerEntity() && flight->GetComponentLead() != SimDriver.GetPlayerEntity())
+    if (SimDriver.GetPlayerEntity() and flight->GetComponentLead() not_eq SimDriver.GetPlayerEntity())
     {
         msg = CreateCallToAWACS(flight, rcAWACSDIVERT, to);
         msg->dataBlock.edata[0] = msg->dataBlock.edata[2];

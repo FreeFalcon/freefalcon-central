@@ -12,6 +12,7 @@
  This file contains the implementations of the sky drawing functions
 \***************************************************************************/
 //JAM 30Sep03 - Begin Major Rewrite
+#include <cISO646>
 #include <math.h>
 #include "grmath.h"
 #include "grinline.h"
@@ -59,7 +60,7 @@ void RenderOTW::SetRoofMode(BOOL state)
     }
 
     // Get the textures we'll need if the roof is being turned on
-    if (state && !texRoofTop.TexHandle())
+    if (state and not texRoofTop.TexHandle())
     {
         Tcolor light;
 
@@ -94,7 +95,7 @@ BOOL RenderOTW::DrawSky(void)
     AdjustSkyColor();
 
 
-    if (!skyRoof)
+    if ( not skyRoof)
     {
         DrawSkyNoRoof();
         return TRUE; // Need to draw terrain
@@ -157,8 +158,8 @@ void RenderOTW::DrawSkyNoRoof(void)
     BOOL canSeeBelowClear = bottom < bandAngleUp;
     BOOL canSeeBelowHorizon = bottom < 0.0f;
 
-    BOOL drawFiller = canSeeAboveTerrain && canSeeBelowHorizon;
-    BOOL drawTop = canSeeAboveHorizon && canSeeBelowClear;
+    BOOL drawFiller = canSeeAboveTerrain and canSeeBelowHorizon;
+    BOOL drawTop = canSeeAboveHorizon and canSeeBelowClear;
     BOOL drawClear = canSeeAboveTop;
 
 
@@ -287,8 +288,8 @@ void RenderOTW::DrawSkyBelow(void)
     BOOL canSeeBelowClear = bottom < angleOfInclination;
     BOOL canSeeBelowHorizon = bottom < 0.0f;
 
-    BOOL drawFiller = canSeeAboveTerrain && canSeeBelowHorizon;
-    BOOL drawTop = canSeeAboveHorizon && canSeeBelowClear;
+    BOOL drawFiller = canSeeAboveTerrain and canSeeBelowHorizon;
+    BOOL drawTop = canSeeAboveHorizon and canSeeBelowClear;
     BOOL drawClear = canSeeAboveTop;
 
 
@@ -504,8 +505,8 @@ void RenderOTW::DrawSkyAbove(void)
     BOOL canSeeBelowHorizon = bottom < 0.0f;
     BOOL canSeeCloudLayer = bottom < -angleOfDepression;
 
-    BOOL drawFiller = canSeeAboveClouds && canSeeBelowHorizon;
-    BOOL drawTop = canSeeAboveHorizon && canSeeBelowClear;
+    BOOL drawFiller = canSeeAboveClouds and canSeeBelowHorizon;
+    BOOL drawTop = canSeeAboveHorizon and canSeeBelowClear;
     BOOL drawClear = canSeeAboveTop;
     BOOL drawClouds = canSeeCloudLayer;
 
@@ -640,7 +641,7 @@ void RenderOTW::DrawClearSky(HorizonRecord *pHorizon)
     // First check the upper left corner
     wasOut = startedOut = horizonLine.LeftOf(leftPixel, topPixel);
 
-    if (!startedOut)
+    if ( not startedOut)
     {
         vert[num].x = leftPixel;
         vert[num].y = topPixel;
@@ -650,7 +651,7 @@ void RenderOTW::DrawClearSky(HorizonRecord *pHorizon)
     // Now check the upper right corner
     amOut = horizonLine.LeftOf(rightPixel, topPixel);
 
-    if (amOut != wasOut)
+    if (amOut not_eq wasOut)
     {
         // Compute the intesection of the top edge with the horizon and insert it
         vert[num].x = horizonLine.X(topPixel);
@@ -658,7 +659,7 @@ void RenderOTW::DrawClearSky(HorizonRecord *pHorizon)
         num++;
     }
 
-    if (!amOut)
+    if ( not amOut)
     {
         vert[num].x = rightPixel;
         vert[num].y = topPixel;
@@ -670,7 +671,7 @@ void RenderOTW::DrawClearSky(HorizonRecord *pHorizon)
     // Now check the lower right corner
     amOut = horizonLine.LeftOf(rightPixel, bottomPixel);
 
-    if (amOut != wasOut)
+    if (amOut not_eq wasOut)
     {
         // Compute the intesection of the right edge with the horizon and insert it
         vert[num].x = rightPixel;
@@ -678,7 +679,7 @@ void RenderOTW::DrawClearSky(HorizonRecord *pHorizon)
         num++;
     }
 
-    if (!amOut)
+    if ( not amOut)
     {
         vert[num].x = rightPixel;
         vert[num].y = bottomPixel;
@@ -690,7 +691,7 @@ void RenderOTW::DrawClearSky(HorizonRecord *pHorizon)
     // Now check the lower left corner
     amOut = horizonLine.LeftOf(leftPixel, bottomPixel);
 
-    if (amOut != wasOut)
+    if (amOut not_eq wasOut)
     {
         // Compute the intesection of the bottom edge with the horizon and insert it
         vert[num].x = horizonLine.X(bottomPixel);
@@ -698,7 +699,7 @@ void RenderOTW::DrawClearSky(HorizonRecord *pHorizon)
         num++;
     }
 
-    if (!amOut)
+    if ( not amOut)
     {
         vert[num].x = leftPixel;
         vert[num].y = bottomPixel;
@@ -708,7 +709,7 @@ void RenderOTW::DrawClearSky(HorizonRecord *pHorizon)
     wasOut = amOut;
 
     // Finally, clip the left edge if it crosses the horizon line
-    if (wasOut != startedOut)
+    if (wasOut not_eq startedOut)
     {
         // Compute the intesection of the left edge with the horizon and insert it
         vert[num].x = (float)leftPixel;
@@ -943,7 +944,7 @@ void RenderOTW::DrawSkyHazeBand(struct HorizonRecord *pHorizon)
         dg = pHorizon->sunEffectColor.g - haze_sky_color.g;
         db = pHorizon->sunEffectColor.b - haze_sky_color.b;
 
-        if (pHorizon->horeffect & 2) num = 5;
+        if (pHorizon->horeffect bitand 2) num = 5;
     }
 
     // Build the corners of our horizon polygon
@@ -1081,7 +1082,7 @@ void RenderOTW::DrawFillerToHorizon(HorizonRecord *pHorizon)
         v2.g = earth_end_color.g + dg * lhazescale;
         v2.b = earth_end_color.b + db * lhazescale;
 
-        if (pHorizon->horeffect & 2)
+        if (pHorizon->horeffect bitand 2)
         {
             num = 5;
 
@@ -1161,7 +1162,7 @@ void RenderOTW::DrawFillerToHorizon(HorizonRecord *pHorizon)
 void RenderOTW::DrawStars(void)
 {
     // RED - Do not draw if inside a layer
-    if (realWeather->InsideOvercast() || realWeather->UnderOvercast()) return;
+    if (realWeather->InsideOvercast() or realWeather->UnderOvercast()) return;
 
     float starblend = TheTimeOfDay.GetStarIntensity();
     float vpAlt = -viewpoint->Z();
@@ -1214,7 +1215,7 @@ void RenderOTW::DrawStars(void)
         {
             if (coord -> flag) continue;
 
-            if (lastcolor != coord -> color)
+            if (lastcolor not_eq coord -> color)
             {
                 lastcolor = coord -> color;
                 float curcolor = lastcolor * starblend;
@@ -1251,9 +1252,9 @@ void RenderOTW::DrawStars(void)
             // Now determine if the point is out behind us or to the sides
             if (scratch_z < 0.000001f) continue;
 
-            if (GetHorizontalClipFlags(scratch_x, scratch_z) != ON_SCREEN) continue;
+            if (GetHorizontalClipFlags(scratch_x, scratch_z) not_eq ON_SCREEN) continue;
 
-            if (GetVerticalClipFlags(scratch_y, scratch_z) != ON_SCREEN) continue;
+            if (GetVerticalClipFlags(scratch_y, scratch_z) not_eq ON_SCREEN) continue;
 
             // Finally, do the perspective divide and scale and shift into screen space
             register float OneOverZ = 1.0f / scratch_z;
@@ -1278,7 +1279,7 @@ void RenderOTW::DrawSun(void)
 
 
     // RED - Do not draw if inside a layer
-    if (realWeather->InsideOvercast() || realWeather->UnderOvercast()) return;
+    if (realWeather->InsideOvercast() or realWeather->UnderOvercast()) return;
 
     // ShiAssert( TheTimeOfDay.ThereIsASun() );
 
@@ -1330,7 +1331,7 @@ void RenderOTW::DrawSun(void)
 void RenderOTW::DrawMoon(void)
 {
     // RED - Do not draw if inside a layer
-    if (realWeather->InsideOvercast() || realWeather->UnderOvercast()) return;
+    if (realWeather->InsideOvercast() or realWeather->UnderOvercast()) return;
 
     Tpoint center;
 
@@ -1499,10 +1500,10 @@ int RenderOTW::DrawCelestialBody(Tpoint *cntr, float dist, float alpha, float r,
     // Render the polygon
     bool gif = false;
 
-    if (g_nGfxFix & 0x04)
+    if (g_nGfxFix bitand 0x04)
         gif = true;
 
-    if (v0.clipFlag & v1.clipFlag & v2.clipFlag & v3.clipFlag) return 0; // not visible
+    if (v0.clipFlag bitand v1.clipFlag bitand v2.clipFlag bitand v3.clipFlag) return 0; // not visible
 
     DrawSquare(&v0, &v1, &v2, &v3, CULL_ALLOW_ALL, gif);
 
@@ -1520,14 +1521,14 @@ void RenderOTW::ComputeHorizonEffect(HorizonRecord *pHorizon)
     ThreeDVertex sunEffectScreenSpace;
 
     //JAM 09Dec03
-    if (realWeather->UnderOvercast() || realWeather->InsideOvercast())
+    if (realWeather->UnderOvercast() or realWeather->InsideOvercast())
     {
         pHorizon->horeffect = 0;
         return;
     }
 
     // Return now if the sun isn't up now
-    if (!TheTimeOfDay.ThereIsASun())
+    if ( not TheTimeOfDay.ThereIsASun())
     {
         // No horizon effect
         pHorizon->horeffect = 0;
@@ -1591,7 +1592,7 @@ void RenderOTW::ComputeHorizonEffect(HorizonRecord *pHorizon)
     TheTimeOfDay.CalculateSunGroundPos(&sunEffectWorldSpace);
     TransformCameraCentricPoint(&sunEffectWorldSpace, &sunEffectScreenSpace);
 
-    if (1/*!(sunEffectScreenSpace.clipFlag & CLIP_NEAR)*/)
+    if (1/* not (sunEffectScreenSpace.clipFlag bitand CLIP_NEAR)*/)
     {
         pHorizon->sunEffectPos.x = sunEffectScreenSpace.x;
         pHorizon->sunEffectPos.y = sunEffectScreenSpace.y;
@@ -1599,22 +1600,22 @@ void RenderOTW::ComputeHorizonEffect(HorizonRecord *pHorizon)
         Edge horizonLine;
         horizonLine.SetupWithVector(shiftX + pHorizon->vx, shiftY + pHorizon->vy, pHorizon->hx, pHorizon->hy);
         pHorizon->sunEffectPos.y = horizonLine.Y(pHorizon->sunEffectPos.x);
-        pHorizon->horeffect |= 2;
+        pHorizon->horeffect or_eq 2;
     }
 
     // calculate scale factor on the left and right side based on the yaw
     pHorizon->lhazescale = pHorizon->rhazescale = 0.0f;
     int anglesize = glConvertFromRadian(diagonal_half_angle);
     int yaw = glConvertFromRadian(Yaw());
-    int leftyaw = (yaw - anglesize) & 0x3fff;
-    int rightyaw = (yaw + anglesize) & 0x3fff;
+    int leftyaw = (yaw - anglesize) bitand 0x3fff;
+    int rightyaw = (yaw + anglesize) bitand 0x3fff;
     anglesize <<= 1;
     float sizeperangle = pHorizon->hazescale / (float)(anglesize);
     int sunyaw = TheTimeOfDay.GetSunYaw();
 
     int i, j;
-    i = (sunyaw - leftyaw) & 0x3fff;
-    j = (leftyaw - sunyaw) & 0x3fff;
+    i = (sunyaw - leftyaw) bitand 0x3fff;
+    j = (leftyaw - sunyaw) bitand 0x3fff;
 
     if (i > j)
     {
@@ -1626,8 +1627,8 @@ void RenderOTW::ComputeHorizonEffect(HorizonRecord *pHorizon)
         pHorizon->lhazescale = pHorizon->hazescale - (i * sizeperangle);
     }
 
-    i = (sunyaw - rightyaw) & 0x3fff;
-    j = (rightyaw - sunyaw) & 0x3fff;
+    i = (sunyaw - rightyaw) bitand 0x3fff;
+    j = (rightyaw - sunyaw) bitand 0x3fff;
 
     if (i > j)
     {
@@ -1755,7 +1756,7 @@ void RenderOTW::ProcessColor(Tcolor * color)
 void RenderOTW::AdjustSkyColor(void)
 {
     //JAM 09Dec03
-    if (realWeather->InsideOvercast() || realWeather->UnderOvercast()) return;
+    if (realWeather->InsideOvercast() or realWeather->UnderOvercast()) return;
 
     TheTimeOfDay.GetSkyColor(&sky_color);
     ProcessColor(&sky_color);

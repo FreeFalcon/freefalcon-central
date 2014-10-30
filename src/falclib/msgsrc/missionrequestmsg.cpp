@@ -40,7 +40,7 @@ int FalconMissionRequestMessage::Process(uchar autodisp)
     if (autodisp)
         return -1;
 
-    if (TeamInfo[dataBlock.team] && TeamInfo[dataBlock.team]->atm && TeamInfo[dataBlock.team]->atm->IsLocal())
+    if (TeamInfo[dataBlock.team] and TeamInfo[dataBlock.team]->atm and TeamInfo[dataBlock.team]->atm->IsLocal())
         TeamInfo[dataBlock.team]->atm->ProcessRequest(&(dataBlock.request));
 
     return 0;

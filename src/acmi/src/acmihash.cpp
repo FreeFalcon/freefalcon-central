@@ -11,7 +11,7 @@ ACMI_Hash::ACMI_Hash()
 
 ACMI_Hash::~ACMI_Hash()
 {
-    if (TableSize_ || Table_)
+    if (TableSize_ or Table_)
         Cleanup();
 }
 
@@ -31,7 +31,7 @@ void ACMI_Hash::Cleanup()
     unsigned long i;
     ACMI_HASHNODE *cur, *prev;
 
-    if (TableSize_ || Table_)
+    if (TableSize_ or Table_)
     {
         for (i = 0; i < TableSize_; i++)
         {
@@ -56,9 +56,9 @@ long ACMI_Hash::Find(VU_ID ID)
     unsigned long idx;
     ACMI_HASHNODE *cur;
 
-    if (!TableSize_ || !Table_) return(NULL);
+    if ( not TableSize_ or not Table_) return(NULL);
 
-    idx = (ID.creator_ | ID.num_) % TableSize_;
+    idx = (ID.creator_ bitor ID.num_) % TableSize_;
     cur = Table_[idx].Root_;
 
     while (cur)
@@ -79,9 +79,9 @@ ACMI_HASHNODE *ACMI_Hash::Get(VU_ID ID)
     unsigned long idx;
     ACMI_HASHNODE *cur;
 
-    if (!TableSize_ || !Table_) return(NULL);
+    if ( not TableSize_ or not Table_) return(NULL);
 
-    idx = (ID.creator_ | ID.num_) % TableSize_;
+    idx = (ID.creator_ bitor ID.num_) % TableSize_;
     cur = Table_[idx].Root_;
 
     while (cur)
@@ -102,7 +102,7 @@ long ACMI_Hash::Add(VU_ID ID, char *lbl, long color)
     unsigned long idx;
     ACMI_HASHNODE *cur, *newhash;
 
-    if (!TableSize_ || !Table_) return(0);
+    if ( not TableSize_ or not Table_) return(0);
 
     cur = Get(ID);
 
@@ -133,9 +133,9 @@ long ACMI_Hash::Add(VU_ID ID, char *lbl, long color)
     newhash->Index = ID_++;
     newhash->Next = NULL;
 
-    idx = (ID.creator_ | ID.num_) % TableSize_;
+    idx = (ID.creator_ bitor ID.num_) % TableSize_;
 
-    if (!Table_[idx].Root_)
+    if ( not Table_[idx].Root_)
     {
         Table_[idx].Root_ = newhash;
     }
@@ -157,11 +157,11 @@ void ACMI_Hash::Remove(VU_ID ID)
     unsigned long idx;
     ACMI_HASHNODE *cur, *prev;
 
-    if (!TableSize_ || !Table_) return;
+    if ( not TableSize_ or not Table_) return;
 
-    idx = (ID.creator_ | ID.num_) % TableSize_;
+    idx = (ID.creator_ bitor ID.num_) % TableSize_;
 
-    if (!Table_[idx].Root_) return;
+    if ( not Table_[idx].Root_) return;
 
     Table_[idx].Root_;
 
@@ -199,7 +199,7 @@ long ACMI_Hash::GetFirst(ACMI_HASHNODE **current, unsigned long *curidx)
 
     cur = Table_[*curidx].Root_;
 
-    while (!cur && *curidx < (TableSize_ - 1))
+    while ( not cur and *curidx < (TableSize_ - 1))
     {
         (*curidx)++;
         cur = Table_[*curidx].Root_;
@@ -221,12 +221,12 @@ long ACMI_Hash::GetNext(ACMI_HASHNODE **current, unsigned long *curidx)
 {
     ACMI_HASHNODE *cur;
 
-    if (!*current)
+    if ( not *current)
         return(-1);
 
     cur = (*current)->Next;
 
-    while (!cur && *curidx < (TableSize_ - 1))
+    while ( not cur and *curidx < (TableSize_ - 1))
     {
         (*curidx)++;
         cur = Table_[*curidx].Root_;

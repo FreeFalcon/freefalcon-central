@@ -93,7 +93,7 @@ void hookup_toolbar_buttons(C_Window *winme)
     // VC Button
     ctrl = (C_Button *) winme->FindControl(VC_BUTTON);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(tactical_team_victory_button);
     }
@@ -133,7 +133,7 @@ void hookup_toolbar_buttons(C_Window *winme)
     // Briefing
     ctrl = (C_Button *) winme->FindControl(BRIEF_BUTTON);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(tactical_briefing_button);
     }
@@ -141,7 +141,7 @@ void hookup_toolbar_buttons(C_Window *winme)
     // TacRef
     ctrl = (C_Button *) winme->FindControl(TACREF_CTRL);
 
-    if (ctrl != NULL)
+    if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(OpenTacticalReferenceCB);
     }
@@ -158,25 +158,25 @@ static void tactical_start_engagement (long ID, short hittype, C_Base *ctrl)
  Flight fl;
  int pilotSlot;
 
- if(hittype != C_TYPE_LMOUSEUP)
+ if(hittype not_eq C_TYPE_LMOUSEUP)
  return;
 
  fl = FalconLocalSession->GetPlayerFlight();
  pilotSlot = FalconLocalSession->GetPilotSlot();
 
- if (tactical_mission_loaded && fl && pilotSlot)
+ if (tactical_mission_loaded and fl and pilotSlot)
  {
  OTWDriver.todOffset = 0.0F;
 
- // tactical_enable_motion = 1; // !current_tactical_mission->is_flag_on (tf_start_paused);
+ // tactical_enable_motion = 1; // not current_tactical_mission->is_flag_on (tf_start_paused);
 
  // Trigger the campaign to compress time and takeoff.
- if (!CompressCampaignUntilTakeoff(fl))
+ if ( not CompressCampaignUntilTakeoff(fl))
  return;
  }
  else
  {
- // PETER TODO: Clear mission window's selection TOO!
+ // PETER TODO: Clear mission window's selection TOO
  FalconLocalSession->SetPlayerFlight(NULL);
  FalconLocalSession->SetPilotSlot(255);
  return;
@@ -190,7 +190,7 @@ static void tactical_start_engagement (long ID, short hittype, C_Base *ctrl)
 
 static void tactical_team_victory_button(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -210,7 +210,7 @@ static void tactical_team_victory_button(long, short hittype, C_Base *)
 
 static void tactical_ato_button(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -226,7 +226,7 @@ static void tactical_ato_button(long, short hittype, C_Base *)
 
 static void tactical_oob_button(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -258,14 +258,14 @@ static void tactical_flight_plan_button(long, short hittype, C_Base *ctrl)
     Flight
     flt;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
 
     flt = (Flight)vuDatabase->Find(gCurrentFlightID);
 
-    if (!flt)
+    if ( not flt)
     {
         return;
     }
@@ -274,7 +274,7 @@ static void tactical_flight_plan_button(long, short hittype, C_Base *ctrl)
 
     if (win)
     {
-        if (!(gMainHandler->GetWindowFlags(FLIGHT_PLAN_WIN) & C_BIT_ENABLED))
+        if ( not (gMainHandler->GetWindowFlags(FLIGHT_PLAN_WIN) bitand C_BIT_ENABLED))
         {
             gActiveFlightID = gSelectedFlightID;
 
@@ -314,12 +314,12 @@ static void tactical_briefing_button(long, short hittype, C_Base *ctrl)
 {
     Flight flight;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     flight = (Flight) vuDatabase->Find(gSelectedFlightID);
 
-    if (!flight || !flight->IsFlight())
+    if ( not flight or not flight->IsFlight())
         return;
 
     // KCK: This should only need to be called upon selecting a flight -
@@ -366,7 +366,7 @@ void add_briefing_text (C_Window *win, int &x, int &y, char *str)
  {
  retval=TRUE;
 
- if ((win == NULL) || (str == NULL))
+ if ((win == NULL) or (str == NULL))
  {
  return;
  }
@@ -377,7 +377,7 @@ void add_briefing_text (C_Window *win, int &x, int &y, char *str)
  {
  wrap = UI_WordWrap (win, str, win->Font_, wrap_w, &status);
 
- if (!status)
+ if ( not status)
  {
  retval = status;
  }
@@ -405,7 +405,7 @@ void add_briefing_text (C_Window *win, int &x, int &y, char *str)
  y += gFontList->GetHeight (win->Font_);
  }
 
- if (!status)
+ if ( not status)
  {
  retval = status;
  }
@@ -446,7 +446,7 @@ void do_tactical_briefing(C_Base *control)
 
 static void tactical_briefing_print(long, short hittype, C_Base *ctrl)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     _TCHAR string[8192];
@@ -473,13 +473,13 @@ void do_tactical_debrief(void)
     C_Window
     *win;
 
-    if (current_tactical_mission->get_type() != tt_training)
+    if (current_tactical_mission->get_type() not_eq tt_training)
     {
         win = gMainHandler->FindWindow(DEBRIEF_WIN);
 
         // KCK: Added the check for a pilot list so that we don't debrief after a
         // discarded mission
-        if (win && TheCampaign.MissionEvaluator && TheCampaign.MissionEvaluator->flight_data && TheCampaign.MissionEvaluator->flight_data->mission != AMIS_TRAINING)
+        if (win and TheCampaign.MissionEvaluator and TheCampaign.MissionEvaluator->flight_data and TheCampaign.MissionEvaluator->flight_data->mission not_eq AMIS_TRAINING)
         {
             BuildCampDebrief(win);
             gMainHandler->EnableWindowGroup(win->GetGroup());
@@ -499,11 +499,11 @@ void do_tactical_debrief(void)
 
 static void tactical_debriefing_print(long, short hittype, C_Base *ctrl)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (TheCampaign.MissionEvaluator == NULL ||
-        TheCampaign.MissionEvaluator->flight_data == NULL ||
+    if (TheCampaign.MissionEvaluator == NULL or
+        TheCampaign.MissionEvaluator->flight_data == NULL or
         TheCampaign.MissionEvaluator->flight_data->mission == AMIS_TRAINING)
         return;
 

@@ -109,7 +109,7 @@ _TCHAR *AddCommas(_TCHAR *buf)
 
     comma = gStringMgr->GetString(TXT_COMMA_PLACE);
 
-    if (!comma)
+    if ( not comma)
         return(buf);
 
     j = 0;
@@ -126,7 +126,7 @@ _TCHAR *AddCommas(_TCHAR *buf)
 
     while (i)
     {
-        if ((i % 3) == 0 && i > 1 && i < len)
+        if ((i % 3) == 0 and i > 1 and i < len)
             newbuf[j++] = comma[0];
 
         newbuf[j++] = buf[k++];
@@ -155,7 +155,7 @@ void GetHighScores()
     retval = RegQueryValueEx(theKey, "initData", 0, &type, (LPBYTE)&Scores, &size);
     RegCloseKey(theKey);
 
-    if (retval != ERROR_SUCCESS)
+    if (retval not_eq ERROR_SUCCESS)
     {
         // ShiAssert(strcmp("Failed Reg Load,I would Clear Here","But Not this time") == 0);
         // memset(&Scores[0],0,size);
@@ -251,7 +251,7 @@ int FindCost(int ID)
 
     i = 0;
 
-    while (VisualIDCost[i][0] != 0)
+    while (VisualIDCost[i][0] not_eq 0)
     {
         if (MapVisId(VisualIDCost[i][0]) == ID)
             return(VisualIDCost[i][1]);
@@ -498,7 +498,7 @@ void CheckEject(VU_ID Pilot, float damage, float fuel)
 {
     if (Pilot == IAPlayerID)
     {
-        if (damage > 80.0f && fuel > 100.0f)
+        if (damage > 80.0f and fuel > 100.0f)
             LivingBonus = -50000;
         else
             LivingBonus = 50000;
@@ -511,7 +511,7 @@ void CheckLanding(VU_ID Pilot, float damage, float fuel)
     {
         LandingBonus = 50000;
 
-        if (damage < 50.0f || fuel == 0.0f)
+        if (damage < 50.0f or fuel == 0.0f)
             LandingBonus = 150000;
     }
 }
@@ -531,7 +531,7 @@ void LoadInstantActionWindows()
 
     gMainParser->LoadSoundList("ia_snd.lst");
 
-    if (!gInstantBites)
+    if ( not gInstantBites)
         gInstantBites = gMainParser->ParseSoundBite("art\\instant\\uidia.scf");
 
     gMainParser->LoadWindowList("ia_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
@@ -567,7 +567,7 @@ static void InstantActionFlyCB(long, short hittype, C_Base *)
     C_Clock *clk;
     float XPos, YPos;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(IA_SETTINGS_WIN);
@@ -673,7 +673,7 @@ static void InstantActionFlyCB(long, short hittype, C_Base *)
             instant_action::set_start_time(static_cast<long>(12.0F * 60.0F * 60.0F));
     }
 
-    ShiAssert(!TheCampaign.IsLoaded());
+    ShiAssert( not TheCampaign.IsLoaded());
 
     // Load a campaign here
     strcpy(gUI_CampaignFile, "Instant");
@@ -698,12 +698,12 @@ static void InsertScoreCB(long, short hittype, C_Base *)
     C_Text *txt;
     _TCHAR buf[MAX_NAME_LENGTH + 1];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     i = 0;
 
-    while (i < MAX_SCORES && TotalScore <= Scores.Scores[i].Score && Scores.Scores[i].Name[0] != 0)
+    while (i < MAX_SCORES and TotalScore <= Scores.Scores[i].Score and Scores.Scores[i].Name[0] not_eq 0)
         i++;
 
     idx = MAX_SCORES;
@@ -736,7 +736,7 @@ static void InsertScoreCB(long, short hittype, C_Base *)
         {
             _tcsncpy(Scores.Scores[i].Name, ebox->GetText(), MAX_NAME_LENGTH);
 
-            if (!Scores.Scores[i].Name[0])
+            if ( not Scores.Scores[i].Name[0])
             {
                 Scores.Scores[i].Name[0] = ' ';
                 Scores.Scores[i].Name[1] = 0;
@@ -754,7 +754,7 @@ static void InsertScoreCB(long, short hittype, C_Base *)
         {
             for (i = 0; i < MAX_SCORES; i++)
             {
-                if (Scores.Scores[i].Name[0] != 0)
+                if (Scores.Scores[i].Name[0] not_eq 0)
                 {
                     // Set Name
                     txt = (C_Text *)win->FindControl(TEXT_1 + i * 2);
@@ -808,7 +808,7 @@ void ChangeTimeCB(long, short hittype, C_Base *control)
     short dir = 0;
     long value, flag;
 
-    if (hittype != C_TYPE_LMOUSEUP && hittype != C_TYPE_REPEAT)
+    if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
     dir = static_cast<short>(control->GetUserNumber(1));
@@ -983,7 +983,7 @@ static void HookupIAControls(long ID)
     {
         ebox->SetCallback(HighScoreKeyboardCB);
 
-        if (!*ebox->GetText())
+        if ( not *ebox->GetText())
         {
             ebox->SetText(UI_logbk.Name());
         }
@@ -1168,13 +1168,13 @@ static void SetMapStartup(C_Window *win)
  for(y=0;y<EVT_MESSAGE_BITS;y++)
  mask[y]=0;
 
- mask[WeaponFireMsg >> 3] |= 0x01 << (WeaponFireMsg & 0x0007);
- mask[DeathMessage >> 3] |= 0x01 << (DeathMessage & 0x0007);
- mask[DamageMsg >> 3] |= 0x01 << (DamageMsg & 0x0007);
- mask[MissileEndMsg >> 3] |= 0x01 << (MissileEndMsg & 0x0007);
- mask[LandingMessage >> 3] |= 0x01 << (LandingMessage & 0x0007);
- mask[EjectMsg >> 3] |= 0x01 << (EjectMsg & 0x0007);
- mask[PlayerStatusMsg >> 3] |= 0x01 << (PlayerStatusMsg & 0x0007);
+ mask[WeaponFireMsg >> 3] or_eq 0x01 << (WeaponFireMsg bitand 0x0007);
+ mask[DeathMessage >> 3] or_eq 0x01 << (DeathMessage bitand 0x0007);
+ mask[DamageMsg >> 3] or_eq 0x01 << (DamageMsg bitand 0x0007);
+ mask[MissileEndMsg >> 3] or_eq 0x01 << (MissileEndMsg bitand 0x0007);
+ mask[LandingMessage >> 3] or_eq 0x01 << (LandingMessage bitand 0x0007);
+ mask[EjectMsg >> 3] or_eq 0x01 << (EjectMsg bitand 0x0007);
+ mask[PlayerStatusMsg >> 3] or_eq 0x01 << (PlayerStatusMsg bitand 0x0007);
 
 */
 
@@ -1663,7 +1663,7 @@ void CheckHighScore(long TotalScore)
 
     i = 0;
 
-    while (i < MAX_SCORES && TotalScore <= Scores.Scores[i].Score && Scores.Scores[i].Name[0] != 0)
+    while (i < MAX_SCORES and TotalScore <= Scores.Scores[i].Score and Scores.Scores[i].Name[0] not_eq 0)
         i++;
 
     if (TotalScore < 0)
@@ -1687,7 +1687,7 @@ void CheckHighScore(long TotalScore)
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
-    else if (!i)
+    else if ( not i)
     {
         SoundID = gInstantBites->Pick(IA8);
 
@@ -1701,14 +1701,14 @@ void CheckHighScore(long TotalScore)
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
-    else if (i >= 2 && i <= 6)
+    else if (i >= 2 and i <= 6)
     {
         SoundID = gInstantBites->Pick(IA6);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
-    else if (i >= 7 && i <= 11)
+    else if (i >= 7 and i <= 11)
     {
         SoundID = gInstantBites->Pick(IA5);
 
@@ -1774,7 +1774,7 @@ static void SetupInstantAction()
     {
         for (i = 0; i < MAX_SCORES; i++)
         {
-            if (Scores.Scores[i].Name[0] != 0)
+            if (Scores.Scores[i].Name[0] not_eq 0)
             {
                 // Set Name
                 txt = (C_Text *)win->FindControl(TEXT_1 + i * 2);
@@ -1845,10 +1845,10 @@ static void SetupInstantAction()
 
 void OpenIAMunitionsCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (!TheCampaign.IsLoaded())
+    if ( not TheCampaign.IsLoaded())
     {
         // Load a campaign here
         strcpy(gUI_CampaignFile, "Instant");

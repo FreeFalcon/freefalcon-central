@@ -76,9 +76,9 @@ void RenderTV::EndDraw(void)
 
 void RenderTV::SetColor(DWORD packedRGBA)
 {
-    //packedRGBA |= (packedRGBA<<8) & 0xFF; // RV - I-Hawk - Allow colors
-    //packedRGBA |= (packedRGBA>>8) & 0xFF;
-    RenderOTW::SetColor(packedRGBA & 0xFFFFFFFF); // Was (0xFF00FF00)
+    //packedRGBA or_eq (packedRGBA<<8) bitand 0xFF; // RV - I-Hawk - Allow colors
+    //packedRGBA or_eq (packedRGBA>>8) bitand 0xFF;
+    RenderOTW::SetColor(packedRGBA bitand 0xFFFFFFFF); // Was (0xFF00FF00)
     // Enable DX engine TV Mode, THIS HAS TO BE CHANGED IN ANOTHER WAY
     TheDXEngine.SetState(DX_TV);
 }
@@ -91,7 +91,7 @@ void RenderTV::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float distan
     vert->a = 1.f;
 
     // FRB - B&W
-    if ((g_bGreyMFD) && (!bNVGmode))
+    if ((g_bGreyMFD) and ( not bNVGmode))
         vert->r = vert->b = vert->g;
 
     vert->RenderingStateHandle = state_far;

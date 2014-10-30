@@ -17,7 +17,7 @@ extern int mpHsi;
 
 void ICPClass::ExecILSMode(void)
 {
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI Original code
         VU_ID id;
@@ -34,9 +34,9 @@ void ICPClass::ExecILSMode(void)
         static int frame = 0;
 
 
-        if (mUpdateFlags & ILS_UPDATE)
+        if (mUpdateFlags bitand ILS_UPDATE)
         {
-            mUpdateFlags &= ~ILS_UPDATE;
+            mUpdateFlags and_eq compl ILS_UPDATE;
 
             if (gNavigationSys)
             {
@@ -78,7 +78,7 @@ void ICPClass::ExecILSMode(void)
                         sprintf(mpLine2, "ALTERNATE RUNWAY ");
                     }
 
-                    if (id == ilsid && isValidILS && isValidRWY)
+                    if (id == ilsid and isValidILS and isValidRWY)
                     {
                         strcat(mpLine2, rwyNum);
                     }
@@ -147,7 +147,7 @@ void ICPClass::ExecILSMode(void)
                         sprintf(mpLine2, "ALTERNATE RUNWAY ");
                     }
 
-                    if (id == ilsid && isValidILS && isValidRWY)
+                    if (id == ilsid and isValidILS and isValidRWY)
                     {
                         strcat(mpLine2, rwyNum);
                     }
@@ -271,7 +271,7 @@ void ICPClass::ExecILSMode(void)
 
 void ICPClass::PNUpdateILSMode(int button, int)
 {
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI original code
         if (button == PREV_BUTTON)
@@ -283,7 +283,7 @@ void ICPClass::PNUpdateILSMode(int button, int)
             gNavigationSys->StepNextTacan();
         }
 
-        mUpdateFlags |= ILS_UPDATE;
+        mUpdateFlags or_eq ILS_UPDATE;
     }
     else
         ExecILSMode();

@@ -60,7 +60,7 @@ void OTWDriverClass::CreateVisualObject(SimBaseClass* theObject, int visType, fl
     Trotation viewRotation;
 
     ShiAssert(IsActive());
-    ShiAssert(!theObject->drawPointer);
+    ShiAssert( not theObject->drawPointer);
 
     // Set position and orientations
     viewRotation.M11 = theObject->dmx[0][0];
@@ -84,32 +84,32 @@ void OTWDriverClass::CreateVisualObject(SimBaseClass* theObject, int visType, fl
 
 void OTWDriverClass::InsertObjectIntoDrawList(SimBaseClass* theObject)
 {
-    if (theObject->drawPointer && !theObject->drawPointer->InDisplayList())
+    if (theObject->drawPointer and not theObject->drawPointer->InDisplayList())
     {
         // KCK: Let's try just going ahead and adding these to the list directly -
         // Assuming, of course that this is called by the Sim/Graphics thread
         viewPoint->InsertObject(theObject->drawPointer);
 
         /*    No longer used
-           if (theObject->IsGroundVehicle() &&
-                 ((GroundClass*)theObject)->crewDrawable &&
-          !((GroundClass*)theObject)->crewDrawable->InDisplayList())
+           if (theObject->IsGroundVehicle() and 
+                 ((GroundClass*)theObject)->crewDrawable and 
+ not ((GroundClass*)theObject)->crewDrawable->InDisplayList())
           viewPoint->InsertObject(((GroundClass*)theObject)->crewDrawable);
         */
-        if (theObject->IsGroundVehicle() &&
-            ((GroundClass*)theObject)->truckDrawable &&
-            !((GroundClass*)theObject)->truckDrawable->InDisplayList())
+        if (theObject->IsGroundVehicle() and 
+            ((GroundClass*)theObject)->truckDrawable and 
+ not ((GroundClass*)theObject)->truckDrawable->InDisplayList())
             viewPoint->InsertObject(((GroundClass*)theObject)->truckDrawable);
 
         /*
               InsertObject(theObject->drawPointer);
-           if (theObject->IsGroundVehicle() &&
-                 ((GroundClass*)theObject)->crewDrawable &&
-          !((GroundClass*)theObject)->crewDrawable->InDisplayList())
+           if (theObject->IsGroundVehicle() and 
+                 ((GroundClass*)theObject)->crewDrawable and 
+ not ((GroundClass*)theObject)->crewDrawable->InDisplayList())
           InsertObject(((GroundClass*)theObject)->crewDrawable);
-           if (theObject->IsGroundVehicle() &&
-                 ((GroundClass*)theObject)->truckDrawable &&
-          !((GroundClass*)theObject)->truckDrawable->InDisplayList())
+           if (theObject->IsGroundVehicle() and 
+                 ((GroundClass*)theObject)->truckDrawable and 
+ not ((GroundClass*)theObject)->truckDrawable->InDisplayList())
           InsertObject(((GroundClass*)theObject)->truckDrawable);
         */
     }
@@ -191,17 +191,17 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
     simView.y     = theObject->YPos();
     simView.z     = theObject->ZPos();
 
-    visType = classPtr->visType[theObject->Status() & VIS_TYPE_MASK];
+    visType = classPtr->visType[theObject->Status() bitand VIS_TYPE_MASK];
 
-    if (visType >= 0 || theObject->drawPointer)
+    if (visType >= 0 or theObject->drawPointer)
     {
-        if (classPtr->vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_LAND ||
+        if (classPtr->vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_LAND or
             classPtr->vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_SEA)
         {
             // This is a ground thingy..
             if (classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_VEHICLE)
             {
-                if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_FOOT &&
+                if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_FOOT and 
                     classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_FOOT_SQUAD)
                 {
                     // Make the ground personel as desired
@@ -220,7 +220,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                 SimBaseClass *prevObj = NULL, *nextObj = NULL;
 
                 // In many cases, our visType should be modified by our neighbors.
-                if ((theObject->Status() & VIS_TYPE_MASK) != VIS_DESTROYED && (((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM || ((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM))
+                if ((theObject->Status() bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED and (((SimFeatureClass*)theObject)->featureFlags bitand FEAT_NEXT_NORM or ((SimFeatureClass*)theObject)->featureFlags bitand FEAT_PREV_NORM))
                 {
                     // KCK: Can we just use our slot number? Or will this break something?
                     // int idx = theObject->GetCampaignObject()->GetComponentIndex (theObject);
@@ -229,19 +229,19 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                     prevObj = theObject->GetCampaignObject()->GetComponentEntity(idx - 1);
                     nextObj = theObject->GetCampaignObject()->GetComponentEntity(idx + 1);
 
-                    if (prevObj && ((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM && (prevObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
+                    if (prevObj and ((SimFeatureClass*)theObject)->featureFlags bitand FEAT_PREV_NORM and (prevObj->Status() bitand VIS_TYPE_MASK) == VIS_DESTROYED)
                     {
-                        if (nextObj && ((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM && (nextObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
+                        if (nextObj and ((SimFeatureClass*)theObject)->featureFlags bitand FEAT_NEXT_NORM and (nextObj->Status() bitand VIS_TYPE_MASK) == VIS_DESTROYED)
                             visType = classPtr->visType[VIS_BOTH_DEST];
                         else
                             visType = classPtr->visType[VIS_LEFT_DEST];
                     }
-                    else if (nextObj && ((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM && (nextObj->Status() & VIS_TYPE_MASK) == VIS_DESTROYED)
+                    else if (nextObj and ((SimFeatureClass*)theObject)->featureFlags bitand FEAT_NEXT_NORM and (nextObj->Status() bitand VIS_TYPE_MASK) == VIS_DESTROYED)
                         visType = classPtr->visType[VIS_RIGHT_DEST];
                 }
 
                 // Check for change - and don't bother if there is none.
-                if (theObject->drawPointer && ((DrawableBSP*)theObject->drawPointer)->GetID() == visType)
+                if (theObject->drawPointer and ((DrawableBSP*)theObject->drawPointer)->GetID() == visType)
                     return;
 
                 // edg: arghhh.  As far as I can tell, calls were being made
@@ -253,8 +253,8 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                 // do here since ACMI uses this function as well -- ie there
                 // should be no calls to OTWDrive list functions.  oh well for
                 // now since there are other calls in here (I thought kevin
-                // was supposed to fix this!?).
-                if (theObject->drawPointer && theObject->drawPointer->InDisplayList())
+                // was supposed to fix this?).
+                if (theObject->drawPointer and theObject->drawPointer->InDisplayList())
                 {
                     // KCK: In some cases we still need this pointer (specifically
                     // when we replace bridge segments), so let's save it here - we'll
@@ -263,14 +263,14 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                     theObject->drawPointer = NULL;
                 }
 
-                // note: ACMI objects DON'T have a campaignObject!
+                // note: ACMI objects DON'T have a campaignObject
                 if (theObject->GetCampaignObject())
                     baseObject = theObject->GetCampaignObject()->GetComponentLead();
                 else
                     baseObject = NULL;
 
                 // Some things require Base Objects (like bridges and airbases)
-                if (baseObject && !((SimFeatureClass*)baseObject)->baseObject)
+                if (baseObject and not ((SimFeatureClass*)baseObject)->baseObject)
                 {
                     // Is this a bridge?
                     if (baseObject->IsSetCampaignFlag(FEAT_ELEV_CONTAINER))
@@ -298,12 +298,12 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                 // Add another building to this grouping of buildings, or replace the drawable
                 // of one which is here.
                 // Is the container a bridge?
-                if (baseObject && baseObject->IsSetCampaignFlag(FEAT_ELEV_CONTAINER))
+                if (baseObject and baseObject->IsSetCampaignFlag(FEAT_ELEV_CONTAINER))
                 {
                     // Make the new BRIDGE object
                     if (visType)
                     {
-                        if (theObject->IsSetCampaignFlag(FEAT_NEXT_IS_TOP) && theObject->Status() != VIS_DESTROYED)
+                        if (theObject->IsSetCampaignFlag(FEAT_NEXT_IS_TOP) and theObject->Status() not_eq VIS_DESTROYED)
                             theObject->drawPointer = new DrawableRoadbed(visType, visType + 1, &simView, theObject->Yaw(), 10.0f, (float)atan(20.0f / 280.0f));
                         else
                             theObject->drawPointer = new DrawableRoadbed(visType, -1, &simView, theObject->Yaw(), 10.0f, (float)atan(20.0f / 280.0f));
@@ -325,7 +325,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                     }
                 }
                 // Is the container a big flat thing (airbase)?
-                else if (baseObject && baseObject->IsSetCampaignFlag(FEAT_FLAT_CONTAINER))
+                else if (baseObject and baseObject->IsSetCampaignFlag(FEAT_FLAT_CONTAINER))
                 {
                     // Everything on a platform is a Building
                     // That means it sticks straight up the -Z axis
@@ -334,7 +334,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                     // Am I Flat (can things drive across it)?
                     if (((SimFeatureClass*)theObject)->displayPriority <= PlayerOptions.BuildingDeaggLevel())
                     {
-                        if (theObject->IsSetCampaignFlag((FEAT_FLAT_CONTAINER | FEAT_ELEV_CONTAINER)))
+                        if (theObject->IsSetCampaignFlag((FEAT_FLAT_CONTAINER bitor FEAT_ELEV_CONTAINER)))
                             ((DrawablePlatform*)((SimFeatureClass*)baseObject)->baseObject)->InsertStaticSurface(((DrawableBuilding*)theObject->drawPointer));
                         else
                             ((DrawablePlatform*)((SimFeatureClass*)baseObject)->baseObject)->InsertStaticObject(theObject->drawPointer);
@@ -368,7 +368,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
             }
             else
                 // TODO:  Might want to remove shadows from missiles/bombs for performance reasons...
-                // if (classPtr->vuClassData.classInfo_[VU_TYPE] != TYPE_MISSILE)
+                // if (classPtr->vuClassData.classInfo_[VU_TYPE] not_eq TYPE_MISSILE)
             {
                 // We may still be on the ground
                 theObject->drawPointer = new DrawableShadowed(visType, &simView, &viewRotation, objectScale, classPtr->visType[1]);
@@ -379,7 +379,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
     }
 }
 
-long TeamSimColorList[NUM_TEAMS] = { 0xfffffffe, // Thunderbird // White  not quite white so color is steady
+long TeamSimColorList[NUM_TEAMS] = { 0xfffffffe, // Thunderbird // White not quite white so color is steady
                                         0xff008000, // US // Green
                                         0xffff0000, // ROK/Shark // Blue
                                         0xff3771B2, // Japan // Brown
@@ -398,10 +398,10 @@ void SetLabel(SimBaseClass* theObject)
 
     ShiAssert(theObject); // try to catch when this happens (2nd crash BT #955)
 
-    if (!theObject)
+    if ( not theObject)
         return;
 
-    if (!theObject->IsExploding())
+    if ( not theObject->IsExploding())
     {
         if (classPtr->dataType == DTYPE_VEHICLE)
         {
@@ -410,9 +410,9 @@ void SetLabel(SimBaseClass* theObject)
             campObj = theObject->GetCampaignObject();
 
             // FRB - Remove the Deagg condition.  Seifer new Deagg method broke the callsign in the label
-            if (campObj && campObj->IsFlight() /*&& !campObj->IsAggregate() /*&& campObj->InPackage()*/
+            if (campObj and campObj->IsFlight() /* and not campObj->IsAggregate() /* and campObj->InPackage()*/
                 // 2001-10-31 M.N. show flight names of our team
-                && flight && (flight->GetTeam() == campObj->GetTeam()))
+               and flight and (flight->GetTeam() == campObj->GetTeam()))
             {
                 char temp[40];
                 GetCallsign(((Flight)campObj)->callsign_id, ((Flight)campObj)->callsign_num, temp);
@@ -490,7 +490,7 @@ int make_callsign_string(char *str, char *insert, SimBaseClass *theObject)
     {
         campObj = theObject->GetCampaignObject();
 
-        if (campObj && campObj->IsFlight() && campObj->InPackage())
+        if (campObj and campObj->IsFlight() and campObj->InPackage())
         {
             char temp[40];
 
@@ -522,7 +522,7 @@ int make_callsign_string(char *str, char *insert, SimBaseClass *theObject)
         }
     }
 
-    if ((callsign[0]) && (flight[0]))
+    if ((callsign[0]) and (flight[0]))
     {
         strcpy(str, callsign);
         strcat(str, insert);

@@ -8,6 +8,7 @@
 #ifndef _DEVICE_H_
 #define _DEVICE_H_
 
+#include <cISO646>
 #include "ImageBuf.h"
 
 class DisplayDevice
@@ -21,7 +22,7 @@ public:
 
     BOOL IsReady(void)
     {
-        return (m_DXCtx != NULL);
+        return (m_DXCtx not_eq NULL);
     };
 
     BOOL IsHardware(void)

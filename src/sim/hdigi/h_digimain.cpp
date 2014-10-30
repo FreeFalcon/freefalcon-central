@@ -103,7 +103,7 @@ void HeliBrain::FrameExec(SimObjectType* curTargetList, SimObjectType* curTarget
 
     Actions();
 
-    if (targetPtr != lastTarget)
+    if (targetPtr not_eq lastTarget)
     {
         lastTarget = targetPtr;
         ataddot = 10.0F;
@@ -130,7 +130,7 @@ void HeliBrain::JoinFlight(void)
 {
     self->flightIndex = self->GetCampaignObject()->GetComponentIndex(self);
 
-    if (self->flightIndex != 0)
+    if (self->flightIndex not_eq 0)
     {
         SetLead(FALSE);
         self->flightLead = (HelicopterClass *)self->GetCampaignObject()->GetComponentLead();
@@ -150,7 +150,7 @@ void HeliBrain::SetTarget(SimObjectType* newTarget)
 
     if (newTarget)
     {
-        ShiAssert(newTarget->BaseData() != (FalconEntity*)0xDDDDDDDD);
+        ShiAssert(newTarget->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
         newTarget->Reference();
         targetData = newTarget->localData;
     }

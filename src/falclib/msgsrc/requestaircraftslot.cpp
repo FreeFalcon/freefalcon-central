@@ -37,7 +37,7 @@ int UI_RequestAircraftSlot::Process(uchar autodisp)
     Flight flight;
     int retval = FALSE;
 
-    if (autodisp || !FalconLocalGame)
+    if (autodisp or not FalconLocalGame)
     {
         return FALSE;
     }
@@ -50,7 +50,7 @@ int UI_RequestAircraftSlot::Process(uchar autodisp)
         case REQUEST_FLIGHT_DELETE:
             MonoPrint("Request Flight Delete %08x\n", flight);
 
-            if (!flight)
+            if ( not flight)
                 return FALSE;
 
             RegroupFlight(flight);
@@ -58,7 +58,7 @@ int UI_RequestAircraftSlot::Process(uchar autodisp)
             break;
 
         case REQUEST_TEAM_CHANGE:
-            if (!flight)
+            if ( not flight)
                 return FALSE;
 
             retval = ChangeFlightTeam(flight);
@@ -66,7 +66,7 @@ int UI_RequestAircraftSlot::Process(uchar autodisp)
             break;
 
         case REQUEST_TYPE_CHANGE:
-            if (!flight)
+            if ( not flight)
                 return FALSE;
 
             retval = ChangeFlightType(flight);
@@ -74,21 +74,21 @@ int UI_RequestAircraftSlot::Process(uchar autodisp)
             break;
 
         case REQUEST_CALLSIGN_CHANGE:
-            if (!flight)
+            if ( not flight)
                 return FALSE;
 
             retval = ChangeFlightCallsign(flight);
             break;
 
         case REQUEST_SKILL_CHANGE:
-            if (!flight)
+            if ( not flight)
                 return FALSE;
 
             retval = ChangePilotSkill(flight);
             break;
 
         case REQUEST_SLOT_LEAVE:
-            if (!flight)
+            if ( not flight)
                 return FALSE;
 
             retval = EmptyFlightSlot(flight);
@@ -107,13 +107,13 @@ int UI_RequestAircraftSlot::Process(uchar autodisp)
 #if 0
 
     // sfr: test
-    if (FalconLocalGame->IsLocal() && dataBlock.request_type != REQUEST_UI_UPDATE)
+    if (FalconLocalGame->IsLocal() and dataBlock.request_type not_eq REQUEST_UI_UPDATE)
     {
         UI_RequestAircraftSlot* msga = new UI_RequestAircraftSlot(FalconNullId, FalconLocalGame);
         msga->dataBlock.request_type = REQUEST_UI_UPDATE;
         // sfr: flag bug, setting all but loopback :/
-        //msga->flags_ |= ~VU_LOOPBACK_MSG_FLAG;
-        msga->flags_ &= ~VU_LOOPBACK_MSG_FLAG;
+        //msga->flags_ or_eq compl VU_LOOPBACK_MSG_FLAG;
+        msga->flags_ and_eq compl VU_LOOPBACK_MSG_FLAG;
         FalconSendMessage(msga, TRUE);
         //VuTimerEvent *timer = new VuTimerEvent(0, vuxRealTime + 1000, VU_DELAY_TIMER, msga);
         //VuMessageQueue::PostVuMessage(timer);
@@ -183,7 +183,7 @@ int UI_RequestAircraftSlot::ChangePilotSkill(Flight flight)
 {
     MonoPrint("Request Skill Change %08x To %d\n", flight, dataBlock.requested_skill);
 
-    if (flight->pilots[dataBlock.requested_slot] != 255)
+    if (flight->pilots[dataBlock.requested_slot] not_eq 255)
     {
         flight->pilots[dataBlock.requested_slot] = dataBlock.requested_skill;
         flight->MakeFlightDirty(DIRTY_PILOTS, DDP[152].priority);
@@ -238,14 +238,14 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
     UI_SendAircraftSlot *msg = NULL;
     int i, got_slot = -1, retval = 0;
 
-    if (!requester)
+    if ( not requester)
     {
         return FALSE;
     }
 
     MonoPrint("\nRequest Slot Join %08x : ", flight);
 
-    if (!flight)
+    if ( not flight)
     {
         if (FalconLocalGame->GetGameType() == game_Dogfight)
         {
@@ -276,7 +276,7 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
         }
         else
         {
-            MonoPrint("  Failed - NULL !Dogfight\n");
+            MonoPrint("  Failed - NULL Dogfight\n");
             return FALSE;
         }
     }
@@ -292,8 +292,8 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
         dataBlock.current_pilot_slot = requester->GetAssignedPilotSlot();
 
         if (
-            (oldflight == flight) &&
-            (FalconLocalGame->GetGameType() == game_Dogfight) &&
+            (oldflight == flight) and 
+            (FalconLocalGame->GetGameType() == game_Dogfight) and 
             (flight->GetTotalVehicles() == 1)
         )
         {
@@ -337,7 +337,7 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
         // an empty one.
         if (FalconLocalGame->GetGameType() == game_Dogfight)
         {
-            for (i = 0; i < PILOTS_PER_FLIGHT && !retval; i++)
+            for (i = 0; i < PILOTS_PER_FLIGHT and not retval; i++)
             {
                 if (flight->plane_stats[i] == AIRCRAFT_NOT_ASSIGNED)
                 {
@@ -386,7 +386,7 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
         }
         // In Tactical Engagement and Campaign, if there is an AI there, we can take the slot,
         // otherwise, we try the next slot until we run out of aircraft or find an available AI.
-        else if (dataBlock.request_type != REQUEST_SLOT_JOIN_AI)
+        else if (dataBlock.request_type not_eq REQUEST_SLOT_JOIN_AI)
         {
             MonoPrint("Request Slot Join %d\n", dataBlock.requested_slot);
 
@@ -405,7 +405,7 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
                 MonoPrint("  Slot %d Stats %d\n", flight->player_slots[i], flight->plane_stats[i]);
             }
 
-            if (flight->player_slots[dataBlock.requested_slot] == 255 && flight->plane_stats[dataBlock.requested_slot] == AIRCRAFT_AVAILABLE)
+            if (flight->player_slots[dataBlock.requested_slot] == 255 and flight->plane_stats[dataBlock.requested_slot] == AIRCRAFT_AVAILABLE)
             {
                 // The requested aircraft slot is empty
                 if (dataBlock.current_pilot_slot == 255)
@@ -424,9 +424,9 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
             else
             {
                 // Try and find an empty one
-                for (i = 0; i < PILOTS_PER_FLIGHT && !retval; i++)
+                for (i = 0; i < PILOTS_PER_FLIGHT and not retval; i++)
                 {
-                    if (flight->player_slots[i] == 255 && flight->plane_stats[i] == AIRCRAFT_AVAILABLE)
+                    if (flight->player_slots[i] == 255 and flight->plane_stats[i] == AIRCRAFT_AVAILABLE)
                     {
                         if (dataBlock.current_pilot_slot == 255)
                         {

@@ -195,11 +195,11 @@ public:
     }
     void SetWPFlag(ulong f)
     {
-        Flags |= (ulong) f;
+        Flags or_eq (ulong) f;
     }
     void UnSetWPFlag(ulong f)
     {
-        Flags &= ~((ulong)(f));
+        Flags and_eq compl ((ulong)(f));
     }
     void SetWPTactic(int f)
     {

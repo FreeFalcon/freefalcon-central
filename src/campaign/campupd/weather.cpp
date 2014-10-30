@@ -50,7 +50,7 @@ void WeatherClass::Init(bool instantAction)
     weatherDay = TheCampaign.GetCurrentDay();
 
 
-    if (!instantAction)
+    if ( not instantAction)
     {
         lockedCondition = TRUE;
         // Cobra - no random weather
@@ -123,7 +123,7 @@ void WeatherClass::UpdateCondition(int condition, bool bForce)
 {
     weatherCondition = condition;
 
-    if (weatherCondition != oldWeatherCondition || bForce)
+    if (weatherCondition not_eq oldWeatherCondition or bForce)
     {
         oldWeatherCondition = weatherCondition;
         needsWeatherRefresh = updateLighting = TRUE;
@@ -207,12 +207,12 @@ void WeatherClass::UpdateCondition(int condition, bool bForce)
 
 void WeatherClass::UpdateWeather()
 {
-    if (!TheCampaign.IsMaster()) return;
+    if ( not TheCampaign.IsMaster()) return;
 
     float seed, delta;
     CampaignTime time, tDelta;
 
-    if (weatherDay != TheCampaign.GetCurrentDay())
+    if (weatherDay not_eq TheCampaign.GetCurrentDay())
     {
         switch (TimeOfDayGeneral())
         {
@@ -260,7 +260,7 @@ void WeatherClass::UpdateWeather()
 
     time = Camp_GetCurrentTime();
 
-    if (time - lastCheck > (CampaignMinutes / 2) || needsWeatherRefresh)
+    if (time - lastCheck > (CampaignMinutes / 2) or needsWeatherRefresh)
     {
         static int lastTOD = TOD_NIGHT;
         int h = FloatToInt32((windHeading - .5f * PI) * 3.f);
@@ -337,7 +337,7 @@ void WeatherClass::UpdateWeather()
             }
         }
 
-        if (rand() % 100 > wHdgThresh || needsWeatherRefresh)
+        if (rand() % 100 > wHdgThresh or needsWeatherRefresh)
         {
             if (rand() % 8 > 4 + h)
                 windHeading = windHeading + (float)delta / 3;
@@ -454,10 +454,10 @@ void WeatherClass::ReceiveWeather(FalconWeatherMessage* message)
     ShadingFactor = message->dataBlock.ShadingFactor;
     WeatherQuality = message->dataBlock.weatherQuality;
 
-    if (TheCampaign.Flags & CAMP_NEED_WEATHER)
+    if (TheCampaign.Flags bitand CAMP_NEED_WEATHER)
     {
         GenerateClouds(FALSE);
-        TheCampaign.Flags &= ~CAMP_NEED_WEATHER;
+        TheCampaign.Flags and_eq compl CAMP_NEED_WEATHER;
     }
 
     TheCampaign.GotJoinData();
@@ -469,7 +469,7 @@ int WeatherClass::CampLoad(char* name, int type)
     BYTE utemp;
     float ftemp, ftemp1;
 
-    Init((type == game_InstantAction || type == game_Dogfight));
+    Init((type == game_InstantAction or type == game_Dogfight));
 
     if (type == game_Campaign)
         unlockableCondition = TRUE;
@@ -480,7 +480,7 @@ int WeatherClass::CampLoad(char* name, int type)
 
     data_ptr = cd.data;
 
-    if (type != game_Campaign && type != game_PlayerPool)
+    if (type not_eq game_Campaign and type not_eq game_PlayerPool)
     {
         if (gCampDataVersion >= 75)
         {
@@ -636,7 +636,7 @@ int WeatherClass::CampLoad(char* name, int type)
                 stratusZ = -22000.f;
                 stratus2Z = -35000.f;
 
-                if (PlayerOptions.weatherCondition < 1 || PlayerOptions.weatherCondition > 4)
+                if (PlayerOptions.weatherCondition < 1 or PlayerOptions.weatherCondition > 4)
                     PlayerOptions.weatherCondition = 1;
 
                 UpdateCondition(PlayerOptions.weatherCondition, false);

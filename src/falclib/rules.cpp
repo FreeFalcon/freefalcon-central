@@ -1,3 +1,4 @@
+#include <cISO646>
 #include "PlayerOp.h"
 //#include "stdhdr.h"
 #include "f4find.h"
@@ -15,13 +16,13 @@ int LoadAllRules(char *filename)
 
     fp = _tfopen(path, _T("rb"));
 
-    if (!fp)
+    if ( not fp)
     {
         MonoPrint(_T("Couldn't open %s rules file\n"), filename);
         _stprintf(path, _T("%s\\Config\\default.rul"), FalconDataDirectory);
         fp = _tfopen(path, "rb");
 
-        if (!fp)
+        if ( not fp)
         {
             MonoPrint(_T("Couldn't open default rules\n"), filename);
             return FALSE;
@@ -32,7 +33,7 @@ int LoadAllRules(char *filename)
     size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    if (size != sizeof(RulesStruct) * rNUM_MODES)
+    if (size not_eq sizeof(RulesStruct) * rNUM_MODES)
     {
         MonoPrint(_T("%s's rules are in old file format\n"), filename);
         return FALSE;
@@ -44,7 +45,7 @@ int LoadAllRules(char *filename)
     success = fread(&tempRules, sizeof(RulesStruct), rNUM_MODES, fp);
     fclose(fp);
 
-    if (success != rNUM_MODES)
+    if (success not_eq rNUM_MODES)
     {
         MonoPrint(_T("Failed to read %s's rules file\n"), filename);
         //Initialize();
@@ -111,13 +112,13 @@ int RulesClass::LoadRules(char *filename)
 
     fp = _tfopen(path, _T("rb"));
 
-    if (!fp)
+    if ( not fp)
     {
         MonoPrint(_T("Couldn't open %s rules file\n"), filename);
         _stprintf(path, _T("%s\\Config\\default.rul"), FalconDataDirectory);
         fp = _tfopen(path, "rb");
 
-        if (!fp)
+        if ( not fp)
         {
             MonoPrint(_T("Couldn't open default rules\n"), filename);
             Initialize();
@@ -129,7 +130,7 @@ int RulesClass::LoadRules(char *filename)
     size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    if (size != sizeof(RulesStruct) * rNUM_MODES)
+    if (size not_eq sizeof(RulesStruct) * rNUM_MODES)
     {
         MonoPrint(_T("%s's rules are in old file format\n"), filename);
         return FALSE;
@@ -141,7 +142,7 @@ int RulesClass::LoadRules(char *filename)
     success = fread(&tempRules, sizeof(RulesStruct), rNUM_MODES, fp);
     fclose(fp);
 
-    if (success != rNUM_MODES)
+    if (success not_eq rNUM_MODES)
     {
         MonoPrint(_T("Failed to read %s's rules file\n"), filename);
         //Initialize();
@@ -199,7 +200,7 @@ int RulesClass::SaveRules(_TCHAR *filename)
     success = fwrite(gRules, sizeof(RulesStruct), rNUM_MODES, fp);
     fclose(fp);
 
-    if (success != rNUM_MODES)
+    if (success not_eq rNUM_MODES)
     {
         MonoPrint(_T("Couldn't save rules"));
         return FALSE;
@@ -208,7 +209,7 @@ int RulesClass::SaveRules(_TCHAR *filename)
     return TRUE;
 }
 
-static char PwdMask[] = "Blood makes the grass grow, kill, kill, kill!";
+static char PwdMask[] = "Blood makes the grass grow, kill, kill, kill";
 static char PwdMask2[] = "ojodp^&SANDsfsl,[poe5487wqer1]@&$N";
 
 void RulesClass::EncryptPwd(void)
@@ -220,8 +221,8 @@ void RulesClass::EncryptPwd(void)
 
     for (i = 0; i < RUL_PW_LEN; i++)
     {
-        *ptr ^= PwdMask[i % strlen(PwdMask)];
-        *ptr ^= PwdMask2[i % strlen(PwdMask2)];
+        *ptr xor_eq PwdMask[i % strlen(PwdMask)];
+        *ptr xor_eq PwdMask2[i % strlen(PwdMask2)];
         ptr++;
     }
 }

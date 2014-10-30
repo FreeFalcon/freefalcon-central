@@ -31,7 +31,7 @@ void HeliBrain::SensorFusion(void)
         localData = obj->localData;
         classPtr = (Falcon4EntityClassType*) obj->BaseData()->EntityType();
 
-        if (!obj->BaseData()->IsSim() || ((SimBaseClass*)obj->BaseData())->IsExploding())
+        if ( not obj->BaseData()->IsSim() or ((SimBaseClass*)obj->BaseData())->IsExploding())
         {
             obj = obj->next;
             continue;
@@ -45,7 +45,7 @@ void HeliBrain::SensorFusion(void)
         /* RWR ids coming form RWR_INTERP can be incorrect. */
         /* Visual identification is 100% correct.           */
         /*--------------------------------------------------*/
-        if (localData->sensorState[SensorClass::Visual] || localData->sensorState[SensorClass::RWR] >= SensorClass::SensorTrack)
+        if (localData->sensorState[SensorClass::Visual] or localData->sensorState[SensorClass::RWR] >= SensorClass::SensorTrack)
         {
             if (obj->BaseData()->IsMissile())
             {
@@ -104,7 +104,7 @@ void HeliBrain::SensorFusion(void)
         /*----------*/
         /* aircraft */
         /*----------*/
-        else if ((pcId != ID_NONE) && (pcId < ID_NEUTRAL))
+        else if ((pcId not_eq ID_NONE) and (pcId < ID_NEUTRAL))
         {
             /*-------------------------*/
             /* time to turn to ownship */
@@ -157,7 +157,7 @@ void HeliBrain::SensorFusion(void)
         /*----------------------------------------------------*/
         localData->targetTime = 2.0F * MAX_TARGET_TIME;
 
-        if (!obj->BaseData()->IsMissile() && pcId < ID_NEUTRAL)
+        if ( not obj->BaseData()->IsMissile() and pcId < ID_NEUTRAL)
         {
             /*------------------*/
             /* closing velocity */

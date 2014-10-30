@@ -105,7 +105,7 @@ static uchar GetUnusedFlag()
 
     while (i < TOTAL_FLAGS)
     {
-        if (!FlagImageID[i][FLAG_STATUS])
+        if ( not FlagImageID[i][FLAG_STATUS])
             return(static_cast<uchar>(i));
 
         i++;
@@ -120,7 +120,7 @@ static uchar GetUnusedColor()
 
     while (i < NUM_TEAMS)
     {
-        if (!TeamColorUse[i])
+        if ( not TeamColorUse[i])
             return(static_cast<uchar>(i));
 
         i++;
@@ -153,7 +153,7 @@ void SetupTeamFlags()
     for (i = 0; i < NUM_TEAMS; i++)
     {
         // Setup flags used
-        if (TeamInfo[i] && (TeamInfo[i]->flags & TEAM_ACTIVE))
+        if (TeamInfo[i] and (TeamInfo[i]->flags bitand TEAM_ACTIVE))
         {
             if (EditMap)
                 EditMap->SetImage(i, FlagImageID[TeamInfo[i]->GetFlag()][SMALL_HORIZ]);
@@ -188,7 +188,7 @@ void SetupTeamFlags()
 
 void SetupTeamColors()
 {
-    // Set ATO & OOB & Camp Map
+    // Set ATO bitand OOB bitand Camp Map
     C_Window *win;
     C_Line   *line;
 
@@ -251,7 +251,7 @@ void SetupTeamColors()
 
 void SetupTeamNames()
 {
-    // Set ATO & OOB & Camp Map
+    // Set ATO bitand OOB bitand Camp Map
     RebuildTeamLists();
     SetupOOBWindow();
     update_team_victory_window();
@@ -286,7 +286,7 @@ void UpdateBigMapColors(long team)
     gMapMgr->RemapTeamColors(team);
 }
 
-// NOTE: Automatically fixes duplicate flags & colors
+// NOTE: Automatically fixes duplicate flags bitand colors
 void SetupTeamListValues()
 {
     C_Window *win;
@@ -304,7 +304,7 @@ void SetupTeamListValues()
 
         for (i = 0; i < NUM_TEAMS; i++)
         {
-            if (TeamInfo[i] && (TeamInfo[i]->flags & TEAM_ACTIVE))
+            if (TeamInfo[i] and (TeamInfo[i]->flags bitand TEAM_ACTIVE))
             {
                 if (FlagImageID[TeamInfo[i]->GetFlag()][FLAG_STATUS])
                     TeamInfo[i]->SetFlag(GetUnusedFlag());
@@ -382,7 +382,7 @@ void SetupCurrentTeamValues(long team)
     if (team >= NUM_TEAMS) // Out of range
         return;
 
-    if (!TeamInfo[team]) // Team undefined
+    if ( not TeamInfo[team]) // Team undefined
         return;
 
     win = gMainHandler->FindWindow(TAC_TEAM_WIN);
@@ -445,12 +445,12 @@ void MakeNewTeamCB(long, short hittype, C_Base *)
     int tid;
     _TCHAR buffer[30];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     i = 1;
 
-    while (TeamInfo[i] && i < NUM_TEAMS)
+    while (TeamInfo[i] and i < NUM_TEAMS)
         i++;
 
     if (i < NUM_TEAMS)
@@ -461,7 +461,7 @@ void MakeNewTeamCB(long, short hittype, C_Base *)
 
         if (TeamInfo[gSelectedTeam])
         {
-            TeamInfo[gSelectedTeam]->flags |= TEAM_ACTIVE;
+            TeamInfo[gSelectedTeam]->flags or_eq TEAM_ACTIVE;
             TeamInfo[gSelectedTeam]->SetFlag(GetUnusedFlag());
             FlagImageID[TeamInfo[gSelectedTeam]->GetFlag()][FLAG_STATUS] = 1;
             TeamInfo[gSelectedTeam]->SetColor(GetUnusedColor());
@@ -500,14 +500,14 @@ static void RemoveTeamCB(long, short hittype, C_Base *)
     CampBaseClass *entity;
     VuListIterator eit(AllCampList);
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     TeamCount = 0;
 
     for (i = 0; i < NUM_TEAMS; i++)
     {
-        if (TeamInfo[i] && (TeamInfo[i]->flags & TEAM_ACTIVE))
+        if (TeamInfo[i] and (TeamInfo[i]->flags bitand TEAM_ACTIVE))
             TeamCount++;
     }
 
@@ -527,14 +527,14 @@ static void RemoveTeamCB(long, short hittype, C_Base *)
         TeamCount = gSelectedTeam;
         i = 0;
 
-        while (!i)
+        while ( not i)
         {
             gSelectedTeam--;
 
             if (gSelectedTeam < 1)
                 gSelectedTeam = NUM_TEAMS - 1;
 
-            if (TeamInfo[gSelectedTeam] || gSelectedTeam == TeamCount)
+            if (TeamInfo[gSelectedTeam] or gSelectedTeam == TeamCount)
                 i = 1;
         }
 
@@ -557,7 +557,7 @@ static void RemoveTeamCB(long, short hittype, C_Base *)
     }
 
     // Pick a team to give all our stuff to.
-    for (i = 7; i < NUM_TEAMS && !TeamInfo[i]; i--);
+    for (i = 7; i < NUM_TEAMS and not TeamInfo[i]; i--);
 
     new_owner = i;
 
@@ -578,7 +578,7 @@ static void ChoosePrevFlag(long, short hittype, C_Base *)
 {
     short oldFlag, newflag, done;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     oldFlag = static_cast<short>(TeamInfo[gSelectedTeam]->GetFlag());
@@ -586,14 +586,14 @@ static void ChoosePrevFlag(long, short hittype, C_Base *)
 
     done = 0;
 
-    while (!done)
+    while ( not done)
     {
         newflag--;
 
         if (newflag < 1)
             newflag += TOTAL_FLAGS;
 
-        if (!FlagImageID[newflag][FLAG_STATUS])
+        if ( not FlagImageID[newflag][FLAG_STATUS])
             done = 1;
     }
 
@@ -609,7 +609,7 @@ static void ChooseNextFlag(long, short hittype, C_Base *)
 {
     short oldFlag, newflag, done;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     oldFlag = static_cast<short>(TeamInfo[gSelectedTeam]->GetFlag());
@@ -618,14 +618,14 @@ static void ChooseNextFlag(long, short hittype, C_Base *)
 
     done = 0;
 
-    while (!done)
+    while ( not done)
     {
         newflag++;
 
         if (newflag >= TOTAL_FLAGS)
             newflag = 1;
 
-        if (!FlagImageID[newflag][FLAG_STATUS])
+        if ( not FlagImageID[newflag][FLAG_STATUS])
             done = 1;
     }
 
@@ -640,7 +640,7 @@ static void ChoosePrevColor(long, short hittype, C_Base *)
 {
     short oldcolor, newcolor, done;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     oldcolor = static_cast<short>(TeamInfo[gSelectedTeam]->GetColor());
@@ -649,14 +649,14 @@ static void ChoosePrevColor(long, short hittype, C_Base *)
 
     done = 0;
 
-    while (!done)
+    while ( not done)
     {
         newcolor--;
 
         if (newcolor < 1)
             newcolor = NUM_TEAMS - 1;
 
-        if (!TeamColorUse[newcolor])
+        if ( not TeamColorUse[newcolor])
             done = 1;
     }
 
@@ -672,7 +672,7 @@ static void ChooseNextColor(long, short hittype, C_Base *)
 {
     short oldcolor, newcolor, done;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     oldcolor = static_cast<short>(TeamInfo[gSelectedTeam]->GetColor());
@@ -681,14 +681,14 @@ static void ChooseNextColor(long, short hittype, C_Base *)
 
     done = 0;
 
-    while (!done)
+    while ( not done)
     {
         newcolor++;
 
         if (newcolor >= NUM_TEAMS)
             newcolor = 1;
 
-        if (!TeamColorUse[newcolor])
+        if ( not TeamColorUse[newcolor])
             done = 1;
     }
 
@@ -707,12 +707,12 @@ void ChooseTeamCB(long, short hittype, C_Base *base)
     C_Button *btn;
     C_Line   *line;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gSelectedTeam = static_cast<uchar>(base->GetUserNumber(0));
 
-    if (gSelectedTeam < 1 || gSelectedTeam >= NUM_TEAMS)
+    if (gSelectedTeam < 1 or gSelectedTeam >= NUM_TEAMS)
         gSelectedTeam = 1;
 
     gDrawTeam = gSelectedTeam;
@@ -790,12 +790,12 @@ static void SetTeamNameCB(long, short hittype, C_Base *base)
 {
     C_EditBox *ebox;
 
-    if (hittype != DIK_RETURN && hittype)
+    if (hittype not_eq DIK_RETURN and hittype)
         return;
 
     ebox = (C_EditBox*)base;
 
-    if (ebox && TeamInfo[gSelectedTeam])
+    if (ebox and TeamInfo[gSelectedTeam])
         TeamInfo[gSelectedTeam]->SetName(ebox->GetText());
 
     UpdateTeamName(gSelectedTeam);
@@ -806,12 +806,12 @@ static void SetTeamStatementCB(long, short hittype, C_Base *base)
 {
     C_EditBox *ebox;
 
-    if (hittype != DIK_RETURN)
+    if (hittype not_eq DIK_RETURN)
         return;
 
     ebox = (C_EditBox*)base;
 
-    if (ebox && TeamInfo[gSelectedTeam])
+    if (ebox and TeamInfo[gSelectedTeam])
         TeamInfo[gSelectedTeam]->SetMotto(ebox->GetText());
 }
 
@@ -820,13 +820,13 @@ static void SetTeamExperience(long ID, short hittype, C_Base *base)
 {
     C_ListBox *lbox;
 
-    if (hittype != DIK_RETURN)
+    if (hittype not_eq DIK_RETURN)
         return;
 
     lbox = (C_ListBox*)base;
     int value = 0;
 
-    if (lbox && TeamInfo[gSelectedTeam])
+    if (lbox and TeamInfo[gSelectedTeam])
     {
         switch (lbox->GetTextID())
         {
@@ -865,7 +865,7 @@ void Hookup_Team_Win(C_Window *win)
 
     if (win)
     {
-        if (win->GetID() != TAC_TEAM_WIN)
+        if (win->GetID() not_eq TAC_TEAM_WIN)
             return;
 
         base = win->FindControl(TAC_MAP_TE);

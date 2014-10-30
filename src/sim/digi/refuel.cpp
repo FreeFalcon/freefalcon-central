@@ -35,7 +35,7 @@ void DigitalBrain::AiRefuel(void)
     AircraftClass *tanker = NULL;
 
     //for now
-    if (tankerId != FalconNullId)
+    if (tankerId not_eq FalconNullId)
     {
         tanker = (AircraftClass*)vuDatabase->Find(tankerId);
 
@@ -200,9 +200,9 @@ void DigitalBrain::AiRefuel(void)
                 af->z = trackZ;
             }
 
-            ShiAssert(!_isnan(af->x));
-            ShiAssert(!_isnan(af->y));
-            ShiAssert(!_isnan(af->z));
+            ShiAssert( not _isnan(af->x));
+            ShiAssert( not _isnan(af->y));
+            ShiAssert( not _isnan(af->z));
 
             // 12DEC03 - FRB - update distance to refueling position
             dx = trackX - af->x;
@@ -216,7 +216,7 @@ void DigitalBrain::AiRefuel(void)
 
             // 2002-03-28 MN Hack to make AI refueling working in each and every situation: if they are really close, just put them on the boom. Period ;-)
             // this also helps them in a tanker turn, which really can only do a human ;-)
-            if (dist < af->GetAIBoomDistance() && g_bPutAIToBoom && refuelstatus == refRefueling)
+            if (dist < af->GetAIBoomDistance() and g_bPutAIToBoom and refuelstatus == refRefueling)
             {
                 // 26NOV03 - FRB - Get a more recent position
                 ((TankerBrain*)tanker->Brain())->OptTankingPosition(&targetPos);
@@ -225,7 +225,7 @@ void DigitalBrain::AiRefuel(void)
                 af->z = targetPos.z;
                 self->SetYPR(tanker->Yaw(), 0.0F, 0.0F); // change current heading to that of the tanker
 
-                if (!ReadySet)
+                if ( not ReadySet)
                 {
                     ((TankerBrain*)tanker->Brain())->AIReady(); // 28NOV03 - FRB - tell th tanker I'm in position
                     ReadySet = 1;
@@ -253,7 +253,7 @@ void DigitalBrain::AiRefuel(void)
             {
                 decelerating = true;
 
-                if ((self->drawPointer) && !((DrawableBSP*)self->drawPointer)->GetDOFangle(41))
+                if ((self->drawPointer) and not ((DrawableBSP*)self->drawPointer)->GetDOFangle(41))
                 {
                     ((DrawableBSP*)self->drawPointer)->SetSwitchMask(13, 1);  // 29NOV03 - FRB - Open refueling door/ Display probe
                     ((DrawableBSP*)self->drawPointer)->SetDOFangle(41, self->af->GetRefuelAngle()*DTR);  // 29NOV03 - FRB - Open refueling door/ Extend probe
@@ -270,7 +270,7 @@ void DigitalBrain::AiRefuel(void)
 
                 /*
                  // JB 020311 Respond to "commands" from the tanker.
-                 if (!af->IsSet(AirframeClass::Refueling) && refuelstatus == refRefueling &&
+                 if ( not af->IsSet(AirframeClass::Refueling) and refuelstatus == refRefueling and 
                  (SimLibElapsedTime - lastBoomCommand) > 10000)
                  {
                  lastBoomCommand = SimLibElapsedTime;
@@ -281,7 +281,7 @@ void DigitalBrain::AiRefuel(void)
                  boompos.x = boompos.y = boompos.z = 0;
 
                  af->GetRefuelPosition(&boompos);
-                 if (boompos.x == 0 && boompos.y ==0 && boompos.z == 0)
+                 if (boompos.x == 0 and boompos.y ==0 and boompos.z == 0)
                  boompos.x = -39.63939795321F;
 
                  relPos.x -= boompos.x;
@@ -393,7 +393,7 @@ void DigitalBrain::AiRefuel(void)
                 }
             }
 
-            if (g_nShowDebugLabels & 0x800)
+            if (g_nShowDebugLabels bitand 0x800)
             {
                 char tmpchr[32];
 
@@ -409,7 +409,7 @@ void DigitalBrain::AiRefuel(void)
                     ((DrawableBSP*)self->drawPointer)->SetLabel(tmpchr, ((DrawableBSP*)self->drawPointer)->LabelColor());
             }
 
-            if (g_nShowDebugLabels & 0x20000)
+            if (g_nShowDebugLabels bitand 0x20000)
             {
                 char tmpchr[32];
                 float tX, tY, tZ;
@@ -511,9 +511,9 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
         }
     }
 
-    ShiAssert(!_isnan(af->x));
-    ShiAssert(!_isnan(af->y));
-    ShiAssert(!_isnan(af->z));
+    ShiAssert( not _isnan(af->x));
+    ShiAssert( not _isnan(af->y));
+    ShiAssert( not _isnan(af->z));
 
     refuelMode = PlayerOptions.GetRefuelingMode() - 1;
 
@@ -521,10 +521,10 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
     // 2002-02-28 MN refuel fixes, help the player somewhat more. Simplistic = full AI control
 #ifndef DEBUG
 
-    if (dist < refuelMode * 100.0F &&
-        fabs(tanker->Yaw() - self->Yaw()) < 3.0F * DTR * refuelMode &&
-        fabs(tanker->GetVt() - self->GetVt())*FTPSEC_TO_KNOTS < (5.0F + 45.0F * (refuelMode /* S.G. NO! refuelMode is ALREADY -1! - 1 */)) &&
-        fabs(self->Pitch()*DTR) < 8.0F * refuelMode &&
+    if (dist < refuelMode * 100.0F and 
+        fabs(tanker->Yaw() - self->Yaw()) < 3.0F * DTR * refuelMode and 
+        fabs(tanker->GetVt() - self->GetVt())*FTPSEC_TO_KNOTS < (5.0F + 45.0F * (refuelMode /* S.G. NO refuelMode is ALREADY -1 - 1 */)) and 
+        fabs(self->Pitch()*DTR) < 8.0F * refuelMode and 
         fabs(self->Roll()*DTR) < 8.0F * refuelMode)
 #endif
     {
@@ -571,14 +571,14 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
         float a, oldrx, deceldistance;
         bool decelerating = false;
 
-        ShiAssert(!_isnan(af->x));
-        ShiAssert(!_isnan(af->y));
-        ShiAssert(!_isnan(af->z));
+        ShiAssert( not _isnan(af->x));
+        ShiAssert( not _isnan(af->y));
+        ShiAssert( not _isnan(af->z));
 
         // 2002-03-28 MN Hack to make full AI refueling control working in each and every situation:
         // if we are really close, just put us on the boom. Period ;-)
-        if (dist < af->GetAIBoomDistance() && g_bPutAIToBoom && refuelstatus == refRefueling &&
-            (PlayerOptions.GetRefuelingMode() == ARSimplistic || PlayerOptions.GetRefuelingMode() == ARModerated && af->IsSet(AirframeClass::Refueling)))
+        if (dist < af->GetAIBoomDistance() and g_bPutAIToBoom and refuelstatus == refRefueling and 
+            (PlayerOptions.GetRefuelingMode() == ARSimplistic or PlayerOptions.GetRefuelingMode() == ARModerated and af->IsSet(AirframeClass::Refueling)))
         {
             // 26NOV03 - FRB - Get a more recent position
             ((TankerBrain*)tanker->Brain())->OptTankingPosition(&targetPos);
@@ -587,7 +587,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
             af->z = targetPos.z;
             self->SetYPR(tanker->Yaw(), 0.0F, 0.0F); // change current heading to that of the tanker
 
-            if (!ReadySet)
+            if ( not ReadySet)
             {
                 ((TankerBrain*)tanker->Brain())->AIReady(); // 28NOV03 - FRB - tell th tanker I'm in position
                 ReadySet = 1;
@@ -624,7 +624,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
 
             /*
              // JB 020311 Respond to "commands" from the tanker.
-             if (!af->IsSet(AirframeClass::Refueling) && refuelstatus == refRefueling &&
+             if ( not af->IsSet(AirframeClass::Refueling) and refuelstatus == refRefueling and 
              (SimLibElapsedTime - lastBoomCommand) > 10000)
              {
              lastBoomCommand = SimLibElapsedTime;
@@ -634,7 +634,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
              Tpoint boompos;
              boompos.x = boompos.y = boompos.z = 0;
              af->GetRefuelPosition(&boompos);
-             if (boompos.x == 0 && boompos.y ==0 && boompos.z == 0)
+             if (boompos.x == 0 and boompos.y ==0 and boompos.z == 0)
              boompos.x = -39.63939795321F;
 
              relPos.x -= boompos.x;
@@ -753,7 +753,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
             }
         }
 
-        if (g_nShowDebugLabels & 0x800)
+        if (g_nShowDebugLabels bitand 0x800)
         {
             char tmpchr[32];
 
@@ -770,7 +770,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
         if (g_bNewRefuelHelp)
         {
             // 2002-03-06 MN in moderated mode (Simplified), once we're stuck to the boom, no stick input needed anymore
-            if (PlayerOptions.GetRefuelingMode() == ARModerated && !af->IsSet(AirframeClass::Refueling))
+            if (PlayerOptions.GetRefuelingMode() == ARModerated and not af->IsSet(AirframeClass::Refueling))
             {
                 af->pstick = (UserStickInputs.pstick - pStick) * 0.3F + pStick;
                 af->rstick = (UserStickInputs.rstick - rStick) * 0.3F + rStick;
@@ -778,8 +778,8 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
                 af->throtl = (UserStickInputs.throttle - throtl) * 0.6F + throtl;
             }
             // Easy means no player input needed at all, also in Simplified when connected to the boom
-            else if (PlayerOptions.GetRefuelingMode() == ARSimplistic ||
-                     PlayerOptions.GetRefuelingMode() == ARModerated && af->IsSet(AirframeClass::Refueling))
+            else if (PlayerOptions.GetRefuelingMode() == ARSimplistic or
+                     PlayerOptions.GetRefuelingMode() == ARModerated and af->IsSet(AirframeClass::Refueling))
             {
                 af->pstick =  pStick;
                 af->rstick =  rStick;
@@ -924,7 +924,7 @@ void DigitalBrain::FlightMemberWantsFuel(int state)
                 zPos = tankerFlight->ZPos();
 
                 if (
-                    fabs(self->XPos() - tankerFlight->XPos()) < rangeAvail &&
+                    fabs(self->XPos() - tankerFlight->XPos()) < rangeAvail and 
                     fabs(self->YPos() - tankerFlight->YPos()) < rangeAvail
                 )
                 {
@@ -937,7 +937,7 @@ void DigitalBrain::FlightMemberWantsFuel(int state)
         }
 
         // Check alternate field
-        if (!foundSomething)
+        if ( not foundSomething)
         {
             // Find the alternate field
             tmpWaypoint = self->waypoint;
@@ -957,7 +957,7 @@ void DigitalBrain::FlightMemberWantsFuel(int state)
             {
                 tmpWaypoint->GetLocation(&xPos, &yPos, &zPos);
 
-                if (fabs(self->XPos() - tankerFlight->XPos()) < rangeAvail &&
+                if (fabs(self->XPos() - tankerFlight->XPos()) < rangeAvail and 
                     fabs(self->YPos() - tankerFlight->YPos()) < rangeAvail)
                 {
                     self->curWaypoint = tmpWaypoint;
@@ -969,7 +969,7 @@ void DigitalBrain::FlightMemberWantsFuel(int state)
         }
 
         // Find nearest ?
-        if (!foundSomething)
+        if ( not foundSomething)
         {
             ObjectiveClass* nearest = FindNearestFriendlyRunway(
                                           self->GetTeam(), SimToGrid(self->XPos()), SimToGrid(self->YPos())
@@ -996,15 +996,15 @@ void DigitalBrain::FlightMemberWantsFuel(int state)
                     // Is this waypoint close to one we have?
                     tmpWaypoint->GetLocation(&xPos, &yPos, &zPos);
 
-                    if (tmpWaypoint->GetWPAction() == WP_LAND &&
-                        fabs(nearest->XPos() - xPos) < 2.0F * NM_TO_FT &&
+                    if (tmpWaypoint->GetWPAction() == WP_LAND and 
+                        fabs(nearest->XPos() - xPos) < 2.0F * NM_TO_FT and 
                         fabs(nearest->YPos() - yPos) < 2.0F * NM_TO_FT)
                     {
                         foundSomething = TRUE;
                         break;
                     }
 
-                    if (!tmpWaypoint->GetNextWP())
+                    if ( not tmpWaypoint->GetNextWP())
                     {
                         break;
                     }

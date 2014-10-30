@@ -10,7 +10,7 @@ C_Feature::C_Feature() : C_Control()
     Operational_ = 0;
     vuID = FalconNullId;
     featureID_ = 0;
-    Defaultflags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER;
+    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER;
 }
 
 C_Feature::C_Feature(char **stream) : C_Control(stream)
@@ -79,7 +79,7 @@ void C_Feature::Cleanup()
 
 void C_Feature::SetState(short newstate)
 {
-    State_ = static_cast<short>(newstate & 1);
+    State_ = static_cast<short>(newstate bitand 1);
 
     if (Name_)
     {
@@ -123,7 +123,7 @@ void C_Feature::SetFont(long ID)
 
 long C_Feature::CheckHotSpots(long relX, long relY)
 {
-    if (relX >= GetX() && relX <= (GetX() + GetW()) && relY >= GetY() && relY <= (GetY() + GetH()))
+    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))
         return(GetID());
 
     return(0);
@@ -185,7 +185,7 @@ BOOL C_Feature::Process(long ID, short HitType)
 
 void C_Feature::Refresh()
 {
-    if (!Ready() || Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
+    if ( not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
@@ -193,7 +193,7 @@ void C_Feature::Refresh()
 
 void C_Feature::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Name_)
@@ -205,6 +205,6 @@ void C_Feature::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (Value_)
         Value_->Draw(surface, cliprect);
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }

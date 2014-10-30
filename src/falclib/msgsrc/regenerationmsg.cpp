@@ -39,17 +39,17 @@ int FalconRegenerationMessage::Process(uchar autodisp)
     {
 
         // 2002-04-10 MN Why do we wait until something else sets he entity to dead
-        // if we want to regenerate it ??? Crap!
+        // if we want to regenerate it ??? Crap
         // Let's just make the not yet dead object dead and regenerate it again
         // This fixes the infamous respawning bug in Dogfights.
-        if (!(g_nDFRegenerateFix & 0x01))
+        if ( not (g_nDFRegenerateFix bitand 0x01))
         {
-            if (!theObject->IsDead())
+            if ( not theObject->IsDead())
             {
                 MonoPrint("Delaying Regeneration Message\n");
                 // sfr: flag bug, setting all but loopback :/
-                //this->flags_ |= ~VU_LOOPBACK_MSG_FLAG;
-                this->flags_ &= ~VU_LOOPBACK_MSG_FLAG;
+                //this->flags_ or_eq compl VU_LOOPBACK_MSG_FLAG;
+                this->flags_ and_eq compl VU_LOOPBACK_MSG_FLAG;
                 VuTimerEvent *timer = new VuTimerEvent(0, vuxRealTime + 1000, VU_DELAY_TIMER, this);
                 VuMessageQueue::PostVuMessage(timer);
 
@@ -59,7 +59,7 @@ int FalconRegenerationMessage::Process(uchar autodisp)
         }
         else
         {
-            if (!theObject->IsDead())
+            if ( not theObject->IsDead())
             {
                 theObject->SetDead(true);
             }
@@ -73,8 +73,8 @@ int FalconRegenerationMessage::Process(uchar autodisp)
 
         // Reset our fly state if we've been regenerated and we are in Match play
         if (
-            theObject &&
-            theObject == FalconLocalSession->GetPlayerEntity() &&
+            theObject and 
+            theObject == FalconLocalSession->GetPlayerEntity() and 
             SimDogfight.GetGameType() == dog_TeamMatchplay
         )
         {

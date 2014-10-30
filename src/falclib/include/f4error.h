@@ -36,17 +36,17 @@
 extern int f4AssertsOn, f4HardCrashOn;
 
 #define F4Assert( expr ) \
- if (f4AssertsOn && !(expr)) { \
+ if (f4AssertsOn and not (expr)) { \
  char buffer[80];    \
  int choice = IDRETRY; \
  if (f4HardCrashOn) \
  *((unsigned int *) 0x00) = 0; \
  else \
  { \
- while (choice != IDIGNORE) { \
+ while (choice not_eq IDIGNORE) { \
  sprintf( buffer, "Assertion at %0d  %s  %s", __LINE__, __FILE__, __DATE__ );\
  choice = MessageBox(NULL, buffer, "Failed:  " #expr,   \
- MB_ICONERROR | MB_ABORTRETRYIGNORE | MB_TASKMODAL); \
+ MB_ICONERROR bitor MB_ABORTRETRYIGNORE bitor MB_TASKMODAL); \
  if (choice == IDABORT) { \
  exit(-1); \
  } \

@@ -27,7 +27,7 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
     ShiAssert(platform);
 
     // 2002-04-17 MN "GPS type" weapons can see and detect always
-    if (g_nMissileFix & 0x100)
+    if (g_nMissileFix bitand 0x100)
     {
         Falcon4EntityClassType* classPtr = NULL;
         classPtr = (Falcon4EntityClassType*)platform->EntityType();
@@ -40,19 +40,19 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
 
         ShiAssert(wc);
 
-        if (wc && (wc->Flags & WEAP_BOMBGPS))
+        if (wc and (wc->Flags bitand WEAP_BOMBGPS))
             return true;
     }
 
-    if (platform->IsMissile() && ((MissileClass*)platform)->parent && ((MissileClass*)platform)->parent->OnGround())
+    if (platform->IsMissile() and ((MissileClass*)platform)->parent and ((MissileClass*)platform)->parent->OnGround())
     {
         // TODO: Fix this case to deal with localData->az being heading instead of relative az
         return TRUE;
     }
-    //else if (!g_bHardCoreReal) MI
-    else if (!g_bRealisticAvionics)
+    //else if ( not g_bHardCoreReal) MI
+    else if ( not g_bRealisticAvionics)
     {
-        if (obj == lockedTarget && obj->localData->ata < typeData->GimbalLimitHalfAngle)
+        if (obj == lockedTarget and obj->localData->ata < typeData->GimbalLimitHalfAngle)
         {
             return TRUE;
         }
@@ -64,12 +64,12 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
     else if (platform->IsMissile())//me123 status bad. make the heatseekers limited to 28 degree radar slew and 6 degree cone in bore.
     {
         // Marco Edit - if missile is both slaved and caged (ie. radar points it to target)
-        if (((MissileClass*)platform)->isSlave == TRUE && ((MissileClass*)platform)->isCaged == TRUE)
+        if (((MissileClass*)platform)->isSlave == TRUE and ((MissileClass*)platform)->isCaged == TRUE)
         {
             tracking = FALSE ;
 
             //me123 slave mode
-            if (obj == lockedTarget && obj->localData->ata < (typeData->GimbalLimitHalfAngle / 1.5))
+            if (obj == lockedTarget and obj->localData->ata < (typeData->GimbalLimitHalfAngle / 1.5))
             {
                 return TRUE;
             }
@@ -109,7 +109,7 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
 
             else
             {
-                if (fabs(obj->localData->el - seekerElCenter) < (typeData->FOVHalfAngle / noneTrackingFactor) &&
+                if (fabs(obj->localData->el - seekerElCenter) < (typeData->FOVHalfAngle / noneTrackingFactor) and 
                     fabs(obj->localData->az - seekerAzCenter) < (typeData->FOVHalfAngle / noneTrackingFactor))
                 {
                     tracking = TRUE ;
@@ -135,7 +135,7 @@ float IrstClass::GetSignature(SimObjectType* obj)
     signal = (obj->BaseData()->GetIRFactor());
 
     // Get our angle off his nose
-    if (!obj->BaseData()->OnGround())
+    if ( not obj->BaseData()->OnGround())
 
         if (0)
         {
@@ -171,12 +171,12 @@ float IrstClass::GetSignature(SimObjectType* obj)
         }
         else //sylvains stuff
         {
-            /* 0-180 DEGREES IS COS -1 TO 1. SINCE IT IS SQUARED, IT BECOMES 0 TO 1. 0 BEING FRONT OR BACK!
+            /* 0-180 DEGREES IS COS -1 TO 1. SINCE IT IS SQUARED, IT BECOMES 0 TO 1. 0 BEING FRONT OR BACK
             I CHANGED IT TO 0-90 SO FRONT IS 0 AND BACK IS 1 LIKE IT SHOULD BE */
             ataFactor = (float)cos(obj->localData->ataFrom/* S.G. TO BRING IT FROM 0-180 TO 0-90 */ / 2.0F);
             ataFactor *= ataFactor;
             // Scale for aspect
-            signal *= min(1.0f, 1.2f - 1.10F * ataFactor);//me123 if they screwed the squared thing, then they most likely didn't use it here either ! so changed from 0.6 - 0.55
+            signal *= min(1.0f, 1.2f - 1.10F * ataFactor);//me123 if they screwed the squared thing, then they most likely didn't use it here either  so changed from 0.6 - 0.55
         }
 
     return signal;
@@ -191,7 +191,7 @@ float IrstClass::GetSunFactor(SimObjectType* obj)
     float strength;
 
     // Skip out if no sun
-    if (!TheTimeOfDay.ThereIsASun())
+    if ( not TheTimeOfDay.ThereIsASun())
     {
         return 0.0f;
     }
@@ -226,7 +226,7 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
     float sunFactor;
 
     // 2002-04-17 MN "GPS type" weapons can see and detect always
-    if (g_nMissileFix & 0x100)
+    if (g_nMissileFix bitand 0x100)
     {
         Falcon4EntityClassType* classPtr = NULL;
         classPtr = (Falcon4EntityClassType*)platform->EntityType();
@@ -239,7 +239,7 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
 
         ShiAssert(wc);
 
-        if (wc && (wc->Flags & WEAP_BOMBGPS))
+        if (wc and (wc->Flags bitand WEAP_BOMBGPS))
             return true;
     }
 
@@ -248,7 +248,7 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
 
     // TODO:  Eliminate this once each vehicle has its own IR signal strength in the class table
     // Cut the signature for being on the ground
-    if (obj->BaseData()->IsSim() && ((SimBaseClass*)obj->BaseData())->OnGround())
+    if (obj->BaseData()->IsSim() and ((SimBaseClass*)obj->BaseData())->OnGround())
         signature *= typeData->GroundFactor;
 
     // Scale for range squared
@@ -258,14 +258,14 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
     // Bonus for being locked target
 
     //MI
-    //if (g_bHardCoreReal && tracking == TRUE)//me123 we have uncaged on a target and it's tracking
-    if (g_bRealisticAvionics && tracking == TRUE)
+    //if (g_bHardCoreReal and tracking == TRUE)//me123 we have uncaged on a target and it's tracking
+    if (g_bRealisticAvionics and tracking == TRUE)
     {
         signature *= 1.2F;
     }
 
-    //if (!g_bHardCoreReal && obj == lockedTarget) MI
-    if (!g_bRealisticAvionics && obj == lockedTarget)
+    //if ( not g_bHardCoreReal and obj == lockedTarget) MI
+    if ( not g_bRealisticAvionics and obj == lockedTarget)
     {
         signature *= 1.5F;
     }
@@ -306,7 +306,7 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
         return FALSE;
 
     }
-    else if ((signature > 0.75F)  && (signature > PRANDFloatPos()))
+    else if ((signature > 0.75F) and (signature > PRANDFloatPos()))
     {
         return TRUE;
     }

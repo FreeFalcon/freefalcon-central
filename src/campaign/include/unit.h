@@ -38,7 +38,7 @@ enum MissionTypeEnum;
 #define U_ENGAGED 0x40
 #define U_B1 0x80
 #define U_SCRIPTED 0x100 // Mission/Route scripted- Don't run planning AI
-#define U_COMMANDO 0x200 // Act like a commando (hit commando sites && kill ourselves after x time)
+#define U_COMMANDO 0x200 // Act like a commando (hit commando sites and kill ourselves after x time)
 #define U_MOVING 0x400
 #define U_REFUSED 0x800 // A request for transport was refused
 #define U_HASECM 0x1000 // This unit has defensive electronic countermeasures
@@ -127,7 +127,7 @@ private:
     GridIndex dest_x; // Destination
     GridIndex dest_y;
     VU_ID cargo_id; // id of our cargo, or our carrier unit
-    VU_ID target_id; // Target we're engaged with (there can be only one! (c))
+    VU_ID target_id; // Target we're engaged with (there can be only one (c))
     uchar moved;        // Moves since check
     uchar losses; // How many vehicles we've lost
     uchar tactic; // Current Unit tactic
@@ -415,120 +415,120 @@ public:
     void SetNoAbort(int f);
     virtual int IsDead() const
     {
-        return (int)unit_flags & U_DEAD;
+        return (int)unit_flags bitand U_DEAD;
     }
     //int Dead() const { return IsDead(); }
     int Assigned() const
     {
-        return (int)unit_flags & U_ASSIGNED;
+        return (int)unit_flags bitand U_ASSIGNED;
     }
     int Ordered() const
     {
-        return (int)unit_flags & U_ORDERED;
+        return (int)unit_flags bitand U_ORDERED;
     }
     int DontPlan() const
     {
-        return (int)unit_flags & U_NO_PLANNING;
+        return (int)unit_flags bitand U_NO_PLANNING;
     }
     int Parent() const
     {
-        return (int)unit_flags & U_PARENT;
+        return (int)unit_flags bitand U_PARENT;
     }
     int Engaged() const
     {
-        return (int)unit_flags & U_ENGAGED;
+        return (int)unit_flags bitand U_ENGAGED;
     }
     int Scripted()  const
     {
-        return (int)unit_flags & U_SCRIPTED;
+        return (int)unit_flags bitand U_SCRIPTED;
     }
     int Commando() const
     {
-        return (int)unit_flags & U_COMMANDO;
+        return (int)unit_flags bitand U_COMMANDO;
     }
     int Moving() const
     {
-        return (int)unit_flags & U_MOVING;
+        return (int)unit_flags bitand U_MOVING;
     }
     int Refused() const
     {
-        return (int)unit_flags & U_REFUSED;
+        return (int)unit_flags bitand U_REFUSED;
     }
     int Cargo() const
     {
-        return (int)unit_flags & U_CARGO;
+        return (int)unit_flags bitand U_CARGO;
     }
     int Combat() const
     {
-        return (int)unit_flags & U_COMBAT;
+        return (int)unit_flags bitand U_COMBAT;
     }
     int Broken() const
     {
-        return (int)unit_flags & U_BROKEN;
+        return (int)unit_flags bitand U_BROKEN;
     }
     int Aborted() const
     {
-        return (int)unit_flags & U_BROKEN;
+        return (int)unit_flags bitand U_BROKEN;
     }
     int Losses() const
     {
-        return (int)unit_flags & U_LOSSES;
+        return (int)unit_flags bitand U_LOSSES;
     }
     int Inactive() const
     {
-        return (int)unit_flags & U_INACTIVE;
+        return (int)unit_flags bitand U_INACTIVE;
     }
     int Fragment() const
     {
-        return (int)unit_flags & U_FRAGMENTED;
+        return (int)unit_flags bitand U_FRAGMENTED;
     }
     int Targeted() const
     {
-        return (int)unit_flags & U_TARGETED;
+        return (int)unit_flags bitand U_TARGETED;
     }
     int Retreating() const
     {
-        return (int)unit_flags & U_RETREATING;
+        return (int)unit_flags bitand U_RETREATING;
     }
     int Detached() const
     {
-        return (int)unit_flags & U_DETACHED;
+        return (int)unit_flags bitand U_DETACHED;
     }
     int Supported() const
     {
-        return (int)unit_flags & U_SUPPORTED;
+        return (int)unit_flags bitand U_SUPPORTED;
     }
     int TempDest() const
     {
-        return (int)unit_flags & U_TEMP_DEST;
+        return (int)unit_flags bitand U_TEMP_DEST;
     }
     int Final() const
     {
-        return (int)unit_flags & U_FINAL;
+        return (int)unit_flags bitand U_FINAL;
     }
     int HasPilots(void)
     {
-        return (int)unit_flags & U_HAS_PILOTS;
+        return (int)unit_flags bitand U_HAS_PILOTS;
     }
     int Diverted(void)
     {
-        return (int)unit_flags & U_DIVERTED;
+        return (int)unit_flags bitand U_DIVERTED;
     }
     int Fired(void)
     {
-        return (int)unit_flags & U_FIRED;
+        return (int)unit_flags bitand U_FIRED;
     }
     int Locked(void)
     {
-        return (int)unit_flags & U_LOCKED;
+        return (int)unit_flags bitand U_LOCKED;
     }
     int IAKill(void)
     {
-        return (int)unit_flags & U_IA_KILL;
+        return (int)unit_flags bitand U_IA_KILL;
     }
     int NoAbort(void)
     {
-        return (int)unit_flags & U_NO_ABORT;
+        return (int)unit_flags bitand U_NO_ABORT;
     }
 
     // Entity information
@@ -569,7 +569,7 @@ public:
     /** sets the number of vehicles in a given group of the unit. */
     void SetNumVehicles(int vg, int n)
     {
-        SetRoster((roster & ~(3 << (vg * 2))) | ((n & 0x03) << (vg * 2)));
+        SetRoster((roster bitand compl (3 << (vg * 2))) bitor ((n bitand 0x03) << (vg * 2)));
     }
     void SetTarget(FalconEntity *e)
     {
@@ -591,7 +591,7 @@ public:
     /** gets number of vehicles in a given vehicle group */
     int GetNumVehicles(int vg)
     {
-        return (int)((roster >> (vg * 2)) & 0x03);
+        return (int)((roster >> (vg * 2)) bitand 0x03);
     }
     FalconEntity* GetTarget(void)
     {

@@ -139,7 +139,7 @@ void OTWDriverClass::SetupSplashScreen(void)
     // Open the input file
     result = texFile.glOpenFileMem(filename);
 
-    if (result != 1)
+    if (result not_eq 1)
     {
         ShiWarning("We failed to read a splash screen image");
         return;
@@ -149,7 +149,7 @@ void OTWDriverClass::SetupSplashScreen(void)
     texFile.glReadFileMem();
     result = ReadTextureImage(&texFile);
 
-    if (result != GOOD_READ)
+    if (result not_eq GOOD_READ)
     {
         ShiWarning("We failed to read a splash screen image");
         return;
@@ -208,7 +208,7 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
 
 
     // RED - Consistency check
-    if (!OTWImage) return;
+    if ( not OTWImage) return;
 
     // Validate our parameter
     if (frame == lastframe) // kill "go back a frame" bug
@@ -224,7 +224,7 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
         return;
     }
 
-    if (!originalImage)
+    if ( not originalImage)
     {
         return;
     }
@@ -256,13 +256,13 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
     ShiAssert(startInvar <= stop);
 
     // Divide the dimmed color intensities by 4 (knock them down 2 bits in each channel)
-    while (srcPal < startLit) *dstPal++ = (*srcPal++ & 0x00FCFCFC) >> 1;
+    while (srcPal < startLit) *dstPal++ = (*srcPal++ bitand 0x00FCFCFC) >> 1;
 
     // Copy the "lit" color intensities
     while (srcPal < stopLit) *dstPal++ = *srcPal++;
 
     // Divide the dimmed color intensities by 4 (knock them down 2 bits in each channel)
-    while (srcPal < startInvar) *dstPal++ = (*srcPal++ & 0x00FCFCFC) >> 1;
+    while (srcPal < startInvar) *dstPal++ = (*srcPal++ bitand 0x00FCFCFC) >> 1;
 
     // Copy the invariant high portion of the palette
     while (srcPal < stop) *dstPal++ = *srcPal++;
@@ -277,7 +277,7 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
     {
         pixel = &WorkBuffer[ y * originalWidth ];
 
-        for (x = 0; x < originalWidth && imagePtr ; x ++)
+        for (x = 0; x < originalWidth and imagePtr ; x ++)
         {
             *pixel = tweakedPalette[*imagePtr];
             pixel ++;

@@ -3,7 +3,7 @@
 
 int foo_x3 = 0; // only for solving warnings
 
-#if !VU_ALL_FILTERED
+#if not VU_ALL_FILTERED
 
 VuFilteredHashTable::VuFilteredHashTable(VuFilter *filter, unsigned int tableSize, uint key) :
     VuHashTable(tableSize, key), filter_(filter->Copy())
@@ -18,7 +18,7 @@ VuFilteredHashTable::~VuFilteredHashTable()
 
 VU_ERRCODE VuFilteredHashTable::ForcedInsert(VuEntity *entity)
 {
-    if (!filter_->RemoveTest(entity))
+    if ( not filter_->RemoveTest(entity))
     {
         return VU_NO_OP;
     }
@@ -29,7 +29,7 @@ VU_ERRCODE VuFilteredHashTable::ForcedInsert(VuEntity *entity)
 
 VU_ERRCODE VuFilteredHashTable::Insert(VuEntity *entity)
 {
-    if (!filter_->Test(entity))
+    if ( not filter_->Test(entity))
     {
         return VU_NO_OP;
     }
@@ -43,11 +43,11 @@ VU_ERRCODE VuFilteredHashTable::Handle(VuMessage *msg)
     {
         VuEntity *ent = msg->Entity();
 
-        if (ent && filter_->RemoveTest(ent))
+        if (ent and filter_->RemoveTest(ent))
         {
             if (Find(ent->Id()))
             {
-                if (!filter_->Test(ent))
+                if ( not filter_->Test(ent))
                 {
                     // ent is in table, but doesn't belong there...
                     Remove(ent);

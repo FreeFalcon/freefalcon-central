@@ -44,11 +44,11 @@ CPHsi::CPHsi()
     ///VWF HACK: The following is a hack to make the Tac Eng Instrument
     // Landing Mission agree with the Manual
 
-    if (SimDriver.RunningTactical() &&
-        current_tactical_mission &&
-        current_tactical_mission->get_type() == tt_training &&
-        SimDriver.GetPlayerEntity() &&
-        !strcmpi(current_tactical_mission->get_title(), "10 Instrument Landing"))
+    if (SimDriver.RunningTactical() and 
+        current_tactical_mission and 
+        current_tactical_mission->get_type() == tt_training and 
+        SimDriver.GetPlayerEntity() and 
+ not strcmpi(current_tactical_mission->get_title(), "10 Instrument Landing"))
     {
         mpHsiValues[HSI_VAL_DESIRED_CRS] = 340.0F;
     }
@@ -207,7 +207,7 @@ void CPHsi::ExecNav(void)
         CalcTCNCrsDev(mpHsiValues[HSI_VAL_DESIRED_CRS]);
     }
 
-    if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 270 && mpHsiValues[HSI_VAL_CRS_DEVIATION] > 90)
+    if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 270 and mpHsiValues[HSI_VAL_CRS_DEVIATION] > 90)
     {
         mpHsiFlags[HSI_FLAG_TO_TRUE] = 2;
     }
@@ -245,10 +245,10 @@ void CPHsi::ExecTacan(void)
         ownshipX = SimDriver.GetPlayerEntity()->XPos();
         ownshipY = SimDriver.GetPlayerEntity()->YPos();
 
-        mpHsiFlags[HSI_FLAG_CRS_WARN] = !gNavigationSys->GetTCNPosition(&tacanX, &tacanY, &tacanZ);
+        mpHsiFlags[HSI_FLAG_CRS_WARN] = not gNavigationSys->GetTCNPosition(&tacanX, &tacanY, &tacanZ);
         gNavigationSys->GetTCNAttribute(NavigationSystem::RANGE, &tacanRange);
 
-        if (gNavigationSys->IsTCNTanker() || gNavigationSys->IsTCNAirbase() || gNavigationSys->IsTCNCarrier())   // now Carrier support
+        if (gNavigationSys->IsTCNTanker() or gNavigationSys->IsTCNAirbase() or gNavigationSys->IsTCNCarrier())   // now Carrier support
         {
             mpHsiFlags[HSI_FLAG_ILS_WARN] = FALSE;
         }
@@ -271,7 +271,7 @@ void CPHsi::ExecTacan(void)
             mpHsiFlags[HSI_FLAG_CRS_WARN] = TRUE;
         }
 
-        if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 270 && mpHsiValues[HSI_VAL_CRS_DEVIATION] > 90)
+        if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 270 and mpHsiValues[HSI_VAL_CRS_DEVIATION] > 90)
             mpHsiFlags[HSI_FLAG_TO_TRUE] = 2;
         else
             mpHsiFlags[HSI_FLAG_TO_TRUE] = TRUE;
@@ -318,11 +318,11 @@ void CPHsi::ExecILSNav(void)
     {
         pcurrentWaypoint->GetLocation(&waypointX, &waypointY, &waypointZ);
         ExecBeaconProximity(playerAC->XPos(), playerAC->YPos(), waypointX, waypointY);
-        mpHsiFlags[HSI_FLAG_ILS_WARN] = !gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &gpDew);
+        mpHsiFlags[HSI_FLAG_ILS_WARN] = not gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &gpDew);
         CalcILSCrsDev(gpDew);
     }
 
-    if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 270 && mpHsiValues[HSI_VAL_CRS_DEVIATION] > 90)
+    if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 270 and mpHsiValues[HSI_VAL_CRS_DEVIATION] > 90)
     {
         mpHsiFlags[HSI_FLAG_TO_TRUE] = 2;
     }
@@ -372,7 +372,7 @@ void CPHsi::ExecBeaconProximity(float x1, float y1, float x2, float y2)
         LastHSIHeading = mpHsiValues[HSI_VAL_CURRENT_HEADING];
     }
 
-    if (g_bRealisticAvionics && g_bINS && !playerAC->INSState(AircraftClass::INS_HSI_OFF_IN))
+    if (g_bRealisticAvionics and g_bINS and not playerAC->INSState(AircraftClass::INS_HSI_OFF_IN))
     {
         mpHsiValues[HSI_VAL_CURRENT_HEADING] = LastHSIHeading;
     }
@@ -438,13 +438,13 @@ BOOL CPHsi::BeaconInRange(float rangeToBeacon, float nominalBeaconrange)
     //MonoPrint("alt = %i\n\n", alt);
 
     // above radio horizon and within detection range - good reception
-    if ((rangeToBeacon < radioHorizon) && (detectionChanceRange > 1) && (detectionChanceAlt > 1)) // definite receive
+    if ((rangeToBeacon < radioHorizon) and (detectionChanceRange > 1) and (detectionChanceAlt > 1)) // definite receive
         lastResult = TRUE;
     // outside of radio horizon or detection range or altitude detection range to low for reception - no reception
-    else if ((rangeToBeacon > radioHorizon) || (detectionChanceRange <= 0) || (detectionChanceAlt <= 0.5))
+    else if ((rangeToBeacon > radioHorizon) or (detectionChanceRange <= 0) or (detectionChanceAlt <= 0.5))
         lastResult = FALSE;
     // detection range at max or detection altitude near min (intermitant reception)
-    else if ((detectionChanceRange > rndNum) && (detectionChanceAlt > rndNum))
+    else if ((detectionChanceRange > rndNum) and (detectionChanceAlt > rndNum))
         lastResult = TRUE;
     else lastResult = FALSE;
 
@@ -490,7 +490,7 @@ void CPHsi::Exec(void)
     }
 
     // Check for HSI Failure
-    if (playerAC->mFaults && playerAC->mFaults->GetFault(FaultClass::tcn_fault))
+    if (playerAC->mFaults and playerAC->mFaults->GetFault(FaultClass::tcn_fault))
     {
         return;
     }
@@ -504,7 +504,7 @@ void CPHsi::Exec(void)
         return;
     }
 
-    if (mode != mLastMode)
+    if (mode not_eq mLastMode)
     {
         mpHsiFlags[HSI_FLAG_INIT] = FALSE;
     }
@@ -563,10 +563,10 @@ void CPHsi::ExecILSTacan(void)
         ownshipX = SimDriver.GetPlayerEntity()->XPos();
         ownshipY = SimDriver.GetPlayerEntity()->YPos();
 
-        mpHsiFlags[HSI_FLAG_CRS_WARN] = !gNavigationSys->GetTCNPosition(&tacanX, &tacanY, &tacanZ);
+        mpHsiFlags[HSI_FLAG_CRS_WARN] = not gNavigationSys->GetTCNPosition(&tacanX, &tacanY, &tacanZ);
         gNavigationSys->GetTCNAttribute(NavigationSystem::RANGE, &range);
 
-        mpHsiFlags[HSI_FLAG_ILS_WARN] = !gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &gpDew);
+        mpHsiFlags[HSI_FLAG_ILS_WARN] = not gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &gpDew);
         ExecBeaconProximity(ownshipX, ownshipY, tacanX, tacanY);
 
         if (BeaconInRange(mpHsiValues[HSI_VAL_DISTANCE_TO_BEACON], range))
@@ -581,7 +581,7 @@ void CPHsi::ExecILSTacan(void)
             // mpHsiValues[HSI_VAL_CRS_DEVIATION] = 0; // last value?
         }
 
-        if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 270 && mpHsiValues[HSI_VAL_CRS_DEVIATION] > 90)
+        if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 270 and mpHsiValues[HSI_VAL_CRS_DEVIATION] > 90)
             mpHsiFlags[HSI_FLAG_TO_TRUE] = 2;
         else
             mpHsiFlags[HSI_FLAG_TO_TRUE] = TRUE;
@@ -681,7 +681,7 @@ CPHsiView::CPHsiView(ObjectInitStr *pobjectInitStr, HsiInitStr *phsiInitStr) : C
     }
     //Wombat778 10-06-2003 Added following lines to set up a temporary buffer for the HSI
     //this is unnecessary in using rendered pit
-    else if (g_bCockpitAutoScale && ((mVScale != 1.0f) || (mHScale != 1.0f)))
+    else if (g_bCockpitAutoScale and ((mVScale not_eq 1.0f) or (mHScale not_eq 1.0f)))
     {
 
         CompassBuffer = new ImageBuffer;
@@ -705,7 +705,7 @@ CPHsiView::~CPHsiView(void)
     }
     //Wombat778 10-06-2003 Added following lines to destroy the temporary imagebuffer;
     //unnecessary if using rendered hsi
-    else if (g_bCockpitAutoScale && ((mVScale != 1.0f) || (mHScale != 1.0f)))
+    else if (g_bCockpitAutoScale and ((mVScale not_eq 1.0f) or (mHScale not_eq 1.0f)))
     {
         if (CompassBuffer)
         {
@@ -730,7 +730,7 @@ void CPHsiView::DisplayBlit()
 
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag || DisplayOptions.bRender2DCockpit)
+    if ( not mDirtyFlag or DisplayOptions.bRender2DCockpit)
     {
         return;
     }
@@ -748,7 +748,7 @@ void CPHsiView::DisplayBlit()
     // Make the rotating blt call
 
     //Wombat778 10-06-2003, modified following lines. allows HSI to scale properly when using cockpit auto scaling
-    if (g_bCockpitAutoScale && ((mVScale != 1.0f) || (mHScale != 1.0f)))   //dont run this code if the var is set but no scaling is occuring
+    if (g_bCockpitAutoScale and ((mVScale not_eq 1.0f) or (mHScale not_eq 1.0f)))   //dont run this code if the var is set but no scaling is occuring
     {
 
         RECT temprect;
@@ -828,7 +828,7 @@ void RenderHSIPoly(tagRECT *srcrect, tagRECT *destrect, GLint alpha, TextureHand
 
     OTWDriver.renderer->context.RestoreState(alpha);
     OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
-    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 90, pVtx, sizeof(pVtx[0]));
+    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 90, pVtx, sizeof(pVtx[0]));
 }
 
 
@@ -837,7 +837,7 @@ void CPHsiView::DisplayBlit3D()
 
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag || !DisplayOptions.bRender2DCockpit)
+    if ( not mDirtyFlag or not DisplayOptions.bRender2DCockpit)
     {
         return;
     }
@@ -890,7 +890,7 @@ void CPHsiView::DisplayDraw()
     static BOOL monoYes;
     static int init = 0;
 
-    if (!init)
+    if ( not init)
     {
         monoYes = 0;
         init = 1;
@@ -898,7 +898,7 @@ void CPHsiView::DisplayDraw()
 
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag)
+    if ( not mDirtyFlag)
     {
         return;
     }
@@ -1068,7 +1068,7 @@ void CPHsiView::DrawStationBearing(float bearing)   // in nav units
 
     // draw tail
     //MI this is not here in real
-    // if(!g_bRealisticAvionics) //Wombat778 10-19-2003   Re-enabled in all avionics modes for realism as per MIRV
+    // if( not g_bRealisticAvionics) //Wombat778 10-19-2003   Re-enabled in all avionics modes for realism as per MIRV
     // {
     OTWDriver.renderer->Tri(bearingTail[0][0], bearingTail[0][1], bearingTail[1][0], bearingTail[1][1],
                             bearingTail[1][0], -bearingTail[1][1]);
@@ -1197,7 +1197,7 @@ void CPHsiView::DrawCourse(float desiredCourse, float deviaiton)
                             courseDevBar[0][0], -courseDevBar[0][1]);
 
 
-    if (ilsWarnFlag) // && (gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN || gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV)) {
+    if (ilsWarnFlag) // and (gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN or gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV)) {
     {
 
         r = (float) sqrt(courseDevScale[1] * courseDevScale[1] + 0.2f * 0.2f);
@@ -1271,32 +1271,32 @@ void CPHsiView::CreateLit(void)
                 mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
             m_pPalette = new PaletteHandle(mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
 
-            if (!m_pPalette)
+            if ( not m_pPalette)
             {
                 throw _com_error(E_OUTOFMEMORY);
             }
 
             // Check if we can use a single texture
             if (
-                (dwMaxTextureWidth >= (unsigned int)mCompassWidth) &&
+                (dwMaxTextureWidth >= (unsigned int)mCompassWidth) and 
                 (dwMaxTextureHeight >= (unsigned int)mCompassHeight)
             )
             {
                 TextureHandle *pTex = new TextureHandle;
 
-                if (!pTex)
+                if ( not pTex)
                 {
                     throw _com_error(E_OUTOFMEMORY);
                 }
 
                 m_pPalette->AttachToTexture(pTex);
 
-                if (!pTex->Create("CPHsi", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, mCompassWidth, mCompassHeight))
+                if ( not pTex->Create("CPHsi", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8, mCompassWidth, mCompassHeight))
                 {
                     throw _com_error(E_FAIL);
                 }
 
-                if (!pTex->Load(0, 0xFFFF0000, (BYTE*)mpSourceBuffer, true, true))
+                if ( not pTex->Load(0, 0xFFFF0000, (BYTE*)mpSourceBuffer, true, true))
                 {
                     // soon to be re-loaded by CPSurface::Translate3D
                     throw _com_error(E_FAIL);

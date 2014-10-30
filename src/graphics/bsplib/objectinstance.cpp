@@ -5,6 +5,7 @@
 
     Provides structures and definitions for 3D objects.
 \***************************************************************************/
+#include <cISO646>
 #include "stdafx.h"
 #include "StateStack.h"
 #include "ObjectInstance.h"
@@ -26,10 +27,10 @@ ObjectInstance::ObjectInstance(int tid)
     /***** BEGIN HACK HACK HACK HACK - Billy forced me to do it :-) -RH *****/
     if
     ( // F16c
-        (tid == 1052) ||
-        (tid == 564) ||
-        (tid == 563) ||
-        (tid == 562) ||
+        (tid == 1052) or
+        (tid == 564) or
+        (tid == 563) or
+        (tid == 562) or
         (tid == 5)
     )
     {
@@ -87,7 +88,7 @@ ObjectInstance::ObjectInstance(int tid)
         memset(SlotChildren, 0, sizeof(*SlotChildren)*ParentObject->nSlots);
     }
 
-    if ((ParentObject->nDynamicCoords == 0) || (ParentObject->nDynamicCoords > 10))
+    if ((ParentObject->nDynamicCoords == 0) or (ParentObject->nDynamicCoords > 10))
     {
         DynamicCoords = NULL;
     }
@@ -146,22 +147,22 @@ ObjectInstance::~ObjectInstance()
 #else
 
     // sfr: checking for NULL values first
-    if (SwitchValues != NULL)
+    if (SwitchValues not_eq NULL)
     {
         delete[] SwitchValues;
     }
 
-    if (DOFValues != NULL)
+    if (DOFValues not_eq NULL)
     {
         delete[] DOFValues;
     }
 
-    if (SlotChildren != NULL)
+    if (SlotChildren not_eq NULL)
     {
         delete[] SlotChildren;
     }
 
-    if (DynamicCoords != NULL)
+    if (DynamicCoords not_eq NULL)
     {
         delete[] DynamicCoords;
     }

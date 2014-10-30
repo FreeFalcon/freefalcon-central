@@ -83,7 +83,7 @@ void CPLight::DisplayBlit(void)
 
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag || !SimDriver.GetPlayerEntity())
+    if ( not mDirtyFlag or not SimDriver.GetPlayerEntity())
     {
         return;
     }
@@ -103,7 +103,7 @@ void CPLight::DisplayBlit(void)
 
     //MI check for electrics
     if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerOff)
-        && mPersistant == 3)
+       and mPersistant == 3)
     {
         //restore our original state
         if (mState)
@@ -121,7 +121,7 @@ void CPLight::DisplayBlit(void)
         return;
     }
     else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerOff)
-             && mPersistant != 3)
+            and mPersistant not_eq 3)
     {
         //restore our original state
         if (WasPersistant)
@@ -149,7 +149,7 @@ void CPLight::DisplayBlit(void)
         return;
     }
     else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerMain)
-             && mPersistant == 3)
+            and mPersistant == 3)
     {
         //make them go away
         mPersistant = 0;
@@ -157,12 +157,12 @@ void CPLight::DisplayBlit(void)
         WasPersistant = TRUE;
     }
 
-    if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->TestLights && mPersistant != 3 && !WasPersistant)
+    if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->TestLights and mPersistant not_eq 3 and not WasPersistant)
     {
         mState = TRUE;
     }
 
-    if (mState || mPersistant)
+    if (mState or mPersistant)
     {
         if (mTransparencyType == CPTRANSPARENT)
         {
@@ -222,7 +222,7 @@ void RenderLightPoly(SourceLightType *sb, tagRECT *destrect, GLint alpha) //Womb
 
     OTWDriver.renderer->context.RestoreState(alpha);
     OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
-    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
+    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
 
 }
 
@@ -231,7 +231,7 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
 {
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag || !SimDriver.GetPlayerEntity())
+    if ( not mDirtyFlag or not SimDriver.GetPlayerEntity())
     {
         return;
     }
@@ -241,15 +241,15 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
         mState = 0;
     }
 
-    if (!DisplayOptions.bRender2DCockpit) //Handle these in displayblit
+    if ( not DisplayOptions.bRender2DCockpit) //Handle these in displayblit
         return;
 
 
-    if (mpSourceBuffer[mState].m_arrTex.size() != 1)
+    if (mpSourceBuffer[mState].m_arrTex.size() not_eq 1)
         return;
 
     if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerOff)
-        && mPersistant == 3)
+       and mPersistant == 3)
     {
         //restore our original state
         if (mState)
@@ -273,7 +273,7 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
         return;
     }
     else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerOff)
-             && mPersistant != 3)
+            and mPersistant not_eq 3)
     {
         //restore our original state
         if (WasPersistant)
@@ -307,7 +307,7 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
         return;
     }
     else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerMain)
-             && mPersistant == 3)
+            and mPersistant == 3)
     {
         //make them go away
         mPersistant = 0;
@@ -315,12 +315,12 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
         WasPersistant = TRUE;
     }
 
-    if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->TestLights && mPersistant != 3 && !WasPersistant)
+    if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->TestLights and mPersistant not_eq 3 and not WasPersistant)
     {
         mState = TRUE;
     }
 
-    if (mState || mPersistant)
+    if (mState or mPersistant)
     {
         if (mTransparencyType == CPTRANSPARENT)
         {
@@ -359,26 +359,26 @@ void CPLight::CreateLit(void)
             const DWORD dwMaxTextureHeight = mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
             m_pPalette = new PaletteHandle(mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
 
-            if (!m_pPalette)
+            if ( not m_pPalette)
                 throw _com_error(E_OUTOFMEMORY);
 
             for (int i = 0; i < mStates; i++)
             {
                 // Check if we can use a single texture
-                if (((int)(dwMaxTextureWidth) >= mpSourceBuffer[i].mWidth) &&
+                if (((int)(dwMaxTextureWidth) >= mpSourceBuffer[i].mWidth) and 
                     ((int)(dwMaxTextureHeight) >= mpSourceBuffer[i].mHeight))
                 {
                     TextureHandle *pTex = new TextureHandle;
 
-                    if (!pTex)
+                    if ( not pTex)
                         throw _com_error(E_OUTOFMEMORY);
 
                     m_pPalette->AttachToTexture(pTex);
 
-                    if (!pTex->Create("CPLight", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, mpSourceBuffer[i].mWidth, mpSourceBuffer[i].mHeight))
+                    if ( not pTex->Create("CPLight", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8, mpSourceBuffer[i].mWidth, mpSourceBuffer[i].mHeight))
                         throw _com_error(E_FAIL);
 
-                    if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer[i].light, true, true)) // soon to be re-loaded by CPSurface::Translate3D
+                    if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer[i].light, true, true)) // soon to be re-loaded by CPSurface::Translate3D
                         throw _com_error(E_FAIL);
 
                     mpSourceBuffer[i].m_arrTex.push_back(pTex);

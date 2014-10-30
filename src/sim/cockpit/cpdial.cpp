@@ -78,7 +78,7 @@ CPDial::~CPDial()
     delete [] mpSinPoints;
     delete [] mpCosPoints;
 
-    if (IsRendered && DisplayOptions.bRender2DCockpit)
+    if (IsRendered and DisplayOptions.bRender2DCockpit)
     {
         glReleaseMemory((char*) mpSourceBuffer);
     }
@@ -157,14 +157,14 @@ void CPDial::Exec(SimBaseClass* pOwnship)
 
             angle = mpPoints[mEndPoints - 1]; //Wombat778 7-09-04
         }
-        else if ((mDialValue >= mpValues[i]) && (mDialValue < mpValues[i + 1]))
+        else if ((mDialValue >= mpValues[i]) and (mDialValue < mpValues[i + 1]))
         {
             found = TRUE;
 
             delta = mpPoints[i + 1] - mpPoints[i];
 
             // sfr: removing this makes it possible to have CW and CCW rotation
-            if ((mpCPManager->GetMajorVersion() == 0) && ((mpCPManager->GetMinorVersion() == 0)))
+            if ((mpCPManager->GetMajorVersion() == 0) and ((mpCPManager->GetMinorVersion() == 0)))
             {
                 if (delta > 0.0F)
                 {
@@ -228,7 +228,7 @@ void CPDial::Exec(SimBaseClass* pOwnship)
             i++;
         }
     }
-    while ((!found) && (i < mEndPoints));
+    while (( not found) and (i < mEndPoints));
 
     SetDirtyFlag(); //VWF FOR NOW
 }
@@ -238,12 +238,12 @@ void CPDial::DisplayDraw()
 
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag)
+    if ( not mDirtyFlag)
     {
         return;
     }
 
-    if (IsRendered && DisplayOptions.bRender2DCockpit)
+    if (IsRendered and DisplayOptions.bRender2DCockpit)
     {
         //Handle in DisplayBlit3D
         return;
@@ -334,7 +334,7 @@ void RenderNeedlePoly(TextureHandle *pTex, tagRECT *destrect, GLint alpha, float
 
     OTWDriver.renderer->context.RestoreState(alpha);
     OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
-    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
+    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
 }
 
 
@@ -343,12 +343,12 @@ void CPDial::DisplayBlit3D()
 
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag)
+    if ( not mDirtyFlag)
     {
         return;
     }
 
-    if (!IsRendered || !DisplayOptions.bRender2DCockpit)
+    if ( not IsRendered or not DisplayOptions.bRender2DCockpit)
     {
         return;
     }
@@ -371,7 +371,7 @@ void CPDial::DisplayBlit3D()
 
 void CPDial::CreateLit(void)
 {
-    if (IsRendered && DisplayOptions.bRender2DCockpit)
+    if (IsRendered and DisplayOptions.bRender2DCockpit)
     {
         try
         {
@@ -382,20 +382,20 @@ void CPDial::CreateLit(void)
             m_pPalette =
                 new PaletteHandle(mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
 
-            if (!m_pPalette)
+            if ( not m_pPalette)
             {
                 throw _com_error(E_OUTOFMEMORY);
             }
 
             // Check if we can use a single texture
             if (
-                ((int)dwMaxTextureWidth >= mSrcRect.right - mSrcRect.left) &&
+                ((int)dwMaxTextureWidth >= mSrcRect.right - mSrcRect.left) and 
                 ((int)dwMaxTextureHeight >= mSrcRect.bottom - mSrcRect.top)
             )
             {
                 TextureHandle *pTex = new TextureHandle;
 
-                if (!pTex)
+                if ( not pTex)
                 {
                     throw _com_error(E_OUTOFMEMORY);
                 }
@@ -403,7 +403,7 @@ void CPDial::CreateLit(void)
                 m_pPalette->AttachToTexture(pTex);
 
                 if (
-                    !pTex->Create("CPDial", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8,
+ not pTex->Create("CPDial", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8,
                                   (int)(mSrcRect.right - mSrcRect.left),
                                   (int)(mSrcRect.bottom - mSrcRect.top))
                 )
@@ -411,7 +411,7 @@ void CPDial::CreateLit(void)
                     throw _com_error(E_FAIL);
                 }
 
-                if (!pTex->Load(0, 0xFFFF0000, (BYTE*)mpSourceBuffer, true, true))
+                if ( not pTex->Load(0, 0xFFFF0000, (BYTE*)mpSourceBuffer, true, true))
                 {
                     // soon to be re-loaded by CPSurface::Translate3D
                     throw _com_error(E_FAIL);

@@ -56,19 +56,19 @@ void AircraftClass::DoWeapons()
 
     // Guns
     //MI
-    if (!g_bRealisticAvionics || isDigital)
+    if ( not g_bRealisticAvionics or isDigital)
     {
-        fireFlag = fireGun && !OnGround() && (Sms->MasterArm() == SMSBaseClass::Arm);
+        fireFlag = fireGun and not OnGround() and (Sms->MasterArm() == SMSBaseClass::Arm);
     }
     else
     {
         //Gun can only be fired if it's selected as actual weapon
-        fireFlag = !OnGround() && (Sms->MasterArm() == SMSBaseClass::Arm) && (GunFire || fireGun);
+        fireFlag = not OnGround() and (Sms->MasterArm() == SMSBaseClass::Arm) and (GunFire or fireGun);
     }
 
     if (Guns)
     {
-        Guns->Exec(&fireFlag, dmx, &platformAngles, targetList, !isDigital);
+        Guns->Exec(&fireFlag, dmx, &platformAngles, targetList, not isDigital);
 
         if (fireFlag)
         {
@@ -78,7 +78,7 @@ void AircraftClass::DoWeapons()
 
             else if (IsFiring())
             {
-                if (!SoundPos.IsPlaying(af->auxaeroData->sndGunStart))  // MLR 2003-11-19
+                if ( not SoundPos.IsPlaying(af->auxaeroData->sndGunStart))  // MLR 2003-11-19
                 {
                     // MonoPrint("Vulcan Loop Sound: Playing\n" );
                     SoundPos.Sfx(af->auxaeroData->sndGunLoop);
@@ -98,9 +98,9 @@ void AircraftClass::DoWeapons()
                 }
             }
 
-            if (!IsFiring())
+            if ( not IsFiring())
             {
-                if (!isDigital)
+                if ( not isDigital)
                 {
                     SoundPos.Sfx(af->auxaeroData->sndGunStart);
                     // F4PlaySound( SFX_DEF[ SFX_VULCAN_START ].handle );
@@ -121,7 +121,7 @@ void AircraftClass::DoWeapons()
             // spin down ownship vulcan?
             if (IsFiring())
             {
-                if (!isDigital)
+                if ( not isDigital)
                 {
                     vulcDist = 20000.0f;
                     SoundPos.Sfx(af->auxaeroData->sndGunEnd);
@@ -144,28 +144,28 @@ void AircraftClass::DoWeapons()
     if ((this->autopilotType == CombatAP)) // FRB
         isPlayer = false;
 
-    if (!SimDriver.RunningInstantAction() || gNumWeaponsInAir < gMaxIAWeaponsFired)
+    if ( not SimDriver.RunningInstantAction() or gNumWeaponsInAir < gMaxIAWeaponsFired)
     {
         wasPostDrop = FCC->postDrop;
 
         // If in Selective jettison mode, stop here, since the pickle button has been usurped
         if (
-            Sms->drawable && Sms->drawable->DisplayMode() == SmsDrawable::SelJet &&
+            Sms->drawable and Sms->drawable->DisplayMode() == SmsDrawable::SelJet and 
             Sms->drawable->IsDisplayed()
         )
         {
-            if (FCC->releaseConsent && !OnGround())
+            if (FCC->releaseConsent and not OnGround())
                 Sms->SelectiveJettison();
         }
         // Firing A-A Missiles
-        else if (FCC->GetMasterMode() == FireControlComputer::Missile ||
-                 FCC->GetMasterMode() == FireControlComputer::Dogfight ||
+        else if (FCC->GetMasterMode() == FireControlComputer::Missile or
+                 FCC->GetMasterMode() == FireControlComputer::Dogfight or
                  FCC->GetMasterMode() == FireControlComputer::MissileOverride)
         {
-            if (FCC->releaseConsent && !FCC->postDrop)
+            if (FCC->releaseConsent and not FCC->postDrop)
             {
                 // 2002-04-07 MN CTD fix - if in AA mode and gun is selected, pressing trigger will crash
-                if (Sms->curWeapon && Sms->curWeaponClass != wcGunWpn)
+                if (Sms->curWeapon and Sms->curWeaponClass not_eq wcGunWpn)
                 {
                     if (Sms->LaunchMissile())
                     {
@@ -179,7 +179,7 @@ void AircraftClass::DoWeapons()
                         // dereference our previous missile before setting another one
 
                         // Only if we are a digital entity
-                        if (isDigital || !isPlayer) // FRB
+                        if (isDigital or not isPlayer) // FRB
                         {
                             // If we currenly have a missile in our variable, dereference it first
                             if (DBrain()->missileFiredEntity)
@@ -189,18 +189,18 @@ void AircraftClass::DoWeapons()
                             // Let FF know we are using this object...
                             VuReferenceEntity((VuEntity *)(DBrain()->missileFiredEntity));
                             // Clear the lsb so we know we have just set it
-                            // (we'll be off by a milisecond, so what!)
-                            DBrain()->missileFiredTime = SimLibElapsedTime & 0xfffffffe;
+                            // (we'll be off by a milisecond, so what)
+                            DBrain()->missileFiredTime = SimLibElapsedTime bitand 0xfffffffe;
                         }
 
                         // END OF ADDED SECTION
                         // JPO - two cases- dogfight mode has its own sub mode.
                         // all others use the regular.
-                        if ((FCC->GetMasterMode() != FireControlComputer::Dogfight &&
-                             FCC->GetSubMode() == FireControlComputer::Aim9) ||
-                            (FCC->GetMasterMode() == FireControlComputer::Dogfight &&
-                             FCC->GetDgftSubMode() == FireControlComputer::Aim9)  ||
-                            (FCC->GetMasterMode() == FireControlComputer::MissileOverride &&
+                        if ((FCC->GetMasterMode() not_eq FireControlComputer::Dogfight and 
+                             FCC->GetSubMode() == FireControlComputer::Aim9) or
+                            (FCC->GetMasterMode() == FireControlComputer::Dogfight and 
+                             FCC->GetDgftSubMode() == FireControlComputer::Aim9)  or
+                            (FCC->GetMasterMode() == FireControlComputer::MissileOverride and 
                              // ASSOCIATOR: Added MissileOverride here to get remembered mode
                              FCC->GetMrmSubMode() == FireControlComputer::Aim9))
                         {
@@ -213,12 +213,12 @@ void AircraftClass::DoWeapons()
 
                             // Must be an IR missile
                             if (
-                                curWeapon->IsMissile() &&
+                                curWeapon->IsMissile() and 
                                 ((MissileClass *)curWeapon)->GetSeekerType() == SensorClass::IRST
                             )
                             {
                                 // If we do not have a target, get the missile's target
-                                if (!targetPtr)
+                                if ( not targetPtr)
                                 {
                                     tmpTargetPtr = curWeapon->targetPtr;
                                 }
@@ -230,10 +230,10 @@ void AircraftClass::DoWeapons()
                         // END OF ADDED SECTION
 
                         else if (
-                            FCC->GetSubMode() == FireControlComputer::Aim120 ||
-                            (FCC->GetMasterMode() == FireControlComputer::Dogfight &&
-                             FCC->GetDgftSubMode() == FireControlComputer::Aim120) ||
-                            (FCC->GetMasterMode() == FireControlComputer::MissileOverride &&
+                            FCC->GetSubMode() == FireControlComputer::Aim120 or
+                            (FCC->GetMasterMode() == FireControlComputer::Dogfight and 
+                             FCC->GetDgftSubMode() == FireControlComputer::Aim120) or
+                            (FCC->GetMasterMode() == FireControlComputer::MissileOverride and 
                              // ASSOCIATOR: Added MissileOverride here to get remembered mode
                              FCC->GetMrmSubMode() == FireControlComputer::Aim120)
                         )
@@ -249,7 +249,7 @@ void AircraftClass::DoWeapons()
                         FCC->MissileLaunch(); //me123 used for "TOF" que modifed JPO
 
                         fireMissile = FALSE;
-                        // MLR Note: Maybe we should have the missle emit the sound (new & looped!)
+                        // MLR Note: Maybe we should have the missle emit the sound (new bitand looped)
 
                         //RV - I-Hawk - commenting this call. all missiles launches sound
                         //now handled in SMSClass::LaunchMissile()
@@ -259,7 +259,7 @@ void AircraftClass::DoWeapons()
                     FCC->postDrop = TRUE;
 
                     //Cobra bomb shake?
-                    if (this == SimDriver.GetPlayerEntity() && Sms->MasterArm() == SMSBaseClass::Arm)
+                    if (this == SimDriver.GetPlayerEntity() and Sms->MasterArm() == SMSBaseClass::Arm)
                     {
                         ioPerturb = 0.5f;
                     }
@@ -267,10 +267,10 @@ void AircraftClass::DoWeapons()
             }
         }
         // Firing A-G Missiles
-        else if (FCC->GetMasterMode() == FireControlComputer::AirGroundMissile ||
+        else if (FCC->GetMasterMode() == FireControlComputer::AirGroundMissile or
                  FCC->GetMasterMode() == FireControlComputer::AirGroundHARM)
         {
-            if (FCC->releaseConsent && !FCC->postDrop)
+            if (FCC->releaseConsent and not FCC->postDrop)
             {
                 if (Sms->LaunchMissile())
                 {
@@ -286,14 +286,14 @@ void AircraftClass::DoWeapons()
 
                     // 2002-04-14 MN moved into MislSms::LaunchMissile - if WEAP_BOMBDROPSOUND is set, play it, if not, missile launch sound
                     // do that only if we don't want the above...
-                    if (!(g_nMissileFix & 0x80))
+                    if ( not (g_nMissileFix bitand 0x80))
                         SoundPos.Sfx(SFX_MISSILE2);
                 }
 
                 FCC->postDrop = TRUE;
 
                 //Cobra bomb shake?
-                if (this == SimDriver.GetPlayerEntity() && Sms->MasterArm() == SMSBaseClass::Arm)
+                if (this == SimDriver.GetPlayerEntity() and Sms->MasterArm() == SMSBaseClass::Arm)
                 {
                     ioPerturb = 0.5f;
                 }
@@ -302,10 +302,10 @@ void AircraftClass::DoWeapons()
         // Firing rockets
         else
 
-            //if (FCC->GetMasterMode() == FireControlComputer::AirGroundBomb && // MLR 4/3/2004 -
+            //if (FCC->GetMasterMode() == FireControlComputer::AirGroundBomb and // MLR 4/3/2004 -
             //FCC->GetSubMode() == FireControlComputer::RCKT)
             if (FCC->GetMasterMode() == FireControlComputer::AirGroundRocket
-                && FCC->GetSubMode() == FireControlComputer::OBSOLETERCKT) // MLR 4/3/2004 -
+               and FCC->GetSubMode() == FireControlComputer::OBSOLETERCKT) // MLR 4/3/2004 -
             {
                 if (FCC->bombPickle)
                 {
@@ -314,7 +314,7 @@ void AircraftClass::DoWeapons()
                     SoundPos.Sfx(SFX_RCKTLOOP);
                     */
 
-                    if (!(Sms->IsSet(SMSBaseClass::Firing)) && curWeapon) // MLR 3/8/2004 - CTD
+                    if ( not (Sms->IsSet(SMSBaseClass::Firing)) and curWeapon) // MLR 3/8/2004 - CTD
                     {
                         // Drop a message
                         SendFireMessage(curWeapon, FalconWeaponsFire::Rocket, TRUE, targetPtr);
@@ -339,13 +339,13 @@ void AircraftClass::DoWeapons()
         // Droping dumb bombs
             else if (FCC->GetMasterMode() == FireControlComputer::AirGroundBomb)
             {
-                // COBRA - RED - Rewritten in a decent and WORKING WAY..!!!!
+                // COBRA - RED - Rewritten in a decent and WORKING WAY..
 
                 // Ok, look for a Bomb
                 BombClass *TheBomb = FCC->GetTheBomb();
 
                 // And if the Bomb is present and released
-                if (TheBomb && FCC->bombPickle)
+                if (TheBomb and FCC->bombPickle)
                 {
                     float wt = 0.0f;
 
@@ -357,7 +357,7 @@ void AircraftClass::DoWeapons()
                     float wtTurb = sqrtf((float)wt) / 100.0f;
 
                     // *** JDAM STUFF *** Check if it's powered
-                    if (TheBomb->IsSetBombFlag(BombClass::IsGPS) && Sms->JDAMPowered)
+                    if (TheBomb->IsSetBombFlag(BombClass::IsGPS) and Sms->JDAMPowered)
                     {
                         // Drop it, enabling ripple if Player
                         if (Sms->DropBomb(isPlayer))
@@ -372,10 +372,10 @@ void AircraftClass::DoWeapons()
                     }
 
                     // *** JSOW STUFF *** Check if it's powered
-                    if (TheBomb->IsSetBombFlag(BombClass::IsJSOW && Sms->JDAMPowered))
+                    if (TheBomb->IsSetBombFlag(BombClass::IsJSOW and Sms->JDAMPowered))
                     {
                         // if AI Pair enabled based on weight
-                        if (!isPlayer)
+                        if ( not isPlayer)
                         {
                             if (wt < 1999) Sms->SetAGBPair(TRUE);
                             else Sms->SetAGBPair(FALSE);
@@ -396,10 +396,10 @@ void AircraftClass::DoWeapons()
 
                     // * From here, code for bumb bombs *
                     // *** CLUSTERS STUFF *** it has burnt height
-                    if (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags & SMSClass::HasBurstHeight)
+                    if (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->flags bitand SMSClass::HasBurstHeight)
                     {
                         // If not Player drop in Couples
-                        if (!isPlayer) Sms->SetAGBPair(TRUE);
+                        if ( not isPlayer) Sms->SetAGBPair(TRUE);
 
                         // Drop it, enabling ripple if Player
                         if (Sms->DropBomb(isPlayer))
@@ -417,7 +417,7 @@ void AircraftClass::DoWeapons()
 
                     // *** GENERIC BOMBS ***
                     // Checks for AI
-                    if (!isPlayer)
+                    if ( not isPlayer)
                     {
                         // Drop light Bombs in pair else as single
                         if (wt < 2000)
@@ -446,13 +446,13 @@ void AircraftClass::DoWeapons()
         // *** LASERS STUFF *** it has burnt height
             else if (FCC->GetMasterMode() == FireControlComputer::AirGroundLaser)
             {
-                // COBRA - RED - Rewritten in a decent and WORKING WAY..!!!!
+                // COBRA - RED - Rewritten in a decent and WORKING WAY..
 
                 // Ok, look for a Bomb
                 BombClass *TheBomb = FCC->GetTheBomb();
 
                 // And if the Bomb is present and released
-                if (TheBomb && FCC->bombPickle)
+                if (TheBomb and FCC->bombPickle)
                 {
                     float wt = 0.0f;
 
@@ -466,7 +466,7 @@ void AircraftClass::DoWeapons()
                     TheBomb->SetTarget(targetPtr);
 
                     //MI ripple for GBU's is there in real
-                    if (!g_bRealisticAvionics)
+                    if ( not g_bRealisticAvionics)
                     {
                         if (Sms->DropBomb(FALSE))
                         {
@@ -489,7 +489,7 @@ void AircraftClass::DoWeapons()
         // Just taking pictures for the family
             else if (FCC->GetMasterMode() == FireControlComputer::AirGroundCamera)
             {
-                if (FCC->releaseConsent && !OnGround() && Sms->curWeapon)
+                if (FCC->releaseConsent and not OnGround() and Sms->curWeapon)
                 {
                     CampBaseClass *campEntity;
                     float vpLeft, vpTop, vpRight, vpBottom;
@@ -504,21 +504,21 @@ void AircraftClass::DoWeapons()
                     // Find the 'official target
                     tmpWp = waypoint;
 
-                    while (tmpWp && tmpWp->GetWPAction() != WP_RECON)
+                    while (tmpWp and tmpWp->GetWPAction() not_eq WP_RECON)
                         tmpWp = tmpWp->GetNextWP();
 
                     if (tmpWp)
                         tgtId = tmpWp->GetWPTargetID();
 
                     // Check the assigned target, if any
-                    if (tgtId != FalconNullId)
+                    if (tgtId not_eq FalconNullId)
                     {
                         campEntity = (CampBaseClass*) vuDatabase->Find(tgtId);
 
                         // Check vs the assigned target's components
                         entity = NULL;
 
-                        if (campEntity && campEntity->GetComponents())
+                        if (campEntity and campEntity->GetComponents())
                         {
                             VuListIterator cit(campEntity->GetComponents());
 
@@ -526,7 +526,7 @@ void AircraftClass::DoWeapons()
                             //    {
                             entity = cit.GetFirst();
 
-                            while (entity && !TheHud->CanSeeTarget(curWeapon->Type(), entity, this))
+                            while (entity and not TheHud->CanSeeTarget(curWeapon->Type(), entity, this))
                                 entity = cit.GetNext();
 
                             //    }
@@ -539,24 +539,24 @@ void AircraftClass::DoWeapons()
                     }
 
                     // If we didn't find something at our target site, check for something else we may have seen
-                    if (!entity)
+                    if ( not entity)
                     {
                         // Check features first
                         VuListIterator featWalker(SimDriver.combinedFeatureList);
                         entity = featWalker.GetFirst();
 
-                        while (entity && !TheHud->CanSeeTarget(curWeapon->Type(), entity, this))
+                        while (entity and not TheHud->CanSeeTarget(curWeapon->Type(), entity, this))
                         {
                             entity = featWalker.GetNext();
                         }
 
                         // No features, check for vehicles
-                        if (!entity)
+                        if ( not entity)
                         {
                             VuListIterator objWalker(SimDriver.combinedList);
                             entity = objWalker.GetFirst();
 
-                            while (entity && !TheHud->CanSeeTarget(curWeapon->Type(), entity, this))
+                            while (entity and not TheHud->CanSeeTarget(curWeapon->Type(), entity, this))
                             {
                                 entity = objWalker.GetNext();
                             }
@@ -579,13 +579,13 @@ void AircraftClass::DoWeapons()
     else
     {
         // Special case for firing a load of rockets
-        //      if (FCC->GetMasterMode() == FireControlComputer::AirGroundBomb && // MLR 4/3/2004 -
-        //          FCC->GetSubMode() == FireControlComputer::RCKT  &&
-        //              Sms->IsSet(SMSBaseClass::Firing) &&
+        //      if (FCC->GetMasterMode() == FireControlComputer::AirGroundBomb and // MLR 4/3/2004 -
+        //          FCC->GetSubMode() == FireControlComputer::RCKT  and 
+        //              Sms->IsSet(SMSBaseClass::Firing) and 
         //          FCC->bombPickle)
 
-        if (FCC->GetMasterMode() == FireControlComputer::AirGroundRocket && // MLR 4/3/2004 -
-            Sms->IsSet(SMSBaseClass::Firing) &&
+        if (FCC->GetMasterMode() == FireControlComputer::AirGroundRocket and // MLR 4/3/2004 -
+            Sms->IsSet(SMSBaseClass::Firing) and 
             FCC->bombPickle)
         {
             // Play the sound
@@ -593,7 +593,7 @@ void AircraftClass::DoWeapons()
             SoundPos.Sfx(SFX_RCKTLOOP);
             */
 
-            if (!(Sms->IsSet(SMSBaseClass::Firing)) && curWeapon)  // MLR 3/8/2004 - CTD
+            if ( not (Sms->IsSet(SMSBaseClass::Firing)) and curWeapon)  // MLR 3/8/2004 - CTD
             {
                 // Drop a message
                 SendFireMessage(curWeapon, FalconWeaponsFire::Rocket, TRUE, targetPtr);

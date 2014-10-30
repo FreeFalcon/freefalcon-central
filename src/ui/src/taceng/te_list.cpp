@@ -133,7 +133,7 @@ extern long TeamLineIDs[NUM_TEAMS];
 
 void create_tactical_scenario_info(void)
 {
-    TheCampaign.Flags |= CAMP_TACTICAL;
+    TheCampaign.Flags or_eq CAMP_TACTICAL;
 
     update_sua_load_list();
 
@@ -174,7 +174,7 @@ void TE_LoadMissionCB(long, short hittype, C_Base *control)
     C_Button   *btn;
     _TCHAR buffer[MAX_PATH];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tree = (C_TreeList*)control;
@@ -221,7 +221,7 @@ void TE_LoadTrainingMissionCB(long, short hittype, C_Base *control)
     C_Button   *btn;
     _TCHAR buffer[MAX_PATH];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tree = (C_TreeList*)control;
@@ -324,12 +324,12 @@ void GetTacticalFileList()
 
 void TEDelFileCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->HideWindow(control->Parent_); // Close Verify Window
 
-    if (!CheckExclude(gLastTEFilename, FalconCampUserSaveDirectory, TEExcludeList, "tac"))
+    if ( not CheckExclude(gLastTEFilename, FalconCampUserSaveDirectory, TEExcludeList, "tac"))
         DeleteFile(gLastTEFilename);
 
     gLastTEFilename[0] = 0;
@@ -347,7 +347,7 @@ void TEDelFileCB(long, short hittype, C_Base *control)
 
 void TEDelVerifyCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gLastTEFilename[0])
@@ -356,7 +356,7 @@ void TEDelVerifyCB(long, short hittype, C_Base *)
 
 void tac_flag_btn_cb(long, short hittype, C_Base *ctrl)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (current_tactical_mission)
@@ -378,7 +378,7 @@ void tac_flag_btn_cb(long, short hittype, C_Base *ctrl)
 
 void choose_eng_type_cb(long , short hittype, C_Base *ctrl)
 {
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     short type = static_cast<short>(((C_ListBox *)ctrl)->GetTextID());
@@ -407,7 +407,7 @@ void choose_eng_type_cb(long , short hittype, C_Base *ctrl)
 
 void hookup_edit_controls(C_Window *win)
 {
-    if (!win)
+    if ( not win)
         return;
 
     C_Button *btn;
@@ -523,7 +523,7 @@ void create_tactical_list(void)
 
     win = gMainHandler->FindWindow(TAC_MISSION_WIN);
 
-    if (!win)
+    if ( not win)
     {
         MonoPrint("Cannot Find TAC_MISSION_WIN\n");
         return;
@@ -667,7 +667,7 @@ void create_tactical_list(void)
 
 void tactical_team_selection(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (current_tactical_mission)
@@ -679,7 +679,7 @@ void tactical_team_selection(long, short hittype, C_Base *control)
 
 void JoinTacTeamCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (control)
@@ -712,10 +712,10 @@ static void update_sua_load_list(void)
 
     win = gMainHandler->FindWindow(TAC_SUA_WIN);
 
-    if (current_tactical_mission && win)
+    if (current_tactical_mission and win)
     {
         gSelectedTeam = 0;
-        //! gSelectedTeam=-1;
+        //gSelectedTeam=-1;
         current_tactical_mission->set_team(0);
         id = 0;
 
@@ -884,7 +884,7 @@ static void update_pua_list(void)
             {
                 long textid = TRN_MISSION_01 + atol(current_tactical_mission->get_title()) - 1;
 
-                if (textid >= TRN_MISSION_01 && textid <= TRN_MISSION_31)
+                if (textid >= TRN_MISSION_01 and textid <= TRN_MISSION_31)
                     txt->SetText(textid);
                 else
                     txt->SetText((char*)TheCampaign.team_motto[gSelectedTeam]);
@@ -974,7 +974,7 @@ void update_missions_details(long winID)
 
     C_Window *win = gMainHandler->FindWindow(winID);
 
-    if (!win)
+    if ( not win)
         return;
 
     if (winID == TAC_AIRCRAFT)
@@ -1031,7 +1031,7 @@ void update_missions_details(long winID)
         }
 
         // Get Mission string
-        if (curflight->GetUnitMission() != AMIS_ABORT)
+        if (curflight->GetUnitMission() not_eq AMIS_ABORT)
         {
             GetMissionTarget(curpackage, curflight, Buffer);
 
@@ -1044,7 +1044,7 @@ void update_missions_details(long winID)
 
             while (wp)
             {
-                if (wp->GetWPFlags() & WPF_TARGET)
+                if (wp->GetWPFlags() bitand WPF_TARGET)
                 {
                     GetTimeString(wp->GetWPArrivalTime(), TOT);
                     wp = NULL;
@@ -1107,21 +1107,21 @@ void tactical_select_join(long, short hittype, C_Base *ctrl)
     C_Window
     *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
 
     DisableScenarioInfo();
 
-    if (!gCommsMgr->Online())
+    if ( not gCommsMgr->Online())
         gMainHandler->EnableWindowGroup(6001);
 
     ctrl->Parent_->HideCluster(ctrl->GetUserNumber(1));
     ctrl->Parent_->HideCluster(ctrl->GetUserNumber(2));
     ctrl->Parent_->UnHideCluster(ctrl->GetUserNumber(0));
 
-    if (!gCommsMgr->Online())
+    if ( not gCommsMgr->Online())
     {
         win = gMainHandler->FindWindow(PB_WIN);
 
@@ -1141,7 +1141,7 @@ void tactical_select_join(long, short hittype, C_Base *ctrl)
 
 void tactical_select_load(long, short hittype, C_Base *ctrl)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -1161,7 +1161,7 @@ void tactical_select_load(long, short hittype, C_Base *ctrl)
 
 void tactical_select_training(long, short hittype, C_Base *ctrl)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }

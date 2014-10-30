@@ -56,7 +56,7 @@ int FalconObjectiveMessage::Process(uchar autodisp)
 
     o = FindObjective(EntityId());
 
-    if (!o)
+    if ( not o)
         return -1;
 
     switch (dataBlock.message)
@@ -73,7 +73,7 @@ int FalconObjectiveMessage::Process(uchar autodisp)
             o->SetObjectiveSupplyLosses(0);
             o->SetAbandoned(0);
 #ifdef KEV_DEBUG
-            MonoPrint("Objective %d captured by Team %d!\n", o->GetCampID(), GetTeam((uchar)(dataBlock.data1)));
+            MonoPrint("Objective %d captured by Team %d\n", o->GetCampID(), GetTeam((uchar)(dataBlock.data1)));
 #endif
             GridIndex x, y;
             o->GetLocation(&x, &y);

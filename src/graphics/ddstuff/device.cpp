@@ -29,7 +29,7 @@ DisplayDevice::DisplayDevice()
 // Clean up after ourselves
 DisplayDevice::~DisplayDevice()
 {
-    ShiAssert(!IsReady());
+    ShiAssert( not IsReady());
 }
 
 
@@ -43,7 +43,7 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
     int resNum;
     UInt w, h, d;
 
-    ShiAssert(!IsReady());
+    ShiAssert( not IsReady());
 
 
     // Remember our driver number so we know if we're software (driver 0) or hardware.
@@ -69,7 +69,7 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
     {
         if (FalconDisplay.devmgr.GetMode(driverNum, devNum, resNum, &w, &h, &d))
         {
-            if ((w == (unsigned) width) && (h == (unsigned)height) && (d == (unsigned)depth))
+            if ((w == (unsigned) width) and (h == (unsigned)height) and (d == (unsigned)depth))
             {
                 // Found it
                 break;
@@ -87,14 +87,14 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
     // Create an MPR device handle for this device
     m_DXCtx = FalconDisplay.devmgr.CreateContext(driverNumber, devNum, resNum, fullScreen, win);
 
-    if (!m_DXCtx)
+    if ( not m_DXCtx)
     {
         // try default device
         driverNumber = 0;
 
         m_DXCtx = FalconDisplay.devmgr.CreateContext(driverNumber, 0, resNum, fullScreen, win);
 
-        if (!m_DXCtx)
+        if ( not m_DXCtx)
             return;
     }
 
@@ -111,7 +111,7 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
     {
 
         // set up and register window class
-        wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS | CS_NOCLOSE;
+        wc.style = CS_HREDRAW bitor CS_VREDRAW bitor CS_OWNDC bitor CS_DBLCLKS bitor CS_NOCLOSE;
         wc.lpfnWndProc = DefWindowProc;
         wc.cbClsExtra = 0;
         wc.cbWndExtra = sizeof(DWORD);
@@ -154,7 +154,7 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
                      NULL /* create parms */
                  );
 
-        if (!appWin)
+        if ( not appWin)
         {
             ShiError("Failed to construct main window");
         }
@@ -174,7 +174,7 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
         // If this is other than the default primary display, shrink the target window
         // on the desktop and don't let DirectX muck with it.
 #if 0
-        SetWindowPos(appWin, HWND_TOP, 0, 200, 10, 4, SWP_NOCOPYBITS | SWP_SHOWWINDOW);
+        SetWindowPos(appWin, HWND_TOP, 0, 200, 10, 4, SWP_NOCOPYBITS bitor SWP_SHOWWINDOW);
 #endif
 
         // Create the primary surface(s)
@@ -189,7 +189,7 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
 
     // Make sure we haven't gotten confused about how many contexts we have
     // ShiAssert( ContextMPR::StateSetupCounter == 0 );
-    if (ContextMPR::StateSetupCounter != 0)
+    if (ContextMPR::StateSetupCounter not_eq 0)
         ContextMPR::StateSetupCounter = 0; // Force it for now.  Shouldn't be required.
 
     // Create a rendering context for the primary surface
@@ -217,7 +217,7 @@ void DisplayDevice::Cleanup(void)
 
     // Make sure we haven't gotten confused about how many contexts we have
     // ShiAssert( ContextMPR::StateSetupCounter == 0 );
-    if (ContextMPR::StateSetupCounter != 0)
+    if (ContextMPR::StateSetupCounter not_eq 0)
     {
         ContextMPR::StateSetupCounter = 0; // Force it for now.  Shouldn't be required.
     }

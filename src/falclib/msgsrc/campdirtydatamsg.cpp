@@ -113,14 +113,14 @@ int CampDirtyData::Process(uchar autodisp)
 
     ent = (FalconEntity*) vuDatabase->Find(EntityId());
 
-    if (!ent || autodisp)
+    if ( not ent or autodisp)
     {
         return 0;
     }
 
     // Only accept data if this is a remote entity
     //sfr: added size check, as we are receiving empy messages
-    if ((!ent->IsLocal())/* && (dataBlock.size != 0)*/)
+    if (( not ent->IsLocal())/* and (dataBlock.size not_eq 0)*/)
     {
         //sfr: was size = ent->DecodeDirty (&data);
         //we do this because we consume the buffer, and will need to free
@@ -137,7 +137,7 @@ int CampDirtyData::Process(uchar autodisp)
         }
         catch (InvalidBufferException)
         {
-            fprintf(stderr, "%s %d: invalid buffer, check here!!!\n", __FILE__,  __LINE__);
+            fprintf(stderr, "%s %d: invalid buffer, check here\n", __FILE__,  __LINE__);
         }
 
 #endif

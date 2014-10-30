@@ -68,7 +68,7 @@ public:
     void Update(long curtime);
     void SetImage(IMAGE_RSC *img, uchar side, uchar blipno)
     {
-        BlipImg_[side & 7][blipno & 7] = img;
+        BlipImg_[side bitand 7][blipno bitand 7] = img;
     }
     void SetImage(long ImageID, uchar side, uchar blipno)
     {

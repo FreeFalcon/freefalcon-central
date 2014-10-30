@@ -62,16 +62,16 @@ unsigned int DrawableClass::AltMFDColors[] =   // JPO Alternative High contrast 
 // JPO - pick color with intensity and backwards compat
 unsigned int DrawableClass::GetMfdColor(MfdColor type)
 {
-    ShiAssert(GetIntensity() != 0 &&
-              GetIntensity() != 0xCCCCCCCC); // we shouldn't ever switch off completely.
+    ShiAssert(GetIntensity() not_eq 0 and 
+              GetIntensity() not_eq 0xCCCCCCCC); // we shouldn't ever switch off completely.
 
-    if (!g_bEnableColorMfd || greenMode)
+    if ( not g_bEnableColorMfd or greenMode)
         type = MFD_DEFAULT;
 
     if (g_bMFDHighContrast)
-        return AltMFDColors[type] & GetIntensity();
+        return AltMFDColors[type] bitand GetIntensity();
     else
-        return MFDColors[type] & GetIntensity();
+        return MFDColors[type] bitand GetIntensity();
 }
 
 // JPO - pick color with intensity and backwards compat
@@ -81,9 +81,9 @@ unsigned int DrawableClass::GetAgedMfdColor(MfdColor type, int age)
 
     if (age == 0) return color;
 
-    color = (((color & 0xff0000) >> age) & 0xff0000) |  // RED (or BLUE)
-            (((color & 0xff00) >> age) & 0xff00) | //  GREEN
-            (((color & 0xff) >> age) & 0xff); // BLUE (or RED)
+    color = (((color bitand 0xff0000) >> age) bitand 0xff0000) bitor  // RED (or BLUE)
+            (((color bitand 0xff00) >> age) bitand 0xff00) bitor //  GREEN
+            (((color bitand 0xff) >> age) bitand 0xff); // BLUE (or RED)
     return color;
 }
 
@@ -169,9 +169,9 @@ void DrawableClass::LabelButton(int idx, char* str1, char* str2, int inverse)
         inverse = 2;
     }
 
-    if (str2 == NULL || *str2 == '\0') // JPO - ignore 2nd string null
+    if (str2 == NULL or *str2 == '\0') // JPO - ignore 2nd string null
     {
-        if (idx > 4 && idx < 10)
+        if (idx > 4 and idx < 10)
         {
             display->TextRight(xPos, yPos, str1, inverse);
         }
@@ -189,7 +189,7 @@ void DrawableClass::LabelButton(int idx, char* str1, char* str2, int inverse)
             display->TextCenter(xPos, yPos, str1, inverse);
             display->TextCenter(xPos, yPos - multiLineOffset, str2, inverse);
         }
-        else if (idx > 4 && idx < 10)
+        else if (idx > 4 and idx < 10)
         {
             display->TextRight(xPos, yPos + multiLineOffset * 0.5F, str1, inverse);
             display->TextRight(xPos, yPos - multiLineOffset * 0.5F, str2, inverse);

@@ -20,7 +20,7 @@ MEM_POOL TBlock::pool;
 // needs to be loaded from disk.
 void TBlock::Setup(TLevel *Level, UINT r, UINT c)
 {
-    ShiAssert(!IsOwned()); // Shouldn't be setting up an already owned block
+    ShiAssert( not IsOwned()); // Shouldn't be setting up an already owned block
 
     // Initialize the members of the block header structure
     level = Level;
@@ -39,7 +39,7 @@ void TBlock::Setup(TLevel *Level, UINT r, UINT c)
 // This must be called inside of Level's critical section
 void TBlock::Cleanup(void)
 {
-    ShiAssert(!IsOwned()); // Shouldn't be cleaning up a still owned block
+    ShiAssert( not IsOwned()); // Shouldn't be cleaning up a still owned block
 
     if (posts)
     {

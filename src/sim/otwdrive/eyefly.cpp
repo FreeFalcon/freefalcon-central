@@ -148,7 +148,7 @@ void OTWDriverClass::FindNearestBuilding(void)
             else
                 radius = 30.0F;
 
-            if (fabs(intersect.x - testFeature->XPos()) < radius &&
+            if (fabs(intersect.x - testFeature->XPos()) < radius and 
                 fabs(intersect.y - testFeature->YPos()) < radius)
             {
                 eyeFlyTgt = testFeature;
@@ -161,7 +161,7 @@ void OTWDriverClass::FindNearestBuilding(void)
 
     if (eyeFlyTgt)
     {
-        sprintf(labelStr, "State %d\n", eyeFlyTgt->Status() & VIS_TYPE_MASK);
+        sprintf(labelStr, "State %d\n", eyeFlyTgt->Status() bitand VIS_TYPE_MASK);
         ShiAssert(strlen(labelStr) < 40);
         eyeFlyTgt->drawPointer->SetLabel(labelStr, 0xff00ff00);
     }

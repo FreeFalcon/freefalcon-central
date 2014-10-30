@@ -73,7 +73,7 @@ typedef enum { NoDamage,
                 PenetrationDam, // Hardened structures, tanks, ships
                 HighExplosiveDam, // Soft targets, area targets
                 HeaveDam, // Runways
-                IncendairyDam, // Burn baby, burn!
+                IncendairyDam, // Burn baby, burn
                 ProximityDam, // AA missiles, etc.
                 KineticDam, // Guns, small arms fire
                 HydrostaticDam, // Submarines

@@ -40,7 +40,7 @@ void DigitalBrain::WvrEngageCheck(void)
     /*---------------------*/
     /* return if no target */
     /*---------------------*/
-    if (targetPtr == NULL || (mpActionFlags[AI_ENGAGE_TARGET] != AI_AIR_TARGET && missionClass != AAMission && !missionComplete) || curMode == RTBMode) // 2002-03-04 MODIFIED BY S.G. Use new enum type
+    if (targetPtr == NULL or (mpActionFlags[AI_ENGAGE_TARGET] not_eq AI_AIR_TARGET and missionClass not_eq AAMission and not missionComplete) or curMode == RTBMode) // 2002-03-04 MODIFIED BY S.G. Use new enum type
     {
         //me123     ClearTarget();
         engagementTimer = 0;
@@ -48,15 +48,15 @@ void DigitalBrain::WvrEngageCheck(void)
     /*-------*/
     /* entry */
     /*-------*/
-    else if (curMode != WVREngageMode && targetData->range < engageRange &&
-             (targetPtr->BaseData()->IsAirplane() || targetPtr->BaseData()->IsFlight() || targetPtr->BaseData()->IsHelicopter()) && // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
-             SimLibElapsedTime > engagementTimer &&
+    else if (curMode not_eq WVREngageMode and targetData->range < engageRange and 
+             (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight() or targetPtr->BaseData()->IsHelicopter()) and // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
+             SimLibElapsedTime > engagementTimer and 
              CanEngage(self, self->CombatClass(), targetPtr, WVRManeuver))  // 2002-03-11 MODIFIED BY S.G. Added parameter WVRManeuver
     {
         AddMode(WVREngageMode);
     }
-    else if (curMode == WVREngageMode &&
-             targetPtr->localData->range < 1.5F * engageRange &&
+    else if (curMode == WVREngageMode and 
+             targetPtr->localData->range < 1.5F * engageRange and 
              CanEngage(self, self->CombatClass(), targetPtr, WVRManeuver)) // 2002-03-11 MODIFIED BY S.G. Added parameter WVRManeuver
     {
         AddMode(WVREngageMode);
@@ -105,9 +105,9 @@ void DigitalBrain::WvrEngage(void)
 #ifdef MANEUVER_DEBUG
         strcpy(tmpchr, "Wvr NoTarget");
 
-        if (g_nShowDebugLabels & 0x10)
+        if (g_nShowDebugLabels bitand 0x10)
         {
-            if (g_nShowDebugLabels & 0x8000)
+            if (g_nShowDebugLabels bitand 0x8000)
             {
                 if (((AircraftClass*) self)->af->GetSimpleMode())
                     strcat(tmpchr, " SIMP");
@@ -124,12 +124,12 @@ void DigitalBrain::WvrEngage(void)
     }
 
     // do we need to evaluate our position?
-    if (SimLibElapsedTime > wvrTacticTimer || wvrCurrTactic == WVR_NONE)
+    if (SimLibElapsedTime > wvrTacticTimer or wvrCurrTactic == WVR_NONE)
     {
         // 2002-02-09 ADDED BY S.G. Change our radarMode to digiSTT if we have been detected and we have a radar to start with
 
         // Look up intercept type for all A/C
-        if (targetPtr->BaseData()->IsAirplane() || targetPtr->BaseData()->IsFlight() || targetPtr->BaseData()->IsHelicopter())
+        if (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight() or targetPtr->BaseData()->IsHelicopter())
         {
             // Find the data table for these two types of A/C
             hisCombatClass = targetPtr->BaseData()->CombatClass(); // 2002-02-26 MODIFIED BY S.G. Removed the AircraftClass cast
@@ -204,7 +204,7 @@ void DigitalBrain::WvrEngage(void)
                 PrintWVRMode("DIGI WVR STRAIGHT\n");
                 wvrTacticTimer = SimLibElapsedTime + 1500;
 
-                if (lastTactic != wvrCurrTactic)
+                if (lastTactic not_eq wvrCurrTactic)
                 {
                     if (af->theta > 0.0F)
                         holdAlt = max(5000.0F, -self->ZPos());
@@ -218,7 +218,7 @@ void DigitalBrain::WvrEngage(void)
                 PrintWVRMode("DIGI WVR AVOID\n");
                 wvrTacticTimer = SimLibElapsedTime + 1500;
 
-                if (lastTactic != wvrCurrTactic)
+                if (lastTactic not_eq wvrCurrTactic)
                 {
                     holdAlt = max(5000.0F, -self->ZPos());
                 }
@@ -231,7 +231,7 @@ void DigitalBrain::WvrEngage(void)
                 break;
 
             case WVR_BEAM_RETURN:
-                if (lastTactic != wvrCurrTactic)
+                if (lastTactic not_eq wvrCurrTactic)
                 {
                     PrintWVRMode("DIGI WVR BEAM RETURN\n");
                     wvrTacticTimer = SimLibElapsedTime + 10000;
@@ -271,7 +271,7 @@ void DigitalBrain::WvrEngage(void)
                 PrintWVRMode("DIGI WVR BEAM\n");
                 wvrTacticTimer = SimLibElapsedTime + 1500;
 
-                if (lastTactic != wvrCurrTactic)
+                if (lastTactic not_eq wvrCurrTactic)
                 {
                     holdAlt = max(5000.0F, -self->ZPos());
                 }
@@ -309,7 +309,7 @@ void DigitalBrain::WvrEngage(void)
                 PrintWVRMode("DIGI WVR BUGOUT\n");
                 wvrTacticTimer = SimLibElapsedTime + 5000;
 
-                if (lastTactic != wvrCurrTactic)
+                if (lastTactic not_eq wvrCurrTactic)
                 {
                     holdAlt = max(5000.0F, -self->ZPos());
                 }
@@ -425,9 +425,9 @@ void DigitalBrain::WvrEngage(void)
     wvrPrevTactic = wvrCurrTactic;
 #ifdef MANEUVER_DEBUG
 
-    if (g_nShowDebugLabels & 0x10)
+    if (g_nShowDebugLabels bitand 0x10)
     {
-        if (g_nShowDebugLabels & 0x50) // add radar mode
+        if (g_nShowDebugLabels bitand 0x50) // add radar mode
         {
             RadarClass* theRadar = (RadarClass*)FindSensor(self, SensorClass::Radar);
 
@@ -447,7 +447,7 @@ void DigitalBrain::WvrEngage(void)
             }
         }
 
-        if (g_nShowDebugLabels & 0x8000)
+        if (g_nShowDebugLabels bitand 0x8000)
         {
             if (((AircraftClass*) self)->af->GetSimpleMode())
                 strcat(tmpchr, " SIMP");
@@ -475,9 +475,9 @@ void DigitalBrain::WvrChooseTactic(void)
     ManeuverChoiceTable *theIntercept;
     int aceAvoid = FALSE;
 
-    if (!IsSetATC(AceGunsEngage) && SkillLevel() >= 3)
+    if ( not IsSetATC(AceGunsEngage) and SkillLevel() >= 3)
     {
-        if (maxAAWpnRange > 0 && maxAAWpnRange < 1.0F * NM_TO_FT)
+        if (maxAAWpnRange > 0 and maxAAWpnRange < 1.0F * NM_TO_FT)
             aceAvoid = TRUE;
     }
 
@@ -486,20 +486,20 @@ void DigitalBrain::WvrChooseTactic(void)
     if (targetPtr)
     {
         // Look up intercept type for all A/C
-        //    if (targetPtr->BaseData()->IsSim() && targetPtr->BaseData()->IsAirplane())
-        if (targetPtr->BaseData()->IsAirplane() || targetPtr->BaseData()->IsFlight() || targetPtr->BaseData()->IsHelicopter()) // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
+        //    if (targetPtr->BaseData()->IsSim() and targetPtr->BaseData()->IsAirplane())
+        if (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight() or targetPtr->BaseData()->IsHelicopter()) // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
         {
             // Find the data table for these two types of A/C
             hisCombatClass = targetPtr->BaseData()->CombatClass(); // 2002-02-26 MODIFIED BY S.G. Removed the AircraftClass cast
             theIntercept = &(maneuverData[myCombatClass][hisCombatClass]);
 
             // No intercepts or Choose not to, or no weapons, or Guns only and ACE in campaign
-            if (theIntercept->numIntercepts == 0 ||
-                theIntercept->intercept[0] == BvrNoIntercept ||
-                maxAAWpnRange == 0 || aceAvoid)
+            if (theIntercept->numIntercepts == 0 or
+                theIntercept->intercept[0] == BvrNoIntercept or
+                maxAAWpnRange == 0 or aceAvoid)
             {
                 // Can't go offensive, should we be defensive, or just keep running?
-                if (targetData->range > 1.5F * NM_TO_FT || targetData->ataFrom > 25.0F * DTR)
+                if (targetData->range > 1.5F * NM_TO_FT or targetData->ataFrom > 25.0F * DTR)
                     wvrCurrTactic = WVR_BUGOUT;
                 else
                     wvrCurrTactic = WVR_GUNJINK;
@@ -515,7 +515,7 @@ void DigitalBrain::WvrChooseTactic(void)
                     wvrCurrTactic = WVR_AVOID;
                 else if (targetData->range > 15.0F * NM_TO_FT)
                     wvrCurrTactic = WVR_BEAM ;//me123 status test chenged from WVR_BEAM_RETURN
-                else if (targetData->range > 10.0F * NM_TO_FT && wvrCurrTactic != WVR_BEAM_RETURN)//me123 status test chenged from >3
+                else if (targetData->range > 10.0F * NM_TO_FT and wvrCurrTactic not_eq WVR_BEAM_RETURN)//me123 status test chenged from >3
                 {
                     wvrCurrTactic = WVR_BEAM_RETURN;
                 }
@@ -535,18 +535,18 @@ void DigitalBrain::WvrChooseTactic(void)
         /*-----------------------------*/
         /* logic is geometry dependent */
         /*-----------------------------*/
-        //ME123 WE DEFINATLY NEED TO THINK ABOUT NOSE TO NOSE OR NOSE TO TAIL FIGHT HERE !
+        //ME123 WE DEFINATLY NEED TO THINK ABOUT NOSE TO NOSE OR NOSE TO TAIL FIGHT HERE 
         // AT THE MOMENT WE JUST ROLL AND PULL NOMATTER WHAT :-(
 
 
         // we are pointing at him and him at us and we are too slow
         // so let's exploit that we are not emidiatly threatened and get some energy
         //TJL 12/06/03 Appears someone forgot a * DTR
-        //if (targetData->ata <= 90.0F * DTR && targetData->ataFrom <= 90.0F)
-        if (targetData->ata <= 90.0F * DTR && targetData->ataFrom <= 90.0F * DTR)
+        //if (targetData->ata <= 90.0F * DTR and targetData->ataFrom <= 90.0F)
+        if (targetData->ata <= 90.0F * DTR and targetData->ataFrom <= 90.0F * DTR)
         {
             // how stupid are we?
-            // MODIFIED BY S.G. af->vt is in feet/second. cornerSpeed is in knot/hour!
+            // MODIFIED BY S.G. af->vt is in feet/second. cornerSpeed is in knot/hour
             // NEEDS TO BE DONE IN THE 1.08 EXE FIRST TO BE CONSISTANT
             if (af->vt < cornerSpeed * 0.3F)
                 //      if ( self->GetKias() < cornerSpeed * 0.3F )
@@ -591,7 +591,7 @@ void DigitalBrain::WvrRollOutOfPlane(void)
     /*-----------------------*/
     /* first pass, save roll */
     /*-----------------------*/
-    if (wvrPrevTactic != WVR_ROOP)
+    if (wvrPrevTactic not_eq WVR_ROOP)
     {
         /*----------------------------------------------------*/
         /* want to roll toward the vertical but limit to keep */
@@ -637,7 +637,7 @@ void DigitalBrain::WvrOverBank(float delta)
     // Find a new roll angle */
     // relative to target
     //-----------------------*/
-    if (wvrPrevTactic != WVR_OVERB)
+    if (wvrPrevTactic not_eq WVR_OVERB)
     {
         if (self->Roll() > 0.0F)
             newroll = targetData->droll + delta;
@@ -755,23 +755,23 @@ void DigitalBrain::SetThreat(FalconEntity *obj)
 
     // don't pre-empt current threat with a new threat until we've been
     // dealing with the threat for a while unless the threat is NULL
-    if (obj != NULL && threatTimer > 0.0f)
+    if (obj not_eq NULL and threatTimer > 0.0f)
         return;
 
-    F4Assert(!obj || !obj->IsSim() || !obj->IsHelicopter());
+    F4Assert( not obj or not obj->IsSim() or not obj->IsHelicopter());
 
-    if (obj && obj->OnGround())//Cobra We want to nail those targeting us!
+    if (obj and obj->OnGround())//Cobra We want to nail those targeting us
     {
         SetGroundTarget(obj);
         return;
     }
 
-    if (obj && !obj->OnGround())
+    if (obj and not obj->OnGround())
     {
         // if the threat is the same as our target, we don't
         // need to do anything since we're already dealing
         // with it
-        if (targetPtr && targetPtr->BaseData() == obj)
+        if (targetPtr and targetPtr->BaseData() == obj)
         {
             return;
         }
@@ -839,7 +839,7 @@ int CanEngage(AircraftClass *self, int combatClass, SimObjectType* targetPtr, in
     int retWvr = TRUE;
 
     // Check for aircraft, choppers or flights
-    if (targetPtr->BaseData()->IsAirplane() || targetPtr->BaseData()->IsFlight() || targetPtr->BaseData()->IsHelicopter())
+    if (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight() or targetPtr->BaseData()->IsHelicopter())
     {
         // If asked to use the new code, then honor the request
         if (g_bUseNewCanEnage)
@@ -854,9 +854,9 @@ int CanEngage(AircraftClass *self, int combatClass, SimObjectType* targetPtr, in
                 campBaseObj = ((CampBaseClass *)targetPtr->BaseData());
 
             // If it doesn't have a campaign object or it's identified... END OF ADDED SECTION plus the use of campBaseObj below
-            if (!campBaseObj || campBaseObj->GetIdentified(self->GetTeam()))
+            if ( not campBaseObj or campBaseObj->GetIdentified(self->GetTeam()))
             {
-                // Yes, now you can get its combat class!
+                // Yes, now you can get its combat class
                 hisCombatClass = targetPtr->BaseData()->CombatClass();
             }
             else
@@ -866,7 +866,7 @@ int CanEngage(AircraftClass *self, int combatClass, SimObjectType* targetPtr, in
                 hisCombatClass = 4;
 
 
-                /*if ((targetPtr->BaseData()->GetVt() * FTPSEC_TO_KNOTS > 300.0f || targetPtr->BaseData()->ZPos() < -10000.0f))  {
+                /*if ((targetPtr->BaseData()->GetVt() * FTPSEC_TO_KNOTS > 300.0f or targetPtr->BaseData()->ZPos() < -10000.0f))  {
                  //this might be a combat jet.. asume the worst
                  hisCombatClass = 4;
                 }
@@ -885,21 +885,21 @@ int CanEngage(AircraftClass *self, int combatClass, SimObjectType* targetPtr, in
 
         theIntercept = &(DigitalBrain::maneuverData[combatClass][hisCombatClass]);
 
-        if (type & DigitalBrain::WVRManeuver)
+        if (type bitand DigitalBrain::WVRManeuver)
         {
-            // If no capability, don't go say you can engage!!!
+            // If no capability, don't go say you can engage
             if (theIntercept->numMerges == 0)
                 retWvr = FALSE;
             else if (theIntercept->numMerges == 1)
             {
                 // Need to be real close for a hit and run
-                if (theIntercept->merge[0] == DigitalBrain::WvrMergeHitAndRun &&
+                if (theIntercept->merge[0] == DigitalBrain::WvrMergeHitAndRun and 
                     targetPtr->localData->ata > 45.0F * DTR)
                 {
                     retWvr = FALSE;
                 }
                 // Can't be behind you for limited
-                else if (theIntercept->merge[0] == DigitalBrain::WvrMergeLimited &&
+                else if (theIntercept->merge[0] == DigitalBrain::WvrMergeLimited and 
                          targetPtr->localData->ata > 90.0F * DTR)
                 {
                     retWvr = FALSE;
@@ -910,7 +910,7 @@ int CanEngage(AircraftClass *self, int combatClass, SimObjectType* targetPtr, in
             retWvr = FALSE;
 
         // Check for intercepts if in BVR...
-        if (type & DigitalBrain::BVRManeuver)
+        if (type bitand DigitalBrain::BVRManeuver)
         {
             if (theIntercept->numIntercepts == 0)
                 retBvr = FALSE;
@@ -932,7 +932,7 @@ int CanEngage(AircraftClass *self, int combatClass, SimObjectType* targetPtr, in
         retBvr = FALSE;
     }
 
-    return retBvr | retWvr;
+    return retBvr bitor retWvr;
 }
 
 #else
@@ -944,8 +944,8 @@ int CanEngage(int combatClass, SimObjectType* targetPtr)
     int retval = TRUE; // Assume you can engage
 
     // Only check for A/C
-    // if (targetPtr->BaseData()->IsSim() && targetPtr->BaseData()->IsAirplane())
-    if (targetPtr->BaseData()->IsAirplane() || targetPtr->BaseData()->IsFlight() || targetPtr->BaseData()->IsHelicopter()) // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
+    // if (targetPtr->BaseData()->IsSim() and targetPtr->BaseData()->IsAirplane())
+    if (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsFlight() or targetPtr->BaseData()->IsHelicopter()) // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
     {
         // Find the data table for these two types of A/C
         hisCombatClass = targetPtr->BaseData()->CombatClass(); // 2002-02-26 MODIFIED BY S.G. Removed the AircraftClass cast
@@ -954,13 +954,13 @@ int CanEngage(int combatClass, SimObjectType* targetPtr)
         if (theIntercept->numMerges == 1)
         {
             // Need to be real close for a hit and run
-            if (theIntercept->merge[0] == DigitalBrain::WvrMergeHitAndRun &&
+            if (theIntercept->merge[0] == DigitalBrain::WvrMergeHitAndRun and 
                 targetPtr->localData->ata > 45.0F * DTR)
             {
                 retval = FALSE;
             }
             // Can't be behind you for limited
-            else if (theIntercept->merge[0] == DigitalBrain::WvrMergeLimited &&
+            else if (theIntercept->merge[0] == DigitalBrain::WvrMergeLimited and 
                      targetPtr->localData->ata > 90.0F * DTR)
             {
                 retval = FALSE;

@@ -66,7 +66,7 @@ public:
     }
     BOOL Queued()
     {
-        if (Queue_[0] != SND_NO_HANDLE) return(TRUE);
+        if (Queue_[0] not_eq SND_NO_HANDLE) return(TRUE);
 
         return(FALSE);
     }

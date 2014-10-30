@@ -163,7 +163,7 @@ void ACMIView::VectorToVectorTranslation(Tpoint*, Tpoint*)
 
 void ACMIView::SelectCamera(long camSel)
 {
-    if (camSel != FREE_CAM)
+    if (camSel not_eq FREE_CAM)
     {
         _camPos.x = -100.0f;
         _camPos.y = 0.0f;
@@ -263,8 +263,8 @@ void ACMIView::SwitchCameraObject(long cameraObject)
     i,
     numEntities;
 
-    F4Assert(Tape() != NULL);
-    F4Assert(_entityUIMappings != NULL);
+    F4Assert(Tape() not_eq NULL);
+    F4Assert(_entityUIMappings not_eq NULL);
 
     numEntities = Tape()->NumEntities();
 
@@ -290,8 +290,8 @@ void ACMIView::SwitchTrackingObject(long cameraObject)
     i,
     numEntities;
 
-    F4Assert(Tape() != NULL)
-    F4Assert(_entityUIMappings != NULL);
+    F4Assert(Tape() not_eq NULL)
+    F4Assert(_entityUIMappings not_eq NULL);
 
     numEntities = Tape()->NumEntities();
 
@@ -313,7 +313,7 @@ void ACMIView::Exec()
 {
     Tpoint pos;
 
-    if (!acmiDraw || !_tapeHasLoaded || Tape() == NULL || !Tape()->IsLoaded())
+    if ( not acmiDraw or not _tapeHasLoaded or Tape() == NULL or not Tape()->IsLoaded())
         return;
 
     if (fcount++ % 10 == 0)
@@ -382,7 +382,7 @@ void ACMIView::Draw()
     Tpoint posb;
     ThreeDVertex spos;
 
-    if (TapeHasLoaded() && Tape() != NULL && Tape()->IsLoaded())
+    if (TapeHasLoaded() and Tape() not_eq NULL and Tape()->IsLoaded())
     {
         gMainHandler->Unlock(); // Make surface available...
 
@@ -400,7 +400,7 @@ void ACMIView::Draw()
         /*
         ** Remove Bing-ism
         ** causing a crash ....
-        if(TESTBUTTONPUSH == 0 && TESTBUTTONPUSH != lastButton)
+        if(TESTBUTTONPUSH == 0 and TESTBUTTONPUSH not_eq lastButton)
         {
          lastButton = TESTBUTTONPUSH;
          TheTerrTextures.SetOverrideTexture( wireTexture.TexHandle() );
@@ -444,7 +444,7 @@ void ACMIView::Draw()
             ep = Tape()->GetSimTapeEntity(i);
 
             // do these only for aircraft
-            if (ep->flags & ENTITY_FLAG_AIRCRAFT)
+            if (ep->flags bitand ENTITY_FLAG_AIRCRAFT)
             {
                 // default target box to off
                 ((DrawablePoled *)ep->objBase->drawPointer)->SetTarget(FALSE);
@@ -458,8 +458,8 @@ void ACMIView::Draw()
 
             // is it in existance at the moment?
             // also no poles or anything on chaff and flares
-            if ((ep->flags & (ENTITY_FLAG_CHAFF | ENTITY_FLAG_FLARE)) ||
-                !Tape()->IsEntityInFrame(i))
+            if ((ep->flags bitand (ENTITY_FLAG_CHAFF bitor ENTITY_FLAG_FLARE)) or
+ not Tape()->IsEntityInFrame(i))
             {
                 continue;
             }
@@ -474,7 +474,7 @@ void ACMIView::Draw()
             {
                 targindex = Tape()->GetEntityCurrentTarget(i);
 
-                if (targindex != -1)
+                if (targindex not_eq -1)
                 {
                     // get the target entity
                     targep = Tape()->GetSimTapeEntity(targindex);
@@ -490,10 +490,10 @@ void ACMIView::Draw()
 
 
                     // do target boxes and lines
-                    if (_cameraState != FREE_CAM)  //&& targindex == CameraObject() )//me123 we wanna see all lock lines
+                    if (_cameraState not_eq FREE_CAM)  // and targindex == CameraObject() )//me123 we wanna see all lock lines
                     {
                         // current attached camera object is target
-                        if (targep->flags & ENTITY_FLAG_AIRCRAFT)
+                        if (targep->flags bitand ENTITY_FLAG_AIRCRAFT)
                         {
                             ((DrawablePoled *)targep->objBase->drawPointer)->SetTarget(TRUE);
                             ((DrawablePoled *)targep->objBase->drawPointer)->SetTargetBoxColor(0xff00ffff);
@@ -503,10 +503,10 @@ void ACMIView::Draw()
                         _renderer->Render3DLine(&pos, &posb);
 
                     }
-                    else if (_cameraState != FREE_CAM && i == CameraObject())
+                    else if (_cameraState not_eq FREE_CAM and i == CameraObject())
                     {
                         // current attached camera object's target
-                        if (targep->flags & ENTITY_FLAG_AIRCRAFT)
+                        if (targep->flags bitand ENTITY_FLAG_AIRCRAFT)
                         {
                             ((DrawablePoled *)targep->objBase->drawPointer)->SetTarget(TRUE);
                             ((DrawablePoled *)targep->objBase->drawPointer)->SetTargetBoxColor(0xffffffff);
@@ -527,7 +527,7 @@ void ACMIView::Draw()
 
             // if we're in internal cam and we're the target object
             // display the "hud"
-            if ((_cameraState == INTERNAL_CAM) && i == CameraObject())
+            if ((_cameraState == INTERNAL_CAM) and i == CameraObject())
             {
 
                 //HEADING
@@ -674,7 +674,7 @@ void ACMIView::UpdateViewPosRot(void)
 
     // if we're not in free camera mode, our world position is
     // based on the camera object
-    if (_cameraState != FREE_CAM)
+    if (_cameraState not_eq FREE_CAM)
     {
         _camWorldPos.x = camEnt->x;
         _camWorldPos.y = camEnt->y;
@@ -938,7 +938,7 @@ void ACMIView::UpdateViewPosRot(void)
     // if we're tracking an object we need to set a new rotation
     // matrix
     // determine if we're tracking an object or not
-    if (_cameraState == TRACKING_CAM && camObj != trackObj)
+    if (_cameraState == TRACKING_CAM and camObj not_eq trackObj)
     {
         // get the diff between desired and current camera pos
         // for look at vector

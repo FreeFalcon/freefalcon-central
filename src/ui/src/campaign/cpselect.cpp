@@ -220,7 +220,7 @@ void LoadCampaignSelectWindows()
     CPSelectLoaded++;
     SetSingle_Comms_Ctrls();
 
-    if (!PlannerLoaded)
+    if ( not PlannerLoaded)
         LoadPlannerWindows();
 
     CampSelMode = 0;
@@ -261,13 +261,13 @@ IMAGE_RSC *CreateOccupationMap(long ID, long w, long h, long palsize)
     size = w * h + palsize * 2;
     data8 = new unsigned char[size];
 
-    if (!data8)
+    if ( not data8)
         return(NULL);
 
     res = new C_Resmgr;
     res->Setup(ID);
     res->SetColorKey(UI95_RGB24Bit(0x00ff00ff));
-    //! UI95_GetScreenColorInfo(&r_mask,&r_shift,&g_mask,&g_shift,&b_mask,&b_shift);
+    //UI95_GetScreenColorInfo(&r_mask,&r_shift,&g_mask,&g_shift,&b_mask,&b_shift);
     UI95_GetScreenColorInfo(r_mask, r_shift, g_mask, g_shift, b_mask, b_shift);
     res->SetScreenFormat(r_shift, g_shift, b_shift);
 
@@ -300,12 +300,12 @@ void SetupMapWindow()
     win = gMainHandler->FindWindow(CS_MAP_WIN);
 
     // MN turn off the occupation maps for now for 128x128 theaters - they cause CTD's...
-    if (win && !g_LargeTheater)
+    if (win and not g_LargeTheater)
     {
         DeleteGroupList(CS_MAP_WIN);
 
         // Create Occupation Map
-        if (gOccupationMap == NULL && (TheCampaign.TheaterSizeX && TheCampaign.TheaterSizeY))
+        if (gOccupationMap == NULL and (TheCampaign.TheaterSizeX and TheCampaign.TheaterSizeY))
             gOccupationMap = CreateOccupationMap(1, TheCampaign.TheaterSizeX / MAP_RATIO, TheCampaign.TheaterSizeY / MAP_RATIO, 16);
 
         if (gOccupationMap)
@@ -314,7 +314,7 @@ void SetupMapWindow()
         // MN big occupation map when HiResUI
         if (g_bHiResUI)
         {
-            if (gBigOccupationMap == NULL && (TheCampaign.TheaterSizeX && TheCampaign.TheaterSizeY))
+            if (gBigOccupationMap == NULL and (TheCampaign.TheaterSizeX and TheCampaign.TheaterSizeY))
                 gBigOccupationMap = CreateOccupationMap(2, TheCampaign.TheaterSizeX / (MAP_RATIO / 2), TheCampaign.TheaterSizeY / (MAP_RATIO / 2), 16);
 
             if (gBigOccupationMap)
@@ -325,7 +325,7 @@ void SetupMapWindow()
 
         if (bmp)
         {
-            /* if(gOccupationMap == NULL && (TheCampaign.TheaterSizeX && TheCampaign.TheaterSizeY))
+            /* if(gOccupationMap == NULL and (TheCampaign.TheaterSizeX and TheCampaign.TheaterSizeY))
              {
              // Create Occupation map...
              gOccupationMap=CreateOccupationMap(1,TheCampaign.TheaterSizeX/MAP_RATIO,TheCampaign.TheaterSizeY/MAP_RATIO,16);*/
@@ -347,7 +347,7 @@ void AddSquadronsToMap()
     C_Button *btn;
     C_Resmgr *res, *res_w;
     IMAGE_RSC *rsc;
-    int i;//! was uint
+    int i;//was uint
     long IconID;
     int savex = -1, savey = -1;
     float x, y;
@@ -414,15 +414,15 @@ void AddSquadronsToMap()
                     res_w = gImageMgr->GetImageRes(BLUE_TEAM_ICONS_W);
             }
 
-            if (TheCampaign.IsValidSquadron(i)  || _IsF16_)
+            if (TheCampaign.IsValidSquadron(i)  or _IsF16_)
             {
-                x = TheCampaign.CampaignSquadronData[i].y; // real world x & y are y & x
+                x = TheCampaign.CampaignSquadronData[i].y; // real world x bitand y are y bitand x
                 y = TheCampaign.CampaignSquadronData[i].x;
 
                 int mapratio = MAP_RATIO;
 
                 // 2002-02-01 MN This fixes squad selection map in hires UI - still need a solution for lowres UI
-                if (g_bHiResUI && !g_LargeTheater)
+                if (g_bHiResUI and not g_LargeTheater)
                 {
                     mapratio /= 2;
                 }
@@ -433,15 +433,15 @@ void AddSquadronsToMap()
                 // IconID=TheCampaign.CampaignSquadronData[i].airbaseIcon; // too big
                 IconID = 10003;
 
-                if (i == gSelectedSquadronID || savex == -1 || savey == -1)
+                if (i == gSelectedSquadronID or savex == -1 or savey == -1)
                 {
                     savex = static_cast<int>(x);
                     savey = static_cast<int>(y);
                 }
 
                 btn = new C_Button;
-                btn->Setup(((long)x << 16) | (long)y, C_TYPE_RADIO, (int)x, (int)y);
-                btn->SetFlagBitOn(C_BIT_HCENTER | C_BIT_VCENTER);
+                btn->Setup(((long)x << 16) bitor (long)y, C_TYPE_RADIO, (int)x, (int)y);
+                btn->SetFlagBitOn(C_BIT_HCENTER bitor C_BIT_VCENTER);
                 btn->SetGroup(-100);
                 btn->SetCluster(i + 1);
 
@@ -449,7 +449,7 @@ void AddSquadronsToMap()
                 {
                     rsc = (IMAGE_RSC*)res->Find(IconID);
 
-                    if (rsc && rsc->Header->Type == _RSC_IS_IMAGE_)
+                    if (rsc and rsc->Header->Type == _RSC_IS_IMAGE_)
                         btn->SetImage(C_STATE_0, rsc);
                 }
 
@@ -457,7 +457,7 @@ void AddSquadronsToMap()
                 {
                     rsc = (IMAGE_RSC*)res_w->Find(IconID);
 
-                    if (rsc && rsc->Header->Type == _RSC_IS_IMAGE_)
+                    if (rsc and rsc->Header->Type == _RSC_IS_IMAGE_)
                         btn->SetImage(C_STATE_1, rsc);
                 }
 
@@ -483,7 +483,7 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
     C_Window *win;
     C_Button *btn;
     C_Text   *txt;
-    int i;//! was uint
+    int i;//was uint
     int icony, mapratio;
     float x, y;
     float maxy;
@@ -514,25 +514,25 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
 
         for (i = 0; i < TheCampaign.NumAvailSquadrons; i++)
         {
-            if (TheCampaign.IsValidSquadron(i)  || _IsF16_)
+            if (TheCampaign.IsValidSquadron(i)  or _IsF16_)
             {
-                x = TheCampaign.CampaignSquadronData[i].y; // real world x & y are y & x
+                x = TheCampaign.CampaignSquadronData[i].y; // real world x bitand y are y bitand x
                 y = TheCampaign.CampaignSquadronData[i].x;
 
                 // 2001-12-12 M.N. adapted for 1024 UI
                 mapratio = MAP_RATIO;
 
-                if (g_bHiResUI && !g_LargeTheater)
+                if (g_bHiResUI and not g_LargeTheater)
                     mapratio /= 2;
 
                 x = x / (FEET_PER_KM * mapratio);
                 y = (maxy - y) / (FEET_PER_KM * mapratio);
 
-                if ((int)x == airbasex && (int)y == airbasey)
+                if ((int)x == airbasex and (int)y == airbasey)
                 {
                     SquadPtr = &TheCampaign.CampaignSquadronData[i];
 
-                    if (!NameShown && SquadPtr)
+                    if ( not NameShown and SquadPtr)
                     {
                         // Airbase Name
                         txt = new C_Text;
@@ -540,7 +540,7 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
                         txt->SetXY(10, icony);
                         txt->SetFont(win->Font_);
                         txt->SetUserNumber(_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_);
-                        txt->SetFlagBitOn(C_BIT_LEFT | C_BIT_WORDWRAP);
+                        txt->SetFlagBitOn(C_BIT_LEFT bitor C_BIT_WORDWRAP);
                         txt->SetW(123);
                         txt->SetFGColor(0x00e0e0e0);
                         txt->SetText(SquadPtr->airbaseName);
@@ -558,14 +558,14 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
                     btn->SetText(C_STATE_1, buffer);
                     btn->SetColor(C_STATE_0, 0xe0e0e0);
                     btn->SetColor(C_STATE_1, 0x00ff00);
-                    btn->SetFlagBitOn(C_BIT_LEFT | C_BIT_USELINE);
+                    btn->SetFlagBitOn(C_BIT_LEFT bitor C_BIT_USELINE);
                     btn->SetCallback(PickSquadronCB);
                     btn->SetUserNumber(_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_); // used in DeleteGameList to find records to remove
                     btn->SetHelpText(HELP_PICK_SQUADRON);
                     btn->SetCursorID(CRSR_F16_ON);
                     win->AddControl(btn);
 
-                    if (i == gSelectedSquadronID || gSelectedSquadronID < 0)
+                    if (i == gSelectedSquadronID or gSelectedSquadronID < 0)
                     {
                         gSelectedSquadronID = i;
                         btn->SetState(1);
@@ -595,14 +595,14 @@ void LoadSquadronInfo()
     {
         // Need squadron info now
 
-        if (gSelectedSquadronID < 0 || gSelectedSquadronID >= TheCampaign.NumAvailSquadrons)
+        if (gSelectedSquadronID < 0 or gSelectedSquadronID >= TheCampaign.NumAvailSquadrons)
         {
             // KCK: Pick a valid squadron with the lowest id.
             gSelectedSquadronID = -1;
 
             for (int i = 0; i < TheCampaign.NumAvailSquadrons; i++)
             {
-                if ((TheCampaign.IsValidSquadron(i) || _IsF16_) && (gSelectedSquadronID < 0 || TheCampaign.CampaignSquadronData[i].id.num_ < TheCampaign.CampaignSquadronData[gSelectedSquadronID].id.num_))
+                if ((TheCampaign.IsValidSquadron(i) or _IsF16_) and (gSelectedSquadronID < 0 or TheCampaign.CampaignSquadronData[i].id.num_ < TheCampaign.CampaignSquadronData[gSelectedSquadronID].id.num_))
                     gSelectedSquadronID = i;
             }
         }
@@ -632,9 +632,9 @@ void LoadSquadronInfo()
             // status (# humans,%strength)
             txt = (C_Text *)win->FindControl(STATUS_FIELD);
 
-            if (txt && vc)
+            if (txt and vc)
             {
-                if (CampSelMode == 2 && gCommsMgr && gCommsMgr->GetTargetGame())
+                if (CampSelMode == 2 and gCommsMgr and gCommsMgr->GetTargetGame())
                 {
                     // Online game - Count # of players
                     int players = 0;
@@ -647,7 +647,7 @@ void LoadSquadronInfo()
                     {
                         // WM 09-28-03  Display the number of players actually in the selected
                         //  squadron.  Not just the number of total players in the game.
-                        if (session->GetPlayerSquadronID()  &&
+                        if (session->GetPlayerSquadronID()  and 
                             session->GetPlayerSquadronID().num_ == SquadPtr->id.num_)
                             players++;
 
@@ -656,7 +656,7 @@ void LoadSquadronInfo()
 
                     _stprintf(buffer, "%1d %s, %1d %s", players, gStringMgr->GetString(TXT_PLAYERS), SquadPtr->currentStrength, vc->Name);
                 }
-                else if (!CampSelMode)
+                else if ( not CampSelMode)
                 {
                     // # of aircraft based on ratio setting for new games
                     int aircraft = 0, mv, i;
@@ -694,7 +694,7 @@ void LoadSquadronInfo()
 
             if (bmp)
             {
-                if (!SquadPtr->squadronPatch)
+                if ( not SquadPtr->squadronPatch)
                 {
                     SquadPtr->squadronPatch = AssignUISquadronID(SquadPtr->nameId);
                 }
@@ -847,7 +847,7 @@ void EnableScenarioText(C_Base *control)
 
 void CloseSelectWindowCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     DisableScenarioInfo();
@@ -909,7 +909,7 @@ void SelectScenarioCB(long ID, short hittype, C_Base *control)
 {
     int i;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SelectScenarioButtons(ID);
@@ -943,7 +943,7 @@ void SelectScenarioCB(long ID, short hittype, C_Base *control)
 
     for (i = 0; i < TheCampaign.NumAvailSquadrons; i++)
     {
-        if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID && (TheCampaign.IsValidSquadron(i) || _IsF16_))
+        if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID and (TheCampaign.IsValidSquadron(i) or _IsF16_))
             gSelectedSquadronID = i;
     }
 
@@ -957,7 +957,7 @@ void SelectScenarioCB(long ID, short hittype, C_Base *control)
     //wrong campaign.
     if (g_bExitCampSelectFix)
     {
-        if (oldCampSelMode != 1)
+        if (oldCampSelMode not_eq 1)
         {
             LoadScenarioInfo();
         }
@@ -986,11 +986,11 @@ void RecieveScenarioInfo()
 
     // KCK: These really should be a better way to figure out which windows need updating than
     // checking the flag field of TheCampaign. Doesn't the UI know which window groups are active?
-    if (TheCampaign.Flags & CAMP_LIGHT)
+    if (TheCampaign.Flags bitand CAMP_LIGHT)
     {
         // Do dogfight/IA stuff
     }
-    else if (TheCampaign.Flags & CAMP_TACTICAL)
+    else if (TheCampaign.Flags bitand CAMP_TACTICAL)
     {
         game = gCommsMgr->GetTargetGame();
 
@@ -1004,7 +1004,7 @@ void RecieveScenarioInfo()
 
         for (i = 0; i < TheCampaign.NumAvailSquadrons; i++)
         {
-            if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID && (TheCampaign.IsValidSquadron(i) || _IsF16_))
+            if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID and (TheCampaign.IsValidSquadron(i) or _IsF16_))
                 gSelectedSquadronID = i;
         }
 
@@ -1025,7 +1025,7 @@ void RecieveScenarioInfo()
 
         for (i = 0; i < TheCampaign.NumAvailSquadrons; i++)
         {
-            if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID && (TheCampaign.IsValidSquadron(i) || _IsF16_))
+            if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID and (TheCampaign.IsValidSquadron(i) or _IsF16_))
                 gSelectedSquadronID = i;
         }
 
@@ -1033,7 +1033,7 @@ void RecieveScenarioInfo()
         //dpc ExitCampSelectFix
         if (g_bExitCampSelectFix)
         {
-            if (oldCampSelMode != 1)
+            if (oldCampSelMode not_eq 1)
             {
                 LoadScenarioInfo();
             }
@@ -1067,7 +1067,7 @@ static void CommitCB(long, short hittype, C_Base *)
     C_EditBox *ebox;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (TheCampaign.NumAvailSquadrons < 1)
@@ -1076,13 +1076,13 @@ static void CommitCB(long, short hittype, C_Base *)
     SetCursor(gCursors[CRSR_WAIT]);
     LoadCampaignWindows();
 
-    if (!TheCampaign.CampaignSquadronData)
+    if ( not TheCampaign.CampaignSquadronData)
         return;
 
     FalconLocalSession->SetCountry(TheCampaign.CampaignSquadronData[gSelectedSquadronID].country);
     gPlayerSquadronId = TheCampaign.CampaignSquadronData[gSelectedSquadronID].id;
 
-    if (CampSelMode != 2)
+    if (CampSelMode not_eq 2)
     {
         if (gCommsMgr->Online())
             SetupInfoWindow(ReallyCreateCB, CancelJoinCB);
@@ -1094,10 +1094,10 @@ static void CommitCB(long, short hittype, C_Base *)
         // Join a Campaign
         game = (FalconGameEntity*)gCommsMgr->GetTargetGame();
 
-        if (!game)
+        if ( not game)
             return;
 
-        if (game != FalconLocalGame)
+        if (game not_eq FalconLocalGame)
         {
             win = gMainHandler->FindWindow(INFO_WIN);
 
@@ -1107,7 +1107,7 @@ static void CommitCB(long, short hittype, C_Base *)
 
                 if (ebox)
                 {
-                    // if(!PlayerOptions.InCompliance(game->GetRules()) || !game->CheckPassword(ebox->GetText()))
+                    // if( not PlayerOptions.InCompliance(game->GetRules()) or not game->CheckPassword(ebox->GetText()))
                     // {
                     SetupInfoWindow(ReallyJoinCB, CancelJoinCB);
                     // }
@@ -1123,13 +1123,13 @@ static void CommitCB(long, short hittype, C_Base *)
 
 static void CommsCommitCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (TheCampaign.NumAvailSquadrons < 1)
         return;
 
-    if (!gCommsMgr->Online())
+    if ( not gCommsMgr->Online())
         return;
 
     CommitCB(ID, hittype, control); // Do rest of NORMAL Commit button
@@ -1149,7 +1149,7 @@ static void PickSquadronCB(long ID, short, C_Base *)
 
 static void HostCampaignCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 }
 
@@ -1161,7 +1161,7 @@ static void LoadCampaignFileCB(long, short hittype, C_Base *control)
 
     int i;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tree = (C_TreeList*)control;
@@ -1204,13 +1204,13 @@ void SetCampaignSelectCB(long ID, short hittype, C_Base *control)
     C_Slider *sldr;
     C_TreeList *tree;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     switch (ID)
     {
         case CS_NEW_CTRL:
-            if (!CampSelMode)
+            if ( not CampSelMode)
                 return;
 
             break;
@@ -1223,7 +1223,7 @@ void SetCampaignSelectCB(long ID, short hittype, C_Base *control)
             //Ideally after exiting Campaing to Main UI this list should be refreshed automatically
             //and last played campaign selected. This is a compromise solution - last
             //choosen campaign is selected but user has to refresh list manually.
-            if (!g_bCampSavedMenuHack)
+            if ( not g_bCampSavedMenuHack)
             {
                 if (CampSelMode == 1)
                     return;
@@ -1284,7 +1284,7 @@ void SetCampaignSelectCB(long ID, short hittype, C_Base *control)
         case CS_JOIN_CTRL:
             CampSelMode = 2;
 
-            if (!gCommsMgr->Online())
+            if ( not gCommsMgr->Online())
             {
                 win = gMainHandler->FindWindow(PB_WIN);
 
@@ -1347,14 +1347,14 @@ void SetCampaignSelectCB(long ID, short hittype, C_Base *control)
     //end ExitCampSelectFix
 }
 
-// ONLY use this as a Tree Callback... or it will CRASH Badly!!!
+// ONLY use this as a Tree Callback... or it will CRASH Badly
 static void CampSelectGameCB(long, short hittype, C_Base *control)
 {
     VU_ID *tmpID;
     FalconGameEntity *game;
     TREELIST *item;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetCursor(gCursors[CRSR_WAIT]);
@@ -1366,7 +1366,7 @@ static void CampSelectGameCB(long, short hittype, C_Base *control)
 
     if (item->Type_ == C_TYPE_MENU)
     {
-        if (!item->Item_->GetState())
+        if ( not item->Item_->GetState())
         {
             item->Item_->SetState(1);
             item->Item_->Refresh();
@@ -1547,7 +1547,7 @@ static void SetCampaignLevels()
 
 void CopySettingsToTemp(void)
 {
-    if (!CampSelMode)
+    if ( not CampSelMode)
     {
         TEMP_Settings.PilotSkill = static_cast<uchar>(PlayerOptions.CampaignEnemyAirExperience());
         TEMP_Settings.SAMSkill = static_cast<uchar>(PlayerOptions.CampaignEnemyGroundExperience());
@@ -1571,7 +1571,7 @@ void CopySettingsToTemp(void)
 
 static void ChallengeLevelCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     switch (((C_ListBox *)control)->GetTextID())
@@ -1581,7 +1581,7 @@ static void ChallengeLevelCB(long, short hittype, C_Base *control)
             TEMP_Settings.PilotSkill = 4;
             TEMP_Settings.SAMSkill = 4;
 
-            if (!CampSelMode)
+            if ( not CampSelMode)
             {
                 TEMP_Settings.AirForces = 0;
                 TEMP_Settings.AirDefenses = 0;
@@ -1596,7 +1596,7 @@ static void ChallengeLevelCB(long, short hittype, C_Base *control)
             TEMP_Settings.PilotSkill = 3;
             TEMP_Settings.SAMSkill = 3;
 
-            if (!CampSelMode)
+            if ( not CampSelMode)
             {
                 TEMP_Settings.AirForces = 1;
                 TEMP_Settings.AirDefenses = 1;
@@ -1611,7 +1611,7 @@ static void ChallengeLevelCB(long, short hittype, C_Base *control)
             TEMP_Settings.PilotSkill = 2;
             TEMP_Settings.SAMSkill = 2;
 
-            if (!CampSelMode)
+            if ( not CampSelMode)
             {
                 TEMP_Settings.AirForces = 2;
                 TEMP_Settings.AirDefenses = 2;
@@ -1626,7 +1626,7 @@ static void ChallengeLevelCB(long, short hittype, C_Base *control)
             TEMP_Settings.PilotSkill = 1;
             TEMP_Settings.SAMSkill = 1;
 
-            if (!CampSelMode)
+            if ( not CampSelMode)
             {
                 TEMP_Settings.AirForces = 3;
                 TEMP_Settings.AirDefenses = 3;
@@ -1641,7 +1641,7 @@ static void ChallengeLevelCB(long, short hittype, C_Base *control)
             TEMP_Settings.PilotSkill = 0;
             TEMP_Settings.SAMSkill = 0;
 
-            if (!CampSelMode)
+            if ( not CampSelMode)
             {
                 TEMP_Settings.AirForces = 4;
                 TEMP_Settings.AirDefenses = 4;
@@ -1658,7 +1658,7 @@ static void ChallengeLevelCB(long, short hittype, C_Base *control)
 
 void OpenChallengeCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // Copy in current settings
@@ -1680,12 +1680,12 @@ void CampDelFileCB(long, short hittype, C_Base *control)
     C_TreeList *tree;
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(CS_SELECT_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     gMainHandler->HideWindow(control->Parent_); // Close Verify Window
@@ -1694,7 +1694,7 @@ void CampDelFileCB(long, short hittype, C_Base *control)
     _TCHAR filename[MAX_PATH];
     _stprintf(filename, "%s.cam", gLastCampFilename);
 
-    if (!CheckExclude(filename, FalconCampUserSaveDirectory, CampExcludeList, "cam"))
+    if ( not CheckExclude(filename, FalconCampUserSaveDirectory, CampExcludeList, "cam"))
     {
         DeleteFile(filename); // .cam file
         _stprintf(filename, "%s.his", gLastCampFilename);
@@ -1723,7 +1723,7 @@ void CampDelFileCB(long, short hittype, C_Base *control)
 
 static void CampDelVerifyCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gLastCampFilename[0])
@@ -1734,7 +1734,7 @@ static void SetSkillSettingsCB(long ID, short hittype, C_Base *control)
 {
     uchar value;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     switch (((C_ListBox *)control)->GetTextID())
@@ -1779,7 +1779,7 @@ static void SetSliderSettingsCB(long ID, short hittype, C_Base *control)
     long val;
     C_Slider *sldr;
 
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
     sldr = (C_Slider *)control;
@@ -1790,7 +1790,7 @@ static void SetSliderSettingsCB(long ID, short hittype, C_Base *control)
     switch (ID)
     {
         case BAR_1_SCROLL:
-            if (val != TEMP_Settings.AirForces)
+            if (val not_eq TEMP_Settings.AirForces)
             {
                 TEMP_Settings.AirForces = static_cast<uchar>(val);
                 // Force the aircraft field to update
@@ -1823,16 +1823,16 @@ static void UseChallengeSettingsCB(long, short hittype, C_Base *control)
     C_Window *win;
     C_Button *btn;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (CampSelMode != 2)
+    if (CampSelMode not_eq 2)
     {
         PlayerOptions.SetCampEnemyAirExperience(TEMP_Settings.PilotSkill);
         PlayerOptions.SetCampEnemyGroundExperience(TEMP_Settings.SAMSkill);
     }
 
-    if (!CampSelMode)
+    if ( not CampSelMode)
     {
         PlayerOptions.SetCampAirRatio(TEMP_Settings.AirForces);
         PlayerOptions.SetCampAirDefenseRatio(TEMP_Settings.AirDefenses);
@@ -2024,7 +2024,7 @@ static void HookupCampaignSelectControls(long ID)
 
 static void JoinStatusCancelCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     MonoPrint("Cancel Join\n");
@@ -2081,12 +2081,12 @@ void DisplayJoinStatusWindow(int bits)
     last_id;
 
     long
-    id = 0;//! uninitialized
+    id = 0;//uninitialized
 
     C_Window
     *win;
 
-    if ((!gCommsMgr->Online()) || (FalconLocalGame->IsLocal()))
+    if (( not gCommsMgr->Online()) or (FalconLocalGame->IsLocal()))
     {
         return;
     }
@@ -2102,7 +2102,7 @@ void DisplayJoinStatusWindow(int bits)
     }
     else
     {
-        join_status_bits |= bits;
+        join_status_bits or_eq bits;
     }
 
     switch (bits)
@@ -2134,7 +2134,7 @@ void DisplayJoinStatusWindow(int bits)
             break;
     }
 
-    if (id != last_id)
+    if (id not_eq last_id)
     {
         win = gMainHandler->FindWindow(COMMLINK_WIN);
 

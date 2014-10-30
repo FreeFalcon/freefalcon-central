@@ -62,7 +62,7 @@ void SimObjCheckOwnership(FalconEntity *);
 #endif
 
 
-// hack for making sure simple model STAYS SET!!!!!!
+// hack for making sure simple model STAYS SET
 BOOL playerFlightModelHack = 0;
 void MakeDogfightTopTen(int mode);
 WeaponType playerLastWeaponType = wtNone;
@@ -87,13 +87,13 @@ int AircraftClass::Wake(void)
     SimVehicleClass::Wake();
 
 
-    if (!(DrawableBSP*)drawPointer)
+    if ( not (DrawableBSP*)drawPointer)
         return retval;
 
     if (g_bWakeTurbulence)
     {
         /*
-        if(!turbulence)
+        if( not turbulence)
         {
          turbulence = new AircraftTurbulence;
          turbulence->lifeSpan = 30; // seconds;
@@ -101,7 +101,7 @@ int AircraftClass::Wake(void)
          turbulence->startRadius = af->GetAeroData(AeroDataSet::Span) / 4;
         }
         */
-        if (!lVortex)
+        if ( not lVortex)
         {
             lVortex = new AircraftTurbulence;
             lVortex->lifeSpan = 30; // seconds;
@@ -110,7 +110,7 @@ int AircraftClass::Wake(void)
             lVortex->type = AircraftTurbulence::LVORTEX;
         }
 
-        if (!rVortex)
+        if ( not rVortex)
         {
             rVortex = new AircraftTurbulence;
             rVortex->lifeSpan = 30; // seconds;
@@ -127,7 +127,7 @@ int AircraftClass::Wake(void)
         Sms->AddWeaponGraphics();
 
     // easter egg: need to check af NULL since we may be non-local
-    if (0)//me123 af && af->GetSimpleMode() == SIMPLE_MODE_HF )
+    if (0)//me123 af and af->GetSimpleMode() == SIMPLE_MODE_HF )
     {
         OTWDriver.RemoveObject((DrawableBSP*)drawPointer, TRUE);
         drawPointer = NULL;
@@ -148,7 +148,7 @@ int AircraftClass::Wake(void)
         //int squad = ((FlightClass*)GetCampaignObject())->GetUnitSquadron()->GetUnitNameID();
         int squad = 0;
 
-        if (GetCampaignObject() && ((FlightClass*)GetCampaignObject())->GetUnitSquadron())
+        if (GetCampaignObject() and ((FlightClass*)GetCampaignObject())->GetUnitSquadron())
         {
             // JB 010806 CTD
             squad = ((FlightClass*)GetCampaignObject())->GetUnitSquadron()->GetUnitNameID();
@@ -212,7 +212,7 @@ int AircraftClass::Wake(void)
             }
         }
 
-        if (set3DTexture != -1 && ((FlightClass*)GetCampaignObject())->IsPlayer())
+        if (set3DTexture not_eq -1 and ((FlightClass*)GetCampaignObject())->IsPlayer())
         {
             ((DrawableBSP*)drawPointer)->SetTextureSet(set3DTexture);
         }
@@ -260,7 +260,7 @@ int AircraftClass::Sleep(void)
 {
     int retval = 0;
 
-    if (!IsAwake())
+    if ( not IsAwake())
     {
         return retval;
     }
@@ -295,7 +295,7 @@ int AircraftClass::Sleep(void)
     // potentially we could get removed prior to exploding.   Check that
     // here for nonlocal entities
 
-    if (!IsLocal() && pctStrength <= 0.0f && !IsSetFlag(SHOW_EXPLOSION))
+    if ( not IsLocal() and pctStrength <= 0.0f and not IsSetFlag(SHOW_EXPLOSION))
     {
         RunExplosion();
         SetFlag(SHOW_EXPLOSION);
@@ -389,14 +389,14 @@ void AircraftClass::MakePlayerVehicle(void)
 
     SetFlag(MOTION_OWNSHIP);
 
-    if (!IsLocal())
+    if ( not IsLocal())
     {
         return;
     }
 
     targetUpdateRate = (5 * SEC_TO_MSEC);/*targetUpdateRate * ((4 - DBrain()->SkillLevel()) * 2 + 1);*/
 
-    if (FalconLocalSession->GetPlayerEntity() != this)
+    if (FalconLocalSession->GetPlayerEntity() not_eq this)
     {
         MonoPrint("Local but not player\n");
         return;
@@ -413,12 +413,12 @@ void AircraftClass::MakePlayerVehicle(void)
     if (curWaypoint->GetWPAction() == WP_TAKEOFF)
     {
         //JPO check for preflighting the aircraft. Doit unless we are right at the begining
-        //if (!DBrain()->IsSetATC(DigitalBrain::DonePreflight) && !DBrain()->IsAtFirstTaxipoint()) {
+        //if ( not DBrain()->IsSetATC(DigitalBrain::DonePreflight) and not DBrain()->IsAtFirstTaxipoint()) {
         //RAS-11Nov04-Fix for Ramp Start: When entering Ramp Start, jet would already be running.  Removed line
         //above and replaced with this one
-        if (!DBrain()->IsSetATC(DigitalBrain::DonePreflight))
+        if ( not DBrain()->IsSetATC(DigitalBrain::DonePreflight))
         {
-            if (PlayerOptions.GetStartFlag() != PlayerOptionsClass::START_RAMP)
+            if (PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RAMP)
             {
                 PreFlight();
             }
@@ -440,7 +440,7 @@ void AircraftClass::MakePlayerVehicle(void)
         PreFlight();
     }
 
-    // just for testing simple flight model!!!
+    // just for testing simple flight model
     // if (af->IsSet(AirframeClass::Simplified))
     // af->SetSimpleMode( SIMPLE_MODE_AF );
     //     af->SetFlag(AirframeClass::Simplified);
@@ -516,7 +516,7 @@ void AircraftClass::MakePlayerVehicle(void)
 
     // Set Unlimited ammo appropriatly
     //Cobra we are doing this to test for now in TE  ADD BACK IN LATER
-    if (SimDriver.RunningInstantAction() || gUnlimitedAmmo > 2 || g_bUnlimitedAmmo)
+    if (SimDriver.RunningInstantAction() or gUnlimitedAmmo > 2 or g_bUnlimitedAmmo)
         Sms->SetUnlimitedAmmo(TRUE);
 
     // Get rid of old sensors
@@ -587,7 +587,7 @@ void AircraftClass::MakePlayerVehicle(void)
                         sensorArray[i] = new Radar360Class(RDR_F16_360, this);
 
                         // JB 011213 If awacs set the radar range
-                        if (af && af->platform && GetCampaignObject() && GetCampaignObject()->GetSType() == STYPE_UNIT_AWACS)
+                        if (af and af->platform and GetCampaignObject() and GetCampaignObject()->GetSType() == STYPE_UNIT_AWACS)
                         {
                             ((Radar360Class*) sensorArray[i])->SetAWACSMode(true);
                             ((Radar360Class*) sensorArray[i])->SetMaxRange(RadarDataTable[af->platform->GetRadarType()].NominalRange * FT_TO_NM);
@@ -679,13 +679,13 @@ void AircraftClass::ConfigurePlayerAvionics(void)
     ShiAssert(this == SimDriver.GetPlayerEntity());
 
     // Configure the avionics appropriatly
-    if (SimDriver.RunningDogfight() ||
-        (SimDriver.RunningInstantAction() && instant_action::is_fighter_sweep()))
+    if (SimDriver.RunningDogfight() or
+        (SimDriver.RunningInstantAction() and instant_action::is_fighter_sweep()))
     {
         CPButtonObject* pButton = OTWDriver.pCockpitManager->GetButtonPointer(ICP_AA_BUTTON_ID);
         SimICPAA(ICP_AA_BUTTON_ID, KEY_DOWN, pButton);
     }
-    else if (SimDriver.RunningInstantAction() && instant_action::is_moving_mud())
+    else if (SimDriver.RunningInstantAction() and instant_action::is_moving_mud())
     {
         CPButtonObject* pButton = OTWDriver.pCockpitManager->GetButtonPointer(ICP_AG_BUTTON_ID);
         SimICPAG(ICP_AG_BUTTON_ID, KEY_DOWN, pButton);
@@ -714,7 +714,7 @@ void AircraftClass::MakeNonPlayerVehicle()
         af->SetSimpleMode(SIMPLE_MODE_AF);
     }
 
-    if ((GetCampaignObject()->GetDeagOwner() != OwnerId()) && (!IsSetFlag(OBJ_DEAD)))
+    if ((GetCampaignObject()->GetDeagOwner() not_eq OwnerId()) and ( not IsSetFlag(OBJ_DEAD)))
     {
         //MonoPrint(
         // "AircraftClass::Change owner to deag owner %08x %08x%08x\n", this, GetCampaignObject()->GetDeagOwner()
@@ -730,8 +730,8 @@ void AircraftClass::MakeNonPlayerVehicle()
     UnSetFalcFlag(FEC_HASPLAYERS);
 
     if (
-        !HasPilot() ||
-        ((DBrain()->ATCStatus() < tReqTaxi) && OnGround() && !af->IsSet(AirframeClass::OnObject))
+ not HasPilot() or
+        ((DBrain()->ATCStatus() < tReqTaxi) and OnGround() and not af->IsSet(AirframeClass::OnObject))
     )
     {
         if (this == FalconLocalSession->GetPlayerEntity())
@@ -743,7 +743,7 @@ void AircraftClass::MakeNonPlayerVehicle()
             SetAutopilot(CombatAP);
         }
 
-        if ((DBrain()->ATCStatus() != lLanded) && (DBrain()->ATCStatus() != lTaxiOff))
+        if ((DBrain()->ATCStatus() not_eq lLanded) and (DBrain()->ATCStatus() not_eq lTaxiOff))
         {
             // JB 010811 Prevent aircraft KIA after landing.
             SetAcStatusBits(ACSTATUS_PILOT_EJECTED);
@@ -869,11 +869,11 @@ void AircraftClass::Regenerate(float, float, float, float)
     int wasLocal = IsLocal();
 
     // KCK KLUDGE: To handle regen messages received after a reaggregate
-    if (!GetCampaignObject() || GetCampaignObject()->IsAggregate())
+    if ( not GetCampaignObject() or GetCampaignObject()->IsAggregate())
         return;
 
     /*----------------------*/
-    /* Make us whole again! */
+    /* Make us whole again  */
     /*----------------------*/
 
     wasPlayer = IsPlayer();
@@ -941,7 +941,7 @@ void AircraftClass::Regenerate(float, float, float, float)
     // Now reinit
     Init(reinitData);
 
-    if (!wasLocal)
+    if ( not wasLocal)
     {
         MakeRemote();
     }
@@ -990,7 +990,7 @@ void AircraftClass::Regenerate(float, float, float, float)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
     RadarClass* theRadar = (RadarClass*)FindSensor(playerAC, SensorClass::Radar);
 
-    if (theRadar && playerAC->FCC)
+    if (theRadar and playerAC->FCC)
     {
         FireControlComputer *fcc = playerAC->FCC;
 

@@ -39,7 +39,7 @@ static unsigned __stdcall timerThread(void)
             delta = MAX_TIME_DELTA;
 
         //ShiAssert(vuxGameTime + SimLibMajorFrameTime >= SimLibElapsedTime);
-        if (!gCompressTillTime || vuxGameTime + delta * gameCompressionRatio < gCompressTillTime)
+        if ( not gCompressTillTime or vuxGameTime + delta * gameCompressionRatio < gCompressTillTime)
         {
             vuxGameTime += delta * gameCompressionRatio; // Normal time advance
         }
@@ -96,7 +96,7 @@ void SetTimeCompression(int newComp)
     if (TheCampaign.EndgameResult)
         newComp = 0;
 
-    if (gCommsMgr && gCommsMgr->Online() && FalconLocalGame)
+    if (gCommsMgr and gCommsMgr->Online() and FalconLocalGame)
     {
         // For online games, we only set our session's requested time compression.
         FalconLocalSession->SetReqCompression((short)newComp);
@@ -109,7 +109,7 @@ void SetTimeCompression(int newComp)
         // Otherwise, set our compression directly
         lastStartTime = vuxRealTime;
 
-        if (!gameCompressionRatio && newComp)
+        if ( not gameCompressionRatio and newComp)
             SimDriver.lastRealTime = vuxGameTime;
 
         gameCompressionRatio = newComp;
@@ -141,7 +141,7 @@ void SetOnlineTimeCompression(int newComp)
 
     lastStartTime = vuxRealTime;
 
-    if (!gameCompressionRatio && newComp)
+    if ( not gameCompressionRatio and newComp)
         SimDriver.lastRealTime = vuxGameTime;
 
     gameCompressionRatio = newComp;
@@ -160,7 +160,7 @@ void SetTemporaryCompression(int newComp)
 
     lastStartTime = vuxRealTime;
 
-    if (!gameCompressionRatio && newComp)
+    if ( not gameCompressionRatio and newComp)
         SimDriver.lastRealTime = vuxGameTime;
 
     gameCompressionRatio = newComp;
@@ -184,7 +184,7 @@ void SetTime(unsigned long currentTime)
 
     // ShiAssert
     // (
-    // (gameCompressionRatio == 0) ||
+    // (gameCompressionRatio == 0) or
     // (TheCampaign.IsSuspended ())
     // );
 }

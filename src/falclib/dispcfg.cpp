@@ -70,7 +70,7 @@ void FalconDisplayConfiguration::Setup(int languageNum)
     DeviceIndependentGraphicsSetup(FalconTerrainDataDir, Falcon3DDataDir, FalconMiscTexDataDir);
 
     // set up and register window class
-    wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_NOCLOSE;
+    wc.style = CS_HREDRAW bitor CS_VREDRAW bitor CS_OWNDC bitor CS_NOCLOSE;
     wc.lpfnWndProc = FalconMessageHandler;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = sizeof(DWORD);
@@ -117,7 +117,7 @@ void FalconDisplayConfiguration::Setup(int languageNum)
                  NULL /* create parms */
              );
 
-    if (!appWin)
+    if ( not appWin)
     {
         ShiError("Failed to construct main window");
     }
@@ -176,7 +176,7 @@ void FalconDisplayConfiguration::MakeWindow(void)
                  NULL /* create parms */
              );
 
-    if (!appWin)
+    if ( not appWin)
     {
         ShiError("Failed to construct main window");
     }
@@ -186,7 +186,7 @@ void FalconDisplayConfiguration::MakeWindow(void)
     tme.cbSize = sizeof(tme);
     tme.dwFlags = TME_LEAVE;
     tme.hwndTrack = appWin;
-    //if (!TrackMouseEvent(&tme)) {
+    //if ( not TrackMouseEvent(&tme)) {
     // ShiError( "Failed to track mouseleave");
     //}
 
@@ -205,7 +205,7 @@ void FalconDisplayConfiguration::MakeWindow(void)
 void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, int Driver)
 {
     // Force exectution in the main thread to avoid problems with worker threads setting directx cooperative levels (which is illegal)
-    LRESULT result = SendMessage(appWin, FM_DISP_ENTER_MODE, newMode, theDevice | (Driver << 16));
+    LRESULT result = SendMessage(appWin, FM_DISP_ENTER_MODE, newMode, theDevice bitor (Driver << 16));
 }
 
 void FalconDisplayConfiguration::_EnterMode(DisplayMode newMode, int theDevice, int Driver)
@@ -223,7 +223,7 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
     ShiAssert(::GetCurrentThreadId() == GetWindowThreadProcessId(appWin, NULL)); // Make sure this is called by the main thread
 #endif
 
-    // sfr: only after we are finished!
+    // sfr: only after we are finished
     //currentMode = newMode;
 
     rect.top = rect.left = 0;
@@ -234,7 +234,7 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(Driver);
 
     // RV - RED - Sim window in windowed mode, always centered
-    if (newMode == Sim && !displayFullScreen)
+    if (newMode == Sim and not displayFullScreen)
     {
 
         int wx = GetSystemMetrics(SM_CXSCREEN);
@@ -243,7 +243,7 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
         int NewXOffset = 0;
         int NewYOffset = 0;
 
-        if ((rect.right > wx) || (rect.bottom > wy))
+        if ((rect.right > wx) or (rect.bottom > wy))
         {
             NewXOffset = 0;
             NewYOffset = 0;
@@ -268,19 +268,19 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
 
     if (pDI)
     {
-        /*JAM 01Dec03 if((g_bForceSoftwareGUI || pDI->Is3dfx() || !pDI->CanRenderWindowed()) && newMode != Sim)
+        /*JAM 01Dec03 if((g_bForceSoftwareGUI or pDI->Is3dfx() or not pDI->CanRenderWindowed()) and newMode not_eq Sim)
          {
          // V1, V2 workaround - use primary display adapter with RGB Renderer
          int nIndexPrimary = FalconDisplay.devmgr.FindPrimaryDisplayDriver();
-         ShiAssert(nIndexPrimary != -1);
+         ShiAssert(nIndexPrimary not_eq -1);
 
-         if(nIndexPrimary != -1)
+         if(nIndexPrimary not_eq -1)
          {
          DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(nIndexPrimary);
          int nIndexRGBRenderer = pDI->FindRGBRenderer();
-         ShiAssert(nIndexRGBRenderer != -1);
+         ShiAssert(nIndexRGBRenderer not_eq -1);
 
-         if(nIndexRGBRenderer != -1)
+         if(nIndexRGBRenderer not_eq -1)
          {
          Driver = nIndexPrimary;
          theDevice = nIndexRGBRenderer;
@@ -288,7 +288,7 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
          }
          }*/
 
-        if (!pDI->SupportsSRT() && DisplayOptions.bRender2Texture)
+        if ( not pDI->SupportsSRT() and DisplayOptions.bRender2Texture)
             DisplayOptions.bRender2Texture = false;
     }
 

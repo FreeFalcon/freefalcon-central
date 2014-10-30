@@ -102,7 +102,7 @@ extern "C" {
     PARAMETERS      :
         pExPtrs - The exeption pointers passed to the callback.
     RETURNS         :
-        !NULL - The constant string that describes the fault.
+ not NULL - The constant string that describes the fault.
         NULL  - There was a problem translating the string.
     ----------------------------------------------------------------------*/
     LPCTSTR BUGSUTIL_DLLINTERFACE __stdcall
@@ -147,7 +147,7 @@ extern "C" {
         pExtPtrs - The exception pointers passed to the crash handler
                    function.
     RETURNS         :
-        !NULL - The requested stack trace string.
+ not NULL - The requested stack trace string.
         NULL  - There was a problem.
     ----------------------------------------------------------------------*/
 #define GSTSO_PARAMS    0x01
@@ -205,7 +205,7 @@ extern "C" {
         pExtPtrs - The exception pointers passed to the crash handler
                    function.
     RETURNS         :
-        !NULL - The requested register string.
+ not NULL - The requested register string.
         NULL  - There was a problem.
     ----------------------------------------------------------------------*/
     LPCTSTR BUGSUTIL_DLLINTERFACE __stdcall

@@ -101,10 +101,10 @@ float DistanceToFront(GridIndex x, GridIndex y)
     VuListIterator myit(FrontList);
     f = GetFirstObjective(&myit);
 
-    while (f != NULL)
+    while (f not_eq NULL)
     {
         // RV - Biker - This is a hack because JimG did introduce
-        if (f->GetType() != TYPE_BORDER || f->GetSType() != 2)
+        if (f->GetType() not_eq TYPE_BORDER or f->GetSType() not_eq 2)
         {
             f->GetLocation(&fx, &fy);
             d = Distance(x, y, fx, fy);
@@ -132,10 +132,10 @@ float DirectionToFront(GridIndex x, GridIndex y)
         VuListIterator myit(FrontList);
         f = GetFirstObjective(&myit);
 
-        while (f != NULL)
+        while (f not_eq NULL)
         {
             // RV - Biker - This is a hack because JimG did introduce
-            if (f->GetType() != TYPE_BORDER || f->GetSType() != 2)
+            if (f->GetType() not_eq TYPE_BORDER or f->GetSType() not_eq 2)
             {
                 f->GetLocation(&fx, &fy);
                 d = Distance(x, y, fx, fy);
@@ -158,7 +158,7 @@ float DirectionToFront(GridIndex x, GridIndex y)
 
         f = FindNearestObjective(x, y, NULL);
 
-        if (!f->IsFrontline())
+        if ( not f->IsFrontline())
         {
             return r; // This won't work unless we find a frontline objective. So just use the value from above
         }
@@ -167,7 +167,7 @@ float DirectionToFront(GridIndex x, GridIndex y)
         {
             n = f->GetNeighbor(i);
 
-            if (n && n->GetTeam() != f->GetTeam())
+            if (n and n->GetTeam() not_eq f->GetTeam())
             {
                 n->GetLocation(&fx, &fy);
                 d = Distance(x, y, fx, fy);
@@ -198,10 +198,10 @@ float DirectionTowardFriendly(GridIndex x, GridIndex y, int team)
         VuListIterator myit(FrontList);
         f = GetFirstObjective(&myit);
 
-        while (f != NULL)
+        while (f not_eq NULL)
         {
             // RV - Biker - This is a hack because JimG did introduce
-            if (f->GetType() != TYPE_BORDER || f->GetSType() != 2)
+            if (f->GetType() not_eq TYPE_BORDER or f->GetSType() not_eq 2)
             {
                 f->GetLocation(&fx, &fy);
                 d = Distance(x, y, fx, fy);
@@ -229,7 +229,7 @@ float DirectionTowardFriendly(GridIndex x, GridIndex y, int team)
 
         f = FindNearestObjective(x, y, NULL);
 
-        if ((f == NULL) || !f->IsFrontline())
+        if ((f == NULL) or not f->IsFrontline())
         {
             // This won't work unless we find a frontline objective. So just use the value from above
             return r;
@@ -239,7 +239,7 @@ float DirectionTowardFriendly(GridIndex x, GridIndex y, int team)
         {
             n = f->GetNeighbor(i);
 
-            if (n && n->GetTeam() != f->GetTeam())
+            if (n and n->GetTeam() not_eq f->GetTeam())
             {
                 n->GetLocation(&fx, &fy);
                 d = Distance(x, y, fx, fy);
@@ -249,7 +249,7 @@ float DirectionTowardFriendly(GridIndex x, GridIndex y, int team)
                     lowest = d;
                     r = (float)atan2((float)(fx - x), (float)(fy - y));
 
-                    if (n->GetTeam() != team)
+                    if (n->GetTeam() not_eq team)
                         r += (float)PI;
                 }
             }
@@ -275,14 +275,14 @@ void* PackXY(GridIndex x, GridIndex y)
 {
     long     t;
 
-    t = x | (y << 16);
+    t = x bitor (y << 16);
     return (void*) t;
 }
 
 void UnpackXY(void* n, GridIndex* x, GridIndex* y)
 {
-    *x = (GridIndex)((long)n & 0xFFFF);
-    *y = (GridIndex)(((long)n >> 16) & 0xFFFF);
+    *x = (GridIndex)((long)n bitand 0xFFFF);
+    *y = (GridIndex)(((long)n >> 16) bitand 0xFFFF);
 }
 
 void Trim(GridIndex* x, GridIndex* y)
@@ -308,7 +308,7 @@ float AngleTo(GridIndex ox, GridIndex oy, GridIndex tx, GridIndex ty)
     dx = tx - ox;
     dy = ty - oy;
 
-    if (!dx && !dy)
+    if ( not dx and not dy)
         return 0.0F;
 
     deg = (float)atan2((float)dx, (float)dy);
@@ -328,7 +328,7 @@ CampaignHeading DirectionTo(GridIndex ox, GridIndex oy, GridIndex tx, GridIndex 
     dx = tx - ox;
     dy = ty - oy;
 
-    if (!dx && !dy)
+    if ( not dx and not dy)
     {
         return Here;
     }
@@ -354,13 +354,13 @@ CampaignHeading DirectionTo(GridIndex ox, GridIndex oy, GridIndex tx, GridIndex 
     dx = tx - ox;
     dy = ty - oy;
 
-    if (cx == tx && cy == ty)
+    if (cx == tx and cy == ty)
         return Here;
 
     td = Distance(ox, oy, tx, ty);
     d = Distance(ox, oy, cx, cy);
 
-    if (d < 1.9 || d > td)
+    if (d < 1.9 or d > td)
         return DirectionTo(cx, cy, tx, ty);
 
     d += 1.9F;
@@ -509,7 +509,7 @@ int GetAltitudeLevel(int alt)
 int GetAltitudeFromLevel(int level, int seed)
 {
     // This is a no-brainer.
-    if (!level)
+    if ( not level)
     {
         return 0;
     }
@@ -527,12 +527,12 @@ int GetAltitudeFromLevel(int level, int seed)
 // speed should be in [distance units]/[hour]
 CampaignTime TimeToArrive(float distance, float speed)
 {
-    if (!distance)
+    if ( not distance)
     {
         return 0;
     }
 
-    if (!speed)
+    if ( not speed)
     {
         return 0xffffffff;
     }
@@ -568,7 +568,7 @@ Objective FindObjective(VU_ID id)
     VuEntity* e;
     e = vuDatabase->Find(id);
 
-    if (e && GetEntityClass(e) == CLASS_OBJECTIVE)
+    if (e and GetEntityClass(e) == CLASS_OBJECTIVE)
     {
         return (Objective)e;
     }
@@ -581,7 +581,7 @@ Unit FindUnit(VU_ID id)
     VuEntity* e;
     e = vuDatabase->Find(id);
 
-    if (e && GetEntityClass(e) == CLASS_UNIT)
+    if (e and GetEntityClass(e) == CLASS_UNIT)
     {
         return (Unit)e;
     }
@@ -594,7 +594,7 @@ CampEntity FindEntity(VU_ID id)
     VuEntity* e;
     e = vuDatabase->Find(id);
 
-    if (e && (GetEntityClass(e) == CLASS_OBJECTIVE || GetEntityClass(e) == CLASS_UNIT))
+    if (e and (GetEntityClass(e) == CLASS_OBJECTIVE or GetEntityClass(e) == CLASS_UNIT))
     {
         return (CampEntity)e;
     }
@@ -648,7 +648,7 @@ Objective FindNearestSupplySource(Objective o)
         {
             c = o->GetNeighbor(n);
 
-            if (c && !CampSearch[c->GetCampID()])
+            if (c and not CampSearch[c->GetCampID()])
             {
                 cost = GetObjectiveMovementCost(o, NULL, n, Wheeled, who, PATH_MARINE);
 
@@ -677,7 +677,7 @@ Objective FindNearestSupplySource(Objective o)
         {
             c = o->GetNeighbor(n);
 
-            if (c && !CampSearch[c->GetCampID()])
+            if (c and not CampSearch[c->GetCampID()])
             {
                 cost = GetObjectiveMovementCost(o, NULL, n, Wheeled, (uchar)who, PATH_MARINE);
 
@@ -722,12 +722,12 @@ Unit FindNearestEnemyUnit(GridIndex X, GridIndex Y, GridIndex mx)
     nd = max_dist * 2;
     u = (Unit) myit.GetFirst();
 
-    while (u != NULL)
+    while (u not_eq NULL)
     {
         u->GetLocation(&x, &y);
         d = FloatToInt32(Distance(X, Y, x, y));
 
-        if (d > ld && d < nd)
+        if (d > ld and d < nd)
         {
             n = u;
             nd = d;
@@ -751,7 +751,7 @@ Unit FindNearestRealUnit(GridIndex X, GridIndex Y, float *last, GridIndex mx)
         max_dist = mx;
     }
 
-    if (last == NULL || *last < 0)
+    if (last == NULL or *last < 0)
     {
         lds = -1.0F;
     }
@@ -770,12 +770,12 @@ Unit FindNearestRealUnit(GridIndex X, GridIndex Y, float *last, GridIndex mx)
 #endif
     u = (Unit) myit.GetFirst();
 
-    while (u != NULL)
+    while (u not_eq NULL)
     {
         u->GetLocation(&x, &y);
         ds = (float)DistSqu(X, Y, x, y);
 
-        if (ds > lds && ds < nds)
+        if (ds > lds and ds < nds)
         {
             n = u;
             nds = ds;
@@ -784,7 +784,7 @@ Unit FindNearestRealUnit(GridIndex X, GridIndex Y, float *last, GridIndex mx)
         u = (Unit) myit.GetNext();
     }
 
-    if (last != NULL)
+    if (last not_eq NULL)
     {
         *last = (float)sqrt(nds);
     }
@@ -798,7 +798,7 @@ Unit FindNearestUnit(VuFilteredList* l, GridIndex X, GridIndex Y, float *last)
     GridIndex   x, y;
     float ds, nds = FLT_MAX, lds;
 
-    if (last == NULL || *last < 0)
+    if (last == NULL or *last < 0)
     {
         lds = -1.0F;
     }
@@ -810,12 +810,12 @@ Unit FindNearestUnit(VuFilteredList* l, GridIndex X, GridIndex Y, float *last)
     VuListIterator myit(l);
     u = GetFirstUnit(&myit);
 
-    while (u != NULL)
+    while (u not_eq NULL)
     {
         u->GetLocation(&x, &y);
         ds = (float)DistSqu(X, Y, x, y);
 
-        if (ds > lds && ds < nds && x >= 0 && y >= 0)
+        if (ds > lds and ds < nds and x >= 0 and y >= 0)
         {
             n = u;
             nds = ds;
@@ -824,7 +824,7 @@ Unit FindNearestUnit(VuFilteredList* l, GridIndex X, GridIndex Y, float *last)
         u = GetNextUnit(&myit);
     }
 
-    if (last != NULL)
+    if (last not_eq NULL)
     {
         *last = (float)sqrt(nds);
     }
@@ -846,11 +846,11 @@ Unit FindUnitByXY(VuFilteredList* l, GridIndex X, GridIndex Y, int domain)
     VuListIterator myit(l);
     u = GetFirstUnit(&myit);
 
-    while (u != NULL)
+    while (u not_eq NULL)
     {
         u->GetLocation(&x, &y);
 
-        if (x == X && y == Y && (u->GetDomain() == domain || domain < 1))
+        if (x == X and y == Y and (u->GetDomain() == domain or domain < 1))
         {
             return u;
         }
@@ -876,11 +876,11 @@ Unit GetUnitByXY(GridIndex X, GridIndex Y)
     VuListIterator myit(AllUnitList);
     u = GetFirstUnit(&myit);
 
-    while (u != NULL)
+    while (u not_eq NULL)
     {
         u->GetLocation(&x, &y);
 
-        if (x == X && y == Y)
+        if (x == X and y == Y)
         {
             return u;
         }
@@ -897,7 +897,7 @@ Objective FindNearestObjective(VuFilteredList* l, GridIndex X, GridIndex Y, floa
     Objective   o, n = NULL;
     GridIndex   x, y;
 
-    if (last == NULL || *last < 0)
+    if (last == NULL or *last < 0)
     {
         lds = -1;
     }
@@ -909,12 +909,12 @@ Objective FindNearestObjective(VuFilteredList* l, GridIndex X, GridIndex Y, floa
     VuListIterator myit(l);
     o = GetFirstObjective(&myit);
 
-    while (o != NULL)
+    while (o not_eq NULL)
     {
         o->GetLocation(&x, &y);
         ds = (float) DistSqu(X, Y, x, y);
 
-        if (ds > lds && ds < nds)
+        if (ds > lds and ds < nds)
         {
             n = o;
             nds = ds;
@@ -923,7 +923,7 @@ Objective FindNearestObjective(VuFilteredList* l, GridIndex X, GridIndex Y, floa
         o = GetNextObjective(&myit);
     }
 
-    if (last != NULL)
+    if (last not_eq NULL)
     {
         *last = (float)sqrt(nds);
     }
@@ -946,7 +946,7 @@ Objective FindNearestObjective(GridIndex X, GridIndex Y, float *last, GridIndex 
     Objective   o, n = NULL;
     GridIndex   x, y;
 
-    if (last == NULL || *last < 0)
+    if (last == NULL or *last < 0)
     {
         lds = -1.0F;
     }
@@ -957,12 +957,12 @@ Objective FindNearestObjective(GridIndex X, GridIndex Y, float *last, GridIndex 
 
     o = (Objective) myit.GetFirst();
 
-    while (o != NULL)
+    while (o not_eq NULL)
     {
         o->GetLocation(&x, &y);
         ds = (float) DistSqu(X, Y, x, y);
 
-        if (ds > lds && ds < nds)
+        if (ds > lds and ds < nds)
         {
             n = o;
             nds = ds;
@@ -971,7 +971,7 @@ Objective FindNearestObjective(GridIndex X, GridIndex Y, float *last, GridIndex 
         o = (Objective) myit.GetNext();
     }
 
-    if (last != NULL)
+    if (last not_eq NULL)
     {
         *last = (float)sqrt(nds);
     }
@@ -1002,10 +1002,10 @@ Objective FindNearestAirbase(GridIndex X, GridIndex Y)
     nd = 9999;
     o = (Objective) myit.GetFirst();
 
-    while (o != NULL)
+    while (o not_eq NULL)
     {
         if (
-            (o->GetType() == TYPE_AIRBASE) ||
+            (o->GetType() == TYPE_AIRBASE) or
             (o->GetType() == TYPE_AIRSTRIP)
         )
         {
@@ -1045,10 +1045,10 @@ Objective FindNearbyAirbase(GridIndex X, GridIndex Y)
     nd = 9999;
     o = (Objective) myit.GetFirst();
 
-    while (o != NULL)
+    while (o not_eq NULL)
     {
         if (
-            (o->GetType() == TYPE_AIRBASE) ||
+            (o->GetType() == TYPE_AIRBASE) or
             (o->GetType() == TYPE_AIRSTRIP)
         )
         {
@@ -1079,12 +1079,12 @@ Objective FindNearestFriendlyAirbase(Team who, GridIndex X, GridIndex Y)
     VuListIterator myit(AllObjList);
     o = (Objective) myit.GetFirst();
 
-    while (o != NULL)
+    while (o not_eq NULL)
     {
         if (
-            (GetTTRelations(o->GetTeam(), who) <= Neutral) &&
-            o->GetType() == TYPE_AIRBASE &&
-            o->brain && o->brain->NumOperableRunways() // JB 010729 CTD
+            (GetTTRelations(o->GetTeam(), who) <= Neutral) and 
+            o->GetType() == TYPE_AIRBASE and 
+            o->brain and o->brain->NumOperableRunways() // JB 010729 CTD
         )
         {
             o->GetLocation(&x, &y);
@@ -1121,12 +1121,12 @@ Objective FindNearestFriendlyRunway(Team who, GridIndex X, GridIndex Y)
     nd =  32800000; //100 km (in ft)
     o = (Objective) myit.GetFirst();
 
-    while (o != NULL)
+    while (o not_eq NULL)
     {
         if (GetTTRelations(o->GetTeam(), who) <= Neutral)
         {
             if (
-                (o->GetType() == TYPE_AIRBASE) ||
+                (o->GetType() == TYPE_AIRBASE) or
                 (o->GetType() == TYPE_AIRSTRIP)
             )
             {
@@ -1171,7 +1171,7 @@ Objective FindNearestFriendlyObjective(Team who, GridIndex *x, GridIndex *y, int
     {
         if (GetTTRelations(o->GetTeam(), who) <= Neutral)
         {
-            if (flags & FF_SECONDLINE && o->IsFrontline())
+            if (flags bitand FF_SECONDLINE and o->IsFrontline())
             {
                 o = (Objective) myit.GetNext();
                 continue;
@@ -1211,7 +1211,7 @@ Objective FindNearestFriendlyObjective(VuFilteredList* l, Team who, GridIndex *x
     {
         if (GetTTRelations(o->GetTeam(), who) <= Neutral)
         {
-            if (flags & FF_SECONDLINE && o->IsFrontline())
+            if (flags bitand FF_SECONDLINE and o->IsFrontline())
             {
                 o = GetNextObjective(&myit);
                 continue;
@@ -1249,7 +1249,7 @@ Objective FindNearestFriendlyPowerStation(VuFilteredList* l, Team who, GridIndex
         if (GetTTRelations(o->GetTeam(), who) <= Neutral)
         {
             if (
-                o->GetType() == TYPE_NUCLEAR ||
+                o->GetType() == TYPE_NUCLEAR or
                 o->GetType() == TYPE_POWERPLANT
             )
             {
@@ -1282,11 +1282,11 @@ Objective GetObjectiveByXY(GridIndex X, GridIndex Y)
 
     o = (Objective) myit.GetFirst();
 
-    while (o != NULL)
+    while (o not_eq NULL)
     {
         o->GetLocation(&x, &y);
 
-        if (x == X && y == Y)
+        if (x == X and y == Y)
         {
             return o;
         }
@@ -1307,12 +1307,12 @@ int ScoreThreatFast(GridIndex X, GridIndex Y, int altlevel, Team who)
     // Check vs territory ownership
     own = GetOwner(TheCampaign.CampMapData, X, Y);
 
-    if (!GetRoE(who, own, ROE_AIR_OVERFLY))
+    if ( not GetRoE(who, own, ROE_AIR_OVERFLY))
     {
         return 32000;
     }
 
-    if (!TheCampaign.SamMapData || !TheCampaign.RadarMapData)
+    if ( not TheCampaign.SamMapData or not TheCampaign.RadarMapData)
     {
         return 0;
     }
@@ -1320,7 +1320,7 @@ int ScoreThreatFast(GridIndex X, GridIndex Y, int altlevel, Team who)
     // Find our indexes
     i = (Y / MAP_RATIO) * MRX + (X / MAP_RATIO);
 
-    if (i < 0 || i > TheCampaign.SamMapSize)
+    if (i < 0 or i > TheCampaign.SamMapSize)
     {
         return 100; // Off the map
     }
@@ -1341,31 +1341,31 @@ int ScoreThreatFast(GridIndex X, GridIndex Y, int altlevel, Team who)
             return 0;
 
         case LowAltitude:
-            score = ((TheCampaign.SamMapData[i] >> ix) & 0x03) * 28;
-            score += ((TheCampaign.SamMapData[i] >> (ix + 2)) & 0x03) * 2;
+            score = ((TheCampaign.SamMapData[i] >> ix) bitand 0x03) * 28;
+            score += ((TheCampaign.SamMapData[i] >> (ix + 2)) bitand 0x03) * 2;
 
-            //score += ((TheCampaign.RadarMapData[i] >> ix) & 0x03) * 3;
-            if (own && own != 0xF && GetRoE(who, own, ROE_AIR_FIRE))
+            //score += ((TheCampaign.RadarMapData[i] >> ix) bitand 0x03) * 3;
+            if (own and own not_eq 0xF and GetRoE(who, own, ROE_AIR_FIRE))
                 score += 10; // 'General' threat for flying over enemy territory
 
             break;
 
         case MediumAltitude:
-            score = ((TheCampaign.SamMapData[i] >> ix) & 0x03) * 10;
-            score += ((TheCampaign.SamMapData[i] >> (ix + 2)) & 0x03) * 23;
-            //score += ((TheCampaign.RadarMapData[i] >> ix) & 0x03) * 1;
-            //score += ((TheCampaign.RadarMapData[i] >> (ix+2)) & 0x03) * 2;
+            score = ((TheCampaign.SamMapData[i] >> ix) bitand 0x03) * 10;
+            score += ((TheCampaign.SamMapData[i] >> (ix + 2)) bitand 0x03) * 23;
+            //score += ((TheCampaign.RadarMapData[i] >> ix) bitand 0x03) * 1;
+            //score += ((TheCampaign.RadarMapData[i] >> (ix+2)) bitand 0x03) * 2;
             break;
 
         case HighAltitude:
         default:
-            score = ((TheCampaign.SamMapData[i] >> (ix + 2)) & 0x03) * 30;
-            //score += ((TheCampaign.RadarMapData[i] >> (ix+2)) & 0x03) * 3;
+            score = ((TheCampaign.SamMapData[i] >> (ix + 2)) bitand 0x03) * 30;
+            //score += ((TheCampaign.RadarMapData[i] >> (ix+2)) bitand 0x03) * 3;
             break;
 
         case VeryHighAltitude:
-            score = ((TheCampaign.SamMapData[i] >> (ix + 2)) & 0x03) * 15;
-            //score += ((TheCampaign.RadarMapData[i] >> (ix+2)) & 0x03) * 3;
+            score = ((TheCampaign.SamMapData[i] >> (ix + 2)) bitand 0x03) * 15;
+            //score += ((TheCampaign.RadarMapData[i] >> (ix+2)) bitand 0x03) * 3;
             break;
     }
 
@@ -1398,21 +1398,21 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
         e->GetLocation(&x, &y);
         d = da = FloatToInt32(Distance(X, Y, x, y));
 
-        if (flags & FIND_CAUTIOUS)
+        if (flags bitand FIND_CAUTIOUS)
         {
             d = da = FloatToInt32(0.8F * d);
         }
 
-        if (e->GetDetectionRange(mt) > d && GetRoE(e->GetTeam(), who, roe_check))
+        if (e->GetDetectionRange(mt) > d and GetRoE(e->GetTeam(), who, roe_check))
         {
             if (
-                e->IsUnit() && !(flags & FIND_NOAIR && e->GetDomain() == DOMAIN_AIR) &&
-                !(flags & FIND_NOMOVERS && ((Unit)e)->Moving())
+                e->IsUnit() and not (flags bitand FIND_NOAIR and e->GetDomain() == DOMAIN_AIR) and 
+ not (flags bitand FIND_NOMOVERS and ((Unit)e)->Moving())
             )
             {
                 d = d; // placeholder. This unit is valid
             }
-            else if (e->IsObjective() && ((Objective)e)->GetObjectiveStatus() > 30)
+            else if (e->IsObjective() and ((Objective)e)->GetObjectiveStatus() > 30)
             {
                 d = d; // placeholder. This objective is valid
             }
@@ -1432,7 +1432,7 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
             {
                 threats += 4;
             }
-            else if (d > VisualDetectionRange[mt] && !(flags & FIND_NODETECT))
+            else if (d > VisualDetectionRange[mt] and not (flags bitand FIND_NODETECT))
             {
                 threats++;
             }
@@ -1466,13 +1466,13 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
  mt = LowAir;
 
  // Set up roe checks
- for (d=0; d<NUM_TEAMS && TeamInfo[d]; d++){
+ for (d=0; d<NUM_TEAMS and TeamInfo[d]; d++){
  tteam[d] = (uchar)GetRoE((uchar)d,who,ROE_AIR_ENGAGE);
  }
 
  // Check lists
  while (pass < 2){
- if (!pass){
+ if ( not pass){
 #ifdef VU_GRID_TREE_Y_MAJOR
  myit = new VuGridIterator(RealUnitProxList, p.y, p.x, (BIG_SCALAR)GridToSim(MAX_AIR_SEARCH));
 #else
@@ -1492,10 +1492,10 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
  got = 0;
  if (tteam[e->GetTeam()])
  {
- if (e->IsUnit() &&
- !(flags & FIND_NOMOVERS && ((Unit)e)->Moving()) &&
- !(flags & FIND_NOAIR && e->GetDomain() == DOMAIN_AIR) &&
- (flags & FIND_FINDUNSPOTTED || e->GetSpotted(who)))
+ if (e->IsUnit() and 
+ not (flags bitand FIND_NOMOVERS and ((Unit)e)->Moving()) and 
+ not (flags bitand FIND_NOAIR and e->GetDomain() == DOMAIN_AIR) and 
+ (flags bitand FIND_FINDUNSPOTTED or e->GetSpotted(who)))
  d = d; // placeholder. This unit is valid
  else if (e->IsObjective())
  d = d; // placeholder. This objective is valid
@@ -1506,9 +1506,9 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
  }
  e->GetLocation(&x,&y);
  d = FloatToInt32(Distance(X,Y,x,y));
- if (flags & FIND_CAUTIOUS)
+ if (flags bitand FIND_CAUTIOUS)
  d = FloatToInt32(0.8F*d);
- if (!(flags & FIND_NODETECT) && e->GetDetectionRange(mt) > d)
+ if ( not (flags bitand FIND_NODETECT) and e->GetDetectionRange(mt) > d)
  got++;
  hc = e->GetAproxHitChance(mt,d);
  if (hc > 0){
@@ -1517,7 +1517,7 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
  if (hc > 0)
  got = 1;
  }
- if (got && foundlist)
+ if (got and foundlist)
  foundlist->ForcedInsert(e);
  found += got;
  }
@@ -1554,7 +1554,7 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
     }
 
     // Set up roe checks
-    for (d = 0; d < NUM_TEAMS && TeamInfo[d]; d++)
+    for (d = 0; d < NUM_TEAMS and TeamInfo[d]; d++)
     {
         tteam[d] = GetRoE((uchar)d, who, ROE_AIR_ENGAGE);
     }
@@ -1562,7 +1562,7 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
     // Check lists
     while (pass < 2)
     {
-        if (!pass)
+        if ( not pass)
         {
             myit = new VuListIterator(AirDefenseList);
         }
@@ -1573,7 +1573,7 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
 
         for (e = (CampEntity) myit->GetFirst(); e; e = (CampEntity) myit->GetNext())
         {
-            if (e == NULL || e->GetTeam() < 0 || e->GetTeam() >= NUM_TEAMS)
+            if (e == NULL or e->GetTeam() < 0 or e->GetTeam() >= NUM_TEAMS)
             {
                 continue; // something bogus
             }
@@ -1585,11 +1585,11 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
             }
 
             if (
-                (!e->IsUnit() || !((Unit)e)->Moving()) &&
+                ( not e->IsUnit() or not ((Unit)e)->Moving()) and 
 #if VU_ALL_FILTERED
-                !foundlist->Find(e)
+ not foundlist->Find(e)
 #else
-                !foundlist->Find(e->Id())
+ not foundlist->Find(e->Id())
 #endif
             )
             {
@@ -1599,19 +1599,19 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
                 if (e->GetAproxHitChance(mt, d) > 0)
                 {
                     foundlist->ForcedInsert(e);
-                    retval |= NEED_SEAD;
+                    retval or_eq NEED_SEAD;
                 }
-                else if (!(flags & FIND_NODETECT) && e->GetDetectionRange(mt) > d)
+                else if ( not (flags bitand FIND_NODETECT) and e->GetDetectionRange(mt) > d)
                 {
                     foundlist->ForcedInsert(e);
-                    retval |= NEED_ECM;
+                    retval or_eq NEED_ECM;
                 }
             }
         }
 
         delete myit;
 
-        if (flags & FIND_NODETECT)
+        if (flags bitand FIND_NODETECT)
         {
             pass = 10; // Skip detector pass, essentially
         }
@@ -1637,25 +1637,25 @@ void FillDistanceList(List list, Team who, int  i, int j)
     VuListIterator myit1(AllObjList);
     o = GetFirstObjective(&myit1);
 
-    while (o != NULL)
+    while (o not_eq NULL)
     {
         good = 0;
         o->GetLocation(&x, &y);
         own = o->GetTeam();
 
-        if (GetTTRelations(who, own) == Allied || !own)
+        if (GetTTRelations(who, own) == Allied or not own)
         {
             if (o->IsFrontline())
                 d = 0.0F;
             else
                 d = DistanceToFront(x, y);
 
-            if (d > (float)i && d < (float)j)
+            if (d > (float)i and d < (float)j)
             {
                 good = 1;
                 lp = list->GetFirstElement();
 
-                while (lp && good)
+                while (lp and good)
                 {
                     loc = lp->GetUserData();
                     UnpackXY(loc, &lx, &ly);
@@ -1690,7 +1690,7 @@ FalconSessionEntity* FindPlayer(Flight flight, uchar planeNum)
 
         while (curSession)
         {
-            if (curSession->GetPlayerFlightID() == flight->Id() && curSession->GetAircraftNum() == planeNum)
+            if (curSession->GetPlayerFlightID() == flight->Id() and curSession->GetAircraftNum() == planeNum)
             {
                 return (curSession);
             }
@@ -1720,8 +1720,8 @@ FalconSessionEntity* FindPlayer(Flight flight, uchar planeNum, uchar pilotSlot)
         while (curSession)
         {
             if (
-                curSession->GetPlayerFlightID() == flight->Id() &&
-                curSession->GetAircraftNum() == planeNum &&
+                curSession->GetPlayerFlightID() == flight->Id() and 
+                curSession->GetAircraftNum() == planeNum and 
                 curSession->GetPilotSlot() == pilotSlot
             )
             {

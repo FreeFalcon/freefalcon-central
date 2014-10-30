@@ -80,18 +80,18 @@ BOOL TextureDB::Setup(DXContext *hrc, const char* path)
 
     // Store the texture path for future reference
     if (strlen(path) + 1 >= sizeof(texturePath))
-        ShiError("Texture path name overflow!");
+        ShiError("Texture path name overflow");
 
     strcpy(texturePath, path);
 
-    if (texturePath[strlen(texturePath) - 1] != '\\')
+    if (texturePath[strlen(texturePath) - 1] not_eq '\\')
         strcat(texturePath, "\\");
 
     sprintf(texturePathD, "%stexture\\", texturePath);
 
     // Store the rendering context to be used just for managing our textures
     private_rc = hrc;
-    ShiAssert(private_rc != NULL);
+    ShiAssert(private_rc not_eq NULL);
 
     // Initialize data members to default values
     overrideHandle = NULL;
@@ -121,7 +121,7 @@ BOOL TextureDB::Setup(DXContext *hrc, const char* path)
     if (result)
         result = ReadFile(listFile, &totalTiles, sizeof(totalTiles), &bytesRead, NULL);
 
-    if (!result)
+    if ( not result)
     {
         char string[80];
         char message[120];
@@ -138,7 +138,7 @@ BOOL TextureDB::Setup(DXContext *hrc, const char* path)
     TextureSets = new SetEntry[numSets];
 #endif
 
-    if (!TextureSets)
+    if ( not TextureSets)
         ShiError("Failed to allocate memory for the texture database.");
 
     // Read the descriptions for the sets.
@@ -150,7 +150,7 @@ BOOL TextureDB::Setup(DXContext *hrc, const char* path)
         if (result)
             result = ReadFile(listFile, &TextureSets[i].terrainType, sizeof(TextureSets[i].terrainType), &bytesRead, NULL);
 
-        if (!result)
+        if ( not result)
         {
             char string[80];
             char message[120];
@@ -189,7 +189,7 @@ BOOL TextureDB::Setup(DXContext *hrc, const char* path)
             if (result)
                 result = ReadFile(listFile, &TextureSets[i].tiles[j].nPaths, sizeof(TextureSets[i].tiles[j].nPaths), &bytesRead, NULL);
 
-            if (!result)
+            if ( not result)
             {
                 char string[80];
                 char message[120];
@@ -224,7 +224,7 @@ BOOL TextureDB::Setup(DXContext *hrc, const char* path)
 
                 result = ReadFile(listFile, TextureSets[i].tiles[j].Areas, dataSize, &bytesRead, NULL);
 
-                if (!result)
+                if ( not result)
                 {
                     char string[80];
                     char message[120];
@@ -250,7 +250,7 @@ BOOL TextureDB::Setup(DXContext *hrc, const char* path)
 
                 result = ReadFile(listFile, TextureSets[i].tiles[j].Paths, dataSize, &bytesRead, NULL);
 
-                if (!result)
+                if ( not result)
                 {
                     char string[80];
                     char message[120];
@@ -279,7 +279,7 @@ void TextureDB::Cleanup(void)
     F4ScopeLock sl(cs_textureList);
 
 
-    if (!TextureSets) return;
+    if ( not TextureSets) return;
 
 
     // Stop receiving time updates
@@ -346,7 +346,7 @@ void TextureDB::Cleanup(void)
 
 #ifdef USE_SH_POOLS
 
-    if (gTexDBMemPool != NULL)
+    if (gTexDBMemPool not_eq NULL)
     {
         MemPoolFree(gTexDBMemPool);
         gTexDBMemPool = NULL;
@@ -383,7 +383,7 @@ void TextureDB::SetLightLevel(void)
     }
 
     // Update all the currently loaded textures
-    if (DisplayOptions.m_texMode != DisplayOptionsClass::TEX_MODE_DDS)
+    if (DisplayOptions.m_texMode not_eq DisplayOptionsClass::TEX_MODE_DDS)
     {
         for (int i = 0; i < numSets; i++)
             if (TextureSets[i].palHandle)
@@ -433,18 +433,18 @@ void TextureDB::StoreMPRPalette(SetEntry *pSet)
 
         if (PlayerOptions.Season == 1) //Autumn
         {
-            if (!((tmpR == tmpG && tmpG == tmpB) || tmpG < 60 || (tmpR + tmpG + tmpB) / 3 > 225)) //Not Greyscale / green / not very bright
+            if ( not ((tmpR == tmpG and tmpG == tmpB) or tmpG < 60 or (tmpR + tmpG + tmpB) / 3 > 225)) //Not Greyscale / green / not very bright
             {
                 RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
-                if (h >= 30 && h <= 165)  //Green
+                if (h >= 30 and h <= 165)  //Green
                 {
                     //h *= 0.6f; // min27 (yellow/orange/terracota/brown)
                     h = h * 0.33f + 15; //Shift to brown
                     s *= 1.2f; //more saturated (intenser brown, just mudy green otherwise
                     v *= 0.9f; //darker
                 }
-                else if (!(v > 0.9 && s > 0.9)) //Not a strong green, but neither very bright
+                else if ( not (v > 0.9 and s > 0.9)) //Not a strong green, but neither very bright
                 {
                     s *= 0.9f; //less saturated
                     v *= 0.85f; //darken a bit
@@ -459,13 +459,13 @@ void TextureDB::StoreMPRPalette(SetEntry *pSet)
         }
         else if (PlayerOptions.Season == 2) //Winter
         {
-            if (!(tmpR == tmpG && tmpR == tmpB) || tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //|| (tmpR == 255 && tmpG == 255))) //Greyscale //or pure color
+            if ( not (tmpR == tmpG and tmpR == tmpB) or tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //or (tmpR == 255 and tmpG == 255))) //Greyscale //or pure color
             {
                 RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
-                if (!(s <= 0.2 || h == -1))  //If Not Greyscale
+                if ( not (s <= 0.2 or h == -1))  //If Not Greyscale
                 {
-                    if (h >= 45 && h <= 150) //If Green
+                    if (h >= 45 and h <= 150) //If Green
                     {
                         s = 0;
                         v = 255; //Make white
@@ -479,7 +479,7 @@ void TextureDB::StoreMPRPalette(SetEntry *pSet)
                 //else if (v<=200) v *= 0.9f; //Greyscale, but not white: darken a bit (to increase contrast)
                 //else if (v>=200) v *= 1.2f; //bright...make even brighter
 
-                //if (s==0 && v < 240) v *= 0.85f; //Greyscale, but not white: darken a bit (to increase contrast)
+                //if (s==0 and v < 240) v *= 0.85f; //Greyscale, but not white: darken a bit (to increase contrast)
                 //if (s>230) s = 255; //bright...make even brighter
                 if (v > 255) v = 255;
 
@@ -490,9 +490,9 @@ void TextureDB::StoreMPRPalette(SetEntry *pSet)
         {
             RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
-            if (!(s <= 0.1 || h == -1))  //Not Greyscale
+            if ( not (s <= 0.1 or h == -1))  //Not Greyscale
             {
-                if (h >= 45 && h <= 160) //Green
+                if (h >= 45 and h <= 160) //Green
                 {
                     s *= 0.8f;
                     v *= 1.2f;
@@ -518,7 +518,7 @@ void TextureDB::StoreMPRPalette(SetEntry *pSet)
     // Turn on the lights if it is dark enough
     if (lightLevel < 0.5f)
     {
-        to = (BYTE *) & (palette[252]);
+        to = (BYTE *) bitand (palette[252]);
 
         if (TheTimeOfDay.GetNVGmode())
         {
@@ -715,14 +715,14 @@ TexPath* TextureDB::GetPath(TextureID texID, int type, int offset)
 
     // Find the first entry of the required type
     if (type)
-        while ((a < stop) && (a->type != type))
+        while ((a < stop) and (a->type not_eq type))
             a++;
 
     // Step to the requested offset
     a += offset;
 
     // We didn't find enough (or any) matching types
-    if ((a >= stop) || ((type) && (a->type != type)))
+    if ((a >= stop) or ((type) and (a->type not_eq type)))
         return NULL;
 
     // We found a match
@@ -746,14 +746,14 @@ TexArea* TextureDB::GetArea(TextureID texID, int type, int offset)
 
     // Find the first entry of the required type
     if (type)
-        while ((a < stop) && (a->type != type))
+        while ((a < stop) and (a->type not_eq type))
             a++;
 
     // Step to the requested offset
     a += offset;
 
     // We didn't find enough (or any) matching types
-    if ((a >= stop) || ((type) && (a->type != type)))
+    if ((a >= stop) or ((type) and (a->type not_eq type)))
         return NULL;
 
     // We found a match
@@ -764,7 +764,7 @@ BYTE TextureDB::GetTerrainType(TextureID texID)
 {
     int set = ExtractSet(texID);
 
-    if ((set < 0) || (set >= numSets))
+    if ((set < 0) or (set >= numSets))
         return 0;
 
     ShiAssert(set >= 0);
@@ -784,10 +784,10 @@ void TextureDB::Load(SetEntry* pSet, TileEntry* pTile, int res, bool forceNoDDS)
     ShiAssert(IsReady());
     ShiAssert(pSet);
     ShiAssert(pTile);
-    ShiAssert(!pTile->handle[res]);
-    ShiAssert(!pTile->handle[res]);
+    ShiAssert( not pTile->handle[res]);
+    ShiAssert( not pTile->handle[res]);
 
-    if (!forceNoDDS && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+    if ( not forceNoDDS and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
     {
         ReadImageDDS(pTile, res);
         pSet->palette = NULL;
@@ -805,12 +805,12 @@ void TextureDB::Load(SetEntry* pSet, TileEntry* pTile, int res, bool forceNoDDS)
 
         // Make sure we recognize this file type
         texFile.imageType = CheckImageType(filename);
-        ShiAssert(texFile.imageType != IMAGE_TYPE_UNKNOWN);
+        ShiAssert(texFile.imageType not_eq IMAGE_TYPE_UNKNOWN);
 
         // Open the input file
         result = texFile.glOpenFileMem(filename);
 
-        if (result != 1)
+        if (result not_eq 1)
         {
             char message[256];
             sprintf(message, "Failed to open %s", filename);
@@ -821,7 +821,7 @@ void TextureDB::Load(SetEntry* pSet, TileEntry* pTile, int res, bool forceNoDDS)
         texFile.glReadFileMem();
         result = ReadTextureImage(&texFile);
 
-        if (result != GOOD_READ)
+        if (result not_eq GOOD_READ)
             ShiError("Failed to read terrain texture. CD Error?");
 
         // Store pointer to the image data
@@ -870,41 +870,41 @@ namespace
 {
     int getDDSWidth(int flags)
     {
-        if (flags & MPR_TI_16)
+        if (flags bitand MPR_TI_16)
         {
             return 16;
         }
-        else if (flags & MPR_TI_32)
+        else if (flags bitand MPR_TI_32)
         {
             return 32;
         }
-        else if (flags & MPR_TI_64)
+        else if (flags bitand MPR_TI_64)
         {
             return 64;
         }
-        else if (flags & MPR_TI_128)
+        else if (flags bitand MPR_TI_128)
         {
             return 128;
         }
-        else if (flags & MPR_TI_256)
+        else if (flags bitand MPR_TI_256)
         {
             return 256;
         }
-        else if (flags & MPR_TI_512)
+        else if (flags bitand MPR_TI_512)
         {
             return 512;
         }
-        else if (flags & MPR_TI_1024)
+        else if (flags bitand MPR_TI_1024)
         {
             return 1024;
         }
-        else if (flags & MPR_TI_2048)
+        else if (flags bitand MPR_TI_2048)
         {
             return 2048;
         }
         else
         {
-            // BUG!!!
+            // BUG
             return 4096;
         }
     }
@@ -918,10 +918,10 @@ void TextureDB::Activate(SetEntry* pSet, TileEntry* pTile, int res)
     ShiAssert(pSet);
     ShiAssert(pTile);
     ShiAssert(res < TEX_LEVELS);
-    ShiAssert(!pTile->handle[res]);
+    ShiAssert( not pTile->handle[res]);
     ShiAssert(pTile->bits[res]);
 
-    if (DisplayOptions.m_texMode != DisplayOptionsClass::TEX_MODE_DDS)
+    if (DisplayOptions.m_texMode not_eq DisplayOptionsClass::TEX_MODE_DDS)
     {
         // Pass the palette to MPR if it isn't already there
         if (pSet->palHandle == 0)
@@ -941,7 +941,7 @@ void TextureDB::Activate(SetEntry* pSet, TileEntry* pTile, int res)
         WORD info = MPR_TI_PALETTE;
 
         if (g_bEnableStaticTerrainTextures)
-            dwFlags |= TextureHandle::FLAG_HINT_STATIC;
+            dwFlags or_eq TextureHandle::FLAG_HINT_STATIC;
 
         ((TextureHandle *)pTile->handle[res])->Create("TextureDB", info, 8, static_cast<UInt16>(pTile->width[res]), static_cast<UInt16>(pTile->height[res]), dwFlags);
 
@@ -1071,7 +1071,7 @@ void TextureDB::Free(SetEntry* pSet, TileEntry* pTile, int res)
     ShiAssert(pTile->handle[res] == NULL);
 
     // KLUDGE to prevent release runtime crash
-    if (!pTile || !pSet) return;
+    if ( not pTile or not pSet) return;
 
     // Release the image memory if it isn't already gone
     if ((char*)pTile->bits[res])
@@ -1096,7 +1096,7 @@ void TextureDB::Free(SetEntry* pSet, TileEntry* pTile, int res)
     // Free the set palette if no tiles are in use
     if (pSet->refCount == 0)
     {
-        if (DisplayOptions.m_texMode != DisplayOptionsClass::TEX_MODE_DDS)
+        if (DisplayOptions.m_texMode not_eq DisplayOptionsClass::TEX_MODE_DDS)
         {
             if (pSet->palHandle)
             {
@@ -1130,7 +1130,7 @@ void TextureDB::Select(ContextMPR *localContext, TextureID texID)
     ShiAssert(tile < TextureSets[set].numTiles);
 
     // JB 010318 CTD
-    if (!(set >= 0 && set < numSets && tile >= 0 && tile < TextureSets[set].numTiles))
+    if ( not (set >= 0 and set < numSets and tile >= 0 and tile < TextureSets[set].numTiles))
         return;
 
     // Make sure the texture we're trying to use is local to MPR
@@ -1145,7 +1145,7 @@ void TextureDB::Select(ContextMPR *localContext, TextureID texID)
     localContext->SelectTexture1(TextureSets[set].tiles[tile].handle[res]);
 
     // Night texture
-    if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS && lightLevel < 0.5f)
+    if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS and lightLevel < 0.5f)
     {
         ShiAssert(TextureSets[set].tiles[tile].handleN[res]);
         localContext->SelectTexture2(TextureSets[set].tiles[tile].handleN[res]);
@@ -1156,7 +1156,7 @@ void TextureDB::RestoreAll()
 {
     ShiAssert(IsReady());
 
-    if (!IsReady()) return;
+    if ( not IsReady()) return;
 
     //   EnterCriticalSection(&cs_textureList);
     F4ScopeLock sl(cs_textureList);
@@ -1209,7 +1209,7 @@ bool TextureDB::SyncDDSTextures(bool bForce)
 {
     ShiAssert(IsReady());
 
-    if (!IsReady())
+    if ( not IsReady())
         return false;
 
     CreateDirectory(texturePathD, NULL);
@@ -1252,7 +1252,7 @@ bool TextureDB::DumpImageToFile(TileEntry* pTile, DWORD *palette, int res, bool 
     ShiAssert(pTile->bits[res]);
     ShiAssert(palette);
 
-    if (!pTile->bits[res]) return false;
+    if ( not pTile->bits[res]) return false;
 
     strcpy(szTemp, (char *)pTile->filename);
     token = strtok(szTemp, sep);
@@ -1277,7 +1277,7 @@ bool TextureDB::DumpImageToFile(TileEntry* pTile, DWORD *palette, int res, bool 
 
     fp = fopen(szFileName, "rb");
 
-    if (!fp || bForce || bIs092)
+    if ( not fp or bForce or bIs092)
     {
         if (fp)
             fclose(fp);
@@ -1320,7 +1320,7 @@ bool TextureDB::DumpImageToFile(TileEntry* pTile, DWORD *palette, int res, bool 
 
     fp = fopen(szFileName, "rb");
 
-    if (!fp || bForce || bIs092)
+    if ( not fp or bForce or bIs092)
     {
         if (fp)
             fclose(fp);
@@ -1344,7 +1344,7 @@ bool TextureDB::DumpImageToFile(TileEntry* pTile, DWORD *palette, int res, bool 
             to++, from++; // Alpha
         }
 
-        to = (BYTE *) & (npal[252]);
+        to = (BYTE *) bitand (npal[252]);
 
         *to = 115;
         to++; // Red
@@ -1432,7 +1432,7 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     fp = fopen(szFileName, "rb");
 
     // FRB - bad dds file name
-    if (!fp)
+    if ( not fp)
         return;
 
     fread(&dwMagic, 1, sizeof(DWORD), fp);
@@ -1444,61 +1444,61 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
     {
-        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') ||
+        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') or
             ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '5'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth;
-            ddsd.dwFlags |= DDSD_LINEARSIZE;
+            ddsd.dwFlags or_eq DDSD_LINEARSIZE;
         }
 
         if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '1'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth / 2;
-            ddsd.dwFlags |= DDSD_LINEARSIZE;
+            ddsd.dwFlags or_eq DDSD_LINEARSIZE;
         }
     }
 
 
-    ShiAssert(ddsd.dwFlags & DDSD_LINEARSIZE)
+    ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE)
 
     // Note: HACK (using height for flags)
     pTile->height[res] = MPR_TI_DDS;
     // Note: MUST BE DXT1
-    pTile->height[res] |= MPR_TI_DXT1;
+    pTile->height[res] or_eq MPR_TI_DXT1;
 
-    // Note: 1024x1024 Max!
+    // Note: 1024x1024 Max
     switch (ddsd.dwWidth)
     {
         case 16:
-            pTile->height[res] |= MPR_TI_16;
+            pTile->height[res] or_eq MPR_TI_16;
             break;
 
         case 32:
-            pTile->height[res] |= MPR_TI_32;
+            pTile->height[res] or_eq MPR_TI_32;
             break;
 
         case 64:
-            pTile->height[res] |= MPR_TI_64;
+            pTile->height[res] or_eq MPR_TI_64;
             break;
 
         case 128:
-            pTile->height[res] |= MPR_TI_128;
+            pTile->height[res] or_eq MPR_TI_128;
             break;
 
         case 256:
-            pTile->height[res] |= MPR_TI_256;
+            pTile->height[res] or_eq MPR_TI_256;
             break;
 
         case 512:
-            pTile->height[res] |= MPR_TI_512;
+            pTile->height[res] or_eq MPR_TI_512;
             break;
 
         case 1024:
-            pTile->height[res] |= MPR_TI_1024;
+            pTile->height[res] or_eq MPR_TI_1024;
             break;
 
         case 2048:
-            pTile->height[res] |= MPR_TI_2048;
+            pTile->height[res] or_eq MPR_TI_2048;
             break;
 
         default:
@@ -1532,65 +1532,65 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
     {
-        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') ||
+        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') or
             ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '5'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth;
-            ddsd.dwFlags |= DDSD_LINEARSIZE;
+            ddsd.dwFlags or_eq DDSD_LINEARSIZE;
         }
 
         if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '1'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth / 2;
-            ddsd.dwFlags |= DDSD_LINEARSIZE;
+            ddsd.dwFlags or_eq DDSD_LINEARSIZE;
         }
     }
 
     // Note: HACK (using height for flags)
     pTile->heightN[res] = MPR_TI_DDS;
     // Note: MUST BE DXT1
-    pTile->heightN[res] |= MPR_TI_DXT1;
+    pTile->heightN[res] or_eq MPR_TI_DXT1;
 
-    // Note: 1024x1024 Max!
+    // Note: 1024x1024 Max
     switch (ddsd.dwWidth)
     {
         case 16:
-            pTile->heightN[res] |= MPR_TI_16;
+            pTile->heightN[res] or_eq MPR_TI_16;
             break;
 
         case 32:
-            pTile->heightN[res] |= MPR_TI_32;
+            pTile->heightN[res] or_eq MPR_TI_32;
             break;
 
         case 64:
-            pTile->heightN[res] |= MPR_TI_64;
+            pTile->heightN[res] or_eq MPR_TI_64;
             break;
 
         case 128:
-            pTile->heightN[res] |= MPR_TI_128;
+            pTile->heightN[res] or_eq MPR_TI_128;
             break;
 
         case 256:
-            pTile->heightN[res] |= MPR_TI_256;
+            pTile->heightN[res] or_eq MPR_TI_256;
             break;
 
         case 512:
-            pTile->heightN[res] |= MPR_TI_512;
+            pTile->heightN[res] or_eq MPR_TI_512;
             break;
 
         case 1024:
-            pTile->heightN[res] |= MPR_TI_1024;
+            pTile->heightN[res] or_eq MPR_TI_1024;
             break;
 
         case 2048:
-            pTile->heightN[res] |= MPR_TI_2048;
+            pTile->heightN[res] or_eq MPR_TI_2048;
             break;
 
         default:
             ShiAssert(false);
     }
 
-    ShiAssert(ddsd.dwFlags & DDSD_LINEARSIZE);
+    ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE);
     pTile->widthN[res] = ddsd.dwLinearSize;
     pTile->bitsN[res] = (BYTE *)glAllocateMemory(pTile->widthN[res], FALSE);
     fread(pTile->bitsN[res], 1, pTile->widthN[res], fp);
@@ -1603,7 +1603,7 @@ bool TextureDB::SaveDDS_DXTn(const char *szFileName, BYTE* pDst, int dimensions)
 
 #if _MSC_VER >= 1300
 
-    fileout = _open(szFileName, O_WRONLY | O_BINARY | O_CREAT, S_IWRITE);
+    fileout = _open(szFileName, O_WRONLY bitor O_BINARY bitor O_CREAT, S_IWRITE);
 
     options.MipMapType = dNoMipMaps;
     options.bBinaryAlpha = false;
@@ -1650,11 +1650,11 @@ void TextureDB::RGBtoHSV(float r, float g, float b, float *h, float *s, float *v
     else
     {
         if (r == *v)
-            *h = (g - b) / delta; // between yellow & magenta
+            *h = (g - b) / delta; // between yellow bitand magenta
         else if (g == *v)
-            *h = 2 + (b - r) / delta; // between cyan & yellow
+            *h = 2 + (b - r) / delta; // between cyan bitand yellow
         else
-            *h = 4 + (r - g) / delta; // between magenta & cyan
+            *h = 4 + (r - g) / delta; // between magenta bitand cyan
     }
 
     *h *= 60; // degrees
@@ -1667,7 +1667,7 @@ void TextureDB::HSVtoRGB(float *r, float *g, float *b, float h, float s, float v
     int i;
     float f, p, q, t;
 
-    if (s == 0 || h == -1)
+    if (s == 0 or h == -1)
     {
         // achromatic (grey)
         *r = *g = *b = v;

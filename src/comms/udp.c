@@ -1,3 +1,4 @@
+#include <cISO646>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -38,10 +39,10 @@ extern HANDLE    GlobalListLock;
 /* Mutex macros */
 #define SAY_ON(a)
 #define SAY_OFF(a)
-#define CREATE_LOCK(a,b)                { a = CreateMutex( NULL, FALSE, b ); if( !a ) DebugBreak(); }
+#define CREATE_LOCK(a,b)                { a = CreateMutex( NULL, FALSE, b ); if( not a ) DebugBreak(); }
 #define REQUEST_LOCK(a)                 { int w = WaitForSingleObject(a, INFINITE); {SAY_ON(a);} if( w == WAIT_FAILED ) DebugBreak(); }
-#define RELEASE_LOCK(a)                 { {SAY_OFF(a);} if( !ReleaseMutex(a)) DebugBreak();   }
-#define DESTROY_LOCK(a)                 { if( !CloseHandle(a)) DebugBreak();   }
+#define RELEASE_LOCK(a)                 { {SAY_OFF(a);} if( not ReleaseMutex(a)) DebugBreak();   }
+#define DESTROY_LOCK(a)                 { if( not CloseHandle(a)) DebugBreak();   }
 
 
 static struct sockaddr_in comBroadcastAddr, comRecvAddr;
@@ -111,7 +112,7 @@ com_API_handle ComUDPOpen(
     c = comListFindProtocolRport(CAPI_UDP_PROTOCOL, localUdpPort);
 
     //if (listitem){
-    if (c != NULL)
+    if (c not_eq NULL)
     {
         com_API_handle ret_val;
         ret_val = ComUDPOpenSendClone(name_in, c, buffersize, gamename,  remoteUdpPort, IPaddress, id);
@@ -158,7 +159,7 @@ com_API_handle ComUDPOpen(
 
     c->buffer_size = sizeof(ComAPIHeader) + buffersize;
 
-    if ((c->max_buffer_size > 0) && (c->buffer_size  > c->max_buffer_size))
+    if ((c->max_buffer_size > 0) and (c->buffer_size  > c->max_buffer_size))
     {
         c->buffer_size = c->max_buffer_size;
     }
@@ -296,7 +297,7 @@ com_API_handle ComUDPOpenSendClone(
 
     c->buffer_size =   max(parentCom->buffer_size, (int)(sizeof(ComAPIHeader) + buffersize));
 
-    if ((c->max_buffer_size > 0) && (c->buffer_size  > c->max_buffer_size))
+    if ((c->max_buffer_size > 0) and (c->buffer_size  > c->max_buffer_size))
     {
         c->buffer_size = c->max_buffer_size;
     }
@@ -364,7 +365,7 @@ void ComUDPClose(com_API_handle c)
         // int trueValue = 1;
         // int falseValue = 0;
 
-        if (cudp->parent != NULL)
+        if (cudp->parent not_eq NULL)
         {
             ComIP *parent;
             parent = cudp->parent;
@@ -461,7 +462,7 @@ void ComUDPClose(com_API_handle c)
         windows_sockets_connections--;
 
         /* if No more connections then WSACleanup() */
-        if (!windows_sockets_connections)
+        if ( not windows_sockets_connections)
         {
             if (sockerror = CAPI_WSACleanup())
             {
@@ -493,7 +494,7 @@ void ComUDPClose(com_API_handle c)
         }
 
         // sfr: removed JB check
-        //if (!F4IsBadReadPtrC(cudp, sizeof(ComIP))) // JB 010615 CTD
+        //if ( not F4IsBadReadPtrC(cudp, sizeof(ComIP))) // JB 010615 CTD
         free(cudp);
     }
 }
@@ -550,18 +551,18 @@ int ComUDPSend(com_API_handle c, int msgsize, int oob, int type)
     /* Do we need to toggle the SO_BROADCAST state ?*/
     actual = cudp;
 
-    if (cudp->parent != NULL)
+    if (cudp->parent not_eq NULL)
     {
         /* am I a SendClone ?? */
         actual   = cudp->parent;
     }
 
-    if (F4IsBadReadPtrC(cudp, sizeof(ComIP)) || F4IsBadReadPtrC(actual, sizeof(ComIP))) // JB 010220 CTD
+    if (F4IsBadReadPtrC(cudp, sizeof(ComIP)) or F4IsBadReadPtrC(actual, sizeof(ComIP))) // JB 010220 CTD
         return COMAPI_OUT_OF_SYNC; // JB 010220 CTD
 
-    if (actual->BroadcastModeOn != cudp->NeedBroadcastMode)
+    if (actual->BroadcastModeOn not_eq cudp->NeedBroadcastMode)
     {
-        CAPI_setsockopt(cudp->send_sock, SOL_SOCKET, SO_BROADCAST, (char *) & (cudp->NeedBroadcastMode), sizeof(int));
+        CAPI_setsockopt(cudp->send_sock, SOL_SOCKET, SO_BROADCAST, (char *) bitand (cudp->NeedBroadcastMode), sizeof(int));
         actual->BroadcastModeOn = cudp->NeedBroadcastMode;
     }
 
@@ -581,7 +582,7 @@ int ComUDPSend(com_API_handle c, int msgsize, int oob, int type)
     //cudp->send_buffer.len = newsize+sizeof(u_short);
 
     // if not OOB, check if enough bw is available
-    if (!oob)
+    if ( not oob)
     {
         if (check_bandwidth(newsize + sizeof(u_short), 0, type) == 0)
         {
@@ -648,7 +649,7 @@ int ComUDPSend(com_API_handle c, int msgsize, int oob, int type)
 
 #ifdef checkbandwidth
 
-    if (test < 20 && oob == 2)
+    if (test < 20 and oob == 2)
     {
         MonoPrint("posupd size %d", bytesSent);
         test ++;
@@ -728,7 +729,7 @@ int ComUDPGet(com_API_handle c)
 
 #ifdef DEBUG_COMMS
 
-            if (recverror != WSAEWOULDBLOCK)
+            if (recverror not_eq WSAEWOULDBLOCK)
             {
             }
 
@@ -786,7 +787,7 @@ int ComUDPGet(com_API_handle c)
                 case WSAEMSGSIZE:
 
                     /* The message was too large to fit into the specified buffer
-                      and was truncated. */
+                     and was truncated. */
                 case WSAEINVAL:
 
                     /* The socket has not been bound with bind, or an unknown flag
@@ -834,11 +835,11 @@ int ComUDPGet(com_API_handle c)
 
             // ignore messages from me
             //sfr: added port info
-            /* if (!(
-             (((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr == cudp->whoami) &&
+            /* if ( not (
+             (((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr == cudp->whoami) and 
              (((struct sockaddr_in *)(&in_addr))->sin_port == CAPI_htons(ComAPIGetMySendPort()))
              )){*/
-            if (((ComAPIHeader *)cudp->recv_buffer.buf)->id != cudp->whoami)
+            if (((ComAPIHeader *)cudp->recv_buffer.buf)->id not_eq cudp->whoami)
             {
                 // sets lastsender
                 cudp->lastsender = ((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr;
@@ -934,10 +935,10 @@ int ComIPHostIDGet(com_API_handle c, char *buf, int reset)
 
     if (force_ip_address)
     {
-        buf[3] = (char)(force_ip_address & 0xff);
-        buf[2] = (char)((force_ip_address >> 8)  & 0xff);
-        buf[1] = (char)((force_ip_address >> 16) & 0xff);
-        buf[0] = (char)((force_ip_address >> 24) & 0xff);
+        buf[3] = (char)(force_ip_address bitand 0xff);
+        buf[2] = (char)((force_ip_address >> 8) bitand 0xff);
+        buf[1] = (char)((force_ip_address >> 16) bitand 0xff);
+        buf[0] = (char)((force_ip_address >> 24) bitand 0xff);
         return 0;
     }
 
@@ -946,7 +947,7 @@ int ComIPHostIDGet(com_API_handle c, char *buf, int reset)
     // wow this is dark magic... dont wanna get in here
     // hentry->h_addr_list[i] is an array of char
     // run all available IPs for host
-    for (i = 0; hentry->h_addr_list[i] != NULL; i++)
+    for (i = 0; hentry->h_addr_list[i] not_eq NULL; i++)
     {
         // we return either first IP or hostIdx IP
         // first IP
@@ -1203,7 +1204,7 @@ void ComAPISetReceiveThreadPriority(com_API_handle c, int priority)
             }
         }
 
-        if (threadhandle && SetPriority != 0xFFFFFFFF)
+        if (threadhandle and SetPriority not_eq 0xFFFFFFFF)
         {
             SetThreadPriority(threadhandle, SetPriority);
         }

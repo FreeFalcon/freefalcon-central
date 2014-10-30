@@ -204,7 +204,7 @@ void DrawablePlatform::UpdateMetrics(long listNo, const Tpoint *pos, TransportSt
 
     // Have the non-zero height objects update their sorting metrics
     // (The flat objects are always drawn in insertion order, and are assumed
-    //  not to move)
+    // not to move)
     tallStaticObjects.UpdateMetrics(pos);
     dynamicObjects.UpdateMetrics(listNo, pos, transList);
 
@@ -219,7 +219,7 @@ void DrawablePlatform::UpdateMetrics(long listNo, const Tpoint *pos, TransportSt
     {
 
         // Push the object back up to our parent list if it has moved beyond our area
-        if (!ObjectInside(obj))
+        if ( not ObjectInside(obj))
         {
             dynamicObjects.RemoveObject(obj);
             parentList->InsertObject(obj);
@@ -247,7 +247,7 @@ void DrawablePlatform::SortForViewpoint(void)
 
     // Have the non-zero height objects update their sort ordering
     // (The flat objects are always drawn in insertion order, and are assumed
-    //  not to move)
+    // not to move)
     tallStaticObjects.SortForViewpoint();
     dynamicObjects.SortForViewpoint();
 
@@ -256,7 +256,7 @@ void DrawablePlatform::SortForViewpoint(void)
     checkDistance = distance + 2.0f * Radius();
     obj = prev;
 
-    while (obj && (obj->distance < checkDistance))
+    while (obj and (obj->distance < checkDistance))
     {
 
         // Pull object down from our parent list if it's inside our area
@@ -276,7 +276,7 @@ void DrawablePlatform::SortForViewpoint(void)
     checkDistance = distance;
     obj = next;
 
-    while (obj && (obj->distance > checkDistance))
+    while (obj and (obj->distance > checkDistance))
     {
 
         // Pull object down from our parent list if it's inside our area

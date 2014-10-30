@@ -544,9 +544,9 @@ void OTWDriverClass::RunActionCamera(void)
     // just continue with current mode
     /*
      ** edg: this was lurking on missiles too long
-     if ( otwPlatform && otwPlatform->IsWeapon() && !otwPlatform->IsEject() )
+     if ( otwPlatform and otwPlatform->IsWeapon() and not otwPlatform->IsEject() )
      {
-     if ( !otwPlatform->IsDead() )
+     if ( not otwPlatform->IsDead() )
      {
     // check back in several secs
     actionCameraTimer = vuxRealTime + 8000;
@@ -557,13 +557,13 @@ void OTWDriverClass::RunActionCamera(void)
 
 
     // check to see if either platform is firing
-    if ((otwPlatform.get() != NULL) && otwPlatform->IsFiring())
+    if ((otwPlatform.get() not_eq NULL) and otwPlatform->IsFiring())
     {
         // check back in several secs
         actionCameraTimer = vuxRealTime + 8000;
         return;
     }
-    else if (otwTrackPlatform.get() && otwTrackPlatform->IsFiring())
+    else if (otwTrackPlatform.get() and otwTrackPlatform->IsFiring())
     {
         // check back in several secs
         actionCameraTimer = vuxRealTime + 8000;
@@ -579,9 +579,9 @@ void OTWDriverClass::RunActionCamera(void)
         {
             // we don't want to deal with campaign objects....
             if (
-                !theObject->IsSim() ||
-                !theObject->IsAwake()
-                /* || theObject->IsEject()*/
+ not theObject->IsSim() or
+ not theObject->IsAwake()
+                /* or theObject->IsEject()*/
             ) // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots REMOVED FOR NOW
             {
                 // get next object in list
@@ -591,17 +591,17 @@ void OTWDriverClass::RunActionCamera(void)
 
             // is this an object( missile or bomb)
             if (
-                (theObject->IsMissile() ||
+                (theObject->IsMissile() or
                  (
-                     theObject->IsBomb() &&
-                     !(((BombClass*)theObject)->IsSetBombFlag(BombClass::IsFlare | BombClass::IsChaff)))
-                ) &&
-                !theObject->IsEject() &&
-                (otwPlatform.get() != weaponObject)
+                     theObject->IsBomb() and 
+ not (((BombClass*)theObject)->IsSetBombFlag(BombClass::IsFlare bitor BombClass::IsChaff)))
+                ) and 
+ not theObject->IsEject() and 
+                (otwPlatform.get() not_eq weaponObject)
             )
             {
                 // don't track missiles with no targets
-                if (!(theObject->IsMissile() && ((SimMoverClass *)theObject)->targetPtr == NULL))
+                if ( not (theObject->IsMissile() and ((SimMoverClass *)theObject)->targetPtr == NULL))
                     weaponObject = theObject;
             }
             // is object firing?
@@ -614,7 +614,7 @@ void OTWDriverClass::RunActionCamera(void)
             {
                 talkObject = theObject;
             }
-            else if (!(theObject->IsGroundVehicle() && ((SimMoverClass *)theObject)->targetPtr == NULL))
+            else if ( not (theObject->IsGroundVehicle() and ((SimMoverClass *)theObject)->targetPtr == NULL))
             {
                 // is this the same as current?
                 if (otwPlatform.get() == theObject)
@@ -622,13 +622,13 @@ void OTWDriverClass::RunActionCamera(void)
                     foundCurrent = TRUE;
                 }
                 // else, is this the first found prior to current?
-                else if (prevObject == NULL && foundCurrent == FALSE)
+                else if (prevObject == NULL and foundCurrent == FALSE)
                 {
                     prevObject = theObject;
                 }
                 // else, if we've already found the current one, this
                 // object must be the next one after current
-                else if (foundCurrent == TRUE && newObject == NULL)
+                else if (foundCurrent == TRUE and newObject == NULL)
                 {
                     newObject = theObject;
                 }
@@ -649,7 +649,7 @@ void OTWDriverClass::RunActionCamera(void)
         targetPtr = ((SimMoverClass *)talkObject)->targetPtr;
 
         // no campaign objects
-        if (targetPtr && !targetPtr->BaseData()->IsSim())
+        if (targetPtr and not targetPtr->BaseData()->IsSim())
         {
             targetPtr = NULL;
         }
@@ -701,7 +701,7 @@ void OTWDriverClass::RunActionCamera(void)
             }
         }
 
-        if (otwPlatform->GetVt() < 30.0f && mOTWDisplayMode == ModeFlyby)
+        if (otwPlatform->GetVt() < 30.0f and mOTWDisplayMode == ModeFlyby)
         {
             mOTWDisplayMode = ModeChase;
         }
@@ -719,7 +719,7 @@ void OTWDriverClass::RunActionCamera(void)
         parent = (SimBaseClass *)((SimWeaponClass *)weaponObject)->Parent();
 
         // no campaign objects
-        if (targetPtr && !targetPtr->BaseData()->IsSim())
+        if (targetPtr and not targetPtr->BaseData()->IsSim())
         {
             targetPtr = NULL;
         }
@@ -786,7 +786,7 @@ void OTWDriverClass::RunActionCamera(void)
             }
         }
 
-        if (otwPlatform->GetVt() < 30.0f && mOTWDisplayMode == ModeFlyby)
+        if (otwPlatform->GetVt() < 30.0f and mOTWDisplayMode == ModeFlyby)
         {
             mOTWDisplayMode = ModeChase;
         }
@@ -801,7 +801,7 @@ void OTWDriverClass::RunActionCamera(void)
         targetPtr = ((SimMoverClass *)firingObject)->targetPtr;
 
         // no campaign objects
-        if (targetPtr && !targetPtr->BaseData()->IsSim())
+        if (targetPtr and not targetPtr->BaseData()->IsSim())
         {
             targetPtr = NULL;
         }
@@ -853,7 +853,7 @@ void OTWDriverClass::RunActionCamera(void)
             }
         }
 
-        if (otwPlatform->GetVt() < 30.0f && mOTWDisplayMode == ModeFlyby)
+        if (otwPlatform->GetVt() < 30.0f and mOTWDisplayMode == ModeFlyby)
         {
             mOTWDisplayMode = ModeChase;
         }
@@ -863,7 +863,7 @@ void OTWDriverClass::RunActionCamera(void)
 
     } // end if firing object
     // just hang on current object
-    else if (!otwPlatform->IsDead() && (int)(NRANDPOS * 2.0f))
+    else if ( not otwPlatform->IsDead() and (int)(NRANDPOS * 2.0f))
     {
         switch ((int)(NRANDPOS * 10.0f))
         {
@@ -896,14 +896,14 @@ void OTWDriverClass::RunActionCamera(void)
         targetPtr = ((SimMoverClass *)newObject)->targetPtr;
 
         // no campaign objects
-        if (targetPtr && !targetPtr->BaseData()->IsSim())
+        if (targetPtr and not targetPtr->BaseData()->IsSim())
         {
             targetPtr = NULL;
         }
 
         // if the object's got a target, set it as the tracked
         // object, otherwise set track platform to NULL
-        if (targetPtr && (int)(NRANDPOS * 3.0f))
+        if (targetPtr and (int)(NRANDPOS * 3.0f))
         {
             // shpw view either from target or viceversa perspective
             if ((int)(NRANDPOS * 3.0f))
@@ -948,7 +948,7 @@ void OTWDriverClass::RunActionCamera(void)
             }
         }
 
-        if (otwPlatform->GetVt() < 30.0f && mOTWDisplayMode == ModeFlyby)
+        if (otwPlatform->GetVt() < 30.0f and mOTWDisplayMode == ModeFlyby)
         {
             mOTWDisplayMode = ModeChase;
         }
@@ -963,14 +963,14 @@ void OTWDriverClass::RunActionCamera(void)
         targetPtr = ((SimMoverClass *)prevObject)->targetPtr;
 
         // no campaign objects
-        if (targetPtr && !targetPtr->BaseData()->IsSim())
+        if (targetPtr and not targetPtr->BaseData()->IsSim())
         {
             targetPtr = NULL;
         }
 
         // if the object's got a target, set it as the tracked
         // object, otherwise set track platform to NULL
-        if (targetPtr && (int)(NRANDPOS * 8.0f))
+        if (targetPtr and (int)(NRANDPOS * 8.0f))
         {
             // shpw view either from target or viceversa perspective
             if ((int)(NRANDPOS * 8.0f))
@@ -1015,7 +1015,7 @@ void OTWDriverClass::RunActionCamera(void)
             }
         }
 
-        if (otwPlatform->GetVt() < 30.0f && mOTWDisplayMode == ModeFlyby)
+        if (otwPlatform->GetVt() < 30.0f and mOTWDisplayMode == ModeFlyby)
         {
             mOTWDisplayMode = ModeChase;
         }
@@ -1026,7 +1026,7 @@ void OTWDriverClass::RunActionCamera(void)
     } // end if new object
 
     // don't use orbit cam on ground
-    if ((otwPlatform.get() != NULL) && otwPlatform->OnGround() && mOTWDisplayMode == ModeOrbit)
+    if ((otwPlatform.get() not_eq NULL) and otwPlatform->OnGround() and mOTWDisplayMode == ModeOrbit)
     {
         mOTWDisplayMode = ModeChase;
         SelectExternal();
@@ -1040,8 +1040,8 @@ void OTWDriverClass::RunActionCamera(void)
 
 
     // randomly adjust the FOV
-    if (mOTWDisplayMode == ModeChase ||
-        mOTWDisplayMode == ModeFlyby ||
+    if (mOTWDisplayMode == ModeChase or
+        mOTWDisplayMode == ModeFlyby or
         mOTWDisplayMode == ModeSatellite)
     {
         // no telefoto when object on ground
@@ -1053,7 +1053,7 @@ void OTWDriverClass::RunActionCamera(void)
                 SetFOV(60.0F * DTR);
             }
         }
-        else if (rand() & 0x00000004)
+        else if (rand() bitand 0x00000004)
         {
             if (GetFOV() > 30.0F * DTR)
             {
@@ -1088,12 +1088,12 @@ void OTWDriverClass::RunHybridPitMode(float pan, float tilt)
 
     if (mOTWDisplayMode == Mode2DCockpit)
     {
-        if (fabs(pan - lastpan) > g_fHybridPitThreshold1 * DTR || fabs(tilt - lasttilt) > g_fHybridPitThreshold1 * DTR)
+        if (fabs(pan - lastpan) > g_fHybridPitThreshold1 * DTR or fabs(tilt - lasttilt) > g_fHybridPitThreshold1 * DTR)
         {
             SetOTWDisplayMode(Mode3DCockpit);
 
             //Wombat778 12-03-04 Reset Hybrid Pit mode
-            if (!GetHybridPitMode())
+            if ( not GetHybridPitMode())
                 ToggleHybridPitMode();
 
             lastpan = pan;
@@ -1104,7 +1104,7 @@ void OTWDriverClass::RunHybridPitMode(float pan, float tilt)
 
     if (mOTWDisplayMode == Mode3DCockpit)
     {
-        if (fabs(pan - lastpan) > g_fHybridPitThreshold2 * DTR || fabs(tilt - lasttilt) > g_fHybridPitThreshold2 * DTR)
+        if (fabs(pan - lastpan) > g_fHybridPitThreshold2 * DTR or fabs(tilt - lasttilt) > g_fHybridPitThreshold2 * DTR)
         {
             lastpan = pan;
             lasttilt = tilt;
@@ -1115,7 +1115,7 @@ void OTWDriverClass::RunHybridPitMode(float pan, float tilt)
             SetOTWDisplayMode(Mode2DCockpit);
 
             //Wombat778 12-03-04 Reset Hybrid Pit mode
-            if (!GetHybridPitMode())
+            if ( not GetHybridPitMode())
                 ToggleHybridPitMode();
         }
 
@@ -1173,11 +1173,11 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsSim() && theObject->IsWeapon() &&
+                    if (theObject->IsSim() and theObject->IsWeapon() and 
                         ((SimWeaponClass*)theObject)->Parent() == focusObj)
                     {
                         // 2002-02-15 ADDED BY S.G. Don't toggle to chaff and flares (NOTE THE '!' AT THE FRONT TO REVERSE THE CONDITION)
-                        if (!(theObject->IsBomb() && (((BombClass *)theObject)->IsSetBombFlag(BombClass::IsChaff) || ((BombClass *)theObject)->IsSetBombFlag(BombClass::IsFlare))))
+                        if ( not (theObject->IsBomb() and (((BombClass *)theObject)->IsSetBombFlag(BombClass::IsChaff) or ((BombClass *)theObject)->IsSetBombFlag(BombClass::IsFlare))))
                         {
                             // END OF ADDED SECTION 2002-02-15
                             // is this the same as current?
@@ -1186,7 +1186,7 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                                 foundCurrent = TRUE;
                             }
                             // else, is this the first found prior to current?
-                            else if (newObject == NULL && foundCurrent == FALSE)
+                            else if (newObject == NULL and foundCurrent == FALSE)
                             {
                                 newObject = theObject;
                             }
@@ -1228,8 +1228,8 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if ((theObject->IsAirplane() || theObject->IsHelicopter()) &&
-                        theObject != focusObj &&
+                    if ((theObject->IsAirplane() or theObject->IsHelicopter()) and 
+                        theObject not_eq focusObj and 
                         theObject->GetTeam() == focusObj->GetTeam())
                     {
                         // is this the same as current?
@@ -1238,7 +1238,7 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                             foundCurrent = TRUE;
                         }
                         // else, is this the first found prior to current?
-                        else if (newObject == NULL && foundCurrent == FALSE)
+                        else if (newObject == NULL and foundCurrent == FALSE)
                         {
                             newObject = theObject;
                         }
@@ -1274,8 +1274,8 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if ((theObject->IsAirplane() || theObject->IsHelicopter()) &&
-                        theObject->GetTeam() != focusObj->GetTeam())
+                    if ((theObject->IsAirplane() or theObject->IsHelicopter()) and 
+                        theObject->GetTeam() not_eq focusObj->GetTeam())
                     {
                         // is this the same as current?
                         if (theObject == currObj)
@@ -1283,7 +1283,7 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                             foundCurrent = TRUE;
                         }
                         // else, is this the first found prior to current?
-                        else if (newObject == NULL && foundCurrent == FALSE)
+                        else if (newObject == NULL and foundCurrent == FALSE)
                         {
                             newObject = theObject;
                         }
@@ -1319,7 +1319,7 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsGroundVehicle() &&
+                    if (theObject->IsGroundVehicle() and 
                         theObject->GetTeam() == focusObj->GetTeam())
                     {
                         // is this the same as current?
@@ -1328,7 +1328,7 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                             foundCurrent = TRUE;
                         }
                         // else, is this the first found prior to current?
-                        else if (newObject == NULL && foundCurrent == FALSE)
+                        else if (newObject == NULL and foundCurrent == FALSE)
                         {
                             newObject = theObject;
                         }
@@ -1366,9 +1366,9 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsGroundVehicle() &&
-                        theObject->GetTeam() != focusObj->GetTeam())
-                        // if ( theObject->GetTeam() != focusObj->GetTeam() ) // 2002-02-16 MODIFIED BY S.G. NEXT_ENEMY handles now both air and ground so fixate this one on ground only...
+                    if (theObject->IsGroundVehicle() and 
+                        theObject->GetTeam() not_eq focusObj->GetTeam())
+                        // if ( theObject->GetTeam() not_eq focusObj->GetTeam() ) // 2002-02-16 MODIFIED BY S.G. NEXT_ENEMY handles now both air and ground so fixate this one on ground only...
                     {
                         // is this the same as current?
                         if (theObject == currObj)
@@ -1376,7 +1376,7 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                             foundCurrent = TRUE;
                         }
                         // else, is this the first found prior to current?
-                        else if (newObject == NULL && foundCurrent == FALSE)
+                        else if (newObject == NULL and foundCurrent == FALSE)
                         {
                             newObject = theObject;
                         }
@@ -1412,10 +1412,10 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->GetTeam() != focusObj->GetTeam())
+                    if (theObject->GetTeam() not_eq focusObj->GetTeam())
                     {
                         // 2002-02-25 ADDED BY S.G. Don't toggle to chaff and flares (NOTE THE '!' AT THE FRONT TO REVERSE THE CONDITION)
-                        if (!(theObject->IsBomb() && (((BombClass *)theObject)->IsSetBombFlag(BombClass::IsChaff) || ((BombClass *)theObject)->IsSetBombFlag(BombClass::IsFlare))))
+                        if ( not (theObject->IsBomb() and (((BombClass *)theObject)->IsSetBombFlag(BombClass::IsChaff) or ((BombClass *)theObject)->IsSetBombFlag(BombClass::IsFlare))))
                         {
                             // END OF ADDED SECTION 2002-02-25
                             // is this the same as current?
@@ -1424,7 +1424,7 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                                 foundCurrent = TRUE;
                             }
                             // else, is this the first found prior to current?
-                            else if (newObject == NULL && foundCurrent == FALSE)
+                            else if (newObject == NULL and foundCurrent == FALSE)
                             {
                                 newObject = theObject;
                             }
@@ -1461,8 +1461,8 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsSim() && theObject->IsMissile() &&
-                        ((SimMoverClass *)theObject)->targetPtr &&
+                    if (theObject->IsSim() and theObject->IsMissile() and 
+                        ((SimMoverClass *)theObject)->targetPtr and 
                         ((SimMoverClass *)theObject)->targetPtr->BaseData() == focusObj)
                     {
                         // is this the same as current?
@@ -1471,7 +1471,7 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                             foundCurrent = TRUE;
                         }
                         // else, is this the first found prior to current?
-                        else if (newObject == NULL && foundCurrent == FALSE)
+                        else if (newObject == NULL and foundCurrent == FALSE)
                         {
                             newObject = theObject;
                         }
@@ -1527,16 +1527,16 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsSim() && theObject->IsWeapon() &&
+                    if (theObject->IsSim() and theObject->IsWeapon() and 
                         ((SimWeaponClass*)theObject)->Parent() == focusObj)
                     {
                         // 2002-02-15 ADDED BY S.G. Don't toggle to chaff and flares (NOTE THE '!' AT THE FRONT TO REVERSE THE CONDITION)
-                        if (!(theObject->IsBomb() && (((BombClass *)theObject)->IsSetBombFlag(BombClass::IsFlare | BombClass::IsChaff))))
+                        if ( not (theObject->IsBomb() and (((BombClass *)theObject)->IsSetBombFlag(BombClass::IsFlare bitor BombClass::IsChaff))))
                         {
                             // END OF ADDED SECTION 2002-02-15
                             // is this the same as current?
                             // if we've got a newObject we're done
-                            if (theObject == currObj && newObject)
+                            if (theObject == currObj and newObject)
                             {
                                 break;
                             }
@@ -1580,14 +1580,14 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if ((theObject->IsAirplane() || theObject->IsHelicopter()) &&
-                        theObject != focusObj &&
-                        // !theObject->IsEject() && // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots REMOVED FOR NOW
+                    if ((theObject->IsAirplane() or theObject->IsHelicopter()) and 
+                        theObject not_eq focusObj and 
+                        // not theObject->IsEject() and // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots REMOVED FOR NOW
                         theObject->GetTeam() == focusObj->GetTeam())
                     {
                         // is this the same as current?
                         // if we've got a newObject we're done
-                        if (theObject == currObj && newObject)
+                        if (theObject == currObj and newObject)
                         {
                             break;
                         }
@@ -1623,13 +1623,13 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if ((theObject->IsAirplane() || theObject->IsHelicopter()) &&
-                        !theObject->IsEject() && // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots
-                        theObject->GetTeam() != focusObj->GetTeam())
+                    if ((theObject->IsAirplane() or theObject->IsHelicopter()) and 
+ not theObject->IsEject() and // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots
+                        theObject->GetTeam() not_eq focusObj->GetTeam())
                     {
                         // is this the same as current?
                         // if we've got a newObject we're done
-                        if (theObject == currObj && newObject)
+                        if (theObject == currObj and newObject)
                         {
                             break;
                         }
@@ -1665,12 +1665,12 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsGroundVehicle() &&
+                    if (theObject->IsGroundVehicle() and 
                         theObject->GetTeam() == focusObj->GetTeam())
                     {
                         // is this the same as current?
                         // if we've got a newObject we're done
-                        if (theObject == currObj && newObject)
+                        if (theObject == currObj and newObject)
                         {
                             break;
                         }
@@ -1706,12 +1706,12 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsGroundVehicle() &&
-                        theObject->GetTeam() != focusObj->GetTeam())
+                    if (theObject->IsGroundVehicle() and 
+                        theObject->GetTeam() not_eq focusObj->GetTeam())
                     {
                         // is this the same as current?
                         // if we've got a newObject we're done
-                        if (theObject == currObj && newObject)
+                        if (theObject == currObj and newObject)
                         {
                             break;
                         }
@@ -1747,15 +1747,15 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->GetTeam() != focusObj->GetTeam())
+                    if (theObject->GetTeam() not_eq focusObj->GetTeam())
                     {
                         // is this the same as current?
                         // if we've got a newObject we're done
                         // 2002-02-25 ADDED BY S.G. Don't toggle to chaff and flares (NOTE THE '!' AT THE FRONT TO REVERSE THE CONDITION)
-                        if (!(theObject->IsBomb() && (((BombClass *)theObject)->IsSetBombFlag(BombClass::IsChaff) || ((BombClass *)theObject)->IsSetBombFlag(BombClass::IsFlare))))
+                        if ( not (theObject->IsBomb() and (((BombClass *)theObject)->IsSetBombFlag(BombClass::IsChaff) or ((BombClass *)theObject)->IsSetBombFlag(BombClass::IsFlare))))
                         {
                             // END OF ADDED SECTION 2002-02-25
-                            if (theObject == currObj && newObject)
+                            if (theObject == currObj and newObject)
                             {
                                 break;
                             }
@@ -1792,14 +1792,14 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                 while (theObject)
                 {
                     // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsSim() &&
-                        theObject->IsMissile() &&
-                        ((SimMoverClass *)theObject)->targetPtr &&
+                    if (theObject->IsSim() and 
+                        theObject->IsMissile() and 
+                        ((SimMoverClass *)theObject)->targetPtr and 
                         ((SimMoverClass *)theObject)->targetPtr->BaseData() == focusObj)
                     {
                         // is this the same as current?
                         // if we've got a newObject we're done
-                        if (theObject == currObj && newObject)
+                        if (theObject == currObj and newObject)
                         {
                             break;
                         }
@@ -1858,7 +1858,7 @@ void OTWDriverClass::SetGraphicsOwnship(SimBaseClass* obj)
     SimBaseClass* curPlatform = otwPlatform.get();
 
     // sanity check
-    if (obj && !obj->IsSim())
+    if (obj and not obj->IsSim())
     {
         return;
     }
@@ -1868,15 +1868,15 @@ void OTWDriverClass::SetGraphicsOwnship(SimBaseClass* obj)
         return;
     }
 
-    ShiAssert(!IsShutdown());
+    ShiAssert( not IsShutdown());
 
     // check for bad position of object and reject -- a bandaid
     if (obj)
     {
         if (
-            _isnan(obj->XPos()) || !_finite(obj->XPos()) ||
-            _isnan(obj->YPos()) || !_finite(obj->YPos()) ||
-            _isnan(obj->ZPos()) || !_finite(obj->ZPos())
+            _isnan(obj->XPos()) or not _finite(obj->XPos()) or
+            _isnan(obj->YPos()) or not _finite(obj->YPos()) or
+            _isnan(obj->ZPos()) or not _finite(obj->ZPos())
         )
         {
             return;
@@ -1886,7 +1886,7 @@ void OTWDriverClass::SetGraphicsOwnship(SimBaseClass* obj)
 
     // sfr added fine interest stuff
     // Let go of the old one
-    if (otwPlatform.get() != NULL)
+    if (otwPlatform.get() not_eq NULL)
     {
         // Make sure we don't leave it hidden (could have happened in UpdateVehicleDrawables)
         if (otwPlatform->drawPointer)
@@ -1905,10 +1905,10 @@ void OTWDriverClass::SetGraphicsOwnship(SimBaseClass* obj)
 
     // sfr added fine interest stuff
     // Establish the new one
-    if (otwPlatform.get() != NULL)
+    if (otwPlatform.get() not_eq NULL)
     {
         // Make sure there is a cockpit up
-        if (!curPlatform)
+        if ( not curPlatform)
         {
             SetOTWDisplayMode(Mode2DCockpit);
         }
@@ -1916,7 +1916,7 @@ void OTWDriverClass::SetGraphicsOwnship(SimBaseClass* obj)
 #if FINE_INT
 
         // add fine interest if platform is not ourselves
-        if (otwPlatform.get() != FalconLocalSession->GetPlayerEntity())
+        if (otwPlatform.get() not_eq FalconLocalSession->GetPlayerEntity())
         {
             FalconLocalSession->AddToFineInterest(otwPlatform.get(), false);
         }
@@ -1925,8 +1925,8 @@ void OTWDriverClass::SetGraphicsOwnship(SimBaseClass* obj)
         // sfr: no need anymore, smartpointer
         //VuReferenceEntity (otwPlatform);
 
-        //if (otwPlatform->IsLocal() && otwPlatform->IsSetFlag(MOTION_OWNSHIP) && otwPlatform->IsAirplane())
-        if ((otwPlatform.get() == SimDriver.GetPlayerAircraft()) && otwPlatform->IsAirplane())
+        //if (otwPlatform->IsLocal() and otwPlatform->IsSetFlag(MOTION_OWNSHIP) and otwPlatform->IsAirplane())
+        if ((otwPlatform.get() == SimDriver.GetPlayerAircraft()) and otwPlatform->IsAirplane())
         {
             avionicsObj = static_cast<AircraftClass*>(otwPlatform.get());
             // MLR 12/1/2003 - Exports the old EyeFromCG stuff
@@ -1969,7 +1969,7 @@ void OTWDriverClass::SetGraphicsOwnship(SimBaseClass* obj)
     }
 }
 
-#if !NEW_SERVER_VIEWPOINT
+#if not NEW_SERVER_VIEWPOINT
 void OTWDriverClass::ServerSetviewPoint(void)
 {
     viewPoint->Update(&ownshipPos);
@@ -2008,7 +2008,7 @@ void OTWDriverClass::Enter(void)
     OTWDisplayMode startMode = Mode2DCockpit;
 
     SetShutdown(0);
-    // FRB - ALERT!!
+    // FRB - ALERT
     // sfr: we are changing gfx context, flush all
     TheLoader.WaitLoader();
 
@@ -2040,7 +2040,7 @@ void OTWDriverClass::Enter(void)
     memset(textMessage, 0, sizeof(textMessage));
     showFrontText = 0;
 
-    if (!flyingEye)
+    if ( not flyingEye)
     {
         // create a special "Flying Eye" type..
         flyingEye = new SpotEntity(F4FlyingEyeType + VU_LAST_ENTITY_TYPE);
@@ -2077,7 +2077,7 @@ void OTWDriverClass::Enter(void)
     // set the special effects detail level
     SfxClass::SetLOD(PlayerOptions.SfxLevel);
 
-    if (otwPlatform.get() != NULL)
+    if (otwPlatform.get() not_eq NULL)
     {
         SetGraphicsOwnship(otwPlatform.get());
     }
@@ -2086,7 +2086,7 @@ void OTWDriverClass::Enter(void)
     //   MonoPrint("Starting loader.. %d\n",vuxRealTime);
     viewPoint->Update(&ownshipPos);
 
-    // KCK: TEMPORARY FOR TIMING STATISTICS- REMOVE BEFORE FLIGHT!
+    // KCK: TEMPORARY FOR TIMING STATISTICS- REMOVE BEFORE FLIGHT
     // TheLoader.WaitForLoader();
 
     //   MonoPrint("Initializing renderer.. %d\n",vuxRealTime);
@@ -2186,7 +2186,7 @@ void OTWDriverClass::Enter(void)
 
     FILE *pcockpitResFile = fopen(strCPFile, "r");
 
-    if (pcockpitResFile != NULL)
+    if (pcockpitResFile not_eq NULL)
     {
         const int lineLen = MAX_LINE_BUFFER - 1;
         char plineBuffer[MAX_LINE_BUFFER] = "";
@@ -2194,22 +2194,22 @@ void OTWDriverClass::Enter(void)
 		char* ptoken = NULL;
         char pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x00};
 
-        if (!feof(pcockpitResFile))
+        if ( not feof(pcockpitResFile))
         {
             fgets(plineBuffer, lineLen, pcockpitResFile);
             plinePtr = plineBuffer;
             ptoken = FindToken(&plinePtr, pseparators);
         }
 
-        while (!feof(pcockpitResFile) && strcmpi(ptoken, END_MARKER))
+        while ( not feof(pcockpitResFile) and strcmpi(ptoken, END_MARKER))
         {
-            if (!strcmpi(ptoken, "resX"))
+            if ( not strcmpi(ptoken, "resX"))
             {
                 ptoken = FindToken(&plinePtr, pseparators);
                 sscanf(ptoken, "%d", &resX);
             }
 
-            if (!strcmpi(ptoken, "resY"))
+            if ( not strcmpi(ptoken, "resY"))
             {
                 ptoken = FindToken(&plinePtr, pseparators);
                 sscanf(ptoken, "%d", &resY);
@@ -2223,7 +2223,7 @@ void OTWDriverClass::Enter(void)
         fclose(pcockpitResFile);
     }
 
-    if (resX > 0 && resY > 0)
+    if (resX > 0 and resY > 0)
     {
         pCockpitManager = new CockpitManager(OTWImage, "ws_ckpit.dat", TRUE, (float)DisplayOptions.DispWidth / float(resX), DisplayOptions.DispHeight / float(resY), FALSE, eCPVisType, eCPName, eCPNameNCTR);
         pPadlockCPManager = new CockpitManager(OTWImage, "ws_plock.dat", FALSE, (float)DisplayOptions.DispWidth / float(resX), DisplayOptions.DispHeight / float(resY), FALSE, eCPVisType, eCPName, eCPNameNCTR);
@@ -2440,12 +2440,12 @@ void OTWDriverClass::Enter(void)
     vrCockpit->SetSwitchMask(0, 1);
     // else vrCockpit->SetSwitchMask( 0, 0);
 
-    if (PlayerOptions.SimVisualCueMode == VCLiftLine || PlayerOptions.SimVisualCueMode == VCBoth)
+    if (PlayerOptions.SimVisualCueMode == VCLiftLine or PlayerOptions.SimVisualCueMode == VCBoth)
         vrCockpit->SetSwitchMask(1, 1);
     else 
         vrCockpit->SetSwitchMask(1, 0);
 
-    if (PlayerOptions.SimVisualCueMode == VCReflection || PlayerOptions.SimVisualCueMode == VCBoth)
+    if (PlayerOptions.SimVisualCueMode == VCReflection or PlayerOptions.SimVisualCueMode == VCBoth)
         vrCockpit->SetSwitchMask(3, 1);
     else 
         vrCockpit->SetSwitchMask(3, 0);
@@ -2478,7 +2478,7 @@ void OTWDriverClass::Enter(void)
     //Get player options
     doGLOC   = PlayerOptions.BlackoutOn() ? TRUE : FALSE;
 
-    if (!PlayerOptions.NameTagsOn())
+    if ( not PlayerOptions.NameTagsOn())
     {
         // Make sure name tags are off if they're not allowed
         DrawableBSP::drawLabels = FALSE;
@@ -2508,7 +2508,7 @@ void OTWDriverClass::Enter(void)
     // 'drawSubTitles' doesn´t destroy or create the radiolabel class - it just governs if the labels are created
     // with this variable the user can temporarily kill the subtitles, however if he wants them off alltogether he
     // has to do this in the UI
-    if ((PlayerOptions.getSubtitles()) && (radioLabel))
+    if ((PlayerOptions.getSubtitles()) and (radioLabel))
     {
         drawSubTitles = true; // Retro 16Dec2003
         radioLabel->ResetAll();
@@ -2518,7 +2518,7 @@ void OTWDriverClass::Enter(void)
         drawSubTitles = false; // Retro 21Dec2003
     }
 
-    if ((g_bPilotEntertainment) && (winamp)) // Retro 3Jan2004 (all) - looking for that winamp window..
+    if ((g_bPilotEntertainment) and (winamp)) // Retro 3Jan2004 (all) - looking for that winamp window..
     {
         winamp->InitWinAmp();
     }
@@ -2690,7 +2690,7 @@ int OTWDriverClass::Exit(void)
     }
 
     OTWDriver.CleanViewpoint(); // JB 010615
-    // FRB - ALERT!!
+    // FRB - ALERT
     // sfr: we are changing gfx mode, flush loader
     TheLoader.WaitLoader();
 
@@ -2767,14 +2767,14 @@ void OTWDriverClass::ObjectSetData(SimBaseClass *obj, Tpoint *simView, Trotation
 
     /*
     // Do we want Control surface data?
-    if (!obj->IsSimObjective() && !obj->IsLocal())
+    if ( not obj->IsSimObjective() and not obj->IsLocal())
     {
     FalconSimDataToggle *dataRequest;
 
-    if ((fabs (obj->XPos() - flyingEye->XPos()) < 3.0F * NM_TO_FT &&
-    fabs (obj->YPos() - flyingEye->YPos()) < 3.0F * NM_TO_FT) || obj->IsSetFlag(MOTION_OWNSHIP))
+    if ((fabs (obj->XPos() - flyingEye->XPos()) < 3.0F * NM_TO_FT and 
+    fabs (obj->YPos() - flyingEye->YPos()) < 3.0F * NM_TO_FT) or obj->IsSetFlag(MOTION_OWNSHIP))
     {
-    if (!((SimMoverClass*)obj)->DataRequested())
+    if ( not ((SimMoverClass*)obj)->DataRequested())
     {
     ((SimMoverClass*)obj)->SetDataRequested(TRUE);
     dataRequest = new FalconSimDataToggle (obj->Id(), FalconLocalGame);
@@ -2809,7 +2809,7 @@ void OTWDriverClass::InitViewpoint()
 {
     F4EnterCriticalSection(cs_update);
 
-    if (!viewPoint && !bKeepClean && Texture::IsSetup())
+    if ( not viewPoint and not bKeepClean and Texture::IsSetup())
     {
         viewPoint = new RViewPoint;
         viewPoint->Setup(PlayerOptions.TerrainDistance()*FEET_PER_KM, PlayerOptions.MaxTerrainLevel(), 4, DisplayOptions.bZBuffering);
@@ -2873,7 +2873,7 @@ void OTWDriverClass::UpdateCameraFocus()
     groundHeight = GetApproxGroundLevel(focusPoint.x, focusPoint.y);
     F4EnterCriticalSection(cs_update);
 
-    if (viewPoint && viewPoint->IsReady() && // JB 010604
+    if (viewPoint and viewPoint->IsReady() and // JB 010604
         focusPoint.z - groundHeight > -100.0f)
     {
         groundHeight = viewPoint->GetGroundLevel(focusPoint.x, focusPoint.y);
@@ -2909,7 +2909,7 @@ void OTWDriverClass::FindNewOwnship(void)
             newObject = (SimBaseClass*)updateWalker.GetNext();
         }
 
-        if (!newObject)
+        if ( not newObject)
         {
             // Get the first one
             newObject = (SimBaseClass*)updateWalker.GetFirst();
@@ -2932,7 +2932,7 @@ void OTWDriverClass::FindNewOwnship(void)
             theObject = (SimBaseClass*)updateWalker.GetNext();
         }
 
-        if (!newObject)
+        if ( not newObject)
         {
             // Get the last one
             theObject = (SimBaseClass*)updateWalker.GetFirst();
@@ -2951,7 +2951,7 @@ void OTWDriverClass::FindNewOwnship(void)
 
         // make sure we're no longer in any cockpit-type mode if the
         // newobject isn't playerEntity
-        if (newObject != SimDriver.GetPlayerAircraft() && DisplayInCockpit())
+        if (newObject not_eq SimDriver.GetPlayerAircraft() and DisplayInCockpit())
         {
             SelectDisplayMode(ModeOrbit);
         }
@@ -2977,7 +2977,7 @@ float OTWDriverClass::GetGroundLevel(float x, float y, Tpoint* normal)
     F4EnterCriticalSection(cs_update);
 
     // try ownship viewpoint first
-    if (viewPoint && viewPoint->IsReady())
+    if (viewPoint and viewPoint->IsReady())
     {
         bestRet = viewPoint->GetGroundLevel(x, y, bestNormal, &bestLod);
     }
@@ -2991,7 +2991,7 @@ float OTWDriverClass::GetGroundLevel(float x, float y, Tpoint* normal)
 
         for (
             std::map < VuBin<FalconSessionEntity>, TViewPoint*>::iterator it = viewpointMap.begin();
-            bestLod > 0 && it != viewpointMap.end();
+            bestLod > 0 and it not_eq viewpointMap.end();
             ++it
         )
         {
@@ -3018,7 +3018,7 @@ float OTWDriverClass::GetGroundLevel(float x, float y, Tpoint* normal)
     InitViewpoint();
     F4EnterCriticalSection(cs_update);
 
-    if (viewPoint && viewPoint->IsReady())
+    if (viewPoint and viewPoint->IsReady())
     {
         float level = viewPoint->GetGroundLevel(x, y, normal);
         F4LeaveCriticalSection(cs_update);
@@ -3036,7 +3036,7 @@ float OTWDriverClass::GetApproxGroundLevel(float x, float y)
 
     F4EnterCriticalSection(cs_update);
 
-    if (viewPoint && viewPoint->IsReady())
+    if (viewPoint and viewPoint->IsReady())
     {
         ShiAssert(FALSE == F4IsBadReadPtr(viewPoint, sizeof * viewPoint)); // JPO CTD check
         float level = viewPoint->GetGroundLevelApproximation(x, y);
@@ -3055,7 +3055,7 @@ void OTWDriverClass::GetAreaFloorAndCeiling(float *floor, float *ceiling)
 
     F4EnterCriticalSection(cs_update);
 
-    if (viewPoint && viewPoint->IsReady())
+    if (viewPoint and viewPoint->IsReady())
     {
         viewPoint->GetAreaFloorAndCeiling(floor, ceiling);
     }
@@ -3083,23 +3083,23 @@ void OTWDriverClass::RemoveObjectFromDrawList(SimBaseClass* theObject)
     F4EnterCriticalSection(cs_update);
 
     if (
-        viewPoint && viewPoint->IsReady() && // JB 010604
+        viewPoint and viewPoint->IsReady() and // JB 010604
         theObject->drawPointer->InDisplayList()
     )
     {
         viewPoint->RemoveObject(theObject->drawPointer);
 
         // RED - NEW PS TRAILS - No more needed a remove
-        /*if (theObject->IsMissile() &&
-         ((MissileClass*)theObject)->trail &&
+        /*if (theObject->IsMissile() and 
+         ((MissileClass*)theObject)->trail and 
          ((MissileClass*)theObject)->trail->InDisplayList() )
         {
          viewPoint->RemoveObject(((MissileClass*)theObject)->trail);
         }*/
 
         if (
-            theObject->IsGroundVehicle() &&
-            ((GroundClass*)theObject)->truckDrawable &&
+            theObject->IsGroundVehicle() and 
+            ((GroundClass*)theObject)->truckDrawable and 
             ((GroundClass*)theObject)->truckDrawable->InDisplayList()
         )
         {
@@ -3149,7 +3149,7 @@ int OTWDriverClass::GetGroundIntersection(euler* dir, vector* pos)
 int OTWDriverClass::CheckLOS(FalconEntity *pt1, FalconEntity *pt2)
 {
     Tpoint start, finish;
-    // sfr: default value is 1 if terrain is not loadedd!!!
+    // sfr: default value is 1 if terrain is not loadedd
     int LOS = 1;
 
     InitViewpoint();
@@ -3169,7 +3169,7 @@ int OTWDriverClass::CheckLOS(FalconEntity *pt1, FalconEntity *pt2)
         LOS = viewPoint->LineOfSight(&start, &finish);
 
         // 2002-02-26 ADDED BY S.G. No LOS, try the other way around...
-        if (!LOS)
+        if ( not LOS)
         {
             LOS = viewPoint->LineOfSight(&finish, &start);
         }
@@ -3245,7 +3245,7 @@ void OTWDriverClass::ScrollMessages()
 
     i = 1;
 
-    while (i < (MAX_CHAT_LINES) && textMessage[i - 1][0])
+    while (i < (MAX_CHAT_LINES) and textMessage[i - 1][0])
     {
         strncpy(textMessage[i - 1], textMessage[i], sizeof(char)*MAX_CHAT_LENGTH);
         textTimeLeft[i - 1] = textTimeLeft[i];
@@ -3257,11 +3257,11 @@ void OTWDriverClass::ScrollMessages()
 
     if (textMessage[0][0])
     {
-        showFrontText |= SHOW_MESSAGES;
+        showFrontText or_eq SHOW_MESSAGES;
     }
     else
     {
-        showFrontText &= ~SHOW_MESSAGES;
+        showFrontText and_eq compl SHOW_MESSAGES;
     }
 }
 
@@ -3273,7 +3273,7 @@ void OTWDriverClass::ShowMessage(char* msg)
     {
         F4SoundFXSetDist(SFX_CP_ICP1, TRUE, 0.0f, 1.0f);
 
-        showFrontText |= SHOW_MESSAGES;
+        showFrontText or_eq SHOW_MESSAGES;
 
         if (textMessage[MAX_CHAT_LINES - 1][0])
         {
@@ -3283,7 +3283,7 @@ void OTWDriverClass::ShowMessage(char* msg)
 
         i = 0;
 
-        while (textMessage[i][0] && i < (MAX_CHAT_LINES - 1))
+        while (textMessage[i][0] and i < (MAX_CHAT_LINES - 1))
         {
             i++;
         }
@@ -3361,7 +3361,7 @@ void OTWDriverClass::AddViewpoint(FalconSessionEntity *session)
     FalconGameEntity *g = FalconLocalGame;
     FalconEntity *e;
 
-    if (g == NULL || !g->IsLocal() || session == NULL || ((e = session->GetPlayerEntity()) == NULL))
+    if (g == NULL or not g->IsLocal() or session == NULL or ((e = session->GetPlayerEntity()) == NULL))
     {
         return;
     }
@@ -3399,7 +3399,7 @@ void OTWDriverClass::RemoveViewpoint(FalconSessionEntity *session)
     F4ScopeLock sl(vmMutex);
     std::map<VuBin<FalconSessionEntity>, TViewPoint*>::iterator it = viewpointMap.find(sb);
 
-    if (it != viewpointMap.end())
+    if (it not_eq viewpointMap.end())
     {
         TViewPoint *vp = it->second;
         vp->Cleanup();
@@ -3414,7 +3414,7 @@ void OTWDriverClass::UpdateViewpoints()
 
     for (
         std::map<VuBin<FalconSessionEntity>, TViewPoint*>::iterator it = viewpointMap.begin();
-        it != viewpointMap.end();
+        it not_eq viewpointMap.end();
         ++it
     )
     {

@@ -106,7 +106,7 @@ void StartCampaignGame(int local, int game_type)
         timestamp  = time.wMinute + (timestamp * 60);
         timestamp  = time.wSecond + (timestamp * 60);
 
-        if (!TheCampaign.GetCreationIter())
+        if ( not TheCampaign.GetCreationIter())
         {
             TheCampaign.SetCreatorIP(FalconLocalSessionId.creator_);
             TheCampaign.SetCreationTime(timestamp);
@@ -158,7 +158,7 @@ void StartCampaignGame(int local, int game_type)
 // This is called any time we've received Campaign Scenario Status data (preload data)
 void CampaignPreloadSuccess(int remote_game)
 {
-    if (remote_game && !TheCampaign.IsLoaded() && gCampJoinStatus == JOIN_REQUEST_ALL_DATA)
+    if (remote_game and not TheCampaign.IsLoaded() and gCampJoinStatus == JOIN_REQUEST_ALL_DATA)
     {
         // We want the rest of the data too.
         gCampJoinStatus = JOIN_CAMP_DATA_ONLY;
@@ -168,7 +168,7 @@ void CampaignPreloadSuccess(int remote_game)
 
 void CampaignJoinSuccess(void)
 {
-    MonoPrint("Got all campaign data! Starting it up!\n");
+    MonoPrint("Got all campaign data Starting it up\n");
 
     if (gMainHandler)
         gMainHandler->RemoveUserCallback(CampaignConnectionTimer);
@@ -200,13 +200,13 @@ void CampaignJoinSuccess(void)
     {
         tactical_mission_loaded = TRUE;
 
-        if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+        if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
         {
             tactical_play_setup();
 
             gCommsMgr->SetCampaignFlag(game_TacticalEngagement);
 
-            if (!FalconLocalGame->IsLocal())
+            if ( not FalconLocalGame->IsLocal())
                 TheCampaign.StartRemoteCampaign(FalconLocalGame);
 
             gCommsMgr->LoadStats();
@@ -223,14 +223,14 @@ void CampaignJoinSuccess(void)
 
         ps = (CampEntity) FindUnit(gPlayerSquadronId);
 
-        if (ps && ps->IsSquadron())
+        if (ps and ps->IsSquadron())
             FalconLocalSession->SetPlayerSquadron((Squadron)ps);
 
         if (gMainHandler)
         {
             CopyinTempSettings();
 
-            if (!CampSelMode)
+            if ( not CampSelMode)
                 AdjustCampaignOptions();
             else
                 AdjustExperienceLevels();
@@ -247,7 +247,7 @@ void CampaignJoinSuccess(void)
                 TheCampaign.SaveFile[CAMP_NAME_SIZE - 1] = 0;
             }
 
-            if (!FalconLocalGame->IsLocal())
+            if ( not FalconLocalGame->IsLocal())
                 TheCampaign.StartRemoteCampaign(FalconLocalGame);
 
             // 2002-04-18 MN redo bullseye selection once more after we have the theaters reference point from the .tri file
@@ -268,8 +268,8 @@ void CampaignJoinSuccess(void)
 
             // 2002-01-03 M.N.
             // If we started a new campaign, make some first task manager calculations and pop up the priority windows
-            if (FalconLocalGame->IsLocal() &&
-                (strcmp(gUI_CampaignFile, "save0") == 0 || strcmp(gUI_CampaignFile, "save1") == 0 || strcmp(gUI_CampaignFile, "save2") == 0))
+            if (FalconLocalGame->IsLocal() and 
+                (strcmp(gUI_CampaignFile, "save0") == 0 or strcmp(gUI_CampaignFile, "save1") == 0 or strcmp(gUI_CampaignFile, "save2") == 0))
             {
                 C_Window *winme = NULL;
                 C_Button *ctrl = NULL;
@@ -321,7 +321,7 @@ void CampaignJoinSuccess(void)
 
 void CampaignJoinFail(void)
 {
-    MonoPrint("Failed to get campaign data!\n");
+    MonoPrint("Failed to get campaign data\n");
 
     StopCampaignLoad();
 
@@ -343,7 +343,7 @@ void CampaignJoinFail(void)
 
 void StopCampaignLoad(void)
 {
-    MonoPrint("Stop Campaign Load!\n");
+    MonoPrint("Stop Campaign Load\n");
 
     gMainHandler->RemoveUserCallback(CampaignConnectionTimer);
 
@@ -369,7 +369,7 @@ void CampaignConnectionTimer(void)
         // If we fail to many times, we quit
         if (gCampJoinTries > 600)
         {
-            MonoPrint("Join Timed out!\n");
+            MonoPrint("Join Timed out\n");
             PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
             return;
         }
@@ -377,7 +377,7 @@ void CampaignConnectionTimer(void)
         gCampJoinLastData = vuxRealTime;
 
         /* Don't repost messages - these are now sent reliably
-         if (!TheCampaign.IsPreLoaded())
+         if ( not TheCampaign.IsPreLoaded())
          PostMessage(FalconDisplay.appWin,FM_JOIN_CAMPAIGN,JOIN_REQUEST_ALL_DATA,gCampJoinGameType);
          else
          PostMessage(FalconDisplay.appWin,FM_JOIN_CAMPAIGN,JOIN_CAMP_DATA_ONLY,gCampJoinGameType);

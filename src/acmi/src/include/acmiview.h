@@ -1,6 +1,7 @@
 #ifndef _ACMIVIEW_H_
 #define _ACMIVIEW_H_
 
+#include <cISO646>
 #include "f4thread.h"
 #include "f4vu.h"
 #include "AcmiCam.h"
@@ -139,7 +140,7 @@ public:
     void UpdateViewPosRot(void);
     void ToggleTracking(void)
     {
-        _tracking ^= 1;
+        _tracking xor_eq 1;
     };
 
 

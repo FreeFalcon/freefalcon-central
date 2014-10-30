@@ -30,7 +30,7 @@ extern GlobalPositioningSystem *gGps;
 
 void CampHackButton1CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // Button 1 is Fist Of God tool
@@ -39,7 +39,7 @@ void CampHackButton1CB(long, short hittype, C_Base *)
 
 void CampHackButton2CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // Button 1 is Cheat tool
@@ -48,7 +48,7 @@ void CampHackButton2CB(long, short hittype, C_Base *)
 
 void CampHackButton3CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gGps->TeamNo_ >= 0)
@@ -62,7 +62,7 @@ int GetBriefingData(int query, int data, _TCHAR *buffer, int len);
 
 void CampHackButton4CB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     _TCHAR buffer[80];
@@ -73,7 +73,7 @@ void CampHackButton4CB(long, short hittype, C_Base *)
     GetBriefingData(GBD_PACKAGE_LABEL, 0, buffer, 80);
     GetBriefingData(GBD_PACKAGE_MISSION, 0, buffer, 80);
 
-    while (!done)
+    while ( not done)
     {
         if (GetBriefingData(GBD_PACKAGE_ELEMENT_NAME, i, buffer, 80) < 0)
             done = 1;
@@ -89,14 +89,14 @@ void CampHackButton5CB(long, short hittype, C_Base *)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(DEBRIEF_WIN);
 
     // KCK: Added the check for a pilot list so that we don't debrief after a
     // discarded mission
-    if (win && TheCampaign.MissionEvaluator && TheCampaign.MissionEvaluator->flight_data)
+    if (win and TheCampaign.MissionEvaluator and TheCampaign.MissionEvaluator->flight_data)
     {
         // TheCampaign.MissionEvaluator->PostMissionEval();
         BuildCampDebrief(win);

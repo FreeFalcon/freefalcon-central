@@ -7,7 +7,7 @@
 #define STATE_6_TIME 30
 #define STATE_5_TIME 15
 
-#ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
+#ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
 enum
 {
@@ -33,7 +33,7 @@ C_Blip::C_Blip() : C_Base()
     Last_ = NULL;
     memset(BlipImg_, NULL, sizeof(IMAGE_RSC*) * 8 * 8);
     _SetCType_(_CNTL_BLIP_);
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE;
 }
 
 C_Blip::C_Blip(char **stream) : C_Base(stream)
@@ -46,7 +46,7 @@ C_Blip::C_Blip(FILE *fp) : C_Base(fp)
 
 C_Blip::~C_Blip()
 {
-    if (Root_ || Drawer_)
+    if (Root_ or Drawer_)
         Cleanup();
 }
 
@@ -108,7 +108,7 @@ void C_Blip::AddBlip(short x, short y, uchar side, long starttime) // time is in
     newblip->time = starttime;
     newblip->Next = NULL;
 
-    if (!Root_)
+    if ( not Root_)
         Root_ = newblip;
     else
     {
@@ -131,7 +131,7 @@ void C_Blip::BlinkLast()
     if (Last_)
     {
         Last_->state++;
-        Last_->state &= 0x03;
+        Last_->state and_eq 0x03;
         Refresh(Last_);
     }
 }
@@ -142,7 +142,7 @@ void C_Blip::Update(long curtime) // time is in minutes
 
     Refresh();
 
-    while (Root_ && Root_->time < (curtime - CUTOFF_TIME))
+    while (Root_ and Root_->time < (curtime - CUTOFF_TIME))
     {
         cur = Root_;
         Root_ = Root_->Next;
@@ -155,7 +155,7 @@ void C_Blip::Update(long curtime) // time is in minutes
 
     cur = Root_;
 
-    while (cur && cur != Last_)
+    while (cur and cur not_eq Last_)
     {
         if (cur->time < (curtime - STATE_7_TIME))
             cur->state = 7;
@@ -191,7 +191,7 @@ void C_Blip::Refresh(BLIP *blip)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((Flags_ & C_BIT_INVISIBLE) || !Parent_ || !Drawer_)
+    if ((Flags_ bitand C_BIT_INVISIBLE) or not Parent_ or not Drawer_)
         return;
 
     Leave = UI_Enter(Parent_);
@@ -205,7 +205,7 @@ void C_Blip::Refresh()
     BLIP *cur;
     F4CSECTIONHANDLE *Leave;
 
-    if ((Flags_ & C_BIT_INVISIBLE) || !Parent_ || !Drawer_)
+    if ((Flags_ bitand C_BIT_INVISIBLE) or not Parent_ or not Drawer_)
         return;
 
     Leave = UI_Enter(Parent_);
@@ -225,7 +225,7 @@ void C_Blip::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     BLIP *cur;
 
-    if ((Flags_ & C_BIT_INVISIBLE) || !Parent_ || !Drawer_)
+    if ((Flags_ bitand C_BIT_INVISIBLE) or not Parent_ or not Drawer_)
         return;
 
     cur = Root_;
@@ -233,7 +233,7 @@ void C_Blip::Draw(SCREEN *surface, UI95_RECT *cliprect)
     while (cur)
     {
         Drawer_->SetXY(cur->x, cur->y);
-        Drawer_->SetImagePtr(BlipImg_[cur->side & 7][cur->state & 7]);
+        Drawer_->SetImagePtr(BlipImg_[cur->side bitand 7][cur->state bitand 7]);
         Drawer_->Draw(surface, cliprect);
         cur = cur->Next;
     }

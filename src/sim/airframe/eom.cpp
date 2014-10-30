@@ -92,7 +92,7 @@ void AirframeClass::EquationsOfMotion(float dt)
     /* earth coordinates */
     /*-------------------*/
 
-    if (stallMode != Crashing && stallMode < Spinning)
+    if (stallMode not_eq Crashing and stallMode < Spinning)
     {
         mlSinCos(&trigWind, ((WeatherClass*)realWeather)->WindHeadingAt(&gndNormal));
         windfraction = 1.0f;//me123max(0.0F, min(nzcgs, 1.0F));
@@ -111,14 +111,14 @@ void AirframeClass::EquationsOfMotion(float dt)
     /*-----------------*/
     /* Update Position */
     /*-----------------*/
-    ShiAssert(!_isnan(xdot));
-    ShiAssert(!_isnan(ydot));
-    ShiAssert(!_isnan(zdot));
+    ShiAssert( not _isnan(xdot));
+    ShiAssert( not _isnan(ydot));
+    ShiAssert( not _isnan(zdot));
 
-    if (!IsSet(InAir))
+    if ( not IsSet(InAir))
     {
         // JB carrier start
-        if (IsSet(AirframeClass::OnObject) && platform->attachedEntity)
+        if (IsSet(AirframeClass::OnObject) and platform->attachedEntity)
         {
             xdot += platform->attachedEntity->XDelta();
             ydot += platform->attachedEntity->YDelta();
@@ -143,9 +143,9 @@ void AirframeClass::EquationsOfMotion(float dt)
         z += zdot * dt;
     }
 
-    ShiAssert(!_isnan(x));
-    ShiAssert(!_isnan(y));
-    ShiAssert(!_isnan(z));
+    ShiAssert( not _isnan(x));
+    ShiAssert( not _isnan(y));
+    ShiAssert( not _isnan(z));
 
     groundZ = OTWDriver.GetGroundLevel(x, y, &gndNormal);
     mag = (float)sqrt(gndNormal.x * gndNormal.x + gndNormal.y * gndNormal.y + gndNormal.z * gndNormal.z);
@@ -158,7 +158,7 @@ void AirframeClass::EquationsOfMotion(float dt)
     /*----------------------*/
     /* set flight status
     /*----------------------*/
-    if (!IsSet(InAir))
+    if ( not IsSet(InAir))
     {
         float gndGmma, relMu;
 
@@ -173,7 +173,7 @@ void AirframeClass::EquationsOfMotion(float dt)
         {
             ClearFlag(Planted);
 
-            if (-zsaero > GRAVITY && gmma - gndGmma > 0.0F)
+            if (-zsaero > GRAVITY and gmma - gndGmma > 0.0F)
             {
                 platform->mFaults->AddTakeOff(SimLibElapsedTime);
                 SetFlag(InAir);
@@ -199,9 +199,9 @@ void AirframeClass::EquationsOfMotion(float dt)
     }
 
     // Force feedback for ownship
-    if (platform == SimDriver.GetPlayerEntity() && !IsSet(InAir))
+    if (platform == SimDriver.GetPlayerEntity() and not IsSet(InAir))
     {
-        if ((vt > 1.0f) && fabs(vt - lastVt) > 15.0F)
+        if ((vt > 1.0f) and fabs(vt - lastVt) > 15.0F)
         {
             lastVt = vt;
             feedbackData = 400000.0F - min((vt / (250.0F * KNOTS_TO_FTPSEC) * 400000.0F), 390000.0F);
@@ -231,7 +231,7 @@ void AirframeClass::CalcBodyRates(float dt)
     else
         tempVt = 4.0F;
 
-    if (!IsSet(InAir))
+    if ( not IsSet(InAir))
     {
         //check to see what's in contact with the ground and rotate aircraft appropriately
         float cgloc = GetAeroData(AeroDataSet::CGLoc);
@@ -270,11 +270,11 @@ void AirframeClass::CalcBodyRates(float dt)
         else if (z + radius >= groundZ)
             body = 1;
 
-        if (NumGear() > 1 && platform->drawPointer)
+        if (NumGear() > 1 and platform->drawPointer)
         {
             for (int i = 0; i < NumGear(); i++)
             {
-                // MLR 2/22/2004 - stop using the BSP for eom stuff!
+                // MLR 2/22/2004 - stop using the BSP for eom stuff
                 if (platform->IsComplex())
                 {
                     GearExt = gearExtension[i];
@@ -287,7 +287,7 @@ void AirframeClass::CalcBodyRates(float dt)
 
                 OldGearExt = GearExt;
 
-                if (!(gear[i].flags & GearData::GearBroken))
+                if ( not (gear[i].flags bitand GearData::GearBroken))
                 {
                     gear[i].vel = gear[i].vel * 0.3F - GearExt * 0.2F / dt;
 
@@ -296,7 +296,7 @@ void AirframeClass::CalcBodyRates(float dt)
 
                     //else
                     // gear[i].vel = min(5.0F, max(-5.0F, gear[i].vel));
-                    if (fabs(GearExt) < 0.001F && gear[i].vel == 0.0F)
+                    if (fabs(GearExt) < 0.001F and gear[i].vel == 0.0F)
                     {
                         GearExt = 0.0F;
                     }
@@ -309,7 +309,7 @@ void AirframeClass::CalcBodyRates(float dt)
 
                     if (platform->IsComplex())
                     {
-                        // MLR 2/22/2004 - stop using the BSP for eom stuff!
+                        // MLR 2/22/2004 - stop using the BSP for eom stuff
                         gearExtension[i] = GearExt;
                         //platform->SetDOF(COMP_NOS_GEAR_COMP + i, GearExt);
 
@@ -328,8 +328,8 @@ void AirframeClass::CalcBodyRates(float dt)
                     MatrixMult(&((DrawableBSP*)platform->drawPointer)->orientation, &PtRelPos, &PtWorldPos);
 
                     if (
-                        IsSet(OnObject) || // JB carrier
-                        (z + PtWorldPos.z >= groundZ - GROUND_TOLERANCE && GearExt - OldGearExt > -dt))
+                        IsSet(OnObject) or // JB carrier
+                        (z + PtWorldPos.z >= groundZ - GROUND_TOLERANCE and GearExt - OldGearExt > -dt))
                     {
                         if (geardof / (GetAeroData(AeroDataSet::NosGearRng + i * 4)*DTR) < 0.85F)
                             allgear = 0;
@@ -358,7 +358,7 @@ void AirframeClass::CalcBodyRates(float dt)
                             temp = (float)atan2(z + PtWorldPos.z - groundZ, fabs(PtRelPos.x * platform->platformAngles.costhe));
                             frontMax = max(temp, frontMax);
                         }
-                        else if (PtRelPos.x * platform->platformAngles.cosphi < 0.0F && IsSet(Planted))
+                        else if (PtRelPos.x * platform->platformAngles.cosphi < 0.0F and IsSet(Planted))
                         {
                             temp = (float)atan2(groundZ - z - PtWorldPos.z, fabs(PtRelPos.x * platform->platformAngles.costhe));
                             backMax = min(temp, backMax);
@@ -368,7 +368,7 @@ void AirframeClass::CalcBodyRates(float dt)
                             temp = (float)atan2(z + PtWorldPos.z - groundZ, fabs(PtRelPos.x * platform->platformAngles.costhe));
                             frontMax = max(temp, frontMax);
                         }
-                        else if (PtRelPos.x < 0.0F && IsSet(Planted))
+                        else if (PtRelPos.x < 0.0F and IsSet(Planted))
                         {
                             temp = (float)atan2(groundZ - z - PtWorldPos.z, fabs(PtRelPos.x * platform->platformAngles.costhe));
                             backMax = min(temp, backMax);
@@ -388,7 +388,7 @@ void AirframeClass::CalcBodyRates(float dt)
                 }
             }
         }
-        else if (!IsSet(GearBroken) && platform->platformAngles.costhe * (cosphi_lim * (gearHt * gearPos + radius)) + z > groundZ - GROUND_TOLERANCE)
+        else if ( not IsSet(GearBroken) and platform->platformAngles.costhe * (cosphi_lim * (gearHt * gearPos + radius)) + z > groundZ - GROUND_TOLERANCE)
         {
             if (fabs(platform->platformAngles.sinphi) > 0.001F)
                 right = 1;
@@ -518,14 +518,14 @@ void AirframeClass::CalcBodyRates(float dt)
 
         float zsaeroLim = max(-GRAVITY, zsaero * platform->platformAngles.cosmu);
 
-        if (!(front + back) && body)
+        if ( not (front + back) and body)
         {
             if (platform->platformAngles.costhe > 0.0F)
                 alpdelta = (GRAVITY + zsaeroLim) * ANG_RATE * dt * dt;
             else
                 alpdelta = (GRAVITY + zsaeroLim) * -ANG_RATE * dt * dt;
         }
-        else if (allgear && front && back && vt == 0.0F)
+        else if (allgear and front and back and vt == 0.0F)
         {
             // MLR 1/16/2004
             // this code seems to be responsible for the pitch being reset to 0 when the plane is grounded
@@ -544,7 +544,7 @@ void AirframeClass::CalcBodyRates(float dt)
         else
             alpdelta = (GRAVITY + zsaeroLim) * (front - back) * ANG_RATE * dt * dt;
 
-        if (pstick > 0.0F && alpha > 0.0F)
+        if (pstick > 0.0F and alpha > 0.0F)
             frontMax -= alpha * DTR;
 
         alpdelta = min(backMax * RTD, max(frontMax * RTD, alpdelta));
@@ -553,7 +553,7 @@ void AirframeClass::CalcBodyRates(float dt)
         //                 non level jets to twitch in pitch with the stick
         //                 pulled back
         //                 everything seems to work with it disabled :)
-        //if(!alpdelta && pstick > 0.0F && alpha > 0.0F)
+        //if( not alpdelta and pstick > 0.0F and alpha > 0.0F)
         // alpdelta = max(-alpha, (GRAVITY + zsaeroLim)*-ANG_RATE*dt*dt);
         alpha += alpdelta;
         oldp03[0] += alpdelta;
@@ -574,14 +574,14 @@ void AirframeClass::CalcBodyRates(float dt)
         oldp02[0] = alpha;
         oldp02[1] = alpha;
 
-        if (!(left + right) && body)
+        if ( not (left + right) and body)
         {
             if (platform->platformAngles.sinphi > 0.0F)
                 pdelta = (GRAVITY + zsaeroLim) * ANG_RATE * dt * DTR;
             else
                 pdelta = (GRAVITY + zsaeroLim) * -ANG_RATE * dt * DTR;
         }
-        else if (allgear && left && right && vt == 0.0F)
+        else if (allgear and left and right and vt == 0.0F)
         {
             pdelta = 0.0F;
             mu *= 0.5F;
@@ -595,7 +595,7 @@ void AirframeClass::CalcBodyRates(float dt)
     /*--------*/
     /* Flying */
     /*--------*/
-    if (!IsSet(Planted))
+    if ( not IsSet(Planted))
     {
 
         /*----------------------*/
@@ -608,7 +608,7 @@ void AirframeClass::CalcBodyRates(float dt)
             qptchc += (float)(atan(nzcgs * GRAVITY / tempVt) - atan(0.1F * gearPos * qsom / tempVt) + pitch * platform->platformAngles.cosbet);
 
         // Bias nose down if going slow
-        if (tempVt < 0.5F * vRot && IsSet(InAir))
+        if (tempVt < 0.5F * vRot and IsSet(InAir))
         {
             rateMod = 5.0F;
 
@@ -640,15 +640,15 @@ void AirframeClass::CalcBodyRates(float dt)
         qptchc -= (float)atan(platform->platformAngles.cosmu * platform->platformAngles.cosgam * GRAVITY / tempVt);
         // JB 010714 mult by the elasticity
         q = Math.FLTust(qptchc, tp01 * auxaeroData->pitchElasticity, dt , oldp05);
-        ShiAssert(!_isnan(q));
-        //if(!IsSet(InAir))
+        ShiAssert( not _isnan(q));
+        //if( not IsSet(InAir))
         // q = max(0.0F, q);
 
         /*----------------------------------*/
         /* body axis roll rate and yaw rate */
         /*----------------------------------*/
 
-        if (stallMode >= DeepStall && alpha < -10.0F)
+        if (stallMode >= DeepStall and alpha < -10.0F)
         {
             slice += (slice * 0.007F - ypedal * 0.005F + (assymetry / weight) * 0.002F);
             slice = max(min(slice, 5.0F), -5.0F);
@@ -702,7 +702,7 @@ void AirframeClass::CalcBodyRates(float dt)
         }
 
         // Bias nose down if going slow
-        if (tempVt < 0.5F * vRot && IsSet(InAir))
+        if (tempVt < 0.5F * vRot and IsSet(InAir))
         {
             rateMod = 5.0F;
 
@@ -718,7 +718,7 @@ void AirframeClass::CalcBodyRates(float dt)
 
         CalcGroundTurnRate(dt);
 
-        if (!IsSet(IsDigital))
+        if ( not IsSet(IsDigital))
         {
             //me123 this is disabled distance is always returned as -5000
             //this is effection stic input and acts very wired.
@@ -732,7 +732,7 @@ void AirframeClass::CalcBodyRates(float dt)
             }
         }
 
-        ShiAssert(!_isnan(r));
+        ShiAssert( not _isnan(r));
         /* REMOVED BY S.G. THIS CODE IS PART OF THE CLUPRIT WHY HOOKING TO THE TANKER DOESN'T WORK
 
          // If on a boom, damp the rates
@@ -790,7 +790,7 @@ void AirframeClass::CalcBodyRates(float dt)
     {
         p = min(rightMax * 2.0F, max(leftMax * 2.0F, p + pdelta));
 
-        if (p == rightMax * 2.0F || p == leftMax * 2.0F)
+        if (p == rightMax * 2.0F or p == leftMax * 2.0F)
         {
             //if we had to limit the roll it means we should stop rolling so zero integrator
             oldr01[0] = 0.0F;
@@ -842,7 +842,7 @@ void AirframeClass::CalcBodyOrientation(float dt)
 
     enorm = (float)(1.0 / sqrt(e1temp * e1temp + e2temp * e2temp +
                                e3temp * e3temp + e4temp * e4temp));
-    ShiAssert(!_isnan(enorm));
+    ShiAssert( not _isnan(enorm));
     e1    = e1temp * enorm;
     e2    = e2temp * enorm;
     e3    = e3temp * enorm;
@@ -855,9 +855,9 @@ void AirframeClass::CalcBodyOrientation(float dt)
     sigma   = (float)atan2(2.0F * (e3 * e4 + e1 * e2), e1 * e1 - e2 * e2 - e3 * e3 + e4 * e4);
     gmma = -(float)atan2(2.0F * (e2 * e4 - e1 * e3), (float)sqrt(1.0f - 2.0F * (e2 * e4 - e1 * e3) * 2.0F * (e2 * e4 - e1 * e3)));
     mu   = (float)atan2(2.0F * (e2 * e3 + e4 * e1), e1 * e1 + e2 * e2 - e3 * e3 - e4 * e4);
-    ShiAssert(!_isnan(sigma));
-    ShiAssert(!_isnan(gmma));
-    ShiAssert(!_isnan(mu));
+    ShiAssert( not _isnan(sigma));
+    ShiAssert( not _isnan(gmma));
+    ShiAssert( not _isnan(mu));
 }
 
 void AirframeClass::CalcGroundTurnRate(float dt)
@@ -867,16 +867,16 @@ void AirframeClass::CalcGroundTurnRate(float dt)
     float NWSBias = 0.02F; // RAS 02Apr04 - Adjust how fast Nose Wheel turns (1.0 max)
     // 0.01 is pretty slow, and 0.05 is fairly fast
 
-    if (IsSet(InAir) || platform->mFaults->GetFault(nws_fault)) //MI added faults check
+    if (IsSet(InAir) or platform->mFaults->GetFault(nws_fault)) //MI added faults check
         return;
 
-    if (g_bRealisticAvionics && platform->Pitch() * RTD > 3 && IsSet(NoseSteerOn))
+    if (g_bRealisticAvionics and platform->Pitch() * RTD > 3 and IsSet(NoseSteerOn))
         ClearFlag(NoseSteerOn);
 
-    if (gearPos >= 0.9F && !IsSet(GearBroken) && vt > 0.0F)
+    if (gearPos >= 0.9F and not IsSet(GearBroken) and vt > 0.0F)
     {
-        if (IsSet(NoseSteerOn) && !(gear[0].flags & GearData::GearStuck)
-            && platform->OnGround())
+        if (IsSet(NoseSteerOn) and not (gear[0].flags bitand GearData::GearStuck)
+           and platform->OnGround())
         {
             //MI need to filter Trim out here
             float YPedal = ypedal - UserStickInputs.ytrim;
@@ -890,14 +890,14 @@ void AirframeClass::CalcGroundTurnRate(float dt)
             // MonoPrint("RStick = %f \n", RStick);
             // MonoPrint("YPedal = %f \n", YPedal);
 
-            if (RStick || lastRStick || YPedal || lastYPedal) // Verify that we have a keyboard/rudder input or that the nose wheel
+            if (RStick or lastRStick or YPedal or lastYPedal) // Verify that we have a keyboard/rudder input or that the nose wheel
             {
                 // is in a position other than zero
-                if (RStick || lastRStick) // use this if using keyboard
+                if (RStick or lastRStick) // use this if using keyboard
                 {
-                    if (RStick > 0.0F || lastRStick > 0.0F) // NWS commanded to the right
+                    if (RStick > 0.0F or lastRStick > 0.0F) // NWS commanded to the right
                     {
-                        if ((lastRStick < NWSBias) && (RStick < NWSBias)) // if float value near center, zero out variables
+                        if ((lastRStick < NWSBias) and (RStick < NWSBias)) // if float value near center, zero out variables
                         {
                             RStick = 0.0F; // Acutaly nose wheel positin less than NWSBias so set all var's to zero
                             lastRStick = 0.0F;
@@ -918,9 +918,9 @@ void AirframeClass::CalcGroundTurnRate(float dt)
                     }
                     else
                     {
-                        if (RStick < 0.0F || lastRStick < 0.0F) // NWS commanded to the left
+                        if (RStick < 0.0F or lastRStick < 0.0F) // NWS commanded to the left
                         {
-                            if ((lastRStick > -NWSBias) && (RStick > -NWSBias)) // If float vaule near center, zero out variables
+                            if ((lastRStick > -NWSBias) and (RStick > -NWSBias)) // If float vaule near center, zero out variables
                             {
                                 RStick = 0.0F;
                                 lastRStick = 0.0F;
@@ -953,11 +953,11 @@ void AirframeClass::CalcGroundTurnRate(float dt)
                 }
 
                 // This section works just like above except uses rudder pedals
-                if (YPedal || lastYPedal)
+                if (YPedal or lastYPedal)
                 {
-                    if (YPedal > 0.0F || lastYPedal > 0.0F)
+                    if (YPedal > 0.0F or lastYPedal > 0.0F)
                     {
-                        if ((lastYPedal < NWSBias) && (YPedal < NWSBias))
+                        if ((lastYPedal < NWSBias) and (YPedal < NWSBias))
                         {
                             YPedal = 0.0F;
                             lastYPedal = 0.0F;
@@ -978,9 +978,9 @@ void AirframeClass::CalcGroundTurnRate(float dt)
                     }
                     else
                     {
-                        if (YPedal < 0.0F || lastYPedal < 0.0F)
+                        if (YPedal < 0.0F or lastYPedal < 0.0F)
                         {
-                            if ((lastYPedal > -NWSBias) && (YPedal > -NWSBias))
+                            if ((lastYPedal > -NWSBias) and (YPedal > -NWSBias))
                             {
                                 YPedal = 0.0F;
                                 lastYPedal = 0.0F;
@@ -1019,7 +1019,7 @@ void AirframeClass::CalcGroundTurnRate(float dt)
 
 
             // ASSOCIATOR 30/11/03 Added g_bRollLinkedNWSRudder for roll unlinked NWS on the ground
-            if (IO.AnalogIsUsed(AXIS_YAW) && !IsSet(IsDigital) || !g_bRollLinkedNWSRudder) // Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_YAW) and not IsSet(IsDigital) or not g_bRollLinkedNWSRudder) // Retro 31Dec2003
             {
                 // rCom =  vt/(13.167F/(float)sin(-ypedal * fabs(yshape) * 0.55856F));
                 rCom =  vt / (13.167F / (float)sin(-YPedal * fabs(NWSyshape) * 0.55856F));
@@ -1040,9 +1040,9 @@ void AirframeClass::CalcGroundTurnRate(float dt)
             // rCom *= (0.5F + (80.0F*KNOTS_TO_FTPSEC - vt)/(160.0F * KNOTS_TO_FTPSEC));
             rCom *= max(0.01F, (0.5F + (80.0F * KNOTS_TO_FTPSEC - vt) / (160.0F * KNOTS_TO_FTPSEC))); // JB 010805 Reverse steers over 160 knots.
 
-            Mu_fric += (0.6F - 0.3F * (!platform->onFlatFeature && groundType != COVERAGE_ROAD));
+            Mu_fric += (0.6F - 0.3F * ( not platform->onFlatFeature and groundType not_eq COVERAGE_ROAD));
 
-            if (!IsSet(OverRunway))
+            if ( not IsSet(OverRunway))
             {
                 Mu_fric -= 0.2F;
             }
@@ -1078,7 +1078,7 @@ void AirframeClass::CalcGroundTurnRate(float dt)
         else
         {
             // ASSOCIATOR 30/11/03 Added g_bRollLinkedNWSRudder for roll unlinked rudder on the ground
-            if (IO.AnalogIsUsed(AXIS_YAW) && !IsSet(IsDigital) || !g_bRollLinkedNWSRudder)  // Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_YAW) and not IsSet(IsDigital) or not g_bRollLinkedNWSRudder)  // Retro 31Dec2003
             {
                 r =  max(-0.5F, min(ypedal * (float)fabs(yshape) * wy01 * cy * qsom * 0.5F, 0.5F));
             }
@@ -1108,8 +1108,8 @@ void AirframeClass::CalcGroundTurnRate(float dt)
 
     float slip = (float)fabs(vt * platform->platformAngles.sinbet);
 
-    if (slip > 3.0F && vt > 25.0F * KNOTS_TO_FTPSEC && platform == SimDriver.GetPlayerEntity() &&
-        (IsSet(OverRunway) || platform->onFlatFeature || groundType == COVERAGE_ROAD))
+    if (slip > 3.0F and vt > 25.0F * KNOTS_TO_FTPSEC and platform == SimDriver.GetPlayerEntity() and 
+        (IsSet(OverRunway) or platform->onFlatFeature or groundType == COVERAGE_ROAD))
     {
         float volume = max(0.0F, 2500.0F - slip * slip * 100.0F);
         //F4SoundFXSetPos( SFX_TIRE_SQUEAL, TRUE, x + 5.0F, y, z, 1.0F, volume );
@@ -1149,9 +1149,9 @@ float AirframeClass::CalcMuFric(int groundType)
 {
     float Mu_fric;
 
-    if (IsSet(GearBroken) || gearPos <= 0.3F || platform->platformAngles.cosphi < 0.9659F)
+    if (IsSet(GearBroken) or gearPos <= 0.3F or platform->platformAngles.cosphi < 0.9659F)
     {
-        Mu_fric = (0.6F + 0.3F * (!platform->onFlatFeature && groundType != COVERAGE_ROAD) + 0.1F * IsSet(OverRunway));
+        Mu_fric = (0.6F + 0.3F * ( not platform->onFlatFeature and groundType not_eq COVERAGE_ROAD) + 0.1F * IsSet(OverRunway));
     }
     else
     {
@@ -1160,7 +1160,7 @@ float AirframeClass::CalcMuFric(int groundType)
             SetFlag(WheelBrakes);
 
         //if we've got more then 87% RPM, PB get's unset
-        if (PBON && (rpm >= 0.87))
+        if (PBON and (rpm >= 0.87))
             TogglePB();
 
         Mu_fric = 0.0F;
@@ -1168,7 +1168,7 @@ float AirframeClass::CalcMuFric(int groundType)
 
         if (NumGear() > 1)
         {
-            wheelbrakes = IsSet(WheelBrakes) * ((!(gear[1].flags & GearData::GearBroken) && TRUE) + (!(gear[2].flags & GearData::GearBroken) && TRUE)) * 0.5F;
+            wheelbrakes = IsSet(WheelBrakes) * (( not (gear[1].flags bitand GearData::GearBroken) and TRUE) + ( not (gear[2].flags bitand GearData::GearBroken) and TRUE)) * 0.5F;
         }
         else
             wheelbrakes = (float)IsSet(WheelBrakes);
@@ -1178,17 +1178,17 @@ float AirframeClass::CalcMuFric(int groundType)
         // (say because parking brake is on), then apply braking full force, otherwise
         // make it proportional with the analog axis value.  Oh, and AP must be off, since
         // smart combat AP still wants to use brakes as well.
-        // NB: Right now there is no support for differential braking!
+        // NB: Right now there is no support for differential braking
         // MD -- 20040111: reversed axis direction per testing feedback
 
         if (IO.AnalogIsUsed(AXIS_BRAKE_LEFT))
-            if (platform->IsPlayer() && (wheelbrakes <= 0.1F) && (platform->AutopilotType() == AircraftClass::APOff))
+            if (platform->IsPlayer() and (wheelbrakes <= 0.1F) and (platform->AutopilotType() == AircraftClass::APOff))
                 wheelbrakes = (15000 - IO.GetAxisValue(AXIS_BRAKE_LEFT)) / 15000.0F;  // not quite so binary on/off
 
-        if (!IsSet(OverRunway))
+        if ( not IsSet(OverRunway))
             Mu_fric += 0.04F - 0.1F * wheelbrakes;
 
-        if (IsSet(OnObject) && IsSet(Hook)) // JB carrier
+        if (IsSet(OnObject) and IsSet(Hook)) // JB carrier
         {
             if (vt < 40.0F * KNOTS_TO_FTPSEC)
             {
@@ -1216,9 +1216,9 @@ float AirframeClass::CalcMuFric(int groundType)
         }
 
         if (vt <= 0.1F)
-            Mu_fric += (0.06F + 0.4F * platform->platformAngles.sinbet + (0.44F + 0.2F * IsSet(OverAirStrip)) * wheelbrakes + (!platform->onFlatFeature && groundType != COVERAGE_ROAD) * (0.4F - 0.1F * IsSet(WheelBrakes)));
+            Mu_fric += (0.06F + 0.4F * platform->platformAngles.sinbet + (0.44F + 0.2F * IsSet(OverAirStrip)) * wheelbrakes + ( not platform->onFlatFeature and groundType not_eq COVERAGE_ROAD) * (0.4F - 0.1F * IsSet(WheelBrakes)));
         else
-            Mu_fric += (0.04F + 0.5F * platform->platformAngles.sinbet + (0.36F + 0.2F * IsSet(OverAirStrip)) * wheelbrakes + (!platform->onFlatFeature && groundType != COVERAGE_ROAD) * (0.4F - 0.1F * IsSet(WheelBrakes)));
+            Mu_fric += (0.04F + 0.5F * platform->platformAngles.sinbet + (0.36F + 0.2F * IsSet(OverAirStrip)) * wheelbrakes + ( not platform->onFlatFeature and groundType not_eq COVERAGE_ROAD) * (0.4F - 0.1F * IsSet(WheelBrakes)));
 
         if (platform->AutopilotType() == AircraftClass::CombatAP)
             Mu_fric += 0.4F * IsSet(WheelBrakes);
@@ -1242,8 +1242,8 @@ float AirframeClass::CalculateVt(float dt)
     Objective airbase = FindNearbyAirbase(gx, gy);
 
     if (
-        IsSet(OnObject) || // JB carrier
-        (airbase && /* JB 060114 CTD*/ airbase->IsObjective() &&  airbase->brain->IsOverRunway(platform))
+        IsSet(OnObject) or // JB carrier
+        (airbase and /* JB 060114 CTD*/ airbase->IsObjective() and airbase->brain->IsOverRunway(platform))
     )
     {
         SetFlag(OverRunway);
@@ -1253,7 +1253,7 @@ float AirframeClass::CalculateVt(float dt)
         ClearFlag(OverRunway);
     }
 
-    if (airbase && airbase->GetType() == TYPE_AIRSTRIP)
+    if (airbase and airbase->GetType() == TYPE_AIRSTRIP)
     {
         SetFlag(OverAirStrip);
     }
@@ -1267,16 +1267,16 @@ float AirframeClass::CalculateVt(float dt)
         gPlayerExitMenuShown = TRUE;
     }
 
-    if (!IsSet(InAir))
+    if ( not IsSet(InAir))
     {
         mlTrig Trig;
         mlSinCos(&Trig, (float)SimLibElapsedTime * vt / 100000.0f);
         oscillationTimer = Trig.sin;
         oscillationSlope = Trig.cos;
 
-        if (IsSet(IsDigital) || !g_bRealisticAvionics)
+        if (IsSet(IsDigital) or not g_bRealisticAvionics)
         {
-            if (vt < 80.0F * KNOTS_TO_FTPSEC && theta < 1.0F * DTR)
+            if (vt < 80.0F * KNOTS_TO_FTPSEC and theta < 1.0F * DTR)
             {
                 SetFlag(NoseSteerOn);
             }
@@ -1291,8 +1291,8 @@ float AirframeClass::CalculateVt(float dt)
         {
             FalconDamageMessage* message;
 
-            if ((groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER) && vt < 5.0F
-                && !IsSet(OnObject))  // JB carrier
+            if ((groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER) and vt < 5.0F
+               and not IsSet(OnObject))  // JB carrier
             {
                 // RV - Biker - Don't apply damage if we're in init
                 if (platform->carrierInitTimer > 5.0f)
@@ -1302,21 +1302,21 @@ float AirframeClass::CalculateVt(float dt)
                 }
             }
             else if (
-                !IsSet(OnObject) && // JB carrier
-                (IsSet(GearBroken) || gearPos <= 0.3F || platform->platformAngles.cosphi < 0.9659F ||
-                 groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER)
+ not IsSet(OnObject) and // JB carrier
+                (IsSet(GearBroken) or gearPos <= 0.3F or platform->platformAngles.cosphi < 0.9659F or
+                 groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER)
             )
             {
                 int dmgStrength;
 
                 if (
                     // JB carrier
-                    !IsSet(OnObject) && (
-                        groundType == COVERAGE_WATER ||
-                        groundType == COVERAGE_RIVER ||
-                        groundType == COVERAGE_THINFOREST ||
-                        groundType == COVERAGE_THICKFOREST ||
-                        groundType == COVERAGE_ROCKY ||
+ not IsSet(OnObject) and (
+                        groundType == COVERAGE_WATER or
+                        groundType == COVERAGE_RIVER or
+                        groundType == COVERAGE_THINFOREST or
+                        groundType == COVERAGE_THICKFOREST or
+                        groundType == COVERAGE_ROCKY or
                         groundType == COVERAGE_URBAN
                     )
                     // JB carrier
@@ -1328,8 +1328,8 @@ float AirframeClass::CalculateVt(float dt)
                     dmgStrength = FloatToInt32(max(0.0F, vt * 0.01F * (1.0F - nzcgs) * (float)rand() / (float)RAND_MAX));
 
                 if (
-                    !IsSet(OnObject) && ( // JB carrier
-                        groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER)
+ not IsSet(OnObject) and ( // JB carrier
+                        groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER)
                 ) // JB carrier
                 {
                     for (int i = 0; i < NumGear(); i++)
@@ -1339,7 +1339,7 @@ float AirframeClass::CalculateVt(float dt)
                             platform->SetDOF(ComplexGearDOF[i] /*COMP_NOS_GEAR + i*/, 0.0F);
                         }
 
-                        gear[i].flags |= GearData::GearBroken | GearData::DoorBroken;
+                        gear[i].flags or_eq GearData::GearBroken bitor GearData::DoorBroken;
                     }
 
                     SetFlag(GearBroken);
@@ -1362,7 +1362,7 @@ float AirframeClass::CalculateVt(float dt)
                     bumpyaw += (1.0F - 2.0F * (float)rand() / (float)RAND_MAX) * dmgStrength * vt / 200.0F * DTR;
                 }
 
-                if (!IsSet(OnObject))
+                if ( not IsSet(OnObject))
                 {
                     // JB carrier
                     SetFlag(EngineOff);
@@ -1372,19 +1372,19 @@ float AirframeClass::CalculateVt(float dt)
                 } // JB carrier
 
                 // TJL 10/20/03 limit rumble sound to only play while on ground, not while over airfield/airstrip
-                if (vt > 1.0F && platform->OnGround())
+                if (vt > 1.0F and platform->OnGround())
                 {
                     pitch = max(0.2F, min(vt / 200.0F, 2.0F));
                     volume = max(0.0F, min(2500.0F - vt * vt, 4000000.0F));
 
                     if (
-                        !IsSet(OnObject) && // JB carrier
-                        !platform->onFlatFeature && groundType != COVERAGE_ROAD
+ not IsSet(OnObject) and // JB carrier
+ not platform->onFlatFeature and groundType not_eq COVERAGE_ROAD
                     )
                     {
                         pitch = min(pitch, 1.0F);
 
-                        //TJL 10/20/03 limit sound to player, should not hear AI ground rumble!
+                        //TJL 10/20/03 limit sound to player, should not hear AI ground rumble
                         if (platform->IsPlayer())
                         {
                             platform->SoundPos.Sfx(SFX_GRND_RUMBLE, 0, pitch, volume, x + 5.0F, y, z);
@@ -1407,22 +1407,22 @@ float AirframeClass::CalculateVt(float dt)
                     }
                 }
 
-                if (!IsSet(OnObject)) // JB carrier
+                if ( not IsSet(OnObject)) // JB carrier
                     Mu_fric = CalcMuFric(groundType);
                 else // JB carrier
                     Mu_fric = CalcMuFric(COVERAGE_RUNWAY); // JB carrier
 
-                //vtDot -= (0.4F + 0.3F * !platform->onFlatFeature) *(1.0F - nzcgs)*GRAVITY;
+                //vtDot -= (0.4F + 0.3F * not platform->onFlatFeature) *(1.0F - nzcgs)*GRAVITY;
 
                 // sfr: one wonders, how will this ever happens????
                 // this is inside an if vt > 1.0f
                 // so unless vt is changed again above this will never happen...
                 // @TODO remove
-                if (vt < 1.0F && platform->DBrain()->IsSetATC(DigitalBrain::Landed))
+                if (vt < 1.0F and platform->DBrain()->IsSetATC(DigitalBrain::Landed))
                 {
                     if (platform == SimDriver.GetPlayerEntity())
                     {
-                        if (!gPlayerExitMenuShown)
+                        if ( not gPlayerExitMenuShown)
                         {
                             gPlayerExitMenuShown = TRUE;
                             OTWDriver.SetExitMenu(TRUE);
@@ -1436,11 +1436,11 @@ float AirframeClass::CalculateVt(float dt)
             }
             else
             {
-                float speedMods = 1.0F + IsSet(Simplified) * 0.25F + IsSet(IsDigital) * 0.25F - (!platform->onFlatFeature && groundType != COVERAGE_ROAD) * 0.3F;
+                float speedMods = 1.0F + IsSet(Simplified) * 0.25F + IsSet(IsDigital) * 0.25F - ( not platform->onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.3F;
 
                 float gearLimitSpeed;
 
-                if (!IsSet(OverRunway))
+                if ( not IsSet(OverRunway))
                     speedMods -= 0.4F;
 
                 // FRB - Fix very low speed minVcas
@@ -1463,7 +1463,7 @@ float AirframeClass::CalculateVt(float dt)
                     platform->SetPulseTurbulence(0.1f, 0.1f, 0.002f * vt, 1.0f);
                 }
 
-                if ((!IsSet(IsDigital)) && !platform->IsSetFalcFlag(FEC_INVULNERABLE) && vt > gearLimitSpeed)
+                if (( not IsSet(IsDigital)) and not platform->IsSetFalcFlag(FEC_INVULNERABLE) and vt > gearLimitSpeed)
                 {
                     float newpos;
                     int which = rand() % NumGear();
@@ -1474,7 +1474,7 @@ float AirframeClass::CalculateVt(float dt)
                     else
                         dmg = 0.0F;
 
-                    if (theta <= 1.0F * DTR || which > 0)
+                    if (theta <= 1.0F * DTR or which > 0)
                     {
                         gear[which].strength -= dmg;
                     }
@@ -1482,9 +1482,9 @@ float AirframeClass::CalculateVt(float dt)
                     if (gear[which].strength < 50.0F)
                     {
                         platform->mFaults->SetFault(FaultClass::gear_fault, FaultClass::ldgr, FaultClass::fail, FALSE);
-                        gear[which].flags |= GearData::GearStuck;
+                        gear[which].flags or_eq GearData::GearStuck;
 
-                        if (NumGear() > 1 && platform->IsComplex())
+                        if (NumGear() > 1 and platform->IsComplex())
                         {
                             newpos = (float)rand() / (float)RAND_MAX * 50.0F * DTR;
 
@@ -1497,10 +1497,10 @@ float AirframeClass::CalculateVt(float dt)
                     }
                     else if (gear[which].strength < 0.0F)
                     {
-                        if (NumGear() > 1 && platform->IsComplex())
+                        if (NumGear() > 1 and platform->IsComplex())
                         {
                             platform->SetDOF(ComplexGearDOF[which] /*COMP_NOS_GEAR + which*/, 0.0F);
-                            gear[which].flags |= GearData::GearBroken | GearData::DoorBroken;
+                            gear[which].flags or_eq GearData::GearBroken bitor GearData::DoorBroken;
                         }
 
                         // gear breaks sound
@@ -1551,9 +1551,9 @@ float AirframeClass::CalculateVt(float dt)
 
         //MI modified so brakesound only get's played above 80kts
         if (
-            IsSet(WheelBrakes) && (platform == SimDriver.GetPlayerEntity()) &&
-            netAccel - vtDot * dt < -20.0F * KNOTS_TO_FTPSEC * dt &&
-            vt > 80.0 * KNOTS_TO_FTPSEC && !IsSet(GearBroken) && gearPos >= 0.8F &&
+            IsSet(WheelBrakes) and (platform == SimDriver.GetPlayerEntity()) and 
+            netAccel - vtDot * dt < -20.0F * KNOTS_TO_FTPSEC * dt and 
+            vt > 80.0 * KNOTS_TO_FTPSEC and not IsSet(GearBroken) and gearPos >= 0.8F and 
             platform->platformAngles.cosphi > 0.9659F
         )
         {
@@ -1569,7 +1569,7 @@ float AirframeClass::CalculateVt(float dt)
         newVt = vt + vtDot * dt;
         netAccel = vtDot * dt;
 
-        if (newVt != 0.0F)
+        if (newVt not_eq 0.0F)
             vt = newVt;
         else
             vt = 0.01F;
@@ -1582,18 +1582,18 @@ float AirframeClass::CalculateVt(float dt)
         if (minVcas < 220.0f)
             gearLimitSpeed = 220.0f * KNOTS_TO_FTPSEC;
 
-        //if(gearPos >= 0.9F && !platform->IsSetFalcFlag(FEC_INVULNERABLE) && vt > gearLimitSpeed)
-        if (gearPos >= 0.9F && vt > gearLimitSpeed)
+        //if(gearPos >= 0.9F and not platform->IsSetFalcFlag(FEC_INVULNERABLE) and vt > gearLimitSpeed)
+        if (gearPos >= 0.9F and vt > gearLimitSpeed)
         {
             int which = rand() % NumGear();
 
-            //if(NumGear() > 1 && platform->IsComplex() && !(gear[which].flags & GearData::GearBroken))
-            if (NumGear() > 1 && which < NumGear() && platform->IsComplex())
+            //if(NumGear() > 1 and platform->IsComplex() and not (gear[which].flags bitand GearData::GearBroken))
+            if (NumGear() > 1 and which < NumGear() and platform->IsComplex())
             {
-                if (!IsSet(IsDigital))
+                if ( not IsSet(IsDigital))
                 {
-                    gear[which].flags |= (GearData::DoorStuck | GearData::GearStuck
-                                          | GearData::DoorBroken | GearData::GearBroken);
+                    gear[which].flags or_eq (GearData::DoorStuck bitor GearData::GearStuck
+                                          bitor GearData::DoorBroken bitor GearData::GearBroken);
                     ((AircraftClass*)platform)->mFaults->SetFault(FaultClass::gear_fault,
                             FaultClass::ldgr, FaultClass::fail, TRUE);
                     // gear breaks sound
@@ -1666,7 +1666,7 @@ void AirframeClass::SetGroundPosition(float dt, float netAccel, float gndGmma, f
     {
         float tempVt = max(10.0F, vt);
 
-        if (NumGear() > 1 && platform->drawPointer)
+        if (NumGear() > 1 and platform->drawPointer)
         {
             if (netAccel > 0.0F)
             {
@@ -1711,12 +1711,12 @@ void AirframeClass::CheckGroundImpact(float dt)
     float aoacmd, betcmd, pscmd;
 
     // JB 010120
-    if (!platform)
+    if ( not platform)
         return;
 
     // JB 010120
 
-    if (platform->drawPointer && z < groundZ - platform->drawPointer->Radius() * 2.0F)
+    if (platform->drawPointer and z < groundZ - platform->drawPointer->Radius() * 2.0F)
         return;
 
     float minHeight = CheckHeight();
@@ -1764,20 +1764,20 @@ void AirframeClass::CheckGroundImpact(float dt)
             slice = 0.0F;
             pitch = 0.0F;
 
-            if (IsSet(GearBroken) || gearPos <= 0.1F)
+            if (IsSet(GearBroken) or gearPos <= 0.1F)
             {
                 // edg note: discovered a crash here.  I'm going to fix it elsewhere, but
                 // protect against it here.  The prob: aircraft is getting init'd, isn't
                 // taking off, and is very close to the ground.  It gets here and doesn't
                 // have a brain yet.   Check here for brain and fix the alt check in
                 // ownmain init.
-                if (platform->DBrain() && !platform->IsSetFalcFlag(FEC_INVULNERABLE))
+                if (platform->DBrain() and not platform->IsSetFalcFlag(FEC_INVULNERABLE))
                 {
                     platform->DBrain()->SetATCFlag(DigitalBrain::Landed);
                     platform->DBrain()->SetATCStatus(lCrashed);
 
                     // KCK NOTE:: Don't set timer for players
-                    if (platform != SimDriver.GetPlayerEntity())
+                    if (platform not_eq SimDriver.GetPlayerEntity())
                         platform->DBrain()->SetWaitTimer(SimLibElapsedTime + 1 * CampaignMinutes);
                 }
 
@@ -1805,7 +1805,7 @@ void AirframeClass::CheckGroundImpact(float dt)
             // KCK NOTE: I'm only sending this for members with the package flag set.
             // This means all package elements in single player, but non-necessarily in
             // multi-player. But in multi-player we'll at least get all players.
-            if (platform->GetCampaignObject() && platform->GetCampaignObject()->InPackage())
+            if (platform->GetCampaignObject() and platform->GetCampaignObject()->InPackage())
             {
                 FalconLandingMessage *lmsg = new FalconLandingMessage(platform->Id(), FalconLocalGame);
                 lmsg->dataBlock.campID = platform->GetCampaignObject()->GetCampID();
@@ -1819,7 +1819,7 @@ void AirframeClass::CheckGroundImpact(float dt)
             // apply some bounce
             z = groundZ - minHeight - (vt * impactAngle) / 20.0F * (1.0F - 0.5F * IsSet(GearBroken));
 
-            if (!platform->IsSetFalcFlag(FEC_INVULNERABLE))
+            if ( not platform->IsSetFalcFlag(FEC_INVULNERABLE))
             {
 
                 aoacmd = max(-90.0F, min(90.0F, alpha + (float)fabs(platform->platformAngles.cosbet * platform->platformAngles.sinthe) * platform->platformAngles.cosphi * 0.1F * vt)); //  + q * RTD * dt));
@@ -1844,14 +1844,14 @@ void AirframeClass::CheckGroundImpact(float dt)
                 float decelFactor = min(0.99F, (sinImpactAngle * 0.9F + impactAngle * 0.2F));
                 vt = max(0.001F, decelFactor * vt);
 
-                if (fabs(slice) > 0.6F || fabs(pitch) > 0.6F)
+                if (fabs(slice) > 0.6F or fabs(pitch) > 0.6F)
                 {
                     stallMode = Crashing;
 
                     xdot *= decelFactor;
                     ydot *= decelFactor;
-                    ShiAssert(!_isnan(xdot));
-                    ShiAssert(!_isnan(ydot));
+                    ShiAssert( not _isnan(xdot));
+                    ShiAssert( not _isnan(ydot));
                 }
 
                 if (vt < 5.0F)
@@ -1876,7 +1876,7 @@ void AirframeClass::CheckGroundImpact(float dt)
                     }
                 }
 
-                gmma = (float)fabs(gmma / (2.0F + !IsSet(GearBroken)));
+                gmma = (float)fabs(gmma / (2.0F + not IsSet(GearBroken)));
                 CalcBodyRates(dt);
                 CalcBodyOrientation(dt);
                 Trigenometry();
@@ -1946,7 +1946,7 @@ void AirframeClass::ResetIntegrators(void)
 float AirframeClass::CheckHeight(void) const
 {
     // JB 010120
-    if (!platform)
+    if ( not platform)
     {
         return 0;
     }
@@ -1974,13 +1974,13 @@ float AirframeClass::CheckHeight(void) const
 
     float cosphi_lim = max(0.0F, platform->platformAngles.cosphi);
 
-    if (NumGear() > 1 && platform->drawPointer)
+    if (NumGear() > 1 and platform->drawPointer)
     {
         float best = 0.0F;
 
         for (int i = 0; i < NumGear(); i++)
         {
-            if (!(gear[i].flags & GearData::GearBroken))
+            if ( not (gear[i].flags bitand GearData::GearBroken))
             {
                 PtRelPos.x = cgloc - GetAeroData(AeroDataSet::NosGearX + i * 4);
                 PtRelPos.y = GetAeroData(AeroDataSet::NosGearY + i * 4);
@@ -2018,7 +2018,7 @@ float AirframeClass::CheckHeight(void) const
     }
     else
     {
-        deltzGear = platform->platformAngles.costhe * (cosphi_lim * (gearHt * gearPos * !IsSet(GearBroken) + radius));
+        deltzGear = platform->platformAngles.costhe * (cosphi_lim * (gearHt * gearPos * not IsSet(GearBroken) + radius));
     }
 
     deltzWing = platform->platformAngles.costhe * (float)fabs(platform->platformAngles.sinphi) * halfspan;
@@ -2099,7 +2099,7 @@ void AirframeClass::DragBodypart(void)
         volume = max(0.0F, min(160000.0F - vt * vt, 4000000.0F));
         platform->SoundPos.Sfx(SFX_TAILSCRAPE, 0 , volume, pitch);
 
-        if (!IsSet(Simplified))
+        if ( not IsSet(Simplified))
         {
             if (platform->pctStrength > 0.5F)
             {
@@ -2117,11 +2117,11 @@ void AirframeClass::DragBodypart(void)
         else
             xwaero -= 0.2F * (1.0F - nzcgs) * GRAVITY;
     }
-    else if (vt <= 0.0F && platform->DBrain()->ATCStatus() != lCrashed)
+    else if (vt <= 0.0F and platform->DBrain()->ATCStatus() not_eq lCrashed)
     {
         platform->DBrain()->SetATCStatus(lCrashed);
 
-        if (platform != SimDriver.GetPlayerEntity())
+        if (platform not_eq SimDriver.GetPlayerEntity())
         {
             platform->DBrain()->SetWaitTimer(SimLibElapsedTime + 1 * CampaignMinutes);
         }

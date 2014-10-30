@@ -53,7 +53,7 @@ float HeliBrain::AutoTrack(float)
     rollLoad = min(1.0f, rollLoad);
 
     // if we're close, just point to spot then go
-    if (fabs(rollLoad) > 0.1f && rng < 1000.0f * 1000.0f)
+    if (fabs(rollLoad) > 0.1f and rng < 1000.0f * 1000.0f)
         desSpeed = 0.0f;
 
     LevelTurn(rollLoad, rollDir, TRUE);
@@ -138,7 +138,7 @@ void HeliBrain::MachHold(float speedSet, float altSet, int groundAvoid)
     throtl = 0.5f + powerO;
 
     // reduce speed if we have to climb
-    if (powerO >= 0.0f && groundAvoid)
+    if (powerO >= 0.0f and groundAvoid)
         speedSet = speedSet * (1.0f - powerO * 2.0f);
 
     // limit speed values min -1 max +1
@@ -257,7 +257,7 @@ void HeliBrain::RollOutOfPlane(void)
     float eroll;
 
     // first pass, save roll
-    if (lastMode != RoopMode)
+    if (lastMode not_eq RoopMode)
     {
         mnverTime = 4.0F;
 
@@ -302,7 +302,7 @@ void HeliBrain::OverBank(float delta)
     if (fabs(self->Pitch()) < 70.0 * DTR)
     {
         // Find a new roll angle
-        if (lastMode != OverBMode)
+        if (lastMode not_eq OverBMode)
         {
             if (self->Roll() > 0.0F)
                 newroll = targetData->droll + delta;

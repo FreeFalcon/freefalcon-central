@@ -11,6 +11,7 @@
      KBR   12/03/96   added thread-safe code
    ---------------------------------------------------------- */
 
+#include <cISO646>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -52,8 +53,8 @@ int LIST_MUTEX = 0;         /* If you want to bypass microsoft's very heavy
 
 #  define WAIT_FOR_LOCK(a)     WaitForSingleObject( a, INFINITE );
 #  define RELEASE_LOCK(a)      ReleaseMutex( a );
-#  define CREATE_LOCK(a)       { if( !a ) a = CreateMutex( NULL, FALSE, NULL ); \
-                                 if( !a ) KEVS_FATAL_ERROR( "Could not get mutex lock." ); }
+#  define CREATE_LOCK(a)       { if( not a ) a = CreateMutex( NULL, FALSE, NULL ); \
+                                 if( not a ) KEVS_FATAL_ERROR( "Could not get mutex lock." ); }
 #else
 #  define WAIT_FOR_LOCK(a)
 #  define RELEASE_LOCK(a)
@@ -71,7 +72,7 @@ int LIST_MUTEX = 0;         /* If you want to bypass microsoft's very heavy
 
   Allocate all list related memory from memory pools
 
-     (... per Roger Fuji's bitchin' & moanin! )
+     (... per Roger Fuji's bitchin' bitand moanin )
 
 
   Allocation Strategy:
@@ -191,7 +192,7 @@ ListGlobalFree(void)
 
     WAIT_FOR_LOCK(LIST_MUTEX);
 
-    if (!GLOBAL_ALLOC_TABLE)
+    if ( not GLOBAL_ALLOC_TABLE)
         return;
 
     table = GLOBAL_ALLOC_TABLE;
@@ -233,7 +234,7 @@ ListGlobalAlloc(void)
     new_unit = (ALLOC_UNIT *)MemMalloc(sizeof(ALLOC_UNIT), "LIST_MEM");
 #endif
 
-    if (!new_unit)
+    if ( not new_unit)
         KEVS_FATAL_ERROR("No memory for list pool.");
 
     if (GLOBAL_ALLOC_TABLE)
@@ -283,12 +284,12 @@ ListAlloc(void)
 
     WAIT_FOR_LOCK(LIST_MUTEX);
 
-    if (!GLOBAL_ALLOC_TABLE)
+    if ( not GLOBAL_ALLOC_TABLE)
         ListGlobalAlloc();
 
     do
     {
-        if ((GLOBAL_ALLOC_TABLE -> avail < ALLOC_SAFETY) ||
+        if ((GLOBAL_ALLOC_TABLE -> avail < ALLOC_SAFETY) or
             (GLOBAL_ALLOC_TABLE -> index > (ALLOC_UNITS - ALLOC_SAFETY)))
 
             ListGlobalPack();
@@ -298,7 +299,7 @@ ListAlloc(void)
         GLOBAL_ALLOC_TABLE -> index++;
 
     }
-    while (lu -> check != ALLOC_FREE_FLAG);
+    while (lu -> check not_eq ALLOC_FREE_FLAG);
 
     lu -> check = ALLOC_USED_FLAG;
 
@@ -322,7 +323,7 @@ ListValidate(void)
 
     WAIT_FOR_LOCK(LIST_MUTEX);
 
-    if (!GLOBAL_ALLOC_TABLE)
+    if ( not GLOBAL_ALLOC_TABLE)
         return;
 
     for (tmp = GLOBAL_ALLOC_TABLE; tmp; tmp = (ALLOC_UNIT *)table -> prev)
@@ -330,8 +331,8 @@ ListValidate(void)
 
     for (tmp = table; tmp; tmp = tmp -> next)
         for (i = 0; i < ALLOC_UNITS; i++)
-            if ((tmp -> unit[i].check != ALLOC_FREE_FLAG) &&
-                (tmp -> unit[i].check != ALLOC_USED_FLAG))
+            if ((tmp -> unit[i].check not_eq ALLOC_FREE_FLAG) and 
+                (tmp -> unit[i].check not_eq ALLOC_USED_FLAG))
             {
                 DBG(PF("ERROR: Possible overwrite in lists."));
 
@@ -362,7 +363,7 @@ ListFree(void * unit)
     for (t = GLOBAL_ALLOC_TABLE; t; t = (ALLOC_UNIT *)tbl -> prev)
         tbl = t;
 
-    if (!tbl)
+    if ( not tbl)
     {
         DBG(PF("Error freeing list structure.\n"));
         RELEASE_LOCK(LIST_MUTEX);
@@ -371,7 +372,7 @@ ListFree(void * unit)
 
     lu = (LIST_UNIT *)((int) unit - sizeof(int));
 
-    if (lu -> check != ALLOC_USED_FLAG)
+    if (lu -> check not_eq ALLOC_USED_FLAG)
     {
         ERROR("Free of a corrupt list node from allocation table.");
         RELEASE_LOCK(LIST_MUTEX);
@@ -380,7 +381,7 @@ ListFree(void * unit)
 
     do
     {
-        if ((unit >= tbl -> min) && (unit < tbl -> max))
+        if ((unit >= tbl -> min) and (unit < tbl -> max))
         {
             tbl -> avail++;
 
@@ -400,9 +401,9 @@ ListFree(void * unit)
         }
 
     }
-    while (tbl && !done);
+    while (tbl and not done);
 
-    if (!done)
+    if ( not done)
         ERROR("Couldn't find list in allocation table\n");
 
     RELEASE_LOCK(LIST_MUTEX);
@@ -425,7 +426,7 @@ ListGlobalPack(void)
     for (t = GLOBAL_ALLOC_TABLE; t; t = (ALLOC_UNIT *)t -> prev)
         tbl = t;
 
-    if (!tbl)
+    if ( not tbl)
     {
         ERROR("List allocation table empty -- cannot pack.");
         GLOBAL_ALLOC_TABLE -> index = 0;
@@ -435,7 +436,7 @@ ListGlobalPack(void)
 
     do
     {
-        if ((tbl -> avail == ALLOC_UNITS) &&
+        if ((tbl -> avail == ALLOC_UNITS) and 
             (tbl -> sleeping))
         {
             if (tbl -> prev)
@@ -475,7 +476,7 @@ ListGlobalPack(void)
     }
     while (tbl);
 
-    if (!GLOBAL_ALLOC_TABLE || (GLOBAL_ALLOC_TABLE -> avail < ALLOC_SWAP_SIZE))
+    if ( not GLOBAL_ALLOC_TABLE or (GLOBAL_ALLOC_TABLE -> avail < ALLOC_SWAP_SIZE))
         ListGlobalAlloc();
 
     GLOBAL_ALLOC_TABLE -> index = 0;
@@ -539,14 +540,14 @@ ListAppendEnd(LIST * list, void * node)
     newnode -> next = NULL;
 
     /* list was null */
-    if (!list)
+    if ( not list)
     {
         list = newnode;
     }
     else
     {
         /* find end of list */
-        for (curr = list ; curr -> next != NULL ; curr = curr -> next) ;
+        for (curr = list ; curr -> next not_eq NULL ; curr = curr -> next) ;
 
         /* chain in at end */
         curr -> next = newnode;
@@ -590,14 +591,14 @@ ListCatenate(LIST * l1, LIST * l2)
 {
     LIST *curr;
 
-    if (!l1)
+    if ( not l1)
         return l2;
 
-    if (!l2)
+    if ( not l2)
         return l1;
 
     /* find last element of l1 */
-    for (curr = l1; curr -> next != NULL; curr = curr -> next);
+    for (curr = l1; curr -> next not_eq NULL; curr = curr -> next);
 
     /* catenate */
     curr -> next = l2;
@@ -618,7 +619,7 @@ ListDestroy(LIST * list, PFV destructor)
     LIST * prev,
          * curr;
 
-    if (!list)
+    if ( not list)
         return;
 
     prev = list;
@@ -662,7 +663,7 @@ ListNth(LIST * list, int n)
 
     curr = list;
 
-    for (i = 0 ; i < n && curr; i++)
+    for (i = 0 ; i < n and curr; i++)
         curr = curr -> next;
 
     return(curr);
@@ -719,24 +720,24 @@ ListRemove(LIST * list, void * node)
     LIST * prev,
          * curr;
 
-    if (!list)
+    if ( not list)
         return(NULL);
 
     prev = NULL;
     curr = list;
 
-    while (curr && (curr -> node != node))
+    while (curr and (curr -> node not_eq node))
     {
         prev = curr;
         curr = curr -> next;
     }
 
     /* not found, return list unmodified */
-    if (!curr)
+    if ( not curr)
         return(list);
 
     /* found at head */
-    if (!prev)
+    if ( not prev)
         list = list -> next;
     else
         prev -> next = curr -> next;
@@ -773,7 +774,7 @@ ListSearch(LIST * list, void * node, PFI func_ptr)
     LIST * l;
 
     for (l =  list; list; list = list -> next)
-        if (!((*func_ptr)(list -> node, node)))
+        if ( not ((*func_ptr)(list -> node, node)))
             return(l);
 
     return(NULL);

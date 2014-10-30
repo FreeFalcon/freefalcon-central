@@ -115,7 +115,7 @@ typedef struct _ActiveEvent
 //
 // These are the headers and data that are used internally for the .vhs format.
 // These use offsets instead of pointers so that we can memory map them.
-// All offsets are from the start of the file!!!.
+// All offsets are from the start of the file.
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -326,31 +326,31 @@ typedef struct
 //
 // .vhs file format:
 //
-// |                        |                 |                 |
-// |        header          | entity block    | timeline block  |
-// | sizeof(ACMITapeHeader) | (variable size) | (variable size) |
+// bitor                        bitor                 bitor                 |
+// bitor        header          bitor entity block    bitor timeline block  |
+// bitor sizeof(ACMITapeHeader) bitor (variable size) bitor (variable size) |
 //
 ////////////////////////////////////////////////////////////////////////////////
 //
 // entity block:
 //
-// |                    |                                       |
-// | number of entities |              entities                 |
-// |  sizeof(long)      | num entities * sizeof(ACMIEntityData) |
+// bitor                    bitor                                       |
+// bitor number of entities bitor              entities                 |
+// bitor  sizeof(long)      bitor num entities * sizeof(ACMIEntityData) |
 //
 // entity:
 //
-// |                        |
-// |      ACMIEntityData    |
-// | sizeof(ACMIEntityData) |
+// bitor                        |
+// bitor      ACMIEntityData    |
+// bitor sizeof(ACMIEntityData) |
 //
 ////////////////////////////////////////////////////////////////////////////////
 //
 // timeline block:
 //
-// |                              |                    |                     |
-// | entity position update block | entity event block | general event block |
-// |     (variable size)          |  (variable size)   |    (variable size)  |
+// bitor                              bitor                    bitor                     |
+// bitor entity position update block bitor entity event block bitor general event block |
+// bitor     (variable size)          bitor  (variable size)   bitor    (variable size)  |
 //
 // The entity position update block contains all entity position updates.
 // The position updates are threaded on a per-entity basis, with a separate doubly linked list

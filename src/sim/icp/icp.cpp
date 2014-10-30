@@ -63,7 +63,7 @@ ICPClass::~ICPClass()
 ICPClass::ICPClass()
 {
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI Original code
         strcpy(mpSelectedModeName, ICPModeNames[NAV_MODE]);
@@ -179,7 +179,7 @@ void ICPClass::SetOwnship(void)
 
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC && playerAC->IsAirplane()) // 2002-02-15 MODIFIED BY S.G. Added the IsAirplane test since it could be an ejected pilot
+    if (playerAC and playerAC->IsAirplane()) // 2002-02-15 MODIFIED BY S.G. Added the IsAirplane test since it could be an ejected pilot
     {
 
         // Waypoint Stuff
@@ -222,12 +222,12 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI original code
-        if (mode == AA_BUTTON || mode == AG_BUTTON || mode == NAV_BUTTON)
+        if (mode == AA_BUTTON or mode == AG_BUTTON or mode == NAV_BUTTON)
         {
-            if (pbutton != mpPrimaryExclusiveButton)
+            if (pbutton not_eq mpPrimaryExclusiveButton)
             {
                 mpPrimaryExclusiveButton->SetCurrentState(0);
                 mICPPrimaryMode = mode;
@@ -235,12 +235,12 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
 
                 if (mICPSecondaryMode == NONE_MODE)
                 {
-                    mUpdateFlags |= CNI_UPDATE;
+                    mUpdateFlags or_eq CNI_UPDATE;
                     ExecCNIMode();
                 }
             }
         }
-        else if (mode == PREV_BUTTON || mode == NEXT_BUTTON)
+        else if (mode == PREV_BUTTON or mode == NEXT_BUTTON)
         {
             HandlePrevNext(mode, mICPSecondaryMode);
         }
@@ -248,14 +248,14 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
         {
             HandleENTR(mICPSecondaryMode);
         }
-        else if (mode == COMM1_BUTTON || mode == COMM2_BUTTON)
+        else if (mode == COMM1_BUTTON or mode == COMM2_BUTTON)
         {
-            if (pbutton != mpTertiaryExclusiveButton)
+            if (pbutton not_eq mpTertiaryExclusiveButton)
             {
                 mpTertiaryExclusiveButton->SetCurrentState(0);
                 mICPTertiaryMode = mode;
                 mpTertiaryExclusiveButton = pbutton;
-                mUpdateFlags |= CNI_UPDATE;
+                mUpdateFlags or_eq CNI_UPDATE;
 
                 if (VM)
                 {
@@ -277,12 +277,12 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 mICPSecondaryMode = NONE_MODE;
                 mpSecondaryExclusiveButton->SetCurrentState(0);
                 mpSecondaryExclusiveButton  = NULL;
-                mUpdateFlags |= CNI_UPDATE;
+                mUpdateFlags or_eq CNI_UPDATE;
                 ExecCNIMode();
             }
             else
             {
-                if (mpSecondaryExclusiveButton != NULL)
+                if (mpSecondaryExclusiveButton not_eq NULL)
                 {
                     mpSecondaryExclusiveButton->SetCurrentState(0);
                 }
@@ -299,41 +299,41 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                     case STPT_BUTTON:
                         playerAC->FCC->SetStptMode(FireControlComputer::FCCWaypoint);
                         playerAC->FCC->waypointStepCmd = 127;
-                        mUpdateFlags |= STPT_UPDATE;
+                        mUpdateFlags or_eq STPT_UPDATE;
                         break;
 
                     case DLINK_BUTTON:
                         playerAC->FCC->SetStptMode(FireControlComputer::FCCDLinkpoint);
                         playerAC->FCC->waypointStepCmd = 127;
-                        mUpdateFlags |= DLINK_UPDATE;
+                        mUpdateFlags or_eq DLINK_UPDATE;
                         ExecDLINKMode();
                         break;
 
                     case MARK_BUTTON:
                         playerAC->FCC->SetStptMode(FireControlComputer::FCCMarkpoint);
                         playerAC->FCC->waypointStepCmd = 127;
-                        mUpdateFlags |= MARK_UPDATE;
+                        mUpdateFlags or_eq MARK_UPDATE;
                         ExecMARKMode();
                         break;
 
                     case ILS_BUTTON:
-                        mUpdateFlags |= ILS_UPDATE;
+                        mUpdateFlags or_eq ILS_UPDATE;
                         ExecILSMode();
                         break;
 
                     case CRUS_BUTTON:
-                        mUpdateFlags |= CRUS_UPDATE;
+                        mUpdateFlags or_eq CRUS_UPDATE;
                         ExecCRUSMode();
                         break;
 
                     case FACK_BUTTON:
-                        mUpdateFlags |= FACK_UPDATE;
+                        mUpdateFlags or_eq FACK_UPDATE;
                         PNUpdateFACKMode(NEXT_BUTTON, FACK_BUTTON);
                         ExecFACKMode();
                         break;
 
                     case ALOW_BUTTON:
-                        mUpdateFlags |= ALOW_UPDATE;
+                        mUpdateFlags or_eq ALOW_UPDATE;
                         break;
                 }
             }
@@ -341,16 +341,16 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
     }
     else
     {
-        if (!playerAC->HasPower(AircraftClass::UFCPower) ||
+        if ( not playerAC->HasPower(AircraftClass::UFCPower) or
             playerAC->mFaults->GetFault(FaultClass::ufc_fault))
             return;
 
         //Master Modes
-        if (mode == AA_BUTTON || mode == AG_BUTTON || mode == NAV_BUTTON)
+        if (mode == AA_BUTTON or mode == AG_BUTTON or mode == NAV_BUTTON)
         {
             mICPPrimaryMode = mode;
 
-            if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == EIGHT_BUTTON)
+            if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == EIGHT_BUTTON)
                 ExecMODEMode();
 
             if (mode == AA_BUTTON)
@@ -371,14 +371,14 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
         /*what mode we've been before. */
         /****************************************************/
 
-        else if (mode == COMM1_BUTTON || mode == COMM2_BUTTON ||
-                 mode == LIST_BUTTON || mode == IFF_BUTTON)
+        else if (mode == COMM1_BUTTON or mode == COMM2_BUTTON or
+                 mode == LIST_BUTTON or mode == IFF_BUTTON)
         {
             //This results in a new DED page, clear our strings
             ClearStrings();
 
             //Did we push the same button as before?
-            if (mICPTertiaryMode == mode && mode != CNI_MODE)
+            if (mICPTertiaryMode == mode and mode not_eq CNI_MODE)
                 PushedSame(LastMode);
             else
                 NewMode(mode);
@@ -387,7 +387,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
         //special case, FACK
         else if (mode == FACK_BUTTON)
         {
-            if (playerAC && playerAC->mFaults)
+            if (playerAC and playerAC->mFaults)
             {
                 if (m_FaultDisplay == false)   // was off
                 {
@@ -397,17 +397,17 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 }
                 else   // move to next fault
                 {
-                    if (playerAC->mFaults->GetFFaultCount() <= 0 ||
+                    if (playerAC->mFaults->GetFFaultCount() <= 0 or
                         playerAC->mFaults->GetNextFault(&m_subsystem, &m_function) == FALSE)
                         m_FaultDisplay = false;
                 }
 
-                mUpdateFlags |= FACK_UPDATE; // we need to do some work
+                mUpdateFlags or_eq FACK_UPDATE; // we need to do some work
             }
         }
 
         //SENCONDAR FUNCTIONS
-        else if (mode == PREV_BUTTON || mode == NEXT_BUTTON)
+        else if (mode == PREV_BUTTON or mode == NEXT_BUTTON)
         {
             ClearStrings();
 
@@ -416,10 +416,10 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
 
             else if (mICPSecondaryMode == CRUS_MODE)
                 StepHOMERNGSTPT(mode);
-            else if (IsICPSet(ICPClass::MODE_CNI) && mICPSecondaryMode == SEVEN_BUTTON)
+            else if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == SEVEN_BUTTON)
                 PNUpdateMARKMode(mode, 0);
 
-            else if (IsICPSet(ICPClass::EDIT_VHF) || IsICPSet(ICPClass::EDIT_UHF))
+            else if (IsICPSet(ICPClass::EDIT_VHF) or IsICPSet(ICPClass::EDIT_UHF))
                 PNUpdateCOMMMode(mode, 0);
 
             else if (IsICPSet(ICPClass::MODE_DLINK))
@@ -459,7 +459,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                         PREVHF--;
                 }
             }
-            else if (IsICPSet(ICPClass::MODE_CNI) && mICPSecondaryMode == SIX_BUTTON)
+            else if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == SIX_BUTTON)
             {
                 if (mode == NEXT_BUTTON)
                 {
@@ -487,15 +487,15 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                     stopped = FALSE;
                 }
             }
-            else if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == EWS_MODE)
+            else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == EWS_MODE)
             {
-                if (PGMFlare || PGMChaff)
+                if (PGMFlare or PGMChaff)
                     StepEWSProg(mode);
                 else
                     PNUpdateSTPTMode(mode, 0);
             }
             // Retro 3Jan2004 start
-            else if ((g_bPilotEntertainment) && (winamp) && (IsICPSet(ICPClass::MISC_MODE) && mICPSecondaryMode == ZERO_MODE))
+            else if ((g_bPilotEntertainment) and (winamp) and (IsICPSet(ICPClass::MISC_MODE) and mICPSecondaryMode == ZERO_MODE))
             {
                 if (mode == PREV_BUTTON)
                     winamp->VolDown();
@@ -507,7 +507,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
             ICPEnter();
         else if (mode == CLEAR_BUTTON)
         {
-            if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == 0)
+            if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == 0)
             {
                 ClearStrings();
                 ExecINTGMode();
@@ -516,7 +516,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
             else
                 ClearInput();
         }
-        else if (mode == UP_MODE || mode == DOWN_MODE || mode == SEQ_MODE || mode == CNI_BUTTON)
+        else if (mode == UP_MODE or mode == DOWN_MODE or mode == SEQ_MODE or mode == CNI_BUTTON)
         {
             if (mode == CNI_MODE)
                 mICPTertiaryMode = CNI_MODE;
@@ -525,7 +525,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
 
             // Retro 3Jan2004 start
             // Retro from here, kind of a hack having this here..
-            if ((g_bPilotEntertainment) && (winamp) && (IsICPSet(ICPClass::MISC_MODE) && mICPSecondaryMode == ZERO_MODE))
+            if ((g_bPilotEntertainment) and (winamp) and (IsICPSet(ICPClass::MISC_MODE) and mICPSecondaryMode == ZERO_MODE))
             {
                 if (mode == UP_MODE)
                     winamp->Next();
@@ -548,7 +548,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 EWSOnOff();
             else
                 OneButton(mode);
@@ -560,7 +560,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 EWSOnOff();
             else
                 TwoButton(mode);
@@ -572,7 +572,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 EWSOnOff();
             else
                 ThreeButton(mode);
@@ -584,7 +584,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 EWSOnOff();
             else
                 FourButton(mode);
@@ -596,7 +596,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 EWSOnOff();
             else
                 FifeButton(mode);
@@ -608,7 +608,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 EWSOnOff();
             else
                 SixButton(mode);
@@ -620,7 +620,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 EWSOnOff();
             else
                 SevenButton(mode);
@@ -632,7 +632,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 EWSOnOff();
             else
                 EightButton(mode);
@@ -644,7 +644,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 EWSOnOff();
             else
                 NineButton(mode);
@@ -652,7 +652,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
         //'0' BUTTON
         else if (mode == ZERO_BUTTON)
         {
-            if ((IsICPSet(ICPClass::MODE_CNI) && mICPSecondaryMode == FIFE_BUTTON) && !IsICPSet(ICPClass::BLOCK_MODE))
+            if ((IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == FIFE_BUTTON) and not IsICPSet(ICPClass::BLOCK_MODE))
             {
                 if (Cruise_RNG)
                 {
@@ -685,7 +685,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
 
                 return;
             }
-            else if (IsICPSet(ICPClass::MISC_MODE) && mICPSecondaryMode == EIGHT_BUTTON)
+            else if (IsICPSet(ICPClass::MISC_MODE) and mICPSecondaryMode == EIGHT_BUTTON)
             {
                 if (ShowBullseyeInfo)
                     ShowBullseyeInfo = FALSE;
@@ -697,7 +697,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
 
             if (CheckMode())
                 return;
-            else if (IsICPSet(ICPClass::EDIT_JAMMER) || IsICPSet(ICPClass::EWS_EDIT_BINGO))
+            else if (IsICPSet(ICPClass::EDIT_JAMMER) or IsICPSet(ICPClass::EWS_EDIT_BINGO))
                 return;
             else if (ManualInput())
                 HandleManualInput(mode);
@@ -723,7 +723,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
 
 void ICPClass::Exec()
 {
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI original code
         switch (mICPSecondaryMode)
@@ -775,7 +775,7 @@ void ICPClass::Exec()
     else
     {
         //for flashing stuff
-        flash = (vuxRealTime & 0x180);
+        flash = (vuxRealTime bitand 0x180);
 
         //do this once here
         if (FillStrings)
@@ -785,10 +785,10 @@ void ICPClass::Exec()
         }
 
         //automaticaly switch waypoints when in parameters and selected
-        if (!MAN)
+        if ( not MAN)
             CheckAutoSTPT();
 
-        if (IsICPSet(ICPClass::MODE_FACK) || TheHud && TheHud->GetDEDSwitch() == HudClass::PFL_DATA)
+        if (IsICPSet(ICPClass::MODE_FACK) or TheHud and TheHud->GetDEDSwitch() == HudClass::PFL_DATA)
             ExecFACKMode();
 
         if (IsICPSet(ICPClass::MODE_COMM1))
@@ -1129,7 +1129,7 @@ void ICPClass::ChangeToCNI(void)
 
     ResetSubPages();
 
-    if (playerAC && playerAC->FCC)
+    if (playerAC and playerAC->FCC)
     {
         playerAC->FCC->SetStptMode(FireControlComputer::FCCWaypoint);
         playerAC->FCC->waypointStepCmd = 127;

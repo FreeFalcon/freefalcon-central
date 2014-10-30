@@ -209,7 +209,7 @@ C_Control::C_Control(char **stream) : C_Base(stream)
         *stream += sizeof(long);
         memcpy(&value, *stream, sizeof(long));
         *stream += sizeof(long);
-        SetSound(value, (short)idx); // note that the index is the 2nd parameter//!
+        SetSound(value, (short)idx); // note that the index is the 2nd parameter
     }
 }
 
@@ -237,7 +237,7 @@ C_Control::C_Control(FILE *fp) : C_Base(fp)
     {
         fread(&idx, sizeof(long), 1, fp);
         fread(&value, sizeof(long), 1, fp);
-        SetSound(value, (short)idx); // note that the index is the 2nd parameter//!
+        SetSound(value, (short)idx); // note that the index is the 2nd parameter
     }
 }
 
@@ -562,7 +562,7 @@ void C_Control::SetSound(long ID, short Type)
 
     if (snd)
     {
-        if (!Sound_)
+        if ( not Sound_)
         {
             Sound_ = new C_Hash;
             Sound_->Setup(1);
@@ -587,7 +587,7 @@ void C_Base::SetUserNumber(long idx, long value)
 {
     USERDATA *usr;
 
-    if (!User_)
+    if ( not User_)
     {
         User_ = new C_Hash;
         User_->Setup(1);
@@ -623,7 +623,7 @@ void C_Base::SetUserPtr(long idx, void *value)
 {
     USERDATA *usr;
 
-    if (!User_)
+    if ( not User_)
     {
         User_ = new C_Hash;
         User_->Setup(1);
@@ -659,7 +659,7 @@ void C_Base::SetUserCleanupPtr(long idx, void *value)
 {
     USERDATA *usr;
 
-    if (!User_)
+    if ( not User_)
     {
         User_ = new C_Hash;
         User_->Setup(1);
@@ -699,7 +699,7 @@ long C_Base::GetUserNumber(long idx)
     {
         usr = (USERDATA*)User_->Find(idx);
 
-        if (usr && usr->type == CSB_IS_VALUE)
+        if (usr and usr->type == CSB_IS_VALUE)
             return(usr->data.number);
     }
 
@@ -714,7 +714,7 @@ void *C_Base::GetUserPtr(long idx)
     {
         usr = (USERDATA*)User_->Find(idx);
 
-        if (usr && (usr->type == CSB_IS_PTR || usr->type == CSB_IS_CLEANUP_PTR))
+        if (usr and (usr->type == CSB_IS_PTR or usr->type == CSB_IS_CLEANUP_PTR))
             return(usr->data.ptr);
     }
 
@@ -723,12 +723,12 @@ void *C_Base::GetUserPtr(long idx)
 
 BOOL C_Control::MouseOver(long relx, long rely, C_Base *me)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
         return(FALSE);
 
-    if (relx >= GetX() && rely >= GetY() && relx <= (GetX() + GetW()) && rely <= GetY() + GetH())
+    if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= GetY() + GetH())
     {
-        if ((C_Base*)this != me)
+        if ((C_Base*)this not_eq me)
             gSoundMgr->PlaySound(GetSound(C_TYPE_MOUSEOVER));
 
         return(TRUE);
@@ -744,17 +744,17 @@ void C_Control::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     clip.left = GetX();
     clip.top = GetY();
 
-    if (Flags_ & C_BIT_RIGHT)
+    if (Flags_ bitand C_BIT_RIGHT)
         clip.left -= GetW();
-    else if (Flags_ & C_BIT_HCENTER)
+    else if (Flags_ bitand C_BIT_HCENTER)
         clip.left -= GetW() / 2;
 
-    if (Flags_ & C_BIT_BOTTOM)
+    if (Flags_ bitand C_BIT_BOTTOM)
         clip.top -= GetH();
-    else if (Flags_ & C_BIT_VCENTER)
+    else if (Flags_ bitand C_BIT_VCENTER)
         clip.top -= GetH() / 2;
 
-    if (!(Flags_ & C_BIT_ABSOLUTE))
+    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
     {
         clip.left += Parent_->VX_[Client_];
         clip.top += Parent_->VY_[Client_];
@@ -764,11 +764,11 @@ void C_Control::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     clip.bottom = clip.top + GetH();
     tmp = clip; // JPO fix so it has some valid data
 
-    if (!Parent_->ClipToArea(&tmp, &clip, cliprect))
+    if ( not Parent_->ClipToArea(&tmp, &clip, cliprect))
         return;
 
-    if (!(Flags_ & C_BIT_ABSOLUTE))
-        if (!Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
+    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
+        if ( not Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
             return;
 
     Parent_->BlitTranslucent(surface, MouseOverColor_, MouseOverPercent_, &clip, C_BIT_ABSOLUTE, 0);
@@ -807,7 +807,7 @@ void C_Base::BaseFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CNTL_SETCLIENT:
-            SetClient((short)P[0]);//!
+            SetClient((short)P[0]);
             break;
 
         case CNTL_SETX:
@@ -851,15 +851,15 @@ void C_Base::BaseFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CNTL_SETFLAGBITON:
-            SetFlags(GetFlags() | P[0]);
+            SetFlags(GetFlags() bitor P[0]);
             break;
 
         case CNTL_SETFLAGBITOFF:
-            SetFlags(GetFlags() & ~P[0]);
+            SetFlags(GetFlags() bitand compl P[0]);
             break;
 
         case CNTL_SETFLAGTOGGLE:
-            SetFlags(GetFlags() ^ P[0]);
+            SetFlags(GetFlags() xor P[0]);
             break;
 
         case CNTL_SETFONT:
@@ -879,7 +879,7 @@ void C_Base::BaseFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CNTL_SETHOTKEY:
-            SetHotKey((WORD)(P[0] | P[1] | P[2] | P[3] | P[4] | P[5] | P[6]));
+            SetHotKey((WORD)(P[0] bitor P[1] bitor P[2] bitor P[3] bitor P[4] bitor P[5] bitor P[6]));
             break;
 
         case CNTL_CURSOR:
@@ -891,7 +891,7 @@ void C_Base::BaseFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CNTL_SETMOUSECOLOR:
-            SetMouseOverColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetMouseOverColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CNTL_SETMOUSEPERC:

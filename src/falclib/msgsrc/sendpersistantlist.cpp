@@ -90,17 +90,17 @@ int FalconSendPersistantList::Process(uchar autodisp)
     VU_BYTE* buf;
     long rem;
 
-    if (autodisp || !TheCampaign.IsPreLoaded())
+    if (autodisp or not TheCampaign.IsPreLoaded())
         return -1;
 
-    if (TheCampaign.Flags & CAMP_NEED_PERSIST)
+    if (TheCampaign.Flags bitand CAMP_NEED_PERSIST)
     {
         CampaignJoinKeepAlive();
 
         buf = (VU_BYTE*) dataBlock.data;
         rem = dataBlock.size;
         DecodePersistantList(&buf, &rem);
-        TheCampaign.Flags &= ~CAMP_NEED_PERSIST;
+        TheCampaign.Flags and_eq compl CAMP_NEED_PERSIST;
 
         if (gMainHandler)
             PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_PERSIST, 0);

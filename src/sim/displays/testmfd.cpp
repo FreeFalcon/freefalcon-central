@@ -113,9 +113,9 @@ void TestMfdDrawable::Display(VirtualDisplay* newDisplay)
     {
         RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
 
-        if (!theRadar)
+        if ( not theRadar)
         {
-            ShiWarning("Oh Oh shouldn't be here without a radar!");
+            ShiWarning("Oh Oh shouldn't be here without a radar");
             return;
         }
         else
@@ -126,17 +126,17 @@ void TestMfdDrawable::Display(VirtualDisplay* newDisplay)
 
     display = newDisplay;
 
-    ShiAssert(bitpage >= 0 && bitpage < sizeof(mfdpages) / sizeof(mfdpages[0]));
-    ShiAssert(display != NULL);
+    ShiAssert(bitpage >= 0 and bitpage < sizeof(mfdpages) / sizeof(mfdpages[0]));
+    ShiAssert(display not_eq NULL);
 
     const MfdTestButtons *mb = mfdpages[bitpage].buttons;
     AircraftClass *self = MfdDisplay[OnMFD()]->GetOwnShip();
-    ShiAssert(self != NULL);
+    ShiAssert(self not_eq NULL);
 
     //MI changed
     if (g_bRealisticAvionics)
     {
-        if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+        if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
             OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
         {
             DrawBullseyeCircle(display, cX, cY);
@@ -154,7 +154,7 @@ void TestMfdDrawable::Display(VirtualDisplay* newDisplay)
     {
         int hilite = 0;
 
-        if (i == bittest && timer > SimLibElapsedTime)
+        if (i == bittest and timer > SimLibElapsedTime)
             hilite = 1;
 
         switch (mb[i].nextMode)
@@ -172,7 +172,7 @@ void TestMfdDrawable::Display(VirtualDisplay* newDisplay)
         }
     }
 
-    if (playerAC && playerAC->mFaults)
+    if (playerAC and playerAC->mFaults)
     {
         FackClass *fack = playerAC->mFaults;
         float yinc = display->TextHeight();
@@ -240,8 +240,8 @@ void TestMfdDrawable::Display(VirtualDisplay* newDisplay)
 
 void TestMfdDrawable::PushButton(int whichButton, int whichMFD)
 {
-    ShiAssert(bitpage >= 0 && bitpage < sizeof(mfdpages) / sizeof(mfdpages[0]));
-    ShiAssert(whichButton >= 0 && whichButton < 20);
+    ShiAssert(bitpage >= 0 and bitpage < sizeof(mfdpages) / sizeof(mfdpages[0]));
+    ShiAssert(whichButton >= 0 and whichButton < 20);
 
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -269,7 +269,7 @@ void TestMfdDrawable::PushButton(int whichButton, int whichMFD)
             break;
 
         case MfdTestButtons::ModeClear: // clear MFL
-            if (playerAC && playerAC->mFaults)
+            if (playerAC and playerAC->mFaults)
                 playerAC->mFaults->ClearMfl();
 
             break;

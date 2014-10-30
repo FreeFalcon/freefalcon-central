@@ -2,6 +2,7 @@
 
 
 // SYSTEM INCLUDES
+#include <cISO646>
 #include <StdIO.h>
 #include <stdlib.h>
 #include <WinSock.h>
@@ -86,14 +87,14 @@ int initialize_windows_sockets(WSADATA* windows_sockets_data)
 
 	const char DLL_NAME[] = "WSOCK32.DLL";
 
-    if (!windows_sockets_connections) // No successful connection yet?
+    if ( not windows_sockets_connections) // No successful connection yet?
     {
 		TCHAR output_buffer[MAX_PATH];
 		DWORD buffer_length;
 		buffer_length = SearchPath(NULL, DLL_NAME, NULL, MAX_PATH,
 								   output_buffer, NULL);
 
-		buffer_length = 0; // my debug		
+//		buffer_length = 0; // my debug		
 		if (0 == buffer_length)
         {
             ComAPILastError = COMAPI_WINSOCKDLL_ERROR;
@@ -112,7 +113,7 @@ int initialize_windows_sockets(WSADATA* windows_sockets_data)
 
 #endif
 
-        if (!CAPI_GetProcAddresses(h_windows_sockets_DLL))
+        if ( not CAPI_GetProcAddresses(h_windows_sockets_DLL))
         {
 #ifdef LOAD_DLLS
             FreeLibrary(h_windows_sockets_DLL);
@@ -131,7 +132,7 @@ int initialize_windows_sockets(WSADATA* windows_sockets_data)
             
             MessageBox(NULL,
                        "Could not find high enough version of WinSock",
-                       "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+                       "Error", MB_OK bitor MB_ICONSTOP bitor MB_SETFOREGROUND);
               
 			return EXIT_SUCCESS;
         }
@@ -139,13 +140,13 @@ int initialize_windows_sockets(WSADATA* windows_sockets_data)
         {
             // Now confirm that the WinSock 2 DLL supports the exact version
             // we want. If not, make sure to call WSACleanup(). 
-            if (LOBYTE(windows_sockets_data->wVersion) != major_version ||
-                HIBYTE(windows_sockets_data->wVersion) != minor_version)
+            if (LOBYTE(windows_sockets_data->wVersion) not_eq major_version or
+                HIBYTE(windows_sockets_data->wVersion) not_eq minor_version)
             {
                 
                  MessageBox(NULL,
                             "Could not find the correct version of WinSock",
-                            "Error",  MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+                            "Error",  MB_OK bitor MB_ICONSTOP bitor MB_SETFOREGROUND);
                   
                 CAPI_WSACleanup();
                 return EXIT_SUCCESS;

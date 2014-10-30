@@ -114,7 +114,7 @@ public:
     uchar objDataReceived[FS_MAXBLK / 8];
 
 public:
-    // constructors & destructor
+    // constructors bitand destructor
     FalconSessionEntity(ulong domainMask, char *callsign);
     //sfr: added rem
     FalconSessionEntity(VU_BYTE **stream, long *rem);

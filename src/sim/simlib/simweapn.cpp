@@ -63,7 +63,7 @@ void SimWeaponClass::InitLocalData()
     WeaponClassDataType *wc = (WeaponClassDataType*)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
 
 #ifndef MISSILE_TEST_PROG
-    ShiAssert(wc != NULL); // JPO catch it
+    ShiAssert(wc not_eq NULL); // JPO catch it
 
     if (wc) // JB 010220
     {
@@ -189,7 +189,7 @@ int SimWeaponClass::Save(VU_BYTE **stream)
 
     ShiAssert(parent);
 
-    if (!parent)
+    if ( not parent)
         return NULL;
 
     VU_ID parentId = parent->Id();
@@ -224,7 +224,7 @@ int SimWeaponClass::Save(VU_BYTE **stream)
 
     ShiAssert(parent);
 
-    if (!parent)
+    if ( not parent)
         return NULL;
 
     VU_ID vuid = parent->Id();
@@ -265,7 +265,7 @@ int SimWeaponClass::Handle(VuTransferEvent *event)
 
 void SimWeaponClass::SetDead(int flag)
 {
-    if (flag/* && parentReferenced*/)
+    if (flag/* and parentReferenced*/)
     {
         /*parentReferenced = FALSE;
         VuDeReferenceEntity (parent);*/
@@ -284,7 +284,7 @@ void SimWeaponClass::SendDamageMessage(FalconEntity *testObject, float rangeSqua
     float lethalCone;
 
     // Don't damage other weapons
-    if (testObject->IsMissile() || testObject->IsBomb())
+    if (testObject->IsMissile() or testObject->IsBomb())
         return;
 
     // Adjust damage for distance:
@@ -312,7 +312,7 @@ void SimWeaponClass::SendDamageMessage(FalconEntity *testObject, float rangeSqua
     //air to air missiles ... however with  new calculation of damage we should always let the damage happen
     //or modify this to be less sensitive
     /*
-    if (normBlastDist < lethalCone && PRANDFloatPos() * 2.0f > normBlastDist)
+    if (normBlastDist < lethalCone and PRANDFloatPos() * 2.0f > normBlastDist)
     {
      return;
     }
@@ -323,7 +323,7 @@ void SimWeaponClass::SendDamageMessage(FalconEntity *testObject, float rangeSqua
     message->dataBlock.fCampID = parent->GetCampID();
     message->dataBlock.fSide   = static_cast<uchar>(parent->GetCountry());
 
-    if (parent->IsSimObjective() || parent->IsCampaign())
+    if (parent->IsSimObjective() or parent->IsCampaign())
         message->dataBlock.fPilotID   = 255;
     else
         message->dataBlock.fPilotID   = shooterPilotSlot;
@@ -336,7 +336,7 @@ void SimWeaponClass::SendDamageMessage(FalconEntity *testObject, float rangeSqua
     message->dataBlock.dCampID = testObject->GetCampID();
     message->dataBlock.dSide   = static_cast<uchar>(testObject->GetCountry());
 
-    if (testObject->IsSim() && testObject->IsMover())
+    if (testObject->IsSim() and testObject->IsMover())
         message->dataBlock.dPilotID   = ((SimMoverClass*)testObject)->pilotSlot;
     else
         message->dataBlock.dPilotID   = 255;
@@ -344,7 +344,7 @@ void SimWeaponClass::SendDamageMessage(FalconEntity *testObject, float rangeSqua
     message->dataBlock.dIndex     = testObject->Type();
 
     //MI special case nukes
-    if (wc && wc->DamageType == NuclearDam)
+    if (wc and wc->DamageType == NuclearDam)
     {
         message->dataBlock.damageStrength = normBlastDist * (wc->Strength * 2000000.0F);
         message->dataBlock.damageRandomFact = 5.0F; // nukes have exaggerated Damage factor
@@ -358,7 +358,7 @@ void SimWeaponClass::SendDamageMessage(FalconEntity *testObject, float rangeSqua
 
     if (normBlastDist >= lethalCone)
     {
-        // Direct hit!
+        // Direct hit
         // message->dataBlock.damageRandomFact += 1.0F;
         message->dataBlock.damageType = damageType;
     }

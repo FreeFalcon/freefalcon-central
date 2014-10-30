@@ -153,7 +153,7 @@ int FalconRadioChatterMessage::Encode(VU_BYTE **buf)
     size += sizeof(dataBlock) - sizeof(dataBlock.edata);
 
     // See how many eval elements we'll be able to strip off
-    /* for (nEvals=MAX_EVALS_PER_RADIO_MESSAGE; (nEvals>0) && (dataBlock.edata[nEvals-1] == 0); nEvals--) {
+    /* for (nEvals=MAX_EVALS_PER_RADIO_MESSAGE; (nEvals>0) and (dataBlock.edata[nEvals-1] == 0); nEvals--) {
      if (dataBlock.edata[nEvals-1] == 0) {
      // This one has default data, so we'll be able strip it off
      } else {
@@ -163,7 +163,7 @@ int FalconRadioChatterMessage::Encode(VU_BYTE **buf)
      }*/
 
     //sfr: find number of eval elements
-    for (nEvals = MAX_EVALS_PER_RADIO_MESSAGE; (nEvals > 0) && (dataBlock.edata[nEvals - 1] == 0); nEvals--) ;
+    for (nEvals = MAX_EVALS_PER_RADIO_MESSAGE; (nEvals > 0) and (dataBlock.edata[nEvals - 1] == 0); nEvals--) ;
 
     // Send the number of evals actually sent
     **buf = nEvals;
@@ -189,7 +189,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
 #if RADIO_TEST
 
     // sfr: test hack for testing client radio calls
-    if (this->dataBlock.message != rcOUTSIDEAIRSPEED)
+    if (this->dataBlock.message not_eq rcOUTSIDEAIRSPEED)
     {
         return 0;
     }
@@ -210,18 +210,18 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
     VU_ID fromID = dataBlock.from, toID = FalconNullId;
 
 
-    if (from && (from->IsDead() || (from->IsVehicle() && !((SimVehicleClass*)from)->HasPilot())))
+    if (from and (from->IsDead() or (from->IsVehicle() and not ((SimVehicleClass*)from)->HasPilot())))
     {
         return 0;
     }
 
     // M.N. turn off all players radio chatter if wanted
-    if (from && from->IsPlayer() && !PlayerOptions.PlayerRadioVoice)
+    if (from and from->IsPlayer() and not PlayerOptions.PlayerRadioVoice)
     {
         return 0;
     }
 
-    if (from && from->IsPlayer())
+    if (from and from->IsPlayer())
     {
         FalconSessionEntity *session;
         VuSessionsIterator sit(FalconLocalGame);
@@ -239,7 +239,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
         }
     }
 
-    if (FalconLocalSession->GetFlyState() != FLYSTATE_FLYING && SimDriver.RunningCampaign() && !noUIcomms)
+    if (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING and SimDriver.RunningCampaign() and not noUIcomms)
         us = FalconLocalSession->GetPlayerSquadron();
 
 #ifdef _DEBUG
@@ -248,24 +248,24 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
 #endif
     // KCK: Ignore all this if we're not in the sim or if we've got fucked up data
 
-    //MonoPrint("Processing Chatter Message ID: %d  %d\n", message, !us);
+    //MonoPrint("Processing Chatter Message ID: %d  %d\n", message, us);
 
-    if ((FalconLocalSession->GetFlyState() == FLYSTATE_FLYING) ||
-        (SimDriver.RunningCampaign() && !noUIcomms) ||
-        (to && to == us))
+    if ((FalconLocalSession->GetFlyState() == FLYSTATE_FLYING) or
+        (SimDriver.RunningCampaign() and not noUIcomms) or
+        (to and to == us))
     {
-        if (!us)
+        if ( not us)
             return -1;
 
         //if the sender is more than 300nm away we can't hear it
-        if (from && us && (DistSqu(from->XPos(), from->YPos(), us->XPos(), us->YPos()) > MAX_RADIO_RANGE * MAX_RADIO_RANGE))
+        if (from and us and (DistSqu(from->XPos(), from->YPos(), us->XPos(), us->YPos()) > MAX_RADIO_RANGE * MAX_RADIO_RANGE))
             return -1;
 
         if (player_flight)
             player_package = static_cast<PackageClass*>(player_flight->GetUnitParent());
 
         //until data is correct this only screws things up
-        if (voiceFilter && !to && from && us->GetTeam() == from->GetTeam()) // KCK: Added && !to -> basically, if you want it to warp, don't specify a target
+        if (voiceFilter and not to and from and us->GetTeam() == from->GetTeam()) // KCK: Added and not to -> basically, if you want it to warp, don't specify a target
         {
             if (DistSqu(from->XPos(), from->YPos(), us->XPos(), us->YPos()) > RADIO_PROX_RANGE * RADIO_PROX_RANGE * 4.0F) //80nm
                 return -1;
@@ -276,7 +276,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
                     if (player_package)
                         to = player_package->GetFirstUnitElement();
 
-                    if (to && to->IsFlight())
+                    if (to and to->IsFlight())
                     {
                         dataBlock.edata[0] = (static_cast<FlightClass*>(to))->callsign_id;
                         dataBlock.edata[1] = ConvertFlightNumberToCallNumber(((Flight)to)->callsign_num);
@@ -298,7 +298,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
                 case WARP_PLANE:
                     to = (FalconEntity *)us;
 
-                    if (player_flight && us->IsSim())
+                    if (player_flight and us->IsSim())
                     {
                         dataBlock.edata[0] = (short)((SimVehicleClass*)us)->GetCallsignIdx();
                         dataBlock.edata[1] = (short)player_flight->GetPilotCallNumber(((SimVehicleClass*)us)->pilotSlot);
@@ -306,29 +306,29 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
             }
         }
 
-        if (to && to->IsSim())
+        if (to and to->IsSim())
             to_entity = (CampBaseClass*)((SimBaseClass*)to)->GetCampaignObject();
-        else if (to && to->IsCampaign())
+        else if (to and to->IsCampaign())
             to_entity = (CampBaseClass*)to;
 
 
-        if (from && from->IsSim())
+        if (from and from->IsSim())
             from_entity = (CampBaseClass*)((SimBaseClass*)from)->GetCampaignObject();
-        else if (from && from->IsCampaign())
+        else if (from and from->IsCampaign())
             from_entity = (CampBaseClass*)from;
 
-        if (FalconLocalGame && FalconLocalGame->GetGameType() != game_InstantAction &&
-            FalconLocalGame->GetGameType() != game_Dogfight)
+        if (FalconLocalGame and FalconLocalGame->GetGameType() not_eq game_InstantAction and 
+            FalconLocalGame->GetGameType() not_eq game_Dogfight)
         {
-            if (from_entity && from_entity->IsFlight())
+            if (from_entity and from_entity->IsFlight())
                 from_package = (Package)((Flight)from_entity)->GetUnitParent();
 
-            if (to_entity && to_entity->IsFlight())
+            if (to_entity and to_entity->IsFlight())
                 to_package = (Package)((Flight)to_entity)->GetUnitParent();
         }
 
         //we want to hear everything sent to our flight or us
-        if ((to_entity && to_entity == player_flight) || (to == us))
+        if ((to_entity and to_entity == player_flight) or (to == us))
             channel = 1;
 
         //we want to hear everything said by us
@@ -336,29 +336,29 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
             channel = 1;
 
         //campaign/taceng
-        if ((to_entity && to_entity == player_flight) || (from_entity && from_entity == player_flight))
-            playbits |= TOFROM_FLIGHT;
+        if ((to_entity and to_entity == player_flight) or (from_entity and from_entity == player_flight))
+            playbits or_eq TOFROM_FLIGHT;
 
         //the seemingly weird check for the team is because everyone in instant action is in the same package but on different teams
-        if (to && (to_package == player_package) && us && us->GetTeam() == to->GetTeam())
-            playbits |= TO_PACKAGE;
+        if (to and (to_package == player_package) and us and us->GetTeam() == to->GetTeam())
+            playbits or_eq TO_PACKAGE;
 
-        if ((to && to_package == player_package && us->GetTeam() == to->GetTeam()) ||
-            (from && from_package == player_package && us && us->GetTeam() == from->GetTeam()))
-            playbits |= TOFROM_PACKAGE;
+        if ((to and to_package == player_package and us->GetTeam() == to->GetTeam()) or
+            (from and from_package == player_package and us and us->GetTeam() == from->GetTeam()))
+            playbits or_eq TOFROM_PACKAGE;
 
         //campaign/taceng
-        if (dataBlock.to == MESSAGE_FOR_TEAM && to && us && us->GetTeam() == to->GetTeam())
-            playbits |= TO_TEAM;
+        if (dataBlock.to == MESSAGE_FOR_TEAM and to and us and us->GetTeam() == to->GetTeam())
+            playbits or_eq TO_TEAM;
 
 
-        if (from && us && (DistSqu(from->XPos(), from->YPos(), us->XPos(), us->YPos()) < RADIO_PROX_RANGE * RADIO_PROX_RANGE)
-            && us && ((to && us->GetTeam() == to->GetTeam()) ||
-                      (from && us->GetTeam() == from->GetTeam())))
-            playbits |= IN_PROXIMITY;
+        if (from and us and (DistSqu(from->XPos(), from->YPos(), us->XPos(), us->YPos()) < RADIO_PROX_RANGE * RADIO_PROX_RANGE)
+           and us and ((to and us->GetTeam() == to->GetTeam()) or
+                      (from and us->GetTeam() == from->GetTeam())))
+            playbits or_eq IN_PROXIMITY;
 
         if (dataBlock.to == MESSAGE_FOR_WORLD)
-            playbits |= TO_WORLD;
+            playbits or_eq TO_WORLD;
 
         int tac_channel;
         TacanList::StationSet set;
@@ -366,14 +366,14 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
         int range, ttype;
         float ilsfreq;
 
-        if (from_entity && gTacanList->GetChannelFromVUID(from_entity->Id(), &tac_channel, &set, &domain, &range, &ttype, &ilsfreq))
-            playbits |= TOFROM_TOWER;
+        if (from_entity and gTacanList->GetChannelFromVUID(from_entity->Id(), &tac_channel, &set, &domain, &range, &ttype, &ilsfreq))
+            playbits or_eq TOFROM_TOWER;
 
-        if (to_entity && gTacanList->GetChannelFromVUID(to_entity->Id(), &tac_channel, &set, &domain, &range, &ttype, &ilsfreq))
-            playbits |= TOFROM_TOWER;
+        if (to_entity and gTacanList->GetChannelFromVUID(to_entity->Id(), &tac_channel, &set, &domain, &range, &ttype, &ilsfreq))
+            playbits or_eq TOFROM_TOWER;
     }
 
-    if (voiceFilter && playbits)
+    if (voiceFilter and playbits)
     {
         // KCK: This assumes voicefilter checks the proximity of the event to us and returns
         // true if it's near enough to us to care
@@ -381,7 +381,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
         //MI if this is here, we're always in proximity mode
         // JPO - yeah - but if not - it fails to decode BRA/Bullseye data
         if (voiceFilter->GetBullseyeComm(&message, dataBlock.edata))
-            playbits |= IN_PROXIMITY;
+            playbits or_eq IN_PROXIMITY;
 
 
 #ifndef ROBIN
@@ -416,10 +416,10 @@ short ConvertWingNumberToCallNumber(int wing_num)
 
 short ConvertToCallNumber(int flight_num, int wing_num)
 {
-    if (flight_num < 0 && wing_num >= 0)
+    if (flight_num < 0 and wing_num >= 0)
         return (short)(wing_num + VF_SHORTCALLSIGN_OFFSET);
 
-    if (flight_num >= 0 && wing_num < 0)
+    if (flight_num >= 0 and wing_num < 0)
         return (short)(flight_num + VF_FLIGHTNUMBER_OFFSET);
 
     return (short)((flight_num - 1) * 4 + wing_num + 1);
@@ -923,7 +923,7 @@ FalconRadioChatterMessage* CreateCallToFlight(Flight flight, FalconEntity *from,
 
     ShiAssert(flight);
 
-    if (!from)
+    if ( not from)
     {
         fromID = FalconNullId;
         fromVoice =  GetDefaultAwacsVoice(); // JPO VOICEFIX
@@ -985,7 +985,7 @@ FalconRadioChatterMessage* CreateCallToPlane(AircraftClass* aircraft, FalconEnti
     short toCallsign, toCallnum;
     uchar fromVoice;
 
-    if (!from)
+    if ( not from)
     {
         fromID = FalconNullId;
         fromVoice =  GetDefaultAwacsVoice(); // JPO VOICEFIX
@@ -1015,7 +1015,7 @@ FalconRadioChatterMessage* CreateCallToPlane(AircraftClass* aircraft, FalconEnti
         fromCallnum = -1;
     }
 
-    if (!aircraft)
+    if ( not aircraft)
     {
         toID = FalconNullId;
         toCallsign = -1;
@@ -1065,7 +1065,7 @@ void SendRogerToPlane(AircraftClass* aircraft, FalconEntity *from, VuTargetEntit
     ShiAssert(aircraft);
     flight = (Flight)aircraft->GetCampaignObject();
 
-    if (!from)
+    if ( not from)
     {
         return;
     }

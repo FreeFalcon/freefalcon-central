@@ -57,14 +57,14 @@ void C_History::AddIconSet(short idx, short team, short x, short y)
         Data_[idx].SetOwner(this);
         Data_[idx].SetImage(ImageID_[team]);
         Data_[idx].SetXY(x, y);
-        Data_[idx].SetFlags(C_BIT_HCENTER | C_BIT_VCENTER);
+        Data_[idx].SetFlags(C_BIT_HCENTER bitor C_BIT_VCENTER);
         Data_[idx].SetInfo();
     }
 }
 
 void C_History::Refresh()
 {
-    if (!Ready() || (GetFlags() & C_BIT_INVISIBLE) || !Parent_)
+    if ( not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or not Parent_)
         return;
 
     Parent_->RefreshClient(GetClient());
@@ -74,7 +74,7 @@ void C_History::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     short i;
 
-    if (!Ready() || (GetFlags() & C_BIT_INVISIBLE) || !Parent_)
+    if ( not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or not Parent_)
         return;
 
     for (i = 0; i < Count_; i++)

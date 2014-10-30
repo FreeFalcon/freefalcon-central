@@ -74,7 +74,7 @@ void RenderWire::ComputeVertexColor(TerrainVertex *vert, Tpost *, float distance
     vert->b = 0.0f;
 
     // Blend out the textures in the distance
-    /* if ( hazed && (distance > blend_start)) {
+    /* if ( hazed and (distance > blend_start)) {
      alpha = (distance - blend_start) / blend_depth;
      if (alpha < BLEND_MIN) alpha = BLEND_MIN;
      if (alpha > BLEND_MAX) alpha = BLEND_MAX;

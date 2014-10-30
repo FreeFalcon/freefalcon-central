@@ -145,7 +145,7 @@ void ViewRemoteLBCB(long, short hittype, C_Base *)
     UI_RequestLogbook *rlb;
     FalconSessionEntity *session;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gPopupMgr->GetCallingType() == C_TYPE_CONTROL)
@@ -162,9 +162,9 @@ void ViewRemoteLBCB(long, short hittype, C_Base *)
 
                 if (plyr)
                 {
-                    //if(plyr->GetVUID() != FalconLocalSessionId)
+                    //if(plyr->GetVUID() not_eq FalconLocalSessionId)
                     {
-                        // Go Ask for Logbook info & Open logbook...
+                        // Go Ask for Logbook info bitand Open logbook...
                         // Log book should be EMPTY, until data appears...
                         // if(Player closes logbook before it's all received)
                         // cancel
@@ -193,7 +193,7 @@ void CommsErrorDialog(long TitleID, long MessageID, void (*OKCB)(long, short, C_
     C_Button *btn;
     C_Text *txt;
 
-    if (!MessageID || !gMainHandler)
+    if ( not MessageID or not gMainHandler)
         return;
 
     win = gMainHandler->FindWindow(COMMLINK_WIN);
@@ -337,7 +337,7 @@ void CommsSetup()
 
 static void DisconnectCommsCB(long, short hittype, C_Base *)
 {
-    if ((hittype != C_TYPE_LMOUSEUP) || (!gCommsMgr->Online()))
+    if ((hittype not_eq C_TYPE_LMOUSEUP) or ( not gCommsMgr->Online()))
     {
         return;
     }
@@ -353,7 +353,7 @@ static void OpenPhoneBookCB(long, short hittype, C_Base *control)
 {
     C_Window *win;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gMainHandler->EnableWindowGroup(control->GetGroup());
@@ -376,7 +376,7 @@ extern bool g_bDrawBoundingBox;
 extern float g_fSoundDopplerFactor, g_fSoundRolloffFactor;// MLR 2003-10-17
 extern int g_nSoundUpdateMS; // MLR 2003/11/03
 
-// RV - Biker - Who does need - we do!!
+// RV - Biker - Who does need - we do
 float g_nboostguidesec = 0; //me123 how many sec we are in boostguide mode
 float g_nterminalguiderange = 0; //me123 what range we transfere to terminal guidence
 float g_nboostguideSensorPrecision = 0; //me123
@@ -409,7 +409,7 @@ extern void LoadTrails();
 // me123 for remote server comands via chat
 void ServerChatCommand(_TCHAR *msg)
 {
-    //if (!g_bServer) return;
+    //if ( not g_bServer) return;
     //me123 the server understands a few commands
 
     // find the command
@@ -424,7 +424,7 @@ void ServerChatCommand(_TCHAR *msg)
 
     if (g_nShowDebugLabels)
     {
-        if (arga && argb && !stricmp(arga, ".trail"))
+        if (arga and argb and not stricmp(arga, ".trail"))
         {
             if (atoi(argb))
             {
@@ -438,23 +438,23 @@ void ServerChatCommand(_TCHAR *msg)
             //F4SoundFXSetDist(SFX_THUNDER,0,0,1);
         }
 
-        if (arga && !stricmp(arga, ".trailreload"))
+        if (arga and not stricmp(arga, ".trailreload"))
         {
             LoadTrails();
         }
 
-        if (arga && !stricmp(arga, ".psreload"))
+        if (arga and not stricmp(arga, ".psreload"))
         {
             DrawableParticleSys::LoadParameters();
         }
 
-        if (arga && !stricmp(arga, ".sndreload"))
+        if (arga and not stricmp(arga, ".sndreload"))
         {
             F4ReloadSFX();
             //F4SoundFXSetDist(SFX_THUNDER,0,0,1);
         }
 
-        if (arga && argb && !stricmp(arga, ".snd"))
+        if (arga and argb and not stricmp(arga, ".snd"))
         {
             if (atoi(argb))
             {
@@ -468,26 +468,26 @@ void ServerChatCommand(_TCHAR *msg)
             //F4SoundFXSetDist(SFX_THUNDER,0,0,1);
         }
 
-        if (arga && argb && !stricmp(arga, ".sndms"))
+        if (arga and argb and not stricmp(arga, ".sndms"))
         {
             g_nSoundUpdateMS = atoi(argb);
             //F4SoundFXSetDist(SFX_THUNDER,0,0,1);
         }
 
-        if (arga && argb && !stricmp(arga, ".snddop"))
+        if (arga and argb and not stricmp(arga, ".snddop"))
         {
             g_fSoundDopplerFactor = (float)atof(argb);
             //F4SoundFXSetDist(SFX_THUNDER,0,0,1);
         }
 
-        if (arga && argb && !stricmp(arga, ".sndro"))
+        if (arga and argb and not stricmp(arga, ".sndro"))
         {
             g_fSoundRolloffFactor = (float)atof(argb);
             //F4SoundFXSetDist(SFX_THUNDER,0,0,1);
         }
 
         // COBRA - RED - SFX Activating cheat '.sfx {SfxNr}'
-        if ((arga && argb && !stricmp(arga, ".sfx")) || (arga && !stricmp(arga, ".")))
+        if ((arga and argb and not stricmp(arga, ".sfx")) or (arga and not stricmp(arga, ".")))
         {
             static int sfx = 0;
             static float Dist = 300;
@@ -497,7 +497,7 @@ void ServerChatCommand(_TCHAR *msg)
 
             float Pan, Tilt, d = 300;
 
-            if (!stricmp(arga, ".")) goto doit;
+            if ( not stricmp(arga, ".")) goto doit;
 
             if (argc) Dist = (float)atof(argc);
             else Dist = 300.0f;
@@ -521,14 +521,14 @@ void ServerChatCommand(_TCHAR *msg)
 
 
         // 2002-02-21 MN Allow to change the set of debug labels via the chat line
-        if (arga && argb && !stricmp(arga, ".label") && g_bActivateDebugStuff)
+        if (arga and argb and not stricmp(arga, ".label") and g_bActivateDebugStuff)
         {
             int newlabels = strtol(argb, NULL, 0); // atoi(argb); 2002-04-01 MODIFIED BY S.G. strtol will parse the inpuy string looking for standard base like 0x
             g_nShowDebugLabels = newlabels;
         }
 
         // Changes fuel level of players aircraft - for refuel testings
-        if (arga && argb && !stricmp(arga, ".fuel") && g_bActivateDebugStuff)
+        if (arga and argb and not stricmp(arga, ".fuel") and g_bActivateDebugStuff)
         {
             unsigned long newfuel = atol(argb);
             gFuelState = newfuel;
@@ -536,14 +536,14 @@ void ServerChatCommand(_TCHAR *msg)
 
         if (g_bServer)
         {
-            if (arga && argb && !stricmp(arga, ".loadte"))
+            if (arga and argb and not stricmp(arga, ".loadte"))
             {
                 DisableScenarioInfo();
                 LeaveCurrentGame();
                 RuleMode = rTACTICAL_ENGAGEMENT;
-                TheCampaign.Flags |= CAMP_TACTICAL;
+                TheCampaign.Flags or_eq CAMP_TACTICAL;
 
-                if (!TACSelLoaded)
+                if ( not TACSelLoaded)
                     LoadTacEngSelectWindows();
 
                 _TCHAR buffer[MAX_PATH];
@@ -561,18 +561,18 @@ void ServerChatCommand(_TCHAR *msg)
                 MainLastGroup = 3000;
             }
 
-            if (arga && argb && !stricmp(arga, ".acmi"))
+            if (arga and argb and not stricmp(arga, ".acmi"))
             {
-                if (!stricmp(argb, "on"))
+                if ( not stricmp(argb, "on"))
                 {
-                    if (!gACMIRec.IsRecording())
+                    if ( not gACMIRec.IsRecording())
                     {
                         //F4EnterCriticalSection( _csect );
                         gACMIRec.StartRecording();
                         //F4LeaveCriticalSection( _csect );
                     }
                 }
-                else if (!stricmp(argb, "off"))
+                else if ( not stricmp(argb, "off"))
                 {
                     if (gACMIRec.IsRecording())
                     {
@@ -582,7 +582,7 @@ void ServerChatCommand(_TCHAR *msg)
                     }
                 }
 
-                else if (!stricmp(argb, "dofile"))
+                else if ( not stricmp(argb, "dofile"))
                 {
                     if (gACMIRec.IsRecording())
                         gACMIRec.StopRecording();
@@ -591,13 +591,13 @@ void ServerChatCommand(_TCHAR *msg)
                 }
             }
 
-            if (0 && arga && argb && !stricmp(arga, ".loadcam"))
+            if (0 and arga and argb and not stricmp(arga, ".loadcam"))
             {
                 DisableScenarioInfo();
                 LeaveCurrentGame();
                 RuleMode = rCAMPAIGN;
 
-                if (!CPSelectLoaded)
+                if ( not CPSelectLoaded)
                     LoadCampaignSelectWindows();
 
                 _TCHAR buffer[MAX_PATH];
@@ -614,7 +614,7 @@ void ServerChatCommand(_TCHAR *msg)
                 MainLastGroup = 3000;
             }
 
-            if (arga && !stricmp(arga, ".quit"))
+            if (arga and not stricmp(arga, ".quit"))
             {
                 tactical_mission_loaded = FALSE;
                 RemoveTacticalEdit();
@@ -630,91 +630,91 @@ void ServerChatCommand(_TCHAR *msg)
             }
         }
 
-        if (arga && argb && !stricmp(arga, ".mistrail") && g_bActivateDebugStuff)
+        if (arga and argb and not stricmp(arga, ".mistrail") and g_bActivateDebugStuff)
         {
             g_nmissiletrial = atoi(argb);
         }
-        else if (arga && !stricmp(arga, ".boundb") && g_bActivateDebugStuff)
+        else if (arga and not stricmp(arga, ".boundb") and g_bActivateDebugStuff)
         {
             if (g_bDrawBoundingBox)
                 g_bDrawBoundingBox = false;
             else
                 g_bDrawBoundingBox = true;
         }
-        // RV - Biker - Who does need - we do!!
-        else if (arga && argb && !stricmp(arga, ".bgs") && g_bActivateDebugStuff)
+        // RV - Biker - Who does need - we do
+        else if (arga and argb and not stricmp(arga, ".bgs") and g_bActivateDebugStuff)
         {
             g_nboostguidesec = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".tgr") && g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".tgr") and g_bActivateDebugStuff)
         {
             g_nterminalguiderange = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".bgsp") && g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".bgsp") and g_bActivateDebugStuff)
         {
             g_nboostguideSensorPrecision = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".sgsp") && g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".sgsp") and g_bActivateDebugStuff)
         {
             g_nsustainguideSensorPrecision = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".tgsp") && g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".tgsp") and g_bActivateDebugStuff)
         {
             g_nterminalguideSensorPrecision = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".bgl") && g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".bgl") and g_bActivateDebugStuff)
         {
             g_nboostguideLead = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".sgl") && g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".sgl") and g_bActivateDebugStuff)
         {
             g_nsustainguideLead = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".tgl") && g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".tgl") and g_bActivateDebugStuff)
         {
             g_nterminalguideLead = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".bggn") && g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".bggn") and g_bActivateDebugStuff)
         {
             g_nboostguideGnav = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".sggn") && g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".sggn") and g_bActivateDebugStuff)
         {
             g_nsustainguideGnav = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".tggn") && g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".tggn") and g_bActivateDebugStuff)
         {
             g_nterminalguideGnav = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".bgbw") && g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".bgbw") and g_bActivateDebugStuff)
         {
             g_nboostguideBwap = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".sgbw") && g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".sgbw") and g_bActivateDebugStuff)
         {
             g_nsustainguideBwap = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".tgbw") && g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".tgbw") and g_bActivateDebugStuff)
         {
             g_nterminalguideBwap = (float)atof(argb);
         }
-        else if (arga && argb && !stricmp(arga, ".cbw") && g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".cbw") and g_bActivateDebugStuff)
         {
             //clientbwforupdatesmodifyer = float(atoi(argb)/1000.0f);
         }
-        else if (arga && argb && !stricmp(arga, ".hbw") && g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".hbw") and g_bActivateDebugStuff)
         {
             //hostbwforupdatesmodifyer = float(atoi(argb)/1000.0f);
         }
-        else if (arga && argb && !stricmp(arga, ".tf") && g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".tf") and g_bActivateDebugStuff)
         {
             g_nMpdelaytweakfactor = float(atoi(argb));
         }
-        else if (arga && argb && !stricmp(arga, ".mbw") && g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".mbw") and g_bActivateDebugStuff)
         {
             //MinBwForOtherData = float(atoi(argb));
         }
-        else if (arga && argb && !stricmp(arga, ".pos"))
+        else if (arga and argb and not stricmp(arga, ".pos"))
         {
             //Posupdsize = float(atoi(argb));
         }
@@ -740,7 +740,7 @@ void AddMessageToChatWindow(VU_ID from, _TCHAR *message)
             //session=(FalconSessionEntity*)vuLocalSessionEntity;
             session = FalconLocalSession;
         }
-        else if (from != FalconNullId)
+        else if (from not_eq FalconNullId)
         {
             color = 0x00ff00;
             session = (FalconSessionEntity*)vuDatabase->Find(from);
@@ -756,7 +756,7 @@ void AddMessageToChatWindow(VU_ID from, _TCHAR *message)
             _tcscpy(chatbuf, session->GetPlayerCallsign());
             _tcscat(chatbuf, ": ");
         }
-        else if (from != FalconNullId)
+        else if (from not_eq FalconNullId)
         {
             _tcscpy(chatbuf, "Unknown");
             _tcscat(chatbuf, ": ");
@@ -776,7 +776,7 @@ void AddMessageToChatWindow(VU_ID from, _TCHAR *message)
         txt->SetFGColor(color);
         txt->SetClient(2);
         txt->SetUserNumber(_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_);
-        txt->SetFlagBitOn(C_BIT_LEFT | C_BIT_WORDWRAP);
+        txt->SetFlagBitOn(C_BIT_LEFT bitor C_BIT_WORDWRAP);
         win->AddControl(txt);
         txt->Refresh();
 
@@ -795,15 +795,15 @@ void BlinkCommsButtonTimerCB(long, short, C_Base *control)
 {
     C_Button *btn;
 
-    if (!gCommsMgr) return;
+    if ( not gCommsMgr) return;
 
-    if (!gNewMessage || !gCommsMgr->Online()) return;
+    if ( not gNewMessage or not gCommsMgr->Online()) return;
 
     btn = (C_Button *)control->Parent_->FindControl(CO_MAIN_CTRL);
 
     if (btn)
     {
-        if (!(btn->GetFlags() & C_BIT_FORCEMOUSEOVER))
+        if ( not (btn->GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         {
             // gSoundMgr->PlaySound(SND_HOMER);
             btn->SetFlagBitOn(C_BIT_FORCEMOUSEOVER);
@@ -848,12 +848,12 @@ BOOL FilterIncommingMessage(FalconSessionEntity *session)
             case rcfFromPackage:
                 flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-                if (!flt)
+                if ( not flt)
                     break;
 
                 pkg = (Package)flt->GetUnitParent();
 
-                if (!pkg)
+                if ( not pkg)
                     break;
 
                 MyPackageID = pkg->Id();
@@ -864,7 +864,7 @@ BOOL FilterIncommingMessage(FalconSessionEntity *session)
                 {
                     pkg = (Package)flt->GetUnitParent();
 
-                    if (pkg && pkg->Id() == MyPackageID)
+                    if (pkg and pkg->Id() == MyPackageID)
                         retval = TRUE;
                 }
 
@@ -873,7 +873,7 @@ BOOL FilterIncommingMessage(FalconSessionEntity *session)
             case rcfProx: // 40nm range
                 ent = FalconLocalSession->GetPlayerEntity();
 
-                if (!ent)
+                if ( not ent)
                     break;
 
                 myx = ent->XPos();
@@ -930,12 +930,12 @@ BOOL FilterIncommingMessage(FalconSessionEntity *session)
             case rcfFromPackage:
                 flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-                if (!flt)
+                if ( not flt)
                     break;
 
                 pkg = (Package)flt->GetUnitParent();
 
-                if (!pkg)
+                if ( not pkg)
                     break;
 
                 MyPackageID = pkg->Id();
@@ -946,7 +946,7 @@ BOOL FilterIncommingMessage(FalconSessionEntity *session)
                 {
                     pkg = (Package)flt->GetUnitParent();
 
-                    if (pkg && pkg->Id() == MyPackageID)
+                    if (pkg and pkg->Id() == MyPackageID)
                         retval = TRUE;
                 }
 
@@ -955,7 +955,7 @@ BOOL FilterIncommingMessage(FalconSessionEntity *session)
             case rcfProx: // 40nm range
                 ent = FalconLocalSession->GetPlayerEntity();
 
-                if (!ent)
+                if ( not ent)
                     break;
 
                 myx = ent->XPos();
@@ -1020,7 +1020,7 @@ void ReceiveChatString(VU_ID from, _TCHAR *message)
 // This function is responsible for deleting msg
 void ProcessChatStr(CHATSTR *msg)
 {
-    if (!msg)
+    if ( not msg)
         return;
 
     ServerChatCommand(msg->Text_); //me123
@@ -1030,7 +1030,7 @@ void ProcessChatStr(CHATSTR *msg)
         TREELIST *item;
         C_Player *plyr;
 
-        if (!People)
+        if ( not People)
             return;
 
         item = People->Find(msg->ID_.creator_);
@@ -1039,13 +1039,13 @@ void ProcessChatStr(CHATSTR *msg)
         {
             plyr = (C_Player*)item->Item_;
 
-            if (plyr && (plyr->GetMute())) // Filter out Chat messages we don't want to hear
+            if (plyr and (plyr->GetMute())) // Filter out Chat messages we don't want to hear
                 return;
         }
 
         AddMessageToChatWindow(msg->ID_, msg->Text_);
 
-        if (!(gMainHandler->GetWindowFlags(CHAT_WIN) & C_BIT_ENABLED))
+        if ( not (gMainHandler->GetWindowFlags(CHAT_WIN) bitand C_BIT_ENABLED))
             gNewMessage = TRUE;
     }
     else if (VM) // Assume Sim is running (AND VM is initialized)
@@ -1056,13 +1056,13 @@ void ProcessChatStr(CHATSTR *msg)
 
         if (session)
         {
-            if (!FilterIncommingMessage(session))
+            if ( not FilterIncommingMessage(session))
                 return;
 
             _tcscpy(chatbuf, session->GetPlayerCallsign());
             _tcscat(chatbuf, ": ");
         }
-        else if (msg->ID_ != FalconNullId)
+        else if (msg->ID_ not_eq FalconNullId)
         {
             _tcscpy(chatbuf, "Unknown");
             _tcscat(chatbuf, ": ");
@@ -1086,7 +1086,7 @@ void SendChatStringCB(long, short hittype, C_Base *control)
     C_Player *plyr;
     UI_SendChatMessage *chat;
 
-    if (hittype != DIK_RETURN || control == NULL || !gCommsMgr->Online())
+    if (hittype not_eq DIK_RETURN or control == NULL or not gCommsMgr->Online())
         return;
 
     AddMessageToChatWindow(FalconLocalSessionId, ((C_EditBox *)control)->GetText());
@@ -1099,11 +1099,11 @@ void SendChatStringCB(long, short hittype, C_Base *control)
         {
             plyr = (C_Player*)cur->Item_;
 
-            if (plyr && plyr->GetState() && !plyr->GetIgnore())
+            if (plyr and plyr->GetState() and not plyr->GetIgnore())
             {
                 FalconSessionEntity *session = (FalconSessionEntity*) vuDatabase->Find(plyr->GetVUID());
 
-                if (session && session != FalconLocalSession)
+                if (session and session not_eq FalconLocalSession)
                 {
                     chat = new UI_SendChatMessage(FalconNullId, session);
 
@@ -1340,7 +1340,7 @@ static void TrimPlayerTree(C_TreeList *tree, TREELIST *branch)
 
             plyr = (C_Player*)branch->Item_;
 
-            if (!TrimmerFindSession(plyr->GetVUID(), game))
+            if ( not TrimmerFindSession(plyr->GetVUID(), game))
                 limb = branch;
         }
 
@@ -1430,7 +1430,7 @@ void UpdateGameTreeBranch(long branchid, VuGameEntity *game, C_TreeList *tree, T
     if (game == NULL)
         return;
 
-    if (branchid != game_PlayerPool)
+    if (branchid not_eq game_PlayerPool)
     {
         group = StartTreeSearch(game->Id(), parent, tree);
 
@@ -1487,7 +1487,7 @@ static void RemoveOldPeopleTreeCB(TREELIST *old)
     ReceiveChatString(FalconNullId, buffer);
 
     // Begin Uplink stuff
-    if (m_pUplink != NULL && FalconLocalGame && FalconLocalGame->IsLocal())
+    if (m_pUplink not_eq NULL and FalconLocalGame and FalconLocalGame->IsLocal())
     {
         try
         {
@@ -1496,7 +1496,7 @@ static void RemoveOldPeopleTreeCB(TREELIST *old)
 
         catch (_com_error e)
         {
-            MonoPrint("StartCampaignGame: Error 0x%X occured during UpLink startup!", e.Error());
+            MonoPrint("StartCampaignGame: Error 0x%X occured during UpLink startup", e.Error());
         }
     }
 
@@ -1512,7 +1512,7 @@ void MakeLocalGameTree(VuGameEntity *game)
     C_Text *txt;
     VU_ID *tmpID;
 
-    if (!People)
+    if ( not People)
         return;
 
     if (People->GetRoot())
@@ -1520,7 +1520,7 @@ void MakeLocalGameTree(VuGameEntity *game)
 
     win = gMainHandler->FindWindow(CHAT_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     if (game)
@@ -1636,12 +1636,12 @@ static void CheckPlayerGroup(FalconSessionEntity *session, C_Player *plyr)
             plyr->SetMute(1);
         }
     }
-    else if (PeopleChatType == 3) // CHAT_PACKAGE (ONLY Campaign & TE)
+    else if (PeopleChatType == 3) // CHAT_PACKAGE (ONLY Campaign bitand TE)
     {
         me = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
         player = (Flight)vuDatabase->Find(session->GetPlayerFlightID());
 
-        if (me && player)
+        if (me and player)
         {
             if (me->GetUnitPackage() == player->GetUnitPackage())
             {
@@ -1662,7 +1662,7 @@ static void CheckPlayerGroup(FalconSessionEntity *session, C_Player *plyr)
     }
     else if (PeopleChatType == 4) // CHAT_FLIGHT
     {
-        if (FalconLocalSession->GetPlayerFlightID() == session->GetPlayerFlightID() && FalconLocalSession->GetPlayerFlightID() != FalconNullId)
+        if (FalconLocalSession->GetPlayerFlightID() == session->GetPlayerFlightID() and FalconLocalSession->GetPlayerFlightID() not_eq FalconNullId)
         {
             plyr->SetState(1);
             plyr->SetMute(0);
@@ -1685,7 +1685,7 @@ void CheckChatFilters(FalconSessionEntity *session)
     TREELIST *item;
     C_Player *player;
 
-    if (!People)
+    if ( not People)
         return;
 
     item = People->Find(session->Id().creator_);
@@ -1709,7 +1709,7 @@ void MutePlayerCB(long, short hittype, C_Base *)
     TREELIST    *item;
     C_Player *plyr;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gPopupMgr->GetCallingType() == C_TYPE_CONTROL)
@@ -1726,7 +1726,7 @@ void MutePlayerCB(long, short hittype, C_Base *)
 
                 if (plyr)
                 {
-                    if (plyr->GetVUID() != FalconLocalSessionId)
+                    if (plyr->GetVUID() not_eq FalconLocalSessionId)
                     {
                         if (plyr->GetMute())
                             plyr->SetMute(0);
@@ -1747,7 +1747,7 @@ void IgnorePlayerCB(long, short hittype, C_Base *)
     TREELIST    *item;
     C_Player *plyr;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (gPopupMgr->GetCallingType() == C_TYPE_CONTROL)
@@ -1764,7 +1764,7 @@ void IgnorePlayerCB(long, short hittype, C_Base *)
 
                 if (plyr)
                 {
-                    if (plyr->GetVUID() != FalconLocalSession->Id())
+                    if (plyr->GetVUID() not_eq FalconLocalSession->Id())
                     {
                         if (plyr->GetIgnore())
                             plyr->SetIgnore(0);
@@ -1787,10 +1787,10 @@ void UpdateLocalGameTree()
     long Age;
     _TCHAR buffer[60];
 
-    if (!People)
+    if ( not People)
         return;
 
-    if (!FalconLocalGame)
+    if ( not FalconLocalGame)
         return;
 
     Age = GetCurrentTime();
@@ -1805,10 +1805,10 @@ void UpdateLocalGameTree()
 
             if (tmpID)
             {
-                if (FalconLocalGame->Id() != *tmpID)
+                if (FalconLocalGame->Id() not_eq *tmpID)
                     MakeLocalGameTree(FalconLocalGame);
             }
-            else if ((VuGameEntity*)FalconLocalGame != vuPlayerPoolGroup)
+            else if ((VuGameEntity*)FalconLocalGame not_eq vuPlayerPoolGroup)
                 MakeLocalGameTree(FalconLocalGame);
         }
     }
@@ -1846,7 +1846,7 @@ void UpdateLocalGameTree()
                 ReceiveChatString(FalconNullId, buffer);
 
                 // Begin Uplink stuff
-                if (m_pUplink != NULL && FalconLocalGame && FalconLocalGame->IsLocal())
+                if (m_pUplink not_eq NULL and FalconLocalGame and FalconLocalGame->IsLocal())
                 {
                     try
                     {
@@ -1855,7 +1855,7 @@ void UpdateLocalGameTree()
 
                     catch (_com_error e)
                     {
-                        MonoPrint("StartCampaignGame: Error 0x%X occured during UpLink startup!", e.Error());
+                        MonoPrint("StartCampaignGame: Error 0x%X occured during UpLink startup", e.Error());
                     }
                 }
 
@@ -1896,7 +1896,7 @@ void RebuildGameTree()
     if (CampaignGames)
         CampaignGames->Refresh();
 
-    if ((gCommsMgr) && (gCommsMgr->Online()))
+    if ((gCommsMgr) and (gCommsMgr->Online()))
     {
         UpdateLocalGameTree(); // Updates Game in Chat window (Current area we are in)
 
@@ -1996,7 +1996,7 @@ void RemoveFromTree(C_TreeList *list, VU_ID ID)
 {
     TREELIST *item;
 
-    if (!list || ID == FalconNullId)
+    if ( not list or ID == FalconNullId)
         return;
 
     item = StartTreeSearch(ID, list->GetRoot(), list);
@@ -2029,7 +2029,7 @@ void UI_UpdateGameList()
     C_TreeList *theTree;
     FalconGameType gametype;
 
-    if (!gUICommsQ)
+    if ( not gUICommsQ)
         return;
 
     q = gUICommsQ->Root_;
@@ -2137,7 +2137,7 @@ void UI_UpdateGameList()
                 game = (FalconGameEntity*)vuDatabase->Find(q->GameID);
                 session = (FalconSessionEntity*)vuDatabase->Find(q->SessionID);
 
-                if (game && session)
+                if (game and session)
                 {
                     if (game == FalconLocalGame)
                         UpdateLocalGameTree();
@@ -2211,7 +2211,7 @@ void UI_UpdateGameList()
                 {
                     // if(game->Id() == q->GameID)
                     // RemovePlayerFromGame(q->SessionID);
-                    if (game->GetGameType() == game_Campaign || game->GetGameType() == game_TacticalEngagement)
+                    if (game->GetGameType() == game_Campaign or game->GetGameType() == game_TacticalEngagement)
                         TallyPlayerSquadrons();
 
                     // else if(game->GetGameType() == game_Dogfight)
@@ -2229,7 +2229,7 @@ void UI_UpdateGameList()
                 {
                     CheckChatFilters(session);
 
-                    if (gCommsMgr->GetGame() != vuPlayerPoolGroup)
+                    if (gCommsMgr->GetGame() not_eq vuPlayerPoolGroup)
                     {
                         if (gCommsMgr->GetGame())
                         {
@@ -2254,20 +2254,20 @@ static void PeopleSelectCB(long, short hittype, C_Base *)
     TREELIST *item;
     C_Player *player;
 
-    if (hittype != C_TYPE_LMOUSEUP || !People)
+    if (hittype not_eq C_TYPE_LMOUSEUP or not People)
         return;
 
     item = People->GetLastItem();
 
-    if (item->Type_ != C_TYPE_ITEM)
+    if (item->Type_ not_eq C_TYPE_ITEM)
         return;
 
     player = (C_Player*)item->Item_;
 
-    if (!player)
+    if ( not player)
         return;
 
-    player->SetState(static_cast<short>(player->GetState() ^ 1));
+    player->SetState(static_cast<short>(player->GetState() xor 1));
     player->Refresh();
 }
 
@@ -2276,7 +2276,7 @@ static void SelectChatFilterCB(long, short hittype, C_Base *control)
     VuSessionsIterator sessionWalker(FalconLocalGame);
     FalconSessionEntity *session;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     PeopleChatType = static_cast<short>(control->GetCluster()); // 1=All,2=team,3=package,4=flight
@@ -2293,7 +2293,7 @@ static void SelectChatFilterCB(long, short hittype, C_Base *control)
 
 void UI_Refresh(void)
 {
-    if (!FalconLocalGame || !gCommsMgr || !gMainHandler)
+    if ( not FalconLocalGame or not gCommsMgr or not gMainHandler)
     {
         return;
     }
@@ -2399,12 +2399,12 @@ void SendTextToPackage()
 
     flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-    if (!flt)
+    if ( not flt)
         return;
 
     pkg = (Package)flt->GetUnitParent();
 
-    if (!pkg)
+    if ( not pkg)
         return;
 
     MyPackageID = pkg->Id();
@@ -2419,7 +2419,7 @@ void SendTextToPackage()
         {
             pkg = (Package)flt->GetUnitParent();
 
-            if (pkg && pkg->Id() == MyPackageID)
+            if (pkg and pkg->Id() == MyPackageID)
             {
                 chat = new UI_SendChatMessage(FalconNullId, session);
 
@@ -2446,7 +2446,7 @@ void SendTextToRange()
 
     ent = FalconLocalSession->GetPlayerEntity();
 
-    if (!ent)
+    if ( not ent)
         return;
 
     myx = ent->XPos();
@@ -2585,7 +2585,7 @@ void SendTextMessageToChannel()
 
 void SimOpenChatBox(unsigned long, int state, void *)
 {
-    if ((state & KEY_DOWN))
+    if ((state bitand KEY_DOWN))
     {
         CommandsKeyCombo = -2;
         CommandsKeyComboMod = -2;
@@ -2598,7 +2598,7 @@ void SimOpenChatBox(unsigned long, int state, void *)
         MaxInputLength = 60;
         AsciiAllowed = 0; // All
 
-        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() | SHOW_CHATBOX);
+        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitor SHOW_CHATBOX);
     }
 }
 

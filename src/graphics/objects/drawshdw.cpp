@@ -36,7 +36,7 @@ void DrawableShadowed::Draw(class RenderOTW *renderer, int LOD)
 {
     //JAM 14May04
     // Draw our shadow if we're close to the ground
-    // if (position.z > renderer->viewpoint->GetTerrainCeiling()) { // -Z is up!
+    // if (position.z > renderer->viewpoint->GetTerrainCeiling()) { // -Z is up
     if (position.z > renderer->viewpoint->GetGroundLevel(position.x, position.y) - 2000.f)
     {
         float yaw;

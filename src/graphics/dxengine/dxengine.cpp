@@ -1,3 +1,4 @@
+#include <cISO646>
 #include "time.h"
 #include <math.h>
 #include "../include/ObjectInstance.h"
@@ -105,7 +106,7 @@ CDXEngine::CDXEngine(void)
     t = time(NULL);
     today = localtime(&t);
 
-    if (today->tm_mon > PROTECTION_MONTH || today->tm_year > PROTECTION_YEAR)
+    if (today->tm_mon > PROTECTION_MONTH or today->tm_year > PROTECTION_YEAR)
         DateOff = true;
     else
         DateOff = false;
@@ -205,7 +206,7 @@ VOID CDXEngine::SelectTexture(GLint texID)
     // eventually select other textures for NVG/TV
 
     // get the Handle of the Texture from the Texture Bank
-    texID = (texID != -1) ? TheTextureBank.GetHandle(texID) : (GLint)ZeroTex;
+    texID = (texID not_eq -1) ? TheTextureBank.GetHandle(texID) : (GLint)ZeroTex;
 
     if (texID) texID = (GLint)((TextureHandle *)texID)->m_pDDS;
 
@@ -449,7 +450,7 @@ void CDXEngine::UnLoadTextures(DWORD ID)
     TheVbManager.GetModelData(VB, ID);
 
     // Consistency check
-    if (!VB.Valid) return;
+    if ( not VB.Valid) return;
 
     // Get the Textures Offsets
     DWORD *texOffset = VB.Texs;
@@ -668,7 +669,7 @@ void CDXEngine::SetViewMode(void)
         case DX_TV:
 
             // FRB - B&W
-            if ((m_RenderState == DX_TV) && (!bNVGmode) && (g_bGreyMFD))
+            if ((m_RenderState == DX_TV) and ( not bNVGmode) and (g_bGreyMFD))
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, 0x00a0a0a0);
             else
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, 0x0000a000 /*NVG_T_FACTOR*/);
@@ -793,7 +794,7 @@ void CDXEngine::SetRenderState(DXFlagsType Flags, DXFlagsType NewFlags, bool Ena
 
 
     // ********************** DISABLE BLOCK *********************
-    if (!Enable)
+    if ( not Enable)
     {
 
 #ifdef EDIT_ENGINE
@@ -863,15 +864,15 @@ void CDXEngine::DrawSurface()
     // Switching Emissive surfaces feature, setup the flags for the surface
     m_pD3DD->SetRenderState(D3DRENDERSTATE_EMISSIVEMATERIALSOURCE, D3DMCS_COLOR2);
 
-    if (m_TheObjectInstance->SwitchValues && (NewFlags.b.SwEmissive))
+    if (m_TheObjectInstance->SwitchValues and (NewFlags.b.SwEmissive))
     {
-        if (!(m_TheObjectInstance->SwitchValues[m_NODE.SURFACE->SwitchNumber]&m_NODE.SURFACE->SwitchMask))
+        if ( not (m_TheObjectInstance->SwitchValues[m_NODE.SURFACE->SwitchNumber]&m_NODE.SURFACE->SwitchMask))
             m_pD3DD->SetRenderState(D3DRENDERSTATE_EMISSIVEMATERIALSOURCE, D3DMCS_MATERIAL);
     }
 
 
     ////////////////////// Test if any change in rendering mode /////////////
-    //if(NewFlags.StateFlags!=m_LastFlags.StateFlags){
+    //if(NewFlags.StateFlags not_eq m_LastFlags.StateFlags){
 
 #ifdef DEBUG_ENGINE
     DXStateChanges++;
@@ -879,9 +880,9 @@ void CDXEngine::DrawSurface()
 
     // Selects changed Flags
     DXFlagsType ChangedFlags, DisabledFlags, EnabledFlags;
-    ChangedFlags.w = m_LastFlags.w ^ NewFlags.w;
-    DisabledFlags.w = ChangedFlags.w & (~NewFlags.w);
-    EnabledFlags.w = ChangedFlags.w & NewFlags.w;
+    ChangedFlags.w = m_LastFlags.w xor NewFlags.w;
+    DisabledFlags.w = ChangedFlags.w bitand (compl NewFlags.w);
+    EnabledFlags.w = ChangedFlags.w bitand NewFlags.w;
 
 
 
@@ -896,7 +897,7 @@ void CDXEngine::DrawSurface()
 
 
     /////////////////////// TEXTURE CHANGE Feature //////////////////////////
-    if (m_TexID != LastTexID)
+    if (m_TexID not_eq LastTexID)
     {
         SelectTexture(m_TexID);
 #ifdef DEBUG_ENGINE
@@ -911,7 +912,7 @@ void CDXEngine::DrawSurface()
     ////////////////////// ZBIAS Checking done every time ////////////////////
 #ifdef DEBUG_ENGINE
 
-    if (UseZBias && m_LastZBias != m_NODE.SURFACE->dwzBias)
+    if (UseZBias and m_LastZBias not_eq m_NODE.SURFACE->dwzBias)
     {
         m_LastZBias = m_NODE.SURFACE->dwzBias;
         m_pD3DD->SetRenderState(D3DRENDERSTATE_ZBIAS, m_LastZBias);
@@ -919,7 +920,7 @@ void CDXEngine::DrawSurface()
 
 #else
 
-    if (m_LastZBias != m_NODE.SURFACE->dwzBias)
+    if (m_LastZBias not_eq m_NODE.SURFACE->dwzBias)
     {
         m_LastZBias = m_NODE.SURFACE->dwzBias;
         m_pD3DD->SetRenderState(D3DRENDERSTATE_ZBIAS, m_LastZBias);
@@ -942,13 +943,13 @@ void CDXEngine::DrawSurface()
 
 
     ////////////////////// Surface SPECULARITY  management ///////////////////////////
-    if (TheMaterial.power != m_NODE.SURFACE->SpecularIndex || m_LastSpecular != m_NODE.SURFACE->DefaultSpecularity)
+    if (TheMaterial.power not_eq m_NODE.SURFACE->SpecularIndex or m_LastSpecular not_eq m_NODE.SURFACE->DefaultSpecularity)
     {
         TheMaterial.power = m_NODE.SURFACE->SpecularIndex;
         m_LastSpecular = m_NODE.SURFACE->DefaultSpecularity;
-        TheMaterial.dcvSpecular.r = (float)((m_LastSpecular >> 16) & 0xff) / 255.0f;
-        TheMaterial.dcvSpecular.g = (float)((m_LastSpecular >> 8) & 0xff) / 255.0f;
-        TheMaterial.dcvSpecular.b = (float)(m_LastSpecular & 0xff) / 255.0f;
+        TheMaterial.dcvSpecular.r = (float)((m_LastSpecular >> 16) bitand 0xff) / 255.0f;
+        TheMaterial.dcvSpecular.g = (float)((m_LastSpecular >> 8) bitand 0xff) / 255.0f;
+        TheMaterial.dcvSpecular.b = (float)(m_LastSpecular bitand 0xff) / 255.0f;
         m_pD3DD->SetMaterial(&TheMaterial);
     }
 
@@ -1023,10 +1024,10 @@ void CDXEngine::DrawSurface()
 float CDXEngine::Process_DOFRot(float dofrot, int dofNumber, int flags, float min, float max, float multiplier, float unused)
 {
     // Negated DOF
-    if (flags & XDOF_NEGATE) dofrot = -dofrot;
+    if (flags bitand XDOF_NEGATE) dofrot = -dofrot;
 
     // DOF Limits
-    if (flags & XDOF_MINMAX)
+    if (flags bitand XDOF_MINMAX)
     {
         if (dofrot < min) dofrot = min;
 
@@ -1034,13 +1035,13 @@ float CDXEngine::Process_DOFRot(float dofrot, int dofNumber, int flags, float mi
     }
 
     // Scaled 0-1 DOF
-    if (flags & XDOF_SUBRANGE && min != max)
+    if (flags bitand XDOF_SUBRANGE and min not_eq max)
     {
         dofrot -= min;
         dofrot /= max - min;
 
         // Angular DOF
-        if (flags & XDOF_ISDOF) dofrot *= (float)(3.14159 / 180.0);
+        if (flags bitand XDOF_ISDOF) dofrot *= (float)(3.14159 / 180.0);
     }
 
     // Final Scaling
@@ -1157,7 +1158,7 @@ void CDXEngine::DOF(void)
 
 #ifndef DEBUG_ENGINE
 
-    // * CONSISTENCY CHECK !!! *
+    // * CONSISTENCY CHECK  *
     if (m_NODE.DOF->dofNumber >= m_TheObjectInstance->ParentObject->nDOFs) return;
 
 #endif
@@ -1238,7 +1239,7 @@ void CDXEngine::SWITCHManage()
 {
 
     //Consistency check
-    if (!m_TheObjectInstance->SwitchValues)
+    if ( not m_TheObjectInstance->SwitchValues)
     {
         // If no switches then skip the switch
         m_NODE.BYTE += m_NODE.DOF->dwDOFTotalSize;
@@ -1251,13 +1252,13 @@ void CDXEngine::SWITCHManage()
     DWORD Value = m_TheObjectInstance->SwitchValues[SWNumber];
     BYTE *LastAddr = m_NODE.BYTE;
 
-    if (m_NODE.DOF->Type == XSWITCH) Value = ~Value;
+    if (m_NODE.DOF->Type == XSWITCH) Value = compl Value;
 
     // Traverse the Switch Items
-    while (m_NODE.DOF->SwitchNumber == SWNumber && (m_NODE.DOF->Type == SWITCH || m_NODE.DOF->Type == XSWITCH))
+    while (m_NODE.DOF->SwitchNumber == SWNumber and (m_NODE.DOF->Type == SWITCH or m_NODE.DOF->Type == XSWITCH))
     {
         // If value found then Exit here pointing the SWITCH, next to it is the SURFACE
-        if (Value & (1 << m_NODE.DOF->SwitchBranch))
+        if (Value bitand (1 << m_NODE.DOF->SwitchBranch))
         {
             PushMatrix(&AppliedState);
             return;
@@ -1295,13 +1296,13 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
 #endif;
 
     // Consistency Check
-    if (!objInst->ParentObject)
+    if ( not objInst->ParentObject)
         return;
 
 #ifndef DEBUG_ENGINE
 
     // Consistency Check
-    if (objInst->id < 0 || objInst->id >= TheObjectListLength || objInst->TextureSet < 0)
+    if (objInst->id < 0 or objInst->id >= TheObjectListLength or objInst->TextureSet < 0)
         return;
 
 #endif
@@ -1337,7 +1338,7 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
     // if Textures not referenced, refernce them
 #ifndef DEBUG_ENGINE
 
-    if (!objInst->TexSetReferenced)
+    if ( not objInst->TexSetReferenced)
     {
         objInst->ParentObject->ReferenceTexSet(objInst->TextureSet);
         objInst->TexSetReferenced = true;
@@ -1355,18 +1356,18 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
     CurrentLOD = objInst->ParentObject->ChooseLOD(LODRange , &LODused, &MaxLODRange);
 
     // if not a lod persent, end here
-    if (!CurrentLOD) return;
+    if ( not CurrentLOD) return;
 
     // ok assign The Model
     Model = (DxDbHeader*)CurrentLOD->root;
 
     // FRB - Filter out bad/nonexistant models
-    if ((Model->Id <= 0) || (Model->Id >= (unsigned int)  TheObjectLODsCount))
+    if ((Model->Id <= 0) or (Model->Id >= (unsigned int)  TheObjectLODsCount))
         return;
 
     ///////////////////////////////// HERE CHECK FOR VISIBILITY /////////////////////////////////////
     // Camera Spacce objects are always visible
-    if (!CameraSpace)
+    if ( not CameraSpace)
     {
 #ifndef DEBUG_ENGINE
         // Compute the object visibility -  Return if Clipped out
@@ -1375,7 +1376,7 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
         m_pD3DD->ComputeSphereVisibility(&p, &r, 1, 0, &ClipResult);
 
         // if Visible assert it, if not visible got to check for Lights
-        if (ClipResult & D3DSTATUS_DEFAULT) goto LightCheck;
+        if (ClipResult bitand D3DSTATUS_DEFAULT) goto LightCheck;
 
         Visible = true;
 
@@ -1398,10 +1399,10 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
     }
 
     // check if child enlighted
-    if (LightOwner != NULL) Liter = LightOwner;
+    if (LightOwner not_eq NULL) Liter = LightOwner;
     else
     {
-        if (!++LightID) LightID++;
+        if ( not ++LightID) LightID++;
 
         Liter = LightID;
     }
@@ -1419,7 +1420,7 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
 
         while (LightsNr--)
         {
-            if (objInst->SwitchValues[Light->Switch] & Light->SwitchMask) TheLightEngine.AddDynamicLight(Liter, Light, RotMatrix, &p, 100);
+            if (objInst->SwitchValues[Light->Switch] bitand Light->SwitchMask) TheLightEngine.AddDynamicLight(Liter, Light, RotMatrix, &p, 100);
 
             Light++;
         }
@@ -1459,7 +1460,7 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
             // hoping it is updated...
 
             // * Any class not air/ground get a normal draw
-            if (Model->VBClass != VB_CLASS_DOMAIN_GROUND && Model->VBClass != VB_CLASS_DOMAIN_AIR) Si = 0.2f;
+            if (Model->VBClass not_eq VB_CLASS_DOMAIN_GROUND and Model->VBClass not_eq VB_CLASS_DOMAIN_AIR) Si = 0.2f;
 
             // Ground vehicles, hi Q reflection index
             if (Model->VBClass == VB_CLASS_DOMAIN_GROUND)
@@ -1498,8 +1499,8 @@ LightCheck:
 #endif
 
     // if inside Lights visibility range, check for lights --- FRB - Bad dwLightsNr check and SwitchValues
-    //if(LODRange<=DYNAMIC_LIGHT_INSIDE_RANGE && Model->dwLightsNr && (Model->dwLightsNr<11) && (objInst->SwitchValues))
-    if (LODRange <= DYNAMIC_LIGHT_INSIDE_RANGE && Model->dwLightsNr)
+    //if(LODRange<=DYNAMIC_LIGHT_INSIDE_RANGE and Model->dwLightsNr and (Model->dwLightsNr<11) and (objInst->SwitchValues))
+    if (LODRange <= DYNAMIC_LIGHT_INSIDE_RANGE and Model->dwLightsNr)
     {
         // Get the Lights area in the model
         DXLightType *Light = (DXLightType*)((char*)Model + Model->pLightsPool);
@@ -1509,7 +1510,7 @@ LightCheck:
         // and add all of them to the dynamic lights list
         while (LightsNr--)
         {
-            if (Light->Switch == -1 || (objInst->SwitchValues[Light->Switch] & Light->SwitchMask)) TheLightEngine.AddDynamicLight(Liter, Light, RotMatrix, &p, LODRange);
+            if (Light->Switch == -1 or (objInst->SwitchValues[Light->Switch] bitand Light->SwitchMask)) TheLightEngine.AddDynamicLight(Liter, Light, RotMatrix, &p, LODRange);
 
             Light++;
         }
@@ -1525,7 +1526,7 @@ LightCheck:
 void CDXEngine::FlushInit(void)
 {
     // if not yet created create the Zero Texture
-    if (!ZeroTex) CreateZeroTexture();
+    if ( not ZeroTex) CreateZeroTexture();
 
     // Initialize the Default Material
     m_pD3DD->SetMaterial(&TheMaterial);
@@ -1585,7 +1586,7 @@ inline void CDXEngine::DrawNode(ObjectInstance *objInst, DWORD LightOwner, DWORD
 
 #endif
 
-            if (m_NODE.SURFACE->dwFlags.b.Texture && m_NODE.SURFACE->TexID[0] != -1) m_TexID = m_TexUsed[m_NODE.SURFACE->TexID[0]];
+            if (m_NODE.SURFACE->dwFlags.b.Texture and m_NODE.SURFACE->TexID[0] not_eq -1) m_TexID = m_TexUsed[m_NODE.SURFACE->TexID[0]];
             else m_TexID = -1;
 
 
@@ -1623,7 +1624,7 @@ inline void CDXEngine::DrawNode(ObjectInstance *objInst, DWORD LightOwner, DWORD
             {
                 m_DofLevel--;
 
-                if (!m_DofLevel) m_SkipSwitch = false;
+                if ( not m_DofLevel) m_SkipSwitch = false;
 
                 break;
             }
@@ -1645,7 +1646,7 @@ inline void CDXEngine::DrawNode(ObjectInstance *objInst, DWORD LightOwner, DWORD
             {
                 ObjectInstance *subObject = objInst->SlotChildren[m_NODE.SLOT->SlotNr];
 
-                if (!subObject) break;
+                if ( not subObject) break;
 
                 D3DXMATRIX p;
                 D3DXMatrixMultiply(&p, &m_NODE.SLOT->rotation, &AppliedState);
@@ -1653,14 +1654,14 @@ inline void CDXEngine::DrawNode(ObjectInstance *objInst, DWORD LightOwner, DWORD
                 k.x = 0;
                 k.y = 0;
                 k.z = 0;
-                // Draw the object IN CAMERA SPACE! - Child always depend on parent Lights...!!!
+                // Draw the object IN CAMERA SPACE - Child always depend on parent Lights...
                 DrawObject(subObject, &p, &k, 1, 1, 1, 1, true, LightOwner);
             }
             break;
 
         default :
             char s[128];
-            printf(s, "Corrupted Model ID : %d !!!", LodID);
+            printf(s, "Corrupted Model ID : %d ", LodID);
             MessageBox(NULL, s, "DX Engine", NULL);
 
     }
@@ -1695,7 +1696,7 @@ void CDXEngine::FlushObjects(void)
     {
 
         // ok, just entered Pit Mode
-        if (m_PitMode && !WasInPitMode)
+        if (m_PitMode and not WasInPitMode)
         {
             //START_PROFILE("3D PIT");
             // enable stenciling in Write Mode
@@ -1706,7 +1707,7 @@ void CDXEngine::FlushObjects(void)
         }
 
         // ok, just Exited Pit Mode
-        if (!m_PitMode && WasInPitMode)
+        if ( not m_PitMode and WasInPitMode)
         {
             // Save transformation State
             D3DXMATRIX OldState = AppliedState;
@@ -1727,7 +1728,7 @@ void CDXEngine::FlushObjects(void)
         StateStackLevel = 0;
 
         // Consistency Check
-        if (!objInst) continue;
+        if ( not objInst) continue;
 
         // assign for engine use
         m_TheObjectInstance = objInst;
@@ -1736,21 +1737,21 @@ void CDXEngine::FlushObjects(void)
         TheVbManager.GetModelData(m_VB, LodID);
 
         // Consistency Check
-        if (!m_VB.Valid) continue;
+        if ( not m_VB.Valid) continue;
 
 #ifdef STAT_DX_ENGINE
         COUNT_PROFILE("*** DX Objects");
 #endif
-        // Execute the Scripts 0 & 1 if existant
+        // Execute the Scripts 0 bitand 1 if existant
         DXScriptVariableType *Script = ((DxDbHeader*)m_VB.Root)->Scripts;
         D3DVECTOR pos;
         pos.x = AppliedState.m30;
         pos.y = AppliedState.m31;
         pos.z = AppliedState.m32;
 
-        if (Script[0].Script) if (!DXScriptArray[Script[0].Script](&pos, objInst, Script[0].Arguments)) goto DrawSection;
+        if (Script[0].Script) if ( not DXScriptArray[Script[0].Script](&pos, objInst, Script[0].Arguments)) goto DrawSection;
 
-        if (Script[1].Script)(!DXScriptArray[Script[1].Script](&pos, objInst, Script[1].Arguments));
+        if (Script[1].Script)( not DXScriptArray[Script[1].Script](&pos, objInst, Script[1].Arguments));
 
     DrawSection:
 
@@ -1794,7 +1795,7 @@ void CDXEngine::FlushObjects(void)
         m_NODE.BYTE = (BYTE*)m_VB.Nodes;
 
         // Till end of Model
-        while (m_NODE.HEAD->Type != DX_MODELEND)
+        while (m_NODE.HEAD->Type not_eq DX_MODELEND)
         {
             // Draw the Node
             DrawNode(objInst, LightOwner, LodID);
@@ -1828,7 +1829,7 @@ void CDXEngine::DrawAlphaSurfaces(void)
 
     while (PopSurface(&m_AlphaStack, &State))
     {
-        if (AppliedState != State) m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&State);
+        if (AppliedState not_eq State) m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&State);
 
         AppliedState = State;
 #ifndef DEBUG_ENGINE
@@ -1838,7 +1839,7 @@ void CDXEngine::DrawAlphaSurfaces(void)
 #endif
 
         // if Changed object, remap all lights
-        if (LastObj != m_TheObjectInstance) TheLightEngine.EnableMappedLights();
+        if (LastObj not_eq m_TheObjectInstance) TheLightEngine.EnableMappedLights();
 
         LastObj = m_TheObjectInstance;
 
@@ -1849,7 +1850,7 @@ void CDXEngine::DrawAlphaSurfaces(void)
 #endif
 
         // Stup the Fog level for this object
-        if (m_FogLevel != LastFog) m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND,   *(DWORD *)(&m_FogLevel));
+        if (m_FogLevel not_eq LastFog) m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND,   *(DWORD *)(&m_FogLevel));
 
         LastFog = m_FogLevel;
         DrawSurface();
@@ -1881,7 +1882,7 @@ void CDXEngine::DrawSortedAlpha(DWORD Level, bool SetupMode)
     m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&State);
     AppliedState = State;
 
-    if (m_LastObjectInstance != m_TheObjectInstance) TheLightEngine.EnableMappedLights(), m_LastObjectInstance = m_TheObjectInstance;
+    if (m_LastObjectInstance not_eq m_TheObjectInstance) TheLightEngine.EnableMappedLights(), m_LastObjectInstance = m_TheObjectInstance;
 
     m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND,   *(DWORD *)(&m_FogLevel));
 
@@ -1908,7 +1909,7 @@ void CDXEngine::DrawSolidSurfaces(void)
 
     while (PopSurface(&m_SolidStack, &State))
     {
-        if (State != AppliedState) m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&State);
+        if (State not_eq AppliedState) m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&State);
 
         AppliedState = State;
 #ifndef DEBUG_ENGINE
@@ -1918,7 +1919,7 @@ void CDXEngine::DrawSolidSurfaces(void)
 #endif
 
         // if Changed object, remap all lights
-        if (LastObj != m_TheObjectInstance) TheLightEngine.EnableMappedLights();
+        if (LastObj not_eq m_TheObjectInstance) TheLightEngine.EnableMappedLights();
 
         LastObj = m_TheObjectInstance;
 #ifndef DEBUG_ENGINE
@@ -1928,7 +1929,7 @@ void CDXEngine::DrawSolidSurfaces(void)
 #endif
 
         // Stup the Fog level for this object
-        if (m_FogLevel != LastFog) m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND,   *(DWORD *)(&m_FogLevel));
+        if (m_FogLevel not_eq LastFog) m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND,   *(DWORD *)(&m_FogLevel));
 
         LastFog = m_FogLevel;
         DrawSurface();
@@ -2109,7 +2110,7 @@ void CDXEngine::FlushBuffers(void)
     // Draw the Solid Surfaces
     DrawSolidSurfaces();
 
-    // Flush Dynamic Buffers & sorted objects
+    // Flush Dynamic Buffers bitand sorted objects
     FlushDynamicObjects();
 
     //Reset Features
@@ -2176,19 +2177,19 @@ void CDXEngine::ModelInit(ObjectInstance *objInst, DxDbHeader* Header, DWORD *Te
     // Transform the model
     AppliedState = *State;
 
-    // Execute the Scripts 0 & 1 if existant
+    // Execute the Scripts 0 bitand 1 if existant
     D3DVECTOR pos;
     pos.x = AppliedState.m30;
     pos.y = AppliedState.m31;
     pos.z = AppliedState.m32;
 
-    if (!m_ScriptsOn) goto DrawSection;
+    if ( not m_ScriptsOn) goto DrawSection;
 
     DXScriptVariableType *Script = (Header)->Scripts;
 
-    if (Script[0].Script) if (!DXScriptArray[Script[0].Script](&pos, objInst, Script[0].Arguments)) goto DrawSection;
+    if (Script[0].Script) if ( not DXScriptArray[Script[0].Script](&pos, objInst, Script[0].Arguments)) goto DrawSection;
 
-    if (Script[1].Script)(!DXScriptArray[Script[1].Script](&pos, objInst, Script[1].Arguments));
+    if (Script[1].Script)( not DXScriptArray[Script[1].Script](&pos, objInst, Script[1].Arguments));
 
 DrawSection:
 

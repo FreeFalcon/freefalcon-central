@@ -272,7 +272,7 @@ void ActivateTacMissionBuilder()
 
 static void TACNewCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -316,12 +316,12 @@ static void TACNewCB(long, short hittype, C_Base *control)
 
 static void TACEditCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
 
-    if (!current_tactical_mission)
+    if ( not current_tactical_mission)
     {
         TACNewCB(ID, hittype, control);
         return;
@@ -362,7 +362,7 @@ static void TACCancelJoinCB(void)
 
 static void TACReallyAcceptCB(void)
 {
-    if (!current_tactical_mission)
+    if ( not current_tactical_mission)
     {
         return;
     }
@@ -382,14 +382,14 @@ static void TACReallyAcceptCB(void)
 
 static void TACAcceptCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    if (!current_tactical_mission)
+    if ( not current_tactical_mission)
     {
         return;
     }
@@ -408,7 +408,7 @@ void UpdateVCs()
 {
     victory_condition *vc;
 
-    if (current_tactical_mission && gMapMgr)
+    if (current_tactical_mission and gMapMgr)
     {
         vc = current_tactical_mission->get_first_unfiltered_victory_condition();
 
@@ -426,7 +426,7 @@ void UpdateVCs()
 
 static void TACExitCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -454,7 +454,7 @@ static void TACExitCB(long, short hittype, C_Base *)
 
 static void TACInfoCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -471,7 +471,7 @@ static void TACInfoCB(long, short hittype, C_Base *)
 
 static void TACHostCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -488,7 +488,7 @@ static void TACHostCB(long, short hittype, C_Base *)
 
 static void TACRevertCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
     {
         return;
     }
@@ -507,12 +507,12 @@ static void TACSaveFileCB(long, short hittype, C_Base *control)
 
     char buffer[100];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     win = gMainHandler->FindWindow(SAVE_WIN);
 
-    if (!win)
+    if ( not win)
         return;
 
     gMainHandler->HideWindow(win);
@@ -540,7 +540,7 @@ static void TACVerifySaveFileCB(long ID, short hittype, C_Base *control)
 
     char buffer[MAX_PATH];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     edit_box = (C_EditBox*) control->Parent_->FindControl(FILE_NAME);
@@ -588,7 +588,7 @@ void LoadSaveSelectFileCB(long, short hittype, C_Base *control)
     C_EditBox *ebox;
     C_Button *btn;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (control)
@@ -614,7 +614,7 @@ static void TACSaveAsCB(long, short hittype, C_Base *)
     _TCHAR buffer[MAX_PATH];
     _TCHAR filename [MAX_PATH];
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (OwnershipChanged)
@@ -639,7 +639,7 @@ void tactical_play_setup()
 {
     short i;
 
-    if (!gMainHandler)
+    if ( not gMainHandler)
         return;
 
     // MonoPrint ("Tactical Play Setup\n");
@@ -652,22 +652,22 @@ void tactical_play_setup()
 
     tactical_update_campaign_entities();
 
-    TheCampaign.Flags |= CAMP_TACTICAL;
+    TheCampaign.Flags or_eq CAMP_TACTICAL;
 
 
-    // MONUMENTOUS HACK to get team color & Flag initialized (If they aren't already)
+    // MONUMENTOUS HACK to get team color bitand Flag initialized (If they aren't already)
     for (i = 0; i < NUM_TEAMS; i++)
     {
         if (TeamInfo[i])
         {
-            if (!TeamInfo[i]->GetFlag())
+            if ( not TeamInfo[i]->GetFlag())
                 TeamInfo[i]->SetFlag(static_cast<uchar>(i));
 
-            if (!TeamInfo[i]->GetColor())
+            if ( not TeamInfo[i]->GetColor())
                 TeamInfo[i]->SetColor(static_cast<uchar>(i));
 
-            if (i && !(TeamInfo[i]->flags & TEAM_ACTIVE))
-                TeamInfo[i]->flags |= TEAM_ACTIVE;
+            if (i and not (TeamInfo[i]->flags bitand TEAM_ACTIVE))
+                TeamInfo[i]->flags or_eq TEAM_ACTIVE;
         }
     }
 
@@ -680,7 +680,7 @@ void tactical_play_setup()
 
     gGps->SetAllowed(0xffffffff);
 
-    if (!g_bServer && current_tactical_mission->get_type() == tt_engagement)
+    if ( not g_bServer and current_tactical_mission->get_type() == tt_engagement)
     {
         InitTimeCompressionBox(1);
         SetTimeCompression(1);
@@ -737,7 +737,7 @@ void tactical_restart_mission(void)
 
 void restart_tactical_engagement(void)
 {
-    if (current_tactical_mission->get_type() != tt_engagement)
+    if (current_tactical_mission->get_type() not_eq tt_engagement)
     {
         TheCampaign.Suspend();
         InitTimeCompressionBox(0);
@@ -783,7 +783,7 @@ void tactical_edit_mission(tactical_mission *)
     }
     else
     {
-        ShiAssert(!"This doesn't work, so should not be allowed");
+        ShiAssert( not "This doesn't work, so should not be allowed");
 
         return;
 
@@ -816,19 +816,19 @@ void tactical_edit_mission(tactical_mission *)
 
     tactical_mission_loaded = TRUE;
 
-    // MONUMENTOUS HACK to get team color & Flag initialized (If they aren't already)
+    // MONUMENTOUS HACK to get team color bitand Flag initialized (If they aren't already)
     for (i = 0; i < NUM_TEAMS; i++)
     {
         if (TeamInfo[i])
         {
-            if (!TeamInfo[i]->GetFlag())
+            if ( not TeamInfo[i]->GetFlag())
                 TeamInfo[i]->SetFlag(static_cast<uchar>(i));
 
-            if (!TeamInfo[i]->GetColor())
+            if ( not TeamInfo[i]->GetColor())
                 TeamInfo[i]->SetColor(static_cast<uchar>(i));
 
-            if (i && !(TeamInfo[i]->flags & TEAM_ACTIVE))
-                TeamInfo[i]->flags |= TEAM_ACTIVE;
+            if (i and not (TeamInfo[i]->flags bitand TEAM_ACTIVE))
+                TeamInfo[i]->flags or_eq TEAM_ACTIVE;
         }
     }
 
@@ -836,7 +836,7 @@ void tactical_edit_mission(tactical_mission *)
 
     tactical_update_campaign_entities();
 
-    TheCampaign.Flags |= CAMP_TACTICAL | CAMP_TACTICAL_EDIT;
+    TheCampaign.Flags or_eq CAMP_TACTICAL bitor CAMP_TACTICAL_EDIT;
 
     TacticalEngagementSetup(true);
 
@@ -894,7 +894,7 @@ void update_taceng_clock(void)
 
     win = gMainHandler->FindWindow(TAC_TIME);
 
-    if (!win)
+    if ( not win)
     {
         return;
     }

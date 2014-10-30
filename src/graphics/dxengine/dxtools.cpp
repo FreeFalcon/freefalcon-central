@@ -1,3 +1,4 @@
+#include <cISO646>
 #include <math.h>
 #include "../include/TimeMgr.h"
 #include "../include/ObjectInstance.h"
@@ -233,15 +234,15 @@ bool DXScript_Beacon(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 
 
     // All flashes OFF
-    sw &= 0xFFFFF000; // All off
+    sw and_eq 0xFFFFF000; // All off
 
     /////// 0 degree green light
 
-    if (fabs(RelAngle) <= 3.0f) sw |= 0x7; // Flash on, has flashed, visible
+    if (fabs(RelAngle) <= 3.0f) sw or_eq 0x7; // Flash on, has flashed, visible
 
-    if (RelAngle >= 162.0f && RelAngle <= 168.0f) sw |= 0x700; // Flash on, has flashed, visible
+    if (RelAngle >= 162.0f and RelAngle <= 168.0f) sw or_eq 0x700; // Flash on, has flashed, visible
 
-    if (RelAngle >= -168.0f && RelAngle <= -162.0f) sw |= 0x70; // Flash on, has flashed, visible
+    if (RelAngle >= -168.0f and RelAngle <= -162.0f) sw or_eq 0x70; // Flash on, has flashed, visible
 
     // Now store the computed results
     obj->DOFValues[0].rotation = (float)fmod(Delta, 2.0f * PI);
@@ -304,7 +305,7 @@ bool DXScript_MeatBall(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 
     for (int i = 0; i < NANGLES - 1; i++)
     {
-        if (angle < angles[i] && angle > angles[i + 1]) obj->SetSwitch(i, 1);
+        if (angle < angles[i] and angle > angles[i + 1]) obj->SetSwitch(i, 1);
         else obj->SetSwitch(i, 0);
     }
 
@@ -318,21 +319,21 @@ bool DXScript_Chaff(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 {
 #ifdef DEBUG_ENGINE
     // Get the timings
-    DWORD Delta = (GetTickCount() & 0xffffff) / 100;
+    DWORD Delta = (GetTickCount() bitand 0xffffff) / 100;
 #else
     // Get the timings
-    DWORD Delta = (TheTimeManager.GetClockTime() & 0xffffff) / 100;
+    DWORD Delta = (TheTimeManager.GetClockTime() bitand 0xffffff) / 100;
 #endif
 
     // consistency check
     if (obj->ParentObject->nSwitches <= 0) return true;
 
     // if 1st frame set the starting time
-    if ((obj->SwitchValues[0] & 0xffff0000) == 0x0000) obj->SwitchValues[0] = (Delta << 16) & 0xffff0000;
+    if ((obj->SwitchValues[0] bitand 0xffff0000) == 0x0000) obj->SwitchValues[0] = (Delta << 16) bitand 0xffff0000;
 
     // update frame number every 100 mSec
-    if (!(obj->SwitchValues[0] & 0x8000))
-        obj->SwitchValues[0] = (obj->SwitchValues[0] & 0xffff0000) | (1 << ((Delta & 0xffff) - (obj->SwitchValues[0] >> 16) & 0x00ffff));
+    if ( not (obj->SwitchValues[0] bitand 0x8000))
+        obj->SwitchValues[0] = (obj->SwitchValues[0] bitand 0xffff0000) bitor (1 << ((Delta bitand 0xffff) - (obj->SwitchValues[0] >> 16) bitand 0x00ffff));
 
     return true;
 }

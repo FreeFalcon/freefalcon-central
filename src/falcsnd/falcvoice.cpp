@@ -97,7 +97,7 @@ void SetVoiceVolumes(void)
 
 void SetVoiceVolume(int channel)
 {
-    if (VM && channel >= 0 && channel < NUM_VOICE_CHANNELS && !VM->falconVoices[channel].exitChannel)
+    if (VM and channel >= 0 and channel < NUM_VOICE_CHANNELS and not VM->falconVoices[channel].exitChannel)
     {
         F4SetStreamVolume(VM->falconVoices[channel].FalcVoiceHandle,
                           PlayerOptions.GroupVol[COM1_SOUND_GROUP + channel]);
@@ -118,7 +118,7 @@ void FalcVoice::UnsilenceVoices(int SoundGroup)
 
 void FalcVoice::FVResumeVoiceStreams(void)
 {
-    if (!F4IsSoundPlaying(FalcVoiceHandle))
+    if ( not F4IsSoundPlaying(FalcVoiceHandle))
     {
         F4StartCallbackStream(FalcVoiceHandle, (void *)this, fillVoiceBuffer);
         exitChannel = FALSE;
@@ -285,20 +285,20 @@ DWORD fillVoiceBuffer(void *me, char *soundBuffer, DWORD length)
 
     thisFV = (FalcVoice *)me;
 
-    if (thisFV == NULL || killThread || thisFV->exitChannel)
+    if (thisFV == NULL or killThread or thisFV->exitChannel)
     {
         memset(soundBuffer, SILENCE_KEY, length);
         return length;
     }
 
-    if (thisFV->voiceBuffers[thisFV->voiceStruct->streamBuffer].status != BUFFER_FILLED)
+    if (thisFV->voiceBuffers[thisFV->voiceStruct->streamBuffer].status not_eq BUFFER_FILLED)
     {
         //don't want to change buffer pointed to unless there is data in the other buffer but not
         //this one. (This way I can make sure I grab the right buffer first)
-        if (thisFV->voiceBuffers[1 - thisFV->voiceStruct->streamBuffer].status != BUFFER_FILLED)
+        if (thisFV->voiceBuffers[1 - thisFV->voiceStruct->streamBuffer].status not_eq BUFFER_FILLED)
         {
             // sfr: i think this is causing the buffer to stop being consumed
-            /*if(gSoundDriver && (thisFV->silenceWritten > 16000) )
+            /*if(gSoundDriver and (thisFV->silenceWritten > 16000) )
             {
              gSoundDriver->PauseStream(thisFV->FalcVoiceHandle);
             }*/
@@ -341,7 +341,7 @@ DWORD fillVoiceBuffer(void *me, char *soundBuffer, DWORD length)
         streams->waveBufferRead += dataToCopy;
     }
 
-    if (!streams->dataInWaveBuffer)
+    if ( not streams->dataInWaveBuffer)
     {
         thisFV->BufferEmpty(thisFV->voiceStruct->streamBuffer);
         thisFV->PopVCAddQueue();
@@ -380,7 +380,7 @@ DWORD fillVoiceBuffer(void *me, char *soundBuffer, DWORD length)
                 streams->waveBufferRead += dataToCopy;
             }
 
-            if (!streams->dataInWaveBuffer)
+            if ( not streams->dataInWaveBuffer)
             {
                 thisFV->BufferEmpty(thisFV->voiceStruct->streamBuffer);
                 thisFV->PopVCAddQueue();
@@ -397,7 +397,7 @@ DWORD fillVoiceBuffer(void *me, char *soundBuffer, DWORD length)
     {
         filler = SILENCE_KEY;
 
-        if (thisFV->voiceStruct->waveFormat.wBitsPerSample != 8)
+        if (thisFV->voiceStruct->waveFormat.wBitsPerSample not_eq 8)
             filler = 0;
 
         memset(dsb, filler, fillerSize);

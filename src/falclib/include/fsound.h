@@ -110,7 +110,7 @@ class SimBaseClass;
 
 #include "FalcLib/include/alist.h"
 
-// this object is used to maintain the positional & velocity values and to supply an interface to the sound code.
+// this object is used to maintain the positional bitand velocity values and to supply an interface to the sound code.
 class F4SoundPos : public ANode
 {
     friend class mlrVoiceHandle;

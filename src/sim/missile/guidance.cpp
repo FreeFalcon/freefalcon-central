@@ -22,12 +22,12 @@ extern bool g_bActivateMissileDebug;
 void MissileClass::CheckGuidePhase(void)
 {
 
-    //if (!targetPtr) return; //Cobra 10/31/04 TJL
+    //if ( not targetPtr) return; //Cobra 10/31/04 TJL
     //Get Laser Position and store in targetX etc.
 
     ShiAssert(inputData);
 
-    if (!inputData)
+    if ( not inputData)
         return;
 
     float dxi = 0.0F, dyi = 0.0F, dzi = 0.0F;
@@ -37,15 +37,15 @@ void MissileClass::CheckGuidePhase(void)
     // supply targetXYZ.
 
     // laser targetting code
-    if (GetWCD()->GuidanceFlags & WEAP_LASER)
+    if (GetWCD()->GuidanceFlags bitand WEAP_LASER)
     {
 
         // only do this for the player
-        if (g_bRealisticAvionics && parent && ((SimVehicleClass *)parent.get())->IsPlayer())
+        if (g_bRealisticAvionics and parent and ((SimVehicleClass *)parent.get())->IsPlayer())
         {
             FireControlComputer* theFCC = ((SimVehicleClass*)parent.get())->GetFCC();
 
-            if (theFCC && theFCC->LaserArm && theFCC->LaserFire)
+            if (theFCC and theFCC->LaserArm and theFCC->LaserFire)
             {
                 SimObjectType *tgt;
 
@@ -54,11 +54,11 @@ void MissileClass::CheckGuidePhase(void)
                 // update the targetPtr
                 // set the targetPtr so the missile can track moving
                 // targets and lead as needed.
-                if (tgt != targetPtr)
+                if (tgt not_eq targetPtr)
                     SetTarget(tgt);
 
                 // no FCC target, track laser point
-                if (!tgt)
+                if ( not tgt)
                 {
                     // need FOV code
                     targetX = theFCC->groundDesignateX;
@@ -83,10 +83,10 @@ void MissileClass::CheckGuidePhase(void)
         //SimObjectType *tgt;
         //tgt=theFCC->TargetPtr();
         //
-        //if(tgt != targetPtr)
+        //if(tgt not_eq targetPtr)
         // SetTarget(tgt);
         //
-        //if(!tgt)
+        //if( not tgt)
         // return;
         //}
     }
@@ -101,7 +101,7 @@ void MissileClass::CheckGuidePhase(void)
     range = (float)sqrt(dxi * dxi + dyi * dyi + dzi * dzi);
 
     //boost
-    if (!guidencephase)
+    if ( not guidencephase)
     {
         if (runTime > inputData->boostguidesec)
             guidencephase = 1;
@@ -111,7 +111,7 @@ void MissileClass::CheckGuidePhase(void)
     {
         if (range < inputData->terminalguiderange)
             guidencephase = 2;
-        else if (inputData->terminalguiderange < 0 && inputData->mslActiveTtg > 0 && sensorArray[0]->Type() == SensorClass::Radar)
+        else if (inputData->terminalguiderange < 0 and inputData->mslActiveTtg > 0 and sensorArray[0]->Type() == SensorClass::Radar)
             guidencephase = 2;
     }
 }
@@ -147,13 +147,13 @@ void MissileClass::CommandGuide(void)
 
     ShiAssert(inputData);
 
-    if (!inputData)
+    if ( not inputData)
         return;
 
     CheckGuidePhase();
 
     // RV - Biker - This is debug stuff don't do the checks all the time
-    if (g_bActivateDebugStuff && g_bActivateMissileDebug)
+    if (g_bActivateDebugStuff and g_bActivateMissileDebug)
     {
         if (g_nboostguidesec)
             inputData->boostguidesec = g_nboostguidesec;//me123 how many sec we are in boostguide mode
@@ -199,7 +199,7 @@ void MissileClass::CommandGuide(void)
     }
 
     //boost
-    if (!guidencephase)
+    if ( not guidencephase)
     {
         SensorPrecision = inputData->boostguideSensorPrecision;
         LeadA = inputData->boostguideLead;
@@ -231,7 +231,7 @@ void MissileClass::CommandGuide(void)
     // No Target
     if (runTime > inputData->guidanceDelay)
     {
-        if (g_bNewSensorPrecision && flags & SensorLostLock &&  sensorArray && sensorArray[0] && sensorArray[0]->Type() == SensorClass::RadarHoming)
+        if (g_bNewSensorPrecision and flags bitand SensorLostLock and sensorArray and sensorArray[0] and sensorArray[0]->Type() == SensorClass::RadarHoming)
         {
             ifd->augCommand.yaw = 0.0f;
             ifd->augCommand.pitch = 0.0f;
@@ -245,7 +245,7 @@ void MissileClass::CommandGuide(void)
             // Inertial Line of Sight Vector
             float rangeplatform = 0;
 
-            if (auxData && auxData->errorfromparrent && sensorArray && sensorArray[0] && sensorArray[0]->Type() == SensorClass::RadarHoming)
+            if (auxData and auxData->errorfromparrent and sensorArray and sensorArray[0] and sensorArray[0]->Type() == SensorClass::RadarHoming)
             {
                 FalconEntity* RadarPlt = ((BeamRiderClass*)this->sensorArray[0])->Getplatform();
 				RadarClass* theRadar = NULL;
@@ -281,7 +281,7 @@ void MissileClass::CommandGuide(void)
 
                 float error = (float)sin(SensorPrecision * DTR) * range;
 
-                if (!g_bNewSensorPrecision)
+                if ( not g_bNewSensorPrecision)
                 {
                     float var = ((-error / 2) + (error * ((float)rand() / (float)RAND_MAX)));
                     targetDX += var;
@@ -333,7 +333,7 @@ void MissileClass::CommandGuide(void)
             invRngSq  = 1.0F / (range * range);
         }
         // we've lost our target, but want to continue our flight to the last known location
-        else if (targetX != -1.0F && targetY != -1.0F && targetZ != -1.0F)
+        else if (targetX not_eq -1.0F and targetY not_eq -1.0F and targetZ not_eq -1.0F)
         {
             hasTarget = TRUE;
 
@@ -347,7 +347,7 @@ void MissileClass::CommandGuide(void)
             dzdoti = targetDZ - zdot;
 
             // 2002-04-07 MN diminish targetDZ so missile won't go too ballistic...
-            if (g_nMissileFix & 0x40)
+            if (g_nMissileFix bitand 0x40)
             {
                 if (targetDZ > 0.0F)
                 {
@@ -386,7 +386,7 @@ void MissileClass::CommandGuide(void)
         wkc = (dxi * dydoti - dyi * dxdoti) * invRngSq;
 
         // Lofting Bias
-        if (runTime > inputData->guidanceDelay && runTime < inputData->guidanceDelay + inputData->mslLoftTime)
+        if (runTime > inputData->guidanceDelay and runTime < inputData->guidanceDelay + inputData->mslLoftTime)
         {
             loftBias = -inputData->mslBiasn - 1.0F; // In units of G
         }
@@ -430,7 +430,7 @@ void MissileClass::CommandGuide(void)
     char tmpStr[40];
     char label[20];
 
-    if (g_nShowDebugLabels & 0x02)
+    if (g_nShowDebugLabels bitand 0x02)
     {
         if (drawPointer)
         {
@@ -439,10 +439,10 @@ void MissileClass::CommandGuide(void)
             else
                 sprintf(tmpStr, "NoLock ");
 
-            if (flags & SensorLostLock)
+            if (flags bitand SensorLostLock)
                 strcat(tmpStr, "OTgtL ");
 
-            if (!guidencephase)
+            if ( not guidencephase)
                 sprintf(label, "B %4.1f %5.0f", vcas, -z);
 
             if (guidencephase == 1)
@@ -465,7 +465,7 @@ void MissileClass::CommandGuide(void)
     //#define MISSILEDEBUG 1
 #ifdef MISSILEDEBUG
 
-    if (sensorArray && sensorArray[0] && sensorArray[0]->Type() == SensorClass::RWR && launchState == InFlight)
+    if (sensorArray and sensorArray[0] and sensorArray[0]->Type() == SensorClass::RWR and launchState == InFlight)
     {
         static int file = -1;
         static int binfile = -1;
@@ -478,8 +478,8 @@ void MissileClass::CommandGuide(void)
         if (file < 0)
         {
             theOne = this;
-            binfile = open("C:\\temp\\MissileTrack.bin", _O_CREAT | _O_TRUNC | _O_WRONLY | _O_BINARY, 0000666);
-            file = open("C:\\temp\\MissileTrack.txt", _O_CREAT | _O_TRUNC | _O_WRONLY, 0000666);
+            binfile = open("C:\\temp\\MissileTrack.bin", _O_CREAT bitor _O_TRUNC bitor _O_WRONLY bitor _O_BINARY, 0000666);
+            file = open("C:\\temp\\MissileTrack.txt", _O_CREAT bitor _O_TRUNC bitor _O_WRONLY, 0000666);
             sprintf(buffer, "Missile Guidance Dump started %2d:%2d.%2d for (0x%X)\n", now / 60000, now % 60000 / 1000, now % 1000 / 10, this);
             write(file, buffer, strlen(buffer));
             sprintf(buffer, "Time     Addr           T   rng   ttg   gndZ   xFromTgt yFromTgt zFromTgt xdot  ydot  zdot  yawCmd ptchCmd\n");
@@ -487,7 +487,7 @@ void MissileClass::CommandGuide(void)
         }
         else
         {
-            if (this != theOne)
+            if (this not_eq theOne)
             {
                 // Get out now so we only have data for one missile to sort through
                 return;

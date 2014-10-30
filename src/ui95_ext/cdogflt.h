@@ -66,7 +66,7 @@ public:
     }
     void SetColor(short state, COLORREF color)
     {
-        Color_[state & 1] = color;
+        Color_[state bitand 1] = color;
     }
     void SetSubParents(C_Window *);
     void SetDefaultFlags()

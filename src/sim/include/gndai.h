@@ -6,8 +6,8 @@
 // Note: rather than define derived classes from a single vehicle (probably the
 // C++ obvious way, I'm making this jump table driven with a single shared class
 // this will keep things simple) - it may be cleaner for a C++ programmer if
-// I split this into movement classes, ranks, formation & combat classes and use
-// multiple inheritance - I can do this simply if someone really wants it!!).
+// I split this into movement classes, ranks, formation bitand combat classes and use
+// multiple inheritance - I can do this simply if someone really wants it).
 //
 //
 #ifndef _GNDAI_H
@@ -16,7 +16,7 @@
 #include "campwp.h"
 #include "object.h"
 
-//edg: ARGH!  WTFUCK?!  Why do this define!!!!!!!!!!!!!!!!???????????????
+//edg: ARGH  WTFUCK?  Why do this define???????????????
 #define TargetClass SimObjectType
 
 #define GFORM_DISPERSED 0 // Scattered / Disorganized
@@ -125,7 +125,7 @@ public:
 
     // Public vars
     //
-    float ideal_x; // Best X & Y, heading
+    float ideal_x; // Best X bitand Y, heading
     float ideal_y;
     float ideal_h;
 

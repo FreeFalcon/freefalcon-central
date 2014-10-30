@@ -150,7 +150,7 @@ extern void *debugPtr;
 int VuReferenceEntity(VuEntity* ent)
 {
     // sfr: temp test
-    //if (ent && ent == debugPtr){
+    //if (ent and ent == debugPtr){
     // printf("bla");
     //}
     if (ent)
@@ -167,7 +167,7 @@ int VuReferenceEntity(VuEntity* ent)
 int VuDeReferenceEntity(VuEntity* ent)
 {
     // sfr: temp test
-    //if (ent && ent == debugPtr){
+    //if (ent and ent == debugPtr){
     // printf("bla");
     //}
     if (ent == NULL)
@@ -319,7 +319,7 @@ void VuEntity::SetEntityType(ushort entityType)
     }
     else
     {
-        assert(!"share_.entityType_ out of range");
+        assert( not "share_.entityType_ out of range");
         entityTypePtr_ = 0;
     }
 
@@ -335,7 +335,7 @@ void VuEntity::SetEntityType(ushort entityType)
     share_.flags_.breakdown_.global_     = entityTypePtr_->global_;
     share_.flags_.breakdown_.persistent_ = entityTypePtr_->persistent_;
 
-    if (share_.flags_.breakdown_.persistent_ && share_.flags_.breakdown_.transfer_)
+    if (share_.flags_.breakdown_.persistent_ and share_.flags_.breakdown_.transfer_)
     {
         share_.flags_.breakdown_.transfer_ = 0;
     }
@@ -425,7 +425,7 @@ void VuEntity::SetDelta(SM_SCALAR dx, SM_SCALAR dy, SM_SCALAR dz)
 #include "IsBad.h"
 VuDriver *VuEntity::SetDriver(VuDriver* newdriver)
 {
-    if ((newdriver != NULL) && (F4IsBadReadPtr(newdriver, sizeof(*newdriver))))
+    if ((newdriver not_eq NULL) and (F4IsBadReadPtr(newdriver, sizeof(*newdriver))))
     {
         printf("bad driver being assigned");
     }
@@ -438,12 +438,12 @@ VuDriver *VuEntity::SetDriver(VuDriver* newdriver)
 void VuEntity::SetOwnerId(VU_ID ownerId)
 {
     // New owner sends xfer message: check for locality after set
-    if (vuLocalSession == ownerId && share_.ownerId_ != ownerId)
+    if (vuLocalSession == ownerId and share_.ownerId_ not_eq ownerId)
     {
         share_.ownerId_ = ownerId;
         VuTargetEntity* target = vuGlobalGroup;
 
-        if (!IsGlobal())
+        if ( not IsGlobal())
         {
             target = vuLocalSessionEntity->Game();
         }
@@ -546,11 +546,11 @@ int VuEntity::Save(VU_BYTE** stream)
  vuDatabase->Remove(this);
  VuMessageQueue::FlushAllQueues();
 
- if (vuAssignmentId < vuLowWrapNumber || vuAssignmentId > vuHighWrapNumber)
+ if (vuAssignmentId < vuLowWrapNumber or vuAssignmentId > vuHighWrapNumber)
  vuAssignmentId = vuLowWrapNumber; // cover wrap
  share_.id_.num_ = vuAssignmentId++;
 
- while (vuDatabase->Find(Id()) || vuAntiDB->Find(Id()) || Id() == other->Id())
+ while (vuDatabase->Find(Id()) or vuAntiDB->Find(Id()) or Id() == other->Id())
  share_.id_.num_ = vuAssignmentId++;
 
  SetVuState(VU_MEM_ACTIVE);
@@ -589,13 +589,13 @@ VU_ERRCODE VuEntity::Handle(VuPushRequest* msg)
                 resp->RequestReliableTransmit();
                 VuMessageQueue::PostVuMessage(resp);
             }
-            else if ((1 << Domain()) & vuLocalSessionEntity->DomainMask())
+            else if ((1 << Domain()) bitand vuLocalSessionEntity->DomainMask())
             {
                 VuEntity* assoc = 0;
 
-                if (Association() != vuNullId &&
-                    (assoc = vuDatabase->Find(Association())) != 0 &&
-                    assoc->OwnerId() != vuLocalSession)
+                if (Association() not_eq vuNullId and 
+                    (assoc = vuDatabase->Find(Association())) not_eq 0 and 
+                    assoc->OwnerId() not_eq vuLocalSession)
                 {
                     // entity has association, and we do not manage it
                     VuMessage* resp = new VuErrorMessage(VU_TRANSFER_ASSOCIATION_ERROR, msg->Sender(), Id(), sender);
@@ -644,9 +644,9 @@ VU_ERRCODE VuEntity::Handle(VuPullRequest* msg)
             {
                 VuEntity* assoc = 0;
 
-                if (Association() != vuNullId &&
-                    (assoc = vuDatabase->Find(Association())) != 0 &&
-                    assoc->OwnerId() != msg->Sender())
+                if (Association() not_eq vuNullId and 
+                    (assoc = vuDatabase->Find(Association())) not_eq 0 and 
+                    assoc->OwnerId() not_eq msg->Sender())
                 {
                     // entity has association, and target does not manage it
                     resp = new VuErrorMessage(VU_TRANSFER_ASSOCIATION_ERROR,
@@ -659,7 +659,7 @@ VU_ERRCODE VuEntity::Handle(VuPullRequest* msg)
                     // owner is local
                     VuTargetEntity* target = vuGlobalGroup;
 
-                    if (!IsGlobal())
+                    if ( not IsGlobal())
                     {
                         target = vuLocalSessionEntity->Game();
                     }
@@ -703,7 +703,7 @@ VU_ERRCODE VuEntity::Handle(VuFullUpdateEvent* event)
         if (driver_->Handle(event) > 0)
             return VU_SUCCESS;
     }
-    else if (event->Entity() && event->Entity() != this)
+    else if (event->Entity() and event->Entity() not_eq this)
     {
         share_  = event->Entity()->share_;
         pos_    = event->Entity()->pos_;
@@ -716,7 +716,7 @@ VU_ERRCODE VuEntity::Handle(VuFullUpdateEvent* event)
 
 VU_ERRCODE VuEntity::Handle(VuPositionUpdateEvent* event)
 {
-    if ((driver_ == NULL) || (driver_->Handle(event) <= 0))
+    if ((driver_ == NULL) or (driver_->Handle(event) <= 0))
     {
         SetPosition(event->x_, event->y_, event->z_);
         SetDelta(event->dx_, event->dy_, event->dz_);
@@ -758,7 +758,7 @@ VuEntity::CollisionCheck(VuEntity* other,
     SM_SCALAR size = EntityType()->collisionRadius_ +  other->EntityType()->collisionRadius_;
     // object does not collide with itself
 
-    if (Id() != other->Id())
+    if (Id() not_eq other->Id())
     {
 
         // Cull based on simple bounding box rejection test, on a per axis basis
@@ -798,8 +798,8 @@ collisionLineEntity1D(BIG_SCALAR d1,
                       BIG_SCALAR objd,
                       BIG_SCALAR radius)
 {
-    if (((d1 < d2) && (d2 > (objd - radius)) && (d1 < (objd + radius))) ||
-        ((d1 >= d2) && (d1 >= (objd - radius)) && (d2 <= (objd + radius))))
+    if (((d1 < d2) and (d2 > (objd - radius)) and (d1 < (objd + radius))) or
+        ((d1 >= d2) and (d1 >= (objd - radius)) and (d2 <= (objd + radius))))
     {
         return TRUE;
     }
@@ -820,8 +820,8 @@ VuEntity::LineCollisionCheck(BIG_SCALAR x1,
     BIG_SCALAR mult = sizeFactor * dt;
     SM_SCALAR  size = EntityType()->collisionRadius_;
 
-    if (collisionLineEntity1D(z1, z2, ZPos(), (size + vuabs(mult * ZDelta()))) &&
-        collisionLineEntity1D(y1, y2, YPos(), (size + vuabs(mult * YDelta()))) &&
+    if (collisionLineEntity1D(z1, z2, ZPos(), (size + vuabs(mult * ZDelta()))) and 
+        collisionLineEntity1D(y1, y2, YPos(), (size + vuabs(mult * YDelta()))) and 
         collisionLineEntity1D(x1, x2, XPos(), (size + vuabs(mult * XDelta()))))
     {
         return TRUE;

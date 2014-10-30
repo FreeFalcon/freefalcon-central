@@ -58,7 +58,7 @@ void PlayerOptionsClass::Initialize(void)
 
      ACMIFileSize = 5;
 
-     SimFlags =  SIM_NO_BLACKOUT | SIM_UNLIMITED_CHAFF | SIM_NAMETAGS | SIM_UNLIMITED_FUEL; // Sim flags
+     SimFlags =  SIM_NO_BLACKOUT bitor SIM_UNLIMITED_CHAFF bitor SIM_NAMETAGS bitor SIM_UNLIMITED_FUEL; // Sim flags
      SimFlightModel = FMSimplified; // Flight model type
      SimWeaponEffect = WEExaggerated;
      SimAvionicsType = ATEasy;
@@ -66,7 +66,7 @@ void PlayerOptionsClass::Initialize(void)
      GeneralFlags = GEN_RULES_FLAGS; // General stuff
     */
     //JAM 07Dec03
-    DispFlags = DISP_HAZING | DISP_GOURAUD | DISP_SHADOWS | DISP_BILINEAR; // Display Options
+    DispFlags = DISP_HAZING bitor DISP_GOURAUD bitor DISP_SHADOWS bitor DISP_BILINEAR; // Display Options
     // DispTextureLevel = 4; //0-4
     DispTerrainDist = 80.0f; // sets ranges at which texture sets are switched
     DispMaxTerrainLevel = 0; //should be 0-2 can be up to 4
@@ -160,13 +160,13 @@ int PlayerOptionsClass::LoadOptions(_TCHAR* filename)
 
     fp = _tfopen(path, _T("rb"));
 
-    if (!fp)
+    if ( not fp)
     {
         MonoPrint(_T("Couldn't open %s's player options\n"), filename);
         _stprintf(path, _T("%s\\Config\\default.pop"), FalconDataDirectory);
         fp = _tfopen(path, "rb");
 
-        if (!fp)
+        if ( not fp)
         {
             MonoPrint(_T("Couldn't open default player options\n"), filename);
             Initialize();
@@ -183,7 +183,7 @@ int PlayerOptionsClass::LoadOptions(_TCHAR* filename)
     success = fread(this, 1, size, fp);
     fclose(fp);
 
-    if (success != size)
+    if (success not_eq size)
     {
         MonoPrint(_T("Failed to read %s's player options\n"), filename);
         Initialize();
@@ -191,13 +191,13 @@ int PlayerOptionsClass::LoadOptions(_TCHAR* filename)
     }
 
     // M.N. If older version, set some new stuff to default values. Next save will update the saved file
-    if (size != sizeof(class PlayerOptionsClass))
+    if (size not_eq sizeof(class PlayerOptionsClass))
     {
         PlayerOptions.skycol = 1;
         PlayerOptions.PlayerRadioVoice = true;
     }
 
-    /* if(size != sizeof(class PlayerOptionsClass))
+    /* if(size not_eq sizeof(class PlayerOptionsClass))
      {
      MonoPrint(_T("%s's player options are in old file format\n"),filename);
      return FALSE;
@@ -206,7 +206,7 @@ int PlayerOptionsClass::LoadOptions(_TCHAR* filename)
 
      success = fread(this, sizeof(class PlayerOptionsClass), 1, fp);
      fclose(fp);
-     if(success != 1)
+     if(success not_eq 1)
      {
      MonoPrint(_T("Failed to read %s's player options\n"),filename);
      Initialize();
@@ -295,10 +295,10 @@ int PlayerOptionsClass::SaveOptions(_TCHAR* filename)
 // returns TRUE if in FULL compliance w/rules
 int PlayerOptionsClass::InCompliance(RulesStruct *rules)
 {
-    if ((SimFlags & SIM_RULES_FLAGS) & ~rules->SimFlags)
+    if ((SimFlags bitand SIM_RULES_FLAGS) bitand compl rules->SimFlags)
         return FALSE;
 
-    if ((GeneralFlags & GEN_RULES_FLAGS) & ~rules->GeneralFlags)
+    if ((GeneralFlags bitand GEN_RULES_FLAGS) bitand compl rules->GeneralFlags)
         return FALSE;
 
     if (ObjectMagnification() > rules->ObjMagnification)
@@ -326,9 +326,9 @@ int PlayerOptionsClass::InCompliance(RulesStruct *rules)
 }
 void PlayerOptionsClass::ComplyWRules(RulesStruct *rules)
 {
-    SimFlags &= ~(SIM_RULES_FLAGS & ~rules->SimFlags);
+    SimFlags and_eq compl (SIM_RULES_FLAGS bitand compl rules->SimFlags);
 
-    GeneralFlags &= ~(GEN_RULES_FLAGS & ~rules->GeneralFlags);
+    GeneralFlags and_eq compl (GEN_RULES_FLAGS bitand compl rules->GeneralFlags);
 
     if (ObjectMagnification() > rules->ObjMagnification)
         ObjMagnification = rules->ObjMagnification;

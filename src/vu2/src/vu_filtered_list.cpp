@@ -3,7 +3,7 @@
 
 int foo_x2 = 0;// only for solving warnings
 
-#if !VU_ALL_FILTERED
+#if not VU_ALL_FILTERED
 
 
 VuFilteredList::VuFilteredList(VuFilter* filter) : VuLinkedList(),  filter_(filter->Copy())
@@ -24,11 +24,11 @@ VU_ERRCODE VuFilteredList::Handle(VuMessage* msg)
         // list has to do with msg
         VuEntity* ent = msg->Entity();
 
-        if (ent && filter_->RemoveTest(ent))
+        if (ent and filter_->RemoveTest(ent))
         {
             if (Find(ent->Id()))
             {
-                if (!filter_->Test(ent))
+                if ( not filter_->Test(ent))
                 {
                     // ent is in table, but doesn't belong there...
                     VuLinkedList::Remove(ent);

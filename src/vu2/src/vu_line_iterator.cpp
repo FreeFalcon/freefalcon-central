@@ -18,9 +18,9 @@ VuLineIterator::VuLineIterator
 {
     curRB_ = 0;
     key1min_ = 0;
-    key1max_ = static_cast<VU_KEY>(~0);
+    key1max_ = static_cast<VU_KEY>(compl 0);
     key2min_ = 0;
-    key2max_ = static_cast<VU_KEY>(~0);
+    key2max_ = static_cast<VU_KEY>(compl 0);
     key1cur_ = 0;
 
     VU_KEY key1origin      = coll->filter_->Key1(origin);
@@ -48,7 +48,7 @@ VuLineIterator::VuLineIterator
 
     VuGridTree *gt = (VuGridTree *)collection_;
 
-    if (!gt->wrap_)
+    if ( not gt->wrap_)
     {
         if (key1min_ < gt->bottom_)
         {
@@ -73,9 +73,9 @@ VuLineIterator::VuLineIterator(
 {
     curRB_ = 0;
     key1min_ = 0;
-    key1max_ = static_cast<VU_KEY>(~0);
+    key1max_ = static_cast<VU_KEY>(compl 0);
     key2min_ = 0;
-    key2max_ = static_cast<VU_KEY>(~0);
+    key2max_ = static_cast<VU_KEY>(compl 0);
     key1cur_ = 0;
     VU_KEY key1origin      = coll->filter_->CoordToKey1(xPos0);
     VU_KEY key2origin      = coll->filter_->CoordToKey2(yPos0);
@@ -102,7 +102,7 @@ VuLineIterator::VuLineIterator(
 
     VuGridTree *gt = (VuGridTree *)collection_;
 
-    if (!gt->wrap_)
+    if ( not gt->wrap_)
     {
         if (key1min_ < gt->bottom_)
         {
@@ -135,7 +135,7 @@ VuEntity *VuLineIterator::GetFirst()
         {
             curnode_ = curnode_->LowerBound(key2min_);
 
-            if (curnode_ && curnode_->head_ && curnode_->key_ < key2max_)
+            if (curnode_ and curnode_->head_ and curnode_->key_ < key2max_)
             {
                 curlink_ = curnode_->head_;
 
@@ -153,7 +153,7 @@ VuEntity *VuLineIterator::GetFirst()
 VuEntity *VuLineIterator::GetNext()
 {
     // sfr: smartpointer
-    while (curnode_ == 0 && key1cur_ < key1max_)
+    while (curnode_ == 0 and key1cur_ < key1max_)
     {
         // danm_TBD: what about non-wrapping edges?
         key1cur_ += ((VuGridTree *)collection_)->rowheight_;
@@ -164,7 +164,7 @@ VuEntity *VuLineIterator::GetNext()
         {
             curnode_ = curnode_->LowerBound(key2min_);
 
-            if (curnode_ && curnode_->head_ && curnode_->key_ < key2max_)
+            if (curnode_ and curnode_->head_ and curnode_->key_ < key2max_)
             {
                 curlink_ = curnode_->head_;
 
@@ -184,7 +184,7 @@ VuEntity *VuLineIterator::GetNext()
     {
         curnode_ = curnode_->next_;
 
-        if (curnode_ == 0 || curnode_->key_ > key2max_)
+        if (curnode_ == 0 or curnode_->key_ > key2max_)
         {
             // skip to next row
             curlink_ = vuTailNode;
@@ -205,7 +205,7 @@ VuEntity *VuLineIterator::GetFirst(VuFilter* filter)
 {
     VuEntity* retval = GetFirst();
 
-    if (retval == 0 || filter->Test(retval))
+    if (retval == 0 or filter->Test(retval))
     {
         return retval;
     }
@@ -218,7 +218,7 @@ VuEntity *VuLineIterator::GetNext(VuFilter* filter)
 {
     VuEntity* retval = 0;
 
-    while ((retval = GetNext()) != 0)
+    while ((retval = GetNext()) not_eq 0)
     {
         if (filter->Test(retval))
         {

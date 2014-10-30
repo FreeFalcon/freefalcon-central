@@ -74,11 +74,11 @@ public:
     }
     void SetFlagBitOns(long flags)
     {
-        Flags_ |= flags;
+        Flags_ or_eq flags;
     }
     void SetFlagBitOff(long flags)
     {
-        Flags_ &= (0xffffffff ^ flags);
+        Flags_ and_eq (0xffffffff xor flags);
     }
     short GetCallingType()
     {

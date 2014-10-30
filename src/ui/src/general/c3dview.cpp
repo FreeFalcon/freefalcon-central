@@ -74,7 +74,7 @@ BOOL C_3dViewer::Setup()
 
 BOOL C_3dViewer::Init3d(float ViewAngle)
 {
-    if (rend3d_ || rendOTW_)
+    if (rend3d_ or rendOTW_)
         return(FALSE);
 
 
@@ -103,7 +103,7 @@ BOOL C_3dViewer::InitOTW(float, BOOL Preload)
 {
     RViewPoint *tempVP = NULL;
 
-    if (rend3d_ || rendOTW_)
+    if (rend3d_ or rendOTW_)
         return(FALSE);
 
     // This preloads a SMALL portion of the terrain for speedy viewing
@@ -129,7 +129,7 @@ BOOL C_3dViewer::InitOTW(float, BOOL Preload)
 
     viewPoint_->Update(&currentPos_);
 
-    if (Preload && tempVP)
+    if (Preload and tempVP)
     {
         tempVP->Cleanup();
         delete tempVP;
@@ -287,7 +287,7 @@ BSPLIST *C_3dViewer::LoadDrawableFeature(long ID, Objective obj, short f, short 
 {
     BSPLIST *bspobj;
 
-    if (!Parent)
+    if ( not Parent)
     {
         bspobj = objects_->CreateContainer(ID, obj, f, fid, classPtr, fc);
 
@@ -376,7 +376,7 @@ BOOL C_3dViewer::AddToView(BSPLIST *obj)
 {
     if (obj)
     {
-        if (!((DrawableBSP*)obj->object)->InDisplayList())
+        if ( not ((DrawableBSP*)obj->object)->InDisplayList())
         {
             viewPoint_->InsertObject(obj->object);
             return(TRUE);
@@ -454,7 +454,7 @@ BOOL C_3dViewer::View3d(long ID)
 
 BOOL C_3dViewer::ViewOTW()
 {
-    if (rendOTW_ && viewPoint_)
+    if (rendOTW_ and viewPoint_)
     {
         viewPoint_->Update(&currentPos_);
         gMainHandler->Unlock();
@@ -486,7 +486,7 @@ BOOL C_3dViewer::ViewGreyOTW()
     WORD *mem;
 
     //long i,j,x; // JB 010118 unreferenced variable
-    if (rendOTW_ && viewPoint_)
+    if (rendOTW_ and viewPoint_)
     {
         viewPoint_->Update(&currentPos_);
         gMainHandler->Unlock();
@@ -514,7 +514,7 @@ BOOL C_3dViewer::ViewGreyOTW()
          rendOTW_->context.FlushPolyLists();
          rendOTW_->EndDraw();
          rendOTW_->context.FinishFrame(NULL);
-         } while(!TheLoader.LoaderQueueEmpty());*/
+         } while( not TheLoader.LoaderQueueEmpty());*/
 
 
         //Wombat778 11-3-2003 Added to allow Latitude/Longitude to be drawn on the display.  A bit of a hack but works ok.
@@ -550,14 +550,14 @@ BOOL C_3dViewer::ViewGreyOTW()
         RECT rcDst = { 0, 0, nWidth, nHeight };
 
         // Cleanup old buffer if it doesnt fit
-        if (m_pImgGray && (m_pImgGray->targetXres() != nWidth || m_pImgGray->targetYres() != nHeight))
+        if (m_pImgGray and (m_pImgGray->targetXres() not_eq nWidth or m_pImgGray->targetYres() not_eq nHeight))
         {
             m_pImgGray->Cleanup();
             delete m_pImgGray;
             m_pImgGray = NULL;
         }
 
-        if (!m_pImgGray)
+        if ( not m_pImgGray)
         {
             // Create new work buffer
             m_pImgGray = new ImageBuffer;
@@ -575,7 +575,7 @@ BOOL C_3dViewer::ViewGreyOTW()
         {
             col = m_pImgGray->Pixel16toPixel32(mem[i]);
             col = (RGBA_GETRED(col) + RGBA_GETGREEN(col) + RGBA_GETBLUE(col)) / 3;
-            col |= (col << 8) | (col << 16);
+            col or_eq (col << 8) bitor (col << 16);
             mem[i] = m_pImgGray->Pixel32toPixel16(col);
         }
 

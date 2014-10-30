@@ -48,7 +48,7 @@ VDial::VDial(VDialInitStr* pInit)
     }
 
     // JPO - lets be careful out there.
-    if (mCallback < 0 || mCallback >= TOTAL_CPCALLBACK_SLOTS)
+    if (mCallback < 0 or mCallback >= TOTAL_CPCALLBACK_SLOTS)
     {
         mExecCallback = NULL;
     }
@@ -114,7 +114,7 @@ void VDial::Exec(SimBaseClass* pOwnship)
             x = mRadius * mpCosPoints[mEndPoints - 1];
             y = -mRadius * mpSinPoints[mEndPoints - 1];
         }
-        else if ((mDialValue >= mpValues[i]) && (mDialValue < mpValues[i + 1]))
+        else if ((mDialValue >= mpValues[i]) and (mDialValue < mpValues[i + 1]))
         {
             found = TRUE;
 
@@ -155,5 +155,5 @@ void VDial::Exec(SimBaseClass* pOwnship)
         }
 
     }
-    while ((!found) && (i < mEndPoints));
+    while (( not found) and (i < mEndPoints));
 }

@@ -1,3 +1,4 @@
+#include <cISO646>
 #include <windows.h>
 #include "fsound.h"
 #include <mmreg.h>
@@ -24,7 +25,7 @@ static WAVEFORMATEX stereo =
 
 void gMusicCallback(SOUNDSTREAM *Stream, int MessageID)
 {
-    if (!Stream || !gMusic)
+    if ( not Stream or not gMusic)
         return;
 
     switch (MessageID)
@@ -38,7 +39,7 @@ void gMusicCallback(SOUNDSTREAM *Stream, int MessageID)
             break;
 
         case SND_MSG_FADE_OUT_DONE:
-            Stream->Status |= SND_STREAM_FADEDOUT;
+            Stream->Status or_eq SND_STREAM_FADEDOUT;
 
             if (gMusic->GetFlags() == C_Music::MUSIC_PAUSE_FADE)
             {
@@ -65,7 +66,7 @@ void gMusicCallback(SOUNDSTREAM *Stream, int MessageID)
 
             if (FadeOutInteractive)
             {
-                Stream->Status |= SND_STREAM_FADE_OUT;
+                Stream->Status or_eq SND_STREAM_FADE_OUT;
                 Stream->FadeOut = Stream->FadeIn;
                 FadeOutInteractive = FALSE;
                 gMusic->ToggleStream();
@@ -110,7 +111,7 @@ C_Music::C_Music()
 
 C_Music::~C_Music()
 {
-    if (StreamID_[0] || StreamID_[1] || Music_)
+    if (StreamID_[0] or StreamID_[1] or Music_)
         Cleanup();
 }
 
@@ -118,7 +119,7 @@ void C_Music::Setup(CSoundMgr *mngr)
 {
     Sound_ = mngr;
 
-    if (!Music_)
+    if ( not Music_)
     {
         Music_ = new C_Hash;
         Music_->Setup(10);
@@ -129,7 +130,7 @@ void C_Music::Cleanup()
 {
     int i, j;
 
-    if (Sound_ && StreamID_[0] != SND_NO_HANDLE || StreamID_[1] != SND_NO_HANDLE)
+    if (Sound_ and StreamID_[0] not_eq SND_NO_HANDLE or StreamID_[1] not_eq SND_NO_HANDLE)
     {
         RemoveStream();
         StreamID_[0] = SND_NO_HANDLE;
@@ -157,7 +158,7 @@ void C_Music::Cleanup()
 
 void C_Music::CreateStream()
 {
-    if (!Sound_)
+    if ( not Sound_)
         return;
 
     if (StreamID_[0] == SND_NO_HANDLE)
@@ -174,10 +175,10 @@ void C_Music::RemoveStream()
 {
     if (Sound_)
     {
-        if (StreamID_[0] != SND_NO_HANDLE)
+        if (StreamID_[0] not_eq SND_NO_HANDLE)
             Sound_->RemoveStream(StreamID_[0]);
 
-        if (StreamID_[1] != SND_NO_HANDLE)
+        if (StreamID_[1] not_eq SND_NO_HANDLE)
             Sound_->RemoveStream(StreamID_[1]);
 
         StreamID_[0] = SND_NO_HANDLE;
@@ -192,7 +193,7 @@ void C_Music::Play(SOUND_RES *snd)
 
     if (Sound_)
     {
-        if (StreamID_[0] == SND_NO_HANDLE || StreamID_[1] == SND_NO_HANDLE)
+        if (StreamID_[0] == SND_NO_HANDLE or StreamID_[1] == SND_NO_HANDLE)
         {
             CreateStream();
             SetMessageCB(gMusicCallback);
@@ -200,16 +201,16 @@ void C_Music::Play(SOUND_RES *snd)
 
         SND_FLAGS = 0;
 
-        if (snd->flags & SOUND_LOOP)
-            SND_FLAGS |= SND_STREAM_LOOP;
+        if (snd->flags bitand SOUND_LOOP)
+            SND_FLAGS or_eq SND_STREAM_LOOP;
 
-        if (snd->flags & SOUND_FADE_IN)
-            SND_FLAGS |= SND_STREAM_FADE_IN;
+        if (snd->flags bitand SOUND_FADE_IN)
+            SND_FLAGS or_eq SND_STREAM_FADE_IN;
 
-        if (snd->flags & SOUND_FADE_OUT)
-            SND_FLAGS |= SND_STREAM_FADE_OUT;
+        if (snd->flags bitand SOUND_FADE_OUT)
+            SND_FLAGS or_eq SND_STREAM_FADE_OUT;
 
-        if (snd->flags & SOUND_RES_STREAM)
+        if (snd->flags bitand SOUND_RES_STREAM)
         {
             strcpy(fname, snd->Sound->Owner->ResName());
             strcat(fname, ".rsc");
@@ -295,10 +296,10 @@ void C_Music::SetVolume(long volume)
 
     if (Sound_)
     {
-        if (StreamID_[0] != SND_NO_HANDLE)
+        if (StreamID_[0] not_eq SND_NO_HANDLE)
             Sound_->SetStreamVolume(StreamID_[0], volume);
 
-        if (StreamID_[1] != SND_NO_HANDLE)
+        if (StreamID_[1] not_eq SND_NO_HANDLE)
             Sound_->SetStreamVolume(StreamID_[1], volume);
     }
 }
@@ -309,7 +310,7 @@ void C_Music::AddQ(long ID)
 
     i = 0;
 
-    while (Queue_[i] != SND_NO_HANDLE && i < _MUSIC_QUEUE_SIZE_)
+    while (Queue_[i] not_eq SND_NO_HANDLE and i < _MUSIC_QUEUE_SIZE_)
         i++;
 
     if (i == _MUSIC_QUEUE_SIZE_)
@@ -330,7 +331,7 @@ void C_Music::PlayQ()
     SOUND_RES *snd;
     int i;
 
-    if (!Sound_)
+    if ( not Sound_)
         return;
 
     if (Sound_->IsStreamPlaying(StreamID_[StreamUsed_]))
@@ -359,7 +360,7 @@ void C_Music::PlayQ()
 
         Queue_[_MUSIC_QUEUE_SIZE_ - 1] = SND_NO_HANDLE;
     }
-    while (!snd && Queue_[0] != SND_NO_HANDLE);
+    while ( not snd and Queue_[0] not_eq SND_NO_HANDLE);
 }
 
 // HELLA HUGE KLUDGE to String 2 or more WAVE files together
@@ -370,7 +371,7 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
     long i, size, NumSamples;
     char fname[MAX_PATH];
 
-    if (!Sound_)
+    if ( not Sound_)
         return;
 
     do
@@ -379,13 +380,13 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
 
         if (snd)
         {
-            if (Stream->fp != INVALID_HANDLE_VALUE)
+            if (Stream->fp not_eq INVALID_HANDLE_VALUE)
             {
                 CloseHandle(Stream->fp);
                 Stream->fp = INVALID_HANDLE_VALUE;
             }
 
-            if (snd->flags & SOUND_IN_RES)
+            if (snd->flags bitand SOUND_IN_RES)
             {
                 strcpy(fname, snd->Sound->Owner->ResName());
                 strcat(fname, ".rsc");
@@ -398,25 +399,25 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
                                         OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
             }
 
-            if (Stream->fp != INVALID_HANDLE_VALUE)
+            if (Stream->fp not_eq INVALID_HANDLE_VALUE)
             {
-                if (snd->Sound && snd->flags & SOUND_RES_STREAM)
+                if (snd->Sound and snd->flags bitand SOUND_RES_STREAM)
                 {
                     SetFilePointer(Stream->fp, snd->Sound->Header->offset, NULL, FILE_BEGIN);
                 }
 
                 size = Sound_->LoadRiffFormat(Stream->fp, &Header, &Stream->HeaderOffset, &NumSamples);
 
-                if (snd->Sound && snd->flags & SOUND_RES_STREAM)
+                if (snd->Sound and snd->flags bitand SOUND_RES_STREAM)
                 {
                     Stream->HeaderOffset += snd->Sound->Header->offset;
                 }
 
                 if (Header.wFormatTag == WAVE_FORMAT_IMA_ADPCM)
                 {
-                    if (!Stream->ImaInfo)
+                    if ( not Stream->ImaInfo)
                     {
-                        Stream->Status |= SND_IS_IMAADPCM;
+                        Stream->Status or_eq SND_IS_IMAADPCM;
                         Stream->ImaInfo = new IMA_STREAM;
                         memset(Stream->ImaInfo, 0, sizeof(IMA_STREAM));
                         Stream->ImaInfo->type = Header.nChannels;
@@ -443,7 +444,7 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
                 }
                 else
                 {
-                    Stream->Status &= ~SND_IS_IMAADPCM;
+                    Stream->Status and_eq compl SND_IS_IMAADPCM;
 
                     if (Stream->ImaInfo)
                     {
@@ -455,15 +456,15 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
                     }
                 }
 
-                Stream->Status |= SND_STREAM_CONTINUE | SND_STREAM_LOOP;
+                Stream->Status or_eq SND_STREAM_CONTINUE bitor SND_STREAM_LOOP;
 
-                if (!(snd->flags & SOUND_LOOP))
-                    Stream->Status ^= SND_STREAM_LOOP;
+                if ( not (snd->flags bitand SOUND_LOOP))
+                    Stream->Status xor_eq SND_STREAM_LOOP;
 
                 Stream->LoopOffset = snd->LoopPoint;
                 Stream->LoopCount = snd->Count;
 
-                if (snd->flags & SOUND_FADE_OUT)
+                if (snd->flags bitand SOUND_FADE_OUT)
                 {
                     Stream->FadeOut = DSBVOLUME_MIN;
                     MusicFlags_ = MUSIC_STOP;
@@ -480,7 +481,7 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
 
         Queue_[_MUSIC_QUEUE_SIZE_ - 1] = SND_NO_HANDLE;
     }
-    while (!snd && Queue_[0] != SND_NO_HANDLE);
+    while ( not snd and Queue_[0] not_eq SND_NO_HANDLE);
 }
 
 // Interactive stuff
@@ -488,10 +489,10 @@ void C_Music::AddInteractiveMusic(long Section, long Group, long MusicID)
 {
     long ID;
 
-    if (!Music_)
+    if ( not Music_)
         return;
 
-    ID = Count_[Section][Group] | (Section << 16) | (Group << 8);
+    ID = Count_[Section][Group] bitor (Section << 16) bitor (Group << 8);
 
     if (Music_->Find(ID))
         return;
@@ -507,7 +508,7 @@ void C_Music::StartInteractive(long Section, long Group)
 
     RepeatCount_ = 1;
 
-    ID = (rand() % Count_[Section][Group]) | (Section << 16) | (Group << 8);
+    ID = (rand() % Count_[Section][Group]) bitor (Section << 16) bitor (Group << 8);
 
     MusicID = (long)Music_->Find(ID);
 
@@ -516,7 +517,7 @@ void C_Music::StartInteractive(long Section, long Group)
         Section_ = Section;
         Group_ = Group;
         GroupRepeat_ = static_cast<short>(2 + rand() % 4);
-        CurPiece_ = ID & 0xff;
+        CurPiece_ = ID bitand 0xff;
         SectionCount_ = 0;
         GroupCount_ = 1;
         // Start it playing
@@ -565,13 +566,13 @@ void C_Music::PlayNextInteractive()
     if (ID == CurPiece_)
         ID = (CurPiece_ + 1) % Count_[Section_][Group_];
 
-    ID |= (Section_ << 16) | (Group_ << 8);
+    ID or_eq (Section_ << 16) bitor (Group_ << 8);
 
     MusicID = (long)Music_->Find(ID);
 
     if (MusicID)
     {
-        CurPiece_ = ID & 0xff;
+        CurPiece_ = ID bitand 0xff;
         // Start it playing
         AddQ(MusicID);
 

@@ -230,7 +230,7 @@ void TWODDRAW_CLASS::DisplayString(int row, int col, char *str)
 void TWODDRAW_CLASS::Viewport(int left, int right, int top, int bottom)
 {
 
-    if (bottom - top > winYres || right - left > winXres)
+    if (bottom - top > winYres or right - left > winXres)
         return;
 
     portOffsetX = left;

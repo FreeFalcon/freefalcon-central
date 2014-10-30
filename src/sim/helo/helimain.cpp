@@ -275,8 +275,8 @@ void HelicopterClass::Init(SimInitDataClass* initData)
     //REMOVED OLD CODE; BEGIN REWRITE
     if (curWaypoint)
     {
-        if (curWaypoint == atWaypoint  && curWaypoint->GetWPFlags() & WPF_TAKEOFF
-            && curWaypoint->GetWPDepartureTime() > SimLibElapsedTime)
+        if (curWaypoint == atWaypoint and curWaypoint->GetWPFlags() bitand WPF_TAKEOFF
+           and curWaypoint->GetWPDepartureTime() > SimLibElapsedTime)
         {
             curWaypoint = atWaypoint;
         }
@@ -386,7 +386,7 @@ int HelicopterClass::Sleep(void)
 {
     int retval = 0;
 
-    if (!IsAwake())
+    if ( not IsAwake())
         return retval;
 
     if (hBrain)
@@ -442,7 +442,7 @@ int HelicopterClass::Exec(void)
         return TRUE;
 
     //RV - I-Hawk - Removed the burning SFX stuff here as not handled in simveh.cpp anymore...
-    if (pctStrength <= 0.0f && !IsExploding())
+    if (pctStrength <= 0.0f and not IsExploding())
     {
         Tpoint pos, vec;
 
@@ -544,7 +544,7 @@ int HelicopterClass::Exec(void)
     // RV - Biker - Switch on pylon if we have weapons
     for (int i = 0; i < Sms->NumHardpoints(); i++)
     {
-        if (i > 0 && Sms->hardPoint[i]->weaponCount > 0)
+        if (i > 0 and Sms->hardPoint[i]->weaponCount > 0)
             ((DrawableBSP*)drawPointer)->SetSwitchMask(24, 1);
     }
 
@@ -561,12 +561,12 @@ int HelicopterClass::Exec(void)
 
     if (IsExploding())
     {
-        if (!IsSetFlag(SHOW_EXPLOSION))
+        if ( not IsSetFlag(SHOW_EXPLOSION))
         {
             RunExplosion();
             SetFlag(SHOW_EXPLOSION);
 
-            if (IsLocal() && flightLead == this)
+            if (IsLocal() and flightLead == this)
             {
                 PromoteSubordinates();
             }
@@ -576,12 +576,12 @@ int HelicopterClass::Exec(void)
 
         return TRUE;
     }
-    else if (!IsDead())
+    else if ( not IsDead())
     {
         ShowDamage();
 
         // animate rotors
-        if (GetSwitch(HELI_ROTORS) != 1)
+        if (GetSwitch(HELI_ROTORS) not_eq 1)
         {
             SetSwitch(HELI_ROTORS, 1);
             SetDOF(HELI_MAIN_ROTOR, 0.0f);
@@ -622,7 +622,7 @@ int HelicopterClass::Exec(void)
             SoundPos.Sfx(SFX_ENGHELI);
 
         // ACMI Output
-        if (gACMIRec.IsRecording() && (SimLibFrameCount & 0x0f) == 0)
+        if (gACMIRec.IsRecording() and (SimLibFrameCount bitand 0x0f) == 0)
         {
             genPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
             genPos.data.type = Type();
@@ -637,7 +637,7 @@ int HelicopterClass::Exec(void)
             gACMIRec.GenPositionRecord(&genPos);
         }
 
-        if (!IsLocal())
+        if ( not IsLocal())
         {
             return FALSE;
         }
@@ -655,9 +655,9 @@ int HelicopterClass::Exec(void)
             distLOD = 0;
 
         // does this helicopter LOD out?
-        if (useDistLOD == TRUE && flightLead)
+        if (useDistLOD == TRUE and flightLead)
         {
-            if (!OnGround() && distLOD < 0.5f && !IsFiring())
+            if ( not OnGround() and distLOD < 0.5f and not IsFiring())
             {
                 // should be hidden
                 SetLocalFlag(IS_HIDDEN);
@@ -707,7 +707,7 @@ int HelicopterClass::Exec(void)
             }
         } // use Dist LOD
 
-        // if ( flightLead == this && SimLibElapsedTime > nextTargetUpdate )
+        // if ( flightLead == this and SimLibElapsedTime > nextTargetUpdate )
         if (SimLibElapsedTime > nextTargetUpdate)
         {
             hBrain->TargetSelection();
@@ -719,7 +719,7 @@ int HelicopterClass::Exec(void)
         /*----------------------*/
         /* Do Relative geometry */
         /*----------------------*/
-        // if ( flightLead == this && SimLibElapsedTime > nextGeomCalc )
+        // if ( flightLead == this and SimLibElapsedTime > nextGeomCalc )
         if (SimLibElapsedTime > nextGeomCalc)
         {
             CalcRelGeom(this, targetPtr, vmat, 1.0F / SimLibMajorFrameTime);
@@ -728,7 +728,7 @@ int HelicopterClass::Exec(void)
             RunSensors();
 
             /*
-            if ( !hBrain->isWing )
+            if ( not hBrain->isWing )
             {
              hBrain->TargetSelection( targetList );
             }
@@ -741,7 +741,7 @@ int HelicopterClass::Exec(void)
         // Get the controls
         GatherInputs();
 
-        // Weapons & targeting - Note: change target to the brain's selected target
+        // Weapons bitand targeting - Note: change target to the brain's selected target
         // FCC->Exec(flightLead->hBrain->targetPtr, flightLead->hBrain->targetPtr, theInputs);
 
         // fire weapons if chosen
@@ -752,7 +752,7 @@ int HelicopterClass::Exec(void)
         /*------------------------*/
         hf->SetControls(hBrain->pStick, hBrain->rStick, hBrain->throtl, hBrain->yPedal);
 
-        if (!OnGround() && SimDriver.MotionOn())
+        if ( not OnGround() and SimDriver.MotionOn())
         {
             hf->Exec();
         }
@@ -761,7 +761,7 @@ int HelicopterClass::Exec(void)
         float groundZ;
         groundZ = OTWDriver.GetGroundLevel(hf->XE.x, hf->XE.y, &normal);
 
-        if (!OnGround() && (hf->XE.z + offsetZ) >= groundZ)
+        if ( not OnGround() and (hf->XE.z + offsetZ) >= groundZ)
         {
             float tmp;
 
@@ -769,7 +769,7 @@ int HelicopterClass::Exec(void)
             tmp = (float)sqrt(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
             normal.z /= tmp;
 
-            // insure we're above ground!
+            // insure we're above ground
             hf->XE.z = OTWDriver.GetGroundLevel(hf->XE.x, hf->XE.y) - offsetZ;
 
             // if the z normal is beyond a certain value, ground is too sloped
@@ -787,7 +787,7 @@ int HelicopterClass::Exec(void)
                 message = new FalconDamageMessage (Id(), owner_session);
                 message->dataBlock.gameTime   = SimLibElapsedTime;
                 message->dataBlock.fEntityID  = Id();
-                if (!SimDriver.RunningCampaign() || GetCampaignObject() == NULL || IsDogfight())
+                if ( not SimDriver.RunningCampaign() or GetCampaignObject() == NULL or IsDogfight())
                 {
                  message->dataBlock.fCampID = GetCallsignIdx();
                  message->dataBlock.fFlightID = (int)GetCampaignObject();
@@ -804,7 +804,7 @@ int HelicopterClass::Exec(void)
                 message->dataBlock.fWeaponUID.num_ = 0;
 
                 message->dataBlock.dEntityID  = Id();
-                if (!SimDriver.RunningCampaign() || GetCampaignObject() == NULL || IsDogfight())
+                if ( not SimDriver.RunningCampaign() or GetCampaignObject() == NULL or IsDogfight())
                 {
                  message->dataBlock.dCampID = GetCallsignIdx();
                  message->dataBlock.dFlightID = (int)GetCampaignObject();
@@ -848,7 +848,7 @@ int HelicopterClass::Exec(void)
 
     }
 
-    if ((GetCampaignObject() > (VuEntity*)MAX_IA_CAMP_UNIT) && !hBrain->isWing)
+    if ((GetCampaignObject() > (VuEntity*)MAX_IA_CAMP_UNIT) and not hBrain->isWing)
     {
         ((Unit)GetCampaignObject())->SimSetLocation(hf->XE.x, hf->XE.y, hf->XE.z);
         // KCK note: no reason to do these..
@@ -886,7 +886,7 @@ void HelicopterClass::JoinFlight(void)
         hBrain->JoinFlight();
 
     // every 5th heli in flight will LOD out on heli battalions
-    if (GetCampaignObject()->NumberOfComponents() > 4 && (flightIndex % 5) != 0)
+    if (GetCampaignObject()->NumberOfComponents() > 4 and (flightIndex % 5) not_eq 0)
     {
         useDistLOD = TRUE;
     }
@@ -962,7 +962,7 @@ void HelicopterClass::LandingCheck(void)
         // KCK NOTE: I'm only sending this for members with the package flag set.
         // This means all package elements in single player, but non-necessarily in
         // multi-player. But in multi-player we'll at least get all players.
-        if (GetCampaignObject() && GetCampaignObject()->InPackage())
+        if (GetCampaignObject() and GetCampaignObject()->InPackage())
         {
             FalconLandingMessage* landingMessage;
             landingMessage = new FalconLandingMessage(Id(), FalconLocalGame);
@@ -978,14 +978,14 @@ void HelicopterClass::LandingCheck(void)
     {
         // we're taking damage.....
         /*
-        ** edg: NO DAMAGE!
+        ** edg: NO DAMAGE
         FalconDamageMessage* message;
 
           VuTargetEntity *owner_session = (VuTargetEntity*)vuDatabase->Find(OwnerId());
           message = new FalconDamageMessage (Id(), owner_session);
           message->dataBlock.gameTime   = SimLibElapsedTime;
           message->dataBlock.fEntityID  = Id();
-          if (!SimDriver.RunningCampaign() || GetCampaignObject() == NULL || IsDogfight())
+          if ( not SimDriver.RunningCampaign() or GetCampaignObject() == NULL or IsDogfight())
           {
           message->dataBlock.fCampID = GetCallsignIdx();
           message->dataBlock.fFlightID = (int)GetCampaignObject();
@@ -1002,7 +1002,7 @@ void HelicopterClass::LandingCheck(void)
           message->dataBlock.fWeaponUID.num_ = 0;
 
           message->dataBlock.dEntityID  = Id();
-          if (!SimDriver.RunningCampaign() || GetCampaignObject() == NULL || IsDogfight())
+          if ( not SimDriver.RunningCampaign() or GetCampaignObject() == NULL or IsDogfight())
           {
           message->dataBlock.dCampID = GetCallsignIdx();
           message->dataBlock.dFlightID = (int)GetCampaignObject();
@@ -1097,7 +1097,7 @@ HelicopterClass::GetFormationPos(float *x, float *y, float *z)
 
     // if we're the leader just return our own position
     //TJL 11/15/03 Test
-    //if ( flightLead == this || !flightLead)
+    //if ( flightLead == this or not flightLead)
     if (flightLead == this)
     {
         *x = XPos();
@@ -1135,9 +1135,9 @@ void HelicopterClass::PromoteSubordinates(void)
     HelicopterClass *newLead = NULL;
 
     MonoPrint("*** Helicopter *** \n");
-    MonoPrint("Need to Promote Subordinates!\n");
+    MonoPrint("Need to Promote Subordinates\n");
 
-    if (!GetCampaignObject()->GetComponents())
+    if ( not GetCampaignObject()->GetComponents())
     {
         MonoPrint("No Flight Pointer to determine promotion\n");
         MonoPrint("************** \n");
@@ -1149,14 +1149,14 @@ void HelicopterClass::PromoteSubordinates(void)
     {
         theObj = (HelicopterClass *)GetCampaignObject()->GetComponentEntity(i);
 
-        // num in flight may not match what's actually there!
+        // num in flight may not match what's actually there
         if (theObj == NULL)
             break;
 
         // do we promote this guy?
-        if (theObj != this && newLead == NULL)
+        if (theObj not_eq this and newLead == NULL)
         {
-            // edg: observed drawPointer being NULL (!?)
+            // edg: observed drawPointer being NULL ( not ?)
             if (theObj->drawPointer)
                 SetLabel(theObj);
 
@@ -1165,16 +1165,16 @@ void HelicopterClass::PromoteSubordinates(void)
             theObj->flightLead = theObj;
             theObj->useDistLOD = FALSE;
             theObj->UnSetLocalFlag(IS_HIDDEN);
-            MonoPrint("Heli New Leader Promoted!\n");
+            MonoPrint("Heli New Leader Promoted\n");
             continue;
         }
 
         // do we set others to newly promoted leader?
-        if (theObj != this && newLead != NULL)
+        if (theObj not_eq this and newLead not_eq NULL)
         {
-            // yup!
+            // yup
             theObj->flightLead = newLead;
-            MonoPrint("Heli Subordinate set to New Leader!\n");
+            MonoPrint("Heli Subordinate set to New Leader\n");
         }
     }
 

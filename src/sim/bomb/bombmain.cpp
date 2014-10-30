@@ -68,9 +68,9 @@ BombClass::BombClass(VU_BYTE** stream, long *rem) : SimWeaponClass(stream, rem)
     memcpychk(&bt, stream, sizeof(bt), rem);
     InitLocalData(bt);
 
-    if (parent && !IsLocal())
+    if (parent and not IsLocal())
     {
-        flags |= FirstFrame;
+        flags or_eq FirstFrame;
         //VuReferenceEntity (parent);
         //parentReferenced = TRUE;
         SetYPR(parent->Yaw(), parent->Pitch(), parent->Roll());
@@ -103,9 +103,9 @@ int BombClass::Save(VU_BYTE **stream)
 {
     int saveSize = SimWeaponClass::Save(stream);
 
-    if (flags & IsChaff)
+    if (flags bitand IsChaff)
         bombType = Chaff;
-    else if (flags & IsFlare)
+    else if (flags bitand IsFlare)
         bombType = Flare;
 
     memcpy(*stream, &bombType, sizeof(int));
@@ -117,9 +117,9 @@ int BombClass::Save(FILE *file)
 {
     int saveSize = SimWeaponClass::Save(file);
 
-    if (flags & IsChaff)
+    if (flags bitand IsChaff)
         bombType = Chaff;
-    else if (flags & IsFlare)
+    else if (flags bitand IsFlare)
         bombType = Flare;
 
     fwrite(&bombType, sizeof(int), 1, file);
@@ -140,7 +140,7 @@ void BombClass::InitLocalData(BombType btype)
     burstHeight = 0.0F;
     detonateHeight = 0.0F;
     timeOfDeath = 0;
-    specialData.flags |= MOTION_BMB_AI;
+    specialData.flags or_eq MOTION_BMB_AI;
     flags = 0;
     dragCoeff = 0.0f;
 
@@ -187,7 +187,7 @@ void BombClass::Init()
     SimWeaponDataType* wpnDefinition;
     int dataIdx;
 
-    // MLR 2003-11-10 cut & paste from MissleClass
+    // MLR 2003-11-10 cut bitand paste from MissleClass
     auxData = NULL;
     classPtr = (Falcon4EntityClassType*)EntityType();
     wc = (WeaponClassDataType*)classPtr->dataPtr;
@@ -200,15 +200,15 @@ void BombClass::Init()
 
     // Am I an LGB
     if (EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GUIDED)
-        flags |= IsLGB;
+        flags or_eq IsLGB;
 
     //Wombat778 3-09-04 Is this a GPS bomb?
     if (EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS)
-        flags |= IsGPS;
+        flags or_eq IsGPS;
 
     // Cobra - GPS/JSOW
     if (EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
-        flags |= (IsGPS | IsJSOW);
+        flags or_eq (IsGPS bitor IsJSOW);
 
 }
 
@@ -252,7 +252,7 @@ void BombClass::Start(vector* pos, vector* rate, float cD, SimObjectType *target
 
     if (parent)
     {
-        flags |= FirstFrame;
+        flags or_eq FirstFrame;
         //VuReferenceEntity (parent);
         //parentReferenced = TRUE;
         SetYPR(parent->Yaw(), parent->Pitch(), parent->Roll());
@@ -270,7 +270,7 @@ void BombClass::Start(vector* pos, vector* rate, float cD, SimObjectType *target
 
     // edg hack.  drag coeff of 1.0f we assume to be a durandal
     if (cD >= 1.0f)
-        flags |= IsDurandal;
+        flags or_eq IsDurandal;
 
     SetPosition(x, y, z);
     CalcTransformMatrix(this);
@@ -295,7 +295,7 @@ void BombClass::Start(vector* pos, vector* rate, float cD, SimObjectType *target
         wc = (WeaponClassDataType *)classPtr->dataPtr;
 
         // if we're not a cluster type, we should have no burst height
-        if (!(wc->Flags & WEAP_CLUSTER))
+        if ( not (wc->Flags bitand WEAP_CLUSTER))
         {
             burstHeight = 0.0f;
         }
@@ -328,7 +328,7 @@ int BombClass::Exec(void)
 
     // Debub ==========================
     static FILE *fp = NULL;
-    //if (!fp)
+    //if ( not fp)
     //fp = fopen("g:\\JSOWtrgtFinal.txt", "w");
     //=================================
 
@@ -337,22 +337,22 @@ int BombClass::Exec(void)
 
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC && playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC and playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
         armingdelay = playerAC->Sms->armingdelay;//me123
     }
 
 
-    if (IsDead() || (flags & FirstFrame))
+    if (IsDead() or (flags bitand FirstFrame))
     {
-        flags &= ~FirstFrame;
+        flags and_eq compl FirstFrame;
         return TRUE;
     }
 
     UpdateTrail();
 
     // ACMI Output
-    if (gACMIRec.IsRecording() && (SimLibFrameCount & 0x07) == 0)
+    if (gACMIRec.IsRecording() and (SimLibFrameCount bitand 0x07) == 0)
     {
         genPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
         genPos.data.type = Type();
@@ -364,15 +364,15 @@ int BombClass::Exec(void)
         genPos.data.pitch = Pitch();
         genPos.data.yaw = Yaw();
 
-        if (flags & IsFlare)
+        if (flags bitand IsFlare)
             gACMIRec.FlarePositionRecord((ACMIFlarePositionRecord *)&genPos);
-        else if (flags & IsChaff)
+        else if (flags bitand IsChaff)
             gACMIRec.ChaffPositionRecord((ACMIChaffPositionRecord *)&genPos);
         else
             gACMIRec.GenPositionRecord(&genPos);
     }
 
-    if (!IsLocal())
+    if ( not IsLocal())
     {
         return FALSE;
     }
@@ -501,9 +501,9 @@ int BombClass::Exec(void)
         dmx[2][2] = trigPitch.cos;
 
         // special case durandal -- when fired remove chute
-        if ((flags & IsDurandal) &&
-            (flags & FireDurandal) &&
-            drawPointer &&
+        if ((flags bitand IsDurandal) and 
+            (flags bitand FireDurandal) and 
+            drawPointer and 
             ((DrawableBSP*)drawPointer)->GetNumSwitches() > 0)
         {
             ((DrawableBSP *)drawPointer)->SetSwitchMask(0, 0);
@@ -511,12 +511,12 @@ int BombClass::Exec(void)
 
         // special case durandal.  If x and y vel reaches 0 we fire it
         // by starting the special effect
-        if ((flags & IsDurandal) &&
-            !(flags & FireDurandal) &&
-            dx == 0.0f &&
+        if ((flags bitand IsDurandal) and 
+ not (flags bitand FireDurandal) and 
+            dx == 0.0f and 
             dy == 0.0f)
         {
-            flags |= FireDurandal;
+            flags or_eq FireDurandal;
 
             // accelerate towards ground
             SetDelta(dx, dy, ZDelta() + 500.0f);
@@ -556,25 +556,25 @@ int BombClass::Exec(void)
         // realistic section would be ran. If no parent, run this
         // There is no danger of a CTD if parent is NULL because the
         // OR will have it enter the if statement without running the 'IsPlayer'.
-        //   if(!g_bRealisticAvionics || ( parent && !((AircraftClass *)parent)->IsPlayer()))
+        //   if( not g_bRealisticAvionics or ( parent and not ((AircraftClass *)parent)->IsPlayer()))
         // Cobra - Forcing all non-Player (AI) into this section causes their bombs
         // to not be guided, thus randon hit pattern
-        //   if(!g_bRealisticAvionics || !parent)
+        //   if( not g_bRealisticAvionics or not parent)
         /////////////////////////////////////////////////////
 
         // RED -  enough enter when it's not a guided Bomb or LGB for AI
         // ( the targeting sysem would CTD if AI managed by player code,
         // As the PlayerEntity is not the one to use )
         if (
-            !g_bRealisticAvionics || !parent || !(flags & GUIDED_BOMB)
-            || ((((!((AircraftClass *)parent.get())->IsPlayer())
-                  || (((AircraftClass *)parent.get())->IsPlayer())
-                  && ((AircraftClass *)parent.get())->AutopilotType() == AircraftClass::CombatAP))
-                && (flags & IsLGB))
+ not g_bRealisticAvionics or not parent or not (flags bitand GUIDED_BOMB)
+            or (((( not ((AircraftClass *)parent.get())->IsPlayer())
+                  or (((AircraftClass *)parent.get())->IsPlayer())
+                 and ((AircraftClass *)parent.get())->AutopilotType() == AircraftClass::CombatAP))
+               and (flags bitand IsLGB))
         )
         {
             // RV - Biker - Add 2.0 sec delay for guidance
-            if (flags & IsLGB && (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
+            if (flags bitand IsLGB and (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
             {
                 if (targetPtr)
                 {
@@ -630,13 +630,13 @@ int BombClass::Exec(void)
 
                         // If a 3rg gen LGB, fins are more precised, even when no longer lased...
                         //#define WEAP_LGB_3RD_GEN 0x40 moved to campwp.h and changed to 0x80
-                        if (wc->Flags & WEAP_LGB_3RD_GEN)
+                        if (wc->Flags bitand WEAP_LGB_3RD_GEN)
                             SetDelta(0.8F * XDelta() + 0.2f * desDxPrev, 0.8f * YDelta() + 0.2f * desDyPrev, ZDelta());
-                        else // 2001-10-19 MODIFIED BY S.G. IT'S * 1.05f AND NOT * 2.0f!
+                        else // 2001-10-19 MODIFIED BY S.G. IT'S * 1.05f AND NOT * 2.0f
                             SetDelta((0.8F * XDelta() + 0.2f * desDxPrev) * 1.05f, (0.8f * YDelta() + 0.2f * desDyPrev) * 1.05f, ZDelta());
                     }
 
-                    if (!((SimBaseClass*)(targetPtr->BaseData()))->IsSetFlag(IS_LASED))
+                    if ( not ((SimBaseClass*)(targetPtr->BaseData()))->IsSetFlag(IS_LASED))
                     {
                         targetPtr->Release();
                         targetPtr = NULL;
@@ -651,21 +651,21 @@ int BombClass::Exec(void)
 
                     // If a 3rg gen LGB, fins are more precised, even when no longer lased...
                     //#define WEAP_LGB_3RD_GEN 0x40 moved to campwp.h and changed to 0x80
-                    if (wc->Flags & WEAP_LGB_3RD_GEN)
+                    if (wc->Flags bitand WEAP_LGB_3RD_GEN)
                         SetDelta(0.8F * XDelta() + 0.2f * desDxPrev, 0.8f * YDelta() + 0.2f * desDyPrev, ZDelta());
-                    else // 2001-10-19 MODIFIED BY S.G. IT'S * 1.05f AND NOT * 2.0f!
+                    else // 2001-10-19 MODIFIED BY S.G. IT'S * 1.05f AND NOT * 2.0f
                         SetDelta((0.8F * XDelta() + 0.2f * desDxPrev) * 1.05f, (0.8f * YDelta() + 0.2f * desDyPrev) * 1.05f, ZDelta());
                 }
             }
         }
         // RV - Biker - Add 2 sec delay for guidance
-        else if ((flags & IsLGB) && g_bRealisticAvionics && (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
+        else if ((flags bitand IsLGB) and g_bRealisticAvionics and (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
         {
             AircraftClass *parentAC = parent->IsAirplane() ? static_cast<AircraftClass*>(parent.get()) : NULL;
 
             //AI's don't need to keep a lock until impact
             // sfr: since someone removed the player check here, im using the parent instead
-            //if(parent /* && ((AircraftClass *)parent)->IsPlayer()*/ )
+            //if(parent /* and ((AircraftClass *)parent)->IsPlayer()*/ )
             if (parentAC)
             {
                 radical = 0;
@@ -715,14 +715,14 @@ int BombClass::Exec(void)
 
                 // 18 degree limit on the seeker
                 /* JAM 17Apr04 - (range-rx * rx) yields a negative number, you can't take the square
-                 root of a negative number! In VC6, the seeker check always passes, but in VC >= 6 + PP,
+                 root of a negative number In VC6, the seeker check always passes, but in VC >= 6 + PP,
                  the check always FAILS, due to differences in how the compilers treat sqrt(-). This is
                  why LGB's consistantly missed their targets in anything but vanilla VC6.
                 */
                 if (
-                    Abs(acosf(rx / range)) <= 18.f * DTR &&
-                    (parentAC->IsPlayer() && parentAC->FCC->LaserFire) ||
-                    !parentAC->IsPlayer()
+                    Abs(acosf(rx / range)) <= 18.f * DTR and 
+                    (parentAC->IsPlayer() and parentAC->FCC->LaserFire) or
+ not parentAC->IsPlayer()
                 )
                 {
                     desDx = (deltaX) / tFall;
@@ -737,20 +737,20 @@ int BombClass::Exec(void)
                 }
                 else
                 {
-                    if (!(desDxPrev == 0.0f && desDyPrev == 0.0f && desDzPrev == 0.0f))
+                    if ( not (desDxPrev == 0.0f and desDyPrev == 0.0f and desDzPrev == 0.0f))
                     {
                         // 2001-04-17 ADDED BY S.G. WE'LL KEEP GOING WHERE WE WERE GOING...
                         Falcon4EntityClassType *classPtr = &Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE];
                         WeaponClassDataType *wc = (WeaponClassDataType *)classPtr->dataPtr;
 
                         // If a 3rg gen LGB, fins are more precised, even when no longer lased...
-                        if (wc->Flags & WEAP_LGB_3RD_GEN)
+                        if (wc->Flags bitand WEAP_LGB_3RD_GEN)
                         {
                             SetDelta(0.8F * XDelta() + 0.2f * desDxPrev, 0.8f * YDelta() + 0.2f * desDyPrev, ZDelta());
                         }
                         else
                         {
-                            // 2001-10-19 MODIFIED BY S.G. IT'S * 1.05f AND NOT * 2.0f!
+                            // 2001-10-19 MODIFIED BY S.G. IT'S * 1.05f AND NOT * 2.0f
                             SetDelta(
                                 (0.8F * XDelta() + 0.2f * desDxPrev) * 1.05f,
                                 (0.8f * YDelta() + 0.2f * desDyPrev) * 1.05f,
@@ -760,9 +760,9 @@ int BombClass::Exec(void)
                     }
                 }
 
-                if (targetPtr && targetPtr->BaseData() && parentAC->IsPlayer())
+                if (targetPtr and targetPtr->BaseData() and parentAC->IsPlayer())
                 {
-                    if (!((SimBaseClass*)(targetPtr->BaseData()))->IsSetFlag(IS_LASED))
+                    if ( not ((SimBaseClass*)(targetPtr->BaseData()))->IsSetFlag(IS_LASED))
                     {
                         targetPtr->Release();
                         targetPtr = NULL;
@@ -772,13 +772,13 @@ int BombClass::Exec(void)
         }
         //Wombat778 3-09-04 If this is a GPS weapon, guide to the GPS coordinates. A ripoff from the LGB code above
         // RV - Biker - Add 2 sec delay for guidance
-        else if (((flags & IsGPS) || (flags & IsJSOW)) && (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
+        else if (((flags bitand IsGPS) or (flags bitand IsJSOW)) and (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
         {
             FalconEntity *target = NULL;
             // SimBaseClass *simTarg;
 
             // Cobra - Check that we have a valid auxData->JDAMLift for JSOWs
-            if (EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW && (auxData->JDAMLift <= 5.0f))
+            if (EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW and (auxData->JDAMLift <= 5.0f))
                 auxData->JDAMLift = g_fJDAMLift;
 
 
@@ -790,7 +790,7 @@ int BombClass::Exec(void)
             // FRB - JSOW Test monitor
             if (range < 10.0f * NM_TO_FT)
             {
-                if ((flags & IsJSOW) && targetPtr)
+                if ((flags bitand IsJSOW) and targetPtr)
                 {
                     // First get the campaign object if it's still a sim entity
                     /*
@@ -800,7 +800,7 @@ int BombClass::Exec(void)
                     else
                      campBaseObj = (CampBaseClass *)targetPtr->BaseData();
                     // Now find out if our campaign object is aggregated
-                    if ((campBaseObj && !campBaseObj->IsAggregate()))
+                    if ((campBaseObj and not campBaseObj->IsAggregate()))
                     {
                     target = targetPtr->BaseData();
                     // Get the sim object associated to this entity number
@@ -920,7 +920,7 @@ int BombClass::Exec(void)
 
         // check for feature collision impact
 
-        if (bombType == None &&  z - terrainHeight > -800.0f)
+        if (bombType == None and z - terrainHeight > -800.0f)
         {
             hitObj = FeatureCollision(terrainHeight);
 
@@ -928,11 +928,11 @@ int BombClass::Exec(void)
             {
                 //me123 OWLOOK make your armingdelay switch here.
                 //MI
-                //if (g_bArmingDelay && (SimLibElapsedTime - timeOfDeath > armingdelay *10  || ((AircraftClass *)parent)->isDigital))
+                //if (g_bArmingDelay and (SimLibElapsedTime - timeOfDeath > armingdelay *10  or ((AircraftClass *)parent)->isDigital))
                 if (
-                    g_bRealisticAvionics &&
-                    (SimLibElapsedTime - timeOfDeath > armingdelay * 10  ||
-                     (parent && ((AircraftClass *)parent.get())->IsDigital()))
+                    g_bRealisticAvionics and 
+                    (SimLibElapsedTime - timeOfDeath > armingdelay * 10  or
+                     (parent and ((AircraftClass *)parent.get())->IsDigital()))
                 )
                 {
                     //me123 addet arming check, for now digi's dont's have arming delay, becourse they will fuck up the delivery
@@ -952,8 +952,8 @@ int BombClass::Exec(void)
                         hitObj = NULL;
                     }
                 }
-                //else if (!g_bArmingDelay) MI
-                else if (!g_bRealisticAvionics)
+                //else if ( not g_bArmingDelay) MI
+                else if ( not g_bRealisticAvionics)
                 {
                     SendDamageMessage(hitObj, 0, FalconDamageType::BombDamage);
                     // JB 000816 ApplyProximityDamage( terrainHeight, 0.0f ); // Cause of objects not blowing up on runways
@@ -974,7 +974,7 @@ int BombClass::Exec(void)
             }
             else if (z >= terrainHeight)
             {
-                if (bombType == None && (SimLibElapsedTime - timeOfDeath > armingdelay * 10.0f || (parent && ((AircraftClass *)parent.get())->IsDigital()))) //me123 addet arming check
+                if (bombType == None and (SimLibElapsedTime - timeOfDeath > armingdelay * 10.0f or (parent and ((AircraftClass *)parent.get())->IsDigital()))) //me123 addet arming check
                 {
                     // Interpolate
                     delta = (z - terrainHeight) / (z - ZPos());
@@ -1005,7 +1005,7 @@ int BombClass::Exec(void)
 
         //MI this else is causing our CBU's to not burst with a BA < 900 because of the check above
         //else
-        if (bheight > 0 && z >= terrainHeight - bheight && !IsSetFlag(SHOW_EXPLOSION) && bombType == BombClass::None)   //me123 check addet to making flares stop exploding
+        if (bheight > 0 and z >= terrainHeight - bheight and not IsSetFlag(SHOW_EXPLOSION) and bombType == BombClass::None)   //me123 check addet to making flares stop exploding
         {
             // for altitude detonations we start the effect here
             SetFlag(SHOW_EXPLOSION);
@@ -1023,7 +1023,7 @@ int BombClass::Exec(void)
                     campBaseObj = (CampBaseClass *)targetPtr->BaseData();
 
                 // Now find out if our campaign object is aggregated
-                if (campBaseObj && campBaseObj->IsAggregate())
+                if (campBaseObj and campBaseObj->IsAggregate())
                 {
                     // Yes, send a damage message right away otherwise the other code is not going to deal with it...
                     SendDamageMessage(campBaseObj, 0, FalconDamageType::BombDamage);
@@ -1085,7 +1085,7 @@ void BombClass::SetTarget(SimObjectType* newTarget)
 
     if (newTarget)
     {
-        ShiAssert(newTarget->BaseData() != (FalconEntity*)0xDDDDDDDD);
+        ShiAssert(newTarget->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
 
         //#ifdef DEBUG
         // targetPtr = newTarget->Copy(OBJ_TAG, this);
@@ -1147,7 +1147,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
     wc = (WeaponClassDataType *)(Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr);
     float modifier = 1.0F;
 
-    if (wc && wc->DamageType == NuclearDam)
+    if (wc and wc->DamageType == NuclearDam)
         modifier = g_fNukeDamageRadius;
 
 #ifdef VU_GRID_TREE_Y_MAJOR
@@ -1185,7 +1185,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
         strength = 1.0f;
     }
 
-    if (/*parentReferenced && */SimDriver.objectList)
+    if (/*parentReferenced and */SimDriver.objectList)
     {
         // Damage multiplier for damage type
         switch (wc->DamageType)
@@ -1218,16 +1218,16 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
             // until digi's are smarter about thier bombing, prevent them
             // from dying in their own blast
             // 2002-04-21 MN check for damage type and only skip if it is not a nuclear
-            if (wc->DamageType != NuclearDam && (testObject == parent &&
-                                                 parent && parent->IsAirplane() &&
-                                                 (((AircraftClass *)parent.get())->IsDigital() ||
+            if (wc->DamageType not_eq NuclearDam and (testObject == parent and 
+                                                 parent and parent->IsAirplane() and 
+                                                 (((AircraftClass *)parent.get())->IsDigital() or
                                                   ((AircraftClass *)parent.get())->AutopilotType() == AircraftClass::CombatAP)))
             {
                 testObject = (SimBaseClass*) objectWalker.GetNext();
                 continue;
             }
 
-            if (testObject != this)
+            if (testObject not_eq this)
             {
                 tmpX = testObject->XPos() - XPos();
                 tmpY = testObject->YPos() - YPos();
@@ -1243,7 +1243,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
                 }
 
                 //MI special case for airplane. Use the "MaxAlt" field to determine if you blow up or not
-                if (testObject && testObject->IsAirplane() && wc && wc->DamageType == NuclearDam)
+                if (testObject and testObject->IsAirplane() and wc and wc->DamageType == NuclearDam)
                 {
                     //if you're below the entered setting, you're screwed
                     if (fabsf((wc->MaxAlt) * 1000.0f) >= fabs(hat)) //JAM 27Sep03 - Should be fabsf
@@ -1251,7 +1251,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
                         SendDamageMessage(testObject, rangeSquare * strength * /*damageMod*/ g_fNukeStrengthFactor, FalconDamageType::ProximityDamage);
                 }
                 // 2002-03-25 MN some more fixes for nukes
-                else if (wc && wc->DamageType == NuclearDam)
+                else if (wc and wc->DamageType == NuclearDam)
                 {
                     if (rangeSquare < damageRadiusSqrd * g_fNukeDamageMod)
                     {
@@ -1280,7 +1280,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
 
             while (testObject)
             {
-                if (!testObject->IsSetCampaignFlag(FEAT_CONTAINER_TOP))
+                if ( not testObject->IsSetCampaignFlag(FEAT_CONTAINER_TOP))
                 {
                     tmpX = testObject->XPos() - XPos();
                     tmpY = testObject->YPos() - YPos();
@@ -1288,7 +1288,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
 
                     rangeSquare = tmpX * tmpX + tmpY * tmpY;; // + tmpZ*tmpZ;
 
-                    if (wc && wc->DamageType == NuclearDam)
+                    if (wc and wc->DamageType == NuclearDam)
                     {
                         if (rangeSquare < damageRadiusSqrd * g_fNukeDamageMod)
                         {
@@ -1317,7 +1317,7 @@ void BombClass::DoExplosion(void)
     FalconMissileEndMessage* endMessage;
     float groundZ;
 
-    if (!IsSetFlag(SHOW_EXPLOSION))
+    if ( not IsSetFlag(SHOW_EXPLOSION))
     {
         // edg note: all special effects are now handled in the
         // missile end message process method
@@ -1363,10 +1363,10 @@ void BombClass::DoExplosion(void)
         FalconSendMessage(endMessage, FALSE);
 
 
-        if (hitObj == NULL &&
-            !(endMessage->dataBlock.groundType == COVERAGE_WATER ||
+        if (hitObj == NULL and 
+ not (endMessage->dataBlock.groundType == COVERAGE_WATER or
               endMessage->dataBlock.groundType == COVERAGE_RIVER)
-           ) //&&( ZPos() - groundZ ) > -40.0f ) // JB 010710 craters weren't showing up
+           ) // and ( ZPos() - groundZ ) > -40.0f ) // JB 010710 craters weren't showing up
         {
             //AddToTimedPersistantList(
             // VIS_CRATER2 + PRANDInt3(), Camp_GetCurrentTime() + CRATER_REMOVAL_TIME, XPos(), YPos()
@@ -1393,7 +1393,7 @@ void BombClass::DoExplosion(void)
         // make sure we don't do it again...
         SetFlag(SHOW_EXPLOSION);
     }
-    else if (!IsDead())
+    else if ( not IsDead())
     {
         // we can now kill it immediately
         SetDead(TRUE);

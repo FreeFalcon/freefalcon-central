@@ -77,7 +77,7 @@ void MakePAKPalette()
     short i;
 
     for (i = 0; i < 101; i++)
-        PAKPalette[100 - i] = UI95_RGB24Bit(0x000000ff | (((i * 255) / 100) << 8) | (((i * 255) / 100) << 16));
+        PAKPalette[100 - i] = UI95_RGB24Bit(0x000000ff bitor (((i * 255) / 100) << 8) bitor (((i * 255) / 100) << 16));
 }
 
 void InitPAKMap()
@@ -85,7 +85,7 @@ void InitPAKMap()
     C_Window *win;
     C_Bitmap *bmp;
 
-    if (!PAKMap)
+    if ( not PAKMap)
     {
         SetCursor(gCursors[CRSR_WAIT]);
         MakePAKPalette();
@@ -93,7 +93,7 @@ void InitPAKMap()
 
         if (PAKMap)
         {
-            PAKMap->Header->flags |= _RSC_USECOLORKEY_;
+            PAKMap->Header->flags or_eq _RSC_USECOLORKEY_;
             MakeCampMap(MAP_PAK, (uchar*)PAKMap->Owner->GetData(), TheCampaign.TheaterSizeX / PAK_MAP_RATIO * TheCampaign.TheaterSizeY / PAK_MAP_RATIO);
 
             win = gMainHandler->FindWindow(STRAT_WIN);
@@ -166,7 +166,7 @@ void ResetToDefaults()
                 // POD->player_priority[i]=POD->air_priority[i];
                 POD->player_priority[i] = -1;
 
-            POD->flags &= ~GTMOBJ_PLAYER_SET_PRIORITY;
+            POD->flags and_eq compl GTMOBJ_PLAYER_SET_PRIORITY;
         }
 
         o = (Objective) poit.GetNext();
@@ -221,7 +221,7 @@ void TurnOnHQButton()
 // Just turn off HQ Flag if slider moved
 void PriSliderCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEDOWN)
+    if (hittype not_eq C_TYPE_LMOUSEDOWN)
         return;
 
     TurnOffHQButton();
@@ -295,7 +295,7 @@ void LoadTargetPriorities()
         }
 
         // CCC  to be changed to Power plant and refinery
-        // Cobra - 2/06 JG - Moved CCC to radar and moved Power plant & refinery here
+        // Cobra - 2/06 JG - Moved CCC to radar and moved Power plant bitand refinery here
         sldr = (C_Slider*)win->FindControl(TARGET_6);
 
         if (sldr)
@@ -510,7 +510,7 @@ void LoadMissionPriorities()
         }
 
         // Recon   to become Escort
-        // Cobra - 2/06 JG - Moved  AMIS_ESCORT & AMIS_SEADESCORT to Recon and changed to Recon to Escort
+        // Cobra - 2/06 JG - Moved  AMIS_ESCORT bitand AMIS_SEADESCORT to Recon and changed to Recon to Escort
         sldr = (C_Slider*)win->FindControl(MISSION_8);
 
         if (sldr)
@@ -531,7 +531,7 @@ void LoadPAKPriorities()
     WORD *Pal;
     short CampControl = 1;
 
-    if (!PAKMap)
+    if ( not PAKMap)
         return;
 
     teamid = FalconLocalSession->GetTeam();
@@ -564,7 +564,7 @@ void LoadPAKPriorities()
 
             Pal[idx] = PAKPalette[PAKPriorities[idx][teamid][0]];
 
-            if (CampControl && POD->flags & GTMOBJ_PLAYER_SET_PRIORITY)
+            if (CampControl and POD->flags bitand GTMOBJ_PLAYER_SET_PRIORITY)
                 CampControl = 0;
         }
 
@@ -647,7 +647,7 @@ void LoadDefaultTargetPriorities()
         }
 
         // CCC  to be changed to Power plant and refinery
-        // Cobra - 2/06 JG - Moved CCC to radar and moved Power plant & refinery here
+        // Cobra - 2/06 JG - Moved CCC to radar and moved Power plant bitand refinery here
         sldr = (C_Slider*)win->FindControl(TARGET_6);
 
         if (sldr)
@@ -864,7 +864,7 @@ void LoadDefaultMissionPriorities()
         }
 
         // Recon   to become Escort
-        // Cobra - 2/06 JG - Moved  AMIS_ESCORT & AMIS_SEADESCORT to Recon and changed to Recon to Escort
+        // Cobra - 2/06 JG - Moved  AMIS_ESCORT bitand AMIS_SEADESCORT to Recon and changed to Recon to Escort
         sldr = (C_Slider*)win->FindControl(MISSION_8);
 
         if (sldr)
@@ -884,7 +884,7 @@ void LoadDefaultPAKPriorities()
     short teamid;
     WORD *Pal;
 
-    if (!PAKMap)
+    if ( not PAKMap)
         return;
 
     teamid = FalconLocalSession->GetTeam();
@@ -978,7 +978,7 @@ void SaveTargetPriorities()
         }
 
         // CCC  to be changed to Power plant and refinery
-        // Cobra - 2/06 JG - Moved CCC to radar and moved Power plant & refinery here
+        // Cobra - 2/06 JG - Moved CCC to radar and moved Power plant bitand refinery here
         sldr = (C_Slider*)win->FindControl(TARGET_6);
 
         if (sldr)
@@ -1178,7 +1178,7 @@ void SaveMissionPriorities()
         }
 
         // Recon   to become Escort
-        // Cobra - 2/06 JG - Moved  AMIS_ESCORT & AMIS_SEADESCORT to Recon and changed to Recon to Escort
+        // Cobra - 2/06 JG - Moved  AMIS_ESCORT bitand AMIS_SEADESCORT to Recon and changed to Recon to Escort
         sldr = (C_Slider*)win->FindControl(MISSION_8);
 
         if (sldr)
@@ -1210,11 +1210,11 @@ void SavePAKPriorities()
             // KCK: Technically, the player should only be able to modify priorities for his team
             i = FalconLocalSession->GetTeam();
 
-            if (i > 0 && i < NUM_TEAMS && TeamInfo[i])
+            if (i > 0 and i < NUM_TEAMS and TeamInfo[i])
                 // for(i=0;i<NUM_TEAMS;i++)
             {
                 POD->player_priority[i] = PAKPriorities[idx][i][0];
-                POD->flags |= GTMOBJ_PLAYER_SET_PRIORITY;
+                POD->flags or_eq GTMOBJ_PLAYER_SET_PRIORITY;
                 PAKPriorities[idx][i][1] = 0;
             }
         }
@@ -1240,7 +1240,7 @@ void SelectPAK(long PAKID, long TeamID)
     WORD *Pal;
     F4CSECTIONHANDLE *Leave;
 
-    if (PAKID >= MAX_PAKS || TeamID >= NUM_TEAMS)
+    if (PAKID >= MAX_PAKS or TeamID >= NUM_TEAMS)
         return;
 
 
@@ -1271,7 +1271,7 @@ void SelectPAK(long PAKID, long TeamID)
 
 void PriorityTabsCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     control->Parent_->HideCluster(control->GetUserNumber(1));
@@ -1285,12 +1285,12 @@ void UsePriotityCB(long ID, short hittype, C_Base *control)
 {
     C_Button *btn;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     btn = (C_Button*)control->Parent_->FindControl(HQ_FLAG);
 
-    if (btn && !btn->GetState())
+    if (btn and not btn->GetState())
     {
         SaveTargetPriorities();
         SaveMissionPriorities();
@@ -1307,7 +1307,7 @@ void ResetPriorityCB(long, short hittype, C_Base *control)
     long PAKID;
     C_ListBox *lbox;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     // Kevin TODO: Reset priorities to those set by the campaign
@@ -1322,7 +1322,7 @@ void ResetPriorityCB(long, short hittype, C_Base *control)
     {
         PAKID = ((C_ListBox*)lbox)->GetTextID();
 
-        if (!PAKID)
+        if ( not PAKID)
             PAKID = 1;
 
         if (PAKID)
@@ -1332,7 +1332,7 @@ void ResetPriorityCB(long, short hittype, C_Base *control)
 
 void CancelPriorityCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     CloseWindowCB(ID, hittype, control);
@@ -1344,7 +1344,7 @@ void OpenPriorityCB(long, short hittype, C_Base *control)
     C_Button *btn;
     C_ListBox *lbox;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     InitPAKMap();
@@ -1407,17 +1407,17 @@ void MapSelectPAKCB(long, short hittype, C_Base *control)
     long x, y, PAKID;
     char *overlay;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (!control || !PAKMap)
+    if ( not control or not PAKMap)
         return;
 
     btn = (C_Button*)control;
     x = btn->GetRelX();
     y = btn->GetRelY();
 
-    if (x < 0 || x >= TheCampaign.TheaterSizeX / PAK_MAP_RATIO || y < 0 || y >= TheCampaign.TheaterSizeY / PAK_MAP_RATIO)
+    if (x < 0 or x >= TheCampaign.TheaterSizeX / PAK_MAP_RATIO or y < 0 or y >= TheCampaign.TheaterSizeY / PAK_MAP_RATIO)
         return;
 
     overlay = PAKMap->Owner->GetData();
@@ -1442,7 +1442,7 @@ void SelectPAKCB(long, short hittype, C_Base *control)
 {
     long PAKID;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     PAKID = ((C_ListBox*)control)->GetTextID();
@@ -1455,7 +1455,7 @@ void SetPAKPriorityCB(long, short hittype, C_Base *control)
 {
     long value;
 
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
     value = 100 - SliderValue((C_Slider*)control);
@@ -1468,7 +1468,7 @@ void SetPAKPriorityCB(long, short hittype, C_Base *control)
 
 void SetCampaignPrioritiesCB(long, short hittype, C_Base *base)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (base->GetState())
@@ -1493,9 +1493,9 @@ BOOL PAKMapTimerCB(C_Base *me)
 
     if (CurrentPAK)
     {
-        me->SetUserNumber(0, (me->GetUserNumber(0) + 1) & 0x03);
+        me->SetUserNumber(0, (me->GetUserNumber(0) + 1) bitand 0x03);
 
-        if (!me->GetUserNumber(0))
+        if ( not me->GetUserNumber(0))
         {
             Pal = (WORD*)(PAKMap->Owner->GetData() + PAKMap->Header->paletteoffset);
             BlinkPAK = static_cast<char>(-BlinkPAK);

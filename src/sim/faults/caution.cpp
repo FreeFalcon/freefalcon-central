@@ -1,3 +1,4 @@
+#include <cISO646>
 #include "caution.h"
 #include "debuggr.h"
 
@@ -29,10 +30,10 @@ BOOL CautionClass::IsFlagSet()
 
     for (i = 0; i < NumVectors; i++)
     {
-        flag  |= mpBitVector[i];
+        flag or_eq mpBitVector[i];
     }
 
-    return (flag != 0);
+    return (flag not_eq 0);
 }
 
 //-------------------------------------------------
@@ -115,7 +116,7 @@ void CautionClass::SetCaution(int subsystem)
     vectorNum = subsystem / BITS_PER_VECTOR;
     bitNum = subsystem - vectorNum * BITS_PER_VECTOR;
 
-    mpBitVector[vectorNum] |= 0x01 << bitNum;
+    mpBitVector[vectorNum] or_eq 0x01 << bitNum;
 
 }
 
@@ -132,7 +133,7 @@ void CautionClass::ClearCaution(int subsystem)
     vectorNum = subsystem / BITS_PER_VECTOR;
     bitNum = subsystem - vectorNum * BITS_PER_VECTOR;
 
-    mpBitVector[vectorNum] &= ~(0x01 << bitNum);
+    mpBitVector[vectorNum] and_eq compl (0x01 << bitNum);
 
 }
 
@@ -149,6 +150,6 @@ BOOL CautionClass::GetCaution(int subsystem)
     vectorNum = subsystem / BITS_PER_VECTOR;
     bitNum = subsystem - vectorNum * BITS_PER_VECTOR;
 
-    return ((mpBitVector[vectorNum] & (0x01 << bitNum)) != 0);
+    return ((mpBitVector[vectorNum] bitand (0x01 << bitNum)) not_eq 0);
 }
 

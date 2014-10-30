@@ -82,22 +82,22 @@ void CPMisc::StepMasterCautionLight(void)
     BOOL masterCautionState;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC == NULL || !playerAC->IsSetFlag(MOTION_OWNSHIP))
+    if (playerAC == NULL or not playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
         return;
     }
 
     masterCautionState = playerAC->mFaults->MasterCaution();
 
-    if (mMasterCautionLightState == 0 && masterCautionState == TRUE)
+    if (mMasterCautionLightState == 0 and masterCautionState == TRUE)
     {
         mMasterCautionLightState  = 1;
     }
-    else if (mMasterCautionLightState == 1 && masterCautionState == TRUE)
+    else if (mMasterCautionLightState == 1 and masterCautionState == TRUE)
     {
         mMasterCautionLightState  = 1;
     }
-    else if (mMasterCautionLightState == 1 && masterCautionState == FALSE)
+    else if (mMasterCautionLightState == 1 and masterCautionState == FALSE)
     {
         mMasterCautionLightState  = 2;
     }
@@ -105,7 +105,7 @@ void CPMisc::StepMasterCautionLight(void)
     {
         mMasterCautionLightState  = 3;
     }
-    else if (mMasterCautionLightState == 0 && masterCautionState == FALSE && mMasterCautionEvent)
+    else if (mMasterCautionLightState == 0 and masterCautionState == FALSE and mMasterCautionEvent)
     {
         mMasterCautionLightState  = 3;
         mMasterCautionEvent = FALSE;
@@ -131,7 +131,7 @@ int CPMisc::GetMFDButtonState(int side, int button)
 void CPMisc::SetMFDButtonState(int side, int button, int value)
 {
 
-    if (SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP))
+    if (SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP))
     {
         MFDButtonArray[button - 1][side] = value;
     }

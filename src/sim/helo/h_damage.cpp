@@ -27,7 +27,7 @@ void DecomposeMatrix(Trotation* matrix, float* pitch, float* roll, float* yaw);
 
 void HelicopterClass::ApplyDamage(FalconDamageMessage* damageMessage)
 {
-    if (IsDead() || IsExploding())
+    if (IsDead() or IsExploding())
         return;
 
     // call generic vehicle damage stuff
@@ -41,7 +41,7 @@ void HelicopterClass::ApplyDamage(FalconDamageMessage* damageMessage)
     {
        if (pctStrength < (1.0F - (1.0F/numSmokeTrails) * i))
        {
-          if (!smokeTrail[i]->InDisplayList())
+          if ( not smokeTrail[i]->InDisplayList())
              OTWDriver.InsertObject (smokeTrail[i]);
        }
     }
@@ -196,12 +196,12 @@ void HelicopterClass::RunExplosion(void)
         OTWDriver.CreateVisualObject(tmpSimBase, classPtr->visType[i + 2], &tp, &tr, OTWDriver.Scale());
         tmpSimBase->SetPosition(pos.x, pos.y, pos.z);
 
-        if (!i)
+        if ( not i)
         {
             tmpSimBase->SetDelta(XDelta(), YDelta(), ZDelta());
         }
 
-        if (!OnGround())
+        if ( not OnGround())
         {
             tmpSimBase->SetDelta(XDelta() + 50.0f * PRANDFloat(),
                                  YDelta() + 50.0f * PRANDFloat(),
@@ -216,7 +216,7 @@ void HelicopterClass::RunExplosion(void)
 
         tmpSimBase->SetYPR(Yaw(), Pitch(), Roll());
 
-        if (!i)
+        if ( not i)
         {
             // First peice is more steady and is flaming
             tmpSimBase->SetYPRDelta(0.0F, 0.0F, 10.0F + PRANDFloat() * 30.0F * DTR);
@@ -224,7 +224,7 @@ void HelicopterClass::RunExplosion(void)
             /*
             OTWDriver.AddSfxRequest(
             new SfxClass (SFX_FLAMING_PART, // type
-             SFX_MOVES | SFX_USES_GRAVITY | SFX_EXPLODE_WHEN_DONE,
+             SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_EXPLODE_WHEN_DONE,
              tmpSimBase, // sim base *
              3.0f + PRANDFloatPos() * 4.0F, // time to live
              1.0F ) ); // scale
@@ -248,7 +248,7 @@ void HelicopterClass::RunExplosion(void)
             /*
             OTWDriver.AddSfxRequest(
              new SfxClass (SFX_SMOKING_PART, // type
-             SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES | SFX_EXPLODE_WHEN_DONE,
+             SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES bitor SFX_EXPLODE_WHEN_DONE,
              tmpSimBase, // sim base *
              4.0f * PRANDFloatPos() + (float)((i+1)*(i+1)), // time to live
              1.0 ) ); // scale
@@ -266,7 +266,7 @@ void HelicopterClass::RunExplosion(void)
 
 void HelicopterClass::ShowDamage(void)
 {
-    if (pctStrength < 0.65f && pctStrength > 0.0f)
+    if (pctStrength < 0.65f and pctStrength > 0.0f)
     {
         if (sfxTimer > (max(pctStrength, 0.1f) + PRANDFloatPos() * 0.3f))
         {

@@ -99,7 +99,7 @@ int RadarDopplerClass::InResCell(SimObjectType* rdrObj, int i, int *rngCell,
         angCell[i] = j;
     }
 
-    return (!detflag);
+    return ( not detflag);
     //   return FALSE;
 }
 
@@ -136,7 +136,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
         S *= 1.4f;
 
     // Either RWS or SAM mode. If we have a focus on a target, increase signal strength a bit
-    else if (mode == RWS || mode == SAM)
+    else if (mode == RWS or mode == SAM)
     {
         if (obj == lockedTarget)
             S *= 1.1f;
@@ -149,7 +149,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
             rdrData = obj->localData;
 
             // if the expected possition is too far from the actual hammer signal to zero
-            if (rdrData->rdrSy[0] && rdrData->rdrSy[1]) // we have a track history
+            if (rdrData->rdrSy[0] and rdrData->rdrSy[1]) // we have a track history
             {
                 float expectedY =  rdrData->rdrY[0]  + (rdrData->rdrY[0] - rdrData->rdrY[1]);
                 float expectedX = (rdrData->rdrX[0] + (rdrData->rdrHd[0] - platform->Yaw())) +
@@ -161,7 +161,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
                 float realaz = rdrData->rdrX[0] + (rdrData->rdrHd[0] - platform->Yaw());
                 realaz = RES180(realaz);
 
-                if (radarDatFile && (fabs(realaz - expectedX) > radarDatFile->MaxAngleDiffSam * DTR ||
+                if (radarDatFile and (fabs(realaz - expectedX) > radarDatFile->MaxAngleDiffSam * DTR or
                                      (fabs(obj->localData->range - expectedY)) > (expectedY * radarDatFile->MaxRangeDiffSam) / 100.0f))
                 {
                     S *= 0.0f; //hammer to zero
@@ -180,14 +180,14 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
     // TWS and VS mode signal strength multiplier
     else if (mode == TWS)
     {
-        if (obj != lockedTarget)
+        if (obj not_eq lockedTarget)
             S *= 0.9f;
 
         SimObjectLocalData* rdrData;
         rdrData = obj->localData;
 
         // if the expected possition is too far from the actual hammer signal to zero
-        if (rdrData->rdrSy[0] && rdrData->rdrSy[1]) // we have a track history
+        if (rdrData->rdrSy[0] and rdrData->rdrSy[1]) // we have a track history
         {
             float expectedY =  rdrData->rdrY[0]  + (rdrData->rdrY[0] - rdrData->rdrY[1]);
             float expectedX = (rdrData->rdrX[1] + (rdrData->rdrHd[1] - platform->Yaw())) +
@@ -199,7 +199,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
             float realaz = rdrData->rdrX[1] + (rdrData->rdrHd[1] - platform->Yaw());
             realaz = RES180(realaz);
 
-            if (radarDatFile && (fabs(realaz - expectedX) > radarDatFile->MaxAngleDiffTws * DTR ||
+            if (radarDatFile and (fabs(realaz - expectedX) > radarDatFile->MaxAngleDiffTws * DTR or
                                  (fabs(obj->localData->range - expectedY)) > (expectedY * radarDatFile->MaxRangeDiffTws) / 100.0f))
             {
                 S *= 0.0f; //hammer to zero
@@ -210,8 +210,8 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
 
                 if (rdrData->rdrSy[1] == AimRel)rdrData->rdrSy[0] = AimFlash;
 
-                if (rdrData->rdrSy[1] == FlashTrack ||
-                    rdrData->rdrSy[1] == FlashBug  ||
+                if (rdrData->rdrSy[1] == FlashTrack or
+                    rdrData->rdrSy[1] == FlashBug  or
                     rdrData->rdrSy[1] == AimFlash)
                     rdrData->rdrSy[0] = Det;
 
@@ -225,7 +225,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
         S *= 1.2f;
 
 
-    if (1)// me123 agreed with jjb to test this !g_bRP5Comp)
+    if (1)// me123 agreed with jjb to test this not g_bRP5Comp)
     {
         VU_ID lastChaffID = FalconNullId;
         VU_ID id;
@@ -239,9 +239,9 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
 
         // No counter measures deployed by campaign things
         // countermeasures only work when tracking (for now)
-        //MI possible CTD? added !target->BaseData() check
+        //MI possible CTD? added not target->BaseData() check
 
-        if (!lockedTarget || !target || !target->BaseData() || !target->BaseData()->IsSim())
+        if ( not lockedTarget or not target or not target->BaseData() or not target->BaseData()->IsSim())
         {
             return (S >= 0.8f + 0.4f * (float)rand() / BIGGEST_RANDOM_NUMBER);
         }
@@ -250,7 +250,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
         id = ((SimBaseClass*)target->BaseData())->NewestChaffID();
 
         // If we have a new chaff bundle to deal with
-        if (id != lastChaffID)
+        if (id not_eq lastChaffID)
         {
             // Stop here if there isn't a counter measure in play
             if (id == FalconNullId)
@@ -265,7 +265,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
 
             // MonoPrint ("ConsiderDecoy %08x %f: ", cm, target->localData->range);
 
-            if (!cm)
+            if ( not cm)
             {
                 // We'll have to wait until next time
                 // (probably because the create event hasn't been processed locally yet)

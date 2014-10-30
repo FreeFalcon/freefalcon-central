@@ -40,7 +40,7 @@ CPDed::CPDed(ObjectInitStr *pobjectInitStr, DedInitStr *pdedInitStr) : CPObject(
     mCycleBits = 0xFFFF;
 
     //MI changed for ICP Stuff
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
         yOffset = (mDestRect.bottom - mDestRect.top) / 3; // 3 lines of DED text
     else
         yOffset = (mDestRect.bottom - mDestRect.top) / 6; // 5 lines of DED text but spaced tighter
@@ -124,18 +124,18 @@ void CPDed::DisplayDraw(void)
     // Hmmm - what about PFL? Assume its on the same circuit?
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC && playerAC->mFaults && playerAC->mFaults->GetFault(FaultClass::ufc_fault))
+    if (playerAC and playerAC->mFaults and playerAC->mFaults->GetFault(FaultClass::ufc_fault))
     {
         return;
     }
 
     if (mpCPManager->mpIcp)
     {
-        if (!g_bRealisticAvionics)
+        if ( not g_bRealisticAvionics)
         {
             if (mDedType == DEDT_DED)
             {
-                if (!playerAC->HasPower(AircraftClass::UFCPower))
+                if ( not playerAC->HasPower(AircraftClass::UFCPower))
                     return;
 
                 //MI original code
@@ -146,7 +146,7 @@ void CPDed::DisplayDraw(void)
 
                 OTWDriver.renderer->SetViewport(ViewPort.left, ViewPort.top, ViewPort.right, ViewPort.bottom);
 
-                if (!OTWDriver.renderer->GetGreenMode())
+                if ( not OTWDriver.renderer->GetGreenMode())
                     // JB 000819 Info from MI
                     //OTWDriver.renderer->SetColor(0xFF009FFF);
                     OTWDriver.renderer->SetColor(mColor[0]);
@@ -174,7 +174,7 @@ void CPDed::DisplayDraw(void)
         {
             OTWDriver.renderer->SetViewport(ViewPort.left, ViewPort.top, ViewPort.right, ViewPort.bottom);
 
-            if (!OTWDriver.renderer->GetGreenMode())
+            if ( not OTWDriver.renderer->GetGreenMode())
                 OTWDriver.renderer->SetColor(mColor[0]); //FF009FFF 00? 00B 00G 00R
             else
                 OTWDriver.renderer->SetColor(mColor[1]);
@@ -186,13 +186,13 @@ void CPDed::DisplayDraw(void)
             //we're a DED
             if (mDedType == DEDT_DED)
             {
-                if (!playerAC->HasPower(AircraftClass::UFCPower))
+                if ( not playerAC->HasPower(AircraftClass::UFCPower))
                     return;
 
                 //Wombat778 10-17-2003 Aeyes Ded spacing fix
                 float stepx;
 
-                if ((g_bDEDSpacingFix) || (DisplayOptions.DispWidth > 1024)) //Wombat778 12-12-2003 Changed to allow automatic selection of the fix at high resolutions
+                if ((g_bDEDSpacingFix) or (DisplayOptions.DispWidth > 1024)) //Wombat778 12-12-2003 Changed to allow automatic selection of the fix at high resolutions
                     stepx = VirtualDisplay::pFontSet->fontData[VirtualDisplay::pFontSet->fontNum][32].pixelWidth;
                 else
                     stepx = 5.0F;
@@ -209,7 +209,7 @@ void CPDed::DisplayDraw(void)
                         buf[0] = mpCPManager->mpIcp->DEDLines[j][i];
                         buf[1] = '\0';
 
-                        if (buf[0] != ' ' && mpCPManager->mpIcp->Invert[j][i] == 0)
+                        if (buf[0] not_eq ' ' and mpCPManager->mpIcp->Invert[j][i] == 0)
                             OTWDriver.renderer->ScreenText(x, y, buf, mpCPManager->mpIcp->Invert[j][i]);
                         else if (mpCPManager->mpIcp->Invert[j][i] == 2)
                             OTWDriver.renderer->ScreenText(x, y, buf, mpCPManager->mpIcp->Invert[j][i]);
@@ -221,7 +221,7 @@ void CPDed::DisplayDraw(void)
             //we're a PFL
             else
             {
-                if (!playerAC->HasPower(AircraftClass::PFDPower))
+                if ( not playerAC->HasPower(AircraftClass::PFDPower))
                 {
                     return;
                 }
@@ -229,7 +229,7 @@ void CPDed::DisplayDraw(void)
                 //Wombat778 10-17-2003 Aeyes Ded spacing fix
                 float stepx;
 
-                if ((g_bDEDSpacingFix) || (DisplayOptions.DispWidth > 1024))
+                if ((g_bDEDSpacingFix) or (DisplayOptions.DispWidth > 1024))
                 {
                     //Wombat778 12-12-2003 Changed to allow automatic selection of the fix at high resolutions
                     stepx = VirtualDisplay::pFontSet->fontData[VirtualDisplay::pFontSet->fontNum][32].pixelWidth;
@@ -252,7 +252,7 @@ void CPDed::DisplayDraw(void)
                         buf[0] = mpCPManager->mpIcp->PFLLines[j][i];
                         buf[1] = '\0';
 
-                        if (buf[0] != ' ' && mpCPManager->mpIcp->PFLInvert[j][i] == 0)
+                        if (buf[0] not_eq ' ' and mpCPManager->mpIcp->PFLInvert[j][i] == 0)
                             OTWDriver.renderer->ScreenText(x, y, buf, mpCPManager->mpIcp->PFLInvert[j][i]);
                         else if (mpCPManager->mpIcp->PFLInvert[j][i] == 2)
                             OTWDriver.renderer->ScreenText(x, y, buf, mpCPManager->mpIcp->PFLInvert[j][i]);

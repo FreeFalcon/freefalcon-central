@@ -73,7 +73,7 @@ void DrawableGuys::Draw(class RenderOTW *renderer, int LOD)
 
 
     // See if we need to update our ground position because the terrain under us changed
-    if (LOD != previousLOD)
+    if (LOD not_eq previousLOD)
     {
 
         Tpoint normal;
@@ -139,13 +139,13 @@ void DrawableGuys::Draw(class RenderOTW *renderer, int LOD)
     // for the shift position and mult by 4 to get the starting bit
     // position of the 1st animation frame for the orientation.
     animShift = FloatToInt32(8.0f * relYaw / (2.0f * PI));
-    animShift &= 0x00000007;
+    animShift and_eq 0x00000007;
 
     // set appropriate switch
     if (moving)
     {
         // cycle animation at about 4 fps
-        animFrame = (TheTimeManager.GetClockTime() >> 8) & 0x3;
+        animFrame = (TheTimeManager.GetClockTime() >> 8) bitand 0x3;
 
         // switch 0 is for the moving case
         mask = (1 << ((animShift << 2) + animFrame));

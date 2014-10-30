@@ -90,7 +90,7 @@ InputFunctionHashTable::~InputFunctionHashTable(void)
 
 #ifdef USE_SH_POOLS
 
-    if (gInputMemPool != NULL)
+    if (gInputMemPool not_eq NULL)
     {
         MemPoolFree(gInputMemPool);
         gInputMemPool = NULL;
@@ -138,7 +138,7 @@ void InputFunctionHashTable::AddFunction(int key, int flags, int buttonId, int m
 {
     struct FunctionPtrListEntry* tmpEntry;
 
-    if (key < 0 || key >= NumHashEntries)
+    if (key < 0 or key >= NumHashEntries)
         return;
 
     // Check for duplicate
@@ -187,7 +187,7 @@ void InputFunctionHashTable::RemoveFunction(int key, int flags)
         tmpEntry = tmpEntry->next;
     }
 
-    if (tmpEntry && tmpEntry->flags == flags)
+    if (tmpEntry and tmpEntry->flags == flags)
     {
         if (lastEntry)
             lastEntry->next = tmpEntry->next;
@@ -310,7 +310,7 @@ BOOL InputFunctionHashTable::SetControl(int key, int flags, long control)
 
 BOOL InputFunctionHashTable::SetButtonFunction(int buttonID, InputFunctionType theFunc, int CPbuttonId)
 {
-    if (buttonID < 0 || buttonID >= NumButtons)
+    if (buttonID < 0 or buttonID >= NumButtons)
         return FALSE;
 
     buttonTable[buttonID].func = theFunc;
@@ -320,7 +320,7 @@ BOOL InputFunctionHashTable::SetButtonFunction(int buttonID, InputFunctionType t
 
 InputFunctionType InputFunctionHashTable::GetButtonFunction(int buttonID, int *cpButtonID)
 {
-    if (buttonID < 0 || buttonID >= NumButtons)
+    if (buttonID < 0 or buttonID >= NumButtons)
     {
         if (cpButtonID)
             *cpButtonID = -1;
@@ -336,10 +336,10 @@ InputFunctionType InputFunctionHashTable::GetButtonFunction(int buttonID, int *c
 
 BOOL InputFunctionHashTable::SetPOVFunction(int POV, int dir, InputFunctionType theFunc, int cpButtonID)
 {
-    if (POV < 0 || POV >= NumPOVs)
+    if (POV < 0 or POV >= NumPOVs)
         return FALSE;
 
-    if (dir < 0 || dir >= MAX_POV_DIR)
+    if (dir < 0 or dir >= MAX_POV_DIR)
         return FALSE;
 
     POVTable[POV].func[dir] = theFunc;
@@ -349,7 +349,7 @@ BOOL InputFunctionHashTable::SetPOVFunction(int POV, int dir, InputFunctionType 
 
 InputFunctionType InputFunctionHashTable::GetPOVFunction(int POV, int dir, int* cpButtonID)
 {
-    if (POV < 0 || POV >= NumPOVs || dir < 0 || dir >= MAX_POV_DIR)
+    if (POV < 0 or POV >= NumPOVs or dir < 0 or dir >= MAX_POV_DIR)
     {
         if (cpButtonID)
             *cpButtonID = -1;
@@ -379,7 +379,7 @@ void CleanupInputFunctions(void)
 void
 CallFunc(InputFunctionType theFunc, unsigned long val, int state, void* pButton)
 {
-    // if (!TrainingScript->IsBlocked(theFunc,NULL)) //Wombat778 3-09-04 Check if this function is being blocked by the training script
+    // if ( not TrainingScript->IsBlocked(theFunc,NULL)) //Wombat778 3-09-04 Check if this function is being blocked by the training script
     // {
     // if (TrainingScript->IsCapturing())
     // TrainingScript->CaptureCommand(theFunc, NULL);
@@ -390,24 +390,24 @@ CallFunc(InputFunctionType theFunc, unsigned long val, int state, void* pButton)
 
 void CallInputFunction(unsigned long val, int state)
 {
-    int keyDown = (state & KEY_DOWN ? 1 : 0);
+    int keyDown = (state bitand KEY_DOWN ? 1 : 0);
     InputFunctionType theFunc;
     int flags, buttonId, mouseSide;
 
     // Special String builder
-    if (CommandsKeyCombo == -1 && CommandsKeyComboMod == -1)
+    if (CommandsKeyCombo == -1 and CommandsKeyComboMod == -1)
     {
         if (keyDown)
         {
             InputBuildString(val);
         }
     }
-    else if (CommandsKeyCombo == -2 && CommandsKeyComboMod == -2)
+    else if (CommandsKeyCombo == -2 and CommandsKeyComboMod == -2)
     {
         if (keyDown)
         {
             //dangling else - JPO
-            if (!(state & 0x6) && DIK_IsAscii(val, state))
+            if ( not (state bitand 0x6) and DIK_IsAscii(val, state))
             {
                 StandardAsciiInput(val, state);
             }
@@ -417,7 +417,7 @@ void CallInputFunction(unsigned long val, int state)
             }
         }
     }
-    else if (OTWDriver.InExitMenu() && keyDown)
+    else if (OTWDriver.InExitMenu() and keyDown)
     {
         if (keyDown)
         {
@@ -427,7 +427,7 @@ void CallInputFunction(unsigned long val, int state)
     else
     {
         flags =
-            (state & MODS_MASK) +
+            (state bitand MODS_MASK) +
             (CommandsKeyCombo << SECOND_KEY_SHIFT) +
             (CommandsKeyComboMod << SECOND_KEY_MOD_SHIFT)
             ;
@@ -436,8 +436,8 @@ void CallInputFunction(unsigned long val, int state)
         /* // ASSOCIATOR: Commented this out so that Comms menu will not deactivate while pressing other keys
         // Cancel the combo, whether it is handled or not
         if (
-         CommandsKeyCombo && keyDown && theFunc != ScreenShot &&
-         theFunc != RadioMessageSend && theFunc != OTWRadioMenuStep && theFunc != OTWRadioMenuStepBack
+         CommandsKeyCombo and keyDown and theFunc not_eq ScreenShot and 
+         theFunc not_eq RadioMessageSend and theFunc not_eq OTWRadioMenuStep and theFunc not_eq OTWRadioMenuStepBack
         ){
          CommandsKeyCombo = 0;
          CommandsKeyComboMod = 0;
@@ -448,9 +448,9 @@ void CallInputFunction(unsigned long val, int state)
 
         // ASSOCIATOR: Added so that other keys can be pressed while in Comms menus
         if (
-            CommandsKeyComboMod && CommandsKeyCombo && keyDown &&
-            theFunc != ScreenShot && theFunc != RadioMessageSend && theFunc != OTWRadioMenuStep &&
-            theFunc != OTWRadioMenuStepBack
+            CommandsKeyComboMod and CommandsKeyCombo and keyDown and 
+            theFunc not_eq ScreenShot and theFunc not_eq RadioMessageSend and theFunc not_eq OTWRadioMenuStep and 
+            theFunc not_eq OTWRadioMenuStepBack
         )
         {
             CommandsKeyCombo = 0;
@@ -459,13 +459,13 @@ void CallInputFunction(unsigned long val, int state)
         }
 
         // ASSOCIATOR: Added so that other keys can be pressed while in Comms menus
-        if (OTWDriver.pMenuManager->IsActive() && val >= DIK_1 && val <= DIK_9)
+        if (OTWDriver.pMenuManager->IsActive() and val >= DIK_1 and val <= DIK_9)
         {
             theFunc = RadioMessageSend;
         }
 
         // ASSOCIATOR: Added so that other keys can be pressed while in Comms menus
-        if (OTWDriver.pMenuManager->IsActive() && val == DIK_ESCAPE)
+        if (OTWDriver.pMenuManager->IsActive() and val == DIK_ESCAPE)
         {
             CommandsKeyCombo    = 0;
             CommandsKeyComboMod = 0;
@@ -478,10 +478,10 @@ void CallInputFunction(unsigned long val, int state)
 
         // ASSOCIATOR: Added so that other keys can be pressed while in Comms menus
         if (
-            CommandsKeyCombo && theFunc != ScreenShot &&
-            theFunc != RadioMessageSend &&
-            theFunc != OTWRadioMenuStep &&
-            theFunc != OTWRadioMenuStepBack
+            CommandsKeyCombo and theFunc not_eq ScreenShot and 
+            theFunc not_eq RadioMessageSend and 
+            theFunc not_eq OTWRadioMenuStep and 
+            theFunc not_eq OTWRadioMenuStepBack
         )
         {
             tempCombo = CommandsKeyCombo;
@@ -489,7 +489,7 @@ void CallInputFunction(unsigned long val, int state)
             CommandsKeyCombo = 0;
             CommandsKeyComboMod = 0;
             flags =
-                (state & MODS_MASK) +
+                (state bitand MODS_MASK) +
                 (CommandsKeyCombo << SECOND_KEY_SHIFT) +
                 (CommandsKeyComboMod << SECOND_KEY_MOD_SHIFT)
                 ;
@@ -512,9 +512,9 @@ void CallInputFunction(unsigned long val, int state)
                 //theFunc(val, state, OTWDriver.pCockpitManager->GetButtonPointer(buttonId));
                 CallFunc(theFunc, val, state, OTWDriver.pCockpitManager->GetButtonPointer(buttonId));
 
-                if (SimDriver.GetPlayerAircraft() &&
-                    SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) &&
-                    !((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+                if (SimDriver.GetPlayerAircraft() and 
+                    SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and 
+ not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
                 {
                     OTWDriver.pCockpitManager->Dispatch(buttonId, mouseSide);
                 }
@@ -608,9 +608,9 @@ void LoadFunctionTables(_TCHAR *fname)
         }
         else
         {
-            // MonoPrint ("ERROR !!!!! %s not found\n", funcName);
+            // MonoPrint ("ERROR  %s not found\n", funcName);
 #ifdef DEBUG
-            //sprintf (tmpStr, "ERROR !!!!! %s not found\n", funcName);
+            //sprintf (tmpStr, "ERROR  %s not found\n", funcName);
             //OutputDebugString (tmpStr);
 #endif
         }
@@ -744,13 +744,13 @@ void StandardAsciiInput(unsigned long key, int state)
     switch (AsciiAllowed)
     {
         case 1: // Integers
-            if (!DIK_IsDigit(key, state) && asciival != '-')
+            if ( not DIK_IsDigit(key, state) and asciival not_eq '-')
                 return;
 
             break;
 
         case 2: // Floats
-            if (!DIK_IsDigit(key, state) && asciival != '-' && asciival != '.')
+            if ( not DIK_IsDigit(key, state) and asciival not_eq '-' and asciival not_eq '.')
                 return;
 
             break;
@@ -767,7 +767,7 @@ void StandardAsciiInput(unsigned long key, int state)
             chatterStr[MaxInputLength] = 0;
         }
 
-        if (!chatterStr[chatterCount])
+        if ( not chatterStr[chatterCount])
             chatterStr[chatterCount + 1] = 0;
 
         chatterStr[chatterCount] = asciival;
@@ -784,7 +784,7 @@ void ExtendedKeyInput(unsigned long key, int)
     switch (key)
     {
         case DIK_NUMPAD6:
-            if (chatterCount < MaxInputLength && chatterStr[chatterCount])
+            if (chatterCount < MaxInputLength and chatterStr[chatterCount])
             {
                 chatterCount++;
             }
@@ -812,11 +812,11 @@ void ExtendedKeyInput(unsigned long key, int)
             break;
 
         case DIK_INSERT:
-            insertMode ^= 1;
+            insertMode xor_eq 1;
             break;
 
         case DIK_NUMPAD1:
-            while (chatterStr[chatterCount] && chatterCount < (MaxInputLength - 1))
+            while (chatterStr[chatterCount] and chatterCount < (MaxInputLength - 1))
                 chatterCount++;
 
             break;
@@ -831,7 +831,7 @@ void ExtendedKeyInput(unsigned long key, int)
 
                 if (i < MaxInputLength)
                 {
-                    while (chatterStr[i] && i < MaxInputLength)
+                    while (chatterStr[i] and i < MaxInputLength)
                     {
                         chatterStr[i - 1] = chatterStr[i];
                         i++;
@@ -868,7 +868,7 @@ void ExtendedKeyInput(unsigned long key, int)
             memset(chatterStr, 0, sizeof(chatterStr));
             UseInputFn = NULL;
             DiscardInputFn = NULL;
-            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() & ~SHOW_CHATBOX);
+            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitand compl SHOW_CHATBOX);
             break;
 
         case DIK_ESCAPE:
@@ -883,7 +883,7 @@ void ExtendedKeyInput(unsigned long key, int)
             memset(chatterStr, 0, sizeof(chatterStr));
             UseInputFn = NULL;
             DiscardInputFn = NULL;
-            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() & ~SHOW_CHATBOX);
+            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitand compl SHOW_CHATBOX);
             break;
     }
 }

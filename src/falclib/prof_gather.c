@@ -1,3 +1,4 @@
+#include <cISO646>
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,11 +32,11 @@ static int hash(Prof_Zone *z, Prof_Zone_Stack *s)
 static void insert_node(Prof_Zone_Stack *q)
 {
     int h = hash(q->zone, q->parent);
-    int x = h & zone_hash_mask;
-    int s = ((h << 4) + (h >> 4)) | 1;
+    int x = h bitand zone_hash_mask;
+    int s = ((h << 4) + (h >> 4)) bitor 1;
 
-    while (zone_hash[x] != &Prof_dummy)
-        x = (x + s) & zone_hash_mask;
+    while (zone_hash[x] not_eq &Prof_dummy)
+        x = (x + s) bitand zone_hash_mask;
 
     zone_hash[x] = q;
 
@@ -99,24 +100,24 @@ static void Prof_init_lowlevel(void);
 Prof_extern_C Prof_Zone_Stack *Prof_StackAppend(Prof_Zone *zone)
 {
     int h = hash(zone, Prof_stack), s;
-    int x = h & zone_hash_mask;
+    int x = h bitand zone_hash_mask;
     Prof_Zone_Stack *z = zone_hash[x];
 
-    if (z->parent == Prof_stack && z->zone == zone) return z;
+    if (z->parent == Prof_stack and z->zone == zone) return z;
 
-    if (z != &Prof_dummy)
+    if (z not_eq &Prof_dummy)
     {
 
         // compute a secondary hash function; force it to be odd
         // so it's relatively prime to the power-of-two table size
-        s = ((h << 4) + (h >> 4)) | 1;
+        s = ((h << 4) + (h >> 4)) bitor 1;
 
         for (;;)
         {
-            x = (x + s) & zone_hash_mask;
+            x = (x + s) bitand zone_hash_mask;
             z = zone_hash[x];
 
-            if (z->parent == Prof_stack && z->zone == zone) return z;
+            if (z->parent == Prof_stack and z->zone == zone) return z;
 
             if (z == &Prof_dummy) break;
         }
@@ -125,7 +126,7 @@ Prof_extern_C Prof_Zone_Stack *Prof_StackAppend(Prof_Zone *zone)
     }
 
     // now's as good a time as any to initialize this zone
-    if (!zone->initialized)
+    if ( not zone->initialized)
     {
         if (zone_hash_max == 1)
         {
@@ -148,7 +149,7 @@ Prof_extern_C Prof_Zone_Stack *Prof_StackAppend(Prof_Zone *zone)
         init_zone_hash(zone_hash_max * 2);
 
         for (i = 0; i < n; ++i)
-            if (old_hash[i] != &Prof_dummy)
+            if (old_hash[i] not_eq &Prof_dummy)
                 insert_node(old_hash[i]);
 
         z = createStackNode(zone, Prof_stack);
@@ -166,7 +167,7 @@ void Prof_traverse(void (*func)(Prof_Zone_Stack *z))
     int i;
 
     for (i = 0; i < zone_hash_max; ++i)
-        if (zone_hash[i] != &Prof_dummy)
+        if (zone_hash[i] not_eq &Prof_dummy)
             func(zone_hash[i]);
 }
 

@@ -98,7 +98,7 @@ void STPViewTimerCB(long, short, C_Base *control)
 {
     control->SetReady(1);
 
-    if (control->GetFlags() & C_BIT_ABSOLUTE)
+    if (control->GetFlags() bitand C_BIT_ABSOLUTE)
     {
         control->Parent_->RefreshWindow();
     }
@@ -124,13 +124,13 @@ void InitializeViewer(C_Window *win, RenderOTW *renderer)
 
     slider = (C_Slider *)win->FindControl(OBJECT_DETAIL);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         renderer->SetObjectDetail((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f + 0.5f);
     }
 
     /* slider=(C_Slider *)win->FindControl(TEXTURE_DISTANCE);
-     if(slider != NULL)
+     if(slider not_eq NULL)
      {
      float sliderPos;
      sliderPos = (float)slider->GetSliderPos()/(slider->GetSliderMax()-slider->GetSliderMin());
@@ -138,7 +138,7 @@ void InitializeViewer(C_Window *win, RenderOTW *renderer)
      }
     */
     /* button=(C_Button *)win->FindControl(OBJECT_TEXTURES);
-     if(button != NULL)
+     if(button not_eq NULL)
      {
      renderer->SetObjectTextureState( button->GetState() );
      }
@@ -147,7 +147,7 @@ void InitializeViewer(C_Window *win, RenderOTW *renderer)
     //JAM 16Jan04
     button = (C_Button *)win->FindControl(SETUP_SPECULAR_LIGHTING);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1)
             DisplayOptions.bSpecularLighting = true;
@@ -158,7 +158,7 @@ void InitializeViewer(C_Window *win, RenderOTW *renderer)
     //JAM 07Dec03
     button = (C_Button *)win->FindControl(SETUP_REALWEATHER_SHADOWS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1)
             PlayerOptions.SetDispFlag(DISP_SHADOWS);
@@ -168,26 +168,26 @@ void InitializeViewer(C_Window *win, RenderOTW *renderer)
 
     /*
      button=(C_Button *)win->FindControl(BILINEAR_FILTERING);
-     if(button != NULL)
+     if(button not_eq NULL)
      {
      renderer->SetFilteringMode( button->GetState() );
      }
     */
     button = (C_Button *)win->FindControl(HAZING);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         renderer->SetHazeMode(button->GetState());
     }
 
     /* button=(C_Button *)win->FindControl(GOUROUD);
-     if(button != NULL)
+     if(button not_eq NULL)
      {
      renderer->SetSmoothShadingMode(button->GetState());
      }
 
      button=(C_Button *)win->FindControl(ALPHA_BLENDING);
-     if(button != NULL)
+     if(button not_eq NULL)
      {
      renderer->SetAlphaMode( button->GetState() );
      }*/
@@ -270,7 +270,7 @@ void LoadObjects(ViewPos &View , C_Window *win)
 
         slider = (C_Slider *)win->FindControl(VEHICLE_SIZE);
 
-        if (slider != NULL)
+        if (slider not_eq NULL)
         {
             scale = ((float)slider->GetSliderPos() / (float)(slider->GetSliderMax() - slider->GetSliderMin()) * 4.0F + 1.0F);
         }
@@ -332,7 +332,7 @@ void STPRender(C_Base *control)
 
         slider = (C_Slider *)control->Parent_->FindControl(TERRAIN_DETAIL);
 
-        if (slider != NULL)
+        if (slider not_eq NULL)
         {
             int mid;
             mid = (slider->GetSliderMax() - slider->GetSliderMin()) / 2;
@@ -366,7 +366,7 @@ void STPRender(C_Base *control)
 
         slider = (C_Slider *)control->Parent_->FindControl(DISAGG_LEVEL);
 
-        if (slider != NULL)
+        if (slider not_eq NULL)
         {
             objdetail = FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 5 + 0.5F);
         }
@@ -404,7 +404,7 @@ void STPRender(C_Base *control)
             text->Refresh();
         }
 
-        if (!tmpVpoint)
+        if ( not tmpVpoint)
         {
             tmpVpoint = new RViewPoint;
             tmpVpoint->Setup(80.0f * FEET_PER_KM, 0, 4, DisplayOptions.bZBuffering);
@@ -419,7 +419,7 @@ void STPRender(C_Base *control)
 
 void RenderViewCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     C_Text *text;
@@ -442,7 +442,7 @@ void RenderViewCB(long, short hittype, C_Base *control)
     {
         if (SetupViewer)
         {
-            if (!ready)
+            if ( not ready)
             {
                 ((C_Button *)control)->SetState(C_STATE_1);
                 ((C_Button *)control)->Refresh();
@@ -481,11 +481,11 @@ void ChangeViewpointCB(long, short, C_Base *)
         // Update the Joystick control
         GetJoystickInput();
 
-        if (IO.digital[0] || ((count %= 3) == 0))
+        if (IO.digital[0] or ((count %= 3) == 0))
         {
             win = gMainHandler->FindWindow(SETUP_WIN);
 
-            if (win != NULL)
+            if (win not_eq NULL)
             {
                 //Leave=UI_Enter(control->Parent_);
                 F4EnterCriticalSection(SetupCritSection);
@@ -507,7 +507,7 @@ void ChangeViewpointCB(long, short, C_Base *)
                 // Retro 31Dec2003
                 extern AxisMapping AxisMap;
 
-                if (AxisMap.FlightControlDevice != -1)
+                if (AxisMap.FlightControlDevice not_eq -1)
                     if (IO.digital[(AxisMap.FlightControlDevice - SIM_JOYSTICK1)*SIMLIB_MAX_DIGITAL])
                     {
                         pitchChg = IO.analog[AXIS_PITCH].engrValue * PITCH_CHG;
@@ -567,13 +567,13 @@ void ChangeViewpointCB(long, short, C_Base *)
 
 void ScalingCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 }
 
 void GouraudCB(long, short hittype, C_Base *control)
 {
-    /* if(hittype != C_TYPE_LMOUSEUP)
+    /* if(hittype not_eq C_TYPE_LMOUSEUP)
      return;
 
      if(SetupViewer == NULL)
@@ -598,7 +598,7 @@ void GouraudCB(long, short hittype, C_Base *control)
 
 void HazingCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (SetupViewer == NULL)
@@ -622,7 +622,7 @@ void HazingCB(long, short hittype, C_Base *control)
 //JAM 07Dec03
 void RealWeatherShadowsCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (SetupViewer == NULL)
@@ -642,7 +642,7 @@ void RealWeatherShadowsCB(long, short hittype, C_Base *control)
 
 void BilinearFilterCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (SetupViewer == NULL)
@@ -666,7 +666,7 @@ void BilinearFilterCB(long, short hittype, C_Base *control)
 
 /*void ObjectTextureCB(long,short hittype,C_Base *control)
 {
- if(hittype != C_TYPE_LMOUSEUP)
+ if(hittype not_eq C_TYPE_LMOUSEUP)
  return;
 
  if(SetupViewer == NULL)
@@ -697,7 +697,7 @@ void RemoveObjFromView(int objID)
     bsplist = SetupViewer->GetBSPList();
 
     // I don't think this will happen, but time is short so lets be safe...
-    if (!bsplist) return;
+    if ( not bsplist) return;
 
     list = bsplist->Root_;
 
@@ -727,7 +727,7 @@ void BuildingDetailCB(long, short hittype, C_Base *control)
     int objdetail;
     static int prevdetail = -1;
 
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
     slider = (C_Slider *)control;
@@ -759,7 +759,7 @@ void BuildingDetailCB(long, short hittype, C_Base *control)
             {
                 for (int i = 0; i < NumFeatures; i++)
                 {
-                    if ((Features[i].Priority <= objdetail) && (Features[i].Priority > prevdetail))
+                    if ((Features[i].Priority <= objdetail) and (Features[i].Priority > prevdetail))
                         SetupViewer->AddToView(i + 100);
                 }
             }
@@ -768,7 +768,7 @@ void BuildingDetailCB(long, short hittype, C_Base *control)
         {
             for (int i = 0; i < NumFeatures; i++)
             {
-                if ((Features[i].Priority > objdetail) && (Features[i].Priority <= prevdetail))
+                if ((Features[i].Priority > objdetail) and (Features[i].Priority <= prevdetail))
                     RemoveObjFromView(i + 100);
             }
         }
@@ -783,7 +783,7 @@ void BuildingDetailCB(long, short hittype, C_Base *control)
 
 void PlayerBubbleCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
     C_Slider    *slider;
@@ -802,7 +802,7 @@ void PlayerBubbleCB(long, short hittype, C_Base *control)
 
 void ObjectDetailCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
     float detail;
@@ -833,7 +833,7 @@ void ObjectDetailCB(long, short hittype, C_Base *control)
 
 void VehicleSizeCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
     C_Slider *slider;
@@ -859,7 +859,7 @@ void VehicleSizeCB(long, short hittype, C_Base *control)
     static int prevscale;
 
 
-    if (prevscale != scale)
+    if (prevscale not_eq scale)
     {
         list = ((C_BSPList *)SetupViewer->GetBSPList())->Root_;
 
@@ -886,7 +886,7 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
     C_Slider *slider;
     static int prevpos = -1;
 
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
     slider = (C_Slider *)control;
@@ -1036,7 +1036,7 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
 
             slider = (C_Slider *)control->Parent_->FindControl(DISAGG_LEVEL);
 
-            if (slider != NULL)
+            if (slider not_eq NULL)
             {
                 disagglvl = FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 5 + 0.5F);
 
@@ -1073,7 +1073,7 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
 
 /*void TextureDistanceCB(long,short hittype,C_Base *control)
 {
- if(hittype != C_TYPE_MOUSEMOVE)
+ if(hittype not_eq C_TYPE_MOUSEMOVE)
  return;
 
  C_Slider *slider;
@@ -1099,7 +1099,7 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
  TexLev = renderer->GetTerrainTextureLevel();
 
  //have the rendered view update with new settings
- if(pos != TexLev)
+ if(pos not_eq TexLev)
  {
  renderer->SetTerrainTextureLevel(pos);
  //control->Parent_->RefreshClient(2);
@@ -1111,7 +1111,7 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
 */
 void SfxLevelCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_MOUSEMOVE)
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
     C_Slider *slider;
@@ -1145,19 +1145,19 @@ void BuildVideoCardList(C_ListBox *lbox)
 
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(Driver);
 
-    if (!pDI) return;
+    if ( not pDI) return;
 
     value = lbox->GetTextID();
     lbox->RemoveAllItems();
 
     while (buf = FalconDisplay.devmgr.GetDeviceName(Driver, i))
     {
-        if (!g_bEnumSoftwareDevices)
+        if ( not g_bEnumSoftwareDevices)
         {
             // check for software device
             DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI = pDI->GetDevice(i);
 
-            if (pD3DDI && !pD3DDI->IsHardware())
+            if (pD3DDI and not pD3DDI->IsHardware())
             {
                 i++;
                 continue;
@@ -1220,11 +1220,11 @@ void BuildResolutionList(C_ListBox *lbox)
 
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(Driver);
 
-    if (!pDI) return;
+    if ( not pDI) return;
 
     DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI = pDI->GetDevice(Card);
 
-    if (!pD3DDI) return;
+    if ( not pD3DDI) return;
 
     // OW
 #if 1
@@ -1233,23 +1233,23 @@ void BuildResolutionList(C_ListBox *lbox)
     {
         // For now we only allow 640x480, 800x600, 1280x960, 1600x1200
         // (MPR already does the 4:3 aspect ratio check for us)
-        if (height > 400 && ((width == 640 || width == 800 || width == 1024 ||
-                              (width == 1280 && height == 960) || width == 1600 || HighResolutionHackFlag)))
+        if (height > 400 and ((width == 640 or width == 800 or width == 1024 or
+                              (width == 1280 and height == 960) or width == 1600 or HighResolutionHackFlag)))
         {
-            if (depth == 8 || depth == 24)
+            if (depth == 8 or depth == 24)
                 continue;
 
-            // if(depth == 16 && !(pD3DDI->m_devDesc.dwDeviceRenderBitDepth & DDBD_16))
+            // if(depth == 16 and not (pD3DDI->m_devDesc.dwDeviceRenderBitDepth bitand DDBD_16))
             if (depth == 16)
                 continue;
-            else if (depth == 32 && !(pD3DDI->m_devDesc.dwDeviceRenderBitDepth & DDBD_32))
+            else if (depth == 32 and not (pD3DDI->m_devDesc.dwDeviceRenderBitDepth bitand DDBD_32))
                 continue;
 
             sprintf(buf2, "%0dx%0d - %d Bit", width, height, depth);
             lbox->AddItem(i - 1, C_TYPE_ITEM, buf2);
 
             // remember index for current mode
-            if (width == DisplayOptions.DispWidth && height == DisplayOptions.DispHeight && depth == DisplayOptions.DispDepth)
+            if (width == DisplayOptions.DispWidth and height == DisplayOptions.DispHeight and depth == DisplayOptions.DispDepth)
                 isel = i - 1;
 
             nNumItems++;
@@ -1258,7 +1258,7 @@ void BuildResolutionList(C_ListBox *lbox)
 
     ShiAssert(i > 0);
 
-    if (isel != -1) lbox->SetValue(isel);
+    if (isel not_eq -1) lbox->SetValue(isel);
     else lbox->SetValue(value);
 
     lbox->Refresh();
@@ -1301,25 +1301,25 @@ void SetAdvanced()
 
     lbox = (C_ListBox *)win->FindControl(SET_VIDEO_DRIVER);
 
-    if (!lbox) return;
+    if ( not lbox) return;
 
     int nDriver = lbox->GetTextID() - 1;
     lbox = (C_ListBox *)win->FindControl(SET_VIDEO_CARD);
 
-    if (!lbox) return;
+    if ( not lbox) return;
 
     int nDevice = lbox->GetTextID() - 1;
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(nDriver);
 
-    if (!pDI) return;
+    if ( not pDI) return;
 
     DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI = pDI->GetDevice(nDevice);
 
-    if (!pD3DDI) return;
+    if ( not pD3DDI) return;
 
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
-    if (!win) return;
+    if ( not win) return;
 
     //========================================
     // FRB - Force Z-Buffering
@@ -1393,7 +1393,7 @@ static void LoadBitmap(long ID, C_Button *btn, char filename[])
  C_ListBox *lbox;
 
  win=gMainHandler->FindWindow(SETUP_SKY_WIN);
- if(!win) return;
+ if( not win) return;
 
  lbox=(C_ListBox *)win->FindControl(SETUP_SKY_COLOR);
  if (lbox)
@@ -1419,7 +1419,7 @@ static void LoadBitmap(long ID, C_Button *btn, char filename[])
  LoadBitmap(SKYCOLOR_BITMAP_ID,btn,skycolor[PlayerOptions.skycol-1].image4);
  break;
  default:
- MonoPrint("Not allowed skycolortime found !!");
+ MonoPrint("Not allowed skycolortime found ");
  break;
  }
  }
@@ -1430,7 +1430,7 @@ void SelectSkyColorCB(long ID,short hittype,C_Base *control)
 {
  C_ListBox *lbox=(C_ListBox*)control;
 
- if(hittype != C_TYPE_SELECT)
+ if(hittype not_eq C_TYPE_SELECT)
  return;
 
  ID=lbox->GetTextID();
@@ -1440,10 +1440,10 @@ void SelectSkyColorCB(long ID,short hittype,C_Base *control)
 
 void SkyColTimeCB(long ID,short hittype,C_Base *control)
 {
- if(hittype != C_TYPE_LMOUSEUP)
+ if(hittype not_eq C_TYPE_LMOUSEUP)
  return;
 
- if(!control)
+ if( not control)
  return;
 
  switch(control->GetID())
@@ -1469,7 +1469,7 @@ void SkyColTimeCB(long ID,short hittype,C_Base *control)
 
 void VideoCardCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     C_ListBox *lbox;
@@ -1488,7 +1488,7 @@ void VideoCardCB(long, short hittype, C_Base *control)
 
 void VideoDriverCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 
     C_ListBox *lbox = (C_ListBox *)control->Parent_->FindControl(SET_VIDEO_CARD);
@@ -1509,14 +1509,14 @@ void VideoDriverCB(long, short hittype, C_Base *control)
      if( ((C_ListBox*)control)->GetTextID() > 1)
      {
      button=(C_Button *)control->Parent_->FindControl(ALPHA_BLENDING);
-     if(button != NULL)
+     if(button not_eq NULL)
      {
      button->SetState(C_STATE_1);
      button->Refresh();
      }
 
      button=(C_Button *)control->Parent_->FindControl(BILINEAR_FILTERING);
-     if(button != NULL)
+     if(button not_eq NULL)
      {
      button->SetState(C_STATE_1);
      button->Refresh();
@@ -1525,14 +1525,14 @@ void VideoDriverCB(long, short hittype, C_Base *control)
      else
      {
      button=(C_Button *)control->Parent_->FindControl(ALPHA_BLENDING);
-     if(button != NULL)
+     if(button not_eq NULL)
      {
      button->SetState(C_STATE_0);
      button->Refresh();
      }
 
      button=(C_Button *)control->Parent_->FindControl(BILINEAR_FILTERING);
-     if(button != NULL)
+     if(button not_eq NULL)
      {
      button->SetState(C_STATE_0);
      button->Refresh();
@@ -1543,18 +1543,18 @@ void VideoDriverCB(long, short hittype, C_Base *control)
 
 void ResolutionCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
         return;
 }
 
 //JAM 21Nov03
 void RealWeatherCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_SELECT) return;
+    if (hittype not_eq C_TYPE_SELECT) return;
 
     C_ListBox *lbox = (C_ListBox*)control;
 
-    if (TheCampaign.InMainUI || !((WeatherClass *)realWeather)->lockedCondition)
+    if (TheCampaign.InMainUI or not ((WeatherClass *)realWeather)->lockedCondition)
     {
         PlayerOptions.weatherCondition = lbox->GetTextID() - 70207;
         ((WeatherClass *)realWeather)->UpdateCondition(PlayerOptions.weatherCondition, true);
@@ -1597,7 +1597,7 @@ void RealWeatherCB(long, short hittype, C_Base *control)
 //THW 2004-01-17
 void SeasonCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_SELECT) return;
+    if (hittype not_eq C_TYPE_SELECT) return;
 
     C_ListBox *lbox = (C_ListBox*)control;
     PlayerOptions.Season = lbox->GetTextID() - 70313;
@@ -1625,7 +1625,7 @@ void SetupGraphicsControls(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_VIDEO_CARD);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         BuildVideoCardList(lbox);
 
@@ -1635,7 +1635,7 @@ void SetupGraphicsControls(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_VIDEO_DRIVER);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         BuildVideoDriverList(lbox);
 
@@ -1646,7 +1646,7 @@ void SetupGraphicsControls(void)
 
     lbox = (C_ListBox *)win->FindControl(SET_RESOLUTION);
 
-    if (lbox != NULL)
+    if (lbox not_eq NULL)
     {
         DisableEnableResolutions(lbox);
         lbox->SetValueText(DisplayOptions.DispWidth);
@@ -1655,7 +1655,7 @@ void SetupGraphicsControls(void)
 
     button = (C_Button *)win->FindControl(70136); //GOUROUD
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.GouraudOn())
             button->SetState(C_STATE_1);
@@ -1667,7 +1667,7 @@ void SetupGraphicsControls(void)
 
     button = (C_Button *)win->FindControl(HAZING);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.HazingOn())
             button->SetState(C_STATE_1);
@@ -1680,7 +1680,7 @@ void SetupGraphicsControls(void)
     //JAM 16Jan04
     button = (C_Button *)win->FindControl(SETUP_SPECULAR_LIGHTING);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (DisplayOptions.bSpecularLighting)
             button->SetState(C_STATE_1);
@@ -1693,7 +1693,7 @@ void SetupGraphicsControls(void)
     //JAM 07Dec03
     button = (C_Button *)win->FindControl(SETUP_REALWEATHER_SHADOWS);
 
-    if (button != NULL)
+    if (button not_eq NULL)
     {
         if (PlayerOptions.ShadowsOn())
             button->SetState(C_STATE_1);
@@ -1705,7 +1705,7 @@ void SetupGraphicsControls(void)
 
     /*
      button=(C_Button *)win->FindControl(BILINEAR_FILTERING);
-     if(button != NULL)
+     if(button not_eq NULL)
      {
      if(PlayerOptions.FilteringOn())
      button->SetState(C_STATE_1);
@@ -1715,7 +1715,7 @@ void SetupGraphicsControls(void)
      }
     */
     /* button=(C_Button *)win->FindControl(OBJECT_TEXTURES);
-     if(button != NULL)
+     if(button not_eq NULL)
      {
      if(PlayerOptions.ObjectTexturesOn())
      button->SetState(C_STATE_1);
@@ -1726,7 +1726,7 @@ void SetupGraphicsControls(void)
     */
     slider = (C_Slider *)win->FindControl(OBJECT_DETAIL);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         slider->Refresh();
         ebox = (C_EditBox *)win->FindControl(OBJECT_DETAIL_READOUT);
@@ -1744,7 +1744,7 @@ void SetupGraphicsControls(void)
 
     slider = (C_Slider *)win->FindControl(DISAGG_LEVEL);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         slider->Refresh();
         ebox = (C_EditBox *)win->FindControl(DISAGG_LEVEL_READOUT);
@@ -1764,7 +1764,7 @@ void SetupGraphicsControls(void)
 
     slider = (C_Slider *)win->FindControl(VEHICLE_SIZE);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         slider->Refresh();
         slider->SetSliderPos(FloatToInt32((slider->GetSliderMax() - slider->GetSliderMin()) * (PlayerOptions.ObjMagnification - 1.0F) / 4.0F));
@@ -1781,7 +1781,7 @@ void SetupGraphicsControls(void)
     }
 
     /* slider=(C_Slider *)win->FindControl(TEXTURE_DISTANCE);
-     if(slider != NULL)
+     if(slider not_eq NULL)
      {
      slider->Refresh();
      ebox = (C_EditBox *)win->FindControl(TEX_DISTANCE_READOUT);
@@ -1797,7 +1797,7 @@ void SetupGraphicsControls(void)
     */
     slider = (C_Slider *)win->FindControl(TERRAIN_DETAIL);
 
-    if (slider != NULL)
+    if (slider not_eq NULL)
     {
         int step;
         step = (slider->GetSliderMax() - slider->GetSliderMin()) / 6;
@@ -1823,7 +1823,7 @@ void SetupGraphicsControls(void)
 
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
-    if (!win) return;
+    if ( not win) return;
 
     // M.N. SkyColor stuff
     // win = gMainHandler->FindWindow(SETUP_SKY_WIN);
@@ -1836,7 +1836,7 @@ void SetupGraphicsControls(void)
 
 void GraphicsDefaultsCB(long, short hittype, C_Base *)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     PlayerOptionsClass Player;
@@ -1894,14 +1894,14 @@ void GraphicsDefaultsCB(long, short hittype, C_Base *)
 // OW
 void AdvancedCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     C_Window *win;
 
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
-    if (!win) return;
+    if ( not win) return;
 
     gMainHandler->ShowWindow(win);
     gMainHandler->WindowToFront(win);
@@ -1910,14 +1910,14 @@ void AdvancedCB(long ID, short hittype, C_Base *control)
 // JPO - select advanced features
 void AdvancedGameCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     C_Window *win;
 
     win = gMainHandler->FindWindow(ADVANCED_GAME_OPTIONS_WIN); // JPOLOOK - not finished yet
 
-    if (!win) return;
+    if ( not win) return;
 
     gMainHandler->ShowWindow(win);
     gMainHandler->WindowToFront(win);
@@ -1926,14 +1926,14 @@ void AdvancedGameCB(long ID, short hittype, C_Base *control)
 // M.N. Skyfix
 void SkyColorCB(long ID, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     C_Window *win;
 
     win = gMainHandler->FindWindow(SETUP_SKY_WIN);
 
-    if (!win) return;
+    if ( not win) return;
 
     gMainHandler->ShowWindow(win);
     gMainHandler->WindowToFront(win);

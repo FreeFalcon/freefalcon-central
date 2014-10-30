@@ -75,18 +75,18 @@ BOOL LoadTargaFile(char *filename, char **image, BITMAPINFO *bmi)
         return FALSE;
 
     // For 15-bit Targa file, skip first 12 bytes.
-    if (UI_READ(&Targa, sizeof(BOGUS_HEADER), 1, hFile) != 1)
+    if (UI_READ(&Targa, sizeof(BOGUS_HEADER), 1, hFile) not_eq 1)
     {
         UI_CLOSE(hFile);
         return NULL;
     }
 
     // Read in image data
-    F4Assert(!(Targa.Width > 3000 || Targa.Height > 3000));
+    F4Assert( not (Targa.Width > 3000 or Targa.Height > 3000));
 
     bytesToRead = Targa.Width * Targa.Height * 2;
 
-    if (!bytesToRead)
+    if ( not bytesToRead)
         return(NULL);
 
     data = new char [bytesToRead];
@@ -95,7 +95,7 @@ BOOL LoadTargaFile(char *filename, char **image, BITMAPINFO *bmi)
     if (data == NULL)
         return(NULL);
 
-    if (UI_READ(data, bytesToRead, 1, hFile) != 1)
+    if (UI_READ(data, bytesToRead, 1, hFile) not_eq 1)
     {
         UI_CLOSE(hFile);
         return NULL;
@@ -135,28 +135,28 @@ BOOL NonResLoadTargaFile(char *filename, char **image, BITMAPINFO *bmi)
         return FALSE;
     }
 
-    if (!ReadFile(hFile, buf, 12, &bytesread, NULL))
+    if ( not ReadFile(hFile, buf, 12, &bytesread, NULL))
     {
         CloseHandle(hFile);
         return(FALSE);
     }
 
     // Read width
-    if (!ReadFile(hFile, &width, sizeof(width), &bytesread, NULL))
+    if ( not ReadFile(hFile, &width, sizeof(width), &bytesread, NULL))
     {
         CloseHandle(hFile);
         return(FALSE);
     }
 
     // Read height
-    if (!ReadFile(hFile, &height, sizeof(height), &bytesread, NULL))
+    if ( not ReadFile(hFile, &height, sizeof(height), &bytesread, NULL))
     {
         CloseHandle(hFile);
         return(FALSE);
     }
 
     // For 15-bit Targa file, skip last 2 bytes.
-    if (!ReadFile(hFile, buf, 2, &bytesread, NULL))
+    if ( not ReadFile(hFile, buf, 2, &bytesread, NULL))
     {
         CloseHandle(hFile);
         return(FALSE);
@@ -166,7 +166,7 @@ BOOL NonResLoadTargaFile(char *filename, char **image, BITMAPINFO *bmi)
     bytesToRead = width * height * 2;
     data = new char [bytesToRead];
 
-    if (!ReadFile(hFile, data, bytesToRead, &bytesread, NULL))
+    if ( not ReadFile(hFile, data, bytesToRead, &bytesread, NULL))
     {
         CloseHandle(hFile);
         return(FALSE);

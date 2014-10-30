@@ -50,7 +50,7 @@ int FalconEjectMessage::Process(uchar autodisp)
     // Determine success of this ejection and adjust squadron/pilot statistics appropriately
     falcEnt = (FalconEntity*)vuDatabase->Find(dataBlock.eFlightID);
 
-    if (falcEnt && falcEnt->IsFlight())
+    if (falcEnt and falcEnt->IsFlight())
     {
         flight = (Flight)falcEnt;
         flight->GetLocation(&x, &y);
@@ -58,8 +58,8 @@ int FalconEjectMessage::Process(uchar autodisp)
         // KCK: Determanistic rescue right now.. might want to check for chopper actually
         // arriving at some point in the far, far future.
         if (
-            GetOwner(TheCampaign.CampMapData, x, y) == flight->GetTeam() ||
-            !((flight->GetCampID() + dataBlock.ePilotID) % 3))
+            GetOwner(TheCampaign.CampMapData, x, y) == flight->GetTeam() or
+ not ((flight->GetCampID() + dataBlock.ePilotID) % 3))
         {
             ps = PILOT_RESCUED;
         }
@@ -67,7 +67,7 @@ int FalconEjectMessage::Process(uchar autodisp)
         // Record the pilot in the squadron records
         sq = (Squadron) flight->GetUnitSquadron();
 
-        if (sq && dataBlock.ePilotID < PILOTS_PER_FLIGHT)
+        if (sq and dataBlock.ePilotID < PILOTS_PER_FLIGHT)
         {
             squadron_pilot = flight->pilots[dataBlock.ePilotID];
 

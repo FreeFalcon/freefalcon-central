@@ -42,7 +42,7 @@ static BOOL GPSTreeSortCB(TREELIST *list, TREELIST *newitem)
     _TCHAR *first, *second;
     long fval, sval;
 
-    if (list && newitem)
+    if (list and newitem)
     {
         if (list->Item_->_GetCType_() == _CNTL_SQUAD_)
             first = ((C_Squadron*)list->Item_)->GetName();
@@ -62,10 +62,10 @@ static BOOL GPSTreeSortCB(TREELIST *list, TREELIST *newitem)
         else
             second = NULL;
 
-        if (!first || !second)
+        if ( not first or not second)
             return(FALSE);
 
-        if (isdigit(*first) && isdigit(*second))
+        if (isdigit(*first) and isdigit(*second))
         {
             fval = atol(first);
             sval = atol(second);
@@ -75,7 +75,7 @@ static BOOL GPSTreeSortCB(TREELIST *list, TREELIST *newitem)
             else if (fval < sval)
                 return(FALSE);
 
-            // if(fval & sval are equal... let strcmp figure it out
+            // if(fval bitand sval are equal... let strcmp figure it out
         }
         else if (isdigit(*first))
             return(FALSE);
@@ -92,12 +92,12 @@ static BOOL GPSTreeSortCB(TREELIST *list, TREELIST *newitem)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL GPSMissionSortPriorityCB(TREELIST *list, TREELIST *newitem)
 {
-    if (!list || !newitem)
+    if ( not list or not newitem)
         return(FALSE);
 
     if (((C_Mission*)newitem->Item_)->GetPriorityID() < ((C_Mission*)list->Item_)->GetPriorityID())
         return(TRUE);
-    else if (((C_Mission*)newitem->Item_)->GetPriorityID() == ((C_Mission*)list->Item_)->GetPriorityID() &&
+    else if (((C_Mission*)newitem->Item_)->GetPriorityID() == ((C_Mission*)list->Item_)->GetPriorityID() and 
              ((C_Mission*)newitem->Item_)->GetTakeOffTime() < ((C_Mission*)list->Item_)->GetTakeOffTime())
         return(TRUE);
 
@@ -107,7 +107,7 @@ static BOOL GPSMissionSortPriorityCB(TREELIST *list, TREELIST *newitem)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL GPSMissionSortTimeCB(TREELIST *list, TREELIST *newitem)
 {
-    if (!list || !newitem)
+    if ( not list or not newitem)
         return(FALSE);
 
     if (((C_Mission*)newitem->Item_)->GetTakeOffTime() < ((C_Mission*)list->Item_)->GetTakeOffTime())
@@ -119,12 +119,12 @@ static BOOL GPSMissionSortTimeCB(TREELIST *list, TREELIST *newitem)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL GPSMissionSortMissionCB(TREELIST *list, TREELIST *newitem)
 {
-    if (!list || !newitem)
+    if ( not list or not newitem)
         return(FALSE);
 
     if (_tcsicmp(((C_Mission*)newitem->Item_)->GetMission(), ((C_Mission*)list->Item_)->GetMission()) < 0)
         return(TRUE);
-    else if (!_tcsicmp(((C_Mission*)newitem->Item_)->GetMission(), ((C_Mission*)list->Item_)->GetMission()) &&
+    else if ( not _tcsicmp(((C_Mission*)newitem->Item_)->GetMission(), ((C_Mission*)list->Item_)->GetMission()) and 
              ((C_Mission*)newitem->Item_)->GetTakeOffTime() < ((C_Mission*)list->Item_)->GetTakeOffTime())
         return(TRUE);
 
@@ -134,12 +134,12 @@ static BOOL GPSMissionSortMissionCB(TREELIST *list, TREELIST *newitem)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL GPSMissionSortStatusCB(TREELIST *list, TREELIST *newitem)
 {
-    if (!list || !newitem)
+    if ( not list or not newitem)
         return(FALSE);
 
     if (((C_Mission*)newitem->Item_)->GetStatusID() < ((C_Mission*)list->Item_)->GetStatusID())
         return(TRUE);
-    else if (((C_Mission*)newitem->Item_)->GetStatusID() == ((C_Mission*)list->Item_)->GetStatusID() &&
+    else if (((C_Mission*)newitem->Item_)->GetStatusID() == ((C_Mission*)list->Item_)->GetStatusID() and 
              ((C_Mission*)newitem->Item_)->GetTakeOffTime() < ((C_Mission*)list->Item_)->GetTakeOffTime())
         return(TRUE);
 
@@ -149,12 +149,12 @@ static BOOL GPSMissionSortStatusCB(TREELIST *list, TREELIST *newitem)
 // Returns TRUE if I want to insert newitem before list item
 static BOOL GPSMissionSortPackageCB(TREELIST *list, TREELIST *newitem)
 {
-    if (!list || !newitem)
+    if ( not list or not newitem)
         return(FALSE);
 
     if (((C_Mission*)newitem->Item_)->GetPackageID() < ((C_Mission*)list->Item_)->GetPackageID())
         return(TRUE);
-    else if (((C_Mission*)newitem->Item_)->GetPackageID() == ((C_Mission*)list->Item_)->GetPackageID() &&
+    else if (((C_Mission*)newitem->Item_)->GetPackageID() == ((C_Mission*)list->Item_)->GetPackageID() and 
              ((C_Mission*)newitem->Item_)->GetTakeOffTime() < ((C_Mission*)list->Item_)->GetTakeOffTime())
         return(TRUE);
 
@@ -166,7 +166,7 @@ void SelectMissionSortCB(long ID, short hittype, C_Base *control)
     C_TreeList *tree;
     F4CSECTIONHANDLE *Leave;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     tree = (C_TreeList*)control->Parent_->FindControl(MISSION_LIST_TREE);
@@ -301,9 +301,9 @@ void GlobalPositioningSystem::UpdateDivisions()
 
             if (u)
             {
-                cur = (UI_Refresher*)GPS_Hash->Find(u->GetCampID() | UR_DIVISION);
+                cur = (UI_Refresher*)GPS_Hash->Find(u->GetCampID() bitor UR_DIVISION);
 
-                if (!cur)
+                if ( not cur)
                 {
                     // create a new one
                     cur = new UI_Refresher;
@@ -311,8 +311,8 @@ void GlobalPositioningSystem::UpdateDivisions()
                     if (cur)
                     {
                         cur->Setup(div, this, Allowed_);
-                        //GPS_Hash->Add(div->nid | UR_DIVISION,cur); // this looks wrong
-                        GPS_Hash->Add(u->GetCampID() | UR_DIVISION, cur); // JPO - hope this is better.
+                        //GPS_Hash->Add(div->nid bitor UR_DIVISION,cur); // this looks wrong
+                        GPS_Hash->Add(u->GetCampID() bitor UR_DIVISION, cur); // JPO - hope this is better.
                     }
                 }
                 else
@@ -339,7 +339,7 @@ void GlobalPositioningSystem::Update()
     CampEntity entity;
     UI_Refresher *cur;
 
-    GPS_Hash->SetCheck(GPS_Hash->GetCheck() ^ 1);
+    GPS_Hash->SetCheck(GPS_Hash->GetCheck() xor 1);
 
     UpdateDivisions();
 
@@ -351,13 +351,13 @@ void GlobalPositioningSystem::Update()
         if (F4IsBadReadPtr(entity, sizeof(CampEntity)))
             continue;
 
-        if (!entity->IsDead())
+        if ( not entity->IsDead())
         {
             cur = (UI_Refresher*)GPS_Hash->Find(entity->GetCampID());
 
-            if (!cur)
+            if ( not cur)
             {
-                if (entity->IsUnit() && ((Unit)entity)->Inactive())
+                if (entity->IsUnit() and ((Unit)entity)->Inactive())
                 {
                 }
                 else
@@ -374,11 +374,11 @@ void GlobalPositioningSystem::Update()
             }
             else
             {
-                if (cur->GetType() != entity->GetType())
+                if (cur->GetType() not_eq entity->GetType())
                 {
                     GPS_Hash->Remove(entity->GetCampID());
 
-                    if (entity->IsUnit() && ((Unit)entity)->Inactive())
+                    if (entity->IsUnit() and ((Unit)entity)->Inactive())
                     {
                     }
                     else
@@ -406,13 +406,13 @@ void GlobalPositioningSystem::Update()
 
     GPS_Hash->RemoveOld();
 
-    if (MisTree_ && (Flags & _GPS_RESORT_MISSION_))
+    if (MisTree_ and (Flags bitand _GPS_RESORT_MISSION_))
     {
         MisTree_->ReorderBranch(MisTree_->GetRoot());
-        Flags |= _GPS_MISSION_RESIZE_;
+        Flags or_eq _GPS_MISSION_RESIZE_;
     }
 
-    if (MisTree_ && (Flags & _GPS_MISSION_RESIZE_))
+    if (MisTree_ and (Flags bitand _GPS_MISSION_RESIZE_))
     {
         MisTree_->RecalcSize();
 
@@ -420,7 +420,7 @@ void GlobalPositioningSystem::Update()
             MisTree_->GetParent()->RefreshClient(MisTree_->GetClient());
     }
 
-    if (AtoTree_ && (Flags & _GPS_ATO_RESIZE_))
+    if (AtoTree_ and (Flags bitand _GPS_ATO_RESIZE_))
     {
         AtoTree_->RecalcSize();
 
@@ -428,7 +428,7 @@ void GlobalPositioningSystem::Update()
             AtoTree_->GetParent()->RefreshClient(AtoTree_->GetClient());
     }
 
-    if (OOBTree_ && (Flags & _GPS_OOB_RESIZE_))
+    if (OOBTree_ and (Flags bitand _GPS_OOB_RESIZE_))
     {
         OOBTree_->RecalcSize();
 

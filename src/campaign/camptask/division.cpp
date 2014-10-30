@@ -51,7 +51,7 @@ DivisionClass::~DivisionClass(void)
 #endif
     element = NULL;
     next = NULL;
-    ShiAssert(this != DivisionData[owner]);
+    ShiAssert(this not_eq DivisionData[owner]);
 }
 
 _TCHAR* DivisionClass::GetName(_TCHAR* buffer, int size, int object)
@@ -86,11 +86,11 @@ Unit DivisionClass::GetUnitElement(int en)
 {
     Unit ret = NULL;
 
-    if (en < elements && element[c_element])
+    if (en < elements and element[c_element])
     {
         ret = (Unit)vuDatabase->Find(element[en]);
 
-        if (!ret || ret->GetDomain() != DOMAIN_LAND)
+        if ( not ret or ret->GetDomain() not_eq DOMAIN_LAND)
             RemoveChild(element[en]);
     }
 
@@ -235,14 +235,14 @@ void BuildDivisionData(void)
 
         while (u)
         {
-            //if (u->VuState() != VU_MEM_DELETED)
+            //if (u->VuState() not_eq VU_MEM_DELETED)
             //{
             if (u->GetDomain() == DOMAIN_LAND)
             {
                 tempteam = u->GetTeam(); // JB 010220 CTD
                 tempdivision = u->GetUnitDivision(); // JB 010220 CTD
 
-                if (tempteam >= 0 && tempteam < NUM_TEAMS && tempdivision >= 0 && tempdivision < MAX_DIVISION) // JB 010220 CTD
+                if (tempteam >= 0 and tempteam < NUM_TEAMS and tempdivision >= 0 and tempdivision < MAX_DIVISION) // JB 010220 CTD
                     divels[tempteam][tempdivision]++; // JB 010220 CTD
 
                 //divels[u->GetTeam()][u->GetUnitDivision()]++; // JB 010220 CTD
@@ -275,7 +275,7 @@ void BuildDivisionData(void)
                         dc = dc->next;
                     }
 
-                    if (!dc)
+                    if ( not dc)
                     {
                         // Create a new one
                         dc = new DivisionClass();
@@ -286,7 +286,7 @@ void BuildDivisionData(void)
                         dc->element = (VU_ID *)MemAllocPtr(gDivVUIDs, sizeof(VU_ID) * divels[t][d], FALSE);
 #else
 
-                        if (t >= 0 && t < NUM_TEAMS && d >= 0 && d < MAX_DIVISION) // JB 010223 CTD
+                        if (t >= 0 and t < NUM_TEAMS and d >= 0 and d < MAX_DIVISION) // JB 010223 CTD
                             dc->element = new VU_ID[divels[t][d]];
 
 #endif
@@ -294,7 +294,7 @@ void BuildDivisionData(void)
                         dd[t] = dc;
                     }
 
-                    if (!F4IsBadWritePtr(dc, sizeof(DivisionClass)) && dc->elements >= 0 && !F4IsBadWritePtr(&(dc->element[dc->elements]), sizeof(VU_ID))) // JB 010223 CTD
+                    if ( not F4IsBadWritePtr(dc, sizeof(DivisionClass)) and dc->elements >= 0 and not F4IsBadWritePtr(&(dc->element[dc->elements]), sizeof(VU_ID))) // JB 010223 CTD
                     {
                         dc->element[dc->elements] = u->Id();
                         dc->elements++;
@@ -351,7 +351,7 @@ void BuildDivisionData (void)
  dc = GetFirstDivision(t);
  while (dc)
  {
- if (!dc->BuildDivision(dc->owner,dc->nid))
+ if ( not dc->BuildDivision(dc->owner,dc->nid))
  {
  // No longer needed, kill off
  if (dc == DivisionData[t])
@@ -367,7 +367,7 @@ void BuildDivisionData (void)
  }
  else
  {
- divlist[dc->nid] |= (1 << dc->owner);
+ divlist[dc->nid] or_eq (1 << dc->owner);
  lastd = dc;
  dc = dc->next;
  }
@@ -378,15 +378,15 @@ void BuildDivisionData (void)
  u = GetFirstUnit(&myit);
  while (u)
  {
- if (u->GetDomain() == DOMAIN_LAND && u->GetUnitDivision())
+ if (u->GetDomain() == DOMAIN_LAND and u->GetUnitDivision())
  {
  d = u->GetUnitDivision();
  c = u->GetOwner();
- if (!(divlist[d] & (1 << c)))
+ if ( not (divlist[d] bitand (1 << c)))
  {
 // CampEnterCriticalSection();
  dc = new DivisionClass();
- if (!dc->BuildDivision(c,d))
+ if ( not dc->BuildDivision(c,d))
  {
  delete dc;
 #ifdef DEBUG
@@ -399,7 +399,7 @@ void BuildDivisionData (void)
  DivisionData[u->GetTeam()] = dc;
  }
 // CampLeaveCriticalSection();
- divlist[d] |= (1 << c);
+ divlist[d] or_eq (1 << c);
  }
  }
  u = GetNextUnit(&myit);
@@ -455,7 +455,7 @@ Division GetDivisionByUnit(Unit u)
 
     while (d)
     {
-        if (d->nid == u->GetUnitDivision() && d->owner == u->GetOwner())
+        if (d->nid == u->GetUnitDivision() and d->owner == u->GetOwner())
             return d;
 
         d = d->next;
@@ -475,7 +475,7 @@ Division FindDivisionByXY(GridIndex x, GridIndex y)
 
         while (d)
         {
-            if (d->x == x && d->y == y)
+            if (d->x == x and d->y == y)
                 return d;
 
             d = d->next;
@@ -496,7 +496,7 @@ int DivisionSanityCheck(void)
 
         while (tmp)
         {
-            ShiAssert((int)tmp != 0xdddddddd);
+            ShiAssert((int)tmp not_eq 0xdddddddd);
             tmp = tmp->next;
         }
     }

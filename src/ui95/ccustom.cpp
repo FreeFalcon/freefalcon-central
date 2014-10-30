@@ -9,7 +9,7 @@ enum
 C_Custom::C_Custom() : C_Control()
 {
     _SetCType_(_CNTL_CUSTOM_);
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_MOUSEOVER;
 
     Section_ = 0;
 
@@ -50,7 +50,7 @@ void C_Custom::Setup(long ID, short Type, short NumCtrls)
 
     SetReady(0);
 
-    if (NumCtrls > 0 && NumCtrls < _CUSTOM_MAX_CTRLS_)
+    if (NumCtrls > 0 and NumCtrls < _CUSTOM_MAX_CTRLS_)
     {
         Count_ = NumCtrls;
         Items_ = new O_Output[Count_];
@@ -74,7 +74,7 @@ void C_Custom::Cleanup(void)
 {
     short i;
 
-    if (!Count_)
+    if ( not Count_)
         return;
 
     for (i = 0; i < Count_; i++)
@@ -119,9 +119,9 @@ long C_Custom::CheckHotSpots(long relX, long relY)
 {
     short i;
 
-    if (Ready() && !(GetFlags() & C_BIT_INVISIBLE) && Parent_)
+    if (Ready() and not (GetFlags() bitand C_BIT_INVISIBLE) and Parent_)
     {
-        if (relX >= GetX() && relY >= GetY() && relX < (GetX() + GetW()) && relY < (GetY() + GetH()))
+        if (relX >= GetX() and relY >= GetY() and relX < (GetX() + GetW()) and relY < (GetY() + GetH()))
         {
             Section_ = 0;
 
@@ -130,8 +130,8 @@ long C_Custom::CheckHotSpots(long relX, long relY)
 
             for (i = 0; i < Count_; i++)
             {
-                if (relX >= Items_[i].GetX() && relX < (Items_[i].GetX() + Items_[i].GetW()) &&
-                    relY >= Items_[i].GetY() && relY < (Items_[i].GetY() + Items_[i].GetH()))
+                if (relX >= Items_[i].GetX() and relX < (Items_[i].GetX() + Items_[i].GetW()) and 
+                    relY >= Items_[i].GetY() and relY < (Items_[i].GetY() + Items_[i].GetH()))
                     Section_ = i;
             }
 
@@ -156,7 +156,7 @@ void C_Custom::Refresh()
 {
     short i;
 
-    if ((GetFlags() & C_BIT_INVISIBLE) || !Parent_ || !Ready())
+    if ((GetFlags() bitand C_BIT_INVISIBLE) or not Parent_ or not Ready())
         return;
 
     for (i = 0; i < Count_; i++)
@@ -167,12 +167,12 @@ void C_Custom::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     short i;
 
-    if ((GetFlags() & C_BIT_INVISIBLE) || !Parent_ || !Ready())
+    if ((GetFlags() bitand C_BIT_INVISIBLE) or not Parent_ or not Ready())
         return;
 
     for (i = 0; i < Count_; i++)
         Items_[i].Draw(surface, cliprect);
 
-    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         HighLite(surface, cliprect);
 }

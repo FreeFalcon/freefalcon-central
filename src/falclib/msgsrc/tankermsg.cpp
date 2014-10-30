@@ -54,7 +54,7 @@ int FalconTankerMessage::Process(uchar autodisp)
         case RequestFuel:
             if (thirstyOne)
             {
-                if (SimDriver.GetPlayerEntity() != thirstyOne || PlayerOptions.PlayerRadioVoice)
+                if (SimDriver.GetPlayerEntity() not_eq thirstyOne or PlayerOptions.PlayerRadioVoice)
                     SendCallToPlane(theTanker, thirstyOne, rcREQUESTFUEL, FalconLocalSession);
 
                 VuListIterator cit(thirstyOne->GetCampaignObject()->GetComponents());
@@ -69,7 +69,7 @@ int FalconTankerMessage::Process(uchar autodisp)
                             component->DBrain()->SetATCFlag(DigitalBrain::NeedToRefuel);
                             component->DBrain()->SetTanker(theTanker->Id());
                             component->DBrain()->StartRefueling();
-                            theTanker->TBrain()->SetInitial(); // M.N. reset flags to allow a turn & initial direction setup (away from FLOT)
+                            theTanker->TBrain()->SetInitial(); // M.N. reset flags to allow a turn bitand initial direction setup (away from FLOT)
                         }
                     }
 
@@ -85,7 +85,7 @@ int FalconTankerMessage::Process(uchar autodisp)
                 if (theTanker)
                     thirstyOne->DBrain()->SetTanker(theTanker->Id());
 
-                if (SimDriver.GetPlayerEntity() != thirstyOne || PlayerOptions.PlayerRadioVoice)
+                if (SimDriver.GetPlayerEntity() not_eq thirstyOne or PlayerOptions.PlayerRadioVoice)
                     SendCallToPlane(theTanker, thirstyOne, rcREADYTOFUEL, FalconLocalSession);
 
                 if (theTanker)
@@ -103,7 +103,7 @@ int FalconTankerMessage::Process(uchar autodisp)
                 {
                     thirstyOne->DBrain()->ClearATCFlag(DigitalBrain::NeedToRefuel);
 
-                    if (SimDriver.GetPlayerEntity() != thirstyOne || PlayerOptions.PlayerRadioVoice)
+                    if (SimDriver.GetPlayerEntity() not_eq thirstyOne or PlayerOptions.PlayerRadioVoice)
                         SendCallToPlane(theTanker, thirstyOne, rcDONEFUELING, FalconLocalSession);
 
                     if (theTanker)
@@ -127,16 +127,16 @@ int FalconTankerMessage::Process(uchar autodisp)
                 thirstyOne->af->SetFlag(AirframeClass::Refueling);
             }
 
-            if (theTanker && theTanker->IsAirplane())
+            if (theTanker and theTanker->IsAirplane())
             {
                 theTanker->af->SetFlag(AirframeClass::Refueling);
                 theTanker->af->SetForcedConditions(theTanker->GetVt(), theTanker->Yaw());
 
-                if (SimDriver.GetPlayerEntity() != thirstyOne || PlayerOptions.PlayerRadioVoice)
+                if (SimDriver.GetPlayerEntity() not_eq thirstyOne or PlayerOptions.PlayerRadioVoice)
                     SendCallToPlane(thirstyOne, theTanker, rcCONTACT, FalconLocalSession);
             }
 
-            if (thirstyOne == SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP) && OTWDriver.pCockpitManager)
+            if (thirstyOne == SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP) and OTWDriver.pCockpitManager)
             {
                 OTWDriver.pCockpitManager->mMiscStates.SetRefuelState(2);
             }
@@ -144,10 +144,10 @@ int FalconTankerMessage::Process(uchar autodisp)
             break;
 
         case Breakaway:
-            if (theTanker && theTanker->IsAirplane())
+            if (theTanker and theTanker->IsAirplane())
                 SendCallToPlane(thirstyOne, theTanker, rcBREAKAWAY, FalconLocalSession);
 
-            if (thirstyOne == SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP) && OTWDriver.pCockpitManager)
+            if (thirstyOne == SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP) and OTWDriver.pCockpitManager)
             {
                 OTWDriver.pCockpitManager->mMiscStates.SetRefuelState(3);
             }
@@ -161,10 +161,10 @@ int FalconTankerMessage::Process(uchar autodisp)
                 thirstyOne->DBrain()->SetRefuelStatus(DigitalBrain::refRefueling);
             }
 
-            if (theTanker && theTanker->IsAirplane())
+            if (theTanker and theTanker->IsAirplane())
                 SendCallToPlane(thirstyOne, theTanker, rcPRECONTACT, FalconLocalSession);
 
-            if (thirstyOne == SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP) && OTWDriver.pCockpitManager)
+            if (thirstyOne == SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP) and OTWDriver.pCockpitManager)
             {
                 OTWDriver.pCockpitManager->mMiscStates.SetRefuelState(0);
             }
@@ -172,10 +172,10 @@ int FalconTankerMessage::Process(uchar autodisp)
             break;
 
         case ClearToContact:
-            if (theTanker && theTanker->IsAirplane())
+            if (theTanker and theTanker->IsAirplane())
                 SendCallToPlane(thirstyOne, theTanker, rcCLEARTOCONTACT, FalconLocalSession);
 
-            if (thirstyOne == SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP) && OTWDriver.pCockpitManager)
+            if (thirstyOne == SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP) and OTWDriver.pCockpitManager)
             {
                 OTWDriver.pCockpitManager->mMiscStates.SetRefuelState(1);
             }
@@ -183,13 +183,13 @@ int FalconTankerMessage::Process(uchar autodisp)
             break;
 
         case Stabalize:
-            if (theTanker && theTanker->IsAirplane())
+            if (theTanker and theTanker->IsAirplane())
                 SendCallToPlane(thirstyOne, theTanker, rcSTABALIZE, FalconLocalSession);
 
             break;
 
         case BoomCommand:
-            if (theTanker && theTanker->IsAirplane())
+            if (theTanker and theTanker->IsAirplane())
             {
                 radioMessage = CreateCallToPlane(thirstyOne, theTanker, rcBOOMCOMMANDS, FalconLocalSession);
                 radioMessage->dataBlock.edata[0] = -1;
@@ -204,10 +204,10 @@ int FalconTankerMessage::Process(uchar autodisp)
             if (thirstyOne)
                 thirstyOne->af->ClearFlag(AirframeClass::Refueling);
 
-            if (theTanker && theTanker->IsAirplane())
+            if (theTanker and theTanker->IsAirplane())
                 SendCallToPlane(thirstyOne, theTanker, rcDISCONNECT, FalconLocalSession);
 
-            if (thirstyOne == SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP) && OTWDriver.pCockpitManager)
+            if (thirstyOne == SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP) and OTWDriver.pCockpitManager)
             {
                 OTWDriver.pCockpitManager->mMiscStates.SetRefuelState(3);
             }
@@ -227,7 +227,7 @@ int FalconTankerMessage::Process(uchar autodisp)
             break;
     }
 
-    if (theTanker && theTanker->IsLocal() && theTanker->IsAirplane() && thirstyOne && thirstyOne->IsAirplane())
+    if (theTanker and theTanker->IsLocal() and theTanker->IsAirplane() and thirstyOne and thirstyOne->IsAirplane())
     {
         switch (dataBlock.type)
         {
@@ -236,13 +236,13 @@ int FalconTankerMessage::Process(uchar autodisp)
                 VuListIterator cit(thirstyOne->GetCampaignObject()->GetComponents());
                 component = (AircraftClass*)cit.GetFirst();
 
-                if (thirstyOne->OwnerId() != vuLocalSessionEntity->Game()->OwnerId()) component = thirstyOne;
+                if (thirstyOne->OwnerId() not_eq vuLocalSessionEntity->Game()->OwnerId()) component = thirstyOne;
 
                 while (component)
                 {
                     pos = ((TankerBrain*)theTanker->Brain())->AddToQ(component);
 
-                    if (thirstyOne->OwnerId() != vuLocalSessionEntity->Game()->OwnerId() ||
+                    if (thirstyOne->OwnerId() not_eq vuLocalSessionEntity->Game()->OwnerId() or
                         component->OwnerId() == vuLocalSessionEntity->Game()->OwnerId())
                         //me123 dont add other players. they need to request them self for now.
                         //otherwice we have a problem getign the wingmen after the players fueled.
@@ -265,9 +265,9 @@ int FalconTankerMessage::Process(uchar autodisp)
 
                                 float xyRange = (float)sqrt(relPos.x * relPos.x + relPos.y * relPos.y);
 
-                                if (xyRange < 500.0F && !theTanker->TBrain()->IsSet(TankerBrain::PrecontactPos) &&
-                                    theTanker->TBrain()->TankingPtr() &&
-                                    fabs(theTanker->TBrain()->TankingPtr()->localData->rangedot) < 100.0F &&
+                                if (xyRange < 500.0F and not theTanker->TBrain()->IsSet(TankerBrain::PrecontactPos) and 
+                                    theTanker->TBrain()->TankingPtr() and 
+                                    fabs(theTanker->TBrain()->TankingPtr()->localData->rangedot) < 100.0F and 
                                     fabs(theTanker->TBrain()->TankingPtr()->localData->az) < 35.0F * DTR)
                                 {
                                     radioMessage = CreateCallToPlane(thirstyOne, theTanker, rcCLEARTOCONTACT, FalconLocalGame);
@@ -280,7 +280,7 @@ int FalconTankerMessage::Process(uchar autodisp)
                                 radioMessage->dataBlock.time_to_play = 2000;
                                 FalconSendMessage(radioMessage, FALSE);
                             }
-                            else if (pos != 0)
+                            else if (pos not_eq 0)
                                 SendRogerToPlane(thirstyOne, theTanker, FalconLocalGame);
                         }
 
@@ -296,7 +296,7 @@ int FalconTankerMessage::Process(uchar autodisp)
 
                     component = (AircraftClass*)cit.GetNext();
 
-                    if (thirstyOne->OwnerId() != vuLocalSessionEntity->Game()->OwnerId()) component = 0;
+                    if (thirstyOne->OwnerId() not_eq vuLocalSessionEntity->Game()->OwnerId()) component = 0;
                 }
             }
             break;

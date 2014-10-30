@@ -152,9 +152,9 @@ BOOL ContextMPR::Setup(ImageBuffer *pIB, DXContext *c)
     {
         m_pCtxDX = c;
 
-        if (!m_pCtxDX)
+        if ( not m_pCtxDX)
         {
-            ShiWarning("Failed to create device!");
+            ShiWarning("Failed to create device");
             return FALSE;
         }
 
@@ -162,7 +162,7 @@ BOOL ContextMPR::Setup(ImageBuffer *pIB, DXContext *c)
 
         ShiAssert(pIB);
 
-        if (!pIB) return FALSE;
+        if ( not pIB) return FALSE;
 
         m_pIB = pIB;
         IDirectDrawSurface7 *lpDDSBack = pIB->targetSurface();
@@ -176,8 +176,8 @@ BOOL ContextMPR::Setup(ImageBuffer *pIB, DXContext *c)
         D3DVERTEXBUFFERDESC vbdesc;
         ZeroMemory(&vbdesc, sizeof(vbdesc));
         vbdesc.dwSize = sizeof(vbdesc);
-        vbdesc.dwFVF = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX2 | D3DFVF_SPECULAR;
-        vbdesc.dwCaps = D3DVBCAPS_WRITEONLY | D3DVBCAPS_DONOTCLIP ;//| D3DVBCAPS_VIDEOMEMORY;
+        vbdesc.dwFVF = D3DFVF_XYZRHW bitor D3DFVF_DIFFUSE bitor D3DFVF_TEX2 bitor D3DFVF_SPECULAR;
+        vbdesc.dwCaps = D3DVBCAPS_WRITEONLY bitor D3DVBCAPS_DONOTCLIP ;//| D3DVBCAPS_VIDEOMEMORY;
 
         //m_dwVBSize = 1024;
         m_dwVBSize = 32768;
@@ -188,7 +188,7 @@ BOOL ContextMPR::Setup(ImageBuffer *pIB, DXContext *c)
 
         m_pIdx = new WORD[vbdesc.dwNumVertices * 3];
 
-        if (!m_pIdx) throw _com_error(E_OUTOFMEMORY);
+        if ( not m_pIdx) throw _com_error(E_OUTOFMEMORY);
 
         // Setup our set of cached rendering states
         SetupMPRState(CHECK_PREVIOUS_STATE);
@@ -268,7 +268,7 @@ void ContextMPR::Cleanup()
     if (StateSetupCounter)
         CleanupMPRState(CHECK_PREVIOUS_STATE);
 
-    // Warning: The SIM code uses a shared DXContext which might be already toast when this function gets called!!
+    // Warning: The SIM code uses a shared DXContext which might be already toast when this function gets called
     // Under no circumstances access m_pCtxDX here
     // Btw: this was causing the infamous LGB CTD
 
@@ -310,7 +310,7 @@ void ContextMPR::Cleanup()
     MonoPrint("ContextMPR::Cleanup - Report of used states follows\n ");
     std::set<int>::iterator it;
 
-    for (it = m_setStatesUsed.begin(); it != m_setStatesUsed.end(); it++)
+    for (it = m_setStatesUsed.begin(); it not_eq m_setStatesUsed.end(); it++)
         MonoPrint("%d,", *it);
 
     m_setStatesUsed.clear();
@@ -349,9 +349,9 @@ void ContextMPR::ClearBuffers(WORD ClearInfo)
 
     DWORD dwClearFlags = 0;
 
-    if (ClearInfo & MPR_CI_DRAW_BUFFER) dwClearFlags |= D3DCLEAR_TARGET;
+    if (ClearInfo bitand MPR_CI_DRAW_BUFFER) dwClearFlags or_eq D3DCLEAR_TARGET;
 
-    if (ClearInfo & MPR_CI_ZBUFFER) dwClearFlags |= D3DCLEAR_ZBUFFER;
+    if (ClearInfo bitand MPR_CI_ZBUFFER) dwClearFlags or_eq D3DCLEAR_ZBUFFER;
 
     HRESULT hr = m_pD3DD->Clear(NULL, NULL, dwClearFlags, m_colBG, 1.0f, NULL);
     ShiAssert(SUCCEEDED(hr));
@@ -414,7 +414,7 @@ void ContextMPR::StartFrame(void)
             TheTerrTextures.RestoreAll();
             TheFarTextures.RestoreAll();
 
-            //if( !bInBeginScene ) INT3; // ASSO: break if not in BeginScene
+            //if( not bInBeginScene ) INT3; // ASSO: break if not in BeginScene
             hr = m_pD3DD->EndScene();
             bInBeginScene = true; // ASSO:
 
@@ -427,13 +427,13 @@ void ContextMPR::StartFrame(void)
         }
     }
 
-#if defined _DEBUG && defined _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT_REPLACE
+#if defined _DEBUG and defined _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT_REPLACE
 
     if (bEnableRenderStateHighlightReplace)
     {
         Sleep(1000);
 
-        if (GetKeyState(VK_F4) & ~1)
+        if (GetKeyState(VK_F4) bitand compl 1)
             DebugBreak();
 
         bRenderStateHighlightReplaceTargetState++;
@@ -451,7 +451,7 @@ void ContextMPR::FinishFrame(void *lpFnPtr)
 
     FlushVB();
 
-    //if( !bInBeginScene ) INT3; // ASSO: break if not in BeginScene
+    //if( not bInBeginScene ) INT3; // ASSO: break if not in BeginScene
     HRESULT hr = m_pD3DD->EndScene();
     bInBeginScene = false; // ASSO:
 
@@ -467,7 +467,7 @@ void ContextMPR::FinishFrame(void *lpFnPtr)
             TheTerrTextures.RestoreAll();
             TheFarTextures.RestoreAll();
 
-            if (!bInBeginScene) INT3; // ASSO: break if not in BeginScene
+            if ( not bInBeginScene) INT3; // ASSO: break if not in BeginScene
 
             hr = m_pD3DD->EndScene();
             bInBeginScene = false; // ASSO:
@@ -512,25 +512,25 @@ void ContextMPR::SetState(WORD State, DWORD Value)
 #endif
     ShiAssert(FALSE == F4IsBadReadPtr(m_pD3DD, sizeof * m_pD3DD));
 
-    if (!m_pD3DD)
+    if ( not m_pD3DD)
         return;
 
     switch (State)
     {
         case MPR_STA_ENABLES:
         {
-            if (Value & MPR_SE_MODULATION)
+            if (Value bitand MPR_SE_MODULATION)
             {
                 FlushVB();
 
                 m_pD3DD->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
             }
 
-            if (Value & MPR_SE_ALPHA)
+            if (Value bitand MPR_SE_ALPHA)
             {
                 FlushVB();
 
-                if (m_pCtxDX->m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps & D3DCMP_GREATEREQUAL)
+                if (m_pCtxDX->m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps bitand D3DCMP_GREATEREQUAL)
                 {
                     m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, TRUE);
                     m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHAREF, (DWORD)1);
@@ -544,11 +544,11 @@ void ContextMPR::SetState(WORD State, DWORD Value)
             }
 
             // ASSO: new color blending state for 3D pit HUD
-            if (Value & MPR_SE_CHROMA2)
+            if (Value bitand MPR_SE_CHROMA2)
             {
                 FlushVB();
 
-                if (m_pCtxDX->m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps & D3DCMP_GREATEREQUAL)
+                if (m_pCtxDX->m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps bitand D3DCMP_GREATEREQUAL)
                 {
                     m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, TRUE);
                     m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHAREF, (DWORD)1);
@@ -567,11 +567,11 @@ void ContextMPR::SetState(WORD State, DWORD Value)
                 m_pD3DD->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
             }
 
-            if (Value & MPR_SE_CHROMA)
+            if (Value bitand MPR_SE_CHROMA)
             {
                 FlushVB();
 
-                if (m_pCtxDX->m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps & D3DCMP_GREATEREQUAL)
+                if (m_pCtxDX->m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps bitand D3DCMP_GREATEREQUAL)
                 {
                     m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, TRUE);
                     m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHAREF, (DWORD)1);
@@ -584,11 +584,11 @@ void ContextMPR::SetState(WORD State, DWORD Value)
                 m_pD3DD->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
             }
 
-            if (Value & MPR_SE_CHROMA_ALPHATEST) //Wombat778 3-30-04 new state to avoid blue line around chroma gifs
+            if (Value bitand MPR_SE_CHROMA_ALPHATEST) //Wombat778 3-30-04 new state to avoid blue line around chroma gifs
             {
                 FlushVB();
 
-                if (m_pCtxDX->m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps & D3DCMP_GREATEREQUAL)
+                if (m_pCtxDX->m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps bitand D3DCMP_GREATEREQUAL)
                 {
                     m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, TRUE);
                     m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHAREF, (DWORD)0xBF);
@@ -601,21 +601,21 @@ void ContextMPR::SetState(WORD State, DWORD Value)
                 m_pD3DD->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
             }
 
-            if (Value & MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE)
+            if (Value bitand MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE)
             {
                 FlushVB();
 
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE, FALSE);
             }
 
-            if (Value & MPR_SE_SHADING)
+            if (Value bitand MPR_SE_SHADING)
             {
                 FlushVB();
 
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_GOURAUD);
             }
 
-            if ((Value & MPR_SE_SCISSORING) && !m_bEnableScissors)
+            if ((Value bitand MPR_SE_SCISSORING) and not m_bEnableScissors)
             {
                 FlushVB();
 
@@ -623,14 +623,14 @@ void ContextMPR::SetState(WORD State, DWORD Value)
                 UpdateViewport();
             }
 
-            if (Value & MPR_SE_Z_BUFFERING)
+            if (Value bitand MPR_SE_Z_BUFFERING)
             {
                 FlushVB();
 
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
             }
 
-            if (Value & MPR_SE_Z_WRITE)
+            if (Value bitand MPR_SE_Z_WRITE)
             {
                 FlushVB();
 
@@ -642,28 +642,28 @@ void ContextMPR::SetState(WORD State, DWORD Value)
 
         case MPR_STA_DISABLES:
         {
-            if (Value & MPR_SE_MODULATION)
+            if (Value bitand MPR_SE_MODULATION)
             {
                 FlushVB();
 
                 m_pD3DD->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
             }
 
-            if (Value & MPR_SE_TEXTURING)
+            if (Value bitand MPR_SE_TEXTURING)
             {
                 FlushVB();
 
                 m_pD3DD->SetTexture(0, NULL);
             }
 
-            if (Value & MPR_SE_SHADING)
+            if (Value bitand MPR_SE_SHADING)
             {
                 FlushVB();
 
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_FLAT);
             }
 
-            if (Value & MPR_SE_FILTERING)
+            if (Value bitand MPR_SE_FILTERING)
             {
                 FlushVB();
 
@@ -671,7 +671,7 @@ void ContextMPR::SetState(WORD State, DWORD Value)
                 m_pD3DD->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFN_POINT);
             }
 
-            if (Value & MPR_SE_ALPHA)
+            if (Value bitand MPR_SE_ALPHA)
             {
                 FlushVB();
 
@@ -681,14 +681,14 @@ void ContextMPR::SetState(WORD State, DWORD Value)
                 m_pD3DD->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
             }
 
-            if (Value & MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE)
+            if (Value bitand MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE)
             {
                 FlushVB();
 
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE, TRUE);
             }
 
-            if ((Value & MPR_SE_SCISSORING) && m_bEnableScissors)
+            if ((Value bitand MPR_SE_SCISSORING) and m_bEnableScissors)
             {
                 FlushVB();
 
@@ -696,14 +696,14 @@ void ContextMPR::SetState(WORD State, DWORD Value)
                 UpdateViewport();
             }
 
-            if (Value & MPR_SE_Z_BUFFERING)
+            if (Value bitand MPR_SE_Z_BUFFERING)
             {
                 FlushVB();
 
                 m_pD3DD->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS);
             }
 
-            if (Value & MPR_SE_Z_WRITE)
+            if (Value bitand MPR_SE_Z_WRITE)
             {
                 FlushVB();
 
@@ -835,7 +835,7 @@ void ContextMPR::SetState(WORD State, DWORD Value)
 
         case MPR_STA_SCISSOR_LEFT:
         {
-            if (Value != m_rcVP.left)
+            if (Value not_eq m_rcVP.left)
             {
                 FlushVB();
 
@@ -848,7 +848,7 @@ void ContextMPR::SetState(WORD State, DWORD Value)
 
         case MPR_STA_SCISSOR_TOP:
         {
-            if (Value != m_rcVP.top)
+            if (Value not_eq m_rcVP.top)
             {
                 FlushVB();
 
@@ -861,7 +861,7 @@ void ContextMPR::SetState(WORD State, DWORD Value)
 
         case MPR_STA_SCISSOR_RIGHT:
         {
-            if (Value != m_rcVP.right)
+            if (Value not_eq m_rcVP.right)
             {
                 FlushVB();
 
@@ -874,7 +874,7 @@ void ContextMPR::SetState(WORD State, DWORD Value)
 
         case MPR_STA_SCISSOR_BOTTOM:
         {
-            if (Value != m_rcVP.bottom)
+            if (Value not_eq m_rcVP.bottom)
             {
                 FlushVB();
 
@@ -906,31 +906,31 @@ void ContextMPR::SetStateInternal(WORD State, DWORD Value)
         {
             bool bNewVal = (State == MPR_STA_ENABLES) ? true : false;
 
-            if (Value & MPR_SE_SCISSORING)
+            if (Value bitand MPR_SE_SCISSORING)
                 StateTableInternal[currentState].SE_SCISSORING = bNewVal;
 
-            if (Value & MPR_SE_MODULATION)
+            if (Value bitand MPR_SE_MODULATION)
                 StateTableInternal[currentState].SE_MODULATION = bNewVal;
 
-            if (Value & MPR_SE_TEXTURING)
+            if (Value bitand MPR_SE_TEXTURING)
                 StateTableInternal[currentState].SE_TEXTURING = bNewVal;
 
-            if (Value & MPR_SE_SHADING)
+            if (Value bitand MPR_SE_SHADING)
                 StateTableInternal[currentState].SE_SHADING = bNewVal;
 
-            if (Value & MPR_SE_Z_BUFFERING)
+            if (Value bitand MPR_SE_Z_BUFFERING)
                 StateTableInternal[currentState].SE_Z_BUFFERING = bNewVal;
 
-            if (Value & MPR_SE_Z_WRITE)
+            if (Value bitand MPR_SE_Z_WRITE)
                 StateTableInternal[currentState].SE_Z_WRITE = bNewVal;
 
-            if (Value & MPR_SE_FILTERING)
+            if (Value bitand MPR_SE_FILTERING)
                 StateTableInternal[currentState].SE_FILTERING = bNewVal;
 
-            if (Value & MPR_SE_ALPHA)
+            if (Value bitand MPR_SE_ALPHA)
                 StateTableInternal[currentState].SE_ALPHA = bNewVal;
 
-            if (Value & MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE)
+            if (Value bitand MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE)
                 StateTableInternal[currentState].SE_NON_PERSPECTIVE_CORRECTION_MODE = bNewVal;
 
             break;
@@ -938,7 +938,7 @@ void ContextMPR::SetStateInternal(WORD State, DWORD Value)
     }
 }
 
-// flag & 0x01  --> skip StateSetupCount checking --> reset/set state
+// flag bitand 0x01  --> skip StateSetupCount checking --> reset/set state
 void ContextMPR::SetCurrentState(GLint state, GLint flag)
 {
     UInt32 i = 0;
@@ -1228,7 +1228,7 @@ void ContextMPR::SetCurrentState(GLint state, GLint flag)
 
             SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
 
-            if (PlayerOptions.FilteringOn() && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+            if (PlayerOptions.FilteringOn() and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
             {
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
@@ -1270,7 +1270,7 @@ void ContextMPR::SetCurrentState(GLint state, GLint flag)
 
             SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
 
-            if (PlayerOptions.FilteringOn() && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+            if (PlayerOptions.FilteringOn() and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
             {
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
@@ -1312,7 +1312,7 @@ void ContextMPR::SetCurrentState(GLint state, GLint flag)
 
             SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
 
-            if (PlayerOptions.FilteringOn() && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+            if (PlayerOptions.FilteringOn() and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
             {
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
@@ -1396,7 +1396,7 @@ void ContextMPR::SetCurrentState(GLint state, GLint flag)
 
             SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
 
-            if (PlayerOptions.FilteringOn() && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+            if (PlayerOptions.FilteringOn() and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
             {
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
@@ -1438,7 +1438,7 @@ void ContextMPR::SetCurrentState(GLint state, GLint flag)
 
             SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
 
-            if (PlayerOptions.FilteringOn() && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+            if (PlayerOptions.FilteringOn() and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
             {
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
@@ -1480,7 +1480,7 @@ void ContextMPR::SetCurrentState(GLint state, GLint flag)
 
             SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
 
-            if (PlayerOptions.FilteringOn() && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+            if (PlayerOptions.FilteringOn() and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
             {
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
@@ -1585,7 +1585,7 @@ void ContextMPR::SetCurrentState(GLint state, GLint flag)
             if (PlayerOptions.FilteringOn())
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR);
 
-            if (DisplayOptions.m_texMode != DisplayOptionsClass::TEX_MODE_DDS)
+            if (DisplayOptions.m_texMode not_eq DisplayOptionsClass::TEX_MODE_DDS)
                 SetState(MPR_STA_DISABLES, MPR_SE_MODULATION);
 
             break;
@@ -1606,7 +1606,7 @@ void ContextMPR::SetCurrentState(GLint state, GLint flag)
             if (PlayerOptions.FilteringOn())
                 SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR);
 
-            if (DisplayOptions.m_texMode != DisplayOptionsClass::TEX_MODE_DDS)
+            if (DisplayOptions.m_texMode not_eq DisplayOptionsClass::TEX_MODE_DDS)
                 SetState(MPR_STA_DISABLES, MPR_SE_MODULATION);
 
             break;
@@ -1755,7 +1755,7 @@ void ContextMPR::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, in
         pSrc = (DWORD *)(((BYTE *)pSrc) + (sY * (totalWidth << 2)) + sX);
         pDst = new DWORD[w * h];
 
-        if (!pDst) throw _com_error(E_OUTOFMEMORY);
+        if ( not pDst) throw _com_error(E_OUTOFMEMORY);
 
         for (int y = 0; y < h; y++)
         {
@@ -1820,7 +1820,7 @@ void ContextMPR::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, in
         CheckHR(m_pD3DD->SetTexture(0, pDDSTex));
 
         // Render it (finally)
-        DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
+        DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
 
         FlushVB();
         InvalidateState();
@@ -1836,7 +1836,7 @@ void ContextMPR::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, in
 
 inline void ContextMPR::SetStateTable(GLint state, GLint flag)
 {
-    if (!m_pD3DD)
+    if ( not m_pD3DD)
         return;
 
     // Record a stateblock
@@ -1846,7 +1846,7 @@ inline void ContextMPR::SetStateTable(GLint state, GLint flag)
     SetCurrentState(state, flag);
 
     hr = m_pD3DD->EndStateBlock((DWORD *)&StateTable[state]);
-    ShiAssert(SUCCEEDED(hr) && StateTable[state]);
+    ShiAssert(SUCCEEDED(hr) and StateTable[state]);
 
     // Record internal state
     m_bUseSetStateInternal = true;
@@ -1865,7 +1865,7 @@ inline void ContextMPR::ClearStateTable(GLint state)
 
 void ContextMPR::SetupMPRState(GLint flag)
 {
-    if (flag & CHECK_PREVIOUS_STATE)
+    if (flag bitand CHECK_PREVIOUS_STATE)
     {
         StateSetupCounter++;
 
@@ -1886,13 +1886,13 @@ void ContextMPR::SetupMPRState(GLint flag)
 
 void ContextMPR::CleanupMPRState(GLint flag)
 {
-    if (!StateSetupCounter)
+    if ( not StateSetupCounter)
     {
-        ShiWarning("MPR not initialized!");
+        ShiWarning("MPR not initialized");
         return;
     }
 
-    if (flag & CHECK_PREVIOUS_STATE)
+    if (flag bitand CHECK_PREVIOUS_STATE)
     {
         StateSetupCounter--;
 
@@ -1908,7 +1908,7 @@ void ContextMPR::CleanupMPRState(GLint flag)
 
 void ContextMPR::SetTexture1(GLint texID)
 {
-    if (texID != lastTexture1)
+    if (texID not_eq lastTexture1)
     {
         HRESULT hr;
 
@@ -1919,7 +1919,7 @@ void ContextMPR::SetTexture1(GLint texID)
         else
             hr = m_pD3DD->SetTexture(0, (IDirectDrawSurface7 *)texID);
 
-        if (!SUCCEEDED(hr)) INT3;
+        if ( not SUCCEEDED(hr)) INT3;
 
         m_pD3DD->SetTexture(1, NULL);
     }
@@ -1927,7 +1927,7 @@ void ContextMPR::SetTexture1(GLint texID)
 
 void ContextMPR::SetTexture2(GLint texID)
 {
-    if (texID != lastTexture2)
+    if (texID not_eq lastTexture2)
     {
         HRESULT hr;
 
@@ -1938,7 +1938,7 @@ void ContextMPR::SetTexture2(GLint texID)
         else
             hr = m_pD3DD->SetTexture(1, (IDirectDrawSurface7 *)texID);
 
-        if (!SUCCEEDED(hr)) INT3;
+        if ( not SUCCEEDED(hr)) INT3;
     }
 }
 
@@ -1953,7 +1953,7 @@ void ContextMPR::SelectTexture1(GLint texID)
     if (texID)
         texID = (GLint)((TextureHandle *)texID)->m_pDDS;
 
-    if (texID != currentTexture1)
+    if (texID not_eq currentTexture1)
     {
         currentTexture1 = texID;
 
@@ -1961,10 +1961,10 @@ void ContextMPR::SelectTexture1(GLint texID)
         m_stats.PutTexture(false);
 #endif
 
-        if (!bZBuffering)
+        if ( not bZBuffering)
         {
             // JB 010326 CTD (too much CPU)
-            if (g_bSlowButSafe && F4IsBadReadPtr((TextureHandle *)texID, sizeof(TextureHandle)))
+            if (g_bSlowButSafe and F4IsBadReadPtr((TextureHandle *)texID, sizeof(TextureHandle)))
                 return;
 
             FlushVB();
@@ -1993,7 +1993,7 @@ void ContextMPR::SelectTexture2(GLint texID)
     if (texID)
         texID = (GLint)((TextureHandle *)texID)->m_pDDS;
 
-    if (texID != currentTexture2)
+    if (texID not_eq currentTexture2)
     {
         currentTexture2 = texID;
 
@@ -2001,10 +2001,10 @@ void ContextMPR::SelectTexture2(GLint texID)
         m_stats.PutTexture(false);
 #endif
 
-        if (!bZBuffering)
+        if ( not bZBuffering)
         {
             // JB 010326 CTD (too much CPU)
-            if (g_bSlowButSafe && F4IsBadReadPtr((TextureHandle *)texID, sizeof(TextureHandle)))
+            if (g_bSlowButSafe and F4IsBadReadPtr((TextureHandle *)texID, sizeof(TextureHandle)))
                 return;
 
             FlushVB();
@@ -2022,7 +2022,7 @@ void ContextMPR::SelectTexture2(GLint texID)
 
 void ContextMPR::SelectForegroundColor(GLint color)
 {
-    if (color != m_colFG_Raw)
+    if (color not_eq m_colFG_Raw)
     {
         m_colFG_Raw = color;
         m_colFG = MPRColor2D3DRGBA(color);
@@ -2031,7 +2031,7 @@ void ContextMPR::SelectForegroundColor(GLint color)
 
 void ContextMPR::SelectBackgroundColor(GLint color)
 {
-    if (color != m_colBG_Raw)
+    if (color not_eq m_colBG_Raw)
     {
         m_colBG_Raw = color;
         m_colBG = MPRColor2D3DRGBA(color);
@@ -2042,32 +2042,32 @@ void ContextMPR::ApplyStateBlock(GLint state)
 {
     if (state == -1) return;
 
-    ShiAssert(state >= 0 && state < MAXIMUM_MPR_STATE);
+    ShiAssert(state >= 0 and state < MAXIMUM_MPR_STATE);
 
-    if (state != lastState)
+    if (state not_eq lastState)
     {
         lastState = state;
 
         HRESULT hr = m_pD3DD->ApplyStateBlock(StateTable[state]);
 
-        if (!SUCCEEDED(hr)) INT3;
+        if ( not SUCCEEDED(hr)) INT3;
     }
 }
 
 void ContextMPR::RestoreState(GLint state)
 {
-    ShiAssert(state != -1);
-    ShiAssert(state >= 0 && state < MAXIMUM_MPR_STATE);
+    ShiAssert(state not_eq -1);
+    ShiAssert(state >= 0 and state < MAXIMUM_MPR_STATE);
 
-#if defined _DEBUG && defined _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT_REPLACE
+#if defined _DEBUG and defined _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT_REPLACE
 
-    if (GetKeyState(VK_F4) & ~1)
+    if (GetKeyState(VK_F4) bitand compl 1)
     {
-        if (!bEnableRenderStateHighlightReplace)
+        if ( not bEnableRenderStateHighlightReplace)
             bEnableRenderStateHighlightReplace = true;
     }
 
-    if (bEnableRenderStateHighlightReplace && (state == bRenderStateHighlightReplaceTargetState))
+    if (bEnableRenderStateHighlightReplace and (state == bRenderStateHighlightReplaceTargetState))
     {
         state = STATE_SOLID;
         m_colFG = 0xffff0000;
@@ -2076,7 +2076,7 @@ void ContextMPR::RestoreState(GLint state)
 
 #endif
 
-    if (state != currentState)
+    if (state not_eq currentState)
     {
 #ifdef _CONTEXT_TRACE_ALL
         MonoPrint("ContextMPR::RestoreState(%d)\n", state);
@@ -2086,12 +2086,12 @@ void ContextMPR::RestoreState(GLint state)
         m_setStatesUsed.insert(state);
 #endif
 
-        if (currentState == -1 || (StateTableInternal[currentState].SE_TEXTURING && !StateTableInternal[state].SE_TEXTURING))
+        if (currentState == -1 or (StateTableInternal[currentState].SE_TEXTURING and not StateTableInternal[state].SE_TEXTURING))
             currentTexture1 = -1;
 
         currentState = state;
 
-        if (!bZBuffering)
+        if ( not bZBuffering)
         {
             FlushVB();
 
@@ -2104,17 +2104,17 @@ void ContextMPR::RestoreState(GLint state)
 // COBRA - RED - Comparing or a so short conditional action has no sense, do it always
 void ContextMPR::UpdateSpecularFog(DWORD specular)
 {
-    /*if(specular != m_colFOG)*/ m_colFOG = specular;
+    /*if(specular not_eq m_colFOG)*/ m_colFOG = specular;
 }
 
 void ContextMPR::SetZBuffering(BOOL state)
 {
-    if (!bZBuffering && state)
+    if ( not bZBuffering and state)
     {
         FlushVB();
         bZBuffering = state;
     }
-    else if (bZBuffering && !state)
+    else if (bZBuffering and not state)
     {
         bZBuffering = state;
     }
@@ -2138,12 +2138,12 @@ void ContextMPR::SetIRmode(BOOL state)
 // COBRA - RED - Comparing or a so short conditional action has no sense, do it always
 void ContextMPR::SetPalID(int id)
 {
-    /*if(id != palID)*/ palID = id;
+    /*if(id not_eq palID)*/ palID = id;
 }
 
 void ContextMPR::SetTexID(int id)
 {
-    /*if(id != texID)*/ texID = id;
+    /*if(id not_eq texID)*/ texID = id;
 }
 
 DWORD ContextMPR::MPRColor2D3DRGBA(GLint color)
@@ -2157,7 +2157,7 @@ HRESULT WINAPI ContextMPR::EnumSurfacesCB2(IDirectDrawSurface7 *lpDDSurface, str
     ShiAssert(FALSE == F4IsBadReadPtr(pThis, sizeof * pThis));
     ShiAssert(FALSE == F4IsBadReadPtr(lpDDSurfaceDesc, sizeof * lpDDSurfaceDesc));
 
-    if (lpDDSurfaceDesc->ddsCaps.dwCaps & DDSCAPS_PRIMARYSURFACE)
+    if (lpDDSurfaceDesc->ddsCaps.dwCaps bitand DDSCAPS_PRIMARYSURFACE)
     {
         pThis->m_pDDSP = lpDDSurface;
         return DDENUMRET_CANCEL;
@@ -2172,7 +2172,7 @@ void ContextMPR::UpdateViewport()
     MonoPrint("ContextMPR::UpdateViewport()\n");
 #endif
 
-    if (m_bViewportLocked || !m_pD3DD)
+    if (m_bViewportLocked or not m_pD3DD)
         return;
 
     // get current viewport
@@ -2190,7 +2190,7 @@ void ContextMPR::UpdateViewport()
         vp.dwWidth = m_rcVP.right - m_rcVP.left;
         vp.dwHeight = m_rcVP.bottom - m_rcVP.top;
 
-        if (!vp.dwWidth || !vp.dwHeight)
+        if ( not vp.dwWidth or not vp.dwHeight)
             return;
     }
     else
@@ -2254,12 +2254,12 @@ void ContextMPR::Stats()
 #ifdef _CONTEXT_USE_MANAGED_TEXTURES
     D3DDEVINFO_TEXTUREMANAGER ditexman;
     hr = m_pD3DD->GetInfo(D3DDEVINFOID_TEXTUREMANAGER, &ditexman, sizeof(ditexman));
-    m_bNoD3DStatsAvail = FAILED(hr) || hr == S_FALSE;
+    m_bNoD3DStatsAvail = FAILED(hr) or hr == S_FALSE;
 #endif
 
     D3DDEVINFO_TEXTURING ditex;
     hr = m_pD3DD->GetInfo(D3DDEVINFOID_TEXTURING, &ditex, sizeof(ditex));
-    m_bNoD3DStatsAvail = FAILED(hr) || hr == S_FALSE;
+    m_bNoD3DStatsAvail = FAILED(hr) or hr == S_FALSE;
 #endif
 }
 
@@ -2269,7 +2269,7 @@ void ContextMPR::TextOut(short x, short y, DWORD col, LPSTR str)
     MonoPrint("ContextMPR::TextOut(%d,%d,0x%X,%s)\n", x, y, col, str);
 #endif
 
-    if (!str) return;
+    if ( not str) return;
 
     try
     {
@@ -2314,7 +2314,7 @@ bool ContextMPR::LockVB(int nVtxCount, void **p)
         m_dwStartVtx = 0;
 
         // we are done with this VB, hint driver that he can use a another memory block to prevent breaking DMA activity
-        hr = m_pVB->Lock(DDLOCK_SURFACEMEMORYPTR | DDLOCK_WRITEONLY | DDLOCK_WAIT | DDLOCK_DISCARDCONTENTS, p, &dwSize);
+        hr = m_pVB->Lock(DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_WRITEONLY bitor DDLOCK_WAIT bitor DDLOCK_DISCARDCONTENTS, p, &dwSize);
     }
 
     else if (m_pTLVtx)
@@ -2327,10 +2327,10 @@ bool ContextMPR::LockVB(int nVtxCount, void **p)
     {
         // we will only append data, dont interrupt DMA
         if (m_dwStartVtx)
-            hr = m_pVB->Lock(DDLOCK_SURFACEMEMORYPTR | DDLOCK_WRITEONLY | DDLOCK_WAIT | DDLOCK_NOOVERWRITE, p, &dwSize);
+            hr = m_pVB->Lock(DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_WRITEONLY bitor DDLOCK_WAIT bitor DDLOCK_NOOVERWRITE, p, &dwSize);
         // ok this is the first lock
         else
-            hr = m_pVB->Lock(DDLOCK_SURFACEMEMORYPTR | DDLOCK_WRITEONLY | DDLOCK_WAIT | DDLOCK_DISCARDCONTENTS, p, &dwSize);
+            hr = m_pVB->Lock(DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_WRITEONLY bitor DDLOCK_WAIT bitor DDLOCK_DISCARDCONTENTS, p, &dwSize);
     }
 
     ShiAssert(SUCCEEDED(hr));
@@ -2371,9 +2371,9 @@ void ContextMPR::FlushPolyLists()
     SetState(MPR_STA_ENABLES, MPR_SE_Z_WRITE);
     SetState(MPR_STA_ENABLES, MPR_SE_Z_BUFFERING);
 
-    if (plainPolys != NULL) RenderPolyList(plainPolys);
+    if (plainPolys not_eq NULL) RenderPolyList(plainPolys);
 
-    if (texturedPolys != NULL) RenderPolyList(texturedPolys);
+    if (texturedPolys not_eq NULL) RenderPolyList(texturedPolys);
 
     // STOP_PROFILE(BSP_ENGINE_PROF);
 
@@ -2394,7 +2394,7 @@ void ContextMPR::FlushPolyLists()
     SetState(MPR_STA_DISABLES, MPR_SE_Z_WRITE);
     //TheDXEngine.SetStencilMode(STENCIL_CHECK);
 
-    if (translucentPolys != NULL) RenderPolyList(translucentPolys);
+    if (translucentPolys not_eq NULL) RenderPolyList(translucentPolys);
 
     TheDXEngine.SetStencilMode(STENCIL_OFF);
 
@@ -2415,9 +2415,9 @@ void ContextMPR::FlushPolyLists()
 
 void ContextMPR::FlushVB()
 {
-    if (!m_dwNumVtx) return;
+    if ( not m_dwNumVtx) return;
 
-    ShiAssert(m_nCurPrimType != 0);
+    ShiAssert(m_nCurPrimType not_eq 0);
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::FlushVB()\n");
@@ -2445,7 +2445,7 @@ void ContextMPR::FlushVB()
 
 #ifdef _VALIDATE_DEVICE
 
-    if (!m_pCtxDX->ValidateD3DDevice())
+    if ( not m_pCtxDX->ValidateD3DDevice())
         MonoPrint("ContextMPR::FlushVB() - Validate Device failed - currentState=%d,currentTexture=0x%\n", currentState, currentTexture);
 
 #endif
@@ -2485,7 +2485,7 @@ void ContextMPR::SetPrimitiveType(int nType)
     MonoPrint("ContextMPR::SetPrimitiveType(%d)\n", nType);
 #endif
 
-    if (m_nCurPrimType != nType)
+    if (m_nCurPrimType not_eq nType)
     {
         // Flush on changed primitive type
         FlushVB();
@@ -2512,14 +2512,14 @@ void ContextMPR::SetProjection(LPD3DMATRIX l_pMP)
 
 void ContextMPR::setGlobalZBias(float zBias)
 {
-    if (gZBias != zBias) gZBias = zBias;
+    if (gZBias not_eq zBias) gZBias = zBias;
 
     ZCX_Calculate(); // COBRA - RED - Drawing CXs update
 }
 
 inline TLVERTEX* SPolygon::CopyToVertexBuffer(TLVERTEX *bufferPos)
 {
-    if (!bufferPos)
+    if ( not bufferPos)
         return NULL;
 
     // COBRA - RED - Using arrays of TLVERTEX it is possible to copy directly into DX Buffer
@@ -2558,7 +2558,7 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
 
 
 
-    if ((pHead->renderState >= STATE_ALPHA_SOLID) && (pHead->renderState <= STATE_ALPHA_TEXTURE_PERSPECTIVE_CLAMP))
+    if ((pHead->renderState >= STATE_ALPHA_SOLID) and (pHead->renderState <= STATE_ALPHA_TEXTURE_PERSPECTIVE_CLAMP))
     {
         offset = DWORD(&pHead->zBuffer) - DWORD(pHead);
         pHead = (SPolygon *)RadixSortDescending((radix_sort_t *)pHead, offset);
@@ -2583,19 +2583,19 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
 
     pStart = pEnd = pCur = pHead;
 
-    while (pEnd != NULL)
+    while (pEnd not_eq NULL)
     {
         vertcnt += pEnd->numVertices;
         VCounter += pEnd->numVertices;
         pEnd = pEnd->pNext;
 
         // was 1024
-        if ((pEnd == NULL) || (vertcnt + pEnd->numVertices > 32768))
+        if ((pEnd == NULL) or (vertcnt + pEnd->numVertices > 32768))
         {
 
-            m_pVBB->Lock(DDLOCK_WRITEONLY | DDLOCK_SURFACEMEMORYPTR | DDLOCK_DISCARDCONTENTS, (LPVOID *)&pIns, NULL);
+            m_pVBB->Lock(DDLOCK_WRITEONLY bitor DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_DISCARDCONTENTS, (LPVOID *)&pIns, NULL);
 
-            while (pEnd != pCur)
+            while (pEnd not_eq pCur)
             {
                 pIns = pCur->CopyToVertexBuffer(pIns);
                 pCur = pCur->pNext;
@@ -2606,13 +2606,13 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
             vertcnt = 0;
             pCur = pStart;
 
-            while (pEnd != pCur)
+            while (pEnd not_eq pCur)
             {
                 ApplyStateBlock(pCur->renderState);
 
                 if (
-                    (pCur->renderState > STATE_GOURAUD && pCur->renderState < STATE_ALPHA_SOLID)
-                    || pCur->renderState > STATE_ALPHA_GOURAUD
+                    (pCur->renderState > STATE_GOURAUD and pCur->renderState < STATE_ALPHA_SOLID)
+                    or pCur->renderState > STATE_ALPHA_GOURAUD
                 )
                 {
                     SetTexture1(pCur->textureID0);
@@ -2658,7 +2658,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
     ShiAssert(FALSE == F4IsBadReadPtr(poly, sizeof * poly));
     ShiAssert(poly->nVerts >= 3);
     ShiAssert(xyzIdxPtr);
-    ShiAssert(!bUseFGColor || (bUseFGColor && rgbaIdxPtr == NULL));
+    ShiAssert( not bUseFGColor or (bUseFGColor and rgbaIdxPtr == NULL));
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::DrawPoly(0x%X,0x%X,0x%X,0x%X,0x%X,0x%X,%s)\n",
@@ -2669,10 +2669,10 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
     m_stats.Primitive(D3DPT_TRIANGLEFAN, poly->nVerts);
 #endif
 
-    if (!bZBuffering)
+    if ( not bZBuffering)
     {
         // Lock VB
-        if (!LockVB(poly->nVerts, (void **)&m_pTLVtx))
+        if ( not LockVB(poly->nVerts, (void **)&m_pTLVtx))
         {
             m_colFOG = 0xFFFFFFFF;
             return;
@@ -2684,7 +2684,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
         ShiAssert(FALSE == F4IsBadWritePtr(pVtx, poly->nVerts * sizeof * pVtx));
 
         // JB 011124 CTD
-        if (!pVtx)
+        if ( not pVtx)
         {
             m_colFOG = 0xFFFFFFFF;
             return;
@@ -2702,7 +2702,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
     }
 
     // Iterate for each vertex
-    if (!bZBuffering)
+    if ( not bZBuffering)
     {
         for (int i = 0; i < poly->nVerts; i++)
         {
@@ -2723,7 +2723,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 pVtx->sy = xyz->y;
             }
 
-            // NOTE: HACK!!
+            // NOTE: HACK
             if (xyz->z > 5)
                 pVtx->sz = SCALE_SZ(xyz->z); // COBRA - RED - Using precomputed CXs
             else
@@ -2733,7 +2733,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
             pVtx->specular = m_colFOG;
 
             // End Mission box
-            if (texID > 25 && texID < 32)
+            if (texID > 25 and texID < 32)
                 pVtx->color = 0xFFFFFFFF;
             else if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit)
             {
@@ -2758,12 +2758,12 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                     else if (TheColorBank.PitLightLevel == 1)
                     {
                         src = p3DpitLolite;
-                        pVtx->color = (src & 0xFF000000) + ((src & 0x00FF0000) >> 16) + (src & 0x0000FF00) + ((src & 0x000000FF) << 16);
+                        pVtx->color = (src bitand 0xFF000000) + ((src bitand 0x00FF0000) >> 16) + (src bitand 0x0000FF00) + ((src bitand 0x000000FF) << 16);
                     }
                     else
                     {
                         src = p3DpitHilite;
-                        pVtx->color = (src & 0xFF000000) + ((src & 0x00FF0000) >> 16) + (src & 0x0000FF00) + ((src & 0x000000FF) << 16);
+                        pVtx->color = (src bitand 0xFF000000) + ((src bitand 0x00FF0000) >> 16) + (src bitand 0x0000FF00) + ((src bitand 0x000000FF) << 16);
                     }
                 }
             }
@@ -2771,7 +2771,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 pVtx->color = TheColorBank.TODcolor;
 
 
-            if (opFlag & PRIM_COLOP_COLOR)
+            if (opFlag bitand PRIM_COLOP_COLOR)
             {
                 ShiAssert(rgbaIdxPtr);
                 rgba = &TheColorBank.ColorPool[*rgbaIdxPtr++];
@@ -2780,7 +2780,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
 
                 if (rgba)
                 {
-                    if (opFlag & PRIM_COLOP_INTENSITY)
+                    if (opFlag bitand PRIM_COLOP_INTENSITY)
                     {
                         ShiAssert(IIdxPtr);
                         I = &TheStateStack.IntensityPool[*IIdxPtr++];
@@ -2793,7 +2793,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                     }
                 }
             }
-            else if (opFlag & PRIM_COLOP_INTENSITY)
+            else if (opFlag bitand PRIM_COLOP_INTENSITY)
             {
                 ShiAssert(IIdxPtr);
 
@@ -2809,16 +2809,16 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                     pVtx->color = TheColorBank.TODcolor;
                 // Set the light level with "special cockpit reflection alpha"
                 else if (palID == 2)
-                    pVtx->color = TheColorBank.TODcolor & 0x26FFFFFF;
+                    pVtx->color = TheColorBank.TODcolor bitand 0x26FFFFFF;
             }
 
-            if (opFlag & PRIM_COLOP_TEXTURE)
+            if (opFlag bitand PRIM_COLOP_TEXTURE)
             {
                 // NVG_LIGHT_LEVEL = 0.703125f
-                if (NVGmode || TVmode || IRmode)
+                if (NVGmode or TVmode or IRmode)
                 {
-                    pVtx->color &= 0xFF00FF00;
-                    pVtx->color |= 0x0000B400;
+                    pVtx->color and_eq 0xFF00FF00;
+                    pVtx->color or_eq 0x0000B400;
                 }
 
                 ShiAssert(uv);
@@ -2850,7 +2850,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
              sVertex->sx = xyz->x;
              sVertex->sy = xyz->y;
 
-             // NOTE: HACK!!
+             // NOTE: HACK
              if(xyz->z > 5)
              sVertex->sz = SCALE_SZ(xyz->z);
              else
@@ -2863,7 +2863,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
             *(Spoint*)&(sVertex->sx) = *(Spoint*)&TheStateStack.XformedPosPool[*xyzIdxPtr++];
             sVertex->rhw = 1.f / sVertex->sz;
 
-            // NOTE: HACK!!
+            // NOTE: HACK
             if (sVertex->sz > 5)
                 sVertex->sz = SCALE_SZ(sVertex->sz); // COBRA - RED - Using precomputed CXs;
             else
@@ -2874,12 +2874,12 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
             sVertex->specular = m_colFOG;
 
             // End Mission box
-            if (texID > 25 && texID < 32)
+            if (texID > 25 and texID < 32)
                 sVertex->color = 0xFFFFFFFF;
             else
                 sVertex->color = TheColorBank.TODcolor;
 
-            if (opFlag & PRIM_COLOP_COLOR)
+            if (opFlag bitand PRIM_COLOP_COLOR)
             {
                 ShiAssert(rgbaIdxPtr);
                 rgba = &TheColorBank.ColorPool[*rgbaIdxPtr++];
@@ -2888,7 +2888,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
 
                 if (rgba)
                 {
-                    if (opFlag & PRIM_COLOP_INTENSITY)
+                    if (opFlag bitand PRIM_COLOP_INTENSITY)
                     {
                         ShiAssert(IIdxPtr);
                         I = &TheStateStack.IntensityPool[*IIdxPtr++];
@@ -2901,7 +2901,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                     }
                 }
             }
-            else if (opFlag & PRIM_COLOP_INTENSITY)
+            else if (opFlag bitand PRIM_COLOP_INTENSITY)
             {
                 ShiAssert(IIdxPtr);
 
@@ -2917,16 +2917,16 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                     sVertex->color = TheColorBank.TODcolor;
                 // Set the light level with "special cockpit reflection alpha"
                 else if (palID == 2)
-                    sVertex->color = TheColorBank.TODcolor & 0x26FFFFFF;
+                    sVertex->color = TheColorBank.TODcolor bitand 0x26FFFFFF;
             }
 
-            if (opFlag & PRIM_COLOP_TEXTURE)
+            if (opFlag bitand PRIM_COLOP_TEXTURE)
             {
                 // NVG_LIGHT_LEVEL = 0.703125f
-                if (NVGmode || TVmode || IRmode)
+                if (NVGmode or TVmode or IRmode)
                 {
-                    sVertex->color &= 0xFF00FF00;
-                    sVertex->color |= 0x0000B400;
+                    sVertex->color and_eq 0xFF00FF00;
+                    sVertex->color or_eq 0x0000B400;
                 }
 
                 ShiAssert(uv);
@@ -2950,7 +2950,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
     }
 
     // Generate Indices
-    if (!bZBuffering)
+    if ( not bZBuffering)
     {
         WORD *pIdx = &m_pIdx[m_dwNumIdx];
 
@@ -3024,7 +3024,7 @@ void ContextMPR::Draw2DPoint(Tpoint *v0)
     // Lock VB
     TLVERTEX *pVtx;
 
-    if (!LockVB(1, (void **)&m_pTLVtx))
+    if ( not LockVB(1, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
@@ -3061,7 +3061,7 @@ void ContextMPR::Draw2DPoint(Tpoint *v0)
     pVtx->tv0 = 0;
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-    pVtx->color = currentState != -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+    pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
     m_dwNumVtx++;
@@ -3090,7 +3090,7 @@ void ContextMPR::Draw2DPoint(float x, float y)
     // Lock VB
     TLVERTEX *pVtx;
 
-    if (!LockVB(1, (void **)&m_pTLVtx))
+    if ( not LockVB(1, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
@@ -3123,7 +3123,7 @@ void ContextMPR::Draw2DPoint(float x, float y)
     pVtx->tv0 = 0;
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-    pVtx->color = currentState != -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+    pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
     m_dwNumVtx++;
@@ -3137,7 +3137,7 @@ void ContextMPR::Draw2DPoint(float x, float y)
 
 void ContextMPR::Draw2DLine(Tpoint *v0, Tpoint *v1)
 {
-    ShiAssert(v0 && v1);
+    ShiAssert(v0 and v1);
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::Draw2DLine(0x%X,0x%X)\n", v0, v1);
@@ -3152,7 +3152,7 @@ void ContextMPR::Draw2DLine(Tpoint *v0, Tpoint *v1)
     // Lock VB
     TLVERTEX *pVtx;
 
-    if (!LockVB(2, (void **)&m_pTLVtx))
+    if ( not LockVB(2, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
@@ -3193,7 +3193,7 @@ void ContextMPR::Draw2DLine(Tpoint *v0, Tpoint *v1)
     pVtx++;
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-    pVtx->color = currentState != -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+    pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
     if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
@@ -3219,7 +3219,7 @@ void ContextMPR::Draw2DLine(Tpoint *v0, Tpoint *v1)
     pVtx->tv0 = 0;
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-    pVtx->color = currentState != -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+    pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
     WORD *pIdx = &m_pIdx[m_dwNumIdx];
@@ -3252,7 +3252,7 @@ void ContextMPR::Draw2DLine(float x0, float y0, float x1, float y1)
     // Lock VB
     TLVERTEX *pVtx;
 
-    if (!LockVB(2, (void **)&m_pTLVtx))
+    if ( not LockVB(2, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
@@ -3286,7 +3286,7 @@ void ContextMPR::Draw2DLine(float x0, float y0, float x1, float y1)
     pVtx++;
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-    pVtx->color = currentState != -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+    pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
     if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
@@ -3308,7 +3308,7 @@ void ContextMPR::Draw2DLine(float x0, float y0, float x1, float y1)
     pVtx->tv0 = 0;
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-    pVtx->color = currentState != -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+    pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
     WORD *pIdx = &m_pIdx[m_dwNumIdx];
@@ -3342,7 +3342,7 @@ void ContextMPR::DrawPrimitive2D(int type, int nVerts, int *xyzIdxPtr)
     // Lock VB
     TLVERTEX *pVtx;
 
-    if (!LockVB(nVerts, (void **)&m_pTLVtx))
+    if ( not LockVB(nVerts, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
@@ -3390,7 +3390,7 @@ void ContextMPR::DrawPrimitive2D(int type, int nVerts, int *xyzIdxPtr)
         pVtx->tv0 = 0;
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-        pVtx->color = currentState != -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+        pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
         pVtx++;
@@ -3419,10 +3419,10 @@ void ContextMPR::DrawPrimitive2D(int type, int nVerts, int *xyzIdxPtr)
 void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtx_t *pData, WORD Stride)
 {
     // Impossible
-    ShiAssert(!(VtxInfo & MPR_VI_COLOR));
+    ShiAssert( not (VtxInfo bitand MPR_VI_COLOR));
 
     // Ensure no degenerate nPrimTypeitives
-    ShiAssert((nVerts >= 3) || (nPrimType == MPR_PRM_POINTS && nVerts >= 1) || (nPrimType <= MPR_PRM_POLYLINE && nVerts >= 2));
+    ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS and nVerts >= 1) or (nPrimType <= MPR_PRM_POLYLINE and nVerts >= 2));
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::DrawPrimitive(%d,0x%X,%d,0x%X,%d)\n", nPrimType, VtxInfo, nVerts, pData, Stride);
@@ -3437,7 +3437,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtx_
     // Lock VB
     TLVERTEX *pVtx;
 
-    if (!LockVB(nVerts, (void **)&m_pTLVtx))
+    if ( not LockVB(nVerts, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
@@ -3474,7 +3474,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtx_
         pVtx->tv0 = 0;
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-        pVtx->color = currentState != -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+        pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
         pVtx++;
@@ -3521,7 +3521,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
     TLVERTEX *pVtx;
 
     // Ensure no degenerate nPrimTypeitives
-    ShiAssert((nVerts >= 3) || (nPrimType == MPR_PRM_POINTS && nVerts >= 1) || (nPrimType <= MPR_PRM_POLYLINE && nVerts >= 2));
+    ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS and nVerts >= 1) or (nPrimType <= MPR_PRM_POLYLINE and nVerts >= 2));
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::DrawPrimitive2(%d,0x%X,%d,0x%X,%d)\n", nPrimType, VtxInfo, nVerts, pData, Stride);
@@ -3532,7 +3532,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
 #endif
 
     // Lock VB
-    if (!LockVB(nVerts, (void **)&m_pTLVtx))
+    if ( not LockVB(nVerts, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
@@ -3545,7 +3545,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
     ShiAssert(FALSE == F4IsBadWritePtr(pVtx, nVerts * sizeof * pVtx));
 
     // JB 011124 CTD
-    if (!pVtx)
+    if ( not pVtx)
     {
         m_colFOG = 0xFFFFFFFF;
         return;
@@ -3575,7 +3575,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
         // OW FIXME: this should be 1.0f / pData->z
         pVtx->rhw = 1.0f;
 
-        if (VtxInfo == (MPR_VI_COLOR | MPR_VI_TEXTURE))
+        if (VtxInfo == (MPR_VI_COLOR bitor MPR_VI_TEXTURE))
         {
             pVtx->color = D3DRGBA(pData->r, pData->g, pData->b, pData->a);
             pVtx->specular = m_colFOG;
@@ -3595,7 +3595,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
         }
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-        pVtx->color = currentState != -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, , (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+        pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, , (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
         pVtx++;
@@ -3644,7 +3644,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
     float PolyZAvg = 0;
 
     // Ensure no degenerate nPrimTypeitives
-    ShiAssert((nVerts >= 3) || (nPrimType == MPR_PRM_POINTS && nVerts >= 1) || (nPrimType <= MPR_PRM_POLYLINE && nVerts >= 2));
+    ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS and nVerts >= 1) or (nPrimType <= MPR_PRM_POLYLINE and nVerts >= 2));
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::DrawPrimitive3(%d,0x%X,%d,0x%X)\n", nPrimType, VtxInfo, nVerts, pData);
@@ -3654,10 +3654,10 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
     m_stats.Primitive(m_nCurPrimType, nVerts);
 #endif
 
-    if (!bZBuffering)
+    if ( not bZBuffering)
     {
         // Lock VB
-        if (!LockVB(nVerts, (void **)&m_pTLVtx))
+        if ( not LockVB(nVerts, (void **)&m_pTLVtx))
         {
             m_colFOG = 0xFFFFFFFF;
             return;
@@ -3670,7 +3670,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
         ShiAssert(FALSE == F4IsBadWritePtr(pVtx, nVerts * sizeof * pVtx));
 
         // JB 011124 CTD
-        if (!pVtx)
+        if ( not pVtx)
         {
             m_colFOG = 0xFFFFFFFF;
             return;
@@ -3693,7 +3693,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
         sVertex = sPolygon->pVertexList;
     }
 
-    if (!bZBuffering)
+    if ( not bZBuffering)
     {
         // Iterate for each vertex
         for (int i = 0; i < nVerts; i++)
@@ -3702,7 +3702,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
             ShiAssert((BYTE *)pVtx < m_pVtxEnd);
 
             // JB 010712 CTD second try
-            if (!pData[i]) break;
+            if ( not pData[i]) break;
 
             if (DisplayOptions.bScreenCoordinateBiasFix)
             {
@@ -3715,26 +3715,26 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
                 pVtx->sy = pData[i]->y;
             }
 
-            // NOTE: HACK!!
+            // NOTE: HACK
             pVtx->sz = 1.0f;
             pVtx->rhw = pData[i]->q > 0.0f ? 1.0f / (pData[i]->q / Q_SCALE) : 1.0f;
 
             if (terrain)
             {
-                if (VtxInfo & MPR_VI_COLOR)
+                if (VtxInfo bitand MPR_VI_COLOR)
                     pVtx->color = D3DRGBA(pData[i]->r, pData[i]->g, pData[i]->b, 1.f);
 
                 pVtx->specular = (min(255, FloatToInt32(pData[i]->a * 255.f)) << 24) + 0xFFFFFF;
             }
             else
             {
-                if (VtxInfo & MPR_VI_COLOR)
+                if (VtxInfo bitand MPR_VI_COLOR)
                     pVtx->color = D3DRGBA(pData[i]->r, pData[i]->g, pData[i]->b, pData[i]->a);
 
                 pVtx->specular = m_colFOG;
             }
 
-            if (VtxInfo & MPR_VI_TEXTURE)
+            if (VtxInfo bitand MPR_VI_TEXTURE)
             {
                 if (terrain)
                 {
@@ -3751,7 +3751,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
             }
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-            pVtx->color = currentState != -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+            pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
             pVtx++;
@@ -3776,12 +3776,12 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
         for (int i = 0; i < nVerts; i++)
         {
             // JB 010712 CTD
-            if (!pData[i]) break;
+            if ( not pData[i]) break;
 
             sVertex->sx = pData[i]->x;
             sVertex->sy = pData[i]->y;
 
-            // NOTE: HACK!!
+            // NOTE: HACK
             if (pData[i]->q)
                 sVertex->sz = gCX1 + gCX2 / (pData[i]->q / Q_SCALE);
             else
@@ -3791,20 +3791,20 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
 
             if (terrain)
             {
-                if (VtxInfo & MPR_VI_COLOR)
+                if (VtxInfo bitand MPR_VI_COLOR)
                     sVertex->color = D3DRGBA(pData[i]->r, pData[i]->g, pData[i]->b, 1.f);
 
                 sVertex->specular = (min(255, FloatToInt32(pData[i]->a * 255.f)) << 24) + 0xFFFFFF;
             }
             else
             {
-                if (VtxInfo & MPR_VI_COLOR)
+                if (VtxInfo bitand MPR_VI_COLOR)
                     sVertex->color = D3DRGBA(pData[i]->r, pData[i]->g, pData[i]->b, pData[i]->a);
 
                 sVertex->specular = m_colFOG;
             }
 
-            if (VtxInfo & MPR_VI_TEXTURE)
+            if (VtxInfo bitand MPR_VI_TEXTURE)
             {
                 if (terrain)
                 {
@@ -3820,7 +3820,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
             }
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-            sVertex->color = currentState != -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+            sVertex->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
             PolyZAvg += sVertex->sz; // COBRA - RED - Poly Z Sum is calculated onthe fly
 
@@ -3830,7 +3830,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
     }
 
     // Generate Indices
-    if (!bZBuffering)
+    if ( not bZBuffering)
     {
         if (m_nCurPrimType == D3DPT_TRIANGLEFAN)
         {

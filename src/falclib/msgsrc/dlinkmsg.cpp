@@ -46,7 +46,7 @@ int FalconDLinkMessage::Process(uchar autodisp)
     theEntity = (SimBaseClass*)(vuDatabase->Find(EntityId()));
 
     if (
-        theEntity && theEntity->IsLocal() &&
+        theEntity and theEntity->IsLocal() and 
         theEntity == (void*)SimDriver.GetPlayerEntity()
     )
     {

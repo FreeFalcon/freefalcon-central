@@ -187,7 +187,7 @@ void RadarDopplerClass::DisplayInit(ImageBuffer* newImage)
     ((RenderGMComposite*)privateDisplay)->Setup(newImage, AddTargetReturnCallback, this);
 
     // Prep GM Radar
-    if (mode == GM || mode == GMT || mode == SEA)
+    if (mode == GM or mode == GMT or mode == SEA)
         SetGMScan();
 
     privateDisplay->SetColor(0xff00ff00);
@@ -237,7 +237,7 @@ void RadarDopplerClass::PushButton(int whichButton, int whichMFD)
         case 11:
             if (g_bRealisticAvionics)
                 MfdDrawable::PushButton(whichButton, whichMFD);
-            else if (mode != OFF)
+            else if (mode not_eq OFF)
             {
                 MfdDisplay[whichMFD]->SetNewMode(MFDClass::SMSMode);
             }
@@ -283,7 +283,7 @@ void RadarDopplerClass::PushButton(int whichButton, int whichMFD)
         default:
 
             // catch the menu and ctl buttons
-            if (whichButton > 4 && whichButton < 20)
+            if (whichButton > 4 and whichButton < 20)
             {
                 if (IsSet(MenuMode))
                 {
@@ -330,7 +330,7 @@ void RadarDopplerClass::AGPushButton(int whichButton, int whichMFD)
             break;
 
         case 1:
-            if (g_bRealisticAvionics && g_bAGRadarFixes)
+            if (g_bRealisticAvionics and g_bAGRadarFixes)
             {
                 ToggleFlag(AutoAGRange);
 
@@ -341,7 +341,7 @@ void RadarDopplerClass::AGPushButton(int whichButton, int whichMFD)
 
                 //StepAGmode(); //MI this should definately not be here
             }
-            else if (!g_bRealisticAvionics)
+            else if ( not g_bRealisticAvionics)
                 StepAGmode();
 
             break;
@@ -358,7 +358,7 @@ void RadarDopplerClass::AGPushButton(int whichButton, int whichMFD)
         case 7:
             SetAGSnowPlow(TRUE);
 
-            if (g_bRealisticAvionics && g_bAGRadarFixes)
+            if (g_bRealisticAvionics and g_bAGRadarFixes)
             {
                 RestoreAGCursor();
             }
@@ -373,7 +373,7 @@ void RadarDopplerClass::AGPushButton(int whichButton, int whichMFD)
         case 9:
             SetAGSteerpoint(TRUE);
 
-            if (g_bRealisticAvionics && g_bAGRadarFixes)
+            if (g_bRealisticAvionics and g_bAGRadarFixes)
                 RestoreAGCursor();
 
             LastAGModes = 3;
@@ -405,7 +405,7 @@ void RadarDopplerClass::AGPushButton(int whichButton, int whichMFD)
             rangeChangeCmd = -1;
 
             //MI
-            if (g_bRealisticAvionics && g_bAGRadarFixes)
+            if (g_bRealisticAvionics and g_bAGRadarFixes)
             {
                 if (IsSet(AutoAGRange))
                 {
@@ -420,7 +420,7 @@ void RadarDopplerClass::AGPushButton(int whichButton, int whichMFD)
             rangeChangeCmd = 1;
 
             //MI
-            if (g_bRealisticAvionics && g_bAGRadarFixes)
+            if (g_bRealisticAvionics and g_bAGRadarFixes)
             {
                 if (IsSet(AutoAGRange))
                 {
@@ -444,8 +444,8 @@ void RadarDopplerClass::AAPushButton(int whichButton, int whichMFD)
         case 1:
             if (g_bRealisticAvionics)
                 StepAAmode();
-            else if ((mode == ACM_30x20) || (mode == ACM_SLEW) || (mode == ACM_BORE)
-                     || (mode == ACM_10x60))
+            else if ((mode == ACM_30x20) or (mode == ACM_SLEW) or (mode == ACM_BORE)
+                     or (mode == ACM_10x60))
             {
                 scanWidthCmd = TRUE;
             }
@@ -453,7 +453,7 @@ void RadarDopplerClass::AAPushButton(int whichButton, int whichMFD)
             break;
 
         case 2:
-            if ((mode == TWS || mode == RWS || mode == LRS || mode == SAM) && g_bRealisticAvionics)
+            if ((mode == TWS or mode == RWS or mode == LRS or mode == SAM) and g_bRealisticAvionics)
                 fovStepCmd = TRUE;
 
             break;
@@ -469,7 +469,7 @@ void RadarDopplerClass::AAPushButton(int whichButton, int whichMFD)
             break;
 
         case 17:
-            if ((mode == RWS) || (mode == TWS) || (mode == VS) || (mode == LRS))
+            if ((mode == RWS) or (mode == TWS) or (mode == VS) or (mode == LRS))
             {
                 scanWidthCmd = TRUE;
             }
@@ -477,8 +477,8 @@ void RadarDopplerClass::AAPushButton(int whichButton, int whichMFD)
             break;
 
         case 18:
-            if ((mode != ACM_SLEW) && (mode != ACM_30x20) &&
-                (mode != ACM_10x60) && (mode != ACM_BORE))
+            if ((mode not_eq ACM_SLEW) and (mode not_eq ACM_30x20) and 
+                (mode not_eq ACM_10x60) and (mode not_eq ACM_BORE))
             {
                 rangeChangeCmd = -1;
             }
@@ -486,8 +486,8 @@ void RadarDopplerClass::AAPushButton(int whichButton, int whichMFD)
             break;
 
         case 19:
-            if ((mode != ACM_SLEW) && (mode != ACM_30x20) &&
-                (mode != ACM_10x60) && (mode != ACM_BORE))
+            if ((mode not_eq ACM_SLEW) and (mode not_eq ACM_30x20) and 
+                (mode not_eq ACM_10x60) and (mode not_eq ACM_BORE))
             {
                 rangeChangeCmd = 1;
             }
@@ -651,13 +651,13 @@ void RadarDopplerClass::MENUDisplay(void)
         for (int i = 0; i < 20; i++)
         {
             //MI make it master mode dependant
-            if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+            if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
                 OTWDriver.pCockpitManager->mpIcp->IsICPSet(ICPClass::MODE_A_A))
             {
                 if (rmenuaa[i].label1)
                     LabelButton(i, rmenuaa[i].label1, rmenuaa[i].label2, mode == rmenuaa[i].mode);
             }
-            else if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+            else if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
                      OTWDriver.pCockpitManager->mpIcp->IsICPSet(ICPClass::MODE_A_G))
             {
                 if (rmenuag[i].label1)
@@ -707,7 +707,7 @@ void RadarDopplerClass::MENUDisplay(void)
 void RadarDopplerClass::MenuPushButton(int whichButton, int whichMFD)
 {
     //MI changed
-    if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
         OTWDriver.pCockpitManager->mpIcp->IsICPSet(ICPClass::MODE_A_A))
     {
         if (rmenuaa[whichButton].label1)
@@ -716,7 +716,7 @@ void RadarDopplerClass::MenuPushButton(int whichButton, int whichMFD)
             ClearFlagBit(MenuMode);
         }
     }
-    else if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+    else if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
              OTWDriver.pCockpitManager->mpIcp->IsICPSet(ICPClass::MODE_A_G))
     {
         if (rmenuag[whichButton].label1)
@@ -796,12 +796,12 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
     int lockedFound = FALSE;
     int testTime;
 
-    if (!((AircraftClass*)platform)->HasPower(AircraftClass::FCRPower))
+    if ( not ((AircraftClass*)platform)->HasPower(AircraftClass::FCRPower))
     {
         SetPower(FALSE);
         SetEmitting(FALSE);
 
-        if (mode != OFF)
+        if (mode not_eq OFF)
         {
             prevMode = mode;
             mode = OFF;
@@ -817,7 +817,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
     {
         if (isEmitting)
             TheHud->HudData.Clear(HudDataType::RadarNoRad);
-        else if (radarData->NominalRange != 0.0) // JB 010706 Only set if the aircraft has radar to begin with
+        else if (radarData->NominalRange not_eq 0.0) // JB 010706 Only set if the aircraft has radar to begin with
             TheHud->HudData.Set(HudDataType::RadarNoRad);
     }
 
@@ -830,7 +830,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
     CheckLockedTarget();
 
     // Maintain track history across agg/deag boundary
-    if (lockedTarget != lastLocked && lockedTarget && lastLocked)
+    if (lockedTarget not_eq lastLocked and lockedTarget and lastLocked)
     {
         ShiAssert(lockedTargetData == lockedTarget->localData);
         memcpy(lockedTargetData, lastLocked->localData, sizeof(SimObjectLocalData));
@@ -841,14 +841,14 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
 
     lastLocked = lockedTarget;
 
-    if (!lastLocked) // MLR 6/21/2004 - So cursors come back after loosing tgt
+    if ( not lastLocked) // MLR 6/21/2004 - So cursors come back after loosing tgt
     {
         ClearFlagBit(STTingTarget);
     }
 
     // JB 010224 Start Enable the CombatAP to shoot A2A missiles
-    //if (g_bSmartCombatAP && lockedTarget) &&
-    if (g_bSmartCombatAP && lockedTarget && ((mode > 1) && (mode < 14)) &&
+    //if (g_bSmartCombatAP and lockedTarget) and 
+    if (g_bSmartCombatAP and lockedTarget and ((mode > 1) and (mode < 14)) and 
         ((AircraftClass*) platform)->autopilotType == AircraftClass::CombatAP)
     {
         int digimode;
@@ -905,7 +905,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
         }
 
         // See if it is time to send a "painted" list update
-        if (lastLocked != lockedTarget)
+        if (lastLocked not_eq lockedTarget)
         {
             if (lastLocked)
             {
@@ -925,7 +925,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
 
         // Just in case we don't have a list but we do have a locked target OR IF THE RADAR IS NOT IN AA MODE
         // I noticed the radar isn't really used in air to ground mode so we'll do just the lockedTarget then
-        if (!tmpPtr || digimode != AA)
+        if ( not tmpPtr or digimode not_eq AA)
             tmpPtr = lockedTarget;
 
         while (tmpPtr)
@@ -934,15 +934,15 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
             // By default, we can see the target (bit 0 at value 1)
             int canSee = SG_LOCK;
 
-            // 2000-10-07 S.G. POSSIBLE BUG! If we are looking at our lockedTarget and we are the only one referencing it, clearing it
+            // 2000-10-07 S.G. POSSIBLE BUG If we are looking at our lockedTarget and we are the only one referencing it, clearing it
             // might invalidate tmpPtr->next. So I'll read it ahead of time
             SimObjectType* tmpPtrNext = tmpPtr->next;
 
             // FRB - CTD below
-            if ((!tmpPtr->BaseData()) || (!tmpPtr->localData))
+            if (( not tmpPtr->BaseData()) or ( not tmpPtr->localData))
                 tmpPtr = tmpPtrNext;
 
-            if (!tmpPtr)
+            if ( not tmpPtr)
                 break;
 
 
@@ -972,7 +972,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                 {
                     // Ground mode is more than just GM, it can be GMT and SEA as well (not sure about SEA though, but gndAttck.cpp DO put the digital radar in GMT mode)
                     // But AFAIK, if NOT in AA, you're in GM or GMT mode (SEA is NOT used by AI after all)
-                    if (digimode != AA)
+                    if (digimode not_eq AA)
                     {
                         // Skip air objects in AA mode
                         canSee = SG_NOLOCK;
@@ -988,7 +988,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                 {
                     // Ok so it's too low, but is it jamming? If so, follow anyway...
                     if (tmpPtr->BaseData()->IsSPJamming())
-                        canSee |= SG_JAMMING; // That's our second bit being used
+                        canSee or_eq SG_JAMMING; // That's our second bit being used
                     // So it's too low and were are not jamming. When did we loose the signal?
                     else if (SimLibElapsedTime - tmpPtr->localData->rdrLastHit > radarData->CoastTime)
                     {
@@ -997,7 +997,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                     }
                     // We just lost the signal, but we can still follow it, right?
                     else
-                        canSee |= SG_FADING;
+                        canSee or_eq SG_FADING;
                 }
             }
 
@@ -1009,35 +1009,35 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                 if (tmpPtr->localData->sensorState[Radar] == NoTrack)
                 {
                     tmpPtr->localData->rdrLastHit = SimLibElapsedTime;// we are starting to lock the guy
-                    canSee |= SG_FADING; // this will make the sensor state max set to detection
+                    canSee or_eq SG_FADING; // this will make the sensor state max set to detection
                 }
 
-                if (radarDatFile && tmpPtr->localData->sensorState[Radar] == Detection &&  SimLibElapsedTime - tmpPtr->localData->rdrLastHit < (unsigned)radarDatFile->TimeToLock)
+                if (radarDatFile and tmpPtr->localData->sensorState[Radar] == Detection and SimLibElapsedTime - tmpPtr->localData->rdrLastHit < (unsigned)radarDatFile->TimeToLock)
                 {
-                    canSee |= SG_FADING;// we are attempting a lock so don't go higher then detection
+                    canSee or_eq SG_FADING;// we are attempting a lock so don't go higher then detection
                 }
 
                 // Can we see it (either with a valid lock, a jammed or fading signal?
-                if (canSee & (SG_JAMMING | SG_FADING)) // Is it a jammed or fading signal?
+                if (canSee bitand (SG_JAMMING bitor SG_FADING)) // Is it a jammed or fading signal?
                     tmpPtr->localData->sensorState[Radar] = Detection; // Yep, say so (weapon can't lock on 'Detection' but digi plane can track it)
                 else
                     tmpPtr->localData->sensorState[Radar] = SensorTrack; // It's a valid lock, mark it as such. Even when fading, we can launch
 
-                if (!(canSee & SG_FADING)) // Is the signal fading?
+                if ( not (canSee bitand SG_FADING)) // Is the signal fading?
                     tmpPtr->localData->rdrLastHit = SimLibElapsedTime;// No, so update the last hit field
             }
             else
                 tmpPtr->localData->sensorState[Radar] = NoTrack; // Sorry, we lost that target...
 
             //
-            // 2000-10-07 S.G. POSSIBLE BUG! If we are looking at our lockedTarget and we are the only one referencing it, clearing it
+            // 2000-10-07 S.G. POSSIBLE BUG If we are looking at our lockedTarget and we are the only one referencing it, clearing it
             // might invalidate tmpPtr->next. So I'll read it ahead of time
             //SimObjectType* tmpPtrNext = tmpPtr->next;
             tmpPtrNext = tmpPtr->next;
 
             // Now is it time to do lockedTarget housekeeping stuff?
             // 2000-09-18 S.G. We need to check the base data because targetList item and lockedData might not be the same
-            if (lockedTarget && tmpPtr->BaseData() == lockedTarget->BaseData())
+            if (lockedTarget and tmpPtr->BaseData() == lockedTarget->BaseData())
             {
                 // 2000-09-18 S.G. Update the lockedTarget radar sensor state with what we just calculated.
                 lockedTarget->localData->sensorState[Radar] = tmpPtr->localData->sensorState[Radar];
@@ -1066,7 +1066,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                     platform->SetRdrElCenter(tmpPtr->localData->el);
 
                     // Tag the target as seen from this frame, unless the target is fading
-                    if (!(canSee & SG_FADING))
+                    if ( not (canSee bitand SG_FADING))
                     {
                         if (sendThisFrame)
                         {
@@ -1085,7 +1085,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
         }
 
         // If we do not have a locked target, leave the radar centered...
-        if (!lockedTarget)
+        if ( not lockedTarget)
         {
             SetSeekerPos(0.0f, 0.0f);
             platform->SetRdrAz(radarData->ScanHalfAngle);
@@ -1106,14 +1106,14 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
     // JB 010224 End Enable the CombatAP to shoot A2A missiles
 
     // JPO - radar doesn't scan with WOW
-    //if (g_bRealisticAvionics && platform->OnGround())
+    //if (g_bRealisticAvionics and platform->OnGround())
     //{
     // // do nothing
     //}
-    //else if (isEmitting) // only scans if its scanning!
+    //else if (isEmitting) // only scans if its scanning
 
     // FRB - Some problems interpreting the above conditionals
-    if (!platform->OnGround() && (isEmitting))
+    if ( not platform->OnGround() and (isEmitting))
         //if (isEmitting)
     {
         MoveBeam();
@@ -1126,7 +1126,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
     rdrObj = targetList;
 
     // Hack -- You really can lock a target, etc. in these modes...
-    if (mode == GM || mode == GMT || mode == SEA)
+    if (mode == GM or mode == GMT or mode == SEA)
         return (NULL);
 
     targetUnderCursor = FalconNullId;
@@ -1137,7 +1137,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
             lockedFound = TRUE;
 
         // Is this the target under the cursor?
-        if (mode != VS)
+        if (mode not_eq VS)
         {
             if (IsUnderCursor(rdrObj, platform->Yaw()))
                 targetUnderCursor = rdrObj->BaseData()->Id();
@@ -1157,11 +1157,11 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
         rdrData = rdrObj->localData;
 
         // Did the beam cross the object
-        if (isEmitting && rdrObj->BaseData() &&// Radar On?
-            !rdrObj->BaseData()->OnGround() && // In the Air?
-            (!rdrObj->BaseData()->IsSim() ||   // Campaign Entity
-             (!rdrObj->BaseData()->IsExploding() && // Live none weapon sim thing
-              !rdrObj->BaseData()->IsWeapon())) &&
+        if (isEmitting and rdrObj->BaseData() and // Radar On?
+ not rdrObj->BaseData()->OnGround() and // In the Air?
+            ( not rdrObj->BaseData()->IsSim() or   // Campaign Entity
+             ( not rdrObj->BaseData()->IsExploding() and // Live none weapon sim thing
+ not rdrObj->BaseData()->IsWeapon())) and 
             LookingAtObject(rdrObj))
         {
             rdrData->painted = TRUE;
@@ -1169,11 +1169,11 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
 
             if (ObjectDetected(rdrObj))
             {
-                if (!InResCell(rdrObj, i, rngCell, angCell, velCell))
+                if ( not InResCell(rdrObj, i, rngCell, angCell, velCell))
                 {
                     i ++;
                     ShiAssert(i < MAX_OBJECTS);
-                    rdrData->rdrDetect = rdrData->rdrDetect | 0x0010;
+                    rdrData->rdrDetect = rdrData->rdrDetect bitor 0x0010;
 
                     // 2000-11-17 ADDED BY S.G. ONLY WHEN WE HAVE 'NoTrack' DO WE SET IT TO 'Detection'. OTHERWISE WE DON'T TOUCH IT (IT MIGHT ALREADY BE 'SensorTrack')
                     if (rdrData->sensorState[Radar] == NoTrack)
@@ -1187,13 +1187,13 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
         }
         else
         {
-            if (!isEmitting)
+            if ( not isEmitting)
                 rdrData->sensorLoopCount[Radar] = 0;
 
             rdrData->painted = FALSE;
 
             //Cobra 11/21/04 Wipe history if IFF not functioning
-            if (!((AircraftClass*)platform)->iffEnabled)
+            if ( not ((AircraftClass*)platform)->iffEnabled)
                 rdrData->interrogated = FALSE;
         }
 
@@ -1214,7 +1214,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
             /*----------------------------------*/
             /* slip, shift in a 0 for no detect */
             /*----------------------------------*/
-            rdrData->rdrDetect = rdrData->rdrDetect & 0x000f;
+            rdrData->rdrDetect = rdrData->rdrDetect bitand 0x000f;
 
             if (mode == TWS)
             {
@@ -1242,12 +1242,12 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                 }
 
                 //MI test
-                // MD -- 20040117: looks like this shouldn't have been left in...don't wipe extrapolation data!
+                // MD -- 20040117: looks like this shouldn't have been left in...don't wipe extrapolation data
                 //AddToHistory(rdrObj, None);
             }
-            else // MD -- 20040118: don't do this for TWS tracks as well!
-                if (!rdrData->TWSTrackFileOpen)
-                    if (rdrData->rdrSy[0] == Solid || rdrData->rdrSy[0] == None)
+            else // MD -- 20040118: don't do this for TWS tracks as well
+                if ( not rdrData->TWSTrackFileOpen)
+                    if (rdrData->rdrSy[0] == Solid or rdrData->rdrSy[0] == None)
                         AddToHistory(rdrObj, None);
                     else
                         SlipHistory(rdrObj);
@@ -1261,7 +1261,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
         rdrObj = rdrObj->next;
     }
 
-    if (!lockedFound && lockedTarget)
+    if ( not lockedFound and lockedTarget)
         lockedTargetData->rdrDetect = lockedTargetData->rdrDetect >> 1;
 
     // Update output paramters
@@ -1281,7 +1281,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
 
 
     // If we changed locks, tell our previous target he's off the hook
-    if (lastLocked != lockedTarget)
+    if (lastLocked not_eq lockedTarget)
     {
         if (lastLocked)
         {
@@ -1298,15 +1298,15 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
 
     // 2002-02-09 MODIFIED BY S.G. Since radarMode is sent as well and is passed to the AI, will let him make the decision to deal with us or not...
     // Tell our current target he's locked
-    /* if (sendThisFrame && lockedTarget && (mode != TWS || IsSet(STTingTarget)))
+    /* if (sendThisFrame and lockedTarget and (mode not_eq TWS or IsSet(STTingTarget)))
     {
     SendTrackMsg (lockedTarget, Track_Lock);
     lastTargetLockSend = SimLibElapsedTime;
     }
-    else if (lockedTarget && mode == TWS && lockedTarget->localData->lockmsgsend == Track_Lock)
+    else if (lockedTarget and mode == TWS and lockedTarget->localData->lockmsgsend == Track_Lock)
     SendTrackMsg (lockedTarget, Track_Unlock);
     */
-    if (sendThisFrame && lockedTarget)
+    if (sendThisFrame and lockedTarget)
     {
         int radarMode;
 
@@ -1332,7 +1332,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
     if (lockedTarget)
     {
         // Saw this frame, so update our best guess
-        if (radarDatFile && lockedTargetData->painted && lockedTargetData->range < radarDatFile->MaxNctrRange &&
+        if (radarDatFile and lockedTargetData->painted and lockedTargetData->range < radarDatFile->MaxNctrRange and 
             lockedTargetData->ataFrom < 45 * DTR)
         {
             // Make a guess based on range

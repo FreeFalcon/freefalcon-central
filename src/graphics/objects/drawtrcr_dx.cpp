@@ -77,7 +77,7 @@ void DXDrawableTracer::Draw(class RenderOTW *renderer, int)
 
     // COBRA - RED - Tracers are updated on by the Gun Exec... this makes flying tracers to freeze
     // if no more 'driven' by the gun EXEC... they appear stopped at midair
-    if (LastPos.x == position.x && LastPos.z == position.z && LastPos.y == position.y && gameCompressionRatio)
+    if (LastPos.x == position.x and LastPos.z == position.z and LastPos.y == position.y and gameCompressionRatio)
     {
         if (parentList) parentList->RemoveMe();
 

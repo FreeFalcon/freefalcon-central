@@ -35,9 +35,9 @@ struct LoadoutStruct
         memset(WeaponCount, 0, (sizeof(uchar) * HARDPOINT_MAX));
     }
 
-    const LoadoutStruct & operator = (const LoadoutStruct &rhs)
+    const LoadoutStruct bitand operator = (const LoadoutStruct &rhs)
     {
-        if (&rhs != this)
+        if (&rhs not_eq this)
         {
             memcpy(WeaponID, rhs.WeaponID, (sizeof(short) * HARDPOINT_MAX));
             memcpy(WeaponCount, rhs.WeaponCount, (sizeof(uchar) * HARDPOINT_MAX));
@@ -46,25 +46,25 @@ struct LoadoutStruct
         return *this;
     }
     /*
-     bool operator == (LoadoutStruct & rhs)
+     bool operator == (LoadoutStruct bitand rhs)
      {
      bool bResult = true;
 
-     for (int i = 0; i < HARDPOINT_MAX && bResult; ++i)
+     for (int i = 0; i < HARDPOINT_MAX and bResult; ++i)
      {
-     bResult = (WeaponID[i] == rhs.WeaponID[i]) && (WeaponCount[i] == rhs.WeaponCount[i]);
+     bResult = (WeaponID[i] == rhs.WeaponID[i]) and (WeaponCount[i] == rhs.WeaponCount[i]);
      }
 
      return bResult;
      }
 
-     bool operator != (LoadoutStruct & rhs)
+     bool operator not_eq (LoadoutStruct bitand rhs)
      {
      bool bResult = false;
 
-     for (int i = 0; i < HARDPOINT_MAX && !bResult; ++i)
+     for (int i = 0; i < HARDPOINT_MAX and not bResult; ++i)
      {
-     bResult = (WeaponID[i] != rhs.WeaponID[i]) || (WeaponCount[i] != rhs.WeaponCount[i]);
+     bResult = (WeaponID[i] not_eq rhs.WeaponID[i]) or (WeaponCount[i] not_eq rhs.WeaponCount[i]);
      }
 
      return bResult;

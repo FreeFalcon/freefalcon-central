@@ -79,7 +79,7 @@ void ShowPackageWPs(VU_ID package)
 
     pkg = (Package)vuDatabase->Find(package);
 
-    if (pkg && pkg->Final())
+    if (pkg and pkg->Final())
     {
         flt = (Flight)pkg->GetFirstUnitElement();
 
@@ -98,7 +98,7 @@ void HidePackageWPs(VU_ID package)
 
     pkg = (Package)vuDatabase->Find(package);
 
-    if (pkg && pkg->Final())
+    if (pkg and pkg->Final())
     {
         flt = (Flight)pkg->GetFirstUnitElement();
 
@@ -115,10 +115,10 @@ void UpdateTeamName(long team)
     TREELIST *item;
     C_Text *txt;
 
-    if (!gATOAll || team >= NUM_TEAMS || !TeamInfo[team])
+    if ( not gATOAll or team >= NUM_TEAMS or not TeamInfo[team])
         return;
 
-    item = gATOAll->Find(team | 0x20000000);
+    item = gATOAll->Find(team bitor 0x20000000);
 
     if (item)
     {
@@ -139,7 +139,7 @@ void SelectATOItemCB(long, short hittype, C_Base *control)
     C_ATO_Flight *ato;
     C_ATO_Package *pkg;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     ShiAssert(gATOAll);
@@ -155,7 +155,7 @@ void SelectATOItemCB(long, short hittype, C_Base *control)
     {
         item = ato->GetOwner()->Parent;
 
-        if (item && item->Item_)
+        if (item and item->Item_)
         {
             pkg = (C_ATO_Package*)item->Item_;
             pkg->SetState(1);
@@ -166,7 +166,7 @@ void SelectATOItemCB(long, short hittype, C_Base *control)
     gSelectedFlightID = ato->GetVUID();
     gSelectedATOFlight = gSelectedFlightID;
 
-    if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
     {
         gCurrentFlightID = gSelectedFlightID;
 
@@ -185,7 +185,7 @@ void SelectATOPackageCB(long, short hittype, C_Base *control)
     C_ATO_Package *package;
     VU_ID *tmpID;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     package = (C_ATO_Package*)control;
@@ -311,7 +311,7 @@ void ChangeFlightTypeCB(long, short hittype, C_Base *control)
     int camp_id;
     uchar type;
 
-    if (hittype != C_TYPE_SELECT)
+    if (hittype not_eq C_TYPE_SELECT)
     {
         return;
     }
@@ -324,7 +324,7 @@ void ChangeFlightTypeCB(long, short hittype, C_Base *control)
 
     flight = (Flight) GetEntityByCampID(camp_id);
 
-    if (flight && !F4IsBadReadPtr(flight, sizeof(Flight))) // JB 010326 CTD
+    if (flight and not F4IsBadReadPtr(flight, sizeof(Flight))) // JB 010326 CTD
         flight->SetUnitMission(type);
 }
 
@@ -373,7 +373,7 @@ C_ATO_Flight *BuildATOFlightInfo(Flight fl)
     newinfo->SetTask(49, 5, NULL);
     mission = fl->GetUnitMission();
 
-    if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
     {
         // Setup list box with only valid roles
         int i, added;
@@ -384,7 +384,7 @@ C_ATO_Flight *BuildATOFlightInfo(Flight fl)
             {
                 lbox->AddItem(i, C_TYPE_ITEM, MissStr[i]);
 
-                if (!added || i == mission)
+                if ( not added or i == mission)
                 {
                     lbox->SetValue(i);
                     added = 1;
@@ -408,7 +408,7 @@ C_ATO_Flight *BuildATOFlightInfo(Flight fl)
     GetCallsign(fl, buffer);
     newinfo->SetCallsign(190, 5, gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
-    // Set # & Airplane type, Squadron
+    // Set # bitand Airplane type, Squadron
     squadron = fl->GetUnitSquadron();
 
     if (squadron)
@@ -467,7 +467,7 @@ C_ATO_Package *BuildATOPackageInfo(Package pkg)
 
 void ToggleATOInfoCB(long, short hittype, C_Base *control)
 {
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     if (((C_Button *)control)->GetState())
@@ -510,7 +510,7 @@ void MakeIndividualATO(VU_ID flightID)
 
     ShiAssert(gATOPackage);
 
-    if (!gATOPackage)
+    if ( not gATOPackage)
         return;
 
     Leave = UI_Enter(gATOPackage->GetParent());
@@ -518,7 +518,7 @@ void MakeIndividualATO(VU_ID flightID)
 
     flt = (Flight)vuDatabase->Find(flightID);
 
-    if (!flt)
+    if ( not flt)
     {
         UI_Leave(Leave);
         return;
@@ -526,7 +526,7 @@ void MakeIndividualATO(VU_ID flightID)
 
     pkg = (Package)flt->GetUnitParent();
 
-    if (!pkg)
+    if ( not pkg)
     {
         UI_Leave(Leave);
         return;
@@ -607,41 +607,41 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
     short AtoMiss;
     C_Text *txt;
 
-    if (!FltPkg)
+    if ( not FltPkg)
         return(NULL);
 
     ShiAssert(gATOAll);
 
-    if (!gATOAll)
+    if ( not gATOAll)
         return NULL;
 
-    if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+    if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
     {
-        if (FltPkg->GetTeam() != FalconLocalSession->GetTeam())
+        if (FltPkg->GetTeam() not_eq FalconLocalSession->GetTeam())
             return(NULL);
     }
 
     MainFlt = (Flight)FltPkg->GetFirstUnitElement();
 
-    if (!MainFlt)
+    if ( not MainFlt)
         return(NULL);
 
     mistype = MainFlt->GetUnitMission();
 
-    if (mistype == AMIS_ABORT || mistype == AMIS_ALERT)
+    if (mistype == AMIS_ABORT or mistype == AMIS_ALERT)
         return(NULL);
 
-    if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
     {
-        team = gATOAll->Find(FltPkg->GetTeam() | 0x20000000);
+        team = gATOAll->Find(FltPkg->GetTeam() bitor 0x20000000);
 
-        if (!team)
+        if ( not team)
         {
             txt = new C_Text;
-            txt->Setup(FltPkg->GetTeam() | 0x20000000, 0);
+            txt->Setup(FltPkg->GetTeam() bitor 0x20000000, 0);
             txt->SetText(TeamInfo[FltPkg->GetTeam()]->GetName());
             txt->SetFont(gATOAll->GetParent()->Font_);
-            team = gATOAll->CreateItem(FltPkg->GetTeam() | 0x20000000, C_TYPE_ROOT, txt);
+            team = gATOAll->CreateItem(FltPkg->GetTeam() bitor 0x20000000, C_TYPE_ROOT, txt);
             gATOAll->AddItem(gATOAll->GetRoot(), team);
         }
     }
@@ -656,17 +656,17 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
 
     AtoMiss = static_cast<short>(MissionToATOMiss(mistype));
 
-    missiontype = gATOAll->Find(AtoMiss | 0x40000000 | (FltPkg->GetTeam() << 16));
+    missiontype = gATOAll->Find(AtoMiss bitor 0x40000000 bitor (FltPkg->GetTeam() << 16));
 
-    if (!missiontype)
+    if ( not missiontype)
     {
         txt = new C_Text;
-        txt->Setup(mistype | 0x40000000, 0);
+        txt->Setup(mistype bitor 0x40000000, 0);
         txt->SetText(AtoMissStr[AtoMiss]);
         txt->SetFont(gATOAll->GetParent()->Font_);
-        missiontype = gATOAll->CreateItem(AtoMiss | 0x40000000 | (FltPkg->GetTeam() << 16), C_TYPE_MENU, txt);
+        missiontype = gATOAll->CreateItem(AtoMiss bitor 0x40000000 bitor (FltPkg->GetTeam() << 16), C_TYPE_MENU, txt);
 
-        if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+        if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
             gATOAll->AddChildItem(team, missiontype);
         else
             gATOAll->AddItem(team, missiontype);
@@ -701,24 +701,24 @@ C_ATO_Flight *AddFlighttoATO(Flight flt)
 
     ShiAssert(gATOAll);
 
-    if (!gATOAll)
+    if ( not gATOAll)
         return NULL;
 
-    if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+    if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
     {
-        if (flt->GetTeam() != FalconLocalSession->GetTeam())
+        if (flt->GetTeam() not_eq FalconLocalSession->GetTeam())
             return(NULL);
     }
 
-    if (flt->GetUnitMission() == AMIS_ALERT || flt->GetUnitMission() == AMIS_ABORT)
+    if (flt->GetUnitMission() == AMIS_ALERT or flt->GetUnitMission() == AMIS_ABORT)
         return(NULL);
 
-    if (!flt->GetUnitParent())
+    if ( not flt->GetUnitParent())
         return(NULL);
 
     FltPkg = (Package)flt->GetUnitParent();
 
-    if (!FltPkg)
+    if ( not FltPkg)
         return(NULL);
 
     package = gATOAll->Find(FltPkg->GetCampID());
@@ -764,30 +764,30 @@ C_ATO_Flight *AddtoATO(Flight flt)
 
     ShiAssert(gATOAll);
 
-    if (!gATOAll)
+    if ( not gATOAll)
         return;
 
-    if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+    if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
     {
-        if (flt->GetTeam() != FalconLocalSession->GetTeam())
+        if (flt->GetTeam() not_eq FalconLocalSession->GetTeam())
             return(NULL);
     }
 
-    if (flt->GetUnitMission() == AMIS_ALERT || flt->GetUnitMission() == AMIS_ABORT)
+    if (flt->GetUnitMission() == AMIS_ALERT or flt->GetUnitMission() == AMIS_ABORT)
         return(NULL);
 
-    if (!flt->GetUnitParent())
+    if ( not flt->GetUnitParent())
         return(NULL);
 
     FltPkg = (Package)flt->GetUnitParent();
     MainFlt = (Flight)FltPkg->GetFirstUnitElement();
 
-    if (!MainFlt)
+    if ( not MainFlt)
         return(NULL);
 
     mistype = MainFlt->GetUnitMission();
 
-    if (mistype == AMIS_ABORT || mistype == AMIS_ALERT)
+    if (mistype == AMIS_ABORT or mistype == AMIS_ALERT)
         return(NULL);
 
     atoitem = BuildATOFlightInfo(flt);
@@ -798,17 +798,17 @@ C_ATO_Flight *AddtoATO(Flight flt)
         atoitem->SetCallback(SelectATOItemCB);
         atoitem->SetFont(gATOAll->GetFont());
 
-        if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+        if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
         {
-            team = gATOAll->Find(flt->GetTeam() | 0x20000000);
+            team = gATOAll->Find(flt->GetTeam() bitor 0x20000000);
 
-            if (!team)
+            if ( not team)
             {
                 txt = new C_Text;
-                txt->Setup(flt->GetTeam() | 0x20000000, 0);
+                txt->Setup(flt->GetTeam() bitor 0x20000000, 0);
                 txt->SetText(TeamInfo[flt->GetTeam()]->GetName());
                 txt->SetFont(gATOAll->GetParent()->Font_);
-                team = gATOAll->CreateItem(flt->GetTeam() | 0x20000000, C_TYPE_ROOT, txt);
+                team = gATOAll->CreateItem(flt->GetTeam() bitor 0x20000000, C_TYPE_ROOT, txt);
                 gATOAll->AddItem(gATOAll->GetRoot(), team);
             }
         }
@@ -816,23 +816,23 @@ C_ATO_Flight *AddtoATO(Flight flt)
             team = gATOAll->GetRoot();
 
         mistype = MainFlt->GetUnitMission();
-        package = gATOAll->Find(flt->GetUnitParent()->GetCampID() | (mistype << 16));
+        package = gATOAll->Find(flt->GetUnitParent()->GetCampID() bitor (mistype << 16));
 
-        if (!package)
+        if ( not package)
         {
             AtoMiss = MissionToATOMiss(mistype);
 
-            missiontype = gATOAll->Find(AtoMiss | 0x40000000 | (flt->GetTeam() << 16));
+            missiontype = gATOAll->Find(AtoMiss bitor 0x40000000 bitor (flt->GetTeam() << 16));
 
-            if (!missiontype)
+            if ( not missiontype)
             {
                 txt = new C_Text;
-                txt->Setup(mistype | 0x40000000, 0);
+                txt->Setup(mistype bitor 0x40000000, 0);
                 txt->SetText(AtoMissStr[AtoMiss]);
                 txt->SetFont(gATOAll->GetParent()->Font_);
-                missiontype = gATOAll->CreateItem(AtoMiss | 0x40000000 | (flt->GetTeam() << 16), C_TYPE_MENU, txt);
+                missiontype = gATOAll->CreateItem(AtoMiss bitor 0x40000000 bitor (flt->GetTeam() << 16), C_TYPE_MENU, txt);
 
-                if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+                if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                     gATOAll->AddChildItem(team, missiontype);
                 else
                     gATOAll->AddItem(team, missiontype);
@@ -847,7 +847,7 @@ C_ATO_Flight *AddtoATO(Flight flt)
             {
                 atopkg->SetFont(gATOAll->GetParent()->Font_);
                 atopkg->SetCallback(SelectATOPackageCB);
-                package = gATOAll->CreateItem(atopkg->GetID() | (mistype << 16), C_TYPE_MENU, atopkg);
+                package = gATOAll->CreateItem(atopkg->GetID() bitor (mistype << 16), C_TYPE_MENU, atopkg);
                 gATOAll->AddChildItem(missiontype, package);
             }
             else
@@ -874,42 +874,42 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
 
     ShiAssert(gATOAll);
 
-    if (!gATOAll)
+    if ( not gATOAll)
         return;
 
-    if (!FltPkg)
+    if ( not FltPkg)
         return(NULL);
 
-    if (!FltPkg->Final())
+    if ( not FltPkg->Final())
         return(NULL);
 
-    if (!(TheCampaign.Flags & CAMP_TACTICAL_EDIT))
+    if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
     {
-        if (FltPkg->GetTeam() != FalconLocalSession->GetTeam())
+        if (FltPkg->GetTeam() not_eq FalconLocalSession->GetTeam())
             return(NULL);
     }
 
     MainFlt = (Flight)FltPkg->GetFirstUnitElement();
 
-    if (!MainFlt)
+    if ( not MainFlt)
         return(NULL);
 
     mistype = MainFlt->GetUnitMission();
 
-    if (mistype == AMIS_ABORT || mistype == AMIS_ALERT)
+    if (mistype == AMIS_ABORT or mistype == AMIS_ALERT)
         return(NULL);
 
-    if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+    if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
     {
-        team = gATOAll->Find(FltPkg->GetTeam() | 0x20000000);
+        team = gATOAll->Find(FltPkg->GetTeam() bitor 0x20000000);
 
-        if (!team)
+        if ( not team)
         {
             txt = new C_Text;
-            txt->Setup(FltPkg->GetTeam() | 0x20000000, 0);
+            txt->Setup(FltPkg->GetTeam() bitor 0x20000000, 0);
             txt->SetText(TeamInfo[FltPkg->GetTeam()]->GetName());
             txt->SetFont(gATOAll->GetParent()->Font_);
-            team = gATOAll->CreateItem(FltPkg->GetTeam() | 0x20000000, C_TYPE_ROOT, txt);
+            team = gATOAll->CreateItem(FltPkg->GetTeam() bitor 0x20000000, C_TYPE_ROOT, txt);
             gATOAll->AddItem(gATOAll->GetRoot(), team);
         }
     }
@@ -918,23 +918,23 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
 
     atopkg = NULL;
     mistype = MainFlt->GetUnitMission();
-    package = gATOAll->Find(FltPkg->GetCampID() | (mistype << 16));
+    package = gATOAll->Find(FltPkg->GetCampID() bitor (mistype << 16));
 
-    if (!package)
+    if ( not package)
     {
         AtoMiss = MissionToATOMiss(mistype);
 
-        missiontype = gATOAll->Find(AtoMiss | 0x40000000 | (FltPkg->GetTeam() << 16));
+        missiontype = gATOAll->Find(AtoMiss bitor 0x40000000 bitor (FltPkg->GetTeam() << 16));
 
-        if (!missiontype)
+        if ( not missiontype)
         {
             txt = new C_Text;
-            txt->Setup(mistype | 0x40000000, 0);
+            txt->Setup(mistype bitor 0x40000000, 0);
             txt->SetText(AtoMissStr[AtoMiss]);
             txt->SetFont(gATOAll->GetParent()->Font_);
-            missiontype = gATOAll->CreateItem(AtoMiss | 0x40000000 | (FltPkg->GetTeam() << 16), C_TYPE_MENU, txt);
+            missiontype = gATOAll->CreateItem(AtoMiss bitor 0x40000000 bitor (FltPkg->GetTeam() << 16), C_TYPE_MENU, txt);
 
-            if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+            if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
                 gATOAll->AddChildItem(team, missiontype);
             else
                 gATOAll->AddItem(team, missiontype);
@@ -949,7 +949,7 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
         {
             atopkg->SetFont(gATOAll->GetParent()->Font_);
             atopkg->SetCallback(SelectATOPackageCB);
-            package = gATOAll->CreateItem(atopkg->GetID() | (mistype << 16), C_TYPE_MENU, atopkg);
+            package = gATOAll->CreateItem(atopkg->GetID() bitor (mistype << 16), C_TYPE_MENU, atopkg);
             gATOAll->AddChildItem(missiontype, package);
         }
     }

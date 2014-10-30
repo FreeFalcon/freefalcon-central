@@ -127,7 +127,7 @@ void CPMachAsi::DisplayDraw()
 
     mDirtyFlag = TRUE;
 
-    if (!mDirtyFlag)
+    if ( not mDirtyFlag)
     {
         return;
     }

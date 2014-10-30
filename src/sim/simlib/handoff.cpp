@@ -27,22 +27,22 @@
 FalconEntity* SimCampHandoff(FalconEntity *current, HandOffType style)
 {
     // Quit now if we don't have a current object
-    if (!current)
+    if ( not current)
         return NULL;
 
     if (current->IsSim())
     {
         // Quit now if we still have our sim emitter
-        if (!current->IsDead())
+        if ( not current->IsDead())
         {
             // Its still just fine
             return current;
         }
 
         // See if it reaggregated
-        if (((SimBaseClass*)current)->GetCampaignObject() &&
-            ((SimBaseClass*)current)->GetCampaignObject()->IsAggregate() &&
-            !((SimBaseClass*)current)->GetCampaignObject()->IsDead())
+        if (((SimBaseClass*)current)->GetCampaignObject() and 
+            ((SimBaseClass*)current)->GetCampaignObject()->IsAggregate() and 
+ not ((SimBaseClass*)current)->GetCampaignObject()->IsDead())
         {
             // Switch to the campaign unit
             return ((SimBaseClass*)current)->GetCampaignObject();
@@ -88,7 +88,7 @@ FalconEntity* SimCampHandoff(FalconEntity *current, HandOffType style)
                     {
                         ShiAssert(simobj->IsSim());
 
-                        if (simobj->GetRadarType() == campRadarType && !simobj->IsDead())
+                        if (simobj->GetRadarType() == campRadarType and not simobj->IsDead())
                         {
                             break;
                         }
@@ -109,12 +109,12 @@ FalconEntity* SimCampHandoff(FalconEntity *current, HandOffType style)
                         simobj = ((CampBaseClass*)current)->GetComponentEntity(i);
 
                         // Just in case a component vehicle died but the vehicle count hadn't been updated yet
-                        if (!simobj)
+                        if ( not simobj)
                         {
                             simobj = ((CampBaseClass*)current)->GetComponentLead();
                         }
 
-                        if (simobj && simobj->IsDead())
+                        if (simobj and simobj->IsDead())
                             simobj = NULL;
                     }
                     else
@@ -165,7 +165,7 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
     if (current->BaseData()->IsSim())
     {
         // is the target still valid?
-        if (!current->BaseData()->IsDead())
+        if ( not current->BaseData()->IsDead())
         {
             return current;
         }
@@ -176,7 +176,7 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
 
             // is the parent in the sim lists?
             // if so we want to try and find a matching target in the target list
-            if (!campobj || !campobj->IsAggregate() || campobj->IsDead())
+            if ( not campobj or not campobj->IsAggregate() or campobj->IsDead())
             {
                 return NULL;
             }
@@ -206,7 +206,7 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
         // get campaign object
         campobj = (CampBaseClass *)current->BaseData();
 
-        if (!campobj || F4IsBadCodePtr((FARPROC) campobj)) // JB 010220 CTD
+        if ( not campobj or F4IsBadCodePtr((FARPROC) campobj)) // JB 010220 CTD
             return NULL; // JB 010220 CTD
 
         if (campobj->IsDead())
@@ -238,7 +238,7 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
                     // Search the list for a battalion radar vehicle
                     while (simobj)
                     {
-                        if (!simobj->IsDead() && simobj->IsAwake() && simobj->GetRadarType() == campRadarType)
+                        if ( not simobj->IsDead() and simobj->IsAwake() and simobj->GetRadarType() == campRadarType)
                         {
                             break;
                         }
@@ -259,12 +259,12 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
                         simobj = campobj->GetComponentEntity(i);
 
                         // Just in case a component vehicle died but the vehicle count hadn't been updated yet
-                        if (!simobj)
+                        if ( not simobj)
                         {
                             simobj = campobj->GetComponentLead();
                         }
 
-                        if (simobj && (simobj->IsDead() || !simobj->IsAwake()))
+                        if (simobj and (simobj->IsDead() or not simobj->IsAwake()))
                         {
                             return NULL;
                         }

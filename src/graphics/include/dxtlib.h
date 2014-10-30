@@ -65,7 +65,7 @@ inline bool IsPower2(unsigned int x)
     if (x == 1)
         return true;
 
-    if (x & (x - 1))
+    if (x bitand (x - 1))
         return false;
 
     return true;
@@ -234,7 +234,7 @@ extern "C" {
 #endif
 
     NVDXTDLL_API
-    unsigned char * nvDXTdecompress(int & w, int & h, int & depth, int & total_width, int & rowBytes, int & src_format);
+    unsigned char * nvDXTdecompress(int bitand w, int bitand h, int bitand depth, int bitand total_width, int bitand rowBytes, int bitand src_format);
 
 
 #ifdef NVDXTC

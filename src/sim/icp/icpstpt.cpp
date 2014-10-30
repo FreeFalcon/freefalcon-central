@@ -136,16 +136,16 @@ void ICPClass::ExecSTPTMode()
     static int frame = 0;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!g_bRealisticAvionics)
+    if ( not g_bRealisticAvionics)
     {
         //MI Original code
-        if (playerAC && playerAC->curWaypoint)  // && !playerAC->FCC->InTransistion()
+        if (playerAC and playerAC->curWaypoint)  // and not playerAC->FCC->InTransistion()
         {
-            //&& mUpdateFlags & STPT_UPDATE && !((AircraftClass*)(mpOwnship))->FCC->waypointStepCmd) {
+            // and mUpdateFlags bitand STPT_UPDATE and not ((AircraftClass*)(mpOwnship))->FCC->waypointStepCmd) {
 
             // Clear the update flag
 
-            mUpdateFlags &= !STPT_UPDATE;
+            mUpdateFlags and_eq not STPT_UPDATE;
 
             // Get info from the aircraft
 
@@ -170,11 +170,11 @@ void ICPClass::ExecSTPTMode()
                 plannedSpeed = abs(FloatToInt32((Distance(xCurr, yCurr, xPrev, yPrev) / (arrive - depart) * FTPSEC_TO_KNOTS)));
             }
 
-            if (wpflags & WPF_TARGET)
+            if (wpflags bitand WPF_TARGET)
             {
                 type = Way_TGT;
             }
-            else if (wpflags & WPF_IP)
+            else if (wpflags bitand WPF_IP)
             {
                 type = Way_IP;
             }
@@ -221,11 +221,11 @@ void ICPClass::ExecSTPTMode()
 
             FormatTime(ETA, timeStr);
 
-            if (!previous ||  wpflags & WPF_ALTERNATE)
+            if ( not previous or  wpflags bitand WPF_ALTERNATE)
             {
                 sprintf(mpLine3, "", timeStr);
             }
-            else if (action == WP_LAND || action == WP_TAKEOFF || plannedSpeed == 0)
+            else if (action == WP_LAND or action == WP_TAKEOFF or plannedSpeed == 0)
             {
                 sprintf(mpLine3, "ETA %8s", timeStr);
             }
@@ -239,7 +239,7 @@ void ICPClass::ExecSTPTMode()
         else if (frame == 9)
         {
 
-            if (!previous ||  wpflags & WPF_ALTERNATE)
+            if ( not previous or  wpflags bitand WPF_ALTERNATE)
             {
                 sprintf(mpLine3, "", timeStr);
             }
@@ -254,7 +254,7 @@ void ICPClass::ExecSTPTMode()
 
                 FormatTime(ETA, timeStr);
 
-                if (action == WP_LAND || action == WP_TAKEOFF || plannedSpeed == 0)
+                if (action == WP_LAND or action == WP_TAKEOFF or plannedSpeed == 0)
                 {
                     sprintf(mpLine3, "ETA %8s", timeStr);
                 }
@@ -280,14 +280,14 @@ void ICPClass::ExecSTPTMode()
         FillDEDMatrix(0, 9, "STPT");
         AddSTPT(0, 15);
 
-        if (!MAN)
+        if ( not MAN)
             FillDEDMatrix(0, 21, "AUTO");
         else
             FillDEDMatrix(0, 21, "MAN");
 
         //Line2
         //Get the current waypoint location
-        if (playerAC && playerAC->curWaypoint)
+        if (playerAC and playerAC->curWaypoint)
             playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
 
         latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + xCurr) / EARTH_RADIUS_FT;
@@ -344,7 +344,7 @@ void ICPClass::PNUpdateSTPTMode(int button, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC)
+    if ( not playerAC)
     {
         return;
     }
@@ -363,6 +363,6 @@ void ICPClass::PNUpdateSTPTMode(int button, int)
         ((AircraftClass*)(playerAC))->FCC->waypointStepCmd = 1;
     }
 
-    mUpdateFlags |= STPT_UPDATE;
-    mUpdateFlags |= CNI_UPDATE;
+    mUpdateFlags or_eq STPT_UPDATE;
+    mUpdateFlags or_eq CNI_UPDATE;
 }

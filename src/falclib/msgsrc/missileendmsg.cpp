@@ -72,8 +72,8 @@ int FalconMissileEndMessage::Process(uchar autodisp)
         sid = 0;
     }
 
-    // prevent handling messages if the graphics isn't running!
-    if (autodisp || !OTWDriver.IsActive())
+    // prevent handling messages if the graphics isn't running
+    if (autodisp or not OTWDriver.IsActive())
     {
         return FALSE;
     }
@@ -112,11 +112,11 @@ int FalconMissileEndMessage::Process(uchar autodisp)
     // what happened to the missile (or bomb)
 
     // first check to see if it hit ground and if its a missile
-    if (dataBlock.groundType >= 0 && (type == TYPE_MISSILE))
+    if (dataBlock.groundType >= 0 and (type == TYPE_MISSILE))
     {
         pos.z -= 40.0f;
 
-        if (!(dataBlock.groundType == COVERAGE_WATER ||
+        if ( not (dataBlock.groundType == COVERAGE_WATER or
               dataBlock.groundType == COVERAGE_RIVER))
         {
             F4SoundFXSetPos(SFX_IMPACTG1 + PRANDInt6(), TRUE, pos.x, pos.y, pos.z, 1.0f, 0, sid);
@@ -155,7 +155,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
 
     // MISSILES
     /*
-    if ( type == TYPE_MISSILE && stype == STYPE_ROCKET  )
+    if ( type == TYPE_MISSILE and stype == STYPE_ROCKET  )
     {
      // try and "back up" the placement for explosion so that
      // it will sort before the feature
@@ -407,7 +407,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
     else if (type == TYPE_GUN)
     {
         // hit water?
-        if ((dataBlock.groundType == COVERAGE_WATER ||
+        if ((dataBlock.groundType == COVERAGE_WATER or
              dataBlock.groundType == COVERAGE_RIVER))
         {
             F4SoundFXSetPos(SFX_SPLASH, TRUE, pos.x, pos.y, pos.z, 1.0f, 0, sid);
@@ -448,7 +448,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                 }
 
                 // don't play any effect for air penetration misses...
-                else // if ( dataBlock.endCode != Missed )
+                else // if ( dataBlock.endCode not_eq Missed )
                 {
                     /*
                     OTWDriver.AddSfxRequest(
@@ -566,7 +566,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
     {
         //Cobra TJL add in SFX_NUKE and comment out all these.
         //MI Nuke explosions
-        if (wc && wc->DamageType == NuclearDam)
+        if (wc and wc->DamageType == NuclearDam)
         {
             /*
             OTWDriver.AddSfxRequest(
@@ -753,7 +753,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
         }
 
         // hit water?
-        if ((dataBlock.groundType == COVERAGE_WATER ||
+        if ((dataBlock.groundType == COVERAGE_WATER or
              dataBlock.groundType == COVERAGE_RIVER))
         {
             F4SoundFXSetPos(SFX_SPLASH, TRUE, pos.x, pos.y, pos.z, 1.0f);
@@ -772,7 +772,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
         }
 
         // hit building
-        if (dataBlock.endCode == FeatureImpact && wc->DamageType != HighExplosiveDam)
+        if (dataBlock.endCode == FeatureImpact and wc->DamageType not_eq HighExplosiveDam)
         {
             pos.x -= dataBlock.xDelta * 0.32f;
             pos.y -= dataBlock.yDelta * 0.32f;
@@ -831,7 +831,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
         }
         // check for cluster bombs
         // at them moment we have no way to scale them
-        else if (wc->Flags & WEAP_CLUSTER)
+        else if (wc->Flags bitand WEAP_CLUSTER)
             //if (TRUE)
         {
             // if ground type is -1 we've exploded in air

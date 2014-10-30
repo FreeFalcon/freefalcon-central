@@ -61,7 +61,7 @@ extern int gShowUnknown; // 2002-02-21 S.G.
 #define MID_UNITS_SQUAD_UNKNOWN 86051 // 2002-02-21 S.G. Until I add it to userids.h
 extern GlobalPositioningSystem *gGps; // 2002-02-21 S.G.
 
-// Used for enabling & disabling menus based on TE/Camp/Edit modes
+// Used for enabling bitand disabling menus based on TE/Camp/Edit modes
 static long GameType;
 static long EditMode;
 
@@ -125,12 +125,12 @@ namespace FilterSaveStuff
         true, false, false, false, false, false,
         false, false, false, false, false, false,
         // Units
-        false, false, false, // this is a radiobutton, only 1 of them may be TRUE (all ot FALSE is ok)!
+        false, false, false, // this is a radiobutton, only 1 of them may be TRUE (all ot FALSE is ok)
         true, false, false, false, false, true,
         false, false, false, false, true, false,
         false,
         // Sams/Radar
-        false, false, false, false // this is a radiobutton, only 1 of them may be TRUE (all ot FALSE is ok)!
+        false, false, false, false // this is a radiobutton, only 1 of them may be TRUE (all ot FALSE is ok)
     }; // ..ugly, but whatever..
 } // namespace FilterSaveStuff, end Retro 26/10/03
 
@@ -600,7 +600,7 @@ void MenuSetCirclesCB(long, short, C_Base *)
         else
         {
             filterState[CIRCLE_SAM_LOW] = filterState[CIRCLE_SAM_HIGH] = filterState[CIRCLE_RADAR_LOW] = filterState[CIRCLE_RADAR_HIGH] = false;
-            gMapMgr->HideThreatType(_THR_SAM_LOW | _THR_SAM_HIGH | _THR_RADAR_LOW | _THR_RADAR_HIGH);
+            gMapMgr->HideThreatType(_THR_SAM_LOW bitor _THR_SAM_HIGH bitor _THR_RADAR_LOW bitor _THR_RADAR_HIGH);
         }
 
         gMapMgr->DrawMap();
@@ -676,7 +676,7 @@ void MenuObjReconCB(long, short, C_Base *)
         if (objective == NULL)
             return;
 
-        if (!objective->IsObjective())
+        if ( not objective->IsObjective())
             return;
 
         if (gUIViewer)
@@ -794,21 +794,21 @@ WayPointClass* GetSelectedWayPoint(void)
     if (caller == NULL)
         return NULL;
 
-    if (gPopupMgr->GetCallingType() == C_TYPE_CONTROL && caller->_GetCType_() == _CNTL_WAYPOINT_)
+    if (gPopupMgr->GetCallingType() == C_TYPE_CONTROL and caller->_GetCType_() == _CNTL_WAYPOINT_)
     {
         // Waypoint
         cwp = (C_Waypoint *)caller;
 
-        if (cwp && cwp->GetLast())
+        if (cwp and cwp->GetLast())
         {
             control = cwp->GetLast()->Icon;
 
-            if (!control)
+            if ( not control)
                 return NULL;
 
             tmpID = (VU_ID *)control->GetUserPtr(C_STATE_0);
 
-            if (!tmpID)
+            if ( not tmpID)
                 return NULL;
 
             // Check if this is our current waypoint set, and make sure our
@@ -819,7 +819,7 @@ WayPointClass* GetSelectedWayPoint(void)
 
                 tmpID = (VU_ID *)control->GetUserPtr(C_STATE_0);
 
-                if (tmpID && *tmpID != gActiveFlightID)
+                if (tmpID and *tmpID not_eq gActiveFlightID)
                 {
                     gActiveFlightID = *tmpID;
                     gCurrentFlightID = *tmpID;
@@ -828,12 +828,12 @@ WayPointClass* GetSelectedWayPoint(void)
 
             unit = FindUnit(*tmpID);
 
-            if (unit && unit->IsFlight())
+            if (unit and unit->IsFlight())
             {
                 wp = unit->GetFirstUnitWP();
                 i = 1;
 
-                while (i < control->GetUserNumber(C_STATE_1) && wp)
+                while (i < control->GetUserNumber(C_STATE_1) and wp)
                 {
                     wp = wp->GetNextWP();
                     i++;
@@ -852,31 +852,31 @@ void SteerPointMenuOpenCB(C_Base *, C_Base *)
     C_PopupList *menu;
     WayPoint wp;
 
-    // We've opened a steerpoint's popup menu. Setup current values!
+    // We've opened a steerpoint's popup menu. Setup current values
     wp = GetSelectedWayPoint();
 
     menu = gPopupMgr->GetMenu(STEERPOINT_POP);
 
-    if (menu && wp)
+    if (menu and wp)
     {
-        if (wp->GetWPFlags() & WPF_TIME_LOCKED)
+        if (wp->GetWPFlags() bitand WPF_TIME_LOCKED)
             menu->SetItemState(MID_LOCK_TOS, 1);
         else
             menu->SetItemState(MID_LOCK_TOS, 0);
 
-        if (wp->GetWPFlags() & WPF_SPEED_LOCKED)
+        if (wp->GetWPFlags() bitand WPF_SPEED_LOCKED)
             menu->SetItemState(MID_LOCK_SPEED, 1);
         else
             menu->SetItemState(MID_LOCK_SPEED, 0);
 
-        if (wp->GetWPFlags() & WPF_HOLDCURRENT)
+        if (wp->GetWPFlags() bitand WPF_HOLDCURRENT)
             menu->SetItemState(CLIMB_DELAY, 1);
         else
             menu->SetItemState(CLIMB_IMMEDIATE, 1);
 
         menu->SetItemState(wp->GetWPFormation() + 1, 1);
-        menu->SetItemState(wp->GetWPAction() | 0x200, 1);
-        menu->SetItemState(wp->GetWPRouteAction() | 0x100, 1);
+        menu->SetItemState(wp->GetWPAction() bitor 0x200, 1);
+        menu->SetItemState(wp->GetWPRouteAction() bitor 0x100, 1);
     }
 }
 
@@ -927,7 +927,7 @@ void MenuUnitDeleteCB(long, short, C_Base *)
         {
             unit = (Unit)vuDatabase->Find(urec->GetID());
 
-            if (unit && unit->IsUnit())
+            if (unit and unit->IsUnit())
             {
                 pkg = NULL;
                 count = 0;
@@ -936,13 +936,13 @@ void MenuUnitDeleteCB(long, short, C_Base *)
                 {
                     pkg = (Package)unit->GetUnitParent();
 
-                    if (pkg && pkg->IsPackage())
+                    if (pkg and pkg->IsPackage())
                     {
                         sec = pkg->GetFirstUnitElement();
 
                         while (sec)
                         {
-                            if (sec != unit)
+                            if (sec not_eq unit)
                                 count++;
 
                             sec = pkg->GetNextUnitElement();
@@ -954,7 +954,7 @@ void MenuUnitDeleteCB(long, short, C_Base *)
 
                 unit->Remove();
 
-                if (pkg && !count)
+                if (pkg and not count)
                     pkg->Remove();
             }
         }
@@ -1035,7 +1035,7 @@ void MenuReconCB(long, short, C_Base *)
             scale = gMapMgr->GetMapScale();
             maxy = gMapMgr->GetMaxY();
 
-            // x & y are reversed for SIM
+            // x bitand y are reversed for SIM
             y = relx / scale;
             x = maxy - rely / scale;
         }
@@ -1048,10 +1048,10 @@ void MenuReconCB(long, short, C_Base *)
             {
                 // 2002-02-21 ADDED BY S.G. If not spotted by the player's team or not editing a TE, can't recon...
                 if (
-                    !(TheCampaign.Flags & CAMP_TACTICAL_EDIT) &&
-                    ent->IsFlight() &&
-                    (gGps->GetTeamNo() != ent->GetTeam()) &&
-                    !ent->GetIdentified(static_cast<Team>(gGps->GetTeamNo()))
+ not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and 
+                    ent->IsFlight() and 
+                    (gGps->GetTeamNo() not_eq ent->GetTeam()) and 
+ not ent->GetIdentified(static_cast<Team>(gGps->GetTeamNo()))
                 )
                 {
                     range = 0.0f;
@@ -1164,7 +1164,7 @@ void MenuUnitStatusCB(long, short, C_Base *)
         if (item)
         {
             iconid = item->ID_;
-            urec = (UI_Refresher *)gGps->Find(item->ID_ & 0x00ffffff); // strip off team (incase it is a division)
+            urec = (UI_Refresher *)gGps->Find(item->ID_ bitand 0x00ffffff); // strip off team (incase it is a division)
         }
     }
 
@@ -1174,20 +1174,20 @@ void MenuUnitStatusCB(long, short, C_Base *)
 
         if (win)
         {
-            if (urec && urec->GetType() == GPS_DIVISION)
-                SetupDivisionInfoWindow(urec->GetDivID(), urec->GetSide()); // Map & Tree save team # in top 8 bits (Needed to find division by team)
+            if (urec and urec->GetType() == GPS_DIVISION)
+                SetupDivisionInfoWindow(urec->GetDivID(), urec->GetSide()); // Map bitand Tree save team # in top 8 bits (Needed to find division by team)
             else
             {
                 ent = (CampEntity)vuDatabase->Find(urec->GetID());
 
-                if (ent && ent->IsUnit())
+                if (ent and ent->IsUnit())
                 {
-                    if (ent->IsFlight() || ent->IsSquadron())
+                    if (ent->IsFlight() or ent->IsSquadron())
                     {
                         // 2002-02-21 ADDED BY S.G. If not spotted by the player's team or not editing a TE, can't get its status...
                         if (
-                            (TheCampaign.Flags & CAMP_TACTICAL_EDIT) ||
-                            (gGps->GetTeamNo() == ent->GetTeam()) ||
+                            (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) or
+                            (gGps->GetTeamNo() == ent->GetTeam()) or
                             ent->GetIdentified(static_cast<Team>(gGps->GetTeamNo()))
                         )
                         {
@@ -1265,7 +1265,7 @@ void MenuFormationCB(long ID, short, C_Base *)
 
     if (wp)
     {
-        formation = ID & 0xff;
+        formation = ID bitand 0xff;
         wp->SetWPFormation(formation - 1);
         refresh_waypoint(wp);
     }
@@ -1282,7 +1282,7 @@ void MenuEnrouteCB(long ID, short, C_Base *)
 
     if (wp)
     {
-        action = ID & 0xff;
+        action = ID bitand 0xff;
         wp->SetWPRouteAction(action);
         refresh_waypoint(wp);
     }
@@ -1299,7 +1299,7 @@ void MenuActionCB(long ID, short, C_Base *)
 
     if (wp)
     {
-        action = ID & 0xff;
+        action = ID bitand 0xff;
         set_waypoint_action(wp, action);
         refresh_waypoint(wp);
     }
@@ -1326,18 +1326,18 @@ void MenuAddWPCB(long, short, C_Base *)
 
     un = (Unit)vuDatabase->Find(gMapMgr->GetCurWPID());
 
-    if (!un)
+    if ( not un)
         return;
 
     wp = un->GetFirstUnitWP();
-    // if(un->GetCurrentUnitWP() != wp)
+    // if(un->GetCurrentUnitWP() not_eq wp)
     // return;
 
     wps = cwp->GetLast();
 
-    num = wps->ID & 0xff;
+    num = wps->ID bitand 0xff;
 
-    while ((num > 1) && (wp))
+    while ((num > 1) and (wp))
     {
         wp = wp->GetNextWP();
         num --;
@@ -1356,17 +1356,17 @@ void MenuDeleteWPCB(long, short hittype, C_Base *)
 
     un = (Unit)vuDatabase->Find(gMapMgr->GetCurWPID());
 
-    if (!un)
+    if ( not un)
         return;
 
-    if (hittype != C_TYPE_LMOUSEUP)
+    if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     gPopupMgr->CloseMenu();
 
     wp = GetSelectedWayPoint();
 
-    if (wp && (wp->GetPrevWP()) && (wp->GetNextWP()))
+    if (wp and (wp->GetPrevWP()) and (wp->GetNextWP()))
     {
         rw = wp->GetPrevWP();
         un->DeleteUnitWP(wp);
@@ -1375,7 +1375,7 @@ void MenuDeleteWPCB(long, short hittype, C_Base *)
 
     gMapMgr->SetCurrentWaypointList(un->Id());
 
-    if ((TheCampaign.Flags & CAMP_TACTICAL_EDIT) && un->IsFlight())
+    if ((TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and un->IsFlight())
     {
         fixup_unit(un);
         gGps->Update();
@@ -1420,7 +1420,7 @@ void MenuEditPackageCB(long, short, C_Base *control)
         if (item)
         {
             iconid = item->ID_;
-            urec = (UI_Refresher *)gGps->Find(item->ID_ & 0x00ffffff); // strip off team (incase it is a division)
+            urec = (UI_Refresher *)gGps->Find(item->ID_ bitand 0x00ffffff); // strip off team (incase it is a division)
         }
     }
 
@@ -1537,7 +1537,7 @@ void MenuAddUnitCB(long ID, short, C_Base *control)
     urec = NULL;
     caller = gPopupMgr->GetCallingControl();
 
-    if (!caller)
+    if ( not caller)
         return;
 
     if (caller->_GetCType_() == _CNTL_MAPICON_)
@@ -2068,7 +2068,7 @@ void MapMenuOpenCB(C_Base *themenu, C_Base *caller)
 {
     C_PopupList *menu;
 
-    if (!themenu || !caller || !caller->Parent_)
+    if ( not themenu or not caller or not caller->Parent_)
         return;
 
     menu = (C_PopupList*)themenu;
@@ -2104,7 +2104,7 @@ void OpenUnitMenuCB(C_Base *themenu, C_Base *caller)
 {
     C_PopupList *menu;
 
-    if (!themenu || !caller || !caller->Parent_)
+    if ( not themenu or not caller or not caller->Parent_)
         return;
 
     menu = (C_PopupList*)themenu;
@@ -2173,7 +2173,7 @@ void OpenNavalMenuCB(C_Base *themenu, C_Base *caller)
 {
     C_PopupList *menu;
 
-    if (!themenu || !caller || !caller->Parent_)
+    if ( not themenu or not caller or not caller->Parent_)
         return;
 
     menu = (C_PopupList*)themenu;
@@ -2243,7 +2243,7 @@ void ObjMenuOpenCB(C_Base *themenu, C_Base *caller)
     C_PopupList *menu;
     bool isAirbase = false;
 
-    if (!themenu || !caller || !caller->Parent_)
+    if ( not themenu or not caller or not caller->Parent_)
         return;
 
     if (caller->_GetCType_() == _CNTL_DRAWLIST_)
@@ -2252,7 +2252,7 @@ void ObjMenuOpenCB(C_Base *themenu, C_Base *caller)
 
         icon = ((C_DrawList*)caller)->GetLastItem();
 
-        if (icon && icon->Owner)
+        if (icon and icon->Owner)
         {
             if (icon->Owner->GetType() == _OBTV_AIR_FIELDS)
             {
@@ -2278,7 +2278,7 @@ void ObjMenuOpenCB(C_Base *themenu, C_Base *caller)
         menu->SetItemFlagBitOn(MID_SQUADRONS, C_BIT_ENABLED);
         menu->SetItemFlagBitOff(MID_SQUADRONS, C_BIT_INVISIBLE);
 
-        if (GameType == 1 || !EditMode)
+        if (GameType == 1 or not EditMode)
             menu->SetItemFlagBitOff(MID_ADD_SQUADRON, C_BIT_ENABLED);
         else
             menu->SetItemFlagBitOn(MID_ADD_SQUADRON, C_BIT_ENABLED);
@@ -2548,47 +2548,47 @@ void HookupCampaignMenus()
             menu->SetCallback(i, MenuFormationCB);
 
         // Enroute menu (hand add the valid ones)
-        menu->AddItem(WP_NOTHING | 0x100, C_TYPE_RADIO, WPActStr[39], MID_ENR_ACTION);
-        menu->SetCallback(WP_NOTHING | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_NOTHING | 0x100, 3);
-        menu->AddItem(WP_CA | 0x100, C_TYPE_RADIO, WPActStr[WP_CA], MID_ENR_ACTION);
-        menu->SetCallback(WP_CA | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_CA | 0x100, 3);
-        menu->AddItem(WP_ESCORT | 0x100, C_TYPE_RADIO, WPActStr[WP_ESCORT], MID_ENR_ACTION);
-        menu->SetCallback(WP_ESCORT | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_ESCORT | 0x100, 3);
-        menu->AddItem(WP_SEAD | 0x100, C_TYPE_RADIO, WPActStr[WP_SEAD], MID_ENR_ACTION);
-        menu->SetCallback(WP_SEAD | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_SEAD | 0x100, 3);
-        menu->AddItem(WP_SAD | 0x100, C_TYPE_RADIO, WPActStr[WP_SAD], MID_ENR_ACTION);
-        menu->SetCallback(WP_SAD | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_SAD | 0x100, 3);
-        menu->AddItem(WP_ELINT | 0x100, C_TYPE_RADIO, WPActStr[WP_ELINT], MID_ENR_ACTION);
-        menu->SetCallback(WP_ELINT | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_ELINT | 0x100, 3);
-        menu->AddItem(WP_TANKER | 0x100, C_TYPE_RADIO, WPActStr[WP_TANKER], MID_ENR_ACTION);
-        menu->SetCallback(WP_TANKER | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_TANKER | 0x100, 3);
-        menu->AddItem(WP_JAM | 0x100, C_TYPE_RADIO, WPActStr[WP_JAM], MID_ENR_ACTION);
-        menu->SetCallback(WP_JAM | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_JAM | 0x100, 3);
-        menu->AddItem(WP_ASW | 0x100, C_TYPE_RADIO, WPActStr[WP_ASW], MID_ENR_ACTION);
-        menu->SetCallback(WP_ASW | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_ASW | 0x100, 3);
-        menu->AddItem(WP_RECON | 0x100, C_TYPE_RADIO, WPActStr[WP_RECON], MID_ENR_ACTION);
-        menu->SetCallback(WP_RECON | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_RECON | 0x100, 3);
+        menu->AddItem(WP_NOTHING bitor 0x100, C_TYPE_RADIO, WPActStr[39], MID_ENR_ACTION);
+        menu->SetCallback(WP_NOTHING bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_NOTHING bitor 0x100, 3);
+        menu->AddItem(WP_CA bitor 0x100, C_TYPE_RADIO, WPActStr[WP_CA], MID_ENR_ACTION);
+        menu->SetCallback(WP_CA bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_CA bitor 0x100, 3);
+        menu->AddItem(WP_ESCORT bitor 0x100, C_TYPE_RADIO, WPActStr[WP_ESCORT], MID_ENR_ACTION);
+        menu->SetCallback(WP_ESCORT bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_ESCORT bitor 0x100, 3);
+        menu->AddItem(WP_SEAD bitor 0x100, C_TYPE_RADIO, WPActStr[WP_SEAD], MID_ENR_ACTION);
+        menu->SetCallback(WP_SEAD bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_SEAD bitor 0x100, 3);
+        menu->AddItem(WP_SAD bitor 0x100, C_TYPE_RADIO, WPActStr[WP_SAD], MID_ENR_ACTION);
+        menu->SetCallback(WP_SAD bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_SAD bitor 0x100, 3);
+        menu->AddItem(WP_ELINT bitor 0x100, C_TYPE_RADIO, WPActStr[WP_ELINT], MID_ENR_ACTION);
+        menu->SetCallback(WP_ELINT bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_ELINT bitor 0x100, 3);
+        menu->AddItem(WP_TANKER bitor 0x100, C_TYPE_RADIO, WPActStr[WP_TANKER], MID_ENR_ACTION);
+        menu->SetCallback(WP_TANKER bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_TANKER bitor 0x100, 3);
+        menu->AddItem(WP_JAM bitor 0x100, C_TYPE_RADIO, WPActStr[WP_JAM], MID_ENR_ACTION);
+        menu->SetCallback(WP_JAM bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_JAM bitor 0x100, 3);
+        menu->AddItem(WP_ASW bitor 0x100, C_TYPE_RADIO, WPActStr[WP_ASW], MID_ENR_ACTION);
+        menu->SetCallback(WP_ASW bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_ASW bitor 0x100, 3);
+        menu->AddItem(WP_RECON bitor 0x100, C_TYPE_RADIO, WPActStr[WP_RECON], MID_ENR_ACTION);
+        menu->SetCallback(WP_RECON bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_RECON bitor 0x100, 3);
 
         // Action Menu
         for (i = 0; i <= WP_FAC; i++)
         {
-            if (!i)
-                menu->AddItem(i | 0x200, C_TYPE_RADIO, WPActStr[39], MID_ACTION);
+            if ( not i)
+                menu->AddItem(i bitor 0x200, C_TYPE_RADIO, WPActStr[39], MID_ACTION);
             else
-                menu->AddItem(i | 0x200, C_TYPE_RADIO, WPActStr[i], MID_ACTION);
+                menu->AddItem(i bitor 0x200, C_TYPE_RADIO, WPActStr[i], MID_ACTION);
 
-            menu->SetCallback(i | 0x200, MenuActionCB);
-            menu->SetItemGroup(i | 0x200, 4);
+            menu->SetCallback(i bitor 0x200, MenuActionCB);
+            menu->SetItemGroup(i bitor 0x200, 4);
         }
     }
 }

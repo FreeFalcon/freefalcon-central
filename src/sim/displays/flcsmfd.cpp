@@ -25,9 +25,9 @@ void FlcsMfdDrawable::Display(VirtualDisplay* newDisplay)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
     RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
 
-    if (!theRadar)
+    if ( not theRadar)
     {
-        ShiWarning("Oh Oh shouldn't be here without a radar!");
+        ShiWarning("Oh Oh shouldn't be here without a radar");
         return;
     }
     else
@@ -63,7 +63,7 @@ void FlcsMfdDrawable::Display(VirtualDisplay* newDisplay)
     //MI changed
     if (g_bRealisticAvionics)
     {
-        if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+        if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
             OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
         {
             DrawBullseyeCircle(display, cX, cY);

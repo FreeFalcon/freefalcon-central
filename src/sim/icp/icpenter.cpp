@@ -16,17 +16,17 @@ void ICPClass::ICPEnter(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (IsICPSet(ICPClass::MODE_CNI) && mICPSecondaryMode == ONE_BUTTON && Manual_Input)
+    if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == ONE_BUTTON and Manual_Input)
         EnterTCN();
-    else if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == TWO_BUTTON && Manual_Input)
+    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == TWO_BUTTON and Manual_Input)
         EnterBingo();
-    else if (IsICPSet(ICPClass::MODE_CNI) && mICPSecondaryMode == TWO_BUTTON && Manual_Input)
+    else if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == TWO_BUTTON and Manual_Input)
         EnterALOW();
-    else if (IsICPSet(ICPClass::EDIT_LAT) && Manual_Input)
+    else if (IsICPSet(ICPClass::EDIT_LAT) and Manual_Input)
         EnterLat();
-    else if (IsICPSet(ICPClass::EDIT_LONG) && Manual_Input)
+    else if (IsICPSet(ICPClass::EDIT_LONG) and Manual_Input)
         EnterLong();
-    else if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == NONE_MODE)
+    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == NONE_MODE)
     {
         ClearStrings();
         ClearFlags();
@@ -35,27 +35,27 @@ void ICPClass::ICPEnter(void)
         playerAC->FCC->waypointStepCmd = 127;
         ExecDLINKMode();
     }
-    else if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == FIFE_BUTTON && Manual_Input)
+    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == FIFE_BUTTON and Manual_Input)
         EnterWSpan();
     //VIP/VRP
-    else if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == THREE_BUTTON && Manual_Input)
+    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == THREE_BUTTON and Manual_Input)
         EnterVIP();
-    else if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == NINE_BUTTON && Manual_Input)
+    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == NINE_BUTTON and Manual_Input)
         EnterVRP();
     //EWS
-    else if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == EWS_MODE)
+    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == EWS_MODE)
     {
-        if (EWSMain && Manual_Input)
+        if (EWSMain and Manual_Input)
             EWSEnter();
         else if (Manual_Input)
         {
-            if (BQ || BI)
+            if (BQ or BI)
                 EnterBurst();
-            else if (SQ || SI)
+            else if (SQ or SI)
                 EnterSalvo();
         }
     }
-    else if ((OA1 || OA2) && Manual_Input)
+    else if ((OA1 or OA2) and Manual_Input)
         EnterOA();
 
     //Mark
@@ -63,16 +63,16 @@ void ICPClass::ICPEnter(void)
         ENTRUpdateMARKMode();
 
     //INTG
-    else if ((IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == 100) ||
-             IsICPSet(ICPClass::MODE_IFF) && Manual_Input)
+    else if ((IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == 100) or
+             IsICPSet(ICPClass::MODE_IFF) and Manual_Input)
         EnterINTG();
 
     //INS
-    else if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == SIX_BUTTON && Manual_Input)
+    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == SIX_BUTTON and Manual_Input)
         EnterINSStuff();
 
     //Laser
-    else if (IsICPSet(ICPClass::MISC_MODE) && mICPSecondaryMode == FIFE_BUTTON && Manual_Input)
+    else if (IsICPSet(ICPClass::MISC_MODE) and mICPSecondaryMode == FIFE_BUTTON and Manual_Input)
         EnterLaser();
 
     InputsMade = 0;
@@ -81,7 +81,7 @@ void ICPClass::EnterLat(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC)
+    if ( not playerAC)
         return;
 
     CheckDigits();
@@ -127,7 +127,7 @@ void ICPClass::EnterLong(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC)
+    if ( not playerAC)
         return;
 
     CheckDigits();
@@ -175,10 +175,10 @@ void ICPClass::EnterLong(void)
 }
 void ICPClass::EnterALOW(void)
 {
-    if (!EDITMSLFLOOR && !TFADV)
+    if ( not EDITMSLFLOOR and not TFADV)
     {
         //round to the next 10FT
-        if (Input_Digit7 != 0)
+        if (Input_Digit7 not_eq 0)
         {
             if (Input_Digit6 > 10)
                 Input_Digit6 = 0;
@@ -221,10 +221,10 @@ void ICPClass::EnterALOW(void)
 }
 void ICPClass::EnterTCN(void)
 {
-    if (!gNavigationSys)
+    if ( not gNavigationSys)
         return;
 
-    if (Input_Digit7 == 0 && Input_Digit6 > 10)
+    if (Input_Digit7 == 0 and Input_Digit6 > 10)
     {
         gNavigationSys->StepTacanBand(NavigationSystem::ICP);
         //ClearDigits();
@@ -235,7 +235,7 @@ void ICPClass::EnterTCN(void)
         CurrChannel = AddUp();
 
         //Not correct
-        if (CurrChannel > 126 || CurrChannel == 0)
+        if (CurrChannel > 126 or CurrChannel == 0)
             WrongInput();
         else
         {
@@ -467,7 +467,7 @@ void ICPClass::EnterWSpan(void)
 {
     ManualWSpan = AddUpFloat();
 
-    if (ManualWSpan > 120 || ManualWSpan < 20)
+    if (ManualWSpan > 120 or ManualWSpan < 20)
         WrongInput();
     else
     {
@@ -484,14 +484,14 @@ void ICPClass::SetOA(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC->curWaypoint)
+    if ( not playerAC->curWaypoint)
         return;
 
     //which offset do we want to set?
     if (OA1)
     {
         //if we don't have a different altitude or a range, we just take the current waypoint
-        if (iOA_RNG == 0 && iOA_ALT == 0)
+        if (iOA_RNG == 0 and iOA_ALT == 0)
         {
             playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
             gNavigationSys->SetDESTOAPoint(NavigationSystem::POS, xCurr, yCurr, (float)iOA_ALT, 1);
@@ -513,7 +513,7 @@ void ICPClass::SetOA(void)
     else
     {
         //if we don't have a different altitude or a range, don't do anything
-        if (iOA_RNG2 == 0 && iOA_ALT2 == 0)
+        if (iOA_RNG2 == 0 and iOA_ALT2 == 0)
         {
             playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
             gNavigationSys->SetDESTOAPoint(NavigationSystem::POS, xCurr, yCurr, (float)iOA_ALT2, 2); //+200
@@ -537,11 +537,11 @@ void ICPClass::SetVIP(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC->curWaypoint)
+    if ( not playerAC->curWaypoint)
         return;
 
     //if we don't have a different altitude or a range, we just take the current waypoint
-    if (iVIP_RNG == 0 && iVIP_ALT == 0)
+    if (iVIP_RNG == 0 and iVIP_ALT == 0)
     {
         playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
         gNavigationSys->SetVIPOAPoint(NavigationSystem::POS, xCurr, yCurr, (float)iVIP_ALT, 1);// + 200,1);
@@ -568,13 +568,13 @@ void ICPClass::SetVRP(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (!playerAC->curWaypoint)
+    if ( not playerAC->curWaypoint)
     {
         return;
     }
 
     //if we don't have a different altitude or a range, we just take the current waypoint
-    if (iVRP_RNG == 0 && iVRP_ALT == 0)
+    if (iVRP_RNG == 0 and iVRP_ALT == 0)
     {
         playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
         gNavigationSys->SetVRPOAPoint(NavigationSystem::POS, xCurr, yCurr, (float)iVRP_ALT, 1);// + 200,1);
@@ -609,7 +609,7 @@ void ICPClass::EnterINTG()
 
     if (INTGCode == 0)
         WrongInput();
-    else if (INTGCode < 10 && INTGCode > 0)
+    else if (INTGCode < 10 and INTGCode > 0)
     {
         if (INTGCode == 1)
             ToggleIFFFlag(ICPClass::MODE_1);
@@ -644,17 +644,17 @@ void ICPClass::EnterINTG()
 
         ResetInput();
     }
-    else if (INTGCode >= 00 && INTGCode <= 73)
+    else if (INTGCode >= 00 and INTGCode <= 73)
     {
         Mode1Code = INTGCode;
         ResetInput();
     }
-    else if (INTGCode >= 0000 && INTGCode <= 7777)
+    else if (INTGCode >= 0000 and INTGCode <= 7777)
     {
         Mode3Code = INTGCode;
         ResetInput();
     }
-    else if (INTGCode >= 20000 && INTGCode <= 27777)
+    else if (INTGCode >= 20000 and INTGCode <= 27777)
     {
         Mode2Code = INTGCode - 20000;
         ResetInput();
@@ -872,7 +872,7 @@ void ICPClass::EnterLaser(void)
 
     if (LaserLine == 1)
     {
-        if (temp < 2889 && temp > 1120)
+        if (temp < 2889 and temp > 1120)
         {
             LaserCode = temp;
             ResetInput();
@@ -882,7 +882,7 @@ void ICPClass::EnterLaser(void)
     }
     else
     {
-        if (temp < 177 && temp > 0)
+        if (temp < 177 and temp > 0)
         {
             LaserTime = temp;
             ResetInput();

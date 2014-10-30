@@ -2,7 +2,7 @@
 /*                                                                            */
 /*  Unit Name : simio.h                                                       */
 /*                                                                            */
-/*  Abstract  : Header file with class definition for SIMLIB_IO_CLASS and     */
+/*  Abstract  : Header file with class definition for SIMLIB_IO_CLASS and */
 /*              defines used in its implementation.                           */
 /*                                                                            */
 /*  Dependencies : Auto-Generated                                             */
@@ -66,7 +66,7 @@ typedef enum
     AXIS_RET_DEPR, // Manual Reticle Depression unipolar
     AXIS_ZOOM, // View Zoom unipolar
     AXIS_INTERCOM_VOLUME, // InterCom Volume, that´s kinda a 'master volume' for all comm channels  // unipolar
-    AXIS_MAX // Add any additional axis BEFORE that one !
+    AXIS_MAX // Add any additional axis BEFORE that one 
 } GameAxis_t;
 
 #define SIMLIB_MAX_ANALOG AXIS_MAX // max number of axis
@@ -279,7 +279,7 @@ public:
     }
     void SetAxisSmoothing(GameAxis_t id, long factor)
     {
-        analog[id].smoothingFactor = factor;    // factor has to be power of 2 !!
+        analog[id].smoothingFactor = factor;    // factor has to be power of 2 
     }
 
     // reads/writes offset-values for bipolar axis

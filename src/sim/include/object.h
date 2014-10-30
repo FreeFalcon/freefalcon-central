@@ -33,7 +33,7 @@ public:
     Float32 el; // body relative angle to target in "pitch" plane
     Float32 elFrom, elFromdot; // from target to use values for elevation
     Float32 droll; // body relative roll to target (how far to roll to get lift vector on target)
-    Float32 range, rangedot; // range to target (feet & feet/sec)
+    Float32 range, rangedot; // range to target (feet bitand feet/sec)
 
     // Radar specific target data (move into Radar classes???)
     BOOL painted; // Was this target painted this frame
@@ -67,21 +67,21 @@ public:
 
     int CloudLOS(void)
     {
-        return (detFlags & 0x01) && TRUE;
+        return (detFlags bitand 0x01) and TRUE;
     }
     void SetCloudLOS(int value)
     {
-        if (value)detFlags |= 0x01;
-        else detFlags &= ~0x01;
+        if (value)detFlags or_eq 0x01;
+        else detFlags and_eq compl 0x01;
     }
     int TerrainLOS(void)
     {
-        return (detFlags & 0x02) && TRUE;
+        return (detFlags bitand 0x02) and TRUE;
     }
     void SetTerrainLOS(int value)
     {
-        if (value)detFlags |= 0x02;
-        else detFlags &= ~0x02;
+        if (value)detFlags or_eq 0x02;
+        else detFlags and_eq compl 0x02;
     }
 #ifdef USE_SH_POOLS
 public:

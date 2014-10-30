@@ -1,5 +1,6 @@
 #ifndef _VOICE_MAP_H_
 #define _VOICE_MAP_H_
+#include <cISO646>
 
 // extra support for selecting voices
 
@@ -49,8 +50,8 @@ public:
         VOICE_SIDE6 = VOICE_SIDE_BASE << 5,
         VOICE_SIDE7 = VOICE_SIDE_BASE << 6,
         VOICE_SIDE8 = VOICE_SIDE_BASE << 7,
-        VOICE_SIDE_ALL = VOICE_SIDE1 | VOICE_SIDE2 | VOICE_SIDE3 | VOICE_SIDE4 |
-                         VOICE_SIDE5 | VOICE_SIDE6 | VOICE_SIDE7,
+        VOICE_SIDE_ALL = VOICE_SIDE1 bitor VOICE_SIDE2 bitor VOICE_SIDE3 bitor VOICE_SIDE4 |
+                         VOICE_SIDE5 bitor VOICE_SIDE6 bitor VOICE_SIDE7,
 
         VOICE_SELF = VOICE_SIDE8 << 8,
         VOICE_SIDE_UNK = -1,

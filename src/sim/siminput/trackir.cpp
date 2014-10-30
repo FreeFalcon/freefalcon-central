@@ -3,7 +3,7 @@
 // Authors: Wolfram "Osram" Kuss (original)
 // Lukas "Retro" Friembichler (adapted for EECH)
 // Date: 26. Feb 2003
-// 26/09/03 adapted for FreeFalcon - SHOCK, HORROR, FALCONEERS GET (TWICE !!!) RECYCLED STUFF... EEEEK
+// 26/09/03 adapted for FreeFalcon - SHOCK, HORROR, FALCONEERS GET (TWICE ) RECYCLED STUFF... EEEEK
 // Update:
 //
 // Description:Implements TrackIR support for EECH
@@ -234,7 +234,7 @@ NPRESULT __stdcall NP_RegisterWindowHandle(HWND hWnd)
 {
     NPRESULT result = NP_ERR_DLL_NOT_FOUND;
 
-    if (NULL != gpfNP_RegisterWindowHandle)
+    if (NULL not_eq gpfNP_RegisterWindowHandle)
         result = (*gpfNP_RegisterWindowHandle)(hWnd);
 
     return result;
@@ -245,7 +245,7 @@ NPRESULT __stdcall NP_UnregisterWindowHandle()
 {
     NPRESULT result = NP_ERR_DLL_NOT_FOUND;
 
-    if (NULL != gpfNP_UnregisterWindowHandle)
+    if (NULL not_eq gpfNP_UnregisterWindowHandle)
         result = (*gpfNP_UnregisterWindowHandle)();
 
     return result;
@@ -256,7 +256,7 @@ NPRESULT __stdcall NP_RegisterProgramProfileID(unsigned short wPPID)
 {
     NPRESULT result = NP_ERR_DLL_NOT_FOUND;
 
-    if (NULL != gpfNP_RegisterProgramProfileID)
+    if (NULL not_eq gpfNP_RegisterProgramProfileID)
         result = (*gpfNP_RegisterProgramProfileID)(wPPID);
 
     return result;
@@ -267,7 +267,7 @@ NPRESULT __stdcall NP_QueryVersion(unsigned short* pwVersion)
 {
     NPRESULT result = NP_ERR_DLL_NOT_FOUND;
 
-    if (NULL != gpfNP_QueryVersion)
+    if (NULL not_eq gpfNP_QueryVersion)
         result = (*gpfNP_QueryVersion)(pwVersion);
 
     return result;
@@ -278,7 +278,7 @@ NPRESULT __stdcall NP_RequestData(unsigned short wDataReq)
 {
     NPRESULT result = NP_ERR_DLL_NOT_FOUND;
 
-    if (NULL != gpfNP_RequestData)
+    if (NULL not_eq gpfNP_RequestData)
         result = (*gpfNP_RequestData)(wDataReq);
 
     return result;
@@ -289,7 +289,7 @@ NPRESULT __stdcall NP_GetData(LPTRACKIRDATA pTID)
 {
     NPRESULT result = NP_ERR_DLL_NOT_FOUND;
 
-    if (NULL != gpfNP_GetData)
+    if (NULL not_eq gpfNP_GetData)
         result = (*gpfNP_GetData)(pTID);
 
     return result;
@@ -300,7 +300,7 @@ NPRESULT __stdcall NP_StartCursor()
 {
     NPRESULT result = NP_ERR_DLL_NOT_FOUND;
 
-    if (NULL != gpfNP_StartCursor)
+    if (NULL not_eq gpfNP_StartCursor)
         result = (*gpfNP_StartCursor)();
 
     return result;
@@ -311,7 +311,7 @@ NPRESULT __stdcall NP_StopCursor()
 {
     NPRESULT result = NP_ERR_DLL_NOT_FOUND;
 
-    if (NULL != gpfNP_StopCursor)
+    if (NULL not_eq gpfNP_StopCursor)
         result = (*gpfNP_StopCursor)();
 
     return result;
@@ -322,7 +322,7 @@ NPRESULT __stdcall NP_StartDataTransmission()
 {
     NPRESULT result = NP_ERR_DLL_NOT_FOUND;
 
-    if (NULL != gpfNP_StartDataTransmission)
+    if (NULL not_eq gpfNP_StartDataTransmission)
         result = (*gpfNP_StartDataTransmission)();
 
     return result;
@@ -333,7 +333,7 @@ NPRESULT __stdcall NP_StopDataTransmission()
 {
     NPRESULT result = NP_ERR_DLL_NOT_FOUND;
 
-    if (NULL != gpfNP_StopDataTransmission)
+    if (NULL not_eq gpfNP_StopDataTransmission)
         result = (*gpfNP_StopDataTransmission)();
 
     return result;
@@ -365,7 +365,7 @@ NPRESULT NPClient_Init(char* csDLLPath)
 
     ghNPClientDLL = LoadLibrary(csNPClientDLLFullPath);
 
-    if (NULL != ghNPClientDLL)
+    if (NULL not_eq ghNPClientDLL)
     {
         // Get addresses of all exported functions
         gpfNP_RegisterWindowHandle     = (PF_NP_REGISTERWINDOWHANDLE)GetProcAddress(ghNPClientDLL, "NP_RegisterWindowHandle");
@@ -401,7 +401,7 @@ char* gcsDLLPath;
 int TrackIR::TrackIR_2D_Map()
 {
 
-    if (!panningAllowed)
+    if ( not panningAllowed)
         return -1;
 
     TRACKIRDATA tid;
@@ -453,7 +453,7 @@ void TrackIR::Poll()
 
     if (NP_OK == NP_GetData(&tid))
     {
-        if (FrameSignature != tid.wPFrameSignature)
+        if (FrameSignature not_eq tid.wPFrameSignature)
         {
             yaw = -tid.fNPYaw / 16383.f * PI; // yaw is +-180 (PI) degrees
             pitch = tid.fNPPitch / 16383.f * PI; // see below for limit
@@ -505,7 +505,7 @@ void TrackIR::GetTrackIR_ViewValues(float* yaw, float* pitch)
 
     if (NP_OK == NP_GetData(&tid))
     {
-        if (FrameSignature != tid.wPFrameSignature)
+        if (FrameSignature not_eq tid.wPFrameSignature)
         {
             *yaw =  -tid.fNPYaw / 16383.f * PI; // yaw is +-180 (PI) degrees
 
@@ -526,7 +526,7 @@ void TrackIR::GetTrackIR_ViewValues(float* yaw, float* pitch)
 
             missedFrameCount = 0;
 
-            if ((isActive == false) && (g_bTrackIRon))
+            if ((isActive == false) and (g_bTrackIRon))
             {
                 OTWDriver.SetHeadTracking(TRUE); // Retro 26/09/03
                 isActive = true;
@@ -584,7 +584,7 @@ char* GetDllLocation(char* loc)
                      "Software\\NaturalPoint\\NATURALPOINT\\NPClient Location",
                      0,
                      KEY_READ,
-                     &pKey) != ERROR_SUCCESS)
+                     &pKey) not_eq ERROR_SUCCESS)
     {
         //error condition
 
@@ -594,7 +594,7 @@ char* GetDllLocation(char* loc)
     //**********************************************************************
     //get the value from the key
     //*********************************************************************/
-    if (!pKey)
+    if ( not pKey)
         return NULL;
 
     //**********************************************************************
@@ -605,7 +605,7 @@ char* GetDllLocation(char* loc)
         //allocate memory for the buffer for the value
         szValue = (unsigned char *)malloc(dwSize);
 
-        if (szValue != NULL)
+        if (szValue not_eq NULL)
         {
             //**********************************************************************
             //now get the value
@@ -629,7 +629,7 @@ char* GetDllLocation(char* loc)
 // Spiffy Macro by wk that retro crippled in order to work in C
 //*********************************************************************/
 #define TEST_RESULT(a, b)       \
-{ if(NP_OK != b)                \
+{ if(NP_OK not_eq b)                \
  { /*::MessageBox(0, a, "", 0);*/\
  return;                     \
  }                             \
@@ -673,7 +673,7 @@ void TrackIR::InitTrackIR(HWND application_window)
 
     gcsDLLPath = GetDllLocation(gcsDLLPath);
 
-    if (!gcsDLLPath)
+    if ( not gcsDLLPath)
         return;
 
     //**********************************************************************
@@ -688,7 +688,7 @@ void TrackIR::InitTrackIR(HWND application_window)
     //*********************************************************************/
     result = NP_RegisterWindowHandle(HandleGame);
 
-    if (result != NP_OK) // this happens if the user forgot to start the TrackIR GUI
+    if (result not_eq NP_OK) // this happens if the user forgot to start the TrackIR GUI
     {
         // do any other error output?
         // ::MessageBeep(-1);
@@ -706,7 +706,7 @@ void TrackIR::InitTrackIR(HWND application_window)
     if (NP_OK == result)
     {
         TIRVersionMajor = wNPClientVer >> 8;
-        TIRVersionMinor = wNPClientVer & 0x00FF;
+        TIRVersionMinor = wNPClientVer bitand 0x00FF;
     }
 
 #ifdef DEBUG_TRACKIR_STUFF
@@ -715,7 +715,7 @@ void TrackIR::InitTrackIR(HWND application_window)
     fclose(fp);
 #endif
 
-    DataFields = NPPitch | NPYaw | NPRoll | NPX | NPY | NPZ;
+    DataFields = NPPitch bitor NPYaw bitor NPRoll bitor NPX bitor NPY bitor NPZ;
 
     TEST_RESULT("NP_RequestData", NP_RequestData(DataFields))
 
@@ -723,7 +723,7 @@ void TrackIR::InitTrackIR(HWND application_window)
 
     TEST_RESULT("NP_StartDataTransmission", NP_StartDataTransmission())
 
-    g_bEnableTrackIR = true; // Retro 26/09/03 - init successful !
+    g_bEnableTrackIR = true; // Retro 26/09/03 - init successful 
     g_bTrackIRon = true;
     OTWDriver.SetHeadTracking(TRUE); // Retro 26/09/03
 
@@ -736,7 +736,7 @@ void TrackIR::InitTrackIR(HWND application_window)
 
 #ifdef DEBUG_TRACKIR_STUFF
     fp = fopen("TIR_Debug.txt", "at");
-    fprintf(fp, "Init Successful !\n");
+    fprintf(fp, "Init Successful \n");
     fclose(fp);
 #endif
 }

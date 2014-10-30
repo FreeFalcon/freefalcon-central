@@ -104,7 +104,7 @@ void InitKeyDescrips(void)
 
     // Scan Ascii table for displayable keys
     for (i = 1; i < 256; i++)
-        if (AsciiChar(i, 0) && AsciiChar(i, 0) != ' ')
+        if (AsciiChar(i, 0) and AsciiChar(i, 0) not_eq ' ')
         {
             temp = new char[KEY_DESCRIP_LEN];
             temp[0] = AsciiChar(i, 0);
@@ -122,7 +122,7 @@ void InitKeyDescrips(void)
 
     while (default_desc[i].scancode)
     {
-        if (!KeyDescrips[default_desc[i].scancode])
+        if ( not KeyDescrips[default_desc[i].scancode])
         {
             temp = new char[KEY_DESCRIP_LEN];
             strncpy(temp, gStringMgr->GetString(default_desc[i].def_ID), KEY_DESCRIP_LEN);

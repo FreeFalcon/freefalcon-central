@@ -32,7 +32,7 @@ public:
     }; //JAM 10Nov03
     ~RViewPoint()
     {
-        ShiAssert(!IsReady());
+        ShiAssert( not IsReady());
     };
 
     void Setup(float gndRange, int maxDetail, int minDetail, bool isZBuffer);
@@ -42,7 +42,7 @@ public:
 
     BOOL IsReady(void)
     {
-        return (objectLists != NULL) && (TViewPoint::IsReady());
+        return (objectLists not_eq NULL) and (TViewPoint::IsReady());
     };
 
     // Add/remove drawable objects from this viewpoint's display list

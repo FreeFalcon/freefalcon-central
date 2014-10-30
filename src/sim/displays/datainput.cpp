@@ -45,7 +45,7 @@ extern int maxripple; // M.N.
 
 void SmsDrawable::InputDisplay(void)
 {
-    InputFlash = (vuxRealTime & 0x180);
+    InputFlash = (vuxRealTime bitand 0x180);
 
     switch (InputModus)
     {
@@ -105,7 +105,7 @@ void SmsDrawable::InputRP(void)
         return;
     }
 
-    if (!Manual_Input)
+    if ( not Manual_Input)
         //sprintf(inputstr, "%d", Sms->rippleCount + 1);
         sprintf(inputstr, "%d", Sms->GetAGBRippleCount() + 1);
     else
@@ -127,7 +127,7 @@ void SmsDrawable::InputRS(void)
         return;
     }
 
-    if (!Manual_Input)
+    if ( not Manual_Input)
         // sprintf(inputstr, "%dFT", Sms->rippleInterval);
         sprintf(inputstr, "%dFT", Sms->GetAGBRippleInterval());
     else
@@ -141,14 +141,14 @@ void SmsDrawable::CNTLPage(void)
     char tempstr[20];
     FireControlComputer *FCC = Sms->ownship->GetFCC();
 
-    if (!FCC)
+    if ( not FCC)
         return;
 
     //OSB1
     if (FCC->IsAGMasterMode())
         LabelButton(0, "A-G");
     else
-        ShiWarning("Should not be here when not in AG mode!!!");
+        ShiWarning("Should not be here when not in AG mode");
 
     //OSB2
     LabelButton(1, FCC->subModeString);
@@ -263,7 +263,7 @@ void SmsDrawable::CNTLPage(void)
         sprintf(tempstr, "%.2fSEC", Sms->GetAGBC1ArmDelay2() / 100);
 
         if (C1Weap)
-            display->TextLeft(x + 0.1F, y, "AD2", Sms->GetAGBFuze() != 1 ? 2 : 0);
+            display->TextLeft(x + 0.1F, y, "AD2", Sms->GetAGBFuze() not_eq 1 ? 2 : 0);
         else
             display->TextLeft(x + 0.1F, y, "AD2");
 
@@ -272,7 +272,7 @@ void SmsDrawable::CNTLPage(void)
     else
     {
         sprintf(tempstr, "%.2fSEC", Sms->GetAGBC1ArmDelay2() / 100);
-        display->TextLeft(x + 0.1F, y, "AD2", Sms->GetAGBFuze() != 1 ? 2 : 0);
+        display->TextLeft(x + 0.1F, y, "AD2", Sms->GetAGBFuze() not_eq 1 ? 2 : 0);
         display->TextLeft(x + 0.3F, y, tempstr);
     }
 
@@ -281,7 +281,7 @@ void SmsDrawable::CNTLPage(void)
     {
      sprintf(tempstr, "%.2fSEC", Sms->C1AD2 / 100);
      if(C1Weap)
-     display->TextLeft(x + 0.1F, y, "AD2", Sms->Prof1NSTL != 1 ? 2 : 0);
+     display->TextLeft(x + 0.1F, y, "AD2", Sms->Prof1NSTL not_eq 1 ? 2 : 0);
      else
      display->TextLeft(x + 0.1F, y, "AD2");
      display->TextLeft(x + 0.3F, y, tempstr);
@@ -289,7 +289,7 @@ void SmsDrawable::CNTLPage(void)
     else
     {
      sprintf(tempstr, "%.2fSEC", Sms->C1AD2 / 100);
-     display->TextLeft(x + 0.1F, y, "AD2", Sms->Prof2NSTL != 1 ? 2 : 0);
+     display->TextLeft(x + 0.1F, y, "AD2", Sms->Prof2NSTL not_eq 1 ? 2 : 0);
      display->TextLeft(x + 0.3F, y, tempstr);
     }*/
 }
@@ -302,7 +302,7 @@ void SmsDrawable::ADPage(void)
     display->TextCenter(InputLineX1, InputLineY, "\x02", 2);
     display->TextCenter(InputLineX2, InputLineY, "\x02", 2);
 
-    if (!Manual_Input)
+    if ( not Manual_Input)
         sprintf(inputstr, "%.2fSEC", Sms->armingdelay / 100);
     else
         FillInputString();
@@ -318,7 +318,7 @@ void SmsDrawable::InputBA(void)
     display->TextCenter(InputLineX1, InputLineY, "\x02", 2);
     display->TextCenter(InputLineX2, InputLineY, "\x02", 2);
 
-    if (!Manual_Input)
+    if ( not Manual_Input)
         sprintf(inputstr, "BA %.0f", Sms->burstHeight);
     else
         FillInputString();
@@ -337,7 +337,7 @@ void SmsDrawable::CDisplay(void)
         if (InputLine <= 0)
         {
             //Line1
-            if (!Manual_Input)
+            if ( not Manual_Input)
                 //sprintf(inputstr, "%.2fSEC", Sms->C1AD1 / 100); // MLR 4/3/2004 -
                 sprintf(inputstr, "%.2fSEC", Sms->GetAGBC1ArmDelay1() / 100);
             else
@@ -358,7 +358,7 @@ void SmsDrawable::CDisplay(void)
             display->TextCenter(InputLineX3, InputLineY, tempstr);
 
             //Line2
-            if (!Manual_Input)
+            if ( not Manual_Input)
                 //sprintf(inputstr, "%.2fSEC", Sms->C1AD2 / 100);
                 sprintf(inputstr, "%.2fSEC", Sms->GetAGBC1ArmDelay2() / 100);
             else
@@ -374,7 +374,7 @@ void SmsDrawable::CDisplay(void)
         if (InputLine <= 0)
         {
             //Line1
-            if (!Manual_Input)
+            if ( not Manual_Input)
                 //sprintf(inputstr, "%.2fSEC", Sms->C2AD / 100);
                 sprintf(inputstr, "%.2fSEC", Sms->GetAGBC2ArmDelay() / 100);
             else
@@ -395,7 +395,7 @@ void SmsDrawable::CDisplay(void)
             display->TextCenter(InputLineX3, InputLineY, tempstr);
 
             //Line2
-            if (!Manual_Input)
+            if ( not Manual_Input)
                 //sprintf(inputstr, "%dFT", Sms->C2BA);
                 sprintf(inputstr, "%dFT", Sms->GetAGBBurstAlt());
             else
@@ -456,7 +456,7 @@ void SmsDrawable::RelAngDisplay(void)
         return;
     }
 
-    if (!Manual_Input)
+    if ( not Manual_Input)
         //sprintf(inputstr, "%d", Sms->angle);
         sprintf(inputstr, "%d", Sms->GetAGBReleaseAngle());
     else
@@ -495,7 +495,7 @@ void SmsDrawable::LADDDisplay(void)
 }
 void SmsDrawable::InputPushButton(int whichButton, int whichMFD)
 {
-    if (!Manual_Input)
+    if ( not Manual_Input)
     {
         for (int i = 0; i < STR_LEN; i++)
             inputstr[i] = ' ';
@@ -503,7 +503,7 @@ void SmsDrawable::InputPushButton(int whichButton, int whichMFD)
         inputstr[STR_LEN - 1] = '\0';
     }
 
-    if (InputsMade == PossibleInputs && CheckButton(whichButton))
+    if (InputsMade == PossibleInputs and CheckButton(whichButton))
         return;
     else if (CheckButton(whichButton))
         InputsMade++;
@@ -517,14 +517,14 @@ void SmsDrawable::InputPushButton(int whichButton, int whichMFD)
         case 2:
             ClearDigits();
 
-            if (InputModus == C1 || InputModus == C2 || InputModus == C3 ||
-                InputModus == C4 || InputModus == REL_ANG || InputModus == LADD_MODE)
+            if (InputModus == C1 or InputModus == C2 or InputModus == C3 or
+                InputModus == C4 or InputModus == REL_ANG or InputModus == LADD_MODE)
             {
                 InputModus = CONTROL_PAGE;
             }
             else
             {
-                if (InputModus != CONTROL_PAGE)
+                if (InputModus not_eq CONTROL_PAGE)
                     SetDisplayMode(lastInputMode);
             }
 
@@ -598,7 +598,7 @@ void SmsDrawable::InputPushButton(int whichButton, int whichMFD)
                 InputModus = C4;
                 MaxInputLines = 3;
             }
-            else if (InputModus != CONTROL_PAGE)
+            else if (InputModus not_eq CONTROL_PAGE)
             {
                 AddInput(19 - whichButton);
             }
@@ -612,7 +612,7 @@ void SmsDrawable::InputPushButton(int whichButton, int whichMFD)
                 InputModus = C3;
                 MaxInputLines = 2;
             }
-            else if (InputModus != CONTROL_PAGE)
+            else if (InputModus not_eq CONTROL_PAGE)
             {
                 AddInput(19 - whichButton);
                 Manual_Input = TRUE;
@@ -629,7 +629,7 @@ void SmsDrawable::InputPushButton(int whichButton, int whichMFD)
                 InputLine = 0;
                 MaxInputLines = 2;
             }
-            else if (InputModus != CONTROL_PAGE)
+            else if (InputModus not_eq CONTROL_PAGE)
             {
                 AddInput(19 - whichButton);
             }
@@ -645,7 +645,7 @@ void SmsDrawable::InputPushButton(int whichButton, int whichMFD)
                 InputLine = 0;
                 MaxInputLines = 2;
             }
-            else if (InputModus != CONTROL_PAGE)
+            else if (InputModus not_eq CONTROL_PAGE)
             {
                 AddInput(19 - whichButton);
             }
@@ -673,7 +673,7 @@ void SmsDrawable::AddInput(int whichButton)
 }
 void SmsDrawable::FillInputString(void)
 {
-    if (InputModus == RELEASE_PULSE || InputModus == REL_ANG)
+    if (InputModus == RELEASE_PULSE or InputModus == REL_ANG)
     {
         for (int i = 0; i < MAX_DIGITS; i++)
         {
@@ -696,7 +696,7 @@ void SmsDrawable::FillInputString(void)
             inputstr[MAX_DIGITS + 1] = 'T';
         }
     }
-    else if (InputModus == ARMING_DELAY || InputModus == C1 || (InputModus == C2 && InputLine <= 0))
+    else if (InputModus == ARMING_DELAY or InputModus == C1 or (InputModus == C2 and InputLine <= 0))
     {
         inputstr[8] = 'S';
         inputstr[9] = 'E';
@@ -739,7 +739,7 @@ void SmsDrawable::FillInputString(void)
         else
             inputstr[0] = ' ';
     }
-    else if (InputModus == BURST_ALT || (InputModus == C2 && InputLine > 0))
+    else if (InputModus == BURST_ALT or (InputModus == C2 and InputLine > 0))
     {
         for (int i = 0; i < MAX_DIGITS; i++)
         {
@@ -829,10 +829,10 @@ void SmsDrawable::CheckInput(void)
         case C1:
             var = AddUp();
 
-            if (Manual_Input && InputLine <= 0)
+            if (Manual_Input and InputLine <= 0)
                 //Sms->C1AD1 = var; // MLR 4/3/2004 -
                 Sms->SetAGBC1ArmDelay1((float)var);
-            else if (Manual_Input && InputLine > 0)
+            else if (Manual_Input and InputLine > 0)
                 //Sms->C1AD2 = var; // MLR 4/3/2004 -
                 Sms->SetAGBC1ArmDelay2((float)var);
 
@@ -842,10 +842,10 @@ void SmsDrawable::CheckInput(void)
         case C2:
             var = AddUp();
 
-            if (Manual_Input && InputLine <= 0)
+            if (Manual_Input and InputLine <= 0)
                 //Sms->C2AD = var;
                 Sms->SetAGBC2ArmDelay((float)var);
-            else if (Manual_Input && InputLine > 0)
+            else if (Manual_Input and InputLine > 0)
                 //Sms->C2BA = var;
                 Sms->SetAGBBurstAlt(var);
 
@@ -948,13 +948,13 @@ void SmsDrawable::ClearDigits(void)
 }
 int SmsDrawable::CheckButton(int whichButton)
 {
-    if (whichButton == 1 ||
-        whichButton == 2 ||
-        whichButton == 3 ||
-        whichButton == 10 ||
-        whichButton == 11 ||
-        whichButton == 12 ||
-        whichButton == 13 ||
+    if (whichButton == 1 or
+        whichButton == 2 or
+        whichButton == 3 or
+        whichButton == 10 or
+        whichButton == 11 or
+        whichButton == 12 or
+        whichButton == 13 or
         whichButton == 14)
         return FALSE;
     else

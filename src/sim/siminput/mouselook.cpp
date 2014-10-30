@@ -103,9 +103,9 @@ void MouseView::BumpViewLeft(float direction)
 /************************************************************************/
 void MouseView::Compute(float amount, bool mouseMoved)
 {
-    if ((azDir) || mouseMoved)
+    if ((azDir) or mouseMoved)
     {
-        if (!mouseMoved)
+        if ( not mouseMoved)
             XTotal += (int)(1500.f * amount * azDir); // 1500.f is an empiric value..
 
         if (XTotal > MAX_AXIS_THROW)
@@ -116,9 +116,9 @@ void MouseView::Compute(float amount, bool mouseMoved)
         Azimuth = XTotal / MAX_AXIS_THROW * PI;
     }
 
-    if ((elDir) || mouseMoved)
+    if ((elDir) or mouseMoved)
     {
-        if (!mouseMoved)
+        if ( not mouseMoved)
             YTotal += (int)(1500.f * amount * elDir); // 1500.f is an empiric value..
 
         if (YTotal > MAX_AXIS_THROW)
@@ -198,7 +198,7 @@ void MouseWheelStuff::ResetAxisValue()
     {
         case AXIS_FOV:
         {
-            // should be default FOV scaled to 0-15000 !!
+            // should be default FOV scaled to 0-15000 
             theAxisValue = (long)(((float)(g_fDefaultFOV) / (float)g_fMaximumFOV) * 15000.f);
             break;
         }

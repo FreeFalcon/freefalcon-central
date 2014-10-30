@@ -41,11 +41,11 @@ void DigitalBrain::RollAndPull(void)
     }
 
     // SLOW FLYING COMPETITION  ??  Rollign sizzors, flat sizzors or stack...some kinda 3/9 line fight
-    if (targetData->range <= 500.0f &&
-        (targetPtr->BaseData()->Yaw() - self->Yaw() < 30.0F * DTR) &&
-        targetData->ata >= 55.0F * DTR &&
-        targetData->ata <= 125.0F * DTR &&
-        targetData->ataFrom >= 55.0F * DTR &&
+    if (targetData->range <= 500.0f and 
+        (targetPtr->BaseData()->Yaw() - self->Yaw() < 30.0F * DTR) and 
+        targetData->ata >= 55.0F * DTR and 
+        targetData->ata <= 125.0F * DTR and 
+        targetData->ataFrom >= 55.0F * DTR and 
         targetData->ataFrom <= 125.0F * DTR
        )
 
@@ -81,7 +81,7 @@ void DigitalBrain::RollAndPull(void)
 
     // OFFENSIVE
 
-    else if (targetData->ata <= targetData->ataFrom || targetData->ata <= 90 * DTR) //me123 from 45
+    else if (targetData->ata <= targetData->ataFrom or targetData->ata <= 90 * DTR) //me123 from 45
     {
 #ifdef DEBUG_BFM
         MonoPrint("OFFENSIVE");
@@ -116,7 +116,7 @@ void DigitalBrain::RollAndPull(void)
                 }
 
                 // Ok so we're within 6 to 15 NM, do we need to go real fast all the time or only when facing one another
-                if (targetData->ata > 15.0f * DTR || targetData->ataFrom > 15.0f * DTR)
+                if (targetData->ata > 15.0f * DTR or targetData->ataFrom > 15.0f * DTR)
                     MachHold(cornerSpeed, self->GetKias(), TRUE);
                 else
                 {
@@ -130,7 +130,7 @@ void DigitalBrain::RollAndPull(void)
                 AutoTrack(maxGs);
             }
 
-            else if (targetPtr->localData->range  < 6.0F * NM_TO_FT && targetPtr->localData->range >= 1.5F * NM_TO_FT)
+            else if (targetPtr->localData->range  < 6.0F * NM_TO_FT and targetPtr->localData->range >= 1.5F * NM_TO_FT)
             {
                 // MonoPrint ("between 6 and 1.5nm trying to force a merge nose up");
                 trackZ += 4000.0f;
@@ -215,7 +215,7 @@ void DigitalBrain::RollAndPull(void)
 #endif
 
         // OVERSHOOT CHECK
-        if (-self->ZPos() > 3000.0f && targetPtr->localData->ata >= 150.0F * DTR &&  targetPtr->localData->range <= 2000.0f && -targetPtr->localData->rangedot * FTPSEC_TO_KNOTS > 70)
+        if (-self->ZPos() > 3000.0f and targetPtr->localData->ata >= 150.0F * DTR and targetPtr->localData->range <= 2000.0f and -targetPtr->localData->rangedot * FTPSEC_TO_KNOTS > 70)
         {
             SetTrackPoint(targetPtr);
             AutoTrack(maxGs);
@@ -229,10 +229,10 @@ void DigitalBrain::RollAndPull(void)
 
         }
         //NOT EMIDIATLY THREATENED
-        else if (-targetPtr->BaseData()->ZPos() > 5000.0f &&
-                 targetData->range > 1000 &&
-                 targetData->ataFrom >= 15.0F * DTR &&
-                 self->GetKias() <= cornerSpeed * 0.9f &&
+        else if (-targetPtr->BaseData()->ZPos() > 5000.0f and 
+                 targetData->range > 1000 and 
+                 targetData->ataFrom >= 15.0F * DTR and 
+                 self->GetKias() <= cornerSpeed * 0.9f and 
                  self->Pitch() < -5 * DTR)
         {
             SetTrackPoint(targetPtr);
@@ -269,7 +269,7 @@ void DigitalBrain::RollAndPull(void)
 
 #ifdef MANEUVER_DEBUG
 
-    if (g_nShowDebugLabels & 0x20)
+    if (g_nShowDebugLabels bitand 0x20)
     {
         if (self->drawPointer)
             ((DrawableBSP*)self->drawPointer)->SetLabel(tmpchr, ((DrawableBSP*)self->drawPointer)->LabelColor());
@@ -280,10 +280,10 @@ void DigitalBrain::RollAndPull(void)
 
 void DigitalBrain::EnergyManagement(void)
 {
-    if (targetData->range <= 1800.0f ||
+    if (targetData->range <= 1800.0f or
         (
-            targetData->range <= 2500.0f &&
-            targetData->ata <= 45.0F * DTR &&
+            targetData->range <= 2500.0f and 
+            targetData->ata <= 45.0F * DTR and 
             targetData->ataFrom >= 90.0F * DTR
         )
        )
@@ -294,11 +294,11 @@ void DigitalBrain::EnergyManagement(void)
 
     //is the target maneuvering ?
     // 2002-03-14 MODIFIED BY S.G.Only SimBaseClass have deltas plus campaign objects don't actually fight
-    if (targetPtr->BaseData()->IsSim() && fabs(targetPtr->BaseData()->PitchDelta()) > 0.10F)
+    if (targetPtr->BaseData()->IsSim() and fabs(targetPtr->BaseData()->PitchDelta()) > 0.10F)
         // if  (fabs (targetPtr->BaseData()->PitchDelta()) > 0.10F)
     {
         // is this a vertical fight ?
-        if (fabs(targetPtr->BaseData()->YawDelta()) < VERTICAL_MAGIC &&
+        if (fabs(targetPtr->BaseData()->YawDelta()) < VERTICAL_MAGIC and 
             fabs(self->YawDelta()) < VERTICAL_MAGIC)
             //both fighter and target vertival
         {
@@ -308,7 +308,7 @@ void DigitalBrain::EnergyManagement(void)
 #endif
         }
 
-        else if (fabs(targetPtr->BaseData()->YawDelta()) < VERTICAL_MAGIC ||
+        else if (fabs(targetPtr->BaseData()->YawDelta()) < VERTICAL_MAGIC or
                  fabs(self->YawDelta()) < VERTICAL_MAGIC)
             //only one of the jets are vertical
         {
@@ -346,8 +346,8 @@ void DigitalBrain::EnergyManagement(void)
         else
         {
             // nose/nose or nose/tail
-            if (self->YawDelta() > 0 && targetPtr->BaseData()->YawDelta() < 0 ||
-                self->YawDelta() < 0 && targetPtr->BaseData()->YawDelta() > 0)
+            if (self->YawDelta() > 0 and targetPtr->BaseData()->YawDelta() < 0 or
+                self->YawDelta() < 0 and targetPtr->BaseData()->YawDelta() > 0)
             {
                 //nose/nose
                 MachHold(0.6f * cornerSpeed, self->GetKias(), FALSE);
@@ -386,7 +386,7 @@ void DigitalBrain::EnergyManagement(void)
 void DigitalBrain::PullToControlPoint(void)
 {
     //me123 this rutine does our nose to nose tactic. The only one at the moment :-(
-    if (!targetPtr)
+    if ( not targetPtr)
     {
         return;
     }
@@ -456,7 +456,7 @@ void DigitalBrain::PullToCollisionPoint(void)
     /* If collision time is defined */
     /* extrapolate targets position */
     /*------------------------------*/
-    if (lastMode != curMode)
+    if (lastMode not_eq curMode)
     {
         if (tc > 0.0)
         {
@@ -504,7 +504,7 @@ void DigitalBrain::PullToCollisionPoint(void)
             SetTrackPoint(tx, ty, tz);
         }
 
-        if (targetPtr->localData->range > 5.0F * NM_TO_FT && targetPtr->BaseData()->ZPos() > self->ZPos())
+        if (targetPtr->localData->range > 5.0F * NM_TO_FT and targetPtr->BaseData()->ZPos() > self->ZPos())
             trackZ = self->ZPos();
     }
     else
@@ -541,7 +541,7 @@ void DigitalBrain::PullToCollisionPoint(void)
                 newZ += (targetPtr->BaseData()->ZDelta() + ALT_RATE_DEADBAND) * MAGIC_NUMBER;
         }
 
-        if (targetPtr->localData->range > 5.0F * NM_TO_FT && targetPtr->BaseData()->ZPos() < self->ZPos())
+        if (targetPtr->localData->range > 5.0F * NM_TO_FT and targetPtr->BaseData()->ZPos() < self->ZPos())
             newZ = self->ZPos();
 
         SetTrackPoint(0.1F * newX + 0.9F * trackX, 0.1F * newY + 0.9F * trackY, 0.1F * newZ + 0.9F * trackZ);
@@ -591,7 +591,7 @@ void DigitalBrain::MaintainClosure(void)
     {
         // 2002-03-14 MODIFIED BY S.G. If we're already getting closer and asking to gove above cornerSpeed, top at cornerSpeed if we're further than 2 NM
         // MachHold ( (self->GetKias() + (closure - rngdot)), self->GetKias(), FALSE);  //me123 from MachHold(max (cornerSpeed, (self->GetKias() + (closure - rngdot))), self->GetKias(), TRUE);
-        MachHold(targetData->range > 2.0f * NM_TO_FT && rngdot > 0 && self->GetKias() + (closure - rngdot) > cornerSpeed ? cornerSpeed : self->GetKias() + (closure - rngdot), self->GetKias(), FALSE);  //me123 from MachHold(max (cornerSpeed, (self->GetKias() + (closure - rngdot))), self->GetKias(), TRUE);
+        MachHold(targetData->range > 2.0f * NM_TO_FT and rngdot > 0 and self->GetKias() + (closure - rngdot) > cornerSpeed ? cornerSpeed : self->GetKias() + (closure - rngdot), self->GetKias(), FALSE);  //me123 from MachHold(max (cornerSpeed, (self->GetKias() + (closure - rngdot))), self->GetKias(), TRUE);
     }
     else if (targetData->range < 5000.0f)
         MachHold((min(cornerSpeed /* *1.2f S.G. */ , self->GetKias() + (closure - rngdot))), self->GetKias(), FALSE) ;     //me123 from MachHold(max (cornerSpeed, (self->GetKias() + (closure - rngdot))), self->GetKias(), FALSE);

@@ -7,7 +7,7 @@ C_MapMover::C_MapMover() : C_Control()
     SY_ = 0;
     Draging_ = 0;
     DrawCallback_ = NULL;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_DRAGABLE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_DRAGABLE bitor C_BIT_MOUSEOVER;
 }
 
 C_MapMover::C_MapMover(char **stream) : C_Control(stream)
@@ -44,10 +44,10 @@ void C_MapMover::Cleanup()
 
 long C_MapMover::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() & C_BIT_INVISIBLE || !(GetFlags() & C_BIT_ENABLED) || !Ready())
+    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
         return(0);
 
-    if (relX >= (GetX()) && relX <= (GetX() + GetW()) && relY >= (GetY()) && relY <= (GetY() + GetH()))
+    if (relX >= (GetX()) and relX <= (GetX() + GetW()) and relY >= (GetY()) and relY <= (GetY() + GetH()))
     {
         SetRelXY(relX - GetX(), relY - GetY());
         return(GetID());
@@ -58,7 +58,7 @@ long C_MapMover::CheckHotSpots(long relX, long relY)
 
 BOOL C_MapMover::Process(long, short HitType)
 {
-    if (!Ready()) return(FALSE);
+    if ( not Ready()) return(FALSE);
 
     switch (HitType)
     {
@@ -91,7 +91,7 @@ BOOL C_MapMover::Process(long, short HitType)
 
 void C_MapMover::Refresh()
 {
-    if (!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL)
+    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW() + 1, GetY() + GetH() + 1, GetFlags(), GetClient());
@@ -99,9 +99,9 @@ void C_MapMover::Refresh()
 
 void C_MapMover::Draw(SCREEN *, UI95_RECT *)
 {
-    if (!Ready()) return;
+    if ( not Ready()) return;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
     if (DrawCallback_)
@@ -112,7 +112,7 @@ BOOL C_MapMover::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
 {
     F4CSECTIONHANDLE* Leave;
 
-    if (GetFlags() & C_BIT_INVISIBLE)
+    if (GetFlags() bitand C_BIT_INVISIBLE)
         return(FALSE);
 
     Leave = UI_Enter(Parent_);
