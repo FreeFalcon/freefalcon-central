@@ -63,7 +63,7 @@ void ICPClass::ICPEnter(void)
         ENTRUpdateMARKMode();
 
     //INTG
-    else if ((IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == 100) ||
+    else if ((IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == 100) or
              IsICPSet(ICPClass::MODE_IFF) and Manual_Input)
         EnterINTG();
 

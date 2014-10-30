@@ -572,7 +572,7 @@ void TextureBankClass::ReadImageDDS(DWORD id)
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
     {
-        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') ||
+        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') or
             ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '5'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth;
@@ -686,7 +686,7 @@ void TextureBankClass::ReadImageDDSN(DWORD id)
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
     {
-        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') ||
+        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') or
             ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '5'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth;

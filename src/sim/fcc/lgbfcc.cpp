@@ -846,7 +846,7 @@ void FireControlComputer::CheckFeatures(LaserPodClass* targetingPod)
                 //MI fix for jumping cursors
                 float CurRange = (float)sqrt(dx * dx + dy * dy);
 
-                // 2001-11-01 Added IsDead ||
+                // 2001-11-01 Added IsDead or
                 //IsExploding check by M.N. - we don't want to bomb something that is already destroyed
                 if ((CurRange < curMin) and not (testObject->IsDead() or testObject->IsExploding()))
                 {

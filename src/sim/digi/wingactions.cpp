@@ -455,7 +455,7 @@ void DigitalBrain::AiExecBreakRL(void)
     {
 
         // Anounce that I'm ending the maneuver
-        if (mCurrentManeuver == FalconWingmanMsg::WMBreakRight ||
+        if (mCurrentManeuver == FalconWingmanMsg::WMBreakRight or
             mCurrentManeuver == FalconWingmanMsg::WMBreakLeft)
         {
 

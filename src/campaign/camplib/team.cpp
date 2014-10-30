@@ -2512,10 +2512,10 @@ void UpdateTeamStatistics(void)
             {
                 // RV - Biker - Only count attack AC for statistic
                 if (u->GetType() == TYPE_SQUADRON and 
-                    (u->GetSType() == STYPE_UNIT_ATTACK ||
-                     u->GetSType() == STYPE_UNIT_ATTACK_HELO ||
-                     u->GetSType() == STYPE_UNIT_BOMBER ||
-                     u->GetSType() == STYPE_UNIT_FIGHTER ||
+                    (u->GetSType() == STYPE_UNIT_ATTACK or
+                     u->GetSType() == STYPE_UNIT_ATTACK_HELO or
+                     u->GetSType() == STYPE_UNIT_BOMBER or
+                     u->GetSType() == STYPE_UNIT_FIGHTER or
                      u->GetSType() == STYPE_UNIT_FIGHTER_BOMBER))
                 {
                     if (u->GetUnitAirbase() == NULL or u->GetSType() == STYPE_UNIT_ATTACK_HELO or not u->GetUnitAirbase()->IsObjective())

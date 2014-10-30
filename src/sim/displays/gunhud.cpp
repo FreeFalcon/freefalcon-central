@@ -395,8 +395,8 @@ void HudClass::DrawTDCircle(void)
     display->AdjustOriginInViewport(0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
                                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
 
-    if (fabs(targetData->az) > 825.0F * DTR ||
-        fabs(targetData->el) > 825.0F * DTR ||
+    if (fabs(targetData->az) > 825.0F * DTR or
+        fabs(targetData->el) > 825.0F * DTR or
         fabs(xPos) > 0.90F or fabs(yPos + hudWinY[BORESIGHT_CROSS_WINDOW] +
                                    hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) > 0.825F)
     {
@@ -768,7 +768,7 @@ void HudClass::DrawLCOSForSSLC(void)
     display->Circle(0.0F, 0.0F, MRToHudUnits(10.0F));
 
     // Settling Cue
-    if (fabs(lastPipperX - hPos) > MRToHudUnits(10.0F) ||
+    if (fabs(lastPipperX - hPos) > MRToHudUnits(10.0F) or
         fabs(lastPipperY - vPos) > MRToHudUnits(10.0F))
     {
         display->Line(-(lastPipperX - hPos) * 2.0F,
@@ -847,7 +847,7 @@ void HudClass::DrawLCOS(void)
     display->Circle(0.0F, 0.0F, MRToHudUnits(10.0F));
 
     // Settling Cue
-    if (fabs(lastPipperX - hPos) > MRToHudUnits(10.0F) ||
+    if (fabs(lastPipperX - hPos) > MRToHudUnits(10.0F) or
         fabs(lastPipperY - vPos) > MRToHudUnits(10.0F))
     {
         display->Line(-(lastPipperX - hPos) * 2.0F,

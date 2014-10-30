@@ -353,7 +353,7 @@ void FireControlComputer::SetSubMode(FCCSubMode newSubMode)
         Sms->Ownship() and 
         Sms->Ownship()->IsAirplane() and // MLR not always owned by a/c
         ((AircraftClass *)(Sms->Ownship()))->af and 
-        ( not ((AircraftClass *)Sms->Ownship())->af->IsSet(AirframeClass::IsDigital) ||
+        ( not ((AircraftClass *)Sms->Ownship())->af->IsSet(AirframeClass::IsDigital) or
          ( not (((AircraftClass *)(Sms->Ownship()))->AutopilotType() == AircraftClass::CombatAP))) and 
         platform and RadarDataTable[platform->GetRadarType()].NominalRange == 0.0) // JB 011018
     {
@@ -372,9 +372,9 @@ void FireControlComputer::SetSubMode(FCCSubMode newSubMode)
         lastSubMode = subMode;
     }
 
-    if (lastSubMode == BSGT ||
-        lastSubMode == SLAVE ||
-        lastSubMode == HARM ||
+    if (lastSubMode == BSGT or
+        lastSubMode == SLAVE or
+        lastSubMode == HARM or
         lastSubMode == HTS)
     {
         platform->SOIManager(SimVehicleClass::SOI_RADAR);
@@ -544,7 +544,7 @@ void FireControlComputer::SetSubMode(FCCSubMode newSubMode)
                 // RV - I-Hawk - Don't auto pass SOI to HARM if we are using the advanced HARM systems
                 HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(platform, SensorClass::HTS);
 
-                if (harmPod and (harmPod->GetSubMode() == HarmTargetingPod::HAS ||
+                if (harmPod and (harmPod->GetSubMode() == HarmTargetingPod::HAS or
                                 harmPod->GetSubMode() == HarmTargetingPod::HAD))
                 {
                     platform->SOIManager(SimVehicleClass::SOI_RADAR);
@@ -687,7 +687,7 @@ void FireControlComputer::SetSubMode(FCCSubMode newSubMode)
 
 void FireControlComputer::ClearOverrideMode(void)
 {
-    if ((GetMasterMode() == Dogfight) ||
+    if ((GetMasterMode() == Dogfight) or
         (GetMasterMode() == MissileOverride))
     {
         masterMode      = lastMasterMode; // MLR - little kludge so I can get the MM
@@ -1395,7 +1395,7 @@ void FireControlComputer::UpdatePlanned()
     //Cobra This function was killing SAMs and threat rings on HSD
     //without it, everything is appearing as normal on the HSD.
     nextDlUpdate = SimLibElapsedTime + 5000/*CampaignSeconds * DATALINK_CYCLE*/;
-    /*if (((AircraftClass*)platform)->mFaults->GetFault(FaultClass::dlnk_fault) ||
+    /*if (((AircraftClass*)platform)->mFaults->GetFault(FaultClass::dlnk_fault) or
  not ((AircraftClass*)platform)->HasPower(AircraftClass::DLPower))
     return;*/
 
@@ -1719,7 +1719,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
             (
                 ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::fcc_fault)
             )
-            ||
+            or
             (
                 ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::amux_fault) and 
                 ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::bmux_fault) and 
@@ -1753,7 +1753,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
 
     if (masterMode not_eq Dogfight and masterMode not_eq MissileOverride) masterMode = newMode;//me123
 
-    int isAI = not playerFCC ||
+    int isAI = not playerFCC or
                (playerFCC and ((AircraftClass *)Sms->Ownship())->AutopilotType() == AircraftClass::CombatAP) ;
 
 
@@ -2000,7 +2000,7 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
                 }
 
                 /*
-                if (PlayerOptions.GetAvionicsType() == ATRealistic ||
+                if (PlayerOptions.GetAvionicsType() == ATRealistic or
                  PlayerOptions.GetAvionicsType() == ATRealisticAV)
                  SetSubMode (BSGT);
                 else
@@ -2423,14 +2423,14 @@ int FireControlComputer::CanStepToWeaponClass(WeaponClass wc)
     switch (masterMode)
     {
         case AAGun:
-            if ((wc == wcAimWpn and g_bWeaponStepToGun) ||
+            if ((wc == wcAimWpn and g_bWeaponStepToGun) or
                 wc == wcGunWpn)
                 return 1;
 
             return 0;
 
         case Missile:
-            if (wc == wcAimWpn ||
+            if (wc == wcAimWpn or
                 (wc == wcGunWpn and g_bWeaponStepToGun))
                 return 1;
 
@@ -2444,9 +2444,9 @@ int FireControlComputer::CanStepToWeaponClass(WeaponClass wc)
             return 0;
 
         case AGGun:
-            if (((wc == wcAgmWpn or wc == wcBombWpn ||
-                  wc == wcRocketWpn or wc == wcHARMWpn ||
-                  wc == wcGbuWpn or wc == wcCamera) and g_bWeaponStepToGun) ||
+            if (((wc == wcAgmWpn or wc == wcBombWpn or
+                  wc == wcRocketWpn or wc == wcHARMWpn or
+                  wc == wcGbuWpn or wc == wcCamera) and g_bWeaponStepToGun) or
                 wc == wcGunWpn)
                 return 1;
 
@@ -2458,9 +2458,9 @@ int FireControlComputer::CanStepToWeaponClass(WeaponClass wc)
         case AirGroundHARM:
         case AirGroundLaser:
         case AirGroundCamera:
-            if (wc == wcAgmWpn or wc == wcBombWpn ||
-                wc == wcRocketWpn or wc == wcHARMWpn ||
-                wc == wcGbuWpn or wc == wcCamera  ||
+            if (wc == wcAgmWpn or wc == wcBombWpn or
+                wc == wcRocketWpn or wc == wcHARMWpn or
+                wc == wcGbuWpn or wc == wcCamera  or
                 (wc == wcGunWpn and g_bWeaponStepToGun))
                 return 1;
 
@@ -2489,9 +2489,9 @@ int FireControlComputer::CanStepToWeaponClass(WeaponClass wc)
      return 1;
      return 0;
     case MM_AG:
-     if( wc==wcAgmWpn or wc==wcBombWpn ||
-     wc==wcRocketWpn or wc==wcHARMWpn ||
-     wc==wcGbuWpn or wc==wcCamera  ||
+     if( wc==wcAgmWpn or wc==wcBombWpn or
+     wc==wcRocketWpn or wc==wcHARMWpn or
+     wc==wcGbuWpn or wc==wcCamera  or
      ( wc==wcGunWpn and g_bWeaponStepToGun ) )
      return 1;
      return 0;
@@ -2689,7 +2689,7 @@ void FireControlComputer::UpdateWeaponPtr(void)
             if (classPtr)
             {
                 if (
-                    classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_MISSILE ||
+                    classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_MISSILE or
                     classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_ROCKET
                 )
                 {
@@ -2698,19 +2698,19 @@ void FireControlComputer::UpdateWeaponPtr(void)
                 else
                 {
                     if (
-                        classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_BOMB ||
+                        classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_BOMB or
                         (
                             classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_ELECTRONICS and 
                             classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_VEHICLE
-                        ) ||
+                        ) or
                         (
                             classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_FUEL_TANK and 
                             classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_FUEL_TANK
-                        ) ||
+                        ) or
                         (
                             classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_RECON and 
                             classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_CAMERA
-                        ) ||
+                        ) or
                         (
                             classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_LAUNCHER and 
                             classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_ROCKET

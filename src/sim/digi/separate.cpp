@@ -177,7 +177,7 @@ void DigitalBrain::SeparateCheck(void)
 
 
     // go no further unless separation is desired
-    if (IsSetATC(SaidBingo)  ||
+    if (IsSetATC(SaidBingo)  or
         curMode == WVREngageMode and (aaAbort or agAbort or campAbort or damageAbort))
     {
         // Entry
@@ -214,7 +214,7 @@ void DigitalBrain::SeparateCheck(void)
             }
         }
         else if (targetData->range < 6.0f * NM_TO_FT and 
-                 targetPtr->localData->rangedot > 0.0f ||
+                 targetPtr->localData->rangedot > 0.0f or
                  targetData->range > 6000)// last mode was seperate
         {
             AddMode(SeparateMode);

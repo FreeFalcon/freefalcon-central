@@ -159,7 +159,7 @@ void FireControlComputer::AirGroundMode(void)
                 theBomb = GetTheBomb();
 
                 if (theBomb and ((AircraftClass*)platform->IsPlayer() and ((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP) and 
-                    ((theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS) ||
+                    ((theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS) or
                      (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)) and 
                     ( not Sms->JDAMPowered))
                 {
@@ -272,7 +272,7 @@ float calcgrav(FireControlComputer *FCC)
 
         if (
             theBomb and not (F4IsBadReadPtr(theBomb, sizeof(BombClass))) and //be EXTRA EXTRA careful
-            (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS) ||
+            (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS) or
             (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
         )
         {
@@ -710,7 +710,7 @@ void FireControlComputer::DelayModePipperCorrection(void)
 #if 0
 
     // See if the pipper falls off screen
-    if (groundPipperEl >  5.0F * DTR or groundPipperEl < -13.0F * DTR ||
+    if (groundPipperEl >  5.0F * DTR or groundPipperEl < -13.0F * DTR or
         groundPipperAz > 10.0F * DTR or groundPipperAz < -10.0F * DTR)
     {
         // This computes a new az and el in the same direction with a 13 degree solid angle
@@ -884,13 +884,13 @@ void FireControlComputer::SetDesignatedTarget(void)
     int bGPS = FALSE;
     BombClass *theBomb = GetTheBomb();
 
-    if (theBomb and (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS ||
+    if (theBomb and (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS or
                     theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW))
         bGPS = TRUE;
 
     // 2001-04-12 ADDED BY S.G. NEED TO MAKE A VARIABLE DESIGNATE BASED ON SKILL AND ALTITUDE
     if (platform->IsAirplane() and not bGPS and 
-        (((AircraftClass *)platform)->IsDigital() ||
+        (((AircraftClass *)platform)->IsDigital() or
          ((AircraftClass *)platform)->AutopilotType() == AircraftClass::CombatAP))
     {
         // Intentionnaly, I didn't play with the sign of ZPos because it will be 'below' groundDesignateZ and therefore - - will make it + and the end value will be positive
@@ -1154,11 +1154,11 @@ void FireControlComputer::CalculateReleaseRange(void)
         maxDelay = 0.5F;
     }
 
-    if (tossAnticipationCue == NoCue ||
+    if (tossAnticipationCue == NoCue or
         (tossAnticipationCue == AwaitingRelease and tossAnticipationCue == lastCue)) // AwaitingRelease = lastCue
     {
-        if ( not wayTooFar and releaseConsent and not postDrop and ((tmpTime < 0.1F ||
-                (airGroundDelayTime > 0.0 and airGroundDelayTime < maxDelay and tmpTime > airGroundDelayTime)) ||
+        if ( not wayTooFar and releaseConsent and not postDrop and ((tmpTime < 0.1F or
+                (airGroundDelayTime > 0.0 and airGroundDelayTime < maxDelay and tmpTime > airGroundDelayTime)) or
                 bombReleaseOverride) and Sms->curWeapon)
         {
             bombPickle = TRUE;
@@ -1476,7 +1476,7 @@ void FireControlComputer::CalculateLADDReleaseRange(void)
 
     maxDelay = 0.5F;
 
-    if (laddAnticipationCue == NoCue ||
+    if (laddAnticipationCue == NoCue or
         (laddAnticipationCue == AwaitingRelease and laddAnticipationCue == lastCue))
     {
         if ( not wayTooFar and releaseConsent and not postDrop and 

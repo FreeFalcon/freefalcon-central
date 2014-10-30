@@ -517,7 +517,7 @@ void SmsDrawable::InputPushButton(int whichButton, int whichMFD)
         case 2:
             ClearDigits();
 
-            if (InputModus == C1 or InputModus == C2 or InputModus == C3 ||
+            if (InputModus == C1 or InputModus == C2 or InputModus == C3 or
                 InputModus == C4 or InputModus == REL_ANG or InputModus == LADD_MODE)
             {
                 InputModus = CONTROL_PAGE;
@@ -948,13 +948,13 @@ void SmsDrawable::ClearDigits(void)
 }
 int SmsDrawable::CheckButton(int whichButton)
 {
-    if (whichButton == 1 ||
-        whichButton == 2 ||
-        whichButton == 3 ||
-        whichButton == 10 ||
-        whichButton == 11 ||
-        whichButton == 12 ||
-        whichButton == 13 ||
+    if (whichButton == 1 or
+        whichButton == 2 or
+        whichButton == 3 or
+        whichButton == 10 or
+        whichButton == 11 or
+        whichButton == 12 or
+        whichButton == 13 or
         whichButton == 14)
         return FALSE;
     else

@@ -563,7 +563,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
                             e->Sleep();
                         }
                         else if (
- not e->IsObjective() ||
+ not e->IsObjective() or
                             (
                                 e->IsObjective() and (e->GetType() not_eq TYPE_AIRBASE) and (e->GetType() not_eq TYPE_AIRSTRIP)
                             )
@@ -584,9 +584,9 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
             vuLocalSessionEntity->Game()->IsLocal() and 
             ( //me123 host wake/sleep stuff
                 //handle airplanes helicopters and airbases
-                g_bSleepAll ||
-                e->IsAirplane() or e->IsHelicopter()  ||
-                (e->IsObjective() and ((e->GetType() == TYPE_AIRBASE) or (e->GetType() == TYPE_AIRSTRIP))) ||
+                g_bSleepAll or
+                e->IsAirplane() or e->IsHelicopter()  or
+                (e->IsObjective() and ((e->GetType() == TYPE_AIRBASE) or (e->GetType() == TYPE_AIRSTRIP))) or
                 (g_bServer and g_bServerHostAll and e->IsUnit())
                 //and airbases
             )
@@ -607,7 +607,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
             }
             else if ( not g_bSleepAll and not e->IsSetFalcFlag(FEC_PLAYER_ENTERING) and // we are not in sleep all mode
                      (
- not e->IsSetFalcFlag(FEC_PLAYERONLY) ||// not a human
+ not e->IsSetFalcFlag(FEC_PLAYERONLY) or// not a human
                          (
                              //human but he's attached
                              e->IsSetFalcFlag(FEC_PLAYERONLY) and e->IsSetFalcFlag(FEC_HASPLAYERS)
@@ -615,8 +615,8 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
                      )
                     )
             {
-                if ((FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI ||
-                     FalconLocalSession->GetFlyState() == FLYSTATE_FLYING ||
+                if ((FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI or
+                     FalconLocalSession->GetFlyState() == FLYSTATE_FLYING or
                      FalconLocalSession->GetFlyState() == FLYSTATE_WAITING))
                     // only wake if the server isn't transitign to/from ui
                 {

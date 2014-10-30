@@ -195,7 +195,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
 
     if (visType >= 0 or theObject->drawPointer)
     {
-        if (classPtr->vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_LAND ||
+        if (classPtr->vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_LAND or
             classPtr->vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_SEA)
         {
             // This is a ground thingy..

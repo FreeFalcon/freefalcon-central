@@ -494,8 +494,8 @@ void DigitalBrain::WvrChooseTactic(void)
             theIntercept = &(maneuverData[myCombatClass][hisCombatClass]);
 
             // No intercepts or Choose not to, or no weapons, or Guns only and ACE in campaign
-            if (theIntercept->numIntercepts == 0 ||
-                theIntercept->intercept[0] == BvrNoIntercept ||
+            if (theIntercept->numIntercepts == 0 or
+                theIntercept->intercept[0] == BvrNoIntercept or
                 maxAAWpnRange == 0 or aceAvoid)
             {
                 // Can't go offensive, should we be defensive, or just keep running?

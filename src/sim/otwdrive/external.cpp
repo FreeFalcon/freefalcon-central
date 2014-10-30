@@ -263,16 +263,16 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
     }
 
     // handle various cases of chase camera
-    else if (GetOTWDisplayMode() == ModeChase ||
+    else if (GetOTWDisplayMode() == ModeChase or
              (
-                 (GetOTWDisplayMode() == ModeAirFriendly ||
-                  GetOTWDisplayMode() == ModeAirEnemy ||
-                  GetOTWDisplayMode() == ModeGroundEnemy ||
-                  GetOTWDisplayMode() == ModeGroundFriendly ||
-                  GetOTWDisplayMode() == ModeTarget ||
-                  GetOTWDisplayMode() == ModeTargetToSelf ||
-                  GetOTWDisplayMode() == ModeTargetToWeapon ||
-                  GetOTWDisplayMode() == ModeIncoming ||
+                 (GetOTWDisplayMode() == ModeAirFriendly or
+                  GetOTWDisplayMode() == ModeAirEnemy or
+                  GetOTWDisplayMode() == ModeGroundEnemy or
+                  GetOTWDisplayMode() == ModeGroundFriendly or
+                  GetOTWDisplayMode() == ModeTarget or
+                  GetOTWDisplayMode() == ModeTargetToSelf or
+                  GetOTWDisplayMode() == ModeTargetToWeapon or
+                  GetOTWDisplayMode() == ModeIncoming or
                   GetOTWDisplayMode() == ModeWeapon) and 
                  (otwTrackPlatform.get() == NULL or otwTrackPlatform == otwPlatform)
              ))
@@ -420,14 +420,14 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
     }
 
     // various cameras (with tracked object)
-    else if (GetOTWDisplayMode() == ModeWeapon ||
-             GetOTWDisplayMode() == ModeAirFriendly ||
-             GetOTWDisplayMode() == ModeAirEnemy ||
-             GetOTWDisplayMode() == ModeTarget ||
-             GetOTWDisplayMode() == ModeTargetToSelf ||
-             GetOTWDisplayMode() == ModeTargetToWeapon ||
-             GetOTWDisplayMode() == ModeIncoming ||
-             GetOTWDisplayMode() == ModeGroundEnemy ||
+    else if (GetOTWDisplayMode() == ModeWeapon or
+             GetOTWDisplayMode() == ModeAirFriendly or
+             GetOTWDisplayMode() == ModeAirEnemy or
+             GetOTWDisplayMode() == ModeTarget or
+             GetOTWDisplayMode() == ModeTargetToSelf or
+             GetOTWDisplayMode() == ModeTargetToWeapon or
+             GetOTWDisplayMode() == ModeIncoming or
+             GetOTWDisplayMode() == ModeGroundEnemy or
              GetOTWDisplayMode() == ModeGroundFriendly)
     {
         // get look-at vector to tracked object
@@ -706,10 +706,10 @@ void OTWDriverClass::BuildExternalNearList(void)
     )
     {
         // Skip things on the groud, without draw pointers, hidden, or exploding
-        if (theObject->OnGround() ||
-            theObject->IsSetLocalFlag(IS_HIDDEN) ||
- not theObject->drawPointer ||
-            theObject->IsExploding() ||
+        if (theObject->OnGround() or
+            theObject->IsSetLocalFlag(IS_HIDDEN) or
+ not theObject->drawPointer or
+            theObject->IsExploding() or
             otwPlatform.get() == theObject)
         {
             continue;

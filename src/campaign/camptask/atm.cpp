@@ -2792,8 +2792,8 @@ int TargetAllSites(Objective po, int action, int team, CampaignTime startTime)
                     mis.target_num = 255;
 
                     if (
-                        otarget->GetType() == TYPE_AIRBASE ||
-                        otarget->GetType() == TYPE_AIRSTRIP ||
+                        otarget->GetType() == TYPE_AIRBASE or
+                        otarget->GetType() == TYPE_AIRSTRIP or
                         otarget->GetType() == TYPE_ARMYBASE
                     )
                     {
@@ -2846,12 +2846,12 @@ int TargetAllSites(Objective po, int action, int team, CampaignTime startTime)
                     //This will also fix the supply code that calls for attacks on the
                     //powergrid.
                     //if (action == AACTION_INTERDICT)
-                    else if (otarget->GetType() == TYPE_FACTORY ||
-                             otarget->GetType() == TYPE_CHEMICAL ||
-                             otarget->GetType() == TYPE_DEPOT ||
-                             otarget->GetType() == TYPE_REFINERY ||
-                             otarget->GetType() == TYPE_PORT ||
-                             otarget->GetType() == TYPE_NUCLEAR ||
+                    else if (otarget->GetType() == TYPE_FACTORY or
+                             otarget->GetType() == TYPE_CHEMICAL or
+                             otarget->GetType() == TYPE_DEPOT or
+                             otarget->GetType() == TYPE_REFINERY or
+                             otarget->GetType() == TYPE_PORT or
+                             otarget->GetType() == TYPE_NUCLEAR or
                              otarget->GetType() == TYPE_POWERPLANT)
                     {
                         // Generate a mission to strike this facility

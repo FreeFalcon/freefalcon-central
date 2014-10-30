@@ -276,7 +276,7 @@ void OTWDriverClass::Padlock_FindEnhancedPriority(BOOL)
             // This is enhanced mode so basically, we start with the highest priority then walk our way DOWN the list until we are at the bottom
             // then start from the highest one again
             /* if((pObj not_eq mpPadlockPriorityObject) and 
-             ((pLoMark == NULL and attempt) ||
+             ((pLoMark == NULL and attempt) or
              (Padlock_DetermineRelativePriority(mpPadlockPriorityObject, priorityRange, isPriorityPainted, pObj, objRange, isObjPainted) and 
              (pLoMark == NULL or Padlock_DetermineRelativePriority(pObj, objRange, isObjPainted, pLoMark, loMarkRange, isLoMarkPainted)))))
             */ int testAgainstPriority = FALSE;
@@ -754,8 +754,8 @@ void OTWDriverClass::Padlock_FindRealisticPriority(BOOL)
             //  subsequent traversal.
 
             // 2002-02-07 MODIFIED BY S.G. Priority are screwed up.
-            /* if(((attempt and mpPadlockCandidate == NULL and pObj == mpPadlockPriorityObject) ||
-             (mpPadlockCandidate == NULL and pObj not_eq mpPadlockPriorityObject) ||
+            /* if(((attempt and mpPadlockCandidate == NULL and pObj == mpPadlockPriorityObject) or
+             (mpPadlockCandidate == NULL and pObj not_eq mpPadlockPriorityObject) or
              (mpPadlockCandidate not_eq NULL and pObj not_eq mpPadlockCandidate)) and 
              Padlock_DetermineRelativePriority(mpPadlockCandidate, candidateRange, isCandidatePainted, pObj, objRange, isObjPainted) and 
              (pLoMark == NULL or Padlock_DetermineRelativePriority(pObj, objRange, isObjPainted, pLoMark, loMarkRange, isLoMarkPainted)))
@@ -1098,11 +1098,11 @@ BOOL OTWDriverClass::Padlock_ConsiderThisObject(SimBaseClass* pObj, BOOL isPaint
         }
         // END OF ADDED SECTION 2002-03-12
         // If in a AG mode make note of it
-        else if (fccMasterMode == FireControlComputer::AirGroundBomb ||
+        else if (fccMasterMode == FireControlComputer::AirGroundBomb or
                  fccMasterMode == FireControlComputer::AirGroundRocket or // MLR 4/3/2004 -
-                 fccMasterMode == FireControlComputer::AirGroundMissile ||
-                 fccMasterMode == FireControlComputer::AirGroundHARM ||
-                 fccMasterMode == FireControlComputer::AirGroundLaser ||
+                 fccMasterMode == FireControlComputer::AirGroundMissile or
+                 fccMasterMode == FireControlComputer::AirGroundHARM or
+                 fccMasterMode == FireControlComputer::AirGroundLaser or
                  (fccMasterMode == FireControlComputer::AGGun and 
                   fccSubMode == FireControlComputer::STRAF) or // MN added
                  (pradar and pradar->IsAG()) or // 2002-03-12 ADDED BY S.G. If our radar is in AG mode, then prioritize ground object
@@ -1110,7 +1110,7 @@ BOOL OTWDriverClass::Padlock_ConsiderThisObject(SimBaseClass* pObj, BOOL isPaint
         {
             mode = AG;
         }
-        else if (fccMasterMode == FireControlComputer::ILS ||
+        else if (fccMasterMode == FireControlComputer::ILS or
                  fccMasterMode == FireControlComputer::Nav)
         {
             mode = NAV;
@@ -1123,7 +1123,7 @@ BOOL OTWDriverClass::Padlock_ConsiderThisObject(SimBaseClass* pObj, BOOL isPaint
         // Proceed if object is on ground and fcc is in AG mode.  Proceed if in object is in
         // air and fcc is in AA mode
 
-        if ((pObj->OnGround() and mode == AG) or pObj->IsMissile() or ( not pObj->OnGround() and mode == AA) ||
+        if ((pObj->OnGround() and mode == AG) or pObj->IsMissile() or ( not pObj->OnGround() and mode == AA) or
             (mode == NAV and ( not pObj->OnGround() or ((Falcon4EntityClassType*)pObj->EntityType())->vuClassData.classInfo_[VU_TYPE] == TYPE_RUNWAY)))
         {
 
@@ -1235,17 +1235,17 @@ BOOL OTWDriverClass::Padlock_DetermineRelativePriority(SimBaseClass* pObjA, floa
     }
     // END OF ADDED SECTION 2002-03-12
     // If in a AG mode make note of it
-    else if (fccMasterMode == FireControlComputer::AirGroundBomb ||
+    else if (fccMasterMode == FireControlComputer::AirGroundBomb or
              fccMasterMode == FireControlComputer::AirGroundRocket or // MLR 4/3/2004 -
-             fccMasterMode == FireControlComputer::AirGroundMissile ||
-             fccMasterMode == FireControlComputer::AirGroundHARM ||
-             fccMasterMode == FireControlComputer::AirGroundLaser ||
+             fccMasterMode == FireControlComputer::AirGroundMissile or
+             fccMasterMode == FireControlComputer::AirGroundHARM or
+             fccMasterMode == FireControlComputer::AirGroundLaser or
              (pradar and pradar->IsAG()) or  // 2002-03-12 ADDED BY S.G. If our radar is in AG mode, then prioritize ground object
              padlockPriority == PriorityAG) // 2002-03-12 ADDED BY S.G. If the player held the control key when pressing down the padlock key, prioritize AG things
     {
         mode = AG;
     } // If we're in Nav mode, make note
-    else if (fccMasterMode == FireControlComputer::ILS ||
+    else if (fccMasterMode == FireControlComputer::ILS or
              fccMasterMode == FireControlComputer::Nav)
     {
         mode = NAV;
@@ -1827,7 +1827,7 @@ void OTWDriverClass::Padlock_CheckPadlock(float dT)
         mTDTimeout = 5.0F;
     }
     else if (mpPadlockPriorityObject and 
-             ((mpPadlockPriorityObject->IsDead() and mPadlockTimeout < 0.0F) ||
+             ((mpPadlockPriorityObject->IsDead() and mPadlockTimeout < 0.0F) or
               (FalconLocalGame and FalconLocalGame->GetGameType() == game_Dogfight and mpPadlockPriorityObject->IsDead() and mpPadlockPriorityObject->IsSetFalcFlag(FEC_REGENERATING))))
     {
         /* 2001-01-29 MODIFIED BY S.G. FOR THE NEW mpPadlockPrioritySimObject

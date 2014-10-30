@@ -552,8 +552,8 @@ SfxClass::SfxClass(int  typeSfx,
             break;
 
         case SFX_GROUND_EXPLOSION:
-            if (gTotSfx >= gSfxLODTotCutoff ||
-                gSfxCount[ SFX_CAT_STEAM ] > gSfxLODCutoff ||
+            if (gTotSfx >= gSfxLODTotCutoff or
+                gSfxCount[ SFX_CAT_STEAM ] > gSfxLODCutoff or
                 gSfxCount[ SFX_FIRE5 ] > gSfxLODCutoff)
             {
                 scale *= 0.20f;
@@ -798,8 +798,8 @@ SfxClass::SfxClass(int  typeSfx,
         case SFX_GROUND_STRIKE:
             secondaryCount = 1;
 
-            if (gTotSfx >= gSfxLODTotCutoff ||
-                gSfxCount[ SFX_CAT_STEAM ] > gSfxLODCutoff ||
+            if (gTotSfx >= gSfxLODTotCutoff or
+                gSfxCount[ SFX_CAT_STEAM ] > gSfxLODCutoff or
                 gSfxCount[ SFX_FIRE5 ] > gSfxLODCutoff)
             {
                 obj2d = new Drawable2D(DRAW2D_GROUND_STRIKE, scale, &pos, 4, gGroundVerts, gFireUvs);
@@ -1604,7 +1604,7 @@ SfxClass::SfxClass(int  typeSfx,
                 obj2d = new Drawable2D(DRAW2D_DARK_DEBRIS, 12.0f, &pos);
 
             /*
-            if ( gTotSfx >= gSfxLODTotCutoff ||
+            if ( gTotSfx >= gSfxLODTotCutoff or
               gSfxCount[ SFX_TRAILSMOKE ] > gSfxLODCutoff )
             {
              objTrail = new DrawableTrail(TRAIL_SMOKE);
@@ -1624,7 +1624,7 @@ SfxClass::SfxClass(int  typeSfx,
             break;
 
         case SFX_DEBRISTRAIL_DUST:
-            if (gTotSfx >= gSfxLODTotCutoff ||
+            if (gTotSfx >= gSfxLODTotCutoff or
                 gSfxCount[ SFX_VEHICLE_DUST ] > gSfxLODCutoff)
             {
                 //RV - I-Hawk - Removing old trails calls, not needed anymore
@@ -1647,8 +1647,8 @@ SfxClass::SfxClass(int  typeSfx,
             // obj2d = new Drawable2D( DRAW2D_DARK_DEBRIS, 10.0f, &pos );
 
             /*
-            if ( gTotSfx >= gSfxLODTotCutoff ||
-              gSfxCount[ SFX_FIRE_EXPAND ] > gSfxLODCutoff ||
+            if ( gTotSfx >= gSfxLODTotCutoff or
+              gSfxCount[ SFX_FIRE_EXPAND ] > gSfxLODCutoff or
               gSfxCount[ SFX_FIRE_EXPAND_NOSMOKE ] > gSfxLODCutoff )
             {
              objTrail = new DrawableTrail(TRAIL_MEDIUM_SAM);
@@ -1695,8 +1695,8 @@ SfxClass::SfxClass(int  typeSfx,
             break;
 
         case SFX_WATERTRAIL:
-            if (gTotSfx >= gSfxLODTotCutoff ||
-                gSfxCount[ SFX_WATER_CLOUD ] > gSfxLODCutoff ||
+            if (gTotSfx >= gSfxLODTotCutoff or
+                gSfxCount[ SFX_WATER_CLOUD ] > gSfxLODCutoff or
                 gSfxCount[ SFX_BLUE_CLOUD ] > gSfxLODCutoff)
             {
                 //RV - I-Hawk - Removing old trails calls, not needed anymore
@@ -2000,7 +2000,7 @@ SfxClass::SfxClass(int  typeSfx,
             break;
 
         case SFX_FLAMING_PART:
-            if (gTotSfx >= gSfxLODTotCutoff ||
+            if (gTotSfx >= gSfxLODTotCutoff or
                 gSfxCount[ SFX_FIRE1 ] > gSfxLODCutoff)
             {
                 //RV - I-Hawk - Removing old trails calls, not needed anymore
@@ -2650,9 +2650,9 @@ BOOL SfxClass::Exec()
 
         // check to see if the object is awake or if its state
         // is no longer OK
-        if ( not baseObj->IsAwake() ||
-            (baseObj->Status() bitand VIS_TYPE_MASK) == VIS_DESTROYED ||
-            (baseObj->Status() bitand VIS_TYPE_MASK) == VIS_DAMAGED ||
+        if ( not baseObj->IsAwake() or
+            (baseObj->Status() bitand VIS_TYPE_MASK) == VIS_DESTROYED or
+            (baseObj->Status() bitand VIS_TYPE_MASK) == VIS_DAMAGED or
             baseObj->IsDead())
         {
             // deref the entity
@@ -3550,7 +3550,7 @@ SfxClass::RunSecondarySfx(void)
                                                   &pos,
                                                   &mvec);
 
-            if (gSfxCount[ SFX_GROUNDBURST ] > gSfxLODCutoff ||
+            if (gSfxCount[ SFX_GROUNDBURST ] > gSfxLODCutoff or
                 gTotSfx >= gSfxLODTotCutoff)
             {
                 numBursts = 10 + FloatToInt32(PRANDFloatPos() * 20.0f);
@@ -3633,9 +3633,9 @@ SfxClass::RunSecondarySfx(void)
 
         case SFX_SPARKS:
         case SFX_SPARKS_NO_DEBRIS:
-            if (gSfxCount[ SFX_WATER_WAKE_LARGE ] > gSfxLODCutoff ||
-                gSfxCount[ SFX_SPARK_TRACER ] > gSfxLODCutoff ||
-                gTotSfx >= gSfxLODTotCutoff ||
+            if (gSfxCount[ SFX_WATER_WAKE_LARGE ] > gSfxLODCutoff or
+                gSfxCount[ SFX_SPARK_TRACER ] > gSfxLODCutoff or
+                gTotSfx >= gSfxLODTotCutoff or
                 (approxDist > 30000.0f and scale < 50.0f))
             {
                 break;
@@ -3709,8 +3709,8 @@ SfxClass::RunSecondarySfx(void)
             mpos.y = pos.y + PRANDFloat() * 30.0f;
             mpos.z = pos.z;
 
-            if (gSfxCount[ SFX_FIRESMOKE ] > gSfxLODCutoff ||
-                gSfxCount[ SFX_TRAILSMOKE ] > gSfxLODCutoff ||
+            if (gSfxCount[ SFX_FIRESMOKE ] > gSfxLODCutoff or
+                gSfxCount[ SFX_TRAILSMOKE ] > gSfxLODCutoff or
                 gTotSfx >= gSfxLODTotCutoff)
             {
                 break;
@@ -3783,7 +3783,7 @@ SfxClass::RunSecondarySfx(void)
             {
                 // try a reduction in the number of effects running
                 // if ( approxDist > 10000.0f and gSfxCount[ SFX_FIRESMOKE ] > gSfxLODCutoff )
-                if (gSfxCount[ SFX_FIRESMOKE ] > gSfxLODCutoff ||
+                if (gSfxCount[ SFX_FIRESMOKE ] > gSfxLODCutoff or
                     gTotSfx >= gSfxLODTotCutoff)
                     break;
 
@@ -3797,7 +3797,7 @@ SfxClass::RunSecondarySfx(void)
                  scale ) ); // scale
                  */
 
-                if (gSfxCount[ SFX_SHIP_BURNING_FIRE ] > gSfxLODCutoff / 2 ||
+                if (gSfxCount[ SFX_SHIP_BURNING_FIRE ] > gSfxLODCutoff / 2 or
                     gTotSfx >= gSfxLODTotCutoff / 2)
                     break;
 
@@ -5935,9 +5935,9 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
                 */
             }
         }
-        else if (type == SFX_GUNFIRE ||
-                 type == SFX_SMOKING_PART ||
-                 type == SFX_FLAMING_PART ||
+        else if (type == SFX_GUNFIRE or
+                 type == SFX_SMOKING_PART or
+                 type == SFX_FLAMING_PART or
                  type == SFX_MISSILE_LAUNCH)
         {
             /*
@@ -5979,7 +5979,7 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
     {
         pos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 10.0f;
 
-        if ((groundType == COVERAGE_WATER ||
+        if ((groundType == COVERAGE_WATER or
              groundType == COVERAGE_RIVER) and 
             type not_eq SFX_FLARE_GFX)
         {
@@ -6485,7 +6485,7 @@ SfxClass::StartRandomDebris(void)
                  gSfxCount[ SFX_FIRETRAIL ] +
                  gSfxCount[ SFX_CAT_LAUNCH ];
 
-    if (numRunning > gSfxLODCutoff * 3 ||
+    if (numRunning > gSfxLODCutoff * 3 or
         gTotSfx >= gSfxLODTotCutoff)
         return;
 
@@ -6493,10 +6493,10 @@ SfxClass::StartRandomDebris(void)
     timetl = 0.5f + 2.0f * debrisScale / 10.0f;
     mpos = pos;
 
-    if (type == SFX_WATER_EXPLOSION ||
-        type == SFX_GROUND_STRIKE ||
-        type == SFX_WATER_STRIKE ||
-        type == SFX_ARTILLERY_EXPLOSION ||
+    if (type == SFX_WATER_EXPLOSION or
+        type == SFX_GROUND_STRIKE or
+        type == SFX_WATER_STRIKE or
+        type == SFX_ARTILLERY_EXPLOSION or
         type == SFX_GROUND_EXPLOSION)
     {
         debrisScale = min(7.0f, scale * 0.1f);
@@ -6543,7 +6543,7 @@ SfxClass::StartRandomDebris(void)
             mvec.z = 90.0f * PRANDFloat();
         }
 
-        if (type == SFX_WATER_EXPLOSION ||
+        if (type == SFX_WATER_EXPLOSION or
             type == SFX_WATER_STRIKE)
         {
             /*

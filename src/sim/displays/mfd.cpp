@@ -753,9 +753,9 @@ void MFDClass::Exec(int clearFrame, int virtualCockpit)
 
     if (ownship and ownship->mFaults and 
         (
-            (ownship->mFaults->GetFault(FaultClass::flcs_fault) bitand FaultClass::dmux) ||
-            ownship->mFaults->GetFault(FaultClass::dmux_fault) ||
-            ((ownship->mFaults->GetFault(FaultClass::mfds_fault) bitand FaultClass::lfwd) and (id % 2 == 0)) ||
+            (ownship->mFaults->GetFault(FaultClass::flcs_fault) bitand FaultClass::dmux) or
+            ownship->mFaults->GetFault(FaultClass::dmux_fault) or
+            ((ownship->mFaults->GetFault(FaultClass::mfds_fault) bitand FaultClass::lfwd) and (id % 2 == 0)) or
             ((ownship->mFaults->GetFault(FaultClass::mfds_fault) bitand FaultClass::rfwd) and (id % 2 == 1))
         )
        )

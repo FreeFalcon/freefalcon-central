@@ -703,7 +703,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
         }
     }
     //VIP and VRP
-    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == THREE_BUTTON  ||
+    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == THREE_BUTTON  or
              IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == NINE_BUTTON)
     {
         if (Manual_Input)
@@ -839,7 +839,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
             }
         }
     }
-    else if ((IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == 100) ||
+    else if ((IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == 100) or
              IsICPSet(ICPClass::MODE_IFF)) //INTG and IFF
     {
         if (Input_Digit7 < 10)

@@ -1974,8 +1974,8 @@ com_API_handle CAPIIsInGroup(com_API_handle grouphandle, unsigned long ipAddress
         }
         else if
         (
-            (curr->com->protocol == CAPI_DPLAY_TCP_PROTOCOL)   ||
-            (curr->com->protocol == CAPI_DPLAY_MODEM_PROTOCOL) ||
+            (curr->com->protocol == CAPI_DPLAY_TCP_PROTOCOL)   or
+            (curr->com->protocol == CAPI_DPLAY_MODEM_PROTOCOL) or
             (curr->com->protocol == CAPI_DPLAY_SERIAL_PROTOCOL)
         )
         {
@@ -2249,8 +2249,8 @@ int ComGROUPSend(com_API_handle c, int msgsize, int oob, int type)
             }
             /*else if
             (
-             (curr->com->protocol == CAPI_DPLAY_TCP_PROTOCOL) ||
-             (curr->com->protocol == CAPI_DPLAY_MODEM_PROTOCOL) ||
+             (curr->com->protocol == CAPI_DPLAY_TCP_PROTOCOL) or
+             (curr->com->protocol == CAPI_DPLAY_MODEM_PROTOCOL) or
              (curr->com->protocol == CAPI_DPLAY_SERIAL_PROTOCOL)
             )
             {
@@ -2409,8 +2409,8 @@ int ComGROUPSendX(com_API_handle c, int msgsize, int oob, int type, com_API_hand
             }
             /*else if
             (
-             curr->com->protocol == CAPI_DPLAY_TCP_PROTOCOL ||
-             curr->com->protocol == CAPI_DPLAY_MODEM_PROTOCOL ||
+             curr->com->protocol == CAPI_DPLAY_TCP_PROTOCOL or
+             curr->com->protocol == CAPI_DPLAY_MODEM_PROTOCOL or
              curr->com->protocol == CAPI_DPLAY_SERIAL_PROTOCOL
             )
             {

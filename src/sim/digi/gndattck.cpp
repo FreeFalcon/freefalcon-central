@@ -126,7 +126,7 @@ void DigitalBrain::GroundAttackMode(void)
         return;
     }
 
-    if ((agmergeTimer not_eq 0 and SimLibElapsedTime > agmergeTimer) ||
+    if ((agmergeTimer not_eq 0 and SimLibElapsedTime > agmergeTimer) or
         (missionComplete and ( not groundTargetPtr or not (IsSetATC(HasAGWeapon)))))
     {
         if (groundTargetPtr)
@@ -161,7 +161,7 @@ void DigitalBrain::GroundAttackMode(void)
     //================================================
     // Cobra - bypass attack profile stuff while attacking with rockets
     //================================================
-    if ((Sms->curWeapon and Sms->curWeapon->IsLauncher() and hasRocket and onStation == Final) ||
+    if ((Sms->curWeapon and Sms->curWeapon->IsLauncher() and hasRocket and onStation == Final) or
         rocketMnvr == RocketFiring or (self->Sms->IsFiringRockets() and (rocketTimer < 0)))
     {
         if (groundTargetPtr)
@@ -190,7 +190,7 @@ void DigitalBrain::GroundAttackMode(void)
     int hasJSOW = FALSE;
 
     if (
-        (hasBomb == TRUE + 4) ||
+        (hasBomb == TRUE + 4) or
         (theBomb and (theBomb->IsSetBombFlag(BombClass::IsJSOW)))
     )
     {
@@ -286,14 +286,14 @@ void DigitalBrain::GroundAttackMode(void)
             (
                 groundTargetPtr->BaseData()->IsSim() and // For a SIM entity
                 (
-                    groundTargetPtr->BaseData()->IsDead() ||
-                    groundTargetPtr->BaseData()->IsExploding() ||
+                    groundTargetPtr->BaseData()->IsDead() or
+                    groundTargetPtr->BaseData()->IsExploding() or
                     (
  not isWing and IsNotMainTargetSEAD() and 
  not ((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject()->IsEmitting()
                     )
                 )
-            ) ||
+            ) or
             (
                 groundTargetPtr->BaseData()->IsCampaign() and // For a CAMPAIGN entity
                 (
@@ -1044,11 +1044,11 @@ DownwindBypass:
             // 2001-07-23 MODIFIED BY S.G. IF NO WEAPON AVAIL FOR TARGET, SWITCH TO FINAL RIGHT AWAY
             // if ( approxRange < 1.3f * NM_TO_FT)
             //cobra removed because SEAD was looping around target
-            //if ( approxRange < 1.3f * NM_TO_FT /*|| not IsSetATC(HasCanUseAGWeapon)*/)
+            //if ( approxRange < 1.3f * NM_TO_FT /*or not IsSetATC(HasCanUseAGWeapon)*/)
             // Cobra - Added JSOW stand-off weapon launching
             //if ((hasJSOW and approxRange < g_fAIJSOWMaxRange * NM_TO_FT) or (approxRange < g_fAGFlyoutRange * NM_TO_FT)) // Cobra - was 5 NM
-            if ((hasJSOW and approxRange < g_fAIJSOWMaxRange * NM_TO_FT) ||
-                (hasHARM and approxRange < g_fAIHarmMaxRange * NM_TO_FT) ||
+            if ((hasJSOW and approxRange < g_fAIJSOWMaxRange * NM_TO_FT) or
+                (hasHARM and approxRange < g_fAIHarmMaxRange * NM_TO_FT) or
                 (approxRange < 8.0f * NM_TO_FT /* and FabsF(ata) < 20.0f * DTR */)) // Cobra - was 5 NM
             {
                 // 2001-07-15 ADDED BY S.G. IF madeAGPass IS TRUE, WE MADE AN A2G PASS AND WAS TURNING AWAY. REDO AN ATTACK PROFILE FOR A NEW PASS
@@ -1121,8 +1121,8 @@ DownwindBypass:
             TrackPoint(0.0F, desSpeed);
 
             // Cobra - get out far enough to make another pass
-            if ((((slowMover) and (approxTargetRange > g_fAGSlowFlyoutRange * NM_TO_FT)) ||
-                 (approxTargetRange > g_fAGFlyoutRange * NM_TO_FT))) // ||
+            if ((((slowMover) and (approxTargetRange > g_fAGSlowFlyoutRange * NM_TO_FT)) or
+                 (approxTargetRange > g_fAGFlyoutRange * NM_TO_FT))) // or
                 //(approxRange < 2.0f  * NM_TO_FT))
             {
                 // Check for remaining AB weapons
@@ -2380,7 +2380,7 @@ void DigitalBrain::SelectGroundWeapon(void)
     classPtr = (Falcon4EntityClassType*)self->EntityType();
 
     if (classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_AIR_ATTACK and 
-        (classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_A10 ||
+        (classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_A10 or
          classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_SU25))
     {
         if (self->Guns and 
@@ -2573,8 +2573,8 @@ void DigitalBrain::SelectCampGroundTarget(void)
         groundTargetPtr and 
         groundTargetPtr->BaseData()->IsSim() and 
         (
-            groundTargetPtr->BaseData()->IsExploding() ||
-            groundTargetPtr->BaseData()->IsDead() ||
+            groundTargetPtr->BaseData()->IsExploding() or
+            groundTargetPtr->BaseData()->IsDead() or
  not ((SimBaseClass *)groundTargetPtr->BaseData())->IsAwake()
         )
     )
@@ -2743,8 +2743,8 @@ void DigitalBrain::SelectCampGroundTarget(void)
     campTactic = campUnit->GetUnitTactic();
 
     // sanity check and make sure its on ground, what to do if not?...
-    if ( not target ||
- not target->OnGround() ||
+    if ( not target or
+ not target->OnGround() or
         (campTactic not_eq ATACTIC_ENGAGE_STRIKE and 
          campTactic not_eq ATACTIC_ENGAGE_SURFACE and 
          campTactic not_eq ATACTIC_ENGAGE_DEF and 
@@ -3286,7 +3286,7 @@ void DigitalBrain::IPCheck(void)
                 }
                 //Cobra - Attempt to let JSOW flights target earlier
                 //else if (((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer) and 
-                // (((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer)->IsSetBombFlag(BombClass::IsJSOW)) ||
+                // (((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer)->IsSetBombFlag(BombClass::IsJSOW)) or
                 else if (hasBomb == TRUE + 4)
                 {
                     if ((FabsF(rangeSq) < FabsF((25.0F * NM_TO_FT) * (25.0F * NM_TO_FT))) and 
@@ -3373,7 +3373,7 @@ void DigitalBrain::DropBomb(float approxRange, float ata, RadarClass* theRadar)
 
     // Check for JDAM/JSOW ready-to-drop
     /* if ((self->IsPlayer() and self->AutopilotType() not_eq AircraftClass::CombatAP) and (Sms->GetCurrentHardpoint() > 0) and 
-     ((Sms->hardPoint[Sms->GetCurrentHardpoint()]->GetWeaponType()==wtGPS) ||
+     ((Sms->hardPoint[Sms->GetCurrentHardpoint()]->GetWeaponType()==wtGPS) or
      (((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer) and 
      ((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer)->IsSetBombFlag(BombClass::IsJSOW))) and 
      ( not Sms->JDAMPowered))
@@ -3385,7 +3385,7 @@ void DigitalBrain::DropBomb(float approxRange, float ata, RadarClass* theRadar)
 
 
     // Make sure the FCC is in the right mode/sub mode
-    if (FCC->GetMasterMode() not_eq FireControlComputer::AirGroundBomb ||
+    if (FCC->GetMasterMode() not_eq FireControlComputer::AirGroundBomb or
         FCC->GetSubMode() not_eq FireControlComputer::CCRP)
     {
         //Cobra test
@@ -3513,7 +3513,7 @@ void DigitalBrain::DropBomb(float approxRange, float ata, RadarClass* theRadar)
             {
                 // COBRA - RED - FIXING POSSIBLE CTDs
                 // Cobra - rippling pair only for GPS JDAM/JSOW
-                /* if ((Sms->GetCurrentHardpoint() > 0) and ((Sms->hardPoint[Sms->GetCurrentHardpoint()]->GetWeaponType()==wtGPS) ||
+                /* if ((Sms->GetCurrentHardpoint() > 0) and ((Sms->hardPoint[Sms->GetCurrentHardpoint()]->GetWeaponType()==wtGPS) or
                  (((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer) and 
                  ((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer)->IsSetBombFlag(BombClass::IsJSOW))))*/
                 if (TheBomb and (TheBomb->IsSetBombFlag(BombClass::IsJSOW) or TheBomb->IsSetBombFlag(BombClass::IsGPS)))
@@ -3618,7 +3618,7 @@ void DigitalBrain::DropGBU(float approxRange, float ata, RadarClass* theRadar)
     droppingBombs = wcGbuWpn;
 
     // Make sure the FCC is in the right mode/sub mode
-    if (FCC->GetMasterMode() not_eq FireControlComputer::AirGroundLaser ||
+    if (FCC->GetMasterMode() not_eq FireControlComputer::AirGroundLaser or
         FCC->GetSubMode() not_eq FireControlComputer::SLAVE)
     {
         //Cobra test
@@ -3849,7 +3849,7 @@ void DigitalBrain::DropGBU(float approxRange, float ata, RadarClass* theRadar)
     //MI NULL out our Target
     if (groundTargetPtr and 
         groundTargetPtr->BaseData()->IsSim() and 
-        (groundTargetPtr->BaseData()->IsDead() ||
+        (groundTargetPtr->BaseData()->IsDead() or
          groundTargetPtr->BaseData()->IsExploding()))
     {
         SetGroundTarget(NULL);
@@ -4342,7 +4342,7 @@ int DigitalBrain::GunStrafe(float approxRange, float ata)
 {
     FireControlComputer* FCC = self->FCC;
 
-    if (FCC->GetMasterMode() not_eq FireControlComputer::AGGun ||
+    if (FCC->GetMasterMode() not_eq FireControlComputer::AGGun or
         FCC->GetSubMode() not_eq FireControlComputer::STRAF)
     {
         FCC->SetMasterMode(FireControlComputer::AGGun);

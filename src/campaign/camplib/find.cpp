@@ -1005,7 +1005,7 @@ Objective FindNearestAirbase(GridIndex X, GridIndex Y)
     while (o not_eq NULL)
     {
         if (
-            (o->GetType() == TYPE_AIRBASE) ||
+            (o->GetType() == TYPE_AIRBASE) or
             (o->GetType() == TYPE_AIRSTRIP)
         )
         {
@@ -1048,7 +1048,7 @@ Objective FindNearbyAirbase(GridIndex X, GridIndex Y)
     while (o not_eq NULL)
     {
         if (
-            (o->GetType() == TYPE_AIRBASE) ||
+            (o->GetType() == TYPE_AIRBASE) or
             (o->GetType() == TYPE_AIRSTRIP)
         )
         {
@@ -1126,7 +1126,7 @@ Objective FindNearestFriendlyRunway(Team who, GridIndex X, GridIndex Y)
         if (GetTTRelations(o->GetTeam(), who) <= Neutral)
         {
             if (
-                (o->GetType() == TYPE_AIRBASE) ||
+                (o->GetType() == TYPE_AIRBASE) or
                 (o->GetType() == TYPE_AIRSTRIP)
             )
             {
@@ -1249,7 +1249,7 @@ Objective FindNearestFriendlyPowerStation(VuFilteredList* l, Team who, GridIndex
         if (GetTTRelations(o->GetTeam(), who) <= Neutral)
         {
             if (
-                o->GetType() == TYPE_NUCLEAR ||
+                o->GetType() == TYPE_NUCLEAR or
                 o->GetType() == TYPE_POWERPLANT
             )
             {

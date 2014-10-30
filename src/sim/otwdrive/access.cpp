@@ -1137,9 +1137,9 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
             case Mode2DCockpit:
             case Mode3DCockpit:
                 if (
-                    (ejectCam) ||
+                    (ejectCam) or
                     ( not SimDriver.GetPlayerAircraft())
-                    //||  (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING)
+                    //or  (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING)
                 )
                 {
                     return;
@@ -1763,8 +1763,8 @@ void OTWDriverClass::ViewReset(void)
 
     eyeHeadRoll = 0.0F;
 
-    if (GetOTWDisplayMode() == Mode3DCockpit ||
-        GetOTWDisplayMode() == ModeHud ||
+    if (GetOTWDisplayMode() == Mode3DCockpit or
+        GetOTWDisplayMode() == ModeHud or
         GetOTWDisplayMode() == ModePadlockF3)
     {
         eyePan = 0.0F;

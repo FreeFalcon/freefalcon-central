@@ -762,7 +762,7 @@ void SmsDrawable::InvPushButton(int whichButton, int whichMFD)
             {
                 MfdDrawable::PushButton(whichButton, whichMFD);
             }
-            else if (pFCC->GetMasterMode() == FireControlComputer::ILS ||
+            else if (pFCC->GetMasterMode() == FireControlComputer::ILS or
                      pFCC->GetMasterMode() == FireControlComputer::Nav)
             {
                 SetDisplayMode(Wpn);

@@ -400,8 +400,8 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
     // Various ways to be broken
     if (ownship->mFaults and 
         (
-            (ownship->mFaults->GetFault(FaultClass::flcs_fault) bitand FaultClass::dmux) ||
-            ownship->mFaults->GetFault(FaultClass::dmux_fault) ||
+            (ownship->mFaults->GetFault(FaultClass::flcs_fault) bitand FaultClass::dmux) or
+            ownship->mFaults->GetFault(FaultClass::dmux_fault) or
             ownship->mFaults->GetFault(FaultClass::hud_fault)
         )
        )
@@ -1261,8 +1261,8 @@ void HudClass::DrawAlphaNumeric(void)
     // Window 12, 15 (Bingo, trapped or home Fuel) JPO additions
 
 
-    if (ownship->mFaults->GetFault(fuel_low_fault) ||
-        ownship->mFaults->GetFault(fuel_trapped) ||
+    if (ownship->mFaults->GetFault(fuel_low_fault) or
+        ownship->mFaults->GetFault(fuel_trapped) or
         ownship->mFaults->GetFault(fuel_home))
     {
         //MI Warn Reset is correct
@@ -1358,7 +1358,7 @@ void HudClass::DrawAlphaNumeric(void)
             }
             else
             {
-                if ( not playerAC->HasPower(AircraftClass::UFCPower) ||
+                if ( not playerAC->HasPower(AircraftClass::UFCPower) or
                     (FCC and FCC->GetMasterMode() == FireControlComputer::Dogfight))
                     return;
 
@@ -1790,7 +1790,7 @@ void HudClass::DrawPitchLadder(void)
     {
         if (
             ownship and 
-            ownship->INSState(AircraftClass::INS_PowerOff) ||
+            ownship->INSState(AircraftClass::INS_PowerOff) or
  not ownship->INSState(AircraftClass::INS_HUD_STUFF)
         )
         {

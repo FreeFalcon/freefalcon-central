@@ -179,8 +179,8 @@ SMSBaseClass::SMSBaseClass(SimVehicleClass *newOwnship, short *weapId, uchar *we
             // sfr: in DF and IA we dont respect these hardpoint limitations
             // fixes DF bug where you select 8 missiles and after second youre out of ammo
             createCount = (
-                              (FalconLocalGame->gameType == game_Dogfight) ||
-                              (FalconLocalGame->gameType == game_InstantAction) ||
+                              (FalconLocalGame->gameType == game_Dogfight) or
+                              (FalconLocalGame->gameType == game_InstantAction) or
                               (rackFlag bitand (1 << i))
                           ) ? hardPoint[i]->weaponCount : 1;
             classPtr = &Falcon4ClassTable[wd->Index];
@@ -193,7 +193,7 @@ SMSBaseClass::SMSBaseClass(SimVehicleClass *newOwnship, short *weapId, uchar *we
                 SetFlag(GunOnBoard);
             }
             else if (
-                classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_MISSILE ||
+                classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_MISSILE or
                 classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_ROCKET
             )
             {
@@ -204,15 +204,15 @@ SMSBaseClass::SMSBaseClass(SimVehicleClass *newOwnship, short *weapId, uchar *we
                                               );
             }
             else if (
-                classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_BOMB ||
+                classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_BOMB or
                 (
                     classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_ELECTRONICS and 
                     classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_VEHICLE
-                ) ||
+                ) or
                 (
                     classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_FUEL_TANK and 
                     classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_FUEL_TANK
-                ) ||
+                ) or
                 (
                     classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_RECON and 
                     classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_CAMERA
@@ -1937,7 +1937,7 @@ void SMSClass::EmergencyJettison(void)
                 }
                 else
                 {
-                    if (hardPoint[curStation] and not (hardPoint[curStation]->GetWeaponClass() == wcECM ||
+                    if (hardPoint[curStation] and not (hardPoint[curStation]->GetWeaponClass() == wcECM or
                                                    hardPoint[curStation]->GetWeaponClass() == wcAimWpn or hardPoint[curStation]->GetWeaponClass() == wcHARMWpn))
                     {
                         ReleaseCurWeapon(-1);
@@ -2827,7 +2827,7 @@ WeaponType SMSClass::GetNextWeapon(WeaponDomain domainDesired)
 
         // Marco edit - non-zero weapon check due to problems with weapon cycling
         if (hardPoint[stationUnderTest] and (hardPoint[stationUnderTest]->GetWeaponData()->domain bitand domainDesired) and 
-            (hardPoint[stationUnderTest]->weaponCount not_eq 0 ||
+            (hardPoint[stationUnderTest]->weaponCount not_eq 0 or
              hardPoint[stationUnderTest]->GetWeaponType() == wtGuns
              or hardPoint[stationUnderTest]->GetWeaponType() == wtAgm88
              or hardPoint[stationUnderTest]->GetWeaponType() == wtGBU)) // JB 010726 Allow HTS/LaserPod to be selected even when out of weapons
@@ -3000,7 +3000,7 @@ void SMSClass::SelectWeapon(WeaponType newtype, WeaponDomain domainDesired)
         case wtMk82:
         case wtMk84:
             if (FCC->GetMasterMode() not_eq FireControlComputer::AirGroundBomb) // or // MLR 4/3/2004 -
-                //FCC->GetSubMode() == FireControlComputer::STRAF ||
+                //FCC->GetSubMode() == FireControlComputer::STRAF or
                 //FCC->GetSubMode() == FireControlComputer::OBSOLETERCKT)
             {
                 FCC->SetMasterMode(FireControlComputer::AirGroundBomb);
@@ -3443,15 +3443,15 @@ int SMSClass::JettisonStation(int stationNum, JettisonMode mode)
         Tpoint pos , vec;
         int rdflags = hardPoint[stationNum]->GetRackDataFlags();
 
-        int jettpylon = ((rdflags bitand RDF_EMERGENCY_JETT_PYLON) and (mode == Emergency)) ||
+        int jettpylon = ((rdflags bitand RDF_EMERGENCY_JETT_PYLON) and (mode == Emergency)) or
                         ((rdflags bitand RDF_SELECTIVE_JETT_PYLON) and (mode == SelectivePylon));
 
-        int jettrack  = jettpylon ||
-                        ((rdflags bitand RDF_EMERGENCY_JETT_RACK) and (mode == Emergency)) ||
+        int jettrack  = jettpylon or
+                        ((rdflags bitand RDF_EMERGENCY_JETT_RACK) and (mode == Emergency)) or
                         ((rdflags bitand RDF_SELECTIVE_JETT_RACK) and (mode == SelectiveRack));
 
-        int jettweapon = jettrack ||
-                         ((rdflags bitand RDF_EMERGENCY_JETT_WEAPON) and (mode == Emergency)) ||
+        int jettweapon = jettrack or
+                         ((rdflags bitand RDF_EMERGENCY_JETT_WEAPON) and (mode == Emergency)) or
                          ((rdflags bitand RDF_SELECTIVE_JETT_WEAPON) and (mode == SelectiveWeapon));
 
         MonoPrint("JettisonStation(%d,%d) : rdflags=%8x  jettpylon=%d  jettrack=%d jettweapon=%d",
@@ -3829,12 +3829,12 @@ void SMSClass::AddStore(int station, int storeId, int visible)
 
         if (gLimiterMgr->HasLimiter(CatIIICommandType, ((AircraftClass *)ownship)->af->VehicleIndex()))
         {
-            if (hardPoint[station]->GetWeaponClass() == wcRocketWpn ||
-                hardPoint[station]->GetWeaponClass() == wcBombWpn ||
-                hardPoint[station]->GetWeaponClass() == wcTank ||
-                hardPoint[station]->GetWeaponClass() == wcAgmWpn ||
-                hardPoint[station]->GetWeaponClass() == wcHARMWpn ||
-                hardPoint[station]->GetWeaponClass() == wcSamWpn ||
+            if (hardPoint[station]->GetWeaponClass() == wcRocketWpn or
+                hardPoint[station]->GetWeaponClass() == wcBombWpn or
+                hardPoint[station]->GetWeaponClass() == wcTank or
+                hardPoint[station]->GetWeaponClass() == wcAgmWpn or
+                hardPoint[station]->GetWeaponClass() == wcHARMWpn or
+                hardPoint[station]->GetWeaponClass() == wcSamWpn or
                 hardPoint[station]->GetWeaponClass() == wcGbuWpn)
             {
 
@@ -3928,12 +3928,12 @@ void SMSClass::ChooseLimiterMode(int hardpoint)
 
                 if (hardPoint[i] and hardPoint[i]->weaponPointer and 
                     hardPoint[i]->weaponCount > 0 and 
-                    (hardPoint[i]->GetWeaponClass() == wcRocketWpn ||
-                     hardPoint[i]->GetWeaponClass() == wcBombWpn ||
-                     hardPoint[i]->GetWeaponClass() == wcTank ||
-                     hardPoint[i]->GetWeaponClass() == wcAgmWpn ||
-                     hardPoint[i]->GetWeaponClass() == wcHARMWpn ||
-                     hardPoint[i]->GetWeaponClass() == wcSamWpn ||
+                    (hardPoint[i]->GetWeaponClass() == wcRocketWpn or
+                     hardPoint[i]->GetWeaponClass() == wcBombWpn or
+                     hardPoint[i]->GetWeaponClass() == wcTank or
+                     hardPoint[i]->GetWeaponClass() == wcAgmWpn or
+                     hardPoint[i]->GetWeaponClass() == wcHARMWpn or
+                     hardPoint[i]->GetWeaponClass() == wcSamWpn or
                      hardPoint[i]->GetWeaponClass() == wcGbuWpn))
                 {
                     // OW CATIII Fix

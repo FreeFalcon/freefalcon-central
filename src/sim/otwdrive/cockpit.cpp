@@ -51,12 +51,12 @@ void OTWDriverClass::Draw2DHud(void)
     {
 #if DO_HIRESCOCK_HACK
 
-        if ( not gDoCockpitHack and (mOTWDisplayMode == ModeHud or mOTWDisplayMode == ModePadlockEFOV ||
+        if ( not gDoCockpitHack and (mOTWDisplayMode == ModeHud or mOTWDisplayMode == ModePadlockEFOV or
                                 mOTWDisplayMode == Mode2DCockpit and pCockpitManager))
         {
 #else
 
-        if (mOTWDisplayMode == ModeHud or mOTWDisplayMode == ModePadlockEFOV ||
+        if (mOTWDisplayMode == ModeHud or mOTWDisplayMode == ModePadlockEFOV or
             mOTWDisplayMode == Mode2DCockpit and pCockpitManager)
         {
 #endif
@@ -88,11 +88,11 @@ void OTWDriverClass::Draw2DHud(void)
 #if DO_HIRESCOCK_HACK
 
     if (
- not gDoCockpitHack and (mOTWDisplayMode == ModeHud or mOTWDisplayMode == ModePadlockEFOV ||
+ not gDoCockpitHack and (mOTWDisplayMode == ModeHud or mOTWDisplayMode == ModePadlockEFOV or
                             mOTWDisplayMode == Mode2DCockpit and pCockpitManager)
 #else
     if (
-        mOTWDisplayMode == ModeHud or mOTWDisplayMode == ModePadlockEFOV ||
+        mOTWDisplayMode == ModeHud or mOTWDisplayMode == ModePadlockEFOV or
         mOTWDisplayMode == Mode2DCockpit and pCockpitManager
 #endif
     )

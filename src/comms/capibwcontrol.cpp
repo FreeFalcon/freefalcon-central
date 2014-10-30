@@ -176,7 +176,7 @@ public:
         // if we have any spare bw of that type, ok
         // this avoids starvation for low bw connections
         if (
-            (used_by_type[type] < bytes_by_type[type]) ||
+            (used_by_type[type] < bytes_by_type[type]) or
             (used_by_type[BW_COMMON] < bytes_by_type[BW_COMMON])
         )
         {

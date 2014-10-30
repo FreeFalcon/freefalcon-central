@@ -132,7 +132,7 @@ int GameManagerClass::CheckPlayerStatus(FalconEntity *entity)
         else if (
             (entity->IsCampaign()) and 
             (
-                (entity == session->GetPlayerFlight()) ||
+                (entity == session->GetPlayerFlight()) or
                 (entity == session->GetPlayerSquadron())
             )
         )

@@ -847,9 +847,9 @@ int FlightClass::MoveUnit(CampaignTime time)
     GetLocation(&x, &y);
 
     if (
-        (tactic == ATACTIC_ENGAGE_AIR) ||
-        (tactic == ATACTIC_SHOOT_AND_RUN) ||
-        (tactic == ATACTIC_ENGAGE_STRIKE) ||
+        (tactic == ATACTIC_ENGAGE_AIR) or
+        (tactic == ATACTIC_SHOOT_AND_RUN) or
+        (tactic == ATACTIC_ENGAGE_STRIKE) or
         (tactic == ATACTIC_ENGAGE_SURFACE)
     )
     {
@@ -1934,7 +1934,7 @@ int FlightClass::ChooseTarget()
     was_engaged = Engaged();
     old_target = GetTarget();
     ShiAssert(
- not old_target or old_target->IsFlight() or old_target->IsBattalion() ||
+ not old_target or old_target->IsFlight() or old_target->IsBattalion() or
         old_target->IsTaskForce() or old_target->IsObjective() or old_target->IsAirplane()
     );
 
@@ -2004,7 +2004,7 @@ int FlightClass::ChooseTarget()
                 // 2001-06-19 MODIFIED BY S.G. SEAD STRIKES AND ESCORTS GO IN,
                 // NOT JUST SEAD ESCORTS (SEE COMMENTS WITHIN FOR MORE DETAILS)
                 //if (((BattalionClass *)e)->class_data->RadarVehicle < 255 and 
-                // (((BattalionClass *)e)->class_data->RadarVehicle > 15 ||
+                // (((BattalionClass *)e)->class_data->RadarVehicle > 15 or
                 // ((BattalionClass *)e)->GetNumVehicles(((BattalionClass *)e)->class_data->RadarVehicle)))
                 int enter = FALSE;
 
@@ -2258,7 +2258,7 @@ int FlightClass::ChooseTarget()
     int towardTarget = TRUE;
 
     if (
-        w and ((w->GetWPFlags() bitand WPF_TARGET) ||
+        w and ((w->GetWPFlags() bitand WPF_TARGET) or
               ((w = w->GetNextWP()) and (w->GetWPFlags() bitand WPF_TARGET) and not (towardTarget = FALSE)))
     )
     {
@@ -3256,11 +3256,11 @@ int FlightClass::BuildMission(MissionRequestClass *mis)
     }
 
     // RV - Biker - Check if we have some GPS guided bombs loaded
-    if (GetUnitMission() == AMIS_ONCALLCAS ||
-        GetUnitMission() == AMIS_PRPLANCAS ||
-        GetUnitMission() == AMIS_SAD ||
-        GetUnitMission() == AMIS_INT ||
-        GetUnitMission() == AMIS_BAI ||
+    if (GetUnitMission() == AMIS_ONCALLCAS or
+        GetUnitMission() == AMIS_PRPLANCAS or
+        GetUnitMission() == AMIS_SAD or
+        GetUnitMission() == AMIS_INT or
+        GetUnitMission() == AMIS_BAI or
         GetUnitMission() == AMIS_ASW)
     {
         for (int i = 0; i < loadouts; i++)
@@ -5453,7 +5453,7 @@ Objective FindAlternateStrip(Flight flight)
             if (
                 target and 
                 (target->GetType() == TYPE_AIRBASE or target->GetType() == TYPE_AIRSTRIP) and 
-                o->GetCampID() == target->GetCampID() ||
+                o->GetCampID() == target->GetCampID() or
                 homebase and o->GetCampID() == homebase->GetCampID()
             )
             {

@@ -259,7 +259,7 @@ void DigitalBrain::AccelCheck(void)
     //this is only important in combat
     if (nextMode >= MergeMode and nextMode <= BVREngageMode and nextMode not_eq GroundAvoidMode)
     {
-        if ((self->Pitch() > 50.0F * DTR and self->GetKias() < cornerSpeed * 0.4F) ||//me123 150kias
+        if ((self->Pitch() > 50.0F * DTR and self->GetKias() < cornerSpeed * 0.4F) or//me123 150kias
             (self->Pitch() > 0.0F * DTR and self->GetKias() < cornerSpeed * 0.35F))//me123 100 GetKias
         {
             AddMode(AccelMode);

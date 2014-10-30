@@ -1946,10 +1946,10 @@ void OTWDriverClass::RenderFrame()
         cockpitFlightData.AdiIlsVerPos = pCockpitManager->ADIGsDevReading;
 
         if (
-            otwPlatform.get() == NULL ||
-            otwPlatform->IsExploding() ||
-            otwPlatform->IsDead() ||
- not otwPlatform->IsAwake() ||
+            otwPlatform.get() == NULL or
+            otwPlatform->IsExploding() or
+            otwPlatform->IsDead() or
+ not otwPlatform->IsAwake() or
             TheHud->Ownship() == NULL
         )
         {
@@ -2376,12 +2376,12 @@ void OTWDriverClass::RenderFrame()
 
     // Now check if in the Pit and the platform is still valid to eventually draw the Pit...
     if (
- not DisplayInCockpit() ||
-        otwPlatform.get() == NULL ||
-        otwPlatform->IsExploding() ||
-        otwPlatform->IsDead() ||
- not otwPlatform->IsAwake() ||
-        TheHud->Ownship() == NULL ||
+ not DisplayInCockpit() or
+        otwPlatform.get() == NULL or
+        otwPlatform->IsExploding() or
+        otwPlatform->IsDead() or
+ not otwPlatform->IsAwake() or
+        TheHud->Ownship() == NULL or
         eyeFly
     )
     {
@@ -2568,8 +2568,8 @@ void OTWDriverClass::RenderFrame()
         //START_PROFILE("HUD");
         if (pCockpitManager->ShowHud())
         {
-            if (GetOTWDisplayMode() == ModePadlockEFOV ||
-                GetOTWDisplayMode() == ModeHud ||
+            if (GetOTWDisplayMode() == ModePadlockEFOV or
+                GetOTWDisplayMode() == ModeHud or
                 GetOTWDisplayMode() == Mode2DCockpit
                )
             {
@@ -2805,9 +2805,9 @@ void OTWDriverClass::RenderFrame()
     {
         //Wombat778 Draw the cursor in the 3d pit as well
         if (
-            (GetOTWDisplayMode() == Mode2DCockpit ||
-             GetOTWDisplayMode() == Mode3DCockpit ||
-             GetOTWDisplayMode() == ModePadlockF3 ||
+            (GetOTWDisplayMode() == Mode2DCockpit or
+             GetOTWDisplayMode() == Mode3DCockpit or
+             GetOTWDisplayMode() == ModePadlockF3 or
              GetOTWDisplayMode() == ModePadlockEFOV
             ) and 
             (gSelectedCursor >= 0) and (otwPlatform.get() == SimDriver.GetPlayerAircraft())

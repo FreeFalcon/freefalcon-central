@@ -46,9 +46,9 @@ int SMSClass::LaunchMissile(void)
     }
 
     // Check for SMS Failure or other reason not to launch
-    if ( not CurStationOK() ||
- not curWeapon ||
-        Ownship()->OnGround() ||
+    if ( not CurStationOK() or
+ not curWeapon or
+        Ownship()->OnGround() or
         MasterArm() not_eq Arm)
     {
         return retval;
@@ -74,9 +74,9 @@ int SMSClass::LaunchMissile(void)
  not (((AircraftClass *)curWeapon->parent.get())->AutopilotType() == AircraftClass::CombatAP) and 
  not Powered) and curWeapon->GetType() == TYPE_MISSILE and 
                 curWeapon->GetSType() == STYPE_MISSILE_AIR_GROUND and 
-                (curWeapon->GetSPType() == SPTYPE_AGM65A ||
-                 curWeapon->GetSPType() == SPTYPE_AGM65B ||
-                 curWeapon->GetSPType() == SPTYPE_AGM65D ||
+                (curWeapon->GetSPType() == SPTYPE_AGM65A or
+                 curWeapon->GetSPType() == SPTYPE_AGM65B or
+                 curWeapon->GetSPType() == SPTYPE_AGM65D or
                  curWeapon->GetSPType() == SPTYPE_AGM65G))
                 return FALSE;
         }
@@ -152,10 +152,10 @@ int SMSClass::LaunchMissile(void)
                 int sfxid = 0;
 
                 //RV - I-Hawk - Include all missiles types here, AA and AG
-                if (theMissile and theMissile->parent and FCC and (FCC->GetMasterMode() == FireControlComputer::AirGroundMissile ||
-                        FCC->GetMasterMode() == FireControlComputer::AirGroundHARM ||
-                        FCC->GetMasterMode() == FireControlComputer::Missile ||
-                        FCC->GetMasterMode() == FireControlComputer::MissileOverride ||
+                if (theMissile and theMissile->parent and FCC and (FCC->GetMasterMode() == FireControlComputer::AirGroundMissile or
+                        FCC->GetMasterMode() == FireControlComputer::AirGroundHARM or
+                        FCC->GetMasterMode() == FireControlComputer::Missile or
+                        FCC->GetMasterMode() == FireControlComputer::MissileOverride or
                         FCC->GetMasterMode() == FireControlComputer::Dogfight))
                 {
                     if (g_nMissileFix bitand 0x80)
@@ -296,9 +296,9 @@ int SMSClass::LaunchMissile(void)
     {
         if (curWeapon and curWeapon->parent and 
             ((AircraftClass *)curWeapon->parent.get())->IsPlayer() and 
-            (curWeapon->GetSPType() == SPTYPE_AGM65A ||
-             curWeapon->GetSPType() == SPTYPE_AGM65B ||
-             curWeapon->GetSPType() == SPTYPE_AGM65D ||
+            (curWeapon->GetSPType() == SPTYPE_AGM65A or
+             curWeapon->GetSPType() == SPTYPE_AGM65B or
+             curWeapon->GetSPType() == SPTYPE_AGM65D or
              curWeapon->GetSPType() == SPTYPE_AGM65G))
         {
             AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
@@ -413,9 +413,9 @@ int SMSClass::LaunchRocket(void)
     }
 
     // Check for SMS Failure
-    if ( not CurStationOK() ||
- not curWeapon ||
-        Ownship()->OnGround() ||
+    if ( not CurStationOK() or
+ not curWeapon or
+        Ownship()->OnGround() or
         MasterArm() not_eq Arm)
     {
         return retval;
@@ -777,9 +777,9 @@ int SMSClass::SubLaunchRocket(int hpId)
     }
 
     // Check for SMS Failure
-    if ( not CurStationOK() ||
- not curWeapon ||
-        Ownship()->OnGround() ||
+    if ( not CurStationOK() or
+ not curWeapon or
+        Ownship()->OnGround() or
         MasterArm() not_eq Arm)
     {
         return TRUE; // MLR 5/30/2004 - was false

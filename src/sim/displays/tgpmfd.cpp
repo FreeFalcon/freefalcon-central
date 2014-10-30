@@ -159,7 +159,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
 
     // RV - I-Hawk - if in TGP mode (should be only in AG mode) and pitch < -20 degrees or
     // Roll > 75 degrees and pitch < 0 degrees, show attiutde warning
-    if (playerAC and ((fabs(playerAC->Roll()) > 75.0f * DTR and playerAC->Pitch() < 0.0f) ||
+    if (playerAC and ((fabs(playerAC->Roll()) > 75.0f * DTR and playerAC->Pitch() < 0.0f) or
                      (playerAC->Pitch() < -20.0f * DTR)))
     {
         for (int i = 0; i < 4; i++)

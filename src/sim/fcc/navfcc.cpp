@@ -2142,7 +2142,7 @@ void FireControlComputer::DrawWingmen()
             return;
     }
 
-    if (((AircraftClass*)platform)->mFaults->GetFault(FaultClass::dlnk_fault) ||
+    if (((AircraftClass*)platform)->mFaults->GetFault(FaultClass::dlnk_fault) or
  not ((AircraftClass*)platform)->HasPower(AircraftClass::DLPower))
         return;
 

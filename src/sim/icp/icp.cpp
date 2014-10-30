@@ -341,7 +341,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
     }
     else
     {
-        if ( not playerAC->HasPower(AircraftClass::UFCPower) ||
+        if ( not playerAC->HasPower(AircraftClass::UFCPower) or
             playerAC->mFaults->GetFault(FaultClass::ufc_fault))
             return;
 
@@ -371,7 +371,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
         /*what mode we've been before. */
         /****************************************************/
 
-        else if (mode == COMM1_BUTTON or mode == COMM2_BUTTON ||
+        else if (mode == COMM1_BUTTON or mode == COMM2_BUTTON or
                  mode == LIST_BUTTON or mode == IFF_BUTTON)
         {
             //This results in a new DED page, clear our strings
@@ -397,7 +397,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 }
                 else   // move to next fault
                 {
-                    if (playerAC->mFaults->GetFFaultCount() <= 0 ||
+                    if (playerAC->mFaults->GetFFaultCount() <= 0 or
                         playerAC->mFaults->GetNextFault(&m_subsystem, &m_function) == FALSE)
                         m_FaultDisplay = false;
                 }

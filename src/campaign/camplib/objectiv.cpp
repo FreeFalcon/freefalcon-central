@@ -172,7 +172,7 @@ ObjectiveClass::ObjectiveClass(int typeindex) : CampBaseClass(typeindex, GetIdFr
 
     link_data = NULL;
 
-    if (GetType() == TYPE_AIRBASE ||
+    if (GetType() == TYPE_AIRBASE or
         GetType() == TYPE_AIRSTRIP)
     {
 
@@ -2070,8 +2070,8 @@ _TCHAR* ObjectiveClass::GetName(_TCHAR* name, int size, int mode)
                 _TCHAR namestr[80];
                 ReadNameString(pnid, namestr, 79);
 
-                if (namestr[0] == 'A' or namestr[0] == 'a' or namestr[0] == 'E' or namestr[0] == 'e' ||
-                    namestr[0] == 'I' or namestr[0] == 'i' or namestr[0] == 'O' or namestr[0] == 'o' ||
+                if (namestr[0] == 'A' or namestr[0] == 'a' or namestr[0] == 'E' or namestr[0] == 'e' or
+                    namestr[0] == 'I' or namestr[0] == 'i' or namestr[0] == 'O' or namestr[0] == 'o' or
                     namestr[0] == 'U' or namestr[0] == 'u')
                     _sntprintf(name, size, "%s d'%s", ObjectiveStr[GetType()], namestr);
                 else

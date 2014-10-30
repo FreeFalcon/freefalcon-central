@@ -861,7 +861,7 @@ void SmsDrawable::WpnPushButton(int whichButton, int whichMFD)
             {
                 MfdDrawable::PushButton(whichButton, whichMFD);
             }
-            else if (pFCC->GetMasterMode() == FireControlComputer::ILS ||
+            else if (pFCC->GetMasterMode() == FireControlComputer::ILS or
                      pFCC->GetMasterMode() == FireControlComputer::Nav)
             {
                 MfdDisplay[whichMFD]->SetNewMode(MFDClass::MfdMenu);
@@ -931,7 +931,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
             if (g_bRealisticAvionics)
             {
                 //MI temporary until we can get the LGB's going
-                if (pFCC->GetMasterMode() == FireControlComputer::AirGroundLaser  ||
+                if (pFCC->GetMasterMode() == FireControlComputer::AirGroundLaser  or
                     pFCC->GetMasterMode() == FireControlComputer::AirGroundRocket or // MLR 4/3/2004 -
                     pFCC->GetMasterMode() == FireControlComputer::AGGun)//           or // MLR 4/3/2004 -
                     //pFCC->GetSubMode()    == FireControlComputer::OBSOLETERCKT) // MLR 4/3/2004 -
@@ -1044,7 +1044,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
             if (g_bRealisticAvionics and Sms->CurHardpoint() >= 0) //MI
             {
                 if ((pFCC->GetMasterMode() == FireControlComputer::AirGroundBomb) or  //me123 status test. addet four lines
-                    (pFCC->GetMasterMode() == FireControlComputer::AirGroundLaser) ||
+                    (pFCC->GetMasterMode() == FireControlComputer::AirGroundLaser) or
                     pFCC->GetMasterMode() == FireControlComputer::AirGroundRocket)
                 {
                     Sms->SetAGBPair( not Sms->GetAGBPair());
@@ -1258,7 +1258,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
                 break;
             }
 
-            if (pFCC->GetMasterMode() == FireControlComputer::AirGroundMissile ||
+            if (pFCC->GetMasterMode() == FireControlComputer::AirGroundMissile or
                 (pFCC->GetMasterMode() == FireControlComputer::AirGroundLaser and 
                  Sms->curWeaponClass == wcGbuWpn))
             {
@@ -1477,7 +1477,7 @@ void SmsDrawable::SJPushButton(int whichButton, int whichMFD)
             {
                 MfdDrawable::PushButton(whichButton, whichMFD);
             }
-            else if (pFCC->GetMasterMode() == FireControlComputer::ILS ||
+            else if (pFCC->GetMasterMode() == FireControlComputer::ILS or
                      pFCC->GetMasterMode() == FireControlComputer::Nav)
             {
                 SetDisplayMode(Wpn);
@@ -1646,7 +1646,7 @@ void SmsDrawable::DogfightDisplay(void)
         else if (Sms->curWeaponType == wtAim120)
         {
             if (Sms->curWeaponType == wtAim120 and 
-                Sms->MasterArm() == SMSBaseClass::Safe ||
+                Sms->MasterArm() == SMSBaseClass::Safe or
                 Sms->MasterArm() == SMSBaseClass::Sim)
             {
                 // JPO new AIM120 code
@@ -2112,7 +2112,7 @@ void SmsDrawable::AAMDisplay(void)
         return;
 
     if (Sms->curWeaponType == wtAim120 and 
-        Sms->MasterArm() == SMSBaseClass::Safe ||
+        Sms->MasterArm() == SMSBaseClass::Safe or
         Sms->MasterArm() == SMSBaseClass::Sim)   // JPO new AIM120 code
     {
         LabelButton(7, "BIT");
@@ -2407,8 +2407,8 @@ void SmsDrawable::BombDisplay(void)
 
             display->TextLeft(-0.3F, 0.2F, tempstr);
 
-            if (pFCC and (pFCC->GetSubMode() == FireControlComputer::LADD ||
-                         pFCC->GetSubMode() == FireControlComputer::CCRP ||
+            if (pFCC and (pFCC->GetSubMode() == FireControlComputer::LADD or
+                         pFCC->GetSubMode() == FireControlComputer::CCRP or
                          pFCC->GetSubMode() == FireControlComputer::DTOSS))
             {
                 sprintf(tempstr, "REL ANG %d", Sms->GetAGBReleaseAngle());

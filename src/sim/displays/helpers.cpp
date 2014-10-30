@@ -251,7 +251,7 @@ void DrawBullseyeCircle(VirtualDisplay* display, float cursorX, float cursorY)
 
     //Cobra removed the g_bIFF
     // Offset for Bullseye symbology
-    if (/*g_bIFF||*/g_bSmallerBullseye) //Wombat778 11-12-2003 made optional on g_bSmallerBullseye 11-07-2003
+    if (/*g_bIFFor*/g_bSmallerBullseye) //Wombat778 11-12-2003 made optional on g_bSmallerBullseye 11-07-2003
         display->AdjustOriginInViewport(-0.90F, -0.80F); //me123 from .80 to .75 and .65 to .62 to move the data
     else
         display->AdjustOriginInViewport(-0.85F, -0.70F); //me123 from .80 to .75 and .65 to .62 to move the data
@@ -275,7 +275,7 @@ void DrawBullseyeCircle(VirtualDisplay* display, float cursorX, float cursorY)
 
     //Cobra removed the g_bIff
     // Draw the circle symbol
-    if (/*g_bIFF||*/g_bSmallerBullseye) //Wombat778 11-12-2003 made optional on g_bSmallerBullseye 11-07-2003 Smaller bullseye is more realistic
+    if (/*g_bIFFor*/g_bSmallerBullseye) //Wombat778 11-12-2003 made optional on g_bSmallerBullseye 11-07-2003 Smaller bullseye is more realistic
     {
         //set a smaller font (needed)
         int ofont = display->CurFont();

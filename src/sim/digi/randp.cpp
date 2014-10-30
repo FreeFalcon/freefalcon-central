@@ -280,7 +280,7 @@ void DigitalBrain::RollAndPull(void)
 
 void DigitalBrain::EnergyManagement(void)
 {
-    if (targetData->range <= 1800.0f ||
+    if (targetData->range <= 1800.0f or
         (
             targetData->range <= 2500.0f and 
             targetData->ata <= 45.0F * DTR and 
@@ -308,7 +308,7 @@ void DigitalBrain::EnergyManagement(void)
 #endif
         }
 
-        else if (fabs(targetPtr->BaseData()->YawDelta()) < VERTICAL_MAGIC ||
+        else if (fabs(targetPtr->BaseData()->YawDelta()) < VERTICAL_MAGIC or
                  fabs(self->YawDelta()) < VERTICAL_MAGIC)
             //only one of the jets are vertical
         {
@@ -346,7 +346,7 @@ void DigitalBrain::EnergyManagement(void)
         else
         {
             // nose/nose or nose/tail
-            if (self->YawDelta() > 0 and targetPtr->BaseData()->YawDelta() < 0 ||
+            if (self->YawDelta() > 0 and targetPtr->BaseData()->YawDelta() < 0 or
                 self->YawDelta() < 0 and targetPtr->BaseData()->YawDelta() > 0)
             {
                 //nose/nose

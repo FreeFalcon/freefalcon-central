@@ -109,7 +109,7 @@ ComIP *ComList::iterGetNext(int protocol)
         ComIP *com = *iterator;
 
         if (
-            (protocol == -1) ||
+            (protocol == -1) or
             (com_API_get_protocol((com_API_handle)(com)) == protocol)
         )
         {

@@ -721,7 +721,7 @@ int BombClass::Exec(void)
                 */
                 if (
                     Abs(acosf(rx / range)) <= 18.f * DTR and 
-                    (parentAC->IsPlayer() and parentAC->FCC->LaserFire) ||
+                    (parentAC->IsPlayer() and parentAC->FCC->LaserFire) or
  not parentAC->IsPlayer()
                 )
                 {
@@ -931,7 +931,7 @@ int BombClass::Exec(void)
                 //if (g_bArmingDelay and (SimLibElapsedTime - timeOfDeath > armingdelay *10  or ((AircraftClass *)parent)->isDigital))
                 if (
                     g_bRealisticAvionics and 
-                    (SimLibElapsedTime - timeOfDeath > armingdelay * 10  ||
+                    (SimLibElapsedTime - timeOfDeath > armingdelay * 10  or
                      (parent and ((AircraftClass *)parent.get())->IsDigital()))
                 )
                 {
@@ -1220,7 +1220,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
             // 2002-04-21 MN check for damage type and only skip if it is not a nuclear
             if (wc->DamageType not_eq NuclearDam and (testObject == parent and 
                                                  parent and parent->IsAirplane() and 
-                                                 (((AircraftClass *)parent.get())->IsDigital() ||
+                                                 (((AircraftClass *)parent.get())->IsDigital() or
                                                   ((AircraftClass *)parent.get())->AutopilotType() == AircraftClass::CombatAP)))
             {
                 testObject = (SimBaseClass*) objectWalker.GetNext();
@@ -1364,7 +1364,7 @@ void BombClass::DoExplosion(void)
 
 
         if (hitObj == NULL and 
- not (endMessage->dataBlock.groundType == COVERAGE_WATER ||
+ not (endMessage->dataBlock.groundType == COVERAGE_WATER or
               endMessage->dataBlock.groundType == COVERAGE_RIVER)
            ) // and ( ZPos() - groundZ ) > -40.0f ) // JB 010710 craters weren't showing up
         {

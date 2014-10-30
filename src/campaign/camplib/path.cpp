@@ -250,7 +250,7 @@ int FindLinkPath(Path p, Objective O1, Objective O2, MoveType mt)
 
     moveTeam = 0;
 
-    if (GetMovementCost(ox, oy, (MoveType)moveType, moveFlags, Here) > MAX_COST ||
+    if (GetMovementCost(ox, oy, (MoveType)moveType, moveFlags, Here) > MAX_COST or
         GetMovementCost(tx, ty, (MoveType)moveType, moveFlags, Here) > MAX_COST)
     {
         p->ClearPath();

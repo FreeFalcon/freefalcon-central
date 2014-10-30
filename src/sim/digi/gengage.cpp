@@ -42,7 +42,7 @@ void DigitalBrain::GunsEngageCheck(void)
     if (curMode not_eq GunsEngageMode)
     {
         if (targetPtr and targetData->range <= 3500.0F and //targetData->range >= 1000.0F and //me123 let's bfm to 4000 before gunning changed from 10000
-            // JB not (self->YawDelta() > 0 and targetPtr->BaseData()->YawDelta() < 0 ||// not nose to nose
+            // JB not (self->YawDelta() > 0 and targetPtr->BaseData()->YawDelta() < 0 or// not nose to nose
             // JB self->YawDelta() < 0 and targetPtr->BaseData()->YawDelta() > 0) and 
             ((AircraftClass *)self)->Guns and 
             ((AircraftClass *)self)->Guns->numRoundsRemaining > 0 and 
@@ -57,7 +57,7 @@ void DigitalBrain::GunsEngageCheck(void)
     else if (curMode == GunsEngageMode)
     {
         if (targetData->range < 3500.0f and //targetData->range > 1000.0f and 
-            // JB not (self->YawDelta() > 0 and targetPtr->BaseData()->YawDelta() < 0 ||// not nose to nose
+            // JB not (self->YawDelta() > 0 and targetPtr->BaseData()->YawDelta() < 0 or// not nose to nose
             // JB self->YawDelta() < 0 and targetPtr->BaseData()->YawDelta() > 0) and 
             ((AircraftClass *)self)->Guns->numRoundsRemaining > 0 and 
             (targetPtr->BaseData()->IsAirplane() or targetPtr->BaseData()->IsHelicopter()) // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)

@@ -104,34 +104,34 @@ void FackClass::SetFault(
     else if (doWarningMsg)
     {
         //TJL 01/24/04 Added Eng2
-        if (subsystem == FaultClass::amux_fault ||
-            subsystem == FaultClass::blkr_fault ||
-            subsystem == FaultClass::bmux_fault ||
-            subsystem == FaultClass::cadc_fault ||
-            subsystem == FaultClass::cmds_fault ||
-            subsystem == FaultClass::dlnk_fault ||
-            subsystem == FaultClass::dmux_fault ||
-            subsystem == FaultClass::dte_fault ||
-            subsystem == FaultClass::eng_fault ||
-            subsystem == FaultClass::eng2_fault ||
-            subsystem == FaultClass::epod_fault ||
-            subsystem == FaultClass::fcc_fault ||
-            subsystem == FaultClass::fcr_fault ||
-            subsystem == FaultClass::flcs_fault ||
-            subsystem == FaultClass::fms_fault ||
-            subsystem == FaultClass::gear_fault ||
-            subsystem == FaultClass::gps_fault ||
-            subsystem == FaultClass::harm_fault ||
-            subsystem == FaultClass::hud_fault ||
-            subsystem == FaultClass::iff_fault ||
-            subsystem == FaultClass::ins_fault ||
-            subsystem == FaultClass::isa_fault ||
-            subsystem == FaultClass::mfds_fault ||
-            subsystem == FaultClass::msl_fault ||
-            subsystem == FaultClass::ralt_fault ||
-            subsystem == FaultClass::rwr_fault ||
-            subsystem == FaultClass::sms_fault ||
-            subsystem == FaultClass::tcn_fault ||
+        if (subsystem == FaultClass::amux_fault or
+            subsystem == FaultClass::blkr_fault or
+            subsystem == FaultClass::bmux_fault or
+            subsystem == FaultClass::cadc_fault or
+            subsystem == FaultClass::cmds_fault or
+            subsystem == FaultClass::dlnk_fault or
+            subsystem == FaultClass::dmux_fault or
+            subsystem == FaultClass::dte_fault or
+            subsystem == FaultClass::eng_fault or
+            subsystem == FaultClass::eng2_fault or
+            subsystem == FaultClass::epod_fault or
+            subsystem == FaultClass::fcc_fault or
+            subsystem == FaultClass::fcr_fault or
+            subsystem == FaultClass::flcs_fault or
+            subsystem == FaultClass::fms_fault or
+            subsystem == FaultClass::gear_fault or
+            subsystem == FaultClass::gps_fault or
+            subsystem == FaultClass::harm_fault or
+            subsystem == FaultClass::hud_fault or
+            subsystem == FaultClass::iff_fault or
+            subsystem == FaultClass::ins_fault or
+            subsystem == FaultClass::isa_fault or
+            subsystem == FaultClass::mfds_fault or
+            subsystem == FaultClass::msl_fault or
+            subsystem == FaultClass::ralt_fault or
+            subsystem == FaultClass::rwr_fault or
+            subsystem == FaultClass::sms_fault or
+            subsystem == FaultClass::tcn_fault or
             subsystem == FaultClass::ufc_fault)
         {
             playerAC->NeedsToPlayCaution = TRUE;//caution
@@ -142,8 +142,8 @@ void FackClass::SetFault(
         else
         {
             /*//these are warnings
-            if(function == FaultClass::dual ||
-             function == FaultClass::efire ||
+            if(function == FaultClass::dual or
+             function == FaultClass::efire or
              function == FaultClass::hydr)
             { */
             // sfr: this was inverted
@@ -189,11 +189,11 @@ void FackClass::SetFault(type_CSubSystem subsystem)
                 //these are warnings
                 if (GetFault(tf_fail) or //never get's set currently
                     GetFault(obs_wrn) or //never get's set currently
-                    GetFault(eng_fire) ||
+                    GetFault(eng_fire) or
                     GetFault(eng2_fire) or //TJL 01/24/04 multi-engine
-                    GetFault(hyd) ||
-                    GetFault(oil_press) ||
-                    GetFault(dual_fc) ||
+                    GetFault(hyd) or
+                    GetFault(oil_press) or
+                    GetFault(dual_fc) or
                     GetFault(to_ldg_config))
                 {
                     if ( not playerAC->NeedsToPlayWarning)
@@ -208,28 +208,28 @@ void FackClass::SetFault(type_CSubSystem subsystem)
                 //these are actually cautions
                 if (subsystem not_eq fuel_low_fault)
                 {
-                    if (GetFault(stores_config_fault) ||
-                        GetFault(flt_cont_fault) ||
-                        GetFault(le_flaps_fault) ||
-                        GetFault(engine) ||
-                        GetFault(overheat_fault) ||
-                        GetFault(avionics_fault) ||
-                        GetFault(radar_alt_fault) ||
-                        GetFault(iff_fault) ||
-                        GetFault(ecm_fault) ||
-                        GetFault(hook_fault) ||
-                        GetFault(nws_fault) ||
-                        GetFault(cabin_press_fault) ||
-                        GetFault(fwd_fuel_low_fault) ||
-                        GetFault(aft_fuel_low_fault) ||
-                        GetFault(probeheat_fault) ||
-                        GetFault(seat_notarmed_fault) ||
-                        GetFault(buc_fault) ||
-                        GetFault(fueloil_hot_fault) ||
-                        GetFault(anti_skid_fault) ||
-                        GetFault(nws_fault) ||
-                        GetFault(oxy_low_fault) ||
-                        GetFault(sec_fault) ||
+                    if (GetFault(stores_config_fault) or
+                        GetFault(flt_cont_fault) or
+                        GetFault(le_flaps_fault) or
+                        GetFault(engine) or
+                        GetFault(overheat_fault) or
+                        GetFault(avionics_fault) or
+                        GetFault(radar_alt_fault) or
+                        GetFault(iff_fault) or
+                        GetFault(ecm_fault) or
+                        GetFault(hook_fault) or
+                        GetFault(nws_fault) or
+                        GetFault(cabin_press_fault) or
+                        GetFault(fwd_fuel_low_fault) or
+                        GetFault(aft_fuel_low_fault) or
+                        GetFault(probeheat_fault) or
+                        GetFault(seat_notarmed_fault) or
+                        GetFault(buc_fault) or
+                        GetFault(fueloil_hot_fault) or
+                        GetFault(anti_skid_fault) or
+                        GetFault(nws_fault) or
+                        GetFault(oxy_low_fault) or
+                        GetFault(sec_fault) or
                         GetFault(lef_fault))
                     {
                         if ( not playerAC->NeedsToPlayCaution and not cockpitFlightData.IsSet(FlightData::MasterCaution))

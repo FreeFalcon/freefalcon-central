@@ -3608,8 +3608,8 @@ int UnitClass::CanDetect(FalconEntity* ent)
     {
         int entOctant = OctantTo(0.0F, 0.0F, ent->XPos() - XPos(), ent->YPos() - YPos());
 
-        if ((entOctant == sojOctant ||
-             entOctant == (sojOctant + 1) % 8 ||
+        if ((entOctant == sojOctant or
+             entOctant == (sojOctant + 1) % 8 or
              entOctant == (sojOctant - 1) % 8) and 
             sojRangeSq < mrs * 2.25)
         {

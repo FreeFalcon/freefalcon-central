@@ -212,7 +212,7 @@ void DigitalBrain::TargetSelection(void)
 
     // stay on current target
     if (targetPtr and (
-            targetPtr->BaseData()->IsExploding() or targetPtr->BaseData()->IsDead() ||
+            targetPtr->BaseData()->IsExploding() or targetPtr->BaseData()->IsDead() or
             (
                 targetPtr->BaseData()->IsAirplane() and 
                 ((AircraftClass*)targetPtr->BaseData())->IsAcStatusBitsSet(
@@ -240,7 +240,7 @@ void DigitalBrain::TargetSelection(void)
         FalconEntity *baseData = objectPtr->BaseData();
 
         if (
-            (baseData == NULL) or (baseData->VuState() not_eq VU_MEM_ACTIVE) ||
+            (baseData == NULL) or (baseData->VuState() not_eq VU_MEM_ACTIVE) or
             //F4IsBadCodePtr((FARPROC) objectPtr->BaseData()) or // JB 010224 CTD
             baseData->IsSim() and (
                 baseData->IsWeapon() or baseData->IsEject() or (
@@ -248,7 +248,7 @@ void DigitalBrain::TargetSelection(void)
                         AircraftClass::ACSTATUS_PILOT_EJECTED
                     )
                 )
-            ) ||
+            ) or
             (objectPtr->localData->range > maxEngageRange)
         )
         {
@@ -287,13 +287,13 @@ void DigitalBrain::TargetSelection(void)
             // IF NO SENSOR IS SEEING THIS GUY, HOW CAN WE TRACK HIM?
             // 2001-03-16 ADDED BY S.G. THIS IS OUR GCI IMPLEMENTATION...
             // EVEN IF NO SENSORS ON HIM, ACE AND VETERAN GETS TO USE GCI
-            if (/*SkillLevel() < g_nLowestSkillForGCI ||*/
-                objectPtr->localData->range >= 60.0F * NM_TO_FT ||
+            if (/*SkillLevel() < g_nLowestSkillForGCI or*/
+                objectPtr->localData->range >= 60.0F * NM_TO_FT or
  not (
                     (
                         baseData->IsSim() and 
                         ((SimBaseClass*)baseData)->GetCampaignObject()->GetSpotted(self->GetTeam())
-                    ) ||
+                    ) or
                     (
                         baseData->IsCampaign() and 
                         ((CampBaseClass*)baseData)->GetSpotted(self->GetTeam())
@@ -699,7 +699,7 @@ SimObjectType* MakeSimListFromVuList(AircraftClass *self, SimObjectType* targetL
                 FalconEntity *feEntity = static_cast<FalconEntity*>(curEntity);
 
                 if (
-                    feEntity->IsDead() ||
+                    feEntity->IsDead() or
                     (feEntity->IsSim() and not static_cast<SimBaseClass*>(feEntity)->IsAwake())
                 )
                 {

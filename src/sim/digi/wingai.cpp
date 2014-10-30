@@ -2025,9 +2025,9 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
         // status = performing maneuver
         response = rcEXECUTERESPONSE;
     }
-    else if ((curMode == GunsEngageMode ||
-              curMode == MissileEngageMode ||
-              curMode == WVREngageMode ||
+    else if ((curMode == GunsEngageMode or
+              curMode == MissileEngageMode or
+              curMode == WVREngageMode or
               curMode == BVREngageMode) and pmytarget and (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
     {
         xdiff = self->XPos() - pmytarget->XPos();

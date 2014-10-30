@@ -77,17 +77,17 @@ int ICPClass::ManualInput(void)
         return TRUE;
 
     if ((IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == ONE_BUTTON and 
-         ILSPageSel == 0) ||
-        (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == TWO_BUTTON) ||
-        (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == FOUR_BUTTON) ||
-        (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == ONE_BUTTON) ||
-        (IsICPSet(ICPClass::EDIT_LAT)) or (IsICPSet(ICPClass::EDIT_LONG)) ||
-        (IsICPSet(ICPClass::FLARE_BINGO)) or (IsICPSet(ICPClass::CHAFF_BINGO)) ||
-        (BQ or BI or SQ or SI or OA1 or OA2) ||
-        (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == TWO_BUTTON) ||
-        (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == THREE_BUTTON) ||
-        (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == FIFE_BUTTON) ||
-        (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == NINE_BUTTON) ||
+         ILSPageSel == 0) or
+        (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == TWO_BUTTON) or
+        (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == FOUR_BUTTON) or
+        (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == ONE_BUTTON) or
+        (IsICPSet(ICPClass::EDIT_LAT)) or (IsICPSet(ICPClass::EDIT_LONG)) or
+        (IsICPSet(ICPClass::FLARE_BINGO)) or (IsICPSet(ICPClass::CHAFF_BINGO)) or
+        (BQ or BI or SQ or SI or OA1 or OA2) or
+        (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == TWO_BUTTON) or
+        (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == THREE_BUTTON) or
+        (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == FIFE_BUTTON) or
+        (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == NINE_BUTTON) or
         (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == 100) or //INTG
         (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == SIX_BUTTON) or //INS
         IsICPSet(ICPClass::MODE_IFF) or (IsICPSet(ICPClass::MISC_MODE) and 
@@ -146,9 +146,9 @@ int ICPClass::CheckMode(void)
     if ( not g_bIFF)
     {
         //Don't do anything for now when in COMM (temporary)/IFF/DLINK/FACK/MARK/INTG mode
-        if (IsICPSet(ICPClass::MODE_COMM1) or IsICPSet(ICPClass::MODE_COMM2) ||
-            IsICPSet(ICPClass::MODE_IFF) or IsICPSet(ICPClass::MODE_DLINK) ||
-            IsICPSet(ICPClass::MODE_FACK) or IsICPSet(ICPClass::BLOCK_MODE) ||
+        if (IsICPSet(ICPClass::MODE_COMM1) or IsICPSet(ICPClass::MODE_COMM2) or
+            IsICPSet(ICPClass::MODE_IFF) or IsICPSet(ICPClass::MODE_DLINK) or
+            IsICPSet(ICPClass::MODE_FACK) or IsICPSet(ICPClass::BLOCK_MODE) or
             (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == 100) or //INTG
             mICPSecondaryMode == MARK_MODE)
             return TRUE;
@@ -158,9 +158,9 @@ int ICPClass::CheckMode(void)
     else
     {
         //Don't do anything for now when in COMM (temporary)/IFF/DLINK/FACK/MARK/INTG mode
-        if (IsICPSet(ICPClass::MODE_COMM1) or IsICPSet(ICPClass::MODE_COMM2) ||
-            IsICPSet(ICPClass::MODE_DLINK) or IsICPSet(ICPClass::MODE_FACK) ||
-            IsICPSet(ICPClass::BLOCK_MODE) ||
+        if (IsICPSet(ICPClass::MODE_COMM1) or IsICPSet(ICPClass::MODE_COMM2) or
+            IsICPSet(ICPClass::MODE_DLINK) or IsICPSet(ICPClass::MODE_FACK) or
+            IsICPSet(ICPClass::BLOCK_MODE) or
             mICPSecondaryMode == MARK_MODE)
             return TRUE;
         else
@@ -197,14 +197,14 @@ void ICPClass::HandleManualInput(int button)
         if (Input_Digit7 < 10)
             Input_Digit6 = Input_Digit7;
     }
-    else if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == ONE_BUTTON ||
-             IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == TWO_BUTTON ||
-             (BQ or BI or SQ or SI or OA1 or OA2 or EDITMSLFLOOR) ||
-             IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == ONE_BUTTON ||
-             IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == TWO_BUTTON ||
-             IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == THREE_BUTTON ||
-             IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == FIFE_BUTTON ||
-             IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == NINE_BUTTON ||
+    else if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == ONE_BUTTON or
+             IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == TWO_BUTTON or
+             (BQ or BI or SQ or SI or OA1 or OA2 or EDITMSLFLOOR) or
+             IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == ONE_BUTTON or
+             IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == TWO_BUTTON or
+             IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == THREE_BUTTON or
+             IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == FIFE_BUTTON or
+             IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == NINE_BUTTON or
              IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == 100 or  //INTG
              (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == SIX_BUTTON) or //INS
              IsICPSet(ICPClass::MODE_IFF) or (IsICPSet(ICPClass::MISC_MODE) and 
@@ -878,7 +878,7 @@ void ICPClass::ResetInput(void)
 }
 int ICPClass::CheckBackupPages(void)
 {
-    if (IsICPSet(ICPClass::MODE_CNI) or IsICPSet(ICPClass::MODE_IFF) ||
+    if (IsICPSet(ICPClass::MODE_CNI) or IsICPSet(ICPClass::MODE_IFF) or
         IsICPSet(ICPClass::MODE_COMM1) or IsICPSet(ICPClass::MODE_COMM2))
         return TRUE;
     else

@@ -261,8 +261,8 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
                 if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
                 {
                     // JPO flashing resizing reticle
-                    if (flash ||
-                        targetData->range > FCC->missileRneMax ||
+                    if (flash or
+                        targetData->range > FCC->missileRneMax or
                         targetData->range < FCC->missileRneMin)
                         DrawMissileReticle(FCC->Aim120ASECRadius(targetData->range), FALSE, TRUE);
 
@@ -422,8 +422,8 @@ void HudClass::DrawAirMissile(void)
 
                 if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
                 {
-                    if (flash ||
-                        targetData->range > FCC->missileRneMax ||
+                    if (flash or
+                        targetData->range > FCC->missileRneMax or
                         targetData->range < FCC->missileRneMin)
                         DrawMissileReticle(FCC->Aim120ASECRadius(targetData->range), FALSE, TRUE);
 
@@ -640,8 +640,8 @@ void HudClass::DrawMissileReticle(float radius, int showRange, int showAspect)
         {
             HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(ownship, SensorClass::HTS);
 
-            if (harmPod and harmPod->GetSubMode() == HarmTargetingPod::HAS ||
-                harmPod and harmPod->GetSubMode() == HarmTargetingPod::Handoff ||
+            if (harmPod and harmPod->GetSubMode() == HarmTargetingPod::HAS or
+                harmPod and harmPod->GetSubMode() == HarmTargetingPod::Handoff or
                 harmPod and harmPod->GetSubMode() == HarmTargetingPod::FilterMode)
             {
                 displayRange = false;

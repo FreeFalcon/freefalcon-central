@@ -2078,7 +2078,7 @@ void OTWDriverClass::VCock_Exec(void)
 
         if (gNavigationSys)
         {
-            if ((gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN ||
+            if ((gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN or
                  gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV) and 
                 gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &hILS))
             {

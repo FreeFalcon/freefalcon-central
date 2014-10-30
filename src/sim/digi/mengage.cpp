@@ -74,9 +74,9 @@ void DigitalBrain::MissileEngageCheck(void)
     {
         if (targetData and targetData->range > 2000.0f) // JB 010208
         {
-            if ( not targetPtr ||
- not curMissile ||
-                targetData->range > maxAAWpnRange * 1.09F ||
+            if ( not targetPtr or
+ not curMissile or
+                targetData->range > maxAAWpnRange * 1.09F or
                 // (targetData->range < 3000.0f * NM_TO_FT and (((AircraftClass *)self)->Guns)) and // Cobra - < 3000 NM??
                 (targetData->range < 3000.0f and (((AircraftClass *)self)->Guns)) and 
                 targetData->ata > angLimit * 1.09F)//me123 from 1.5
@@ -158,7 +158,7 @@ void DigitalBrain::MissileEngage(void)
     if (targetData->range <= g_fRAPDistance * NM_TO_FT)//me123 bwrengage will fly the jet outside g_fRAPDistance
         RollAndPull();
     // 2002-03-15 MODIFIED BY S.G. If asked to perform maneuver like chainsaw, do this without doing the BVR stuff. Added the 'mpActionFlags[AI_EXECUTE_MANEUVER] == TRUE+1' condition
-    else if ((self->Sms->curWeaponType == wtAim120 and not missileFiredEntity) ||
+    else if ((self->Sms->curWeaponType == wtAim120 and not missileFiredEntity) or
              mpActionFlags[AI_EXECUTE_MANEUVER] == TRUE + 1)
     {
         SetYpedal(0.0F);
@@ -413,12 +413,12 @@ void DigitalBrain::WeaponSelection(void)
                 // outside 3nm and curmissile is a irmissile
                 else if (
                     theMissile->sensorArray and theMissile->sensorArray[0]->Type() not_eq SensorClass::IRST and not curMissile
-                    ||
+                    or
                     (curMissile and 
-                     (curMissile->sensorArray[0]->Type() == SensorClass::Radar ||
+                     (curMissile->sensorArray[0]->Type() == SensorClass::Radar or
                       curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming) and 
                      thisPctRange > pctRange and thisPctRange > 0.0F)
-                    ||
+                    or
                     curMissile and curMissile->sensorArray[0]->Type() == SensorClass::IRST and 
                     targetPtr->localData->range > 3 * NM_TO_FT)
                 {

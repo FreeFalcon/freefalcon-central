@@ -34,7 +34,7 @@ void DigitalBrain::SensorFusion(void)
     int relation = 0, pcId = ID_NONE, canSee = FALSE, i = 0;
     FalconEntity* baseObj = NULL;
 
-    // 2002-04-18 REINSTATED BY S.G. After putting back '||' instead of ' and ' before "localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime" below, this is no longer required
+    // 2002-04-18 REINSTATED BY S.G. After putting back 'or' instead of ' and ' before "localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime" below, this is no longer required
     // 2002-02-17 MODIFIED BY S.G. Sensor routines for AI runs less often than SensorFusion therefore the AI will time out his target after this delayTime as elapsed.
     //                             By using the highest of both, I'm sure this will not happen...
     int delayTime = SimLibElapsedTime - 6 * SEC_TO_MSEC * (SkillLevel() + 1);
@@ -116,9 +116,9 @@ void DigitalBrain::SensorFusion(void)
           // Idiots find out about you inside 1 mile anyway
           if (localData->range > 3.0F * NM_TO_FT and // gci is crap inside 3nm
           (SkillLevel() >= 2 and 
-           localData->range < 25.0F * NM_TO_FT||
+           localData->range < 25.0F * NM_TO_FTor
            SkillLevel() >=3  and 
-           localData->range < 35.0F * NM_TO_FT||
+           localData->range < 35.0F * NM_TO_FTor
            SkillLevel() >=4  and 
            localData->range < 55.0F * NM_TO_FT)
            )//me123 not if no sensor has seen it or localData->range < 1.0F * NM_TO_FT)
@@ -134,7 +134,7 @@ void DigitalBrain::SensorFusion(void)
 
           for (i = 0; i<self->numSensors and not canSee; i++)
           {
-          if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack ||
+          if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack or
           localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime)
           {
          canSee = TRUE;
@@ -160,7 +160,7 @@ void DigitalBrain::SensorFusion(void)
 
          for (i = 0; i<self->numSensors and not canSee; i++)
          {
-         if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack ||
+         if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack or
          localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime)
          {
          canSee = TRUE;
@@ -193,7 +193,7 @@ void DigitalBrain::SensorFusion(void)
 
         // Go through all your sensors. If you 'see' the target and are bright enough, flag it as spotted and ask for an intercept if this FLIGHT is spotted for the first time...
         //for (i = 0; i<self->numSensors; i++) {
-        //if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack or localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime) { // 2002-04-18 MODIFIED BY S.G. Reverted to and instead of ||. *MY* logic was flawed. It gaves a 'delay' (grace period) after the sensor becomes 'NoLock'.
+        //if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack or localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime) { // 2002-04-18 MODIFIED BY S.G. Reverted to and instead of or. *MY* logic was flawed. It gaves a 'delay' (grace period) after the sensor becomes 'NoLock'.
         //if (campBaseObj and /* and SkillLevel() >= g_nLowestSkillForGCI and */ not ((UnitClass *)self->GetCampaignObject())->Broken()) {//Cobra removed GCI test here...not needed
         //if ( not campBaseObj->GetSpotted(self->GetTeam()) and campBaseObj->IsFlight())
         //RequestIntercept((FlightClass *)campBaseObj, self->GetTeam());
@@ -324,7 +324,7 @@ void DigitalBrain::SensorFusion(void)
                 else
                     campObj = (CampBaseClass *)baseObj;
 
-                int isMissionTarget = campObj and (((FlightClass *)(self->GetCampaignObject()))-> GetUnitMissionTargetID() == campObj->Id() ||
+                int isMissionTarget = campObj and (((FlightClass *)(self->GetCampaignObject()))-> GetUnitMissionTargetID() == campObj->Id() or
                                                   ((FlightClass *)(self->GetCampaignObject()))->GetAssignedTarget() == campObj->Id());
 
                 if (isMissionTarget)

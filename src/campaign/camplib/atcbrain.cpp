@@ -358,8 +358,8 @@ void ATCBrain::ProcessRunways(void)
                 else
                     deltaTime = nextLand[queue]->schedTime - SimLibElapsedTime;
 
-                if (rwindex and player->af->vt < 30.0F * KNOTS_TO_FTPSEC and (player->DBrain()->ATCStatus() == lCrashed ||
-                        (player->DBrain()->ATCStatus() > lLanded and deltaTime < LAND_TIME_DELTA / 2) ||
+                if (rwindex and player->af->vt < 30.0F * KNOTS_TO_FTPSEC and (player->DBrain()->ATCStatus() == lCrashed or
+                        (player->DBrain()->ATCStatus() > lLanded and deltaTime < LAND_TIME_DELTA / 2) or
                         (player->DBrain()->ATCStatus() == lLanded and deltaTime < LAND_TIME_DELTA / 4 and player->af->vt < 5.0F)))
                 {
                     runwayStats[queue].rnwyInUse = player;
@@ -863,7 +863,7 @@ void ATCBrain::ProcessQueue(int queue)
 
                         if (info->schedTime < SimLibElapsedTime and (temp or runwayStats[queue].nextEmergency not_eq FalconNullId))
                         {
-                            if ( not aircraft->DBrain()->IsSetATC(DigitalBrain::ClearToLand) ||
+                            if ( not aircraft->DBrain()->IsSetATC(DigitalBrain::ClearToLand) or
                                 info->schedTime + CampaignMinutes < SimLibElapsedTime)
                             {
                                 //if there is someone who needs to use the runway after us
@@ -1818,7 +1818,7 @@ void ATCBrain::RequestTakeoff(AircraftClass* departing)
                 {
                     nextTakeoff = NextToTakeoff(GetQueue(rwindex));
 
-                    if (nextTakeoff == info ||
+                    if (nextTakeoff == info or
                         (UseSectionTakeoff((Flight)aircraft->GetCampaignObject(), rwindex) and aircraft->DBrain()->IsMyWingman(nextTakeoff->aircraftID)))
                         info->status = tTakeoff;
                 }
@@ -1888,7 +1888,7 @@ void ATCBrain::RequestTaxi(AircraftClass* departing)
 
     if (info)
     {
-        if (info->schedTime + 60 * CampaignSeconds > SimLibElapsedTime ||
+        if (info->schedTime + 60 * CampaignSeconds > SimLibElapsedTime or
             (info->status == tTakeoff))
         {
             int takeoffNum;
@@ -2021,7 +2021,7 @@ void ATCBrain::RequestTaxi(AircraftClass* departing)
         {
             nextTakeoff = NextToTakeoff(GetQueue(rwindex));
 
-            if (nextTakeoff == info ||
+            if (nextTakeoff == info or
                 (UseSectionTakeoff((Flight)departing->GetCampaignObject(), rwindex) and departing->DBrain()->IsMyWingman(nextTakeoff->aircraftID)))
                 info->status = tTakeoff;
         }
@@ -3460,9 +3460,9 @@ int ATCBrain::CheckVector(AircraftClass *aircraft, runwayQueueStruct* info)
     // Old information - Broken out to make easier to debug
     /*
     if( (info->lastContacted + 30 * CampaignSeconds < SimLibElapsedTime and dist > 4.0F*turnDist and 
-     (cosAngle < 0.965925F or info->status < lLanded and fabs(speed - vt) > 30.0F)) ||
-     (info->lastContacted + 15 * CampaignSeconds < SimLibElapsedTime and cosAngle < 0.5F and dist > 3.0F*turnDist) ||
-     (info->lastContacted + 8 * CampaignSeconds < SimLibElapsedTime and cosAngle < -0.866F )||
+     (cosAngle < 0.965925F or info->status < lLanded and fabs(speed - vt) > 30.0F)) or
+     (info->lastContacted + 15 * CampaignSeconds < SimLibElapsedTime and cosAngle < 0.5F and dist > 3.0F*turnDist) or
+     (info->lastContacted + 8 * CampaignSeconds < SimLibElapsedTime and cosAngle < -0.866F )or
      info->lastContacted + 2 * CampaignMinutes < SimLibElapsedTime and dist > 4.0F*turnDist)
     {
      //we're not heading for our track point
@@ -3908,7 +3908,7 @@ runwayQueueStruct* ATCBrain::InList(VU_ID aircraftID)
     //if ( not runwayQueue) // JB 010304 CTD
     //if (F4IsBadReadPtr(runwayQueue, sizeof(runwayQueueStruct*)) or not runwayQueue) // JB 010304 CTD
     if (
-        F4IsBadReadPtr(this, sizeof(ATCBrain)) ||
+        F4IsBadReadPtr(this, sizeof(ATCBrain)) or
         F4IsBadReadPtr(runwayQueue, sizeof(runwayQueueStruct*)) or not runwayQueue) // JB 010317 CTD
     {
         return NULL;
@@ -4920,7 +4920,7 @@ SimBaseClass* CheckPointGlobal(AircraftClass *self, float x, float y)
         // ignore objects under these conditions:
         // Ourself
         // Not on ground
-        if ( not testObject->OnGround() ||
+        if ( not testObject->OnGround() or
             testObject == self)
         {
             testObject = (SimBaseClass*) unitWalker.GetNext();
@@ -5046,7 +5046,7 @@ SimBaseClass* CheckTaxiPointGlobal(AircraftClass *self, float x, float y)
         // ignore objects under these conditions:
         // Ourself
         // Not on ground
-        if ( not testObject->OnGround() ||
+        if ( not testObject->OnGround() or
             testObject == self)
         {
             testObject = (SimBaseClass*) unitWalker.GetNext();
@@ -5339,7 +5339,7 @@ int ATCBrain::CheckIfBlockingRunway(AircraftClass *aircraft, runwayQueueStruct* 
             // info->timer = SimLibElapsedTime + 15 * CampaignSeconds;
         }
         else if (info->lastContacted + 90 * CampaignSeconds < SimLibElapsedTime and // 06FEB04 - FRB - was 45 seconds
-                 (SimLibElapsedTime > LAND_TIME_DELTA + info->schedTime ||
+                 (SimLibElapsedTime > LAND_TIME_DELTA + info->schedTime or
                   (rwindex not_eq info->rwindex and GetOppositeRunway(rwindex) not_eq info->rwindex)))
         {
             //yell at them to get off runway
@@ -5466,8 +5466,8 @@ int ATCBrain::UseSectionTakeoff(FlightClass *flight, int rwindex)
 {
     //TJL 10/31/03 Changing to 40 from 80
     if (runwayStats[PtHeaderDataTable[rwindex].runwayNum].halfwidth > 40.0F and 
-        (flight->GetSType() == STYPE_UNIT_ATTACK ||
-         flight->GetSType() == STYPE_UNIT_FIGHTER ||
+        (flight->GetSType() == STYPE_UNIT_ATTACK or
+         flight->GetSType() == STYPE_UNIT_FIGHTER or
          flight->GetSType() == STYPE_UNIT_FIGHTER_BOMBER) and 
         flight->GetTotalVehicles() > 1)
         return TRUE;

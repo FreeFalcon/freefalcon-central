@@ -413,7 +413,7 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
         // Should we repeat?
         if (self and self->curWaypoint and self->curWaypoint->GetWPFlags() bitand (WPF_REPEAT | WPF_REPEAT_CONTINUOUS))
         {
-            if ((self->curWaypoint->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS) ||
+            if ((self->curWaypoint->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS) or
                 SimLibElapsedTime < self->curWaypoint->GetWPDepartureTime())
             {
                 // Find prev waypoint
@@ -603,16 +603,16 @@ void DigitalBrain::GoToCurrentWaypoint(void)
     /* Reached the next waypoint */
     /*---------------------------*/
     //            0.83 NM
-    // if (rng < (5000.0F * 5000.0F) or (onStation not_eq NotThereYet) ||
+    // if (rng < (5000.0F * 5000.0F) or (onStation not_eq NotThereYet) or
     // Cobra - Give AI plenty of leeway to reach WP
     //            1.66 NM
-    if (rng < (10000.0F * 10000.0F) or (onStation not_eq NotThereYet) ||
+    if (rng < (10000.0F * 10000.0F) or (onStation not_eq NotThereYet) or
         SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime())
     {
         // Should we repeat?
         if (self->curWaypoint->GetWPFlags() bitand (WPF_REPEAT | WPF_REPEAT_CONTINUOUS))
         {
-            if ((self->curWaypoint->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS) ||
+            if ((self->curWaypoint->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS) or
                 SimLibElapsedTime < self->curWaypoint->GetWPDepartureTime())
             {
                 // Find prev waypoint
@@ -1026,11 +1026,11 @@ void DigitalBrain::SetWaypointSpecificStuff(void)
 #if 0 // Retro 20May2004 - fixed logic
                 if (missionType == (AMIS_OCASTRIKE or AMIS_INTSTRIKE or AMIS_STRIKE or AMIS_DEEPSTRIKE or AMIS_STSTRIKE or AMIS_STRATBOMB))
 #else
-                if ((missionType == AMIS_OCASTRIKE) ||
-                    (missionType == AMIS_INTSTRIKE) ||
-                    (missionType == AMIS_STRIKE) ||
-                    (missionType == AMIS_DEEPSTRIKE) ||
-                    (missionType == AMIS_STSTRIKE) ||
+                if ((missionType == AMIS_OCASTRIKE) or
+                    (missionType == AMIS_INTSTRIKE) or
+                    (missionType == AMIS_STRIKE) or
+                    (missionType == AMIS_DEEPSTRIKE) or
+                    (missionType == AMIS_STSTRIKE) or
                     (missionType == AMIS_STRATBOMB))
 #endif // Retro 20May2004 - end
                 {

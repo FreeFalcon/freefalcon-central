@@ -171,7 +171,7 @@ void HudClass::DrawAirspeed(void)
         {
             //MI don't draw into the text
             /*if (a >= 0 and 
-              (y1 - boxY > display->TextHeight() * 1.1F ||
+              (y1 - boxY > display->TextHeight() * 1.1F or
               y1 - boxY < -tickInc))*/
             if ( not g_bRealisticAvionics)
             {
@@ -239,7 +239,7 @@ void HudClass::DrawAirspeed(void)
                     // sfr: changed order here (no semantic change, was if else if)
                     //CruiseTOS in all modes, others only in NAV
                     if (
-                        (FCC->GetMasterMode() == FireControlComputer::Nav) ||
+                        (FCC->GetMasterMode() == FireControlComputer::Nav) or
                         (OTWDriver.pCockpitManager->mpIcp->GetCruiseIndex() == 0)
                     )
                     {
@@ -633,7 +633,7 @@ void HudClass::DrawAltitude(void)
             {
                 //MI don't draw into the text
                 /*if (a >= 0 and 
-                  (y1 - boxY > display->TextHeight() * 1.1F ||
+                  (y1 - boxY > display->TextHeight() * 1.1F or
                   y1 - boxY < -tickInc))*/
                 if ( not g_bRealisticAvionics)
                 {
@@ -941,8 +941,8 @@ void HudClass::DrawHeading(void)
     else if (headingPos == High or ((AircraftClass*)ownship)->af->gearPos > 0.5F)
     {
         //MI
-        if ( not g_bRealisticAvionics or ((AircraftClass*)ownship)->OnGround() ||
-            (g_bRealisticAvionics and g_bINS and ownship and ownship->INSState(AircraftClass::INS_PowerOff) ||
+        if ( not g_bRealisticAvionics or ((AircraftClass*)ownship)->OnGround() or
+            (g_bRealisticAvionics and g_bINS and ownship and ownship->INSState(AircraftClass::INS_PowerOff) or
  not ownship->INSState(AircraftClass::INS_HUD_STUFF)))
         {
 
@@ -1001,7 +1001,7 @@ void HudClass::DrawHeading(void)
         }
 
         //MI INS stuff
-        if (g_bRealisticAvionics and g_bINS and ownship and ownship->INSState(AircraftClass::INS_PowerOff) ||
+        if (g_bRealisticAvionics and g_bINS and ownship and ownship->INSState(AircraftClass::INS_PowerOff) or
  not ownship->INSState(AircraftClass::INS_HUD_STUFF))
         {
             headingTop = hudWinY[HEADING_WINDOW_LO] +
@@ -1162,7 +1162,7 @@ void HudClass::DrawHeading(void)
                         {
                             if
                             (
-                                ((a < 0) and (((-a) % 6) < 2)) ||
+                                ((a < 0) and (((-a) % 6) < 2)) or
                                 ((a >= 0) and ((a % 6) < 2))
                             )
                             {
@@ -1236,7 +1236,7 @@ void HudClass::DrawHeading(void)
                         {
                             if
                             (
-                                ((a < 0) and (((-a) % 6) < 2)) ||
+                                ((a < 0) and (((-a) % 6) < 2)) or
                                 ((a >= 0) and ((a % 6) < 2))
                             )
                             {
@@ -1324,7 +1324,7 @@ void HudClass::DrawTadpole(void)
     //MI INS stuff
     if (g_bRealisticAvionics and g_bINS)
     {
-        if (ownship and ownship->INSState(AircraftClass::INS_PowerOff) ||
+        if (ownship and ownship->INSState(AircraftClass::INS_PowerOff) or
  not ownship->INSState(AircraftClass::INS_HUD_STUFF))
             return;
     }
@@ -1376,7 +1376,7 @@ void HudClass::DrawILS(void)
     // ILS needles on hud not get properly updated because it query pCockpitManager->mHiddenFlag
     // and this seems not get updated in 3d pit view
     // if (gNavigationSys and not OTWDriver.pCockpitManager->mHiddenFlag)
-    if (gNavigationSys and (gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN ||
+    if (gNavigationSys and (gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN or
                            gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV) and 
         gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &hDev))
     {
@@ -1515,8 +1515,8 @@ void HudClass::DrawWaypoint(void)
     else if (headingPos == High or ((AircraftClass*)ownship)->af->gearPos > 0.5F)
     {
         //MI
-        if ( not g_bRealisticAvionics or ((AircraftClass*)ownship)->OnGround() ||
-            (g_bRealisticAvionics and g_bINS and ownship and ownship->INSState(AircraftClass::INS_PowerOff) ||
+        if ( not g_bRealisticAvionics or ((AircraftClass*)ownship)->OnGround() or
+            (g_bRealisticAvionics and g_bINS and ownship and ownship->INSState(AircraftClass::INS_PowerOff) or
  not ownship->INSState(AircraftClass::INS_HUD_STUFF)))
         {
 
@@ -1937,8 +1937,8 @@ void HudClass::RangeToSteerpoint(void)
     {
         HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(ownship, SensorClass::HTS);
 
-        if (harmPod and harmPod->GetSubMode() == HarmTargetingPod::HAS ||
-            harmPod and harmPod->GetSubMode() == HarmTargetingPod::Handoff ||
+        if (harmPod and harmPod->GetSubMode() == HarmTargetingPod::HAS or
+            harmPod and harmPod->GetSubMode() == HarmTargetingPod::Handoff or
             harmPod and harmPod->GetSubMode() == HarmTargetingPod::FilterMode)
         {
             displayRange = false;
@@ -2484,7 +2484,7 @@ void HudClass::DrawRALT(void)
     {
         if ( not ((AircraftClass*)ownship)->OnGround())
         {
-            if (((AircraftClass*)ownship)->af->platform->RALTStatus == AircraftClass::ROFF ||
+            if (((AircraftClass*)ownship)->af->platform->RALTStatus == AircraftClass::ROFF or
                 ((AircraftClass*)ownship)->af->platform->RALTStatus == AircraftClass::RSTANDBY)
                 DrawALString();
             else if (Warnflash)
@@ -2796,7 +2796,7 @@ void HudClass::DrawAirSpeedCarret(float Speed)
 
     //TJL 07/31/04 F14 - F18 Airspeed Carret //Cobra 11/04/04 TJL
     //Cobra fixed non-F16, non-HUD specific airspeed carret issue
-    if (ownship->af->GetTypeAC() == 6 or ownship->af->GetTypeAC() == 7 or ownship->af->GetTypeAC() == 8 ||
+    if (ownship->af->GetTypeAC() == 6 or ownship->af->GetTypeAC() == 7 or ownship->af->GetTypeAC() == 8 or
         ownship->af->GetTypeAC() == 9 or ownship->af->GetTypeAC() == 10)
     {
         float delta = 0.0f;
@@ -2969,9 +2969,9 @@ void HudClass::DrawCruiseIndexes(void)
                         }
                         // we are at optimum cruice let's cruice range here
                         else if (fabs(-playerAC->ZPos() - playerAC->af->GetOptimumAltitude()) < 200.0f  and 
-                                 fabs(playerAC->ZDelta()) < 50.0f ||
+                                 fabs(playerAC->ZDelta()) < 50.0f or
                                  fabs(-playerAC->ZPos() - playerAC->af->GetOptimumAltitude()) < 1000.0f  and 
-                                 playerAC->ZDelta() > 0.0f ||
+                                 playerAC->ZDelta() > 0.0f or
                                  -playerAC->ZPos() > playerAC->af->GetOptimumAltitude())
                         {
                             DrawAirSpeedCarret(playerAC->af->GetOptKias(2));

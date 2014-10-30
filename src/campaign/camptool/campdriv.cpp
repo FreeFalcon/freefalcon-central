@@ -2772,24 +2772,24 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                 while (FromObjective)
                 {
                     // SAM Site logic
-                    if (FromObjective->GetType() == TYPE_AIRBASE ||
-                        FromObjective->GetType() == TYPE_ARMYBASE ||
-                        FromObjective->GetType() == TYPE_PORT ||
-                        FromObjective->GetType() == TYPE_FACTORY ||
-                        FromObjective->GetType() == TYPE_NUCLEAR ||
-                        FromObjective->GetType() == TYPE_POWERPLANT ||
-                        FromObjective->GetType() == TYPE_REFINERY ||
-                        FromObjective->GetType() == TYPE_CHEMICAL ||
-                        FromObjective->GetType() == TYPE_COM_CONTROL ||
-                        FromObjective->GetType() == TYPE_DEPOT ||
-                        FromObjective->GetType() == TYPE_RADAR ||
+                    if (FromObjective->GetType() == TYPE_AIRBASE or
+                        FromObjective->GetType() == TYPE_ARMYBASE or
+                        FromObjective->GetType() == TYPE_PORT or
+                        FromObjective->GetType() == TYPE_FACTORY or
+                        FromObjective->GetType() == TYPE_NUCLEAR or
+                        FromObjective->GetType() == TYPE_POWERPLANT or
+                        FromObjective->GetType() == TYPE_REFINERY or
+                        FromObjective->GetType() == TYPE_CHEMICAL or
+                        FromObjective->GetType() == TYPE_COM_CONTROL or
+                        FromObjective->GetType() == TYPE_DEPOT or
+                        FromObjective->GetType() == TYPE_RADAR or
                         FromObjective->GetType() == TYPE_SAM_SITE)
                         FromObjective->SetSamSite(1);
                     else
                         FromObjective->SetSamSite(0);
 
                     // HART Site logic
-                    if (FromObjective->GetType() == TYPE_HARTS ||
+                    if (FromObjective->GetType() == TYPE_HARTS or
                         FromObjective->GetType() == TYPE_HILL_TOP)
                         FromObjective->SetArtillerySite(1);
                     else
@@ -2802,7 +2802,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                         FromObjective->SetCommandoSite(0);
 
                     // Radar logic
-                    if (FromObjective->GetType() == TYPE_AIRBASE ||
+                    if (FromObjective->GetType() == TYPE_AIRBASE or
                         FromObjective->GetType() == TYPE_RADAR)
                         FromObjective->SetRadarSite(1);
                     else

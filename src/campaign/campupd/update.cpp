@@ -114,7 +114,7 @@ int UpdateUnit(Unit u, CampaignTime DeltaTime)
 
     if (
 #if FIX_RESET_UNIT
-        (lastCheck == 0) ||
+        (lastCheck == 0) or
 #endif
         (TheCampaign.CurrentTime - lastCheck > u->UpdateTime())
     )

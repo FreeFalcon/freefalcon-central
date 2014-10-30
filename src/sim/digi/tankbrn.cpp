@@ -755,13 +755,13 @@ void TankerBrain::DriveBoom(void)
         {
             tmpAz = tankingPtr->localData->az;
 
-            if (fabs(totalrange) > 8.0F * /*FRB*/ ScaledRM ||
-                fabs(boom[DROGUE].az - tmpAz)*RTD > 7.0F * /*FRB*/ ScaledRM ||
-                fabs(boom[DROGUE].el - tankingPtr->localData->el)*RTD > 5.0F * /*FRB*/ ScaledRM ||
-                fabs(tankingPtr->BaseData()->Roll())*RTD > 5.0F * /* S.G.*/ ScaledRM ||
-                fabs(tankingPtr->BaseData()->Pitch())*RTD > 8.0F * /* S.G.*/ ScaledRM ||
-                tankingPtr->localData->el * RTD > 5.0F * /*FRB*/ ScaledRM ||
-                tankingPtr->localData->el * RTD < -5.0F * /*FRB*/ ScaledRM ||
+            if (fabs(totalrange) > 8.0F * /*FRB*/ ScaledRM or
+                fabs(boom[DROGUE].az - tmpAz)*RTD > 7.0F * /*FRB*/ ScaledRM or
+                fabs(boom[DROGUE].el - tankingPtr->localData->el)*RTD > 5.0F * /*FRB*/ ScaledRM or
+                fabs(tankingPtr->BaseData()->Roll())*RTD > 5.0F * /* S.G.*/ ScaledRM or
+                fabs(tankingPtr->BaseData()->Pitch())*RTD > 8.0F * /* S.G.*/ ScaledRM or
+                tankingPtr->localData->el * RTD > 5.0F * /*FRB*/ ScaledRM or
+                tankingPtr->localData->el * RTD < -5.0F * /*FRB*/ ScaledRM or
                 fabs(tankingPtr->localData->az)*RTD > 23.0F * /*FRB*/ ScaledRM)
             {
                 flags and_eq compl GivingGas;
@@ -965,13 +965,13 @@ void TankerBrain::DriveBoom(void)
     }
     else if (tankingPtr and not (flags bitand ClearingPlane))
     {
-        if (fabs(boom[BOOM].ext - tankingPtr->localData->range + 33.5F) > 2.0F ||
-            fabs(boom[BOOM].az - tmpAz)*RTD > 2.0F * /*FRB*/ ScaledRM ||
-            fabs(boom[BOOM].el - tankingPtr->localData->el)*RTD > 2.0F ||
+        if (fabs(boom[BOOM].ext - tankingPtr->localData->range + 33.5F) > 2.0F or
+            fabs(boom[BOOM].az - tmpAz)*RTD > 2.0F * /*FRB*/ ScaledRM or
+            fabs(boom[BOOM].el - tankingPtr->localData->el)*RTD > 2.0F or
             fabs(tankingPtr->BaseData()->Roll())*RTD > 20.0F * /* S.G.*/ ScaledRM or  // JPG 14 Jan 03 - 20 prevents tons of disconnects in the turn
-            fabs(tankingPtr->BaseData()->Pitch())*RTD > 20.0F * /* S.G.*/ ScaledRM ||
-            tankingPtr->localData->el * RTD > -25.0F ||
-            tankingPtr->localData->el * RTD < -40.0F ||
+            fabs(tankingPtr->BaseData()->Pitch())*RTD > 20.0F * /* S.G.*/ ScaledRM or
+            tankingPtr->localData->el * RTD > -25.0F or
+            tankingPtr->localData->el * RTD < -40.0F or
             fabs(tankingPtr->localData->az)*RTD > 23.0F)
         {
             flags and_eq compl GivingGas;

@@ -668,7 +668,7 @@ void HudClass::DrawSteeringToRelease(void)
         // Solution Cue
         if (FCC->tossAnticipationCue not_eq FireControlComputer::NoCue)
         {
-            if (FCC->tossAnticipationCue == FireControlComputer::PullUp ||
+            if (FCC->tossAnticipationCue == FireControlComputer::PullUp or
                 FCC->tossAnticipationCue == FireControlComputer::AwaitingRelease)
                 solutionCueY = min(FCC->airGroundDelayTime / 60.0F, 1.0F);
             else
@@ -681,7 +681,7 @@ void HudClass::DrawSteeringToRelease(void)
         }
 
         // Toss Anticipation Cue
-        if (FCC->tossAnticipationCue == FireControlComputer::PreToss ||
+        if (FCC->tossAnticipationCue == FireControlComputer::PreToss or
             (FCC->tossAnticipationCue == FireControlComputer::PullUp and flash))
         {
             display->Circle(0.0F, RadToHudUnits(-3.0F * DTR) +
@@ -778,8 +778,8 @@ void HudClass::DrawSteeringToRelease(void)
         {
             HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(ownship, SensorClass::HTS);
 
-            if (harmPod and harmPod->GetSubMode() == HarmTargetingPod::HAS ||
-                harmPod and harmPod->GetSubMode() == HarmTargetingPod::Handoff ||
+            if (harmPod and harmPod->GetSubMode() == HarmTargetingPod::HAS or
+                harmPod and harmPod->GetSubMode() == HarmTargetingPod::Handoff or
                 harmPod and harmPod->GetSubMode() == HarmTargetingPod::FilterMode)
             {
                 displayRange = false;
@@ -1048,7 +1048,7 @@ void HudClass::DrawSteeringToReleaseLADD(void)
         // Solution Cue
         if (FCC->laddAnticipationCue not_eq FireControlComputer::NoLADDCue)
         {
-            if (FCC->laddAnticipationCue == FireControlComputer::LADDPullUp ||
+            if (FCC->laddAnticipationCue == FireControlComputer::LADDPullUp or
                 FCC->laddAnticipationCue == FireControlComputer::LADDAwaitingRelease)
                 solutionCueY = min(FCC->airGroundDelayTime / 60.0F, 1.0F);
             else

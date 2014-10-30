@@ -141,7 +141,7 @@ void DigitalBrain::AiRunTargetSelection(void)
                 mDesignatedObject = FalconNullId;
             }
         }
-        else if (mpSearchFlags[AI_SEARCH_FOR_TARGET] ||
+        else if (mpSearchFlags[AI_SEARCH_FOR_TARGET] or
                  mDesignatedObject == FalconNullId)   // If we are ordered to scan for targets
         {
             TargetSelection(); // Run the full selection routine
@@ -368,8 +368,8 @@ SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int 
                         (
                             flightMember[j]->DBrain()->groundTargetPtr and 
                             flightMember[j]->DBrain()->groundTargetPtr->BaseData() == simTarg
-                        ) ||
-                        flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg ||
+                        ) or
+                        flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg or
                         flightMember[j]->DBrain()->gndTargetHistory[1] == simTarg
                     )
                 )
@@ -606,8 +606,8 @@ SimBaseClass *DigitalBrain::FindJSOWGroundTarget(CampBaseClass *targetGroup, int
                 continue;
 
             if (flightMember[j] and flightMember[j]->DBrain() and ((flightMember[j]->DBrain()->groundTargetPtr and 
-                    flightMember[j]->DBrain()->groundTargetPtr->BaseData() == simTarg) ||
-                    flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg ||
+                    flightMember[j]->DBrain()->groundTargetPtr->BaseData() == simTarg) or
+                    flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg or
                     flightMember[j]->DBrain()->gndTargetHistory[1] == simTarg))
                 break;  // Yes, ignore it.
         }
@@ -728,8 +728,8 @@ int DigitalBrain::FindJDAMGroundTarget(CampBaseClass *targetGroup, int targetNum
                 continue;
 
             if (flightMember[j] and flightMember[j]->DBrain() and ((flightMember[j]->DBrain()->groundTargetPtr and 
-                    flightMember[j]->DBrain()->groundTargetPtr->BaseData() == simTarg) ||
-                    flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg ||
+                    flightMember[j]->DBrain()->groundTargetPtr->BaseData() == simTarg) or
+                    flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg or
                     flightMember[j]->DBrain()->gndTargetHistory[1] == simTarg))
                 break;  // Yes, ignore it.
         }

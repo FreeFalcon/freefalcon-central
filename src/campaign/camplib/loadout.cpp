@@ -184,7 +184,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
     if (type_flags bitand WEAP_BAI_LOADOUT)
     {
         if (((WeaponDataTable[wid].GuidanceFlags bitand WEAP_LASER) and (wid not_eq 68 or wid not_eq 310)) or // 2002-01-24 MODIFIED BY S.G. Added () around the '&' statements since it has lower precedence than and 
-            (WeaponDataTable[wid].GuidanceFlags bitand WEAP_RADAR) ||
+            (WeaponDataTable[wid].GuidanceFlags bitand WEAP_RADAR) or
             (WeaponDataTable[wid].GuidanceFlags bitand WEAP_ANTIRADATION))
             score = 0;
 
@@ -209,7 +209,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
     {
         score = score * WeaponDataTable[wid].Range / 100;
 
-        if ((WeaponDataTable[wid].GuidanceFlags bitand WEAP_LASER) ||
+        if ((WeaponDataTable[wid].GuidanceFlags bitand WEAP_LASER) or
             ( not (WeaponDataTable[wid].Flags bitand WEAP_CLUSTER) and (WeaponDataTable[wid].Flags bitand WEAP_BOMBGPS)))
             score = score / (WeaponDataTable[wid].Strength + 1) * 200;
 

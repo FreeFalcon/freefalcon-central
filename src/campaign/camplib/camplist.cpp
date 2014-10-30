@@ -404,7 +404,7 @@ ObjProxFilter* AllObjProxFilter = NULL;
 VU_BOOL CampBaseFilter::Test(VuEntity *e)
 {
     if ((e->EntityType())->classInfo_[VU_DOMAIN] and 
-        ((e->EntityType())->classInfo_[VU_CLASS] == CLASS_UNIT ||
+        ((e->EntityType())->classInfo_[VU_CLASS] == CLASS_UNIT or
          (e->EntityType())->classInfo_[VU_CLASS] == CLASS_OBJECTIVE))
         return TRUE;
 
@@ -414,7 +414,7 @@ VU_BOOL CampBaseFilter::Test(VuEntity *e)
 VU_BOOL CampBaseFilter::RemoveTest(VuEntity *e)
 {
     if ((e->EntityType())->classInfo_[VU_DOMAIN] and 
-        ((e->EntityType())->classInfo_[VU_CLASS] == CLASS_UNIT ||
+        ((e->EntityType())->classInfo_[VU_CLASS] == CLASS_UNIT or
          (e->EntityType())->classInfo_[VU_CLASS] == CLASS_OBJECTIVE))
         return TRUE;
 

@@ -154,7 +154,7 @@ void FireControlComputer::AirAirMode(void)
                     (VehicleClassDataType *)Falcon4ClassTable[platform->Type() - VU_LAST_ENTITY_TYPE].dataPtr;
 
                 if ( not playerFCC or ( // don't do this check for ai
-                        vc and ( not (vc->Flags bitand 0x20000000) ||
+                        vc and ( not (vc->Flags bitand 0x20000000) or
                                // JB 010712 Normal behavior for the 2d cockpit
                                OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode2DCockpit) and 
  not theMissile->isCaged)
@@ -538,7 +538,7 @@ void FireControlComputer::AirAirMode(void)
                 //if (g_bHardCoreReal and ( MI
                 if (g_bRealisticAvionics and (
                         theMissile->sensorArray[0]->Type() == SensorClass::Radar
-                        //|| theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming
+                        //or theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming
                     ))
                 {
                     static const float MISSILE_ALTITUDE_BONUS = 23.0f; // JB 010215 changed from 24 to 23
@@ -554,7 +554,7 @@ void FireControlComputer::AirAirMode(void)
                     missileteoryMaxTof += -5.0F * (float) sin(.07F * missileteoryMaxTof); // JB 010215
                     // digi's don't shoot semi's if agregate now, so this is ok
                     /*if (((AircraftClass *)theMissile->parent)->isDigital and 
-                     (theMissile->sensorArray[0]->Type() == SensorClass::Radar ||
+                     (theMissile->sensorArray[0]->Type() == SensorClass::Radar or
                      theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming and 
                      overtake * missileteoryMaxTof < missileRMax))
                      missileRMax   = overtake * missileteoryMaxTof;// missileMaxTof;

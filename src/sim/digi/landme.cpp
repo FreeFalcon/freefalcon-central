@@ -1026,7 +1026,7 @@ void DigitalBrain::Land(void)
             groundAvoidNeeded = FALSE;
 
             //TJL 02/21/04
-            /*if(af->vt < af->CalcTASfromCAS(af->MinVcas() + 30.0F)*KNOTS_TO_FTPSEC ||
+            /*if(af->vt < af->CalcTASfromCAS(af->MinVcas() + 30.0F)*KNOTS_TO_FTPSEC or
              (af->gearPos > 0.0F and af->vt < af->CalcTASfromCAS(af->MinVcas() + 10.0F)*KNOTS_TO_FTPSEC))*/
             if (af->vcas < 270.0F)
             {
@@ -1395,7 +1395,7 @@ void DigitalBrain::Land(void)
                         // Cobra - Skip a/c on parking spots
                         if (
                             (((AircraftClass*)inTheWay)->DBrain()) and 
-                            ((PtDataTable[((AircraftClass*)inTheWay)->DBrain()->GetTaxiPoint()].type == LargeParkPt ||
+                            ((PtDataTable[((AircraftClass*)inTheWay)->DBrain()->GetTaxiPoint()].type == LargeParkPt or
                               (PtDataTable[((AircraftClass*)inTheWay)->DBrain()->GetTaxiPoint()].type == SmallParkPt)))
                         )
                         {
@@ -1519,7 +1519,7 @@ void DigitalBrain::FindParkingSpot(ObjectiveClass *Airbase) // FRB - Landing-->P
 
             pt ++; // try next
         }
-        else if (PtDataTable[pt].type == SmallParkPt ||
+        else if (PtDataTable[pt].type == SmallParkPt or
                  PtDataTable[pt].type == LargeParkPt)
         {
             pt = GetNextPtLoop(pt);
@@ -1540,8 +1540,8 @@ void DigitalBrain::FindParkingSpot(ObjectiveClass *Airbase) // FRB - Landing-->P
 bool DigitalBrain::AtFinalTaxiPoint()
 {
     // final point is one of these
-    if (PtDataTable[curTaxiPoint].type == SmallParkPt ||
-        PtDataTable[curTaxiPoint].type == LargeParkPt ||
+    if (PtDataTable[curTaxiPoint].type == SmallParkPt or
+        PtDataTable[curTaxiPoint].type == LargeParkPt or
         PtDataTable[curTaxiPoint].flags == PT_LAST)
     {
         return CloseToTrackPoint();
@@ -1843,8 +1843,8 @@ void DigitalBrain::TakeOff()
             return; // not time for startup yet
         }
         else if (
-            PtDataTable[curTaxiPoint].flags == PT_LAST ||
-            PtDataTable[curTaxiPoint].type == SmallParkPt ||
+            PtDataTable[curTaxiPoint].flags == PT_LAST or
+            PtDataTable[curTaxiPoint].type == SmallParkPt or
             PtDataTable[curTaxiPoint].type == LargeParkPt
         )
         {
@@ -2129,7 +2129,7 @@ void DigitalBrain::TakeOff()
             //AI_MESSAGE(0,"AI - REQ TAXI");
             // 17JAN04 - FRB - clear occupied parking spot flag
             if (
-                (PtDataTable[curTaxiPoint].type == SmallParkPt) ||
+                (PtDataTable[curTaxiPoint].type == SmallParkPt) or
                 (PtDataTable[curTaxiPoint].type == LargeParkPt)
             )
             {
@@ -2153,7 +2153,7 @@ void DigitalBrain::TakeOff()
             desiredSpeed = 0.0F;
 
             if (
-                (distSq < TAXI_CHECK_DIST * TAXI_CHECK_DIST) ||
+                (distSq < TAXI_CHECK_DIST * TAXI_CHECK_DIST) or
                 (rx < 1.0F and distSq < TAXI_CHECK_DIST * TAXI_CHECK_DIST * 4.0F)
             )
             {
@@ -2203,7 +2203,7 @@ void DigitalBrain::TakeOff()
 
             //if we haven't reached our desired taxi point, we need to move
             if (
-                (distSq < TAXI_CHECK_DIST * TAXI_CHECK_DIST) ||
+                (distSq < TAXI_CHECK_DIST * TAXI_CHECK_DIST) or
                 (rx < 1.0F and distSq < TAXI_CHECK_DIST * TAXI_CHECK_DIST * 4.0F)
             )
             {
@@ -2268,7 +2268,7 @@ void DigitalBrain::TakeOff()
 
             //if we haven't reached our desired taxi point, we need to move
             if (
-                (distSq < TAXI_CHECK_DIST * TAXI_CHECK_DIST) ||
+                (distSq < TAXI_CHECK_DIST * TAXI_CHECK_DIST) or
                 (rx < 0.0F and distSq < TAXI_CHECK_DIST * TAXI_CHECK_DIST * 4.0F)
             )
             {
@@ -2813,9 +2813,9 @@ void DigitalBrain::DealWithBlocker(SimBaseClass *inTheWay, ObjectiveClass *Airba
             CalculateTaxiSpeed(MoveAlong);
         }
     }
-    else if ((isWing and ( not inTheWay2 or inTheWay2->GetCampaignObject() not_eq self->GetCampaignObject() ||
-                         self->vehicleInUnit < ((AircraftClass*)inTheWay2)->vehicleInUnit)) ||
-             (inTheWay->GetVt() < 5.0F and SimLibElapsedTime > waittimer + extraWait) ||
+    else if ((isWing and ( not inTheWay2 or inTheWay2->GetCampaignObject() not_eq self->GetCampaignObject() or
+                         self->vehicleInUnit < ((AircraftClass*)inTheWay2)->vehicleInUnit)) or
+             (inTheWay->GetVt() < 5.0F and SimLibElapsedTime > waittimer + extraWait) or
              (inTheWay->IsAirplane() and ((AircraftClass*)inTheWay)->DBrain()->RwTime() > rwtime))
     {
         tmpX = inTheWay->XPos() - self->XPos();
@@ -2926,7 +2926,7 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
         flight_leader and 
         (
             (flight_leader->IsPlayer() and 
-             (flight_leader->AutopilotType() == AircraftClass::CombatAP)) ||
+             (flight_leader->AutopilotType() == AircraftClass::CombatAP)) or
  not flight_leader->IsPlayer()
         )
     )
@@ -3017,11 +3017,11 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
             // This allows aircraft to file out of parking versus all move at once.
             // sfr: added leader check and concatenated 2 checks in one if
             if (isWing and leader and (
-                    PtDataTable[curTaxiPoint].type == SmallParkPt ||
+                    PtDataTable[curTaxiPoint].type == SmallParkPt or
                     PtDataTable[curTaxiPoint].type == LargeParkPt
                 ) and (
                     (
-                        PtDataTable[leader->DBrain()->curTaxiPoint].type == SmallParkPt ||
+                        PtDataTable[leader->DBrain()->curTaxiPoint].type == SmallParkPt or
                         PtDataTable[leader->DBrain()->curTaxiPoint].type == LargeParkPt
                     ) or (
                         leader->DBrain()->curTaxiPoint >= (leader->spawnpoint) - 1 and 
@@ -3892,8 +3892,8 @@ BOOL DigitalBrain::CheckTaxiCollision(void)
             // Ourself
             // Not on ground
             // no drawpointer
-            if ( not testObject->OnGround() ||
-                testObject == self ||
+            if ( not testObject->OnGround() or
+                testObject == self or
  not testObject->drawPointer)
             {
                 testObject = (SimBaseClass*) unitWalker.GetNext();
@@ -4101,7 +4101,7 @@ BOOL DigitalBrain::SimpleGroundTrack(float speed)
             // ignore objects under these conditions:
             // Ourself
             // Not on ground
-            if ( not testObject->OnGround() ||
+            if ( not testObject->OnGround() or
                 testObject == self)
             {
                 testObject = (SimBaseClass*) unitWalker.GetNext();
@@ -4145,7 +4145,7 @@ BOOL DigitalBrain::SimpleGroundTrack(float speed)
 
             // reject anything more than MAX_AZ deg off our nose
             // Cobra - Restrict large a/c to narrow view
-            if ((BigBoy and (fabs(az) > 10.f * DTR)) ||
+            if ((BigBoy and (fabs(az) > 10.f * DTR)) or
                 (fabs(az) > MAX_AZ))
             {
                 testObject = (SimBaseClass*) unitWalker.GetNext();
@@ -4155,7 +4155,7 @@ BOOL DigitalBrain::SimpleGroundTrack(float speed)
             /*
              // Cobra - Skip a/c on parking spots
              if (((AircraftClass*)testObject)->DBrain() and 
-             (((AircraftClass*)testObject)->DBrain()->GetTaxiPoint() == LargeParkPt ||
+             (((AircraftClass*)testObject)->DBrain()->GetTaxiPoint() == LargeParkPt or
              ((AircraftClass*)testObject)->DBrain()->GetTaxiPoint() == SmallParkPt))
              {
              testObject = (SimBaseClass*) unitWalker.GetNext();

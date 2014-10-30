@@ -52,7 +52,7 @@ void DigitalBrain::BvrEngageCheck(void)
     /*---------------------*/
     /* return if no target */
     /*---------------------*/
-    if (targetPtr == NULL or curMode == RTBMode or /* 2002-04-01 ADDED BY S.G. Player's wing doing a maneuver */ mpActionFlags[AI_EXECUTE_MANEUVER])/*|| // No Target
+    if (targetPtr == NULL or curMode == RTBMode or /* 2002-04-01 ADDED BY S.G. Player's wing doing a maneuver */ mpActionFlags[AI_EXECUTE_MANEUVER])/*or // No Target
       ( not mpActionFlags[AI_ENGAGE_TARGET] and missionClass not_eq AAMission and not missionComplete) or // Target is not assigned and on AG mission
        curMode == RTBMode)*/
     {
@@ -61,7 +61,7 @@ void DigitalBrain::BvrEngageCheck(void)
         //if ((AircraftClass*)flightLead)
         if ((AircraftClass*)flightLead and bvractionstep not_eq 0) //THW 2003-11-15 Only calc if necessary
         {
-            if (((AircraftClass*)flightLead)->DBrain()->bvractionstep == 0 and self->GetCampaignObject()->NumberOfComponents() < 3 ||
+            if (((AircraftClass*)flightLead)->DBrain()->bvractionstep == 0 and self->GetCampaignObject()->NumberOfComponents() < 3 or
                 ((AircraftClass*)flightLead)->DBrain()->bvractionstep == 0 and (AircraftClass *)self->GetCampaignObject() and 
                 (AircraftClass *)self->GetCampaignObject()->GetComponentNumber(2) and 
                 ((AircraftClass *)self->GetCampaignObject()->GetComponentNumber(2))->DBrain()->bvractionstep == 0)
@@ -190,7 +190,7 @@ void DigitalBrain::BvrEngageCheck(void)
         classPtr = (Falcon4EntityClassType*)(targetPtr->BaseData()->EntityType());
 
         // if its a plane we're in.....
-        if ((classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_AIRPLANE ||
+        if ((classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_AIRPLANE or
              classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_HELICOPTER) and 
             targetPtr->localData->range < engageRange and self->CombatClass() <= 7
             /*CanEngage(self, self->CombatClass(), targetPtr, BVRManeuver)*/) // 2002-03-11 MODIFIED BY S.G. Added parameter BVRManeuver
@@ -239,7 +239,7 @@ void DigitalBrain::BvrEngage(void)
 #endif
 
     // do we need to evaluate our position?
-    if (bvrTacticTimer < SimLibElapsedTime or targetPtr not_eq lastTarget ||
+    if (bvrTacticTimer < SimLibElapsedTime or targetPtr not_eq lastTarget or
         missilelasttime not_eq missileFiredEntity)
     {
         // run logic for next tactic
@@ -1391,7 +1391,7 @@ void DigitalBrain::level2c(void)
 
     if (wingman)
     {
-        if ((bvractionstep not_eq 0  or targetData->range > TGTMAR) and wingman->DBrain()->bvrCurrTactic == BvrFlyFormation and WhoIsSpiked() > 3  ||
+        if ((bvractionstep not_eq 0  or targetData->range > TGTMAR) and wingman->DBrain()->bvrCurrTactic == BvrFlyFormation and WhoIsSpiked() > 3  or
             (bvractionstep not_eq 0 or targetData->range > TGTMAR) and wingman->DBrain()->bvrCurrTactic not_eq BvrFlyFormation and WhoIsSpiked() > 7)
             bvractionstep = 0;
         else bvractionstep = 1;
@@ -2251,7 +2251,7 @@ void DigitalBrain::CalculateMAR()
 
      // 2002-03-22 MODIFIED BY S.G. Only use the original code if we have no minTGTMAR
      if ( not self->af or self->af->GetMinTGTMAR() == 0.0) {
-     if (self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG29||
+     if (self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG29or
       self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG31)
      {
      if (maxAAWpnRange > 6000.0f) // 2002-03-06 ADDED BY S.G. If you only have guns or nothing, don't be foolish and go on the aggresive.
@@ -2259,13 +2259,13 @@ void DigitalBrain::CalculateMAR()
      }
 
      if (
-      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_SU27||
-      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F14A||
-      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F15C||
-      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F15E||
-      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F16C||
-      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F18A||
-      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F18D||
+      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_SU27or
+      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F14Aor
+      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F15Cor
+      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F15Eor
+      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F16Cor
+      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F18Aor
+      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F18Dor
       self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F22)
      {
      if (maxAAWpnRange > 6000.0f) // 2002-03-06 ADDED BY S.G. If you only have guns or nothing, don't be foolish and go on the aggresive
@@ -2292,7 +2292,7 @@ void DigitalBrain::CalculateMAR()
      {// we have Type ID.
      // 2002-03-22 MODIFIED BY S.G. If our target is an airplane and we have a minMAR, use it instead of the original method
      if ( not targetPtr->BaseData()->IsAirplane() or not ((AircraftClass *)targetPtr->BaseData())->af or ((AircraftClass *)targetPtr->BaseData())->af->GetMaxMARIdedStart() == 0.0f) {
-     if (targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG29||
+     if (targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG29or
       targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG31)
      {
      MAR  = max(MAR,5.0f*NM_TO_FT) ;
@@ -2306,13 +2306,13 @@ void DigitalBrain::CalculateMAR()
      }
 
      if (
-      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_SU27||
-      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F14A||
-      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F15C||
-      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F15E||
-      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F16C||
-      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F18A||
-      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F18D||
+      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_SU27or
+      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F14Aor
+      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F15Cor
+      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F15Eor
+      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F16Cor
+      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F18Aor
+      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F18Dor
       targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F22)
      {
      MAR  =max(MAR,10.0f*NM_TO_FT);
@@ -2342,7 +2342,7 @@ void DigitalBrain::CalculateMAR()
      {// we Don't have Type ID, we have SA on their Speed and altitude though since the ent is spotted
      // 2002-03-22 MODIFIED BY S.G. Instead of using the hard coded value, use configurable one
      if (
-     (targetPtr->BaseData()->GetVt() * FTPSEC_TO_KNOTS > 300.0f ||
+     (targetPtr->BaseData()->GetVt() * FTPSEC_TO_KNOTS > 300.0f or
      -targetPtr->BaseData()->ZPos() > 10000.0f)
 
      )
@@ -2410,7 +2410,7 @@ int DigitalBrain::IsSupportignmissile(void)
         result = 1;
 
     /* if (missileFiredEntity and 
-     (((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming ||
+     (((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming or
      ((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::Radar ))
      {
      if (self->FCC->lastMissileImpactTime > (((MissileClass *)missileFiredEntity)->GetActiveTime(0.0f, 0.0f, 0.0f, 0.0f, 0.0f)))
@@ -2425,7 +2425,7 @@ int DigitalBrain::IsSupportignmissile(void)
 
     /* if (wingman and 
      wingman->DBrain()->missileFiredEntity and 
-     (((SimWeaponClass *)wingman->DBrain()->missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming ||
+     (((SimWeaponClass *)wingman->DBrain()->missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming or
      ((SimWeaponClass *)wingman->DBrain()->missileFiredEntity)->sensorArray[0]->Type() == SensorClass::Radar ))
      {
      if (wingman->FCC->lastMissileImpactTime > (((MissileClass *)wingman->DBrain()->missileFiredEntity)->GetActiveTime(0.0f, 0.0f, 0.0f, 0.0f, 0.0f)))
@@ -2686,7 +2686,7 @@ void DigitalBrain::DoProfile(void)
 void DigitalBrain::BaseLineIntercept(void)
 {
     //only with radar sa 
-    if (fabs(targetData->azFrom) < 30 * DTR ||
+    if (fabs(targetData->azFrom) < 30 * DTR or
         fabs(targetData->azFrom) > 40 * DTR and 
         fabs(targetData->azFrom) < 160 * DTR)
     {
@@ -2847,7 +2847,7 @@ int DigitalBrain::BeamManeuver(int direction, int NotchHI)
 
     if (
         heighttimer + 15 * CampaignSeconds < SimLibElapsedTime and 
-        (TargetAz(self, targetPtr) > 80.0f * DTR and TargetAz(self, targetPtr) < 100.0f * DTR ||
+        (TargetAz(self, targetPtr) > 80.0f * DTR and TargetAz(self, targetPtr) < 100.0f * DTR or
          TargetAz(self, targetPtr) < -80.0f * DTR and TargetAz(self, targetPtr) > -100.0f * DTR)
     )
     {

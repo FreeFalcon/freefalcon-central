@@ -27,10 +27,10 @@ ObjectInstance::ObjectInstance(int tid)
     /***** BEGIN HACK HACK HACK HACK - Billy forced me to do it :-) -RH *****/
     if
     ( // F16c
-        (tid == 1052) ||
-        (tid == 564) ||
-        (tid == 563) ||
-        (tid == 562) ||
+        (tid == 1052) or
+        (tid == 564) or
+        (tid == 563) or
+        (tid == 562) or
         (tid == 5)
     )
     {

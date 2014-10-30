@@ -579,7 +579,7 @@ void OTWDriverClass::RunActionCamera(void)
         {
             // we don't want to deal with campaign objects....
             if (
- not theObject->IsSim() ||
+ not theObject->IsSim() or
  not theObject->IsAwake()
                 /* or theObject->IsEject()*/
             ) // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots REMOVED FOR NOW
@@ -591,7 +591,7 @@ void OTWDriverClass::RunActionCamera(void)
 
             // is this an object( missile or bomb)
             if (
-                (theObject->IsMissile() ||
+                (theObject->IsMissile() or
                  (
                      theObject->IsBomb() and 
  not (((BombClass*)theObject)->IsSetBombFlag(BombClass::IsFlare | BombClass::IsChaff)))
@@ -1040,8 +1040,8 @@ void OTWDriverClass::RunActionCamera(void)
 
 
     // randomly adjust the FOV
-    if (mOTWDisplayMode == ModeChase ||
-        mOTWDisplayMode == ModeFlyby ||
+    if (mOTWDisplayMode == ModeChase or
+        mOTWDisplayMode == ModeFlyby or
         mOTWDisplayMode == ModeSatellite)
     {
         // no telefoto when object on ground
@@ -1874,8 +1874,8 @@ void OTWDriverClass::SetGraphicsOwnship(SimBaseClass* obj)
     if (obj)
     {
         if (
-            _isnan(obj->XPos()) or not _finite(obj->XPos()) ||
-            _isnan(obj->YPos()) or not _finite(obj->YPos()) ||
+            _isnan(obj->XPos()) or not _finite(obj->XPos()) or
+            _isnan(obj->YPos()) or not _finite(obj->YPos()) or
             _isnan(obj->ZPos()) or not _finite(obj->ZPos())
         )
         {

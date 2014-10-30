@@ -34,7 +34,7 @@ void DigitalBrain::GunsJinkCheck(void)
             return;
 
         if (obj->BaseData()->IsSim() and 
-            (((SimBaseClass*)obj->BaseData())->IsFiring() ||
+            (((SimBaseClass*)obj->BaseData())->IsFiring() or
              TeamInfo[self->GetTeam()]->TStance(obj->BaseData()->GetTeam()) == War))
         {
             localData = obj->localData;
@@ -154,7 +154,7 @@ void DigitalBrain::GunsJink(void)
     /* itself, but we must make sure the  */
     /* threat is still around             */
     /*------------------------------------*/
-    if (targetPtr == NULL or targetPtr->BaseData()->IsExploding() ||
+    if (targetPtr == NULL or targetPtr->BaseData()->IsExploding() or
         targetPtr and targetPtr->localData->range > 4000)
     {
         // bail, no target

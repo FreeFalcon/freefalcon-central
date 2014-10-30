@@ -778,7 +778,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
                 af->throtl = (UserStickInputs.throttle - throtl) * 0.6F + throtl;
             }
             // Easy means no player input needed at all, also in Simplified when connected to the boom
-            else if (PlayerOptions.GetRefuelingMode() == ARSimplistic ||
+            else if (PlayerOptions.GetRefuelingMode() == ARSimplistic or
                      PlayerOptions.GetRefuelingMode() == ARModerated and af->IsSet(AirframeClass::Refueling))
             {
                 af->pstick =  pStick;

@@ -639,7 +639,7 @@ void UpdateNoCampaignParentObjectsWakeState(float px, float py, float range)
             {
                 if (object->IsAwake() and //me123 host needs to drive missiles and bombs
                     (
- not vuLocalSessionEntity->Game()->IsLocal() ||
+ not vuLocalSessionEntity->Game()->IsLocal() or
                         vuLocalSessionEntity->Game()->IsLocal() and 
  not object->IsBomb() and 
  not object->IsMissile())

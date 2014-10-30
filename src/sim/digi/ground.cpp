@@ -32,7 +32,7 @@ void DigitalBrain::GroundCheck(void)
     // Let it follow waypoints close to the ground
     if ( //( curMode == WaypointMode or // also perform GroundCheck for leaders
         //curMode == LandingMode or // airbases with hilly terrain around need GroundCheck
-        /*(curMode == WaypointMode and agDoctrine not_eq AGD_NONE) ||*/ // 2002-03-11 ADDED BY S.G. GroundAttackMode has its own ground avoidance code
+        /*(curMode == WaypointMode and agDoctrine not_eq AGD_NONE) or*/ // 2002-03-11 ADDED BY S.G. GroundAttackMode has its own ground avoidance code
         curMode == TakeoffMode //)
        and threatPtr == NULL)
     {
@@ -146,7 +146,7 @@ void DigitalBrain::GroundCheck(void)
 
                 // Check to be sure we're not going to hit the ground in the next time frame and double check that our worst case
                 // recovery path along the ground to recover from high pitch angles won't take us into the ground either.
-                if (-self->ZPos() - (i * self->ZDelta()) < maxElevation + 100.0F ||
+                if (-self->ZPos() - (i * self->ZDelta()) < maxElevation + 100.0F or
                     -self->ZPos() - pitchturnfactor * 1.25 < maxElevation + 100.0F)
                 {
                     //float z = self->ZPos();

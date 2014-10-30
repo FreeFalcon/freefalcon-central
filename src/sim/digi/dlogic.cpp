@@ -59,7 +59,7 @@ void DigitalBrain::DecisionLogic(void)
     if (g_bRequestHelp)
     {
         // 2002-01-14 MODIFIED BY S.G. pctStrength only belongs to SimBaseClass. Make sure it's one before checking
-        if (airtargetPtr and (airtargetPtr->BaseData()->IsDead() or airtargetPtr->BaseData()->IsExploding() ||
+        if (airtargetPtr and (airtargetPtr->BaseData()->IsDead() or airtargetPtr->BaseData()->IsExploding() or
                              (airtargetPtr->BaseData()->IsSim() and ((SimBaseClass *)airtargetPtr->BaseData())->pctStrength <= 0.0f)))
         {
             airtargetPtr->Release();
@@ -664,7 +664,7 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
                 theRadar->SetDesiredTarget(newTarget);
             }
             else if (
- not curMissile ||
+ not curMissile or
                 (curMissile->sensorArray and curMissile->sensorArray[0]->Type() not_eq SensorClass::IRST)
             )
             {
@@ -795,7 +795,7 @@ void DigitalBrain::FireControl(void)
     float shootShootPct = 0.0F, pct = 0.0F;
 
     // basic check for firing, time to shoot, have a missile, have a target
-    if (SimLibElapsedTime < missileShotTimer ||
+    if (SimLibElapsedTime < missileShotTimer or
  not curMissile or not targetPtr
         or F4IsBadReadPtr(curMissile, sizeof(MissileClass)) // JB 010223 CTD
         or F4IsBadReadPtr(self->FCC, sizeof(FireControlComputer)) // JB 010326 CTD
@@ -825,9 +825,9 @@ void DigitalBrain::FireControl(void)
 
     // Check firing parameters
     // MODIFIED BY S.G. SO IR MISSILE HAVE A VARIABLE ATA
-    //   if ( targetData->ata > 20.0f * DTR ||
+    //   if ( targetData->ata > 20.0f * DTR or
 
-    if (self->FCC->inRange == FALSE or targetData->range < self->FCC->missileRMin ||
+    if (self->FCC->inRange == FALSE or targetData->range < self->FCC->missileRMin or
         targetData->range > self->FCC->missileRMax)
         return;
 
@@ -849,7 +849,7 @@ void DigitalBrain::FireControl(void)
         return;
 
     if // off bore or getting closer to bore
-    (curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming and (targetData->ata > 35.0f * DTR/* or  targetData->atadot < 0.0f*/)) // 2002-03-12 MODIFIED BY S.G. and has HIGHER precedence than ||
+    (curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming and (targetData->ata > 35.0f * DTR/* or  targetData->atadot < 0.0f*/)) // 2002-03-12 MODIFIED BY S.G. and has HIGHER precedence than or
         return;
 
     // if // don't shoot semis if agregated
@@ -858,7 +858,7 @@ void DigitalBrain::FireControl(void)
     // return;
 
     if // off bore or getting closer to bore
-    (curMissile->sensorArray[0]->Type() == SensorClass::Radar and (targetData->ata > 35.0f * DTR /*||  targetData->atadot < 0.0f*/))  // 2002-03-12 MODIFIED BY S.G. and has HIGHER precedence than ||
+    (curMissile->sensorArray[0]->Type() == SensorClass::Radar and (targetData->ata > 35.0f * DTR /*or  targetData->atadot < 0.0f*/))  // 2002-03-12 MODIFIED BY S.G. and has HIGHER precedence than or
         return;
 
     if // irst iff bore
@@ -870,7 +870,7 @@ void DigitalBrain::FireControl(void)
 
     // ADDED BY S.G. TO MAKE SURE WE DON'T FIRE BEAM RIDER IF THE MAIN RADAR IS JAMMED (NEW: USES SensorTrack INSTEAD of noTrack)
     if (curMissile->sensorArray and curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming
-        /* and curMissile->GetSPType() not_eq SPTYPE_AIM120*/ ||
+        /* and curMissile->GetSPType() not_eq SPTYPE_AIM120*/ or
         curMissile->sensorArray[0]->Type() == SensorClass::Radar)
     {
         // Find the radar attached to us

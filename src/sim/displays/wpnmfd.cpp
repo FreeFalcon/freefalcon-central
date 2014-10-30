@@ -62,7 +62,7 @@ VirtualDisplay* WpnMfdDrawable::GetDisplay(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ( not playerAC or not playerAC->Sms ||
+    if ( not playerAC or not playerAC->Sms or
  not playerAC->Sms->curWeapon)
         return privateDisplay;
 
