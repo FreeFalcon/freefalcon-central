@@ -936,7 +936,7 @@ int ComIPHostIDGet(com_API_handle c, char *buf, int reset)
     if (force_ip_address)
     {
         buf[3] = (char)(force_ip_address bitand 0xff);
-        buf[2] = (char)((force_ip_address >> 8)  bitand 0xff);
+        buf[2] = (char)((force_ip_address >> 8) bitand 0xff);
         buf[1] = (char)((force_ip_address >> 16) bitand 0xff);
         buf[0] = (char)((force_ip_address >> 24) bitand 0xff);
         return 0;

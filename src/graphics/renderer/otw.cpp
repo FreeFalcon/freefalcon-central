@@ -704,8 +704,8 @@ void RenderOTW::DrawTunnelBorder(void)
     SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
 
     // Initialize all the verticies
-    float r = (float)((tunnelColor)     bitand 0xFF) / 255.9f;
-    float g = (float)((tunnelColor >> 8)  bitand 0xFF) / 255.9f;
+    float r = (float)((tunnelColor) bitand 0xFF) / 255.9f;
+    float g = (float)((tunnelColor >> 8) bitand 0xFF) / 255.9f;
     float b = (float)((tunnelColor >> 16) bitand 0xFF) / 255.9f;
 
     for (i = 0; i < NumPoints; i++)

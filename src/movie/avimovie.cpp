@@ -545,7 +545,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
 
     if (ICDecompressQuery(item->hIC, &(item->aviStreams.bihIn),
                           (LPBITMAPINFOHEADER)
-                          bitand (item->bihOut)) not_eq ICERR_OK)
+ bitand (item->bihOut)) not_eq ICERR_OK)
     {
         aviClose(&(item->aviStreams));
         item->status = 0;
@@ -554,7 +554,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
 
     if (ICDecompressBegin(item->hIC, &(item->aviStreams.bihIn),
                           (LPBITMAPINFOHEADER)
-                          bitand (item->bihOut)) not_eq ICERR_OK)
+ bitand (item->bihOut)) not_eq ICERR_OK)
     {
         aviClose(&(item->aviStreams));
         item->status = 0;
@@ -1154,7 +1154,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
                     errorCode = ICDecompress(item->hIC, 0, &(streams->bihIn),
                                              streams->currentBlock->buffer,
                                              (LPBITMAPINFOHEADER)
-                                             bitand (item->bihOut),
+ bitand (item->bihOut),
                                              item->surfaceBuffer);
                 }
                 else
@@ -1166,7 +1166,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
                         errorCode = ICDecompress(item->hIC, 0, &(streams->bihIn),
                                                  streams->currentBlock->buffer,
                                                  (LPBITMAPINFOHEADER)
-                                                 bitand (item->bihOut),
+ bitand (item->bihOut),
                                                  sa.surfacePtr);
                         surfaceReleasePointer(item->surfaceBuffer, &sa);
                     }

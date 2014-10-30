@@ -249,8 +249,8 @@ BOOL DeviceManager::ChooseDevice(int *usrDrvNum, int *usrDevNum, int *usrWidth)
     ShiAssert(listSlot not_eq LB_ERR);
     packedNum = SendMessage(listWin, LB_GETITEMDATA, listSlot, 0);
     devNum  = (packedNum >> 24) bitand 0xFF;
-    drvNum  = (packedNum >> 8)  bitand 0xFFFF;
-    modeNum = (packedNum >> 0)  bitand 0xFF;
+    drvNum  = (packedNum >> 8) bitand 0xFFFF;
+    modeNum = (packedNum >> 0) bitand 0xFF;
 
     modeName = GetModeName(drvNum, devNum, modeNum);
     ShiAssert(modeName);

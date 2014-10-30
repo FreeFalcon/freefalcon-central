@@ -289,8 +289,8 @@ void TMap::LoadColorTable(HANDLE inputFile)
 
     while (dst < end)
     {
-        dst->r = ((*packedSrc)       bitand 0xFF) / 255.0f;
-        dst->g = ((*packedSrc >> 8)  bitand 0xFF) / 255.0f;
+        dst->r = ((*packedSrc) bitand 0xFF) / 255.0f;
+        dst->g = ((*packedSrc >> 8) bitand 0xFF) / 255.0f;
         dst->b = ((*packedSrc >> 16) bitand 0xFF) / 255.0f;
         packedSrc++;
         dst++;

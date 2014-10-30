@@ -184,7 +184,7 @@ int aviOpen(char *aviFileName, char *audioFileName,
                 return RIFF_BAD_AUDIO_FORMAT;
 
             if (AVI_READ(streams->externalSoundHandle, \
-                         bitand (streams->waveFormat), subChunk.subChunkLength)
+ bitand (streams->waveFormat), subChunk.subChunkLength)
  not_eq subChunk.subChunkLength)
                 return RIFF_BAD_AUDIO_FORMAT;
 
@@ -585,7 +585,7 @@ int aviReadRecord(PAVISTREAMS streams)
                 AVI_SEEK(streams->handle, recordLen, SEEK_CUR);
 
                 if (AVI_READ(streams->handle, \
-                             bitand (streams->preRECSubChunk), \
+ bitand (streams->preRECSubChunk), \
                              RIFF_SUB_CHUNK) not_eq RIFF_SUB_CHUNK)
                     return RIFF_BAD_FORMAT;
 

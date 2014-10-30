@@ -183,9 +183,9 @@ WORD UI95_ScreenToTga(WORD color)
 {
     long r, g, b;
 
-    r = ((color >> reds)   bitand 0x1f) << 10;
+    r = ((color >> reds) bitand 0x1f) << 10;
     g = ((color >> greens) bitand 0x1f) << 5;
-    b = ((color >> blues)  bitand 0x1f);
+    b = ((color >> blues) bitand 0x1f);
 
     return static_cast<WORD>(r | g | b); 
 }

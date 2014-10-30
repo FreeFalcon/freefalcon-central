@@ -92,7 +92,7 @@ int process_local_file_hdr(local_file_hdr * lrec, char * buffer);
 
 /* -------------------------------------------------------------------------
 
-    E X T E R N A L   P R O T O T Y P E S   bitand D A T A
+    E X T E R N A L   P R O T O T Y P E S bitand D A T A
 
    ------------------------------------------------------------------------- */
 

@@ -547,17 +547,17 @@ float Process_a(float dofRotScalar, int DofID, int flags)
  a=-a;
  }
 
- if(flags  bitand BNF_POSITIVE_ONLY)
+ if(flags bitand BNF_POSITIVE_ONLY)
  {
    if(a<0) a=0;
  }
 
- if(flags  bitand BNF_NEGATIVE_ONLY)
+ if(flags bitand BNF_NEGATIVE_ONLY)
  {
    if(a>0) a=0;
  }
 
- if(flags  bitand BNF_CLAMP)
+ if(flags bitand BNF_CLAMP)
  {
    if(a>1) a=1;
    if(a<-1) a=-1;
