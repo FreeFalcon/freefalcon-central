@@ -218,7 +218,7 @@ void SetWindowLOGFONT(LOGFONT *log)
             ebox->SetText(log->lfFaceName);
         }
 
-        win->update_  or_eq  C_DRAW_REFRESHALL;
+        win->update_ or_eq  C_DRAW_REFRESHALL;
         win->RefreshWindow();
     }
 }
@@ -325,14 +325,14 @@ void GetWindowLOGFONT(LOGFONT *log)
 
         if (lbox)
         {
-            log->lfPitchAndFamily  or_eq  LF_PITCH[lbox->GetTextID()];
+            log->lfPitchAndFamily or_eq  LF_PITCH[lbox->GetTextID()];
         }
 
         lbox = (C_ListBox*)win->FindControl(LB_FAMILY);
 
         if (lbox)
         {
-            log->lfPitchAndFamily  or_eq  LF_FAMILY[lbox->GetTextID()];
+            log->lfPitchAndFamily or_eq  LF_FAMILY[lbox->GetTextID()];
         }
 
         ebox = (C_EditBox*)win->FindControl(EB_FACENAME);
@@ -507,7 +507,7 @@ C_Fontmgr *FontToBFT(long ID, LOGFONT *logfont)
             for (x = 0; x < charw; x++)
                 if (GetPixel(hdc, xoff + x, yoff + y))
                 {
-                    CharPtr[y * bytesperline + x / 8]  or_eq  1 << (x % 8);
+                    CharPtr[y * bytesperline + x / 8] or_eq  1 << (x % 8);
                     SetPixel(hdc, xoff + x, yoff + y, 0);
                 }
 
@@ -615,7 +615,7 @@ void IncreaseLead(long, short hittype, C_Base *control)
                 txt->Refresh();
             }
 
-            control->Parent_->update_  or_eq  C_DRAW_REFRESHALL;
+            control->Parent_->update_ or_eq  C_DRAW_REFRESHALL;
             control->Parent_->RefreshWindow();
         }
     }
@@ -648,7 +648,7 @@ void DecreaseLead(long , short hittype, C_Base *control)
                 txt->Refresh();
             }
 
-            control->Parent_->update_  or_eq  C_DRAW_REFRESHALL;
+            control->Parent_->update_ or_eq  C_DRAW_REFRESHALL;
             control->Parent_->RefreshWindow();
         }
     }
@@ -681,7 +681,7 @@ void IncreaseTrail(long, short hittype, C_Base *control)
                 txt->Refresh();
             }
 
-            control->Parent_->update_  or_eq  C_DRAW_REFRESHALL;
+            control->Parent_->update_ or_eq  C_DRAW_REFRESHALL;
             control->Parent_->RefreshWindow();
         }
     }
@@ -714,7 +714,7 @@ void DecreaseTrail(long, short hittype, C_Base *control)
                 txt->Refresh();
             }
 
-            control->Parent_->update_  or_eq  C_DRAW_REFRESHALL;
+            control->Parent_->update_ or_eq  C_DRAW_REFRESHALL;
             control->Parent_->RefreshWindow();
         }
     }
@@ -747,7 +747,7 @@ void IncreaseWidth(long, short hittype, C_Base *control)
                 txt->Refresh();
             }
 
-            control->Parent_->update_  or_eq  C_DRAW_REFRESHALL;
+            control->Parent_->update_ or_eq  C_DRAW_REFRESHALL;
             control->Parent_->RefreshWindow();
         }
     }
@@ -780,7 +780,7 @@ void DecreaseWidth(long, short hittype, C_Base *control)
                 txt->Refresh();
             }
 
-            control->Parent_->update_  or_eq  C_DRAW_REFRESHALL;
+            control->Parent_->update_ or_eq  C_DRAW_REFRESHALL;
             control->Parent_->RefreshWindow();
         }
     }
@@ -1008,7 +1008,7 @@ void MakeFontList(long FontID)
 
     UI_Leave(Leave);
     win->ScanClientAreas();
-    win->update_  or_eq  C_DRAW_REFRESHALL;
+    win->update_ or_eq  C_DRAW_REFRESHALL;
     win->RefreshWindow();
 }
 

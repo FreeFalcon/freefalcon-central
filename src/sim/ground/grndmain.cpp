@@ -234,7 +234,7 @@ void GroundClass::Init(SimInitDataClass* initData)
     {
         // Don't move if we've got an assigned point
         gai->moveState = GNDAI_MOVE_HALTED;
-        gai->moveFlags  or_eq  GNDAI_MOVE_FIXED_POSITIONS;
+        gai->moveFlags or_eq  GNDAI_MOVE_FIXED_POSITIONS;
     }
 
     CalcTransformMatrix(this);

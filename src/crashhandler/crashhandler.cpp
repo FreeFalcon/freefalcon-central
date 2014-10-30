@@ -184,7 +184,7 @@ BOOL __stdcall AddCrashHandlerLimitModule(HMODULE hMod)
 
     if (NULL == phTemp)
     {
-        TRACE0("Serious trouble in the house! - malloc failed\n");
+        TRACE0("Serious trouble in the house - malloc failed\n");
         return (FALSE) ;
     }
 
@@ -1364,7 +1364,7 @@ BOOL BUGSUTIL_DLLINTERFACE __stdcall IsMiniDumpFunctionAvailable(void)
         }
         else
         {
-            // Can't find DBGHELP.DLL!  Save this for the
+            // Can't find DBGHELP.DLL  Save this for the
             // CreateCurrentProcessMiniDump function to return.
             g_eIMDALastError = eDBGHELP_NOT_FOUND ;
         }
@@ -1579,7 +1579,7 @@ unsigned WINAPI DumpThread(LPVOID pData)
     }
     else
     {
-        // Could not open the file!
+        // Could not open the file
         pParams->eReturnValue = eOPEN_DUMP_FAILED ;
     }
 

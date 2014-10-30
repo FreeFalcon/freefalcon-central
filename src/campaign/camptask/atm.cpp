@@ -133,7 +133,7 @@ ATMAirbaseClass::ATMAirbaseClass(FILE *file)
 
     // Or in sortie masks - This is part of the hack for Dave
     // for (int i=0; i<ATM_MAX_CYCLES; i++)
-    // schedule[i]  or_eq  SortieCycle[DEFAULT_SORTIE_RATE];
+    // schedule[i] or_eq  SortieCycle[DEFAULT_SORTIE_RATE];
 }
 
 ATMAirbaseClass::~ATMAirbaseClass()
@@ -559,7 +559,7 @@ int AirTaskingManagerClass::Task(void)
 
     // Clear flags
     flags and_eq compl ATM_NEW_PLANES;
-    flags  or_eq  ATM_NEW_REQUESTS;
+    flags or_eq  ATM_NEW_REQUESTS;
 
     // Now traverse my request list
     lp = requestList->GetLastElement();
@@ -795,7 +795,7 @@ void AirTaskingManagerClass::DoCalculations(void)
             sq = (Squadron) squadit.GetNext();
         }
     }
-    flags  or_eq  ATM_NEW_PLANES;
+    flags or_eq  ATM_NEW_PLANES;
 
     // Clean up airbase list and set new sortie rates
     cur = airbaseList;
@@ -937,7 +937,7 @@ int AirTaskingManagerClass::BuildPackage(Package *pc, MissionRequest mis)
     }
 
     // if (mis->tot_type == TYPE_EQ)
-    // mis->flags  or_eq  REQF_USERESERVES;
+    // mis->flags or_eq  REQF_USERESERVES;
 
     // Reset assigned stats for this package (KCK NOTE: this is a minor gain, can probably axe this if need be)
     {
@@ -971,7 +971,7 @@ int AirTaskingManagerClass::BuildPackage(Package *pc, MissionRequest mis)
     if (j == PRET_SUCCESS)
     {
         CampEntity e;
-        mis->flags  or_eq  REQF_MET;
+        mis->flags or_eq  REQF_MET;
 
         // Return receipt
         if (mis->flags bitand REQF_NEEDRESPONSE)
@@ -1057,7 +1057,7 @@ int AirTaskingManagerClass::BuildDivert(MissionRequest mis)
         return PRET_CANCELED;
 
     // Attempt to find an available flight
-    mis->caps  or_eq  MissionData[mis->mission].caps;
+    mis->caps or_eq  MissionData[mis->mission].caps;
     mis->target_num = 255;
 
     if ( not mis->aircraft)
@@ -1472,7 +1472,7 @@ void AirTaskingManagerClass::ProcessRequest(MissionRequest request)
 #ifdef KEV_ADEBUG
     MonoPrint("* Accepted %s request for team %d at %d,%d - tot %f - pri %d\n", MissStr[mis->mission], mis->who, mis->tx, mis->ty, mis->tot, mis->priority);
 #endif
-    flags  or_eq  ATM_NEW_REQUESTS;
+    flags or_eq  ATM_NEW_REQUESTS;
 }
 
 // This finds the best squadron to assign to a given mission.
@@ -1521,7 +1521,7 @@ Squadron AirTaskingManagerClass::FindBestAir(MissionRequest mis, GridIndex bx, G
 
     // Check for night missions
     if (TimeOfDayGeneral(mis->tot) == TOD_NIGHT)
-        mis->caps  or_eq  VEH_NIGHT;
+        mis->caps or_eq  VEH_NIGHT;
 
     caps = mis->caps bitand VEH_CAPIBILITY_MASK;
     service = mis->caps bitand VEH_SERVICE_MASK;
@@ -1576,7 +1576,7 @@ Squadron AirTaskingManagerClass::FindBestAir(MissionRequest mis, GridIndex bx, G
 
             // 2001-04-28 ADDED BY S.G. GOOD MORAL SQUADRON WILL TASK NON NIGHT PLANES AT NIGHT (THEY'LL USE GCI ANYWAY)...
             if ( not sq->Broken())
-                stats  or_eq  VEH_NIGHT;
+                stats or_eq  VEH_NIGHT;
 
             // END OF ADDED SECTION
 
@@ -1754,11 +1754,11 @@ Squadron AirTaskingManagerClass::FindBestAir(MissionRequest mis, GridIndex bx, G
 
     // Record service of the selected aircraft and other info
     if ( not service)
-        mis->caps  or_eq  (bs->class_data->Flags bitand VEH_SERVICE_MASK);
+        mis->caps or_eq  (bs->class_data->Flags bitand VEH_SERVICE_MASK);
 
     // Set stealth mission, if applicable
     if (bs->class_data->Flags bitand VEH_STEALTH)
-        mis->caps  or_eq  VEH_STEALTH;
+        mis->caps or_eq  VEH_STEALTH;
 
     mis->start_block = sb;
     mis->final_block = fb;
@@ -1979,7 +1979,7 @@ Flight AirTaskingManagerClass::FindBestAirFlight(MissionRequest mis)
 
     // Record service of the selected aircraft and other info
     if ( not service)
-        mis->caps  or_eq  (bf->class_data->Flags bitand VEH_SERVICE_MASK);
+        mis->caps or_eq  (bf->class_data->Flags bitand VEH_SERVICE_MASK);
 
     return bf;
 }
@@ -2100,11 +2100,11 @@ void AirTaskingManagerClass::ScheduleAircraft(VU_ID abid, WayPoint w, int aircra
         return;
 
     // Now fill the takeoff slot
-    airbase->schedule[block]  or_eq  (0x01 << slot);
+    airbase->schedule[block] or_eq  (0x01 << slot);
 
     // Fill the same slot in the next block - to allow for fudge time
     if (block + 1 < ATM_MAX_CYCLES)
-        airbase->schedule[block + 1]  or_eq  (0x01 << slot);
+        airbase->schedule[block + 1] or_eq  (0x01 << slot);
 
     // If we're a large flight, fill the next slot
     if (aircraft > 2)
@@ -2115,11 +2115,11 @@ void AirTaskingManagerClass::ScheduleAircraft(VU_ID abid, WayPoint w, int aircra
 
         if (block < ATM_MAX_CYCLES)
         {
-            airbase->schedule[block]  or_eq  (0x01 << slot);
+            airbase->schedule[block] or_eq  (0x01 << slot);
 
             // Fill the same slot in the next block - to allow for fudge time
             if (block + 1 < ATM_MAX_CYCLES)
-                airbase->schedule[block + 1]  or_eq  (0x01 << slot);
+                airbase->schedule[block + 1] or_eq  (0x01 << slot);
         }
     }
 
@@ -2155,7 +2155,7 @@ void AirTaskingManagerClass::ScheduleAircraft(VU_ID abid, WayPoint w, int aircra
             {
                 if ( not (airbase->schedule[block] bitand (0x01 << slot)))
                 {
-                    airbase->schedule[block]  or_eq  (0x01 << slot);
+                    airbase->schedule[block] or_eq  (0x01 << slot);
                     aircraft--;
                 }
 
@@ -2723,7 +2723,7 @@ void RequestIntercept(FlightClass* enemy, int who, RequIntHint hint)
 
     // 2001-10-27 ADDED BY S.G. Flag the intercept has been an help request
     if (hint == RI_HELP)
-        mis.flags  or_eq  AMIS_HELP_REQUEST;
+        mis.flags or_eq  AMIS_HELP_REQUEST;
 
     // END OF ADDED SECTION 2001-10-27
 

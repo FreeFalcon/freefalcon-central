@@ -167,7 +167,7 @@ static void Beacon(void)
         {
             if ((sw bitand 0x4) == 0)
             {
-                sw  or_eq  0x7; // Flash on, has flashed, visible
+                sw or_eq  0x7; // Flash on, has flashed, visible
             }
             else
             {
@@ -176,7 +176,7 @@ static void Beacon(void)
         }
         else
         {
-            sw  or_eq  0x1; // Visible
+            sw or_eq  0x1; // Visible
         }
     }
 
@@ -196,7 +196,7 @@ static void Beacon(void)
         {
             if ((sw bitand 0x40) == 0)
             {
-                sw  or_eq  0x70; // Flash on, has flashed, visible
+                sw or_eq  0x70; // Flash on, has flashed, visible
             }
             else
             {
@@ -205,7 +205,7 @@ static void Beacon(void)
         }
         else
         {
-            sw  or_eq  0x10; // Visible
+            sw or_eq  0x10; // Visible
         }
     }
 
@@ -225,7 +225,7 @@ static void Beacon(void)
         {
             if ((sw bitand 0x400) == 0)
             {
-                sw  or_eq  0x700; // Flash on, has flashed, visible
+                sw or_eq  0x700; // Flash on, has flashed, visible
             }
             else
             {
@@ -234,7 +234,7 @@ static void Beacon(void)
         }
         else
         {
-            sw  or_eq  0x100; // Visible
+            sw or_eq  0x100; // Visible
         }
     }
 

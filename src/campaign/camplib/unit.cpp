@@ -1678,7 +1678,7 @@ int UnitClass::Deaggregate(FalconSessionEntity* session)
 
     if (session not_eq FalconLocalSession)
     {
-        simdata.createFlags  or_eq  SIDC_REMOTE_OWNER;
+        simdata.createFlags or_eq  SIDC_REMOTE_OWNER;
         simdata.owner = session;
     }
 
@@ -2163,7 +2163,7 @@ void UnitClass::DeaggregateFromData(VU_BYTE* data, long size)
 
     if (owning_session not_eq FalconLocalSession)
     {
-        simdata.createFlags  or_eq  SIDC_REMOTE_OWNER;
+        simdata.createFlags or_eq  SIDC_REMOTE_OWNER;
         simdata.owner = owning_session;
     }
 
@@ -2660,7 +2660,7 @@ void UnitClass::SetDead(int d)
     {
         if ( not (unit_flags bitand U_DEAD))
         {
-            unit_flags  or_eq  U_DEAD;
+            unit_flags or_eq  U_DEAD;
             //MakeUnitDirty (DIRTY_UNIT_FLAGS, DDP[36].priority);
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
@@ -2679,7 +2679,7 @@ void UnitClass::SetDead(int d)
 void UnitClass::SetAssigned(int p)
 {
     if (p)
-        unit_flags  or_eq  U_ASSIGNED;
+        unit_flags or_eq  U_ASSIGNED;
     else
         unit_flags and_eq compl U_ASSIGNED;
 }
@@ -2687,7 +2687,7 @@ void UnitClass::SetAssigned(int p)
 void UnitClass::SetOrdered(int p)
 {
     if (p)
-        unit_flags  or_eq  U_ORDERED;
+        unit_flags or_eq  U_ORDERED;
     else
         unit_flags and_eq compl U_ORDERED;
 }
@@ -2698,7 +2698,7 @@ void UnitClass::SetDontPlan(int p)
     {
         if ( not (unit_flags bitand U_NO_PLANNING))
         {
-            unit_flags  or_eq  U_NO_PLANNING;
+            unit_flags or_eq  U_NO_PLANNING;
             //MakeUnitDirty (DIRTY_UNIT_FLAGS, DDP[38].priority);
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
@@ -2720,7 +2720,7 @@ void UnitClass::SetParent(int p)
     {
         if ( not (unit_flags bitand U_PARENT))
         {
-            unit_flags  or_eq  U_PARENT;
+            unit_flags or_eq  U_PARENT;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -2740,7 +2740,7 @@ void UnitClass::SetEngaged(int p)
     {
         if ( not (unit_flags bitand U_ENGAGED))
         {
-            unit_flags  or_eq  U_ENGAGED;
+            unit_flags or_eq  U_ENGAGED;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -2756,7 +2756,7 @@ void UnitClass::SetEngaged(int p)
 
 void UnitClass::SetScripted(int p)
 {
-    unit_flags  or_eq  U_SCRIPTED;
+    unit_flags or_eq  U_SCRIPTED;
 
     if ( not p)
     {
@@ -2768,7 +2768,7 @@ void UnitClass::SetScripted(int p)
 
 void UnitClass::SetCommando(int c)
 {
-    unit_flags  or_eq  U_COMMANDO;
+    unit_flags or_eq  U_COMMANDO;
 
     if ( not c)
     {
@@ -2784,7 +2784,7 @@ void UnitClass::SetMoving(int p)
     {
         if ( not (unit_flags bitand U_MOVING))
         {
-            unit_flags  or_eq  U_MOVING;
+            unit_flags or_eq  U_MOVING;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -2800,7 +2800,7 @@ void UnitClass::SetMoving(int p)
 
 void UnitClass::SetRefused(int r)
 {
-    unit_flags  or_eq  U_REFUSED;
+    unit_flags or_eq  U_REFUSED;
 
     if ( not r)
         unit_flags xor_eq U_REFUSED;
@@ -2814,7 +2814,7 @@ void UnitClass::SetHasECM(int e)
     {
         if ( not (unit_flags bitand U_HASECM))
         {
-            unit_flags  or_eq  U_HASECM;
+            unit_flags or_eq  U_HASECM;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -2834,7 +2834,7 @@ void UnitClass::SetCargo(int c)
     {
         if ( not (unit_flags bitand U_CARGO))
         {
-            unit_flags  or_eq  U_CARGO;
+            unit_flags or_eq  U_CARGO;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -2854,7 +2854,7 @@ void UnitClass::SetCombat(int p)
     {
         if ( not (unit_flags bitand U_COMBAT))
         {
-            unit_flags  or_eq  U_COMBAT;
+            unit_flags or_eq  U_COMBAT;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -2926,7 +2926,7 @@ void UnitClass::SetBroken(int p)
     {
         if ( not (unit_flags bitand U_BROKEN))
         {
-            unit_flags  or_eq  U_BROKEN;
+            unit_flags or_eq  U_BROKEN;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -2946,7 +2946,7 @@ void UnitClass::SetAborted(int p)
     {
         if ( not (unit_flags bitand U_BROKEN))
         {
-            unit_flags  or_eq  U_BROKEN;
+            unit_flags or_eq  U_BROKEN;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -2962,7 +2962,7 @@ void UnitClass::SetAborted(int p)
 
 void UnitClass::SetLosses(int p)
 {
-    unit_flags  or_eq  U_LOSSES;
+    unit_flags or_eq  U_LOSSES;
 
     if ( not p)
         unit_flags xor_eq U_LOSSES;
@@ -2985,7 +2985,7 @@ void UnitClass::SetInactive(int f)
 
             InactiveList->Insert(this);*/
 
-            unit_flags  or_eq  U_INACTIVE;
+            unit_flags or_eq  U_INACTIVE;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -3019,7 +3019,7 @@ void UnitClass::SetFragment(int f)
     {
         if ( not (unit_flags bitand U_FRAGMENTED))
         {
-            unit_flags  or_eq  U_FRAGMENTED;
+            unit_flags or_eq  U_FRAGMENTED;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -3035,7 +3035,7 @@ void UnitClass::SetFragment(int f)
 
 void UnitClass::SetTargeted(int p)
 {
-    unit_flags  or_eq  U_TARGETED;
+    unit_flags or_eq  U_TARGETED;
 
     if ( not p)
         unit_flags xor_eq U_TARGETED;
@@ -3049,7 +3049,7 @@ void UnitClass::SetRetreating(int p)
     {
         if ( not (unit_flags bitand U_RETREATING))
         {
-            unit_flags  or_eq  U_RETREATING;
+            unit_flags or_eq  U_RETREATING;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -3069,7 +3069,7 @@ void UnitClass::SetDetached(int p)
     {
         if ( not (unit_flags bitand U_DETACHED))
         {
-            unit_flags  or_eq  U_DETACHED;
+            unit_flags or_eq  U_DETACHED;
             //MakeUnitDirty (DIRTY_UNIT_FLAGS, DDP[62].priority);
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
@@ -3087,7 +3087,7 @@ void UnitClass::SetDetached(int p)
 
 void UnitClass::SetSupported(int s)
 {
-    unit_flags  or_eq  U_SUPPORTED;
+    unit_flags or_eq  U_SUPPORTED;
 
     if ( not s)
         unit_flags xor_eq U_SUPPORTED;
@@ -3097,7 +3097,7 @@ void UnitClass::SetSupported(int s)
 
 void UnitClass::SetTempDest(int t)
 {
-    unit_flags  or_eq  U_TEMP_DEST;
+    unit_flags or_eq  U_TEMP_DEST;
 
     if ( not t)
         unit_flags xor_eq U_TEMP_DEST;
@@ -3109,7 +3109,7 @@ void UnitClass::SetFinal(int p)
 {
     if (p and  not (unit_flags bitand U_FINAL))
     {
-        unit_flags  or_eq  U_FINAL;
+        unit_flags or_eq  U_FINAL;
         //MakeUnitDirty (DIRTY_UNIT_FLAGS, DDP[64].priority);
         MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_NOW);
     }
@@ -3127,7 +3127,7 @@ void UnitClass::SetPilots(int p)
     {
         if ( not (unit_flags bitand U_HAS_PILOTS))
         {
-            unit_flags  or_eq  U_HAS_PILOTS;
+            unit_flags or_eq  U_HAS_PILOTS;
             //MakeUnitDirty (DIRTY_UNIT_FLAGS, DDP[66].priority);
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
@@ -3149,7 +3149,7 @@ void UnitClass::SetDiverted(int d)
     {
         if ( not (unit_flags bitand U_DIVERTED))
         {
-            unit_flags  or_eq  U_DIVERTED;
+            unit_flags or_eq  U_DIVERTED;
             //MakeUnitDirty (DIRTY_UNIT_FLAGS, DDP[68].priority);
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
@@ -3171,7 +3171,7 @@ void UnitClass::SetFired(int d)
     {
         if ( not (unit_flags bitand U_FIRED))
         {
-            unit_flags  or_eq  U_FIRED;
+            unit_flags or_eq  U_FIRED;
             //MakeUnitDirty (DIRTY_UNIT_FLAGS, DDP[70].priority);
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
@@ -3193,7 +3193,7 @@ void UnitClass::SetLocked(int l)
     {
         if ( not (unit_flags bitand U_LOCKED))
         {
-            unit_flags  or_eq  U_LOCKED;
+            unit_flags or_eq  U_LOCKED;
             //MakeUnitDirty (DIRTY_UNIT_FLAGS, DDP[72].priority);
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
@@ -3211,7 +3211,7 @@ void UnitClass::SetLocked(int l)
 
 void UnitClass::SetIAKill(int i)
 {
-    unit_flags  or_eq  U_IA_KILL;
+    unit_flags or_eq  U_IA_KILL;
 
     if ( not i)
         unit_flags xor_eq U_IA_KILL;
@@ -3221,7 +3221,7 @@ void UnitClass::SetIAKill(int i)
 
 void UnitClass::SetNoAbort(int i)
 {
-    unit_flags  or_eq  U_NO_ABORT;
+    unit_flags or_eq  U_NO_ABORT;
 
     if ( not i)
     {
@@ -4324,7 +4324,7 @@ float UnitClass::GetUnitMovementCost(GridIndex x, GridIndex y, CampaignHeading h
     int flags = 0;
 
     if (GetUnitFormation() == GFORM_COLUMN)
-        flags  or_eq  PATH_ROADOK;
+        flags or_eq  PATH_ROADOK;
 
     return GetMovementCost(x, y, GetMovementType(), flags, h);
 }
@@ -4335,13 +4335,13 @@ int UnitClass::GetUnitObjectivePath(Path p, Objective o, Objective t)
 
     if (GetDomain() == DOMAIN_LAND)
     {
-        flags  or_eq  PATH_ROADOK;
+        flags or_eq  PATH_ROADOK;
         // KCK: Commented out to prevent units from stalling
         // if (GetUnitCurrentRole() == GRO_ATTACK or GetUnitCurrentRole() == GRO_FIRESUPPORT)
-        flags  or_eq  PATH_ENEMYOK | PATH_ENEMYCOST;
+        flags or_eq  PATH_ENEMYOK | PATH_ENEMYCOST;
 
         if (GetUnitNormalRole() == GRO_ENGINEER)
-            flags  or_eq  PATH_ENGINEER;
+            flags or_eq  PATH_ENGINEER;
     }
 
     maxSearch = OBJ_GROUND_PATH_MAX_SEARCH;
@@ -4356,10 +4356,10 @@ int UnitClass::GetUnitGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, G
     if (GetDomain() == DOMAIN_LAND)
     {
         if (GetUnitFormation() == GFORM_COLUMN or GetUnitFormation() == GFORM_OVERWATCH or DistSqu(x, y, xx, yy) > 30)
-            flags  or_eq  PATH_ROADOK | PATH_ENEMYCOST;
+            flags or_eq  PATH_ROADOK | PATH_ENEMYCOST;
 
         if (GetUnitNormalRole() == GRO_ENGINEER)
-            flags  or_eq  PATH_ENGINEER;
+            flags or_eq  PATH_ENGINEER;
     }
 
     // Flights will never find a path inroute - only during planning and they should use
@@ -6607,7 +6607,7 @@ void UnitClass::MakeUnitDirty(Dirty_Unit bits, Dirtyness score)
         score = static_cast<Dirtyness>(score << 4);
     }
 
-    dirty_unit  or_eq  bits ;
+    dirty_unit or_eq  bits ;
     MakeDirty(DIRTY_UNIT, score);
 }
 

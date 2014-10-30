@@ -440,7 +440,7 @@ void AircraftClass::MakePlayerVehicle(void)
         PreFlight();
     }
 
-    // just for testing simple flight model!
+    // just for testing simple flight model
     // if (af->IsSet(AirframeClass::Simplified))
     // af->SetSimpleMode( SIMPLE_MODE_AF );
     //     af->SetFlag(AirframeClass::Simplified);
@@ -873,7 +873,7 @@ void AircraftClass::Regenerate(float, float, float, float)
         return;
 
     /*----------------------*/
-    /* Make us whole again! */
+    /* Make us whole again  */
     /*----------------------*/
 
     wasPlayer = IsPlayer();

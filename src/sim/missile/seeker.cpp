@@ -95,12 +95,12 @@ void MissileClass::RunSeeker()
         else if (targetPtr and targetPtr->localData->range * targetPtr->localData->range <= lethalRadiusSqrd)
         {
             // We were close enough to detonate, so do it
-            flags  or_eq  ClosestApprch;
+            flags or_eq  ClosestApprch;
         }
         else
         {
             // Record that we lost lock on our original target
-            flags  or_eq  SensorLostLock;
+            flags or_eq  SensorLostLock;
 
             // Update relative geometry on the new target (if any)
             if (lockedTarget)
@@ -274,12 +274,12 @@ void MissileClass::RunSeeker()
         else if (targetPtr and targetPtr->localData->range * targetPtr->localData->range <= lethalRadiusSqrd)
         {
             // We were close enough to detonate, so do it
-            flags  or_eq  ClosestApprch;
+            flags or_eq  ClosestApprch;
         }
         else
         {
             // Record that we lost lock on our original target
-            flags  or_eq  SensorLostLock;
+            flags or_eq  SensorLostLock;
 
             // Update relative geometry on the new target (if any)
             if (newTarget)
@@ -324,7 +324,7 @@ void MissileClass::RunSeeker()
             fabs(sensorArray[0]->SeekerEl() - targetPtr->localData->el) > inputData->atamax
         )
         {
-            //flags  or_eq  SensorLostLock;
+            //flags or_eq  SensorLostLock;
             //SetTarget( NULL );
         }
     }

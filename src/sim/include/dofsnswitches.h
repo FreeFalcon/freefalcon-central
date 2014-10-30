@@ -317,7 +317,7 @@ enum Switches
 
 
 
-    COMP_MAX_SWITCH = 255, // update!
+    COMP_MAX_SWITCH = 255, // update
     //*************************************************
 
     SIMP_AB = 0,
@@ -532,7 +532,7 @@ enum DOFS
 
     // end knobs, lever, dial (animation)
 
-    COMP_MAX_DOF = 163, // Make sure this is up to date!
+    COMP_MAX_DOF = 163, // Make sure this is up to date
     //*************************************************
 
     // Simple model DOF's

@@ -167,7 +167,7 @@ BOOL C_MapIcon::HideByType(long typemask)
     {
         if (cur->Type bitand typemask)
         {
-            cur->Flags  or_eq  C_BIT_INVISIBLE;
+            cur->Flags or_eq  C_BIT_INVISIBLE;
             retval = TRUE;
         }
 
@@ -202,7 +202,7 @@ void C_MapIcon::Hide()
 
     while (cur)
     {
-        cur->Flags  or_eq  C_BIT_INVISIBLE;
+        cur->Flags or_eq  C_BIT_INVISIBLE;
         cur = (MAPICONLIST*)Root_->GetNext(&current, &curidx);
     }
 }
@@ -335,7 +335,7 @@ MAPICONLIST *C_MapIcon::AddIconToList(
     newitem->Flags = C_BIT_ENABLED;
 
     if (Dragable)
-        newitem->Flags  or_eq  C_BIT_DRAGABLE;
+        newitem->Flags or_eq  C_BIT_DRAGABLE;
 
     newitem->ImageID = ImageID;
     newitem->Dragable = Dragable;
@@ -505,7 +505,7 @@ void C_MapIcon::Refresh(MAPICONLIST *icon)
     // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified, not editing a TE and 'showUnknown' isn't set, hide it
     if ( not gShowUnknown and icon->ImageID == ICON_UKN)
     {
-        icon->Flags  or_eq  C_BIT_INVISIBLE;
+        icon->Flags or_eq  C_BIT_INVISIBLE;
         Leave = UI_Enter(Parent_);
         SetXY(icon->x, icon->y);
         icon->Icon->Refresh();
@@ -565,7 +565,7 @@ void C_MapIcon::Refresh()
         // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified, not editing a TE and 'showUnknown' isn't set, hide it
         if ( not gShowUnknown and cur->ImageID == ICON_UKN)
         {
-            cur->Flags  or_eq  C_BIT_INVISIBLE;
+            cur->Flags or_eq  C_BIT_INVISIBLE;
             SetXY(cur->x, cur->y);
             cur->Icon->Refresh();
         }
@@ -653,7 +653,7 @@ void C_MapIcon::Draw(SCREEN *surface, UI95_RECT *cliprect)
     {
         // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified, not editing a TE and 'showUnknown' isn't set, hide it
         if ( not gShowUnknown and cur->ImageID == ICON_UKN)
-            cur->Flags  or_eq  C_BIT_INVISIBLE;
+            cur->Flags or_eq  C_BIT_INVISIBLE;
 
         if ((gShowUnknown and cur->ImageID == ICON_UKN) or  not (GetFlags() bitand C_BIT_INVISIBLE))   // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
         {

@@ -143,7 +143,7 @@ public:
     // 2002-03-29 ADDED BY S.G. Need them outside RadarClass
     void SetFlag(RadarFlag val)
     {
-        flag  or_eq  val;
+        flag or_eq  val;
     };
     void ClearFlag(RadarFlag val)
     {

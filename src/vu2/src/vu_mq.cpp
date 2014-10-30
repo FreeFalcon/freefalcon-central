@@ -208,7 +208,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
 
     // if message is remote or is a local message loopback, place in local queues
     if (
-        !msg->IsLocal() ||
+        not msg->IsLocal() ||
         ((msg->Flags() bitand VU_LOOPBACK_MSG_FLAG) and msg->IsLocal())
     )
     {
@@ -278,7 +278,7 @@ int VuMessageQueue::InvalidateMessages(VU_BOOL (*evalFunc)(VuMessage*, void*), v
 
 void VuMessageQueue::RepostMessage(VuMessage* msg, int delay)
 {
-    msg->flags_  or_eq  compl VU_LOOPBACK_MSG_FLAG;
+    msg->flags_ or_eq  compl VU_LOOPBACK_MSG_FLAG;
     VuTimerEvent *timer = new VuTimerEvent(0, vuxRealTime + delay, VU_DELAY_TIMER, msg);
     VuMessageQueue::PostVuMessage(timer);
 }

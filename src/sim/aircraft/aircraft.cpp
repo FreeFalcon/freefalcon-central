@@ -589,7 +589,7 @@ void AircraftClass::Init(SimInitDataClass* initData)
     {
         if (GetSType() == STYPE_AIR_FIGHTER_BOMBER and GetSPType() == SPTYPE_F16C)
         {
-            acFlags  or_eq  isF16 | isComplex;
+            acFlags or_eq  isF16 | isComplex;
             // Turn on the nozzle
             SetSwitch(COMP_EXH_NOZZLE, 1);
 
@@ -782,13 +782,13 @@ void AircraftClass::Init(SimInitDataClass* initData)
         // without having to have the same specific type like the code above
         if (af->auxaeroData->typeAC == 1 or af->auxaeroData->typeAC == 2)
         {
-            acFlags  or_eq  isF16;
+            acFlags or_eq  isF16;
         }
 
         //TJL 01/11/04 Set Two Engines
         if (af->auxaeroData->nEngines == 2)
         {
-            acFlags  or_eq  hasTwoEngines;
+            acFlags or_eq  hasTwoEngines;
         }
 
 
@@ -827,12 +827,12 @@ void AircraftClass::Init(SimInitDataClass* initData)
 
         if (af->auxaeroData->hasSwingWing)
         {
-            acFlags  or_eq  hasSwing;
+            acFlags or_eq  hasSwing;
         }
 
         if (af->auxaeroData->isComplex)
         {
-            acFlags  or_eq  isComplex;
+            acFlags or_eq  isComplex;
             MakeComplex();
         }
 
@@ -1258,7 +1258,7 @@ int AircraftClass::Exec(void)
             // if we r over 90% of Mach Apply Turbulence
             if (TempTurb > 0.0f and TempTurb <= 0.1f) Turb += 10.0f * (TempTurb * TempTurb);
 
-            // if Passing Sonic Wave, Bang!
+            // if Passing Sonic Wave, Bang
             if (TempTurb >= 0.1f and LastMach < 0.1f) SetPulseTurbulence(0.3f, 0.3f, 0.3f, 1.0f);
 
             LastMach = TempTurb;
@@ -1391,7 +1391,7 @@ int AircraftClass::Exec(void)
         {
             TheHud->SymWheelPos = 1.0F;
             TheHud->SetLightLevel();
-            DBrain()->moreFlags  or_eq  DigitalBrain::HUDSetup; // set the flag so we don't go in here again
+            DBrain()->moreFlags or_eq  DigitalBrain::HUDSetup; // set the flag so we don't go in here again
         }
 
 
@@ -2191,11 +2191,11 @@ int AircraftClass::Exec(void)
                 // First See if the timer has elapsed or the target is died
                 if (
                     SimLibElapsedTime > DBrain()->targetSpotWingTimer ||
-                    !DBrain()->targetSpotWingTarget or DBrain()->targetSpotWingTarget->IsDead()
+                    not DBrain()->targetSpotWingTarget or DBrain()->targetSpotWingTarget->IsDead()
                 )
                 {
                     // 2002-03-07 MODIFIDED BY S.G.
-                    //Added '|| !DBrain()->targetSpotWingTarget' but should NOT be required!
+                    //Added '|| not DBrain()->targetSpotWingTarget' but should NOT be required
                     // If so, kill the camera and clear out everything associated with this targetSpot
                     // sfr: cleanup camera mess
                     FalconLocalSession->RemoveCamera(DBrain()->targetSpotWing);
@@ -2236,12 +2236,12 @@ int AircraftClass::Exec(void)
                 // First See if the timer has elapsed or the target is died
                 if (
                     SimLibElapsedTime > DBrain()->targetSpotElementTimer ||
-                    !DBrain()->targetSpotElementTarget ||
+                    not DBrain()->targetSpotElementTarget ||
                     DBrain()->targetSpotElementTarget->IsDead()
                 )
                 {
                     // 2002-03-07 MODIFIDED BY S.G. Added '||
-                    // !DBrain()->targetSpotElementTarget' but should NOT be required!
+                    // not DBrain()->targetSpotElementTarget' but should NOT be required
                     // sfr: cleanup camera mess
                     FalconLocalSession->RemoveCamera(DBrain()->targetSpotElement);
                     // If so, kill the camera and clear out everything associated with this targetSpot
@@ -2280,12 +2280,12 @@ int AircraftClass::Exec(void)
             {
                 // First See if the timer has elapsed or the target is died
                 if (SimLibElapsedTime > DBrain()->targetSpotFlightTimer ||
-                    !DBrain()->targetSpotFlightTarget ||
+                    not DBrain()->targetSpotFlightTarget ||
                     DBrain()->targetSpotFlightTarget->IsDead()
                    )
                 {
                     // 2002-03-07 MODIFIDED BY S.G.
-                    // Added '|| !DBrain()->targetSpotFlightTarget' but should NOT be required!
+                    // Added '|| not DBrain()->targetSpotFlightTarget' but should NOT be required
                     // If so, kill the camera and clear out everything associated with this targetSpot
                     // sfr: cleanup camera mess
                     FalconLocalSession->RemoveCamera(DBrain()->targetSpotFlight);
@@ -2844,7 +2844,7 @@ void AircraftClass::RunSensors(void)
         // Run the sensor model
         object = sensor->Exec(targetList);
 
-        //Cobra for some reason Visdetect isn't setting target!
+        //Cobra for some reason Visdetect isn't setting target
         if (object and sensor->Type() == SensorClass::Visual and sensor->Type() not_eq SensorClass::TargetingPod)
         {
             SetTarget(object);
@@ -3178,7 +3178,7 @@ void AircraftClass::SetPowerOutput(float)
         diff = specialData.powerOutputNet - value;
 
         if ((diff < -g_nMPPowerXmitThreshold) or (diff > g_nMPPowerXmitThreshold) ||
-            !value and specialData.powerOutputNet) // Xmit if RPM just changed to 0
+            not value and specialData.powerOutputNet) // Xmit if RPM just changed to 0
         {
             //MonoPrint ("%08x SPO %f\n", this, powerOutput);
 
@@ -3223,7 +3223,7 @@ void AircraftClass::SetPowerOutput(float)
         diff = specialData.powerOutputNet - value;
 
         if ((diff < -g_nMPPowerXmitThreshold) or (diff > g_nMPPowerXmitThreshold) ||
-            !value and specialData.powerOutputNet) // Xmit if RPM just changed to 0
+            not value and specialData.powerOutputNet) // Xmit if RPM just changed to 0
         {
 
             specialData.powerOutputNet = static_cast<uchar>(value);
@@ -3241,7 +3241,7 @@ void AircraftClass::SetPowerOutput(float)
         diff = specialData.powerOutputNet2 - value;
 
         if ((diff < -g_nMPPowerXmitThreshold) or (diff > g_nMPPowerXmitThreshold) ||
-            !value and specialData.powerOutputNet2) // Xmit if RPM just changed to 0
+            not value and specialData.powerOutputNet2) // Xmit if RPM just changed to 0
         {
             specialData.powerOutputNet2 = static_cast<uchar>(value);
             MakeSimBaseDirty(DIRTY_SIM_POWER_OUTPUT2, DDP[162].priority);
@@ -3693,13 +3693,13 @@ int AircraftClass::FindBestSpawnPoint(Objective obj, SimInitDataClass* initData)
     }
     else
     {
-        PtDataTable[initData->ptIndex].flags  or_eq  PT_OCCUPIED; // 02JAN04 - FRB - Reserve parking spot
+        PtDataTable[initData->ptIndex].flags or_eq  PT_OCCUPIED; // 02JAN04 - FRB - Reserve parking spot
         spawnpoint = initData->ptIndex; //RAS-11Nov04-store initial spawn point
         return initData->ptIndex;
     }
 
     spawnpoint = initData->ptIndex; //RAS-11Nov04-store initial spawn point
-    PtDataTable[initData->ptIndex].flags  or_eq  PT_OCCUPIED; // 02JAN04 - FRB - Reserve parking spot
+    PtDataTable[initData->ptIndex].flags or_eq  PT_OCCUPIED; // 02JAN04 - FRB - Reserve parking spot
     return initData->ptIndex;
 }
 
@@ -3941,7 +3941,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
             break;
     }
 
-    // FRB - Something is wrong!
+    // FRB - Something is wrong
     if ( not w)
         return -1;
 
@@ -4085,7 +4085,7 @@ void AircraftClass::MakeAircraftDirty(DirtyAircraft bits, Dirtyness score)
         return;
     }
 
-    dirty_aircraft  or_eq  bits;
+    dirty_aircraft or_eq  bits;
     MakeDirty(DIRTY_AIRCRAFT, score);
 }
 
@@ -4125,7 +4125,7 @@ void AircraftClass::SetAcStatusBits(int bits)
 {
     if ( not IsAcStatusBitsSet(bits))
     {
-        status_bits  or_eq  bits;
+        status_bits or_eq  bits;
         MakeAircraftDirty(DIRTY_ACSTATUS_BITS, SEND_NOW);
     }
 }

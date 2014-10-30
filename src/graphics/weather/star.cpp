@@ -509,10 +509,10 @@ void CStar::UpdateStar()
         if (CalculateStarCoord(star -> ra, star -> dec, coord))
         {
             if (InsideRange(coord -> az, SunAz) and InsideRange(coord -> alt, SunAlt))
-                coord -> flag  or_eq  STAR_BEHIND_SUN;
+                coord -> flag or_eq  STAR_BEHIND_SUN;
 
             if (InsideRange(coord -> az, MoonAz) and InsideRange(coord -> alt, MoonAlt))
-                coord -> flag  or_eq  STAR_BEHIND_SUN;
+                coord -> flag or_eq  STAR_BEHIND_SUN;
 
             if (coord -> alt < HorizonRange)
             {

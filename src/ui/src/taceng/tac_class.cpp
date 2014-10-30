@@ -104,7 +104,7 @@ int tactical_mission::is_flag_on(long value)
 
 void tactical_mission::set_flag(long value)
 {
-    TheCampaign.TE_flags  or_eq  value;
+    TheCampaign.TE_flags or_eq  value;
 }
 
 void tactical_mission::clear_flag(long value)

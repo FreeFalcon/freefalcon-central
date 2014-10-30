@@ -1600,7 +1600,7 @@ void RenderOTW::ComputeHorizonEffect(HorizonRecord *pHorizon)
         Edge horizonLine;
         horizonLine.SetupWithVector(shiftX + pHorizon->vx, shiftY + pHorizon->vy, pHorizon->hx, pHorizon->hy);
         pHorizon->sunEffectPos.y = horizonLine.Y(pHorizon->sunEffectPos.x);
-        pHorizon->horeffect  or_eq  2;
+        pHorizon->horeffect or_eq  2;
     }
 
     // calculate scale factor on the left and right side based on the yaw

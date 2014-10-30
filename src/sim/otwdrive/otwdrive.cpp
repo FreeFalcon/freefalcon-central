@@ -3257,7 +3257,7 @@ void OTWDriverClass::ScrollMessages()
 
     if (textMessage[0][0])
     {
-        showFrontText  or_eq  SHOW_MESSAGES;
+        showFrontText or_eq  SHOW_MESSAGES;
     }
     else
     {
@@ -3273,7 +3273,7 @@ void OTWDriverClass::ShowMessage(char* msg)
     {
         F4SoundFXSetDist(SFX_CP_ICP1, TRUE, 0.0f, 1.0f);
 
-        showFrontText  or_eq  SHOW_MESSAGES;
+        showFrontText or_eq  SHOW_MESSAGES;
 
         if (textMessage[MAX_CHAT_LINES - 1][0])
         {

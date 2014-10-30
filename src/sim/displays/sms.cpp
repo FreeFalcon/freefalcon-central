@@ -990,7 +990,7 @@ SMSClass::SMSClass(SimVehicleClass *newOwnship, short *weapId, uchar *weapCnt) :
 
             // Set CBU flag appropriatly
             if (wc->Flags bitand WEAP_CLUSTER)
-                hardPoint[i]->GetWeaponData()->flags  or_eq  HasBurstHeight;
+                hardPoint[i]->GetWeaponData()->flags or_eq  HasBurstHeight;
 
             strcpy(hardPoint[i]->GetWeaponData()->mnemonic, wpnDefinition->mnemonic);
             IncrementStores(hardPoint[i]->GetWeaponClass(), hardPoint[i]->weaponCount);
@@ -1968,7 +1968,7 @@ void SMSClass::EmergencyJettison(void)
 
     // Set a permanent flag indicating that we've done the deed
     if (jettSuccess)
-        flags  or_eq  EmergencyJettisonFlag;
+        flags or_eq  EmergencyJettisonFlag;
 }
 
 
@@ -1995,7 +1995,7 @@ void SMSClass::AGJettison(void)
 
     // Set a permanent flag indicating that we've done the deed
     if (jettSuccess)
-        flags  or_eq  EmergencyJettisonFlag;
+        flags or_eq  EmergencyJettisonFlag;
 }
 
 // 2002-02-20 ADDED BY S.G. Will jettison the tanks if empty.
@@ -2017,7 +2017,7 @@ void SMSClass::TankJettison(void)
 
         // Set a permanent flag indicating that we've done the deed
         if (jettSuccess)
-            flags  or_eq  TankJettisonFlag;
+            flags or_eq  TankJettisonFlag;
     }
 }
 
@@ -3081,7 +3081,7 @@ void SMSClass::SetUnlimitedGuns(int flag)
 void SMSClass::SetUnlimitedAmmo(int newFlag)
 {
     if (newFlag)
-        flags  or_eq  UnlimitedAmmoFlag;
+        flags or_eq  UnlimitedAmmoFlag;
     else
         flags and_eq compl UnlimitedAmmoFlag;
 

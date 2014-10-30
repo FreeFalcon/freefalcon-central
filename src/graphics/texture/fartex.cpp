@@ -585,8 +585,8 @@ void FarTexDB::Activate(DWORD offset)
         ShiAssert(texArray[offset].handle);
 
         DWORD info = MPR_TI_DDS;
-        info  or_eq  MPR_TI_DXT1;
-        info  or_eq  MPR_TI_32;
+        info or_eq  MPR_TI_DXT1;
+        info or_eq  MPR_TI_32;
 
         ((TextureHandle *)texArray[offset].handle)->Create("FarTexDB", info, 32, IMAGE_SIZE, IMAGE_SIZE);
         ((TextureHandle *)texArray[offset].handle)->Load(0, 0, texArray[offset].bits, false, true, linearSize);
@@ -601,7 +601,7 @@ void FarTexDB::Activate(DWORD offset)
         WORD info = MPR_TI_PALETTE;
 
         if (g_bEnableStaticTerrainTextures)
-            dwFlags  or_eq  TextureHandle::FLAG_HINT_STATIC;
+            dwFlags or_eq  TextureHandle::FLAG_HINT_STATIC;
 
         ((TextureHandle *)texArray[offset].handle)->Create("FarTexDB", info, 8, IMAGE_SIZE, IMAGE_SIZE, dwFlags);
 

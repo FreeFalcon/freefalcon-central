@@ -284,14 +284,14 @@ void SetPilotStatus (int pn, int f)
  {
  if (pn >= NumPilots)
  return;
- PilotData[pn].flags  or_eq  f;
+ PilotData[pn].flags or_eq  f;
  }
 
 void UnsetPilotStatus (int pn, int f)
  {
  if (pn >= NumPilots)
  return;
- PilotData[pn].flags  or_eq  f;
+ PilotData[pn].flags or_eq  f;
  PilotData[pn].flags xor_eq f;
  }
 */
@@ -334,7 +334,7 @@ void GetCallsignID(uchar* id, uchar* num, int range)
 void SetCallsignID(int id, int num)
 {
     int temp = (0x01 << (num - 1));
-    CallsignData[id]  or_eq  (uchar)(temp);
+    CallsignData[id] or_eq  (uchar)(temp);
 }
 
 void UnsetCallsignID(int id, int num)

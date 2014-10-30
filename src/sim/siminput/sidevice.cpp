@@ -115,11 +115,11 @@ BOOL SetupDIDevice(HWND hWnd, BOOL Exclusive, int DeviceIndex,
 
     if (Exclusive)
     {
-        CooperationFlags  or_eq  DISCL_EXCLUSIVE;
+        CooperationFlags or_eq  DISCL_EXCLUSIVE;
     }
     else
     {
-        CooperationFlags  or_eq  DISCL_NONEXCLUSIVE;
+        CooperationFlags or_eq  DISCL_NONEXCLUSIVE;
     }
 
     // Obtain an interface to the system mouse device

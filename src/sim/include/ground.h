@@ -77,7 +77,7 @@ public:
     };
     void SetGunFiring(int i)
     {
-        gunFireFlags  or_eq  (1 << i);
+        gunFireFlags or_eq  (1 << i);
     };
     void UnSetGunFiring(int i)
     {

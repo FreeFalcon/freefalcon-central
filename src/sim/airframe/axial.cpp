@@ -276,8 +276,8 @@ void AirframeClass::Axial(float dt)
 
                     for (int i = 0; i < NumGear(); i++)
                     {
-                        gear[i].flags  or_eq  GearData::GearProblem;
-                        gear[i].flags  or_eq  GearData::DoorBroken;
+                        gear[i].flags or_eq  GearData::GearProblem;
+                        gear[i].flags or_eq  GearData::DoorBroken;
 
                         if (platform->IsComplex())
                         {
@@ -295,7 +295,7 @@ void AirframeClass::Axial(float dt)
                 }
                 else if (NumGear() > 1)
                 {
-                    // MLR 2/22/2004 - BEGIN MY CHANGES!
+                    // MLR 2/22/2004 - BEGIN MY CHANGES
                     float dmg = (qbar - maxQbar) / 3.0F + rand() % 26;
 
                     int l,
@@ -317,7 +317,7 @@ void AirframeClass::Axial(float dt)
 
                             if (gear[which].strength <= 0.0F)
                             {
-                                gear[which].flags  or_eq  GearData::GearBroken;
+                                gear[which].flags or_eq  GearData::GearBroken;
 
                                 if (platform->IsComplex())
                                     platform->SetDOF(ComplexGearDOF[which], 0.0F);
@@ -332,7 +332,7 @@ void AirframeClass::Axial(float dt)
                             {
                                 if (gear[which].strength < 50.0F)
                                 {
-                                    gear[which].flags  or_eq  GearData::GearStuck;
+                                    gear[which].flags or_eq  GearData::GearStuck;
                                     platform->mFaults->SetFault(FaultClass::gear_fault,
                                                                 FaultClass::ldgr, FaultClass::fail, FALSE);
                                 }
@@ -347,9 +347,9 @@ void AirframeClass::Axial(float dt)
                             newpos = ((float)rand() / (float)RAND_MAX * 50.0F + 40.0F) * DTR;
 
                             if (dmg > 25.0F + rand() % 5)
-                                gear[which].flags  or_eq  GearData::DoorBroken;
+                                gear[which].flags or_eq  GearData::DoorBroken;
                             else if (dmg > 15.0F + rand() % 5)
-                                gear[which].flags  or_eq  GearData::DoorStuck;
+                                gear[which].flags or_eq  GearData::DoorStuck;
 
                             if (platform->IsComplex() and newpos > platform->GetDOFValue(ComplexGearDOF[which]))
                                 platform->SetDOF(ComplexGearDoorDOF[which], newpos);
@@ -463,7 +463,7 @@ case 0:
 
     if (gear[0].strength <= 0.0F)
     {
-        gear[0].flags  or_eq  GearData::GearBroken;
+        gear[0].flags or_eq  GearData::GearBroken;
 
         if (platform->IsComplex())
             platform->SetDOF(COMP_NOS_GEAR, 0.0F);
@@ -475,7 +475,7 @@ case 0:
     }
     else if (gear[0].strength < 50.0F)
     {
-        gear[0].flags  or_eq  GearData::GearStuck;
+        gear[0].flags or_eq  GearData::GearStuck;
         platform->mFaults->SetFault(FaultClass::gear_fault,
                                     FaultClass::ldgr, FaultClass::fail, FALSE);
     }
@@ -504,7 +504,7 @@ case 1:
         if (platform->IsComplex())
             platform->SetDOF(COMP_LT_GEAR, 0.0F);
 
-        gear[1].flags  or_eq  GearData::GearBroken;
+        gear[1].flags or_eq  GearData::GearBroken;
         platform->SoundPos.Sfx(auxaeroData->sndWheelBrakes);
         SetFlag(GearDamaged);
         ((AircraftClass*)platform)->mFaults->SetFault(FaultClass::gear_fault,
@@ -512,7 +512,7 @@ case 1:
     }
     else if (gear[1].strength < 50.0F)
     {
-        gear[1].flags  or_eq  GearData::GearStuck;
+        gear[1].flags or_eq  GearData::GearStuck;
         platform->mFaults->SetFault(FaultClass::gear_fault,
                                     FaultClass::ldgr, FaultClass::fail, FALSE);
     }
@@ -542,7 +542,7 @@ case 2:
         if (platform->IsComplex())
             platform->SetDOF(COMP_RT_GEAR, 0.0F);
 
-        gear[2].flags  or_eq  GearData::GearBroken;
+        gear[2].flags or_eq  GearData::GearBroken;
         platform->SoundPos.Sfx(auxaeroData->sndWheelBrakes);
         SetFlag(GearDamaged);
         ((AircraftClass*)platform)->mFaults->SetFault(FaultClass::gear_fault,
@@ -550,7 +550,7 @@ case 2:
     }
     else if (gear[2].strength < 50.0F)
     {
-        gear[2].flags  or_eq  GearData::GearStuck;
+        gear[2].flags or_eq  GearData::GearStuck;
         platform->mFaults->SetFault(FaultClass::gear_fault,
                                     FaultClass::ldgr, FaultClass::fail, FALSE);
     }
@@ -567,9 +567,9 @@ case 3:
     newpos = ((float)rand() / (float)RAND_MAX * 50.0F + 40.0F) * DTR;
 
     if (dmg > 25.0F + rand() % 5)
-        gear[0].flags  or_eq  GearData::DoorBroken;
+        gear[0].flags or_eq  GearData::DoorBroken;
     else if (dmg > 15.0F + rand() % 5)
-        gear[0].flags  or_eq  GearData::DoorStuck;
+        gear[0].flags or_eq  GearData::DoorStuck;
 
     if (platform->IsComplex() and newpos > platform->GetDOFValue(COMP_NOS_GEAR))
         platform->SetDOF(COMP_NOS_GEAR_DR, newpos);
@@ -581,9 +581,9 @@ case 4:
     newpos = ((float)rand() / (float)RAND_MAX * 50.0F + 25.0F) * DTR;
 
     if (dmg > 25.0F + rand() % 5)
-        gear[1].flags  or_eq  GearData::DoorBroken;
+        gear[1].flags or_eq  GearData::DoorBroken;
     else if (dmg > 15.0F + rand() % 5)
-        gear[1].flags  or_eq  GearData::DoorStuck;
+        gear[1].flags or_eq  GearData::DoorStuck;
 
     if (platform->IsComplex() and newpos > platform->GetDOFValue(COMP_NOS_GEAR))
         platform->SetDOF(COMP_LT_GEAR_DR, newpos);
@@ -595,9 +595,9 @@ case 5:
     newpos = ((float)rand() / (float)RAND_MAX * 50.0F + 25.0F) * DTR;
 
     if (dmg > 25.0F + rand() % 5)
-        gear[2].flags  or_eq  GearData::DoorBroken;
+        gear[2].flags or_eq  GearData::DoorBroken;
     else if (dmg > 15.0F + rand() % 5)
-        gear[2].flags  or_eq  GearData::DoorStuck;
+        gear[2].flags or_eq  GearData::DoorStuck;
 
     if (platform->IsComplex() and newpos > platform->GetDOFValue(COMP_RT_GEAR))
         platform->SetDOF(COMP_RT_GEAR_DR, newpos);

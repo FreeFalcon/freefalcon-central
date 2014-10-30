@@ -88,7 +88,7 @@ BOOL C_Waypoint::HideByType(long typemask)
     {
         if (cur->Type bitand typemask)
         {
-            cur->Flags  or_eq  C_BIT_INVISIBLE;
+            cur->Flags or_eq  C_BIT_INVISIBLE;
             retval = TRUE;
         }
 
@@ -140,7 +140,7 @@ WAYPOINTLIST *C_Waypoint::AddWaypointToList(long CampID, short type, long NormID
     newitem->Flags = C_BIT_ENABLED;
 
     if (Dragable)
-        newitem->Flags  or_eq  C_BIT_DRAGABLE;
+        newitem->Flags or_eq  C_BIT_DRAGABLE;
 
     newitem->Dragable = Dragable;
     newitem->state = 0;

@@ -888,7 +888,7 @@ void WriteDebugPixel(int x, int y)
 
     cur_val = (char *)(screen_buffer[page] + the_byte);
 #ifndef DISABLE_MONO_DISPLAY
-    *cur_val  or_eq  (char)(1 << the_bit);
+    *cur_val or_eq  (char)(1 << the_bit);
 #endif
 }
 

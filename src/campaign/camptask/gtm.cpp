@@ -286,11 +286,11 @@ int GroundTaskingManagerClass::Task(void)
     collect = COLLECT_AIRDEFENSE | COLLECT_SUPPORT | COLLECT_REPAIR | COLLECT_RESERVE | COLLECT_DEFEND | COLLECT_RADAR;
 
     if (action == GACTION_OFFENSIVE)
-        collect  or_eq  COLLECT_CAPTURE | COLLECT_ASSAULT | COLLECT_AIRBORNE | COLLECT_COMMANDO | COLLECT_SECURE;
+        collect or_eq  COLLECT_CAPTURE | COLLECT_ASSAULT | COLLECT_AIRBORNE | COLLECT_COMMANDO | COLLECT_SECURE;
     else if (action == GACTION_MINOROFFENSIVE)
-        collect  or_eq  COLLECT_SECURE;
+        collect or_eq  COLLECT_SECURE;
     else if (action == GACTION_CONSOLIDATE)
-        collect  or_eq  COLLECT_SECURE;
+        collect or_eq  COLLECT_SECURE;
 
 #ifdef KEV_GDEBUG
     ulong ltime;
@@ -1419,7 +1419,7 @@ void SendPrimaryObjectiveList(uchar teammask)
         for (team = 0; team < NUM_TEAMS; team++)
         {
             if (TeamInfo[team])
-                teammask  or_eq  (1 << team);
+                teammask or_eq  (1 << team);
         }
     }
 
@@ -1454,7 +1454,7 @@ void SavePrimaryObjectiveList(char* scenario)
     for (team = 0; team < NUM_TEAMS; team++)
     {
         if (TeamInfo[team])
-            teammask  or_eq  (1 << team);
+            teammask or_eq  (1 << team);
     }
 
     size = EncodePrimaryObjectiveList(teammask, &data);

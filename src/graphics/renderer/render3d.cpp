@@ -469,8 +469,8 @@ void Render3D::TransformPoint(Tpoint* p, ThreeDVertex* result)
 
     // Now determine if the point is out behind us or to the sides
     clipFlag  = GetRangeClipFlags(scratch_z, far_clip);
-    clipFlag  or_eq  GetHorizontalClipFlags(scratch_x, scratch_z);
-    clipFlag  or_eq  GetVerticalClipFlags(scratch_y, scratch_z);
+    clipFlag or_eq  GetHorizontalClipFlags(scratch_x, scratch_z);
+    clipFlag or_eq  GetVerticalClipFlags(scratch_y, scratch_z);
 
     // Finally, do the perspective divide and scale and shift into screen space
     register float OneOverZ = 1.0f / scratch_z;
@@ -508,8 +508,8 @@ void Render3D::TransformCameraCentricPoint(Tpoint* p, ThreeDVertex* result)
 
     // Now determine if the point is out behind us or to the sides
     clipFlag  = GetRangeClipFlags(scratch_z, far_clip);
-    clipFlag  or_eq  GetHorizontalClipFlags(scratch_x, scratch_z);
-    clipFlag  or_eq  GetVerticalClipFlags(scratch_y, scratch_z);
+    clipFlag or_eq  GetHorizontalClipFlags(scratch_x, scratch_z);
+    clipFlag or_eq  GetVerticalClipFlags(scratch_y, scratch_z);
 
     // Finally, do the perspective divide and scale and shift into screen space
     register float OneOverZ = 1.0f / scratch_z;
@@ -573,8 +573,8 @@ void Render3D::TransformBillboardPoint(Tpoint* p, Tpoint *viewOffset, ThreeDVert
 
     // Now determine if the point is out behind us or to the sides
     clipFlag  = GetRangeClipFlags(scratch_z, far_clip);
-    clipFlag  or_eq  GetHorizontalClipFlags(scratch_x, scratch_z);
-    clipFlag  or_eq  GetVerticalClipFlags(scratch_y, scratch_z);
+    clipFlag or_eq  GetHorizontalClipFlags(scratch_x, scratch_z);
+    clipFlag or_eq  GetVerticalClipFlags(scratch_y, scratch_z);
 
     // Finally, do the perspective divide and scale and shift into screen space
     register float OneOverZ = 1.0f / scratch_z;
@@ -610,8 +610,8 @@ void Render3D::TransformTreePoint(Tpoint* p, Tpoint *viewOffset, ThreeDVertex* r
 
     // Now determine if the point is out behind us or to the sides
     clipFlag  = GetRangeClipFlags(scratch_z, far_clip);
-    clipFlag  or_eq  GetHorizontalClipFlags(scratch_x, scratch_z);
-    clipFlag  or_eq  GetVerticalClipFlags(scratch_y, scratch_z);
+    clipFlag or_eq  GetHorizontalClipFlags(scratch_x, scratch_z);
+    clipFlag or_eq  GetVerticalClipFlags(scratch_y, scratch_z);
 
     // Finally, do the perspective divide and scale and shift into screen space
     register float OneOverZ = 1.0f / scratch_z;

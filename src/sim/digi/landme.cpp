@@ -3655,7 +3655,7 @@ int DigitalBrain::FindDesiredTaxiPoint(ulong takeoffTime)
     // Cobra - Hack to get the fighter a/c leaders on the front row of parking area
     if ((af->GetParkType() == SmallParkPt) and (tp = GetNextParkTypePt(tp, af->GetParkType())))
     {
-        PtDataTable[tp].flags  or_eq  PT_OCCUPIED; // 02JAN04 - FRB - Block use of first parking spot
+        PtDataTable[tp].flags or_eq  PT_OCCUPIED; // 02JAN04 - FRB - Block use of first parking spot
     }
 
     tp = GetFirstPt(rwIndex);
@@ -3704,7 +3704,7 @@ int DigitalBrain::FindDesiredTaxiPoint(ulong takeoffTime)
     if (parkPt >= 0)
     {
         tp = parkPt;
-        PtDataTable[tp].flags  or_eq  PT_OCCUPIED; // 02JAN04 - FRB - Reserve parking spot
+        PtDataTable[tp].flags or_eq  PT_OCCUPIED; // 02JAN04 - FRB - Reserve parking spot
         SetTaxiPoint(self->spawnpoint = tp);
         return tp;
     }

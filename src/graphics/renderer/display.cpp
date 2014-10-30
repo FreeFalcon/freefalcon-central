@@ -433,13 +433,13 @@ void VirtualDisplay::Line(float x1, float y1, float x2, float y2)
     {
         x1 = x2 + (x1 - x2) * ((y2 + 1.0f) / (y2 - y1));
         y1 = -1.0f;
-        clipFlag  or_eq  CLIP_BOTTOM;
+        clipFlag or_eq  CLIP_BOTTOM;
     }
     else if (y1 > 1.0f)
     {
         x1 = x2 + (x1 - x2) * ((y2 - 1.0f) / (y2 - y1));
         y1 = 1.0f;
-        clipFlag  or_eq  CLIP_TOP;
+        clipFlag or_eq  CLIP_TOP;
     }
 
     // Clip point 2

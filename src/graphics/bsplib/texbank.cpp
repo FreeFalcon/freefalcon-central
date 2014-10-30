@@ -177,14 +177,14 @@ void TextureBankClass::ReadPool(int file, char *basename)
         TexturePool[i].fileSize = TempTexturePool[i].fileSize;
 
         TexturePool[i].tex = TempTexturePool[i].tex;
-        TexturePool[i].tex.flags  or_eq  MPR_TI_INVALID;
+        TexturePool[i].tex.flags or_eq  MPR_TI_INVALID;
         TexturePool[i].texN = TempTexturePool[i].tex;
-        TexturePool[i].texN.flags  or_eq  MPR_TI_INVALID;
+        TexturePool[i].texN.flags or_eq  MPR_TI_INVALID;
 
         if (DisplayOptions.bMipmapping)
         {
-            TexturePool[i].tex.flags  or_eq  MPR_TI_MIPMAP;
-            TexturePool[i].texN.flags  or_eq  MPR_TI_MIPMAP;
+            TexturePool[i].tex.flags or_eq  MPR_TI_MIPMAP;
+            TexturePool[i].texN.flags or_eq  MPR_TI_MIPMAP;
         }
 
         TexturePool[i].palID = 0;//TempTexturePool[i].palID;
@@ -512,9 +512,9 @@ void TextureBankClass::SyncDDSTextures(bool bForce)
         else
             fclose(fp);
 
-        TexturePool[id].tex.flags  or_eq  MPR_TI_DDS;
+        TexturePool[id].tex.flags or_eq  MPR_TI_DDS;
         TexturePool[id].tex.flags and_eq compl MPR_TI_PALETTE;
-        TexturePool[id].texN.flags  or_eq  MPR_TI_DDS;
+        TexturePool[id].texN.flags or_eq  MPR_TI_DDS;
         TexturePool[id].texN.flags and_eq compl MPR_TI_PALETTE;
     }
 }
@@ -576,13 +576,13 @@ void TextureBankClass::ReadImageDDS(DWORD id)
             ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '5'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth;
-            ddsd.dwFlags  or_eq  DDSD_LINEARSIZE;
+            ddsd.dwFlags or_eq  DDSD_LINEARSIZE;
         }
 
         if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '1'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth / 2;
-            ddsd.dwFlags  or_eq  DDSD_LINEARSIZE;
+            ddsd.dwFlags or_eq  DDSD_LINEARSIZE;
         }
     }
 
@@ -592,15 +592,15 @@ void TextureBankClass::ReadImageDDS(DWORD id)
     switch (ddsd.ddpfPixelFormat.dwFourCC)
     {
         case MAKEFOURCC('D', 'X', 'T', '1'):
-            TexturePool[id].tex.flags  or_eq  MPR_TI_DXT1;
+            TexturePool[id].tex.flags or_eq  MPR_TI_DXT1;
             break;
 
         case MAKEFOURCC('D', 'X', 'T', '3'):
-            TexturePool[id].tex.flags  or_eq  MPR_TI_DXT3;
+            TexturePool[id].tex.flags or_eq  MPR_TI_DXT3;
             break;
 
         case MAKEFOURCC('D', 'X', 'T', '5'):
-            TexturePool[id].tex.flags  or_eq  MPR_TI_DXT5;
+            TexturePool[id].tex.flags or_eq  MPR_TI_DXT5;
             break;
 
         default:
@@ -610,35 +610,35 @@ void TextureBankClass::ReadImageDDS(DWORD id)
     switch (ddsd.dwWidth)
     {
         case 16:
-            TexturePool[id].tex.flags  or_eq  MPR_TI_16;
+            TexturePool[id].tex.flags or_eq  MPR_TI_16;
             break;
 
         case 32:
-            TexturePool[id].tex.flags  or_eq  MPR_TI_32;
+            TexturePool[id].tex.flags or_eq  MPR_TI_32;
             break;
 
         case 64:
-            TexturePool[id].tex.flags  or_eq  MPR_TI_64;
+            TexturePool[id].tex.flags or_eq  MPR_TI_64;
             break;
 
         case 128:
-            TexturePool[id].tex.flags  or_eq  MPR_TI_128;
+            TexturePool[id].tex.flags or_eq  MPR_TI_128;
             break;
 
         case 256:
-            TexturePool[id].tex.flags  or_eq  MPR_TI_256;
+            TexturePool[id].tex.flags or_eq  MPR_TI_256;
             break;
 
         case 512:
-            TexturePool[id].tex.flags  or_eq  MPR_TI_512;
+            TexturePool[id].tex.flags or_eq  MPR_TI_512;
             break;
 
         case 1024:
-            TexturePool[id].tex.flags  or_eq  MPR_TI_1024;
+            TexturePool[id].tex.flags or_eq  MPR_TI_1024;
             break;
 
         case 2048:
-            TexturePool[id].tex.flags  or_eq  MPR_TI_2048;
+            TexturePool[id].tex.flags or_eq  MPR_TI_2048;
             break;
 
         default:
@@ -673,7 +673,7 @@ void TextureBankClass::ReadImageDDSN(DWORD id)
         return;
     }
 
-    TexturePool[id].texN.flags  or_eq  MPR_TI_DDS;
+    TexturePool[id].texN.flags or_eq  MPR_TI_DDS;
     TexturePool[id].texN.flags and_eq compl MPR_TI_PALETTE;
     TexturePool[id].texN.flags and_eq compl MPR_TI_INVALID;
 
@@ -690,13 +690,13 @@ void TextureBankClass::ReadImageDDSN(DWORD id)
             ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '5'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth;
-            ddsd.dwFlags  or_eq  DDSD_LINEARSIZE;
+            ddsd.dwFlags or_eq  DDSD_LINEARSIZE;
         }
 
         if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '1'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth / 2;
-            ddsd.dwFlags  or_eq  DDSD_LINEARSIZE;
+            ddsd.dwFlags or_eq  DDSD_LINEARSIZE;
         }
     }
 
@@ -705,15 +705,15 @@ void TextureBankClass::ReadImageDDSN(DWORD id)
     switch (ddsd.ddpfPixelFormat.dwFourCC)
     {
         case MAKEFOURCC('D', 'X', 'T', '1'):
-            TexturePool[id].texN.flags  or_eq  MPR_TI_DXT1;
+            TexturePool[id].texN.flags or_eq  MPR_TI_DXT1;
             break;
 
         case MAKEFOURCC('D', 'X', 'T', '3'):
-            TexturePool[id].tex.flags  or_eq  MPR_TI_DXT3;
+            TexturePool[id].tex.flags or_eq  MPR_TI_DXT3;
             break;
 
         case MAKEFOURCC('D', 'X', 'T', '5'):
-            TexturePool[id].texN.flags  or_eq  MPR_TI_DXT5;
+            TexturePool[id].texN.flags or_eq  MPR_TI_DXT5;
             break;
 
         default:
@@ -723,35 +723,35 @@ void TextureBankClass::ReadImageDDSN(DWORD id)
     switch (ddsd.dwWidth)
     {
         case 16:
-            TexturePool[id].texN.flags  or_eq  MPR_TI_16;
+            TexturePool[id].texN.flags or_eq  MPR_TI_16;
             break;
 
         case 32:
-            TexturePool[id].texN.flags  or_eq  MPR_TI_32;
+            TexturePool[id].texN.flags or_eq  MPR_TI_32;
             break;
 
         case 64:
-            TexturePool[id].texN.flags  or_eq  MPR_TI_64;
+            TexturePool[id].texN.flags or_eq  MPR_TI_64;
             break;
 
         case 128:
-            TexturePool[id].texN.flags  or_eq  MPR_TI_128;
+            TexturePool[id].texN.flags or_eq  MPR_TI_128;
             break;
 
         case 256:
-            TexturePool[id].texN.flags  or_eq  MPR_TI_256;
+            TexturePool[id].texN.flags or_eq  MPR_TI_256;
             break;
 
         case 512:
-            TexturePool[id].texN.flags  or_eq  MPR_TI_512;
+            TexturePool[id].texN.flags or_eq  MPR_TI_512;
             break;
 
         case 1024:
-            TexturePool[id].texN.flags  or_eq  MPR_TI_1024;
+            TexturePool[id].texN.flags or_eq  MPR_TI_1024;
             break;
 
         case 2048:
-            TexturePool[id].texN.flags  or_eq  MPR_TI_2048;
+            TexturePool[id].texN.flags or_eq  MPR_TI_2048;
             break;
 
         default:

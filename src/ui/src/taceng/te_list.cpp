@@ -133,7 +133,7 @@ extern long TeamLineIDs[NUM_TEAMS];
 
 void create_tactical_scenario_info(void)
 {
-    TheCampaign.Flags  or_eq  CAMP_TACTICAL;
+    TheCampaign.Flags or_eq  CAMP_TACTICAL;
 
     update_sua_load_list();
 

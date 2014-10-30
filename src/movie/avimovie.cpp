@@ -431,14 +431,14 @@ int movieOpen(char *aviFileName, char *audioFileName,
 
     if ( not (audioFlag bitand MOVIE_NO_AUDIO))
     {
-        item->aviStreams.audioFlag  or_eq  STREAM_AUDIO_ON;
+        item->aviStreams.audioFlag or_eq  STREAM_AUDIO_ON;
 
         if (audioFileName)
         {
-            item->aviStreams.audioFlag  or_eq  STREAM_AUDIO_EXTERNAL;
+            item->aviStreams.audioFlag or_eq  STREAM_AUDIO_EXTERNAL;
 
             if (audioFlag bitand MOVIE_PRELOAD_AUDIO)
-                item->aviStreams.audioFlag  or_eq  STREAM_AUDIO_PRELOAD;
+                item->aviStreams.audioFlag or_eq  STREAM_AUDIO_PRELOAD;
         }
     }
 
@@ -642,7 +642,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
     //   if ( ddPointer and ( videoMode not_eq MOVIE_MODE_INTERLACE ) )
     if (1)
     {
-        item->sbType  or_eq  SURFACE_TYPE_DDRAW;
+        item->sbType or_eq  SURFACE_TYPE_DDRAW;
         item->surfaceBuffer = surfaceCreate(ddPointer, dibWidth, dibHeight);
     }
     else
@@ -653,7 +653,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
         item->surfaceBuffer = new char[item->pixelSize *
                                        item->aviStreams.bihIn.biWidth *
                                        item->aviStreams.bihIn.biHeight];
-        item->sbType  or_eq  SURFACE_TYPE_SYSTEM;
+        item->sbType or_eq  SURFACE_TYPE_SYSTEM;
     }
 
     if ( not item->surfaceBuffer)
@@ -803,7 +803,7 @@ int movieStart(int handle)
         /*
            Stop filler thread.
         */
-        item->status  or_eq  MOVIE_STATUS_STOP_THREAD;
+        item->status or_eq  MOVIE_STATUS_STOP_THREAD;
         WaitForSingleObject((HANDLE) item->hFillerThread, INFINITE);
         CloseHandle((HANDLE) item->hFillerThread);
 
@@ -814,7 +814,7 @@ int movieStart(int handle)
         return MOVIE_UNABLE_TO_LAUNCH_THREAD;
     }
 
-    item->status  or_eq  MOVIE_STATUS_PLAYING;
+    item->status or_eq  MOVIE_STATUS_PLAYING;
     Sleep(0);                               // give up time slice
 
     return MOVIE_OK;
@@ -876,7 +876,7 @@ int movieClose(int handle)
     if ((item->status bitand MOVIE_STATUS_PLAYING) ||
         (item->status bitand MOVIE_STATUS_THREAD_RUNNING))
     {
-        item->status  or_eq  MOVIE_STATUS_QUIT;
+        item->status or_eq  MOVIE_STATUS_QUIT;
         WaitForSingleObject((HANDLE) item->hMovieThread, INFINITE);
         CloseHandle((HANDLE) item->hMovieThread);
         CloseHandle((HANDLE) item->hFillerThread);
@@ -926,7 +926,7 @@ int movieStop(int handle)
     if ( not (item->status bitand MOVIE_STATUS_IN_USE))
         return MOVIE_NOT_IN_USE;
 
-    item->status  or_eq  MOVIE_STATUS_QUIT;
+    item->status or_eq  MOVIE_STATUS_QUIT;
 
     return MOVIE_OK;
 }
@@ -1021,12 +1021,12 @@ static unsigned int __stdcall fillerThread(void* itemIn)
             if (status < RIFF_OK)
             {
                 item->lastError = exitCode = MOVIE_THREAD_BAD_FILE;
-                item->status  or_eq  MOVIE_STATUS_STOP_THREAD;
+                item->status or_eq  MOVIE_STATUS_STOP_THREAD;
                 break;
             }
 
             if (status == RIFF_END_FILE)
-                item->status  or_eq  MOVIE_STATUS_EOF;
+                item->status or_eq  MOVIE_STATUS_EOF;
 
             /*
                Read audio data from an external sound file.
@@ -1041,12 +1041,12 @@ static unsigned int __stdcall fillerThread(void* itemIn)
                 if (status < RIFF_OK)
                 {
                     item->lastError = exitCode = MOVIE_THREAD_BAD_AUDIO_FILE;
-                    item->status  or_eq  MOVIE_STATUS_STOP_THREAD;
+                    item->status or_eq  MOVIE_STATUS_STOP_THREAD;
                     break;
                 }
 
                 if (status == RIFF_AUDIO_END_FILE)
-                    item->status  or_eq  MOVIE_STATUS_AUDIO_EOF;
+                    item->status or_eq  MOVIE_STATUS_AUDIO_EOF;
             }
         }
         else
@@ -1080,7 +1080,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
 
     firstTime = TRUE;
     exitCode = MOVIE_OK;
-    item->status  or_eq  MOVIE_STATUS_THREAD_RUNNING;
+    item->status or_eq  MOVIE_STATUS_THREAD_RUNNING;
     streams = &(item->aviStreams);
 
     if ((item->sbType bitand SURFACE_TYPE_SYSTEM)  and 
@@ -1090,7 +1090,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
 
         if (item->sa.lockStatus == SURFACE_IS_UNLOCKED)
         {
-            item->status  or_eq  MOVIE_STATUS_STOP_THREAD;
+            item->status or_eq  MOVIE_STATUS_STOP_THREAD;
             item->lastError = exitCode = MOVIE_BUFFER_LOCK_FAIL;
             WaitForSingleObject((HANDLE) item->hFillerThread, INFINITE);
             item->status and_eq compl MOVIE_STATUS_PLAYING;
@@ -1172,7 +1172,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
                     }
                     else
                     {
-                        item->status  or_eq  MOVIE_STATUS_STOP_THREAD;
+                        item->status or_eq  MOVIE_STATUS_STOP_THREAD;
                         item->lastError = exitCode = MOVIE_BUFFER_LOCK_FAIL;
                         break;
                     }
@@ -1180,7 +1180,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
 
                 if (errorCode not_eq ICERR_OK)
                 {
-                    item->status  or_eq  MOVIE_STATUS_STOP_THREAD;
+                    item->status or_eq  MOVIE_STATUS_STOP_THREAD;
                     item->lastError = exitCode = MOVIE_THREAD_BAD_DECOMPRESS;
                     break;
                 }
@@ -1240,7 +1240,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
                         {
                             if ((timeGetTime() - timeBegin) > AUDIO_TIMEOUT)
                             {
-                                item->status  or_eq  MOVIE_STATUS_STOP_THREAD;
+                                item->status or_eq  MOVIE_STATUS_STOP_THREAD;
                                 item->lastError = exitCode = MOVIE_THREAD_AUDIO_TIMEOUT;
                                 break;
                             }

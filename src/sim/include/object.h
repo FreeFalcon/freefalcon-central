@@ -71,7 +71,7 @@ public:
     }
     void SetCloudLOS(int value)
     {
-        if (value)detFlags  or_eq  0x01;
+        if (value)detFlags or_eq  0x01;
         else detFlags and_eq compl 0x01;
     }
     int TerrainLOS(void)
@@ -80,7 +80,7 @@ public:
     }
     void SetTerrainLOS(int value)
     {
-        if (value)detFlags  or_eq  0x02;
+        if (value)detFlags or_eq  0x02;
         else detFlags and_eq compl 0x02;
     }
 #ifdef USE_SH_POOLS

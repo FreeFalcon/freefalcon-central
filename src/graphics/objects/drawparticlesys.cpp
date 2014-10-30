@@ -5458,7 +5458,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                     // assing a link as texture
                     ppn->Texture = (ParticleTextureNode*)gpn;
                     // and signal the texture depends on a group
-                    ppn->GroupFlags  or_eq  GRP_TEXTURE;
+                    ppn->GroupFlags or_eq  GRP_TEXTURE;
                     ppn->drawType = PSDT_POLY;
                     // end here
                     continue;
@@ -5839,7 +5839,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                     // assing a link as texture
                     tpn->Texture = (ParticleTextureNode*)gpn;
                     // and signal the texture depends on a group
-                    tpn->GroupFlags  or_eq  GRP_TEXTURE;
+                    tpn->GroupFlags or_eq  GRP_TEXTURE;
                     continue;
                 }
 
@@ -5859,7 +5859,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                     // assing a link as texture
                     tpn->SideTexture = (ParticleTextureNode*)gpn;
                     // and signal the texture depends on a group
-                    tpn->GroupFlags  or_eq  GRP_TEXTURE2;
+                    tpn->GroupFlags or_eq  GRP_TEXTURE2;
                     continue;
                 }
 

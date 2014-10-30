@@ -49,7 +49,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 
     for (nextOut = outList; vertPointers < lastIn; nextOut++)
     {
-        clipTest  or_eq  (*vertPointers)->clipFlag;
+        clipTest or_eq  (*vertPointers)->clipFlag;
         *nextOut = (*vertPointers++);
     }
 
@@ -77,7 +77,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
                 *nextOut = &extraVerts[extraVertCount];
                 extraVertCount++;
                 IntersectNear(*p, *v, *nextOut);
-                clipTest  or_eq  (*nextOut)->clipFlag;
+                clipTest or_eq  (*nextOut)->clipFlag;
                 nextOut++;
             }
 
@@ -366,7 +366,7 @@ void Render3D::IntersectNear(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v
 
     // Now determine if the point is out to the sides
     v->clipFlag  = GetHorizontalClipFlags(x, z);
-    v->clipFlag  or_eq  GetVerticalClipFlags(y, z);
+    v->clipFlag or_eq  GetVerticalClipFlags(y, z);
 
     // Compute the screen space coordinates of the new point
     register float OneOverZ = 1.0f / z;

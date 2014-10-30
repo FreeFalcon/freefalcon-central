@@ -40,7 +40,7 @@ public:
     /** different */
     bool operator not_eq (const VuBin &rhs)const
     {
-        return !operator==(rhs);
+        return not operator==(rhs);
     }
 
     // NULL tests

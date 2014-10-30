@@ -235,5 +235,5 @@ void ICPClass::PNUpdateFACKMode(int button, int)
         mFaultFunc ++;
     }
 
-    mUpdateFlags  or_eq  FACK_UPDATE;
+    mUpdateFlags or_eq  FACK_UPDATE;
 }

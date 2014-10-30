@@ -520,12 +520,12 @@ void CampBaseClass::SetSpotted(Team t, CampaignTime time, int identified)
         }
     }
 
-    spotted  or_eq  (0x01 << t);
+    spotted or_eq  (0x01 << t);
 
     // 2002-02-11 ADDED BY S.G.
     // The upper 8 bits of spotted is now used to know if the target has been identified by that team.
     // The only time you lose your identification is when you lose your spotting
-    spotted  or_eq  ((identified bitand 0x01) << (t + 8));
+    spotted or_eq  ((identified bitand 0x01) << (t + 8));
 }
 
 void CampBaseClass::SetEmitting(int e)
@@ -541,7 +541,7 @@ void CampBaseClass::SetEmitting(int e)
     {
         if ( not IsEmitting())
         {
-            base_flags  or_eq  CBC_EMITTING;
+            base_flags or_eq  CBC_EMITTING;
             //MakeCampBaseDirty (DIRTY_BASE_FLAGS, DDP[4].priority);
             MakeCampBaseDirty(DIRTY_BASE_FLAGS, SEND_SOMETIME);
         }
@@ -586,7 +586,7 @@ void CampBaseClass::SetAggregate(bool agg)
 {
     if (agg)
     {
-        local_flags  or_eq  CBC_AGGREGATE;
+        local_flags or_eq  CBC_AGGREGATE;
     }
     else
     {
@@ -595,7 +595,7 @@ void CampBaseClass::SetAggregate(bool agg)
 }
 /*void CampBaseClass::SetAggregate (int a)
 {
- local_flags  or_eq  CBC_AGGREGATE;
+ local_flags or_eq  CBC_AGGREGATE;
  if ( not a)
  local_flags xor_eq CBC_AGGREGATE;
 }
@@ -606,7 +606,7 @@ void CampBaseClass::SetJammed(int j)
     {
         if ( not (base_flags bitand CBC_JAMMED))
         {
-            base_flags  or_eq  CBC_JAMMED;
+            base_flags or_eq  CBC_JAMMED;
             //MakeCampBaseDirty (DIRTY_BASE_FLAGS, DDP[6].priority);
             MakeCampBaseDirty(DIRTY_BASE_FLAGS, SEND_SOMETIME);
         }
@@ -645,7 +645,7 @@ void CampBaseClass::SetTacan(int t)
         gTacanList->AddTacan(this);
     }
 
-    local_flags  or_eq  CBC_HAS_TACAN;
+    local_flags or_eq  CBC_HAS_TACAN;
 
     if ( not t)
         local_flags xor_eq CBC_HAS_TACAN;
@@ -653,14 +653,14 @@ void CampBaseClass::SetTacan(int t)
 /*
    void CampBaseClass::SetChecked (int t)
    {
-   local_flags  or_eq  CBC_CHECKED;
+   local_flags or_eq  CBC_CHECKED;
    if ( not t)
    local_flags xor_eq CBC_CHECKED;
    }
  */
 void CampBaseClass::SetAwake(int d)
 {
-    local_flags  or_eq  CBC_AWAKE;
+    local_flags or_eq  CBC_AWAKE;
 
     if ( not d)
     {
@@ -670,7 +670,7 @@ void CampBaseClass::SetAwake(int d)
 
 void CampBaseClass::SetInPackage(int p)
 {
-    local_flags  or_eq  CBC_IN_PACKAGE;
+    local_flags or_eq  CBC_IN_PACKAGE;
 
     if ( not p)
     {
@@ -680,7 +680,7 @@ void CampBaseClass::SetInPackage(int p)
 
 void CampBaseClass::SetDelta(int d)
 {
-    local_flags  or_eq  CBC_HAS_DELTA;
+    local_flags or_eq  CBC_HAS_DELTA;
 
     if ( not d)
         local_flags xor_eq CBC_HAS_DELTA;
@@ -688,7 +688,7 @@ void CampBaseClass::SetDelta(int d)
 
 void CampBaseClass::SetInSimLists(int l)
 {
-    local_flags  or_eq  CBC_IN_SIM_LIST;
+    local_flags or_eq  CBC_IN_SIM_LIST;
 
     if ( not l)
         local_flags xor_eq CBC_IN_SIM_LIST;
@@ -696,7 +696,7 @@ void CampBaseClass::SetInSimLists(int l)
 
 void CampBaseClass::SetReserved(int r)
 {
-    local_flags  or_eq  CBC_RESERVED_ONLY;
+    local_flags or_eq  CBC_RESERVED_ONLY;
 
     if ( not r)
         local_flags xor_eq CBC_RESERVED_ONLY;
@@ -1085,7 +1085,7 @@ void CampBaseClass::MakeCampBaseDirty(Dirty_Campaign_Base bits, Dirtyness score)
         score = static_cast<Dirtyness>(score << 4);
     }
 
-    dirty_camp_base  or_eq  bits;
+    dirty_camp_base or_eq  bits;
     MakeDirty(DIRTY_CAMPAIGN_BASE, score);
 }
 

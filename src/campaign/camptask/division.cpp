@@ -367,7 +367,7 @@ void BuildDivisionData (void)
  }
  else
  {
- divlist[dc->nid]  or_eq  (1 << dc->owner);
+ divlist[dc->nid] or_eq  (1 << dc->owner);
  lastd = dc;
  dc = dc->next;
  }
@@ -399,7 +399,7 @@ void BuildDivisionData (void)
  DivisionData[u->GetTeam()] = dc;
  }
 // CampLeaveCriticalSection();
- divlist[d]  or_eq  (1 << c);
+ divlist[d] or_eq  (1 << c);
  }
  }
  u = GetNextUnit(&myit);

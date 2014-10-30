@@ -595,7 +595,7 @@ TeamClass::TeamClass(FILE *file) :
         flags and_eq compl TEAM_UPDATED; // We're not updated until we get data from the master
     }
     else
-        flags  or_eq  TEAM_UPDATED;
+        flags or_eq  TEAM_UPDATED;
 
     atm = NULL;
     gtm = NULL;
@@ -996,7 +996,7 @@ int TeamClass::CheckControl(GridIndex X, GridIndex Y)
 
 void TeamClass::SetActive(int act)
 {
-    flags  or_eq  TEAM_ACTIVE;
+    flags or_eq  TEAM_ACTIVE;
 
     if ( not act)
         flags xor_eq TEAM_ACTIVE;
@@ -1089,7 +1089,7 @@ int TeamClass::Handle(VuFullUpdateEvent *event)
 
     // Set our flag if we've got all the team's info
     // WARNING: we don't guarentee receipt of the managers
-    flags  or_eq  TEAM_UPDATED;
+    flags or_eq  TEAM_UPDATED;
 
     // Mark team data as received if we have all the teams.
     for (int i = 0; i < NUM_TEAMS; i++)
@@ -3063,7 +3063,7 @@ void TeamClass::MakeTeamDirty(Dirty_Team bits, Dirtyness score)
         return;
     }
 
-    dirty_team  or_eq  bits;
+    dirty_team or_eq  bits;
     MakeDirty(DIRTY_TEAM, score);
 }
 

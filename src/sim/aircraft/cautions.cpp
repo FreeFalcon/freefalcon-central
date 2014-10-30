@@ -65,7 +65,7 @@ void AircraftClass::CautionCheck(void)
                     //mFaults->SetFault(fuel_low_fault);
                     mFaults->SetWarning(fuel_low_fault);
 
-                    //Smeg 27-Oct-2003 - added ! to play Bingo when not alrady being played. Probably a typo.
+                    //Smeg 27-Oct-2003 - added not to play Bingo when not alrady being played. Probably a typo.
                     //if( not F4SoundFXPlaying( af->auxaeroData->sndBBBingo)) // MLR 5/16/2004 -
                     //   F4SoundFXSetDist( af->auxaeroData->sndBBBingo, TRUE, 0.0f, 1.0f );
                     if ( not SoundPos.IsPlaying(af->auxaeroData->sndBBBingo)) // MLR 5/16/2004 -
@@ -165,7 +165,7 @@ void AircraftClass::CautionCheck(void)
         //if (g_bEnableAircraftLimits) { MI
         if (g_bRealisticAvionics)
         {
-            // Marco Edit - OverG DOES NOT affect !
+            // Marco Edit - OverG DOES NOT affect 
             // (at least not before the aircraft falls apart)
             //MI put back in after discussing with Marco
             CheckForOverG();
@@ -1136,7 +1136,7 @@ void AircraftClass::SetExternalData(void)
     // shared memory bit preperly.  Also play the VMS in accordance with the dash one; technically
     // this should mean saying each of the words once each while the button is held in the test
     // position but this doesn't seem to be possible without new sounds for this purpose.
-    // MD -- 20031216: oops! forgot the AVTR lamp in HsiBits
+    // MD -- 20031216: oops forgot the AVTR lamp in HsiBits
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC == NULL)
@@ -1366,7 +1366,7 @@ void AircraftClass::SetExternalData(void)
     // useful for cockpit builders that implement the rightmost AP switch with the same kind of
     // switch that is used in the F-16: a three place momentary that has the off-center positions
     // magnetically captured to hold the swithc out of the off position while the AP is functioning
-    // within its operating limits.  Use this bit to turn on the solenoid if your switch has one!
+    // within its operating limits.  Use this bit to turn on the solenoid if your switch has one
 
     if ((playerAC->IsOn(AircraftClass::AttHold)) or (playerAC->IsOn(AircraftClass::AltHold)))
         cockpitFlightData.SetLightBit(FlightData::AutoPilotOn);

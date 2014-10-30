@@ -50,7 +50,7 @@ void DigitalBrain::CommandFlight(void)
                     }
                 }
                 else
-                    moreFlags  or_eq  KeepTryingAttack;
+                    moreFlags or_eq  KeepTryingAttack;
             }
         }
         else if ((moreFlags bitand KeepTryingRejoin) or lastTarget and targetPtr == NULL) // 2002-03-08 MODIFIED BY S.G. keep trying to rejoin until it can
@@ -84,7 +84,7 @@ void DigitalBrain::CommandFlight(void)
                 moreFlags and_eq compl KeepTryingRejoin;
             }
             else
-                moreFlags  or_eq  KeepTryingRejoin;
+                moreFlags or_eq  KeepTryingRejoin;
         }
     }
 }

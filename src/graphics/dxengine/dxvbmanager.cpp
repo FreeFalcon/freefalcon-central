@@ -168,7 +168,7 @@ void CDXVbManager::DestroyVAT(VBufferListType *pVb, CVbVAT *Vat)
         if (Vat->Next) Vat->Next->Prev = NULL;
     }
 
-    //  Kill It!
+    //  Kill It
     delete Vat;
 }
 
@@ -405,7 +405,7 @@ bool CDXVbManager::VBCheckForBuffer(DWORD ID, DWORD Class, DWORD nVertices)
     while (i < MAX_VERTEX_BUFFERS)
     {
 
-        // if a still inexistant VB ( no class assigned ) create it !
+        // if a still inexistant VB ( no class assigned ) create it 
         if ( not pVbList[i].Class) CreateVB(i, Class);
 
         // if a VB with wrong Class next VB and skip
@@ -431,7 +431,7 @@ bool CDXVbManager::VBCheckForBuffer(DWORD ID, DWORD Class, DWORD nVertices)
         i++;
     }
 
-    // if here, all is full !
+    // if here, all is full 
     return false;
 
 }

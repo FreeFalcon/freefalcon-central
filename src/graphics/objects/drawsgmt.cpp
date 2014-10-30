@@ -2778,7 +2778,7 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
         alp = (float)intalp;
         alp = alp * 0.3f + alp * 0.7f * NRANDPOS;
         intalp = FloatToInt32(alp);
-        GunTrailTexture.palette->paletteData[j]  or_eq  (intalp << 24);
+        GunTrailTexture.palette->paletteData[j] or_eq  (intalp << 24);
     }
 
     GunTrailTexture.palette->UpdateMPR(GunTrailTexture.palette->paletteData);

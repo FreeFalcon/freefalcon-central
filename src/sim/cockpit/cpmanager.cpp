@@ -6182,21 +6182,21 @@ WORD TemplateInfoClass::Pixel32toPixel16(UInt32 ABGR)
     // GREEN
     if (greenShift >= 0)
     {
-        color  or_eq  (ABGR >>  greenShift) bitand dwGBitMask;
+        color or_eq  (ABGR >>  greenShift) bitand dwGBitMask;
     }
     else
     {
-        color  or_eq  (ABGR << -greenShift) bitand dwGBitMask;
+        color or_eq  (ABGR << -greenShift) bitand dwGBitMask;
     }
 
     // BLUE
     if (blueShift >= 0)
     {
-        color  or_eq  (ABGR >>  blueShift) bitand dwBBitMask;
+        color or_eq  (ABGR >>  blueShift) bitand dwBBitMask;
     }
     else
     {
-        color  or_eq  (ABGR << -blueShift) bitand dwBBitMask;
+        color or_eq  (ABGR << -blueShift) bitand dwBBitMask;
     }
 
     return (WORD)color;
@@ -6219,24 +6219,24 @@ DWORD TemplateInfoClass::Pixel32toPixel32(UInt32 ABGR)
     // GREEN
     if (greenShift >= 0)
     {
-        color  or_eq  (ABGR >>  greenShift) bitand dwGBitMask;
+        color or_eq  (ABGR >>  greenShift) bitand dwGBitMask;
     }
     else
     {
-        color  or_eq  (ABGR << -greenShift) bitand dwGBitMask;
+        color or_eq  (ABGR << -greenShift) bitand dwGBitMask;
     }
 
     // BLUE
     if (blueShift >= 0)
     {
-        color  or_eq  (ABGR >>  blueShift) bitand dwBBitMask;
+        color or_eq  (ABGR >>  blueShift) bitand dwBBitMask;
     }
     else
     {
-        color  or_eq  (ABGR << -blueShift) bitand dwBBitMask;
+        color or_eq  (ABGR << -blueShift) bitand dwBBitMask;
     }
 
-    color  or_eq  ABGR bitand 0xff000000;
+    color or_eq  ABGR bitand 0xff000000;
 
     return color;
 }

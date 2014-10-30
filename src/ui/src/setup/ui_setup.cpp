@@ -1607,7 +1607,7 @@ static void SaveValues(void)
      if(button not_eq NULL)
      {
      if(button->GetState() == C_STATE_1)
-     PlayerOptions.ObjFlags  or_eq  DISP_OBJ_TEXTURES;
+     PlayerOptions.ObjFlags or_eq  DISP_OBJ_TEXTURES;
      else
      PlayerOptions.ObjFlags and_eq compl DISP_OBJ_TEXTURES;
      }

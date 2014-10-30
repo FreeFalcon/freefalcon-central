@@ -651,12 +651,12 @@ bool DXContext::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFulls
         MonoPrint("%s", g_CardDetails);  // JB 010215
 
         DWORD m_dwCoopFlags = NULL;
-        m_dwCoopFlags  or_eq  DDSCL_FPUPRESERVE; // OW FIXME: check if this can be eliminated by eliminating ALL controlfp calls in all files
+        m_dwCoopFlags or_eq  DDSCL_FPUPRESERVE; // OW FIXME: check if this can be eliminated by eliminating ALL controlfp calls in all files
 
-        if (g_bForceDXMultiThreadedCoopLevel) m_dwCoopFlags  or_eq  DDSCL_MULTITHREADED;
+        if (g_bForceDXMultiThreadedCoopLevel) m_dwCoopFlags or_eq  DDSCL_MULTITHREADED;
 
-        if (bFullscreen) m_dwCoopFlags  or_eq  DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN | DDSCL_ALLOWREBOOT;
-        else m_dwCoopFlags  or_eq  DDSCL_NORMAL;
+        if (bFullscreen) m_dwCoopFlags or_eq  DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN | DDSCL_ALLOWREBOOT;
+        else m_dwCoopFlags or_eq  DDSCL_NORMAL;
 
         CheckHR(m_pDD->SetCooperativeLevel(m_hWnd, m_dwCoopFlags));
 
@@ -862,7 +862,7 @@ void DXContext::AttachDepthBuffer(IDirectDrawSurface7 *p)
 
         // Software devices require system-memory depth buffers.
         if (m_eDeviceCategory == D3DDeviceCategory_Software)
-            ddsd.ddsCaps.dwCaps  or_eq  DDSCAPS_SYSTEMMEMORY;
+            ddsd.ddsCaps.dwCaps or_eq  DDSCAPS_SYSTEMMEMORY;
 
         CheckHR(m_pDD->CreateSurface(&ddsd, &pDDSZB, NULL));
 

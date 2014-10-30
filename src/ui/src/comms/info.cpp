@@ -2129,7 +2129,7 @@ static void INFOSaveValues(void)
     if (button not_eq NULL)
     {
         if (button->GetState() == C_STATE_1 or button->GetState() == C_STATE_2)
-            PlayerOptions.GeneralFlags  or_eq  GEN_NO_WEATHER;
+            PlayerOptions.GeneralFlags or_eq  GEN_NO_WEATHER;
         else
             PlayerOptions.GeneralFlags and_eq compl GEN_NO_WEATHER;
     }

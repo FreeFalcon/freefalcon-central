@@ -197,7 +197,7 @@ LPVOID surfaceCreate(LPVOID ddPointer, int dibWidth, int dibHeight)
         ddsd.dwSize = sizeof(ddsd);
         ddsd.ddpfPixelFormat = ddsdMode.ddpfPixelFormat;
 
-        ddsd.dwFlags  or_eq  DDSD_WIDTH | DDSD_HEIGHT;
+        ddsd.dwFlags or_eq  DDSD_WIDTH | DDSD_HEIGHT;
         ddsd.dwWidth  = dibWidth;
         ddsd.dwHeight = dibHeight;
         ddsd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;

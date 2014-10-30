@@ -327,7 +327,7 @@ void AircraftClass::GatherInputs(void)
         {
             if (glocFactor >= 0.99F)
             {
-                acFlags  or_eq  InRecovery;
+                acFlags or_eq  InRecovery;
             }
 
             af->pstick = theBrain->pStick;
@@ -401,7 +401,7 @@ void AircraftClass::GatherInputs(void)
             {
                 if (glocFactor >= 0.99F)
                 {
-                    acFlags  or_eq  InRecovery;
+                    acFlags or_eq  InRecovery;
                 }
 
                 af->pstick = UserStickInputs.pstick;

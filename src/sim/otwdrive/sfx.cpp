@@ -2780,10 +2780,10 @@ BOOL SfxClass::Exec()
                 if (i < 5) i = SFX_BOOMA1 + i;
                 else i = SFX_BOOMG1 + i - 5;
 
-                CrashSoundMask  or_eq  F16CRASH_BOOMMASK;
+                CrashSoundMask or_eq  F16CRASH_BOOMMASK;
                 PlayCrashSound(F16CRASH_BOOMMASK, i);
 
-                flags  or_eq  SFX_F16CRASH_HITGROUND;
+                flags or_eq  SFX_F16CRASH_HITGROUND;
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass(SFX_GROUND_STRIKE_NOFIRE, // type
@@ -2804,7 +2804,7 @@ BOOL SfxClass::Exec()
 
                     if (flags bitand SFX_F16CRASH_OBJECT)
                     {
-                        CrashSoundMask  or_eq  F16CRASH_BUMPMASK;
+                        CrashSoundMask or_eq  F16CRASH_BUMPMASK;
                         PlayCrashSound(F16CRASH_BUMPMASK, SFX_GROUND_CRUNCH);
                     }
 
@@ -2827,7 +2827,7 @@ BOOL SfxClass::Exec()
 
             if ((flags bitand SFX_MOVES) and  not (flags bitand SFX_F16CRASH_STOP))
             {
-                flags  or_eq  SFX_F16CRASH_ADJUSTANGLE;
+                flags or_eq  SFX_F16CRASH_ADJUSTANGLE;
             }
         }
 
@@ -2897,7 +2897,7 @@ BOOL SfxClass::Exec()
 
                     if ((flags bitand SFX_F16CRASH_OBJECT) and (fabs(baseObj->YawDelta()) > 20.0f * DTR))
                     {
-                        CrashSoundMask  or_eq  F16CRASH_DRAGMASK;
+                        CrashSoundMask or_eq  F16CRASH_DRAGMASK;
                         PlayCrashSound(F16CRASH_DRAGMASK, SFX_TAILSCRAPE);
                     }
                 }
@@ -2934,7 +2934,7 @@ BOOL SfxClass::Exec()
                 fabs(vec.z) < 5.0f)
             {
 
-                flags  or_eq  SFX_F16CRASH_STOP;
+                flags or_eq  SFX_F16CRASH_STOP;
                 float pitch = baseObj->Pitch();
                 int stopit = RestPiece(&pitch, RestPitch);
                 float roll = baseObj->Roll();
@@ -2951,7 +2951,7 @@ BOOL SfxClass::Exec()
 
                 if (flags bitand SFX_F16CRASH_OBJECT)
                 {
-                    CrashSoundMask  or_eq  F16CRASH_FELLMASK;
+                    CrashSoundMask or_eq  F16CRASH_FELLMASK;
                     PlayCrashSound(F16CRASH_FELLMASK, SFX_FLAPLOOP);
                 }
             }
@@ -2978,7 +2978,7 @@ BOOL SfxClass::Exec()
 
                 if (fabs(vec.x) < 1.0f and fabs(vec.y) < 1.0f and vec.z < GRAVITY)
                 {
-                    flags  or_eq  SFX_F16CRASH_SKIPGRAVITY;
+                    flags or_eq  SFX_F16CRASH_SKIPGRAVITY;
                     vec.z = 0.0f;
                 }
                 else if (vec.z > GRAVITY) vec.z = -vec.z;
@@ -3005,7 +3005,7 @@ BOOL SfxClass::Exec()
              1.0f, // time to live
              5.0f) ); // scale
 
-             CrashSoundMask  or_eq  F16CRASH_FLOATMASK;
+             CrashSoundMask or_eq  F16CRASH_FLOATMASK;
              PlayCrashSound (F16CRASH_FLOATMASK, SFX_IMPACTG6);
              }
             */
@@ -3014,7 +3014,7 @@ BOOL SfxClass::Exec()
         {
             if ( not (flags bitand SFX_F16CRASH_STOP))
             {
-                flags  or_eq  SFX_F16CRASH_STOP;
+                flags or_eq  SFX_F16CRASH_STOP;
                 float mat[3][3], mat1[3][3];
                 Tpoint normal;
                 CalculateRestingObjectMatrix(RestPitch, RestRoll, mat1);

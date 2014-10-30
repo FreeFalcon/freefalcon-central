@@ -781,7 +781,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     // Copy in new data
     if ( not name or strcmp(name, tmpSess->name) not_eq 0)
     {
-        dirty  or_eq  0x0001;
+        dirty or_eq  0x0001;
         size = _tcslen(tmpSess->name);
         /*if (name)
           delete name;
@@ -792,7 +792,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
 
     if ( not callSign or strcmp(callSign, tmpSess->callSign) not_eq 0)
     {
-        dirty  or_eq  0x0002;
+        dirty or_eq  0x0002;
         size = _tcslen(tmpSess->callSign);
         /*if (callSign)
           delete callSign;
@@ -811,20 +811,20 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     // a flight in this game, the playerFlightPtr should dirty the
     // session just dandily..
     // if(playerFlight not_eq tmpSess->playerFlight)
-    // dirty  or_eq  0x0004;
+    // dirty or_eq  0x0004;
     if (country not_eq tmpSess->country)
     {
-        dirty  or_eq  0x0008;
+        dirty or_eq  0x0008;
     }
 
     if (aircraftNum not_eq tmpSess->aircraftNum)
     {
-        dirty  or_eq  0x0010;
+        dirty or_eq  0x0010;
     }
 
     if (pilotSlot not_eq tmpSess->pilotSlot)
     {
-        dirty  or_eq  0x0020;
+        dirty or_eq  0x0020;
     }
 
     tmpSess->playerSquadronPtr.reset((Squadron) vuDatabase->Find(tmpSess->playerSquadron));
@@ -833,19 +833,19 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
 
     if (playerSquadronPtr not_eq tmpSess->playerSquadronPtr)
     {
-        dirty  or_eq  0x0040;
+        dirty or_eq  0x0040;
         SetPlayerSquadron(tmpSess->playerSquadronPtr.get());
     }
 
     if (playerFlightPtr not_eq tmpSess->playerFlightPtr)
     {
-        dirty  or_eq  0x0080;
+        dirty or_eq  0x0080;
         SetPlayerFlight(tmpSess->playerFlightPtr.get());
     }
 
     if (playerEntityPtr not_eq tmpSess->playerEntityPtr)
     {
-        dirty  or_eq  0x0100;
+        dirty or_eq  0x0100;
         SetPlayerEntity(tmpSess->playerEntityPtr.get());
     }
 

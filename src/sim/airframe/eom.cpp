@@ -274,7 +274,7 @@ void AirframeClass::CalcBodyRates(float dt)
         {
             for (int i = 0; i < NumGear(); i++)
             {
-                // MLR 2/22/2004 - stop using the BSP for eom stuff!
+                // MLR 2/22/2004 - stop using the BSP for eom stuff
                 if (platform->IsComplex())
                 {
                     GearExt = gearExtension[i];
@@ -309,7 +309,7 @@ void AirframeClass::CalcBodyRates(float dt)
 
                     if (platform->IsComplex())
                     {
-                        // MLR 2/22/2004 - stop using the BSP for eom stuff!
+                        // MLR 2/22/2004 - stop using the BSP for eom stuff
                         gearExtension[i] = GearExt;
                         //platform->SetDOF(COMP_NOS_GEAR_COMP + i, GearExt);
 
@@ -1178,7 +1178,7 @@ float AirframeClass::CalcMuFric(int groundType)
         // (say because parking brake is on), then apply braking full force, otherwise
         // make it proportional with the analog axis value.  Oh, and AP must be off, since
         // smart combat AP still wants to use brakes as well.
-        // NB: Right now there is no support for differential braking!
+        // NB: Right now there is no support for differential braking
         // MD -- 20040111: reversed axis direction per testing feedback
 
         if (IO.AnalogIsUsed(AXIS_BRAKE_LEFT))
@@ -1339,7 +1339,7 @@ float AirframeClass::CalculateVt(float dt)
                             platform->SetDOF(ComplexGearDOF[i] /*COMP_NOS_GEAR + i*/, 0.0F);
                         }
 
-                        gear[i].flags  or_eq  GearData::GearBroken | GearData::DoorBroken;
+                        gear[i].flags or_eq  GearData::GearBroken | GearData::DoorBroken;
                     }
 
                     SetFlag(GearBroken);
@@ -1384,7 +1384,7 @@ float AirframeClass::CalculateVt(float dt)
                     {
                         pitch = min(pitch, 1.0F);
 
-                        //TJL 10/20/03 limit sound to player, should not hear AI ground rumble!
+                        //TJL 10/20/03 limit sound to player, should not hear AI ground rumble
                         if (platform->IsPlayer())
                         {
                             platform->SoundPos.Sfx(SFX_GRND_RUMBLE, 0, pitch, volume, x + 5.0F, y, z);
@@ -1482,7 +1482,7 @@ float AirframeClass::CalculateVt(float dt)
                     if (gear[which].strength < 50.0F)
                     {
                         platform->mFaults->SetFault(FaultClass::gear_fault, FaultClass::ldgr, FaultClass::fail, FALSE);
-                        gear[which].flags  or_eq  GearData::GearStuck;
+                        gear[which].flags or_eq  GearData::GearStuck;
 
                         if (NumGear() > 1 and platform->IsComplex())
                         {
@@ -1500,7 +1500,7 @@ float AirframeClass::CalculateVt(float dt)
                         if (NumGear() > 1 and platform->IsComplex())
                         {
                             platform->SetDOF(ComplexGearDOF[which] /*COMP_NOS_GEAR + which*/, 0.0F);
-                            gear[which].flags  or_eq  GearData::GearBroken | GearData::DoorBroken;
+                            gear[which].flags or_eq  GearData::GearBroken | GearData::DoorBroken;
                         }
 
                         // gear breaks sound
@@ -1592,7 +1592,7 @@ float AirframeClass::CalculateVt(float dt)
             {
                 if ( not IsSet(IsDigital))
                 {
-                    gear[which].flags  or_eq  (GearData::DoorStuck | GearData::GearStuck
+                    gear[which].flags or_eq  (GearData::DoorStuck | GearData::GearStuck
                                           | GearData::DoorBroken | GearData::GearBroken);
                     ((AircraftClass*)platform)->mFaults->SetFault(FaultClass::gear_fault,
                             FaultClass::ldgr, FaultClass::fail, TRUE);

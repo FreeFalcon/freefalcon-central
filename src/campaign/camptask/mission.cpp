@@ -2549,7 +2549,7 @@ int CheckPathThreats(Unit u)
             x = fx + FloatToInt32(xd * step + 0.5F);
             y = fy + FloatToInt32(yd * step + 0.5F);
             // Just check to see what sort of escorts we'll need, if any
-            retval  or_eq  CollectThreatsFast(x, y, GetAltitudeLevel(nw->GetWPAltitude()), u->GetTeam(), FIND_NOAIR | FIND_NOMOVERS | FIND_FINDUNSPOTTED, &threats);
+            retval or_eq  CollectThreatsFast(x, y, GetAltitudeLevel(nw->GetWPAltitude()), u->GetTeam(), FIND_NOAIR | FIND_NOMOVERS | FIND_FINDUNSPOTTED, &threats);
 
             // Return if we've got everything we're likely to get
             if (retval == (NEED_SEAD | NEED_ECM))
@@ -2566,7 +2566,7 @@ int CheckPathThreats(Unit u)
              time = w->GetWPArrivalTime() + TimeToArrive(Distance(fx,fy,x,y),u->GetCruiseSpeed());
              else
              time = u->GetUnitTOT();
-             retval  or_eq  TargetThreats(u->GetTeam(),u->GetUnitPriority(),&threats,mt,time,target_flags,&targeted);
+             retval or_eq  TargetThreats(u->GetTeam(),u->GetUnitPriority(),&threats,mt,time,target_flags,&targeted);
              }
             */
         }
@@ -2597,7 +2597,7 @@ int TargetThreats(Team team, int priority, F4PFList list, MoveType mt, CampaignT
 
         if (e->GetAproxCombatStrength(mt, 0) > 0) // This unit can hurt us
         {
-            retval  or_eq  NEED_SEAD;
+            retval or_eq  NEED_SEAD;
 
             if (e->IsUnit() and e->GetSType() == STYPE_UNIT_AIR_DEFENSE and (e->GetSpotted(team) or rand() < HALF_CHANCE))
             {
@@ -2609,7 +2609,7 @@ int TargetThreats(Team team, int priority, F4PFList list, MoveType mt, CampaignT
         }
         else if (e->GetDetectionRange(mt) > VisualDetectionRange[mt]) // This unit has radar
         {
-            retval  or_eq  NEED_ECM;
+            retval or_eq  NEED_ECM;
 
             if (e->IsObjective())
             {
@@ -2670,7 +2670,7 @@ int TargetThreats (Team team, int priority, F4PFList list, MoveType mt, Campaign
  oca = 0;
  if (e->GetAproxCombatStrength(mt,0) > 0) // This unit can hurt us
  {
- retval  or_eq  NEED_SEAD;
+ retval or_eq  NEED_SEAD;
  if (e->IsUnit() and e->GetSType() == STYPE_UNIT_AIR_DEFENSE and (e->GetSpotted(team) or rand() < HALF_CHANCE))
  {
  // Specifically, it's a SAM battalion
@@ -2681,7 +2681,7 @@ int TargetThreats (Team team, int priority, F4PFList list, MoveType mt, Campaign
  }
  else if (e->GetDetectionRange(mt) > VisualDetectionRange[mt]) // This unit has radar
  {
- retval  or_eq  NEED_ECM;
+ retval or_eq  NEED_ECM;
  if (e->IsObjective())
  {
  strike_type = AMIS_OCASTRIKE;

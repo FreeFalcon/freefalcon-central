@@ -790,7 +790,7 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
     Handler_->AddWindow(Window_, C_BIT_ENABLED);
     Window_->ScanClientArea(0);
     Window_->AdjustScrollbar(0);
-    Window_->update_  or_eq  C_DRAW_REFRESHALL;
+    Window_->update_ or_eq  C_DRAW_REFRESHALL;
     Window_->RefreshWindow();
     Handler_->WindowToFront(Window_);
     return(TRUE);

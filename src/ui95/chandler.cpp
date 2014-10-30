@@ -350,10 +350,10 @@ void *C_Handler::Lock()
     {
         surface_.mem = (WORD *)Front_->Lock();
 
-        // surface_.width = (short)Front_->targetXres(); //!
+        // surface_.width = (short)Front_->targetXres(); //
         surface_.width = (short)Front_->targetStride() / Front_->PixelSize(); // OW
 
-        surface_.height = (short)Front_->targetYres(); //!
+        surface_.height = (short)Front_->targetYres(); //
         //XX
         surface_.bpp = Front_->PixelSize() << 3;//bytes->bits
         surface_.owner = Front_;
@@ -437,7 +437,7 @@ BOOL C_Handler::AddWindow(C_Window *thewin, long Flags)
     }
 
     thewin->SetHandler(this);
-    thewin->update_  or_eq  C_DRAW_REFRESHALL;
+    thewin->update_ or_eq  C_DRAW_REFRESHALL;
     thewin->RefreshWindow();
 
     if (thewin->GetFlags() bitand C_BIT_ENABLED)
@@ -461,7 +461,7 @@ BOOL C_Handler::ShowWindow(C_Window *thewin)
         if (cur->win == thewin and  not (cur->Flags bitand C_BIT_ENABLED))
         {
             cur->win->SetCritical(UI_Critical);
-            cur->Flags  or_eq  C_BIT_ENABLED;
+            cur->Flags or_eq  C_BIT_ENABLED;
             cur->win->update_ = C_DRAW_REFRESHALL;
             cur->win->RefreshWindow();
             cur->win->SetSection(CurrentSection_);
@@ -884,7 +884,7 @@ void C_Handler::SetUpdateRect(UI95_RECT *upd)
     {
         rectlist_[rectcount_] = *upd;
         rectcount_++;
-        UpdateFlag  or_eq  C_DRAW_COPYWINDOW;
+        UpdateFlag or_eq  C_DRAW_COPYWINDOW;
     }
     else if (rectcount_ < HND_MAX_RECTS)
     {
@@ -899,7 +899,7 @@ void C_Handler::SetUpdateRect(UI95_RECT *upd)
         rectlist_[rectcount_].right = upd->right;
         rectlist_[rectcount_].bottom = upd->bottom;
         rectcount_++;
-        UpdateFlag  or_eq  C_DRAW_COPYWINDOW;
+        UpdateFlag or_eq  C_DRAW_COPYWINDOW;
     }
     else
     {
@@ -908,7 +908,7 @@ void C_Handler::SetUpdateRect(UI95_RECT *upd)
         rectlist_[0].top = 0;
         rectlist_[0].right = GetW();
         rectlist_[0].bottom = GetH();
-        UpdateFlag  or_eq  C_DRAW_COPYWINDOW;
+        UpdateFlag or_eq  C_DRAW_COPYWINDOW;
     }
 }
 
@@ -1899,14 +1899,14 @@ BOOL C_Handler::CheckHotKeys(unsigned char DKScanCode, unsigned char Ascii, unsi
     return(FALSE);
 }
 
-long C_Handler::GetDragX(WORD MouseX) //!
+long C_Handler::GetDragX(WORD MouseX) //
 {
     long retval = Drag_.ItemX_ + MouseX - Drag_.StartX_;
 
     return(retval);
 }
 
-long C_Handler::GetDragY(WORD MouseY) //!
+long C_Handler::GetDragY(WORD MouseY) //
 {
     long retval = Drag_.ItemY_ + MouseY - Drag_.StartY_;
 
@@ -1915,7 +1915,7 @@ long C_Handler::GetDragY(WORD MouseY) //!
 
 // returns FALSE if NOT grabbing a control
 BOOL C_Handler::GrabItem(WORD MouseX, WORD MouseY, C_Window *overme, long GrabType)
-//!BOOL C_Handler::GrabItem(WORD MouseX,WORD MouseY,C_Window *overme,short GrabType)
+//not BOOL C_Handler::GrabItem(WORD MouseX,WORD MouseY,C_Window *overme,short GrabType)
 {
     Grab_.Control_ = overme->GetControl(&Grab_.ID_, MouseX - overme->GetX(), MouseY - overme->GetY());
     Grab_.StartX_ = MouseX;
@@ -2001,7 +2001,7 @@ BOOL C_Handler::DragItem(WORD MouseX, WORD MouseY, C_Window *overme)
 
 BOOL C_Handler::DropItem(WORD MouseX, WORD MouseY, C_Window *overme)
 {
-    long relX, relY; //!
+    long relX, relY; //
     BOOL retval = FALSE;
 
     relX = MouseX - overme->GetX();
@@ -2052,13 +2052,13 @@ void C_Handler::BlitWindowNow(C_Window *win)
 
 void C_Handler::PostUpdate()
 {
-    // UpdateFlag  or_eq  C_DRAW_UPDATE;
+    // UpdateFlag or_eq  C_DRAW_UPDATE;
     // PostMessage(AppWindow_,C_WM_UPDATE,0,0);
 }
 
 void C_Handler::SendUpdate()
 {
-    // UpdateFlag  or_eq  C_DRAW_UPDATE;
+    // UpdateFlag or_eq  C_DRAW_UPDATE;
     // SendMessage(AppWindow_,C_WM_UPDATE,0,0);
 }
 
@@ -2219,7 +2219,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             {
                 if (MouseCallback_)
                 {
-                    ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme, (short)MessageType); //!
+                    ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme, (short)MessageType); //
                 }
                 else
                 {
@@ -2230,7 +2230,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 {
                     overme->SetControl(Grab_.ID_);
                     WindowToFront(overme);
-                    Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //!
+                    Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //
                 }
             }
             else
@@ -2238,7 +2238,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 overme->DeactivateControl();
 
                 if (MouseCallback_)
-                    ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType); //!
+                    ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType); //
 
                 if (ret)
                     WindowToFront(overme);
@@ -2289,7 +2289,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
                 if (MouseCallback_ and Grab_.Control_)
                 {
-                    ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme, (short)MessageType); //!
+                    ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme, (short)MessageType); //
                 }
                 else
                 {
@@ -2322,11 +2322,11 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                         );
                     }
 
-                    Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //!
+                    Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //
 
                     if (DblClk and Grab_.Control_)
                     {
-                        Grab_.Control_->Process(Grab_.ID_, (short)DblClk); //!
+                        Grab_.Control_->Process(Grab_.ID_, (short)DblClk); //
                     }
                 }
 
@@ -2344,7 +2344,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
                 if (MouseCallback_)
                 {
-                    ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType); //!
+                    ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType); //
                 }
 
                 if (ret)
@@ -2559,7 +2559,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             }
 
             if (MouseCallback_)
-                (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType); //!
+                (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType); //
 
             retval = 0;
             break;
@@ -2599,7 +2599,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             if (GrabItem(MouseX, MouseY, overme, MessageType))
             {
                 if (MouseCallback_)
-                    ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme, (short)MessageType); //!
+                    ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme, (short)MessageType); //
                 else
                     ret = TRUE;
 
@@ -2607,7 +2607,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 {
                     overme->SetControl(Grab_.ID_);
                     WindowToFront(overme);
-                    Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //!
+                    Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //
                 }
             }
             else
@@ -2615,7 +2615,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 overme->DeactivateControl();
 
                 if (MouseCallback_)
-                    ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType); //!
+                    ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType); //
                 else
                     ret = TRUE;
 
@@ -2661,16 +2661,16 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             else if (Grab_.Control_)
             {
                 if (MouseCallback_)
-                    ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme, (short)MessageType); //!
+                    ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme, (short)MessageType); //
                 else
                     ret = TRUE;
 
                 if (ret and overme->IsMenu())
                 {
-                    Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //!
+                    Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //
 
                     if (DblClk and Grab_.Control_)
-                        Grab_.Control_->Process(Grab_.ID_, (short)DblClk); //!
+                        Grab_.Control_->Process(Grab_.ID_, (short)DblClk); //
 
                     Grab_.Control_ = NULL;
                 }
@@ -2682,7 +2682,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 overme->DeactivateControl();
 
                 if (MouseCallback_)
-                    ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType); //!
+                    ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType); //
 
                 gPopupMgr->OpenWindowMenu(overme, MouseX, MouseY);
             }
@@ -2783,8 +2783,8 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
                             if (Drag_.Window_ not_eq NULL and Drag_.Control_ not_eq NULL)
                             {
-                                DropItem((WORD)(Drag_.Window_->GetX() + Drag_.Control_->GetX()), //!
-                                         (WORD)(Drag_.Window_->GetY() + Drag_.Control_->GetY()), //!
+                                DropItem((WORD)(Drag_.Window_->GetX() + Drag_.Control_->GetX()), //
+                                         (WORD)(Drag_.Window_->GetY() + Drag_.Control_->GetY()), //
                                          Drag_.Window_);
                                 Grab_.Control_->Process(Grab_.ID_, C_TYPE_LDROP);
                             }
@@ -2834,16 +2834,16 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
             Repeat = lParam bitand 0xffff;
 
-            Key = (uchar)(((lParam >> 16) bitand 0xff) | ((lParam >> 17) bitand 0x80)); //!
+            Key = (uchar)(((lParam >> 16) bitand 0xff) | ((lParam >> 17) bitand 0x80)); //
 
             if (GetKeyState(VK_SHIFT) bitand 0x80)
-                ShiftStates  or_eq  _SHIFT_DOWN_;
+                ShiftStates or_eq  _SHIFT_DOWN_;
 
             if (GetKeyState(VK_MENU) bitand 0x80)
-                ShiftStates  or_eq  _ALT_DOWN_;
+                ShiftStates or_eq  _ALT_DOWN_;
 
             if (GetKeyState(VK_CONTROL) bitand 0x80)
-                ShiftStates  or_eq  _CTRL_DOWN_;
+                ShiftStates or_eq  _CTRL_DOWN_;
 
             if (GetKeyState(VK_CAPITAL) bitand 0x01)
                 if ((Key >= DIK_Q and Key <= DIK_P) or (Key >= DIK_A and Key <= DIK_L) or (Key >= DIK_Z and Key <= DIK_M))
@@ -2851,7 +2851,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
             if (GetKeyState(VK_NUMLOCK) bitand 0x01)
                 if ((Key >= DIK_NUMPAD7 and Key <= DIK_NUMPAD9) or (Key >= DIK_NUMPAD4 and Key <= DIK_NUMPAD6) or (Key >= DIK_NUMPAD1 and Key <= DIK_DECIMAL))
-                    ShiftStates  or_eq  _SHIFT_DOWN_;
+                    ShiftStates or_eq  _SHIFT_DOWN_;
 
             Ascii = AsciiChar(Key, ShiftStates);
 

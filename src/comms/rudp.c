@@ -494,14 +494,14 @@ extern "C" {
             if (now - cudp->rudp_data.last_send_time > RUDP_OOB_RESEND_TIME)
             {
                 *flags = RUDPF_RESET;
-                *flags  or_eq  cudp->rudp_data.reset_send;
+                *flags or_eq  cudp->rudp_data.reset_send;
                 cudp->rudp_data.last_send_time = now;
             }
         }
         else if (cudp->rudp_data.reset_send == RUDP_RESET_OK)
         {
             *flags = RUDPF_RESET;
-            *flags  or_eq  cudp->rudp_data.reset_send;
+            *flags or_eq  cudp->rudp_data.reset_send;
             cudp->rudp_data.last_send_time = now;
         }
         else if (cudp->rudp_data.reset_send == RUDP_PING)
@@ -525,7 +525,7 @@ extern "C" {
             if (cudp->rudp_data.last_sent_received not_eq cudp->rudp_data.last_received)
             {
                 cudp->rudp_data.send_ack = FALSE;
-                *flags  or_eq  RUDPF_LAST;
+                *flags or_eq  RUDPF_LAST;
                 *(unsigned short*)ptr = (unsigned short)cudp->rudp_data.last_received;
 
                 cudp->rudp_data.last_sent_received = cudp->rudp_data.last_received;
@@ -537,7 +537,7 @@ extern "C" {
             if (cudp->rudp_data.last_oob_sent_received not_eq cudp->rudp_data.last_oob_received)
             {
                 cudp->rudp_data.send_oob_ack = FALSE;
-                *flags  or_eq  RUDPF_LOOB;
+                *flags or_eq  RUDPF_LOOB;
                 *(unsigned short*)ptr = (unsigned short)cudp->rudp_data.last_oob_received;
 
                 cudp->rudp_data.last_oob_sent_received = cudp->rudp_data.last_oob_received;
@@ -556,7 +556,7 @@ extern "C" {
             //
             // count ++;
             // cp->acknowledged = TRUE;
-            // // *flags  or_eq  RUDPF_ACK;
+            // // *flags or_eq  RUDPF_ACK;
             // *(unsigned short*)ptr = cp->sequence_number;
             // ptr += sizeof (short);
             // size += sizeof (short);
@@ -572,26 +572,26 @@ extern "C" {
             //
             // if (count)
             // {
-            // *flags  or_eq  (count);
+            // *flags or_eq  (count);
             // }
 
             // If we're sending a packet, we have a sequence number bitand data
             if (rp)
             {
-                *flags  or_eq  RUDPF_SEQ;
+                *flags or_eq  RUDPF_SEQ;
                 *(unsigned short*)ptr = rp->sequence_number;
                 ptr += sizeof(short);
                 size += sizeof(short);
 
                 if (rp->oob)
                 {
-                    *flags  or_eq  RUDPF_OOB;
+                    *flags or_eq  RUDPF_OOB;
                 }
 
                 // If we're a packetized message, send a message id, slot, etc.
                 if (rp->message_parts > 1)
                 {
-                    *flags  or_eq  RUDPF_MSG;
+                    *flags or_eq  RUDPF_MSG;
                     *(unsigned short*)ptr = rp->message_number;
                     ptr += sizeof(unsigned short);
                     size += sizeof(unsigned short);

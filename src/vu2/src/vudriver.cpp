@@ -386,7 +386,7 @@ void VuMaster::Exec(VU_TIME timestamp)
 
     for (VuSessionEntity *s = iter.GetFirst(); s not_eq NULL; s = iter.GetNext())
     {
-        // dont send to ourselves!
+        // dont send to ourselves
         if (s == vuLocalSessionEntity)
         {
             continue;

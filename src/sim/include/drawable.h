@@ -156,7 +156,7 @@ public:
     };
     void SetSOI(int newVal)
     {
-        if (newVal) drawFlags  or_eq  SOI;
+        if (newVal) drawFlags or_eq  SOI;
         else drawFlags and_eq compl SOI;
     };
 

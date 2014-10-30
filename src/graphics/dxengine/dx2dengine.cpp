@@ -362,7 +362,7 @@ void CDXEngine::DX2D_Reset(void)
 
 
 // This function returns the visibility for an objects of a certain radius in a certain Pos
-// WARNING ! This function stores the calculated position for following uses in XMMPos variable
+// WARNING  This function stores the calculated position for following uses in XMMPos variable
 // as we suppose calculating the visibility is just before rendering same item
 // returns the Distance from Camera, -1 if out of FOV
 bool CDXEngine::DX2D_GetVisibility(D3DXVECTOR3 *Pos, float Radius, DWORD Flags)

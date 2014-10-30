@@ -145,8 +145,8 @@ DWORD Loader::MainLoop()
         {
             actionDone = false;
             // The LOD updating run
-            actionDone  or_eq  ObjectLOD::UpdateLods();
-            actionDone  or_eq  TheTextureBank.UpdateBank();
+            actionDone or_eq  ObjectLOD::UpdateLods();
+            actionDone or_eq  TheTextureBank.UpdateBank();
 
             while ((Active = GetNextRequest()) and ( not shutDown))
             {
@@ -154,7 +154,7 @@ DWORD Loader::MainLoop()
                 if (queueStatus == QUEUE_FIFO)
                 {
                     // Make the callback to notify the requestor
-                    // NOTE:  The callback is responsible for deleting the queue entry!
+                    // NOTE:  The callback is responsible for deleting the queue entry
                     ShiAssert((Active->callback not_eq NULL));
                     Active->callback(Active);
                 }
@@ -195,7 +195,7 @@ DWORD Loader::MainLoop()
 
     }
 
-    // We've been asked to quit, so off we go!
+    // We've been asked to quit, so off we go
     stopped = TRUE;
 
     return 0;

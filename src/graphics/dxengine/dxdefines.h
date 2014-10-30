@@ -90,7 +90,7 @@ typedef union
         DWORD SWLightOwner: 8; // The Static Light Owner for this surface... ignored in runtime/used in editing
     } b;
     // *** WARNING *** THIS MUST BE THE BIT SIZE OF THE NUMEBR OF
-    // FLAGS DEFINING THE RENDERING STATE !
+    // FLAGS DEFINING THE RENDERING STATE 
     char StateFlags;
     //***********************************************************
     DWORD w;

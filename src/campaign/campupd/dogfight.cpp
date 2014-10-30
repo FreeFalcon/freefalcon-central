@@ -853,7 +853,7 @@ void DogfightClass::EndGame(void)
     MonoPrint("Game has ended\n");
     MonoPrint("GameStatus: dog Waiting\n");
     localGameStatus = gameStatus = dog_Waiting;
-    flags  or_eq  DF_GAME_OVER;
+    flags or_eq  DF_GAME_OVER;
     FalconLocalSession->SetFlyState(FLYSTATE_IN_UI);
 }
 

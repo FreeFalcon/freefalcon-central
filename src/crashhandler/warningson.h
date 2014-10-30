@@ -29,7 +29,7 @@ the MS headers to compile.
 /* unreferenced local function has been removed */
 #pragma warning ( default : 4505 )
 
-/* STL spews errors just including them! */
+/* STL spews errors just including them */
 /* C++ language change: to explicitly specialize class template ''
    use the following syntax:*/
 #pragma warning ( default : 4663 )

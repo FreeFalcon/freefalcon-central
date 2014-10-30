@@ -128,7 +128,7 @@ public:
     }
     void SetObjFlags(ulong flags)
     {
-        obj_data.obj_flags  or_eq  (flags);
+        obj_data.obj_flags or_eq  (flags);
     }
 
     // constructors

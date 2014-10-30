@@ -190,7 +190,7 @@ void GunClass::InitLocalData(int type)
 
     if (wcPtr->HitChance[ Air ] > 0 or wcPtr->HitChance[ LowAir ] > 0)
     {
-        domain  or_eq  (int)wdAir;
+        domain or_eq  (int)wdAir;
     }
 
     gunDomain = (WeaponDomain)domain;
@@ -628,7 +628,7 @@ int GunClass::Exec(
 
             if ( not bulptr->flying)
             {
-                whatWasHit  or_eq  TRACER_HIT_FEATURE;
+                whatWasHit or_eq  TRACER_HIT_FEATURE;
                 numFlying--;
                 continue;
             }
@@ -738,7 +738,7 @@ int GunClass::Exec(
 
             if ( not bulptr->flying)
             {
-                whatWasHit  or_eq  TRACER_HIT_UNIT;
+                whatWasHit or_eq  TRACER_HIT_UNIT;
                 numFlying--;
                 continue;
             }
@@ -795,7 +795,7 @@ int GunClass::Exec(
                 bulptr->z = groundZ;
                 bulptr->flying = FALSE;
                 numFlying--;
-                whatWasHit  or_eq  TRACER_HIT_GROUND;
+                whatWasHit or_eq  TRACER_HIT_GROUND;
 
                 // only do sound and smoke effect for lead bullet....
                 // hack: seems like ground vehicles shoot into ground

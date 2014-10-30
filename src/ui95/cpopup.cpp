@@ -359,7 +359,7 @@ void C_PopupList::SetItemFlagBitOn(long ID, long flags)
     cur = FindID(ID);
 
     if (cur)
-        cur->flags_  or_eq  flags;
+        cur->flags_ or_eq  flags;
 }
 
 void C_PopupList::SetItemFlagBitOff(long ID, long flags)
@@ -700,7 +700,7 @@ void C_PopupList::Refresh()
     if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->update_  or_eq  C_DRAW_REFRESHALL;
+    Parent_->update_ or_eq  C_DRAW_REFRESHALL;
     Parent_->RefreshWindow();
 }
 
@@ -917,7 +917,7 @@ BOOL C_PopupList::OpenWindow(short x, short y, short Dir)
     Window_->AddControl(this);
 
     Selected_ = -1;
-    Window_->update_  or_eq  C_DRAW_REFRESHALL;
+    Window_->update_ or_eq  C_DRAW_REFRESHALL;
     Window_->RefreshWindow();
     Window_->SetDepth(10000);
     Window_->SetCritical(Handler_->GetCritical());

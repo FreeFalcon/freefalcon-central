@@ -140,7 +140,7 @@ void AirframeClass::EngineModel(float dt)
         HydrDown(HYDR_ALL); // all off
     }
 
-    // JPO - if the epu is running - well its running!
+    // JPO - if the epu is running - well its running
     // this may be independant of the engine if the pilot wants to check
     if (GeneratorRunning(GenEpu))
     {
@@ -261,7 +261,7 @@ void AirframeClass::EngineModel(float dt)
         if ((platform->mFaults->GetFault(FaultClass::eng_fault) bitand FaultClass::fl_out) ||
             (g_bUseAnalogIdleCutoff and IO.IsAxisCutOff(AXIS_THROTTLE)))
         {
-            SetFlag(EngineStopped); //JPO - engine is now stopped!
+            SetFlag(EngineStopped); //JPO - engine is now stopped
             throtl = 0.0F;
         }
 
@@ -901,7 +901,7 @@ void AirframeClass::MultiEngineModel(float dt)
 
     //********************************************************
     // #3
-    // JPO - if the epu is running - well its running!
+    // JPO - if the epu is running - well its running
     // this may be independant of the engine if the pilot wants to check
     if (GeneratorRunning(GenEpu))
     {
@@ -2100,13 +2100,13 @@ void AirframeClass::HydrBreak(int sys)
     if (sys bitand HYDR_A_SYSTEM)   // mark A system as down and broke
     {
         hydrAB and_eq compl  HYDR_A_SYSTEM;
-        hydrAB  or_eq  HYDR_A_BROKE;
+        hydrAB or_eq  HYDR_A_BROKE;
     }
 
     if (sys bitand HYDR_B_SYSTEM)   // mark A system as down and broke
     {
         hydrAB and_eq compl  HYDR_B_SYSTEM;
-        hydrAB  or_eq  HYDR_B_BROKE;
+        hydrAB or_eq  HYDR_B_BROKE;
     }
 }
 
@@ -2115,13 +2115,13 @@ void AirframeClass::HydrRestore(int sys)
     // restore A if not broke
     if ((sys bitand HYDR_A_SYSTEM) and (hydrAB bitand HYDR_A_BROKE) == 0)
     {
-        hydrAB  or_eq  HYDR_A_SYSTEM;
+        hydrAB or_eq  HYDR_A_SYSTEM;
     }
 
     // restore B if not broke
     if ((sys bitand HYDR_B_SYSTEM) and (hydrAB bitand HYDR_B_BROKE) == 0)
     {
-        hydrAB  or_eq  HYDR_B_SYSTEM;
+        hydrAB or_eq  HYDR_B_SYSTEM;
     }
 }
 

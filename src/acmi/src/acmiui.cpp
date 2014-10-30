@@ -533,7 +533,7 @@ void ToggleWingTrailsCB(long ID, short, C_Base*)
                 acmiView->Tape()->SetWingTrails(gDoWingTrails);
             }
 
-            //gTrailLen = 2000; // MN I want to have them even a bit longer ! ;-) (1000 before...)
+            //gTrailLen = 2000; // MN I want to have them even a bit longer  ;-) (1000 before...)
             gTrailLen = ACMI_TRAILS_MAX;  // MLR 12/22/2003 - now in seconds
             acmiView->Tape()->SetWingTrailLength(gTrailLen);
             MonoPrint("WingTrails Max \n");
@@ -1793,7 +1793,7 @@ static void ViewTimerCB(long, short, C_Base *control)
 {
     // F4EnterCriticalSection( gUICriticalSection );
     control->SetReady(1);
-    control->Parent_->update_  or_eq  C_DRAW_REFRESHALL;
+    control->Parent_->update_ or_eq  C_DRAW_REFRESHALL;
     control->Parent_->RefreshWindow();
     // F4LeaveCriticalSection( gUICriticalSection );
 }
@@ -1833,7 +1833,7 @@ void MoveACMIViewTimerCB(long, short, C_Base *control)
             secs = (int)(pct);
             msecs = (int)(pct * 100) - secs * 100;
 
-            // edg: yuck!  I assume Bing did this....
+            // edg: yuck  I assume Bing did this....
             // SimTime() (as now time stamped on tape) includes the
             // time of day in seconds.  Assuming the Sim Starts at Noon gives
             // 12 hrs * 60 secs/hr = 720 which is why the following subtraction is in.
@@ -1898,7 +1898,7 @@ void MoveACMIViewTimerCB(long, short, C_Base *control)
         }
 
         control->SetUserNumber(_UI95_TIMER_COUNTER_, control->GetUserNumber(_UI95_TIMER_DELAY_));
-        control->Parent_->update_  or_eq  C_DRAW_REFRESHALL;
+        control->Parent_->update_ or_eq  C_DRAW_REFRESHALL;
         control->Parent_->RefreshWindow();
     }
 

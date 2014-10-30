@@ -461,7 +461,7 @@ void MakeNewTeamCB(long, short hittype, C_Base *)
 
         if (TeamInfo[gSelectedTeam])
         {
-            TeamInfo[gSelectedTeam]->flags  or_eq  TEAM_ACTIVE;
+            TeamInfo[gSelectedTeam]->flags or_eq  TEAM_ACTIVE;
             TeamInfo[gSelectedTeam]->SetFlag(GetUnusedFlag());
             FlagImageID[TeamInfo[gSelectedTeam]->GetFlag()][FLAG_STATUS] = 1;
             TeamInfo[gSelectedTeam]->SetColor(GetUnusedColor());

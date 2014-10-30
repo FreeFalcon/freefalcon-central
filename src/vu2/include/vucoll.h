@@ -87,7 +87,7 @@ public:
 
     // virtual public interface
 
-    /** removes entities from collection. If !all, local persistant and global
+    /** removes entities from collection. If not all, local persistant and global
     * entities are not removed.
     */
     virtual unsigned int Purge(VU_BOOL all = TRUE) = 0;
@@ -176,7 +176,7 @@ public:
     /** for associative containers, removes all entities with the given ID. */
     virtual VU_ERRCODE Remove(VU_ID eid) = 0;
 
-    /** removes entities from collection. If !all, local persistant and global
+    /** removes entities from collection. If not all, local persistant and global
     * entities are not removed.
     */
     virtual unsigned int Purge(VU_BOOL all = TRUE) = 0;

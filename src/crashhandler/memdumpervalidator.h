@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------
 John Robbins
-Microsoft Systems Journal, October 1997 - BugSlayer Column!
+Microsoft Systems Journal, October 1997 - BugSlayer Column
 ----------------------------------------------------------------------*/
 
 #ifndef _MEMDUMPERVALIDATOR_H

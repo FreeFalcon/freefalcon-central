@@ -67,7 +67,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
                     simEntity->nonLocalData->dx = dataBlock.dx;
                     simEntity->nonLocalData->dy = dataBlock.dy;
                     simEntity->nonLocalData->dz = dataBlock.dz;
-                    simEntity->nonLocalData->flags  or_eq  NONLOCAL_GUNS_FIRING;
+                    simEntity->nonLocalData->flags or_eq  NONLOCAL_GUNS_FIRING;
                     simEntity->nonLocalData->timer2 = 0;
                 }
 

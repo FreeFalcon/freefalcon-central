@@ -27,11 +27,11 @@ void Render2D::SetClipFlags(TwoDVertex* vert)
 {
     vert->clipFlag = ON_SCREEN;
 
-    if (vert->x < leftPixel) vert->clipFlag  or_eq  CLIP_LEFT;
-    else if (vert->x > rightPixel) vert->clipFlag  or_eq  CLIP_RIGHT;
+    if (vert->x < leftPixel) vert->clipFlag or_eq  CLIP_LEFT;
+    else if (vert->x > rightPixel) vert->clipFlag or_eq  CLIP_RIGHT;
 
-    if (vert->y < topPixel) vert->clipFlag  or_eq  CLIP_TOP;
-    else if (vert->y > bottomPixel) vert->clipFlag  or_eq  CLIP_BOTTOM;
+    if (vert->y < topPixel) vert->clipFlag or_eq  CLIP_TOP;
+    else if (vert->y > bottomPixel) vert->clipFlag or_eq  CLIP_BOTTOM;
 }
 
 /***************************************************************************
@@ -56,7 +56,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
 
     for (nextOut = outList; vertPointers < lastIn; nextOut++)
     {
-        clipTest  or_eq  (*vertPointers)->clipFlag;
+        clipTest or_eq  (*vertPointers)->clipFlag;
         *nextOut = (*vertPointers++);
     }
 

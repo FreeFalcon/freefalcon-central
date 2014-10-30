@@ -460,7 +460,7 @@ void DrawClippedPrim(Prim *prim)
     {
         clipFlag = TheStateStack.ClipInfoPool[*xyzIdxPtr++].clipFlag;
         clipFlagAND and_eq clipFlag;
-        clipFlagOR  or_eq  clipFlag;
+        clipFlagOR or_eq  clipFlag;
     };
 
     // See if we're on, off, or straddling the screen

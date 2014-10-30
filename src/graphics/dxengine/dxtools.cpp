@@ -238,11 +238,11 @@ bool DXScript_Beacon(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 
     /////// 0 degree green light
 
-    if (fabs(RelAngle) <= 3.0f) sw  or_eq  0x7; // Flash on, has flashed, visible
+    if (fabs(RelAngle) <= 3.0f) sw or_eq  0x7; // Flash on, has flashed, visible
 
-    if (RelAngle >= 162.0f and RelAngle <= 168.0f) sw  or_eq  0x700; // Flash on, has flashed, visible
+    if (RelAngle >= 162.0f and RelAngle <= 168.0f) sw or_eq  0x700; // Flash on, has flashed, visible
 
-    if (RelAngle >= -168.0f and RelAngle <= -162.0f) sw  or_eq  0x70; // Flash on, has flashed, visible
+    if (RelAngle >= -168.0f and RelAngle <= -162.0f) sw or_eq  0x70; // Flash on, has flashed, visible
 
     // Now store the computed results
     obj->DOFValues[0].rotation = (float)fmod(Delta, 2.0f * PI);

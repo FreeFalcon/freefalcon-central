@@ -298,13 +298,13 @@ AirframeClass::SimpleModel(void)
         //nzcgs = nzcgb = min (nzcgb, maxGs);
     }
 
-    //this needs to always be calculated, otherwise it is impossible to taxi or takeoff!
+    //this needs to always be calculated, otherwise it is impossible to taxi or takeoff
     // Find new velocity
     vtDot = xwaero + xwprop - GRAVITY * platform->platformAngles.singam;
 
     float netAccel = CalculateVt(dT);
 
-    // edg: my mr steen mode to allow hovering!
+    // edg: my mr steen mode to allow hovering
     // speed is directly based on throtl
     // speed up yawrate
     if (playerFlightModelHack  and 

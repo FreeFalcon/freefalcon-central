@@ -169,7 +169,7 @@ extern "C" {
 #define TRACE2(sz, p1, p2)      ::DiagOutput(_T(sz), p1, p2)
 #define TRACE3(sz, p1, p2, p3)  ::DiagOutput(_T(sz), p1, p2, p3)
 
-#else   // !_DEBUG
+#else   // not _DEBUG
     /*//////////////////////////////////////////////////////////////////////
                            _DEBUG Is NOT Defined
     //////////////////////////////////////////////////////////////////////*/

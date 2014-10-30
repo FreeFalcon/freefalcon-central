@@ -28,7 +28,7 @@
 #include "textids.h"
 #include "teamdata.h"
 #include "classtbl.h"
-// 3D stuff in the UI? No Way!
+// 3D stuff in the UI? No Way
 
 
 // Ground Altitude Function = UIrenderer->GetGroundLevel(x,y);

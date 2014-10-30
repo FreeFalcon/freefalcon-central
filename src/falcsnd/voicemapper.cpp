@@ -119,8 +119,8 @@ void VoiceMapper::LoadVoices()
             continue;
 
         int vtype = LookupName(type);
-        vtype  or_eq  LookupName(side);
-        voiceflags[voice]  or_eq  vtype;
+        vtype or_eq  LookupName(side);
+        voiceflags[voice] or_eq  vtype;
     }
 
     CloseCampFile(fp);
@@ -165,7 +165,7 @@ int VoiceMapper::PickVoice(int type, int side)
     unsigned int match = type;
 
     if (side not_eq VOICE_SIDE_UNK)
-        match  or_eq  (VOICE_SIDE_BASE << side);
+        match or_eq  (VOICE_SIDE_BASE << side);
 
     float chance;
     int selected = 0;

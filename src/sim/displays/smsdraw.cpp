@@ -2743,7 +2743,7 @@ void SmsDrawable::EmergJetDisplay(void)
             (Sms->hardPoint[curStation]->GetRack() or curStation == 5 and Sms->hardPoint[curStation]->GetWeaponClass() == wcTank))//me123 in the line above addet a check so we don't emergency jettison a-a missiles
 #endif
         {
-            hardPointSelected  or_eq  (1 << curStation);
+            hardPointSelected or_eq  (1 << curStation);
         }
     }
 

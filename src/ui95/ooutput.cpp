@@ -243,7 +243,7 @@ int O_Output::FitString(int idx) // returns # characters to keep on this line
         if (Label_[idx + count] == ' ')
             space = count;
 
-        // 2002-02-24 ADDED BY S.G. If we get a '\n', that's it for this line!
+        // 2002-02-24 ADDED BY S.G. If we get a '\n', that's it for this line
         if (Label_[idx + count] == '\n')
         {
             space = count;
@@ -562,7 +562,7 @@ void O_Output::Refresh()
 
     if (_GetOType_() == _OUT_SCALEBITMAP_)
     {
-        Owner_->Parent_->update_  or_eq  C_DRAW_REFRESH;
+        Owner_->Parent_->update_ or_eq  C_DRAW_REFRESH;
         Owner_->Parent_->SetUpdateRect(Owner_->Parent_->ClientArea_[Owner_->GetClient()].left,
                                        Owner_->Parent_->ClientArea_[Owner_->GetClient()].top,
                                        Owner_->Parent_->ClientArea_[Owner_->GetClient()].right,

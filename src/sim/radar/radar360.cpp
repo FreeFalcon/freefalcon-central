@@ -140,7 +140,7 @@ void Radar360Class::UpdateState(int cursorXCmd, int cursorYCmd)
     }
 
     if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
-        flags  or_eq  CursorMoving;
+        flags or_eq  CursorMoving;
     else
         flags and_eq compl CursorMoving;
 }
@@ -886,7 +886,7 @@ void Radar360Class::DisplayAATargets(float scaledSinYaw, float scaledCosYaw)
         // Desaturate and brighten the target under the cursor
         if (object->BaseData()->Id() == targetUnderCursor)
         {
-            color  or_eq  0x00404040;
+            color or_eq  0x00404040;
         }
 
         // Draw the target symbol
@@ -991,7 +991,7 @@ void Radar360Class::DisplayAGTargets(float scaledSinYaw, float scaledCosYaw)
         // Desaturate and brighten the target under the cursor
         if (object->Id() == targetUnderCursor)
         {
-            color  or_eq  0x00404040;
+            color or_eq  0x00404040;
         }
 
         // Draw the target symbol

@@ -1599,12 +1599,12 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
                 if (e->GetAproxHitChance(mt, d) > 0)
                 {
                     foundlist->ForcedInsert(e);
-                    retval  or_eq  NEED_SEAD;
+                    retval or_eq  NEED_SEAD;
                 }
                 else if ( not (flags bitand FIND_NODETECT) and e->GetDetectionRange(mt) > d)
                 {
                     foundlist->ForcedInsert(e);
-                    retval  or_eq  NEED_ECM;
+                    retval or_eq  NEED_ECM;
                 }
             }
         }

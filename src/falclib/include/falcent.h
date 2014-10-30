@@ -124,7 +124,7 @@ public:
     };
     void SetTypeFlag(int flag)
     {
-        falconType  or_eq  flag;
+        falconType or_eq  flag;
     };
     void UnSetTypeFlag(int flag)
     {
@@ -134,7 +134,7 @@ public:
     {
         if ( not (falconFlags bitand flag))
         {
-            falconFlags  or_eq  flag;
+            falconFlags or_eq  flag;
             MakeFlagsDirty();
         }
     };
@@ -365,7 +365,7 @@ public:
 
     void SetFELocalFlag(int flag)
     {
-        feLocalFlags  or_eq  flag;
+        feLocalFlags or_eq  flag;
     };
     void UnSetFELocalFlag(int flag)
     {

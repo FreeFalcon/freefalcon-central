@@ -146,7 +146,7 @@ void AirframeClass::Pitch(void)
                 //TJL 04/10/04 Adding limiter
                 //TJL 05/07/04 Removing the dreaded code as this may have caused
                 //major issues in the AI floating point calculations
-                //but I don't know why.  Possibly even missing aircraft!
+                //but I don't know why.  Possibly even missing aircraft
                 /*
                  limiter = gLimiterMgr->GetLimiter(PosGLimiter, vehicleIndex);
                  if (limiter)

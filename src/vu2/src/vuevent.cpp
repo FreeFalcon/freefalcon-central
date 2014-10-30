@@ -123,7 +123,7 @@ VuMessage::VuMessage(
 
     if (loopback)
     {
-        flags_  or_eq  VU_LOOPBACK_MSG_FLAG;
+        flags_ or_eq  VU_LOOPBACK_MSG_FLAG;
     }
 
     // note: msg id is set only for external messages which are sent out
@@ -216,7 +216,7 @@ int VuMessage::Send()
 
         if (retval <= 0)
         {
-            flags_  or_eq  VU_SEND_FAILED_MSG_FLAG;
+            flags_ or_eq  VU_SEND_FAILED_MSG_FLAG;
         }
     }
 
@@ -243,7 +243,7 @@ VU_ERRCODE VuMessage::Dispatch(VU_BOOL autod)
         retval = Process(autod);
         vuDatabase->Handle(this);
         // mark as sent
-        flags_  or_eq  VU_PROCESSED_MSG_FLAG;
+        flags_ or_eq  VU_PROCESSED_MSG_FLAG;
     }
 
     return retval;
@@ -1080,7 +1080,7 @@ VU_ERRCODE VuCreateEvent::Process(VU_BOOL)
 
                     if (Entity()->VuState() == VU_MEM_ACTIVE)
                     {
-                        // note: this will cause a memory leak! (but is extrememly rare)
+                        // note: this will cause a memory leak (but is extrememly rare)
                         //   Basically, we have two ents with the same id, and we cannot
                         //   keep track of both, even to know when it is safe to delete
                         //   the abandoned entity -- so we remove it from VU, but don't

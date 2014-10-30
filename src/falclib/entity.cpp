@@ -1437,7 +1437,7 @@ void UpdateUnitCombatStatistics(void)
                 for (j = 0; j < OtherDam and vc; j++)
                     dam[j] += vc->DamageMod[j];
 
-                UnitDataTable[id].Flags  or_eq  vc->Flags bitand 0xFF;
+                UnitDataTable[id].Flags or_eq  vc->Flags bitand 0xFF;
 
                 if (vc->MaxSpeed < mspeed)
                     mspeed = vc->MaxSpeed;
@@ -2108,11 +2108,11 @@ void RDLoadRackData(void)
                     switch (i)
                     {
                         case 0:
-                            rn->flags  or_eq  RDF_EMERGENCY_JETT_RACK;
+                            rn->flags or_eq  RDF_EMERGENCY_JETT_RACK;
                             break;
 
                         case 1:
-                            rn->flags  or_eq  RDF_SELECTIVE_JETT_RACK;
+                            rn->flags or_eq  RDF_SELECTIVE_JETT_RACK;
                             break;
                     }
                 }
@@ -2129,11 +2129,11 @@ void RDLoadRackData(void)
                     switch (i)
                     {
                         case 0:
-                            rn->flags  or_eq  RDF_EMERGENCY_JETT_WEAPON;
+                            rn->flags or_eq  RDF_EMERGENCY_JETT_WEAPON;
                             break;
 
                         case 1:
-                            rn->flags  or_eq  RDF_SELECTIVE_JETT_WEAPON;
+                            rn->flags or_eq  RDF_SELECTIVE_JETT_WEAPON;
                             break;
                     }
                 }
@@ -2317,11 +2317,11 @@ void RDLoadRackData(void)
                         switch (i)
                         {
                             case 0:
-                                pn->flags  or_eq  RDF_EMERGENCY_JETT_PYLON;
+                                pn->flags or_eq  RDF_EMERGENCY_JETT_PYLON;
                                 break;
 
                             case 1:
-                                pn->flags  or_eq  RDF_SELECTIVE_JETT_PYLON;
+                                pn->flags or_eq  RDF_SELECTIVE_JETT_PYLON;
                                 break;
                         }
                     }

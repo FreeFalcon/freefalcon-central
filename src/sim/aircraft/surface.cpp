@@ -106,7 +106,7 @@ int ComplexGearBrokenSwitch[] =
     COMP_GEAR_BROKEN_SW_8
 };
 
-//The ACMI is huge!
+//The ACMI is huge
 
 
 
@@ -394,7 +394,7 @@ void AircraftClass::MoveDof(int dof, float newval, float rate, int ssfx, int lsf
         else
         {
             if ( not SoundPos.IsPlaying(ssfx) and  // MLR 12/30/2003 - changed IsPlaying sound call
-                !SoundPos.IsPlaying(lsfx))
+                not SoundPos.IsPlaying(lsfx))
                 SoundPos.Sfx(ssfx);
             else
                 SoundPos.Sfx(lsfx);
@@ -1458,7 +1458,7 @@ void AircraftClass::RunLightSurfaces(void)
                 if (SimLibElapsedTime > animWingFlashTimer)
                 {
                     // blink time is small. random factor to avoid all blinking together
-                    navState = !navState;
+                    navState = not navState;
 
                     if (navState)
                     {
@@ -1517,7 +1517,7 @@ void AircraftClass::RunLightSurfaces(void)
             if (SimLibElapsedTime > animStrobeTimer)
             {
                 // blink time is small. random factor to avoid all blinking together
-                strobeState = !strobeState;
+                strobeState = not strobeState;
 
                 if (strobeState)
                 {
@@ -1585,7 +1585,7 @@ void AircraftClass::RunGearSurfaces(void)
     for (i = 0; i < numgear; i++)
     {
         //move the door
-        if ( not (af->gear[i].flags bitand GearData::DoorStuck) and !(af->gear[i].flags bitand GearData::DoorBroken))
+        if ( not (af->gear[i].flags bitand GearData::DoorStuck) and not (af->gear[i].flags bitand GearData::DoorBroken))
         {
             float pos = af->gearPos * 2;
 
@@ -1599,7 +1599,7 @@ void AircraftClass::RunGearSurfaces(void)
             SetDOF(ComplexGearDoorDOF[i], af->GetAeroData(AeroDataSet::NosGearRng) * DTR);
 
         //move the gear
-        if ( not (af->gear[i].flags bitand GearData::GearStuck) and !(af->gear[i].flags bitand GearData::GearBroken))
+        if ( not (af->gear[i].flags bitand GearData::GearStuck) and not (af->gear[i].flags bitand GearData::GearBroken))
         {
             float pos = (af->gearPos - .5f) * 2;
 
@@ -1654,7 +1654,7 @@ void AircraftClass::RunGearSurfaces(void)
             // lastRStick and lastYPedal defined in EOM.cpp
             // RAS 06Apr04 changed 30.0F to 50.0F to make graphical nose wheel match rate of turn.  Acutal turn radius needs to be
             // looked at.  Real F-16 nose wheel turns 32.0 degrees
-            if (IO.AnalogIsUsed(AXIS_YAW) and  not af->IsSet(AirframeClass::IsDigital) or !g_bRollLinkedNWSRudder)  // Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_YAW) and  not af->IsSet(AirframeClass::IsDigital) or not g_bRollLinkedNWSRudder)  // Retro 31Dec2003
             {
                 SetDOF(COMP_NOS_GEAR_ROT, -af->lastYPedal * 50.0F * DTR * (0.5F + (80.0F * KNOTS_TO_FTPSEC - af->vt) / (160.0F * KNOTS_TO_FTPSEC)));
             }
@@ -1674,7 +1674,7 @@ void AircraftClass::RunGearSurfaces(void)
     else
         SetDOF(COMP_NOS_GEAR_ROT, GetDOFValue(COMP_NOS_GEAR_ROT) * 0.9F);
 
-    if (GetDOFValue(ComplexGearDOF[0]) == af->GetAeroData(AeroDataSet::NosGearRng)*DTR and !(af->gear[0].flags bitand GearData::DoorBroken))
+    if (GetDOFValue(ComplexGearDOF[0]) == af->GetAeroData(AeroDataSet::NosGearRng)*DTR and not (af->gear[0].flags bitand GearData::DoorBroken))
         SetSwitch(COMP_NOS_GEAR_ROD, TRUE);
     else
         SetSwitch(COMP_NOS_GEAR_ROD, FALSE);

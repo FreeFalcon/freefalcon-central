@@ -242,7 +242,7 @@ void C_Window::SetFlags(long flag)
 
 void C_Window::SetFlagBitOn(long flag)
 {
-    Flags_  or_eq  flag;
+    Flags_ or_eq  flag;
 }
 
 void C_Window::SetFlagBitOff(long flag)
@@ -549,16 +549,16 @@ long C_Window::SetCheckedUpdateRect(long x1, long y1, long x2, long y2)
                     clipflag = 0;
 
                     if (x1 >= rectlist_[i].left)
-                        clipflag  or_eq  _CHR_CLIP_LEFT;
+                        clipflag or_eq  _CHR_CLIP_LEFT;
 
                     if (y1 >= rectlist_[i].top)
-                        clipflag  or_eq  _CHR_CLIP_TOP;
+                        clipflag or_eq  _CHR_CLIP_TOP;
 
                     if (x2 <= rectlist_[i].right)
-                        clipflag  or_eq  _CHR_CLIP_RIGHT;
+                        clipflag or_eq  _CHR_CLIP_RIGHT;
 
                     if (y2 <= rectlist_[i].bottom)
-                        clipflag  or_eq  _CHR_CLIP_BOTTOM;
+                        clipflag or_eq  _CHR_CLIP_BOTTOM;
 
                     if (clipflag == (_CHR_CLIP_LEFT | _CHR_CLIP_TOP | _CHR_CLIP_RIGHT | _CHR_CLIP_BOTTOM))
                         return(0); // new rect is inside another rect
@@ -718,8 +718,8 @@ void C_Window::SetUpdateRect(long x1, long y1, long x2, long y2, long flags, lon
     else
         AddUpdateRect(x1, y1, x2, y2);
 
-    update_  or_eq  C_DRAW_COPYWINDOW | C_DRAW_REFRESH;
-    Handler_->UpdateFlag  or_eq  C_DRAW_REFRESH;
+    update_ or_eq  C_DRAW_COPYWINDOW | C_DRAW_REFRESH;
+    Handler_->UpdateFlag or_eq  C_DRAW_REFRESH;
 
     UI_Leave(Leave);
 }
@@ -745,16 +745,16 @@ void C_Window::ClearCheckedUpdateRect(long x1, long y1, long x2, long y2)
                     clipflag = 0;
 
                     if (x1 >= rectlist_[i].left)
-                        clipflag  or_eq  _CHR_CLIP_LEFT;
+                        clipflag or_eq  _CHR_CLIP_LEFT;
 
                     if (y1 >= rectlist_[i].top)
-                        clipflag  or_eq  _CHR_CLIP_TOP;
+                        clipflag or_eq  _CHR_CLIP_TOP;
 
                     if (x2 <= rectlist_[i].right)
-                        clipflag  or_eq  _CHR_CLIP_RIGHT;
+                        clipflag or_eq  _CHR_CLIP_RIGHT;
 
                     if (y2 <= rectlist_[i].bottom)
-                        clipflag  or_eq  _CHR_CLIP_BOTTOM;
+                        clipflag or_eq  _CHR_CLIP_BOTTOM;
 
                     oldrect = rectlist_[i];
 
@@ -2236,28 +2236,28 @@ BOOL C_Window::ClipLine(long *x1, long *y1, long *x2, long *y2, UI95_RECT *clip)
     flag2 = 0;
 
     if (*x1 < clip->left)
-        flag1  or_eq  LINE_CLIP_LEFT;
+        flag1 or_eq  LINE_CLIP_LEFT;
 
     if (*x2 < clip->left)
-        flag2  or_eq  LINE_CLIP_LEFT;
+        flag2 or_eq  LINE_CLIP_LEFT;
 
     if (*y1 < clip->top)
-        flag1  or_eq  LINE_CLIP_TOP;
+        flag1 or_eq  LINE_CLIP_TOP;
 
     if (*y2 < clip->top)
-        flag2  or_eq  LINE_CLIP_TOP;
+        flag2 or_eq  LINE_CLIP_TOP;
 
     if (*x1 > clip->right)
-        flag1  or_eq  LINE_CLIP_RIGHT;
+        flag1 or_eq  LINE_CLIP_RIGHT;
 
     if (*x2 > clip->right)
-        flag2  or_eq  LINE_CLIP_RIGHT;
+        flag2 or_eq  LINE_CLIP_RIGHT;
 
     if (*y1 > clip->bottom)
-        flag1  or_eq  LINE_CLIP_BOTTOM;
+        flag1 or_eq  LINE_CLIP_BOTTOM;
 
     if (*y2 > clip->bottom)
-        flag2  or_eq  LINE_CLIP_BOTTOM;
+        flag2 or_eq  LINE_CLIP_BOTTOM;
 
     if ( not flag1 and not flag2) // return, because both points are inside clip rect
         return(TRUE);

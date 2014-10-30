@@ -2594,7 +2594,7 @@ void BattalionClass::MakeBattalionDirty(Dirty_Battalion bits, Dirtyness score)
         score = static_cast<Dirtyness>(score << 4);
     }
 
-    dirty_battalion  or_eq  bits;
+    dirty_battalion or_eq  bits;
 
     MakeDirty(DIRTY_BATTALION, score);
 }

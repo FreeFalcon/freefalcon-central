@@ -988,7 +988,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                 {
                     // Ok so it's too low, but is it jamming? If so, follow anyway...
                     if (tmpPtr->BaseData()->IsSPJamming())
-                        canSee  or_eq  SG_JAMMING; // That's our second bit being used
+                        canSee or_eq  SG_JAMMING; // That's our second bit being used
                     // So it's too low and were are not jamming. When did we loose the signal?
                     else if (SimLibElapsedTime - tmpPtr->localData->rdrLastHit > radarData->CoastTime)
                     {
@@ -997,7 +997,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                     }
                     // We just lost the signal, but we can still follow it, right?
                     else
-                        canSee  or_eq  SG_FADING;
+                        canSee or_eq  SG_FADING;
                 }
             }
 
@@ -1009,12 +1009,12 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                 if (tmpPtr->localData->sensorState[Radar] == NoTrack)
                 {
                     tmpPtr->localData->rdrLastHit = SimLibElapsedTime;// we are starting to lock the guy
-                    canSee  or_eq  SG_FADING; // this will make the sensor state max set to detection
+                    canSee or_eq  SG_FADING; // this will make the sensor state max set to detection
                 }
 
                 if (radarDatFile and tmpPtr->localData->sensorState[Radar] == Detection and  SimLibElapsedTime - tmpPtr->localData->rdrLastHit < (unsigned)radarDatFile->TimeToLock)
                 {
-                    canSee  or_eq  SG_FADING;// we are attempting a lock so don't go higher then detection
+                    canSee or_eq  SG_FADING;// we are attempting a lock so don't go higher then detection
                 }
 
                 // Can we see it (either with a valid lock, a jammed or fading signal?

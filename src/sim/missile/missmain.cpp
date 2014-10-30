@@ -1501,7 +1501,7 @@ MissileClass::FindRocketGroundImpact(float *impactX, float *impactY, float *impa
       // flies the thing
              CommandGuide(); // TODO: Avoid this -- all it does for rockets is set the G commands to 1.0
 
-      flags  or_eq  FindingImpact; // MLR 1/9/2004 - added to prevent the rocket's launch smoke puff trail when selected
+      flags or_eq  FindingImpact; // MLR 1/9/2004 - added to prevent the rocket's launch smoke puff trail when selected
              FlyMissile();
       flags and_eq compl FindingImpact;
 

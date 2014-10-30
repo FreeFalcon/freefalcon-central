@@ -206,7 +206,7 @@ int Detected(Unit u, FalconEntity *e, float *range)
             det = ENEMY_SAME_HEX | ENEMY_IN_RANGE | ENEMY_DETECTED | FRIENDLY_IN_RANGE;
 
         if (e->ZPos() - u->ZPos() > -5000.0f)
-            det  or_eq  ENEMY_SAME_HEX | ENEMY_IN_RANGE | FRIENDLY_IN_RANGE | FRIENDLY_DETECTED;
+            det or_eq  ENEMY_SAME_HEX | ENEMY_IN_RANGE | FRIENDLY_IN_RANGE | FRIENDLY_DETECTED;
 
         if (det)
             return(det);
@@ -227,16 +227,16 @@ int Detected(Unit u, FalconEntity *e, float *range)
         edet = udet; // KCK hack- let players spot only what spots them
 
     if (edet)
-        retval  or_eq  FRIENDLY_DETECTED;
+        retval or_eq  FRIENDLY_DETECTED;
 
     if (eran)
-        retval  or_eq  FRIENDLY_IN_RANGE;
+        retval or_eq  FRIENDLY_IN_RANGE;
 
     if (udet)
-        retval  or_eq  ENEMY_DETECTED;
+        retval or_eq  ENEMY_DETECTED;
 
     if (uran)
-        retval  or_eq  ENEMY_IN_RANGE;
+        retval or_eq  ENEMY_IN_RANGE;
 
     return retval;
 }

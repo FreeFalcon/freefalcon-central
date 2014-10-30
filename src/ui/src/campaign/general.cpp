@@ -1947,7 +1947,7 @@ static void MakeBar(C_Line *line, long valueID, long Team)
 
     line->SetW(w);
 
-    line->Parent_->update_  or_eq  C_DRAW_REFRESH;
+    line->Parent_->update_ or_eq  C_DRAW_REFRESH;
     line->Parent_->SetUpdateRect(line->GetUserNumber(0), line->GetUserNumber(1),
                                  line->GetUserNumber(0) + line->GetUserNumber(2),
                                  line->GetUserNumber(1) + line->GetUserNumber(3),

@@ -363,6 +363,6 @@ void ICPClass::PNUpdateSTPTMode(int button, int)
         ((AircraftClass*)(playerAC))->FCC->waypointStepCmd = 1;
     }
 
-    mUpdateFlags  or_eq  STPT_UPDATE;
-    mUpdateFlags  or_eq  CNI_UPDATE;
+    mUpdateFlags or_eq  STPT_UPDATE;
+    mUpdateFlags or_eq  CNI_UPDATE;
 }

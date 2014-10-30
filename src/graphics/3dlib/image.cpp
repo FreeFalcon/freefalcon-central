@@ -221,13 +221,13 @@ GLint ReadDDS(CImageFileMemory *fi)
             ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '5'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth;
-            ddsd.dwFlags  or_eq  DDSD_LINEARSIZE;
+            ddsd.dwFlags or_eq  DDSD_LINEARSIZE;
         }
 
         if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '1'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth / 2;
-            ddsd.dwFlags  or_eq  DDSD_LINEARSIZE;
+            ddsd.dwFlags or_eq  DDSD_LINEARSIZE;
         }
     }
 
@@ -590,7 +590,7 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
                              (q = (p = b) + fi->glReadMem(b, blocksize)) < (b + blocksize)))
                 return(UNEXPECTED_EOF);
 
-            thiscode  or_eq  (*p << (8 - bitsleft));
+            thiscode or_eq  (*p << (8 - bitsleft));
 
             if (currentcode <= 16)
             {
@@ -603,7 +603,7 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
                                  (q = (p = b) + fi->glReadMem(b, blocksize)) < (b + blocksize)))
                     return(UNEXPECTED_EOF);
 
-                thiscode  or_eq  (*p << (16 - bitsleft));
+                thiscode or_eq  (*p << (16 - bitsleft));
                 bitsleft = currentcode - 16;
                 *p >>= bitsleft;
             }
@@ -1015,7 +1015,7 @@ GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF)
                 for (l = 0; l < lpHeader->nPlanes; l++)
                 {
                     if (line[k >> 3] bitand masktable[k bitand 0x0007])
-                        lpBmp[k]  or_eq  bittable[l];
+                        lpBmp[k] or_eq  bittable[l];
 
                     line += m;
                 }

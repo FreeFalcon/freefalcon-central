@@ -1749,7 +1749,7 @@ void tactical_make_package(long, short hittype, C_Base *)
             mis.mission = static_cast<uchar>(type);
             mis.priority = static_cast<short>(gPackagePriority);
             mis.aircraft = 2;
-            mis.flags  or_eq  REQF_ALLOW_ERRORS | REQF_TE_MISSION;
+            mis.flags or_eq  REQF_ALLOW_ERRORS | REQF_TE_MISSION;
 
             new_package->SetUnitDestination(MapX, MapY);
             new_package->SetLocation(MapX, MapY);
@@ -2444,7 +2444,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
                 mis.tot += 10 * CampaignMinutes; // Try and get us in front of our pickup point
         }
 
-        mis.flags  or_eq  REQF_ALLOW_ERRORS | REQF_TE_MISSION;
+        mis.flags or_eq  REQF_ALLOW_ERRORS | REQF_TE_MISSION;
         error = new_flight->BuildMission(&mis);
 
         if (error not_eq PRET_SUCCESS)

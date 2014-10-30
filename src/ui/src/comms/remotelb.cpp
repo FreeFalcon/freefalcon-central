@@ -44,7 +44,7 @@ void RemoteLB::Cleanup()
 void RemoteLB::SetPilotData(LB_PILOT *data)
 {
     memcpy(&Pilot_, data, sizeof(Pilot_));
-    flags_  or_eq  PILOT_READY;
+    flags_ or_eq  PILOT_READY;
 }
 
 RemoteImage *RemoteLB::Receive(RemoteImage *Image, short packetno, short length, long offset, long size, uchar *data)
@@ -84,7 +84,7 @@ RemoteImage *RemoteLB::Receive(RemoteImage *Image, short packetno, short length,
         }
 
         if (i == remotedata->numblocks)
-            remotedata->flags  or_eq  IMAGE_READY;
+            remotedata->flags or_eq  IMAGE_READY;
     }
 
     return(remotedata);
@@ -100,9 +100,9 @@ void RemoteLB::ReceiveImage(uchar ID, short packetno, short length, long offset,
             if (Photo_)
             {
                 if (Photo_->flags bitand IMAGE_READY)
-                    flags_  or_eq  PHOTO_READY;
+                    flags_ or_eq  PHOTO_READY;
 
-                flags_  or_eq  PHOTO_CLEANUP;
+                flags_ or_eq  PHOTO_CLEANUP;
             }
 
             break;
@@ -113,9 +113,9 @@ void RemoteLB::ReceiveImage(uchar ID, short packetno, short length, long offset,
             if (Patch_)
             {
                 if (Patch_->flags bitand IMAGE_READY)
-                    flags_  or_eq  PATCH_READY;
+                    flags_ or_eq  PATCH_READY;
 
-                flags_  or_eq  PATCH_CLEANUP;
+                flags_ or_eq  PATCH_CLEANUP;
             }
 
             break;

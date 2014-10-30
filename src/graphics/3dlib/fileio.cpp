@@ -20,8 +20,8 @@ GLint CFileIO::openwrite(const char *filename, GLint binary)
 
     int mode = O_RDWR | O_CREAT | O_TRUNC;
 
-    if (binary) mode  or_eq  O_BINARY;
-    else mode  or_eq  O_TEXT;
+    if (binary) mode or_eq  O_BINARY;
+    else mode or_eq  O_TEXT;
 
     file = GR_OPEN(filename, mode);
 

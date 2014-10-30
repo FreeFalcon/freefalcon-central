@@ -269,13 +269,13 @@ costtype CostToArrive(Unit u, int orders, GridIndex x, GridIndex y, Objective t)
 
     // Movement options
     if (GetGroundRole(orders) == GRO_ATTACK)
-        flags  or_eq  PATH_ENEMYOK; // | PATH_ENEMYCOST;
+        flags or_eq  PATH_ENEMYOK; // | PATH_ENEMYCOST;
 
     if (u->GetSType() == STYPE_UNIT_AIRMOBILE)
-        flags  or_eq  PATH_AIRBORNE;
+        flags or_eq  PATH_AIRBORNE;
 
     if (u->GetSType() == STYPE_UNIT_MARINE)
-        flags  or_eq  PATH_MARINE;
+        flags or_eq  PATH_MARINE;
 
     o = FindNearestObjective(x, y, NULL);
 

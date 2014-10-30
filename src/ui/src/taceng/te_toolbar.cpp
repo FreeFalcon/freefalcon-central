@@ -168,7 +168,7 @@ static void tactical_start_engagement (long ID, short hittype, C_Base *ctrl)
  {
  OTWDriver.todOffset = 0.0F;
 
- // tactical_enable_motion = 1; // !current_tactical_mission->is_flag_on (tf_start_paused);
+ // tactical_enable_motion = 1; // not current_tactical_mission->is_flag_on (tf_start_paused);
 
  // Trigger the campaign to compress time and takeoff.
  if ( not CompressCampaignUntilTakeoff(fl))
@@ -176,7 +176,7 @@ static void tactical_start_engagement (long ID, short hittype, C_Base *ctrl)
  }
  else
  {
- // PETER TODO: Clear mission window's selection TOO!
+ // PETER TODO: Clear mission window's selection TOO
  FalconLocalSession->SetPlayerFlight(NULL);
  FalconLocalSession->SetPilotSlot(255);
  return;

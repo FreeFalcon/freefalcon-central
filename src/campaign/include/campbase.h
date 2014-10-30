@@ -519,7 +519,7 @@ public:
     void SetTacan(int t);
     void SetChecked(void)
     {
-        local_flags  or_eq  CBC_CHECKED;
+        local_flags or_eq  CBC_CHECKED;
     }
     void UnsetChecked(void)
     {
@@ -527,7 +527,7 @@ public:
     }
     void SetInterest(void)
     {
-        local_flags  or_eq  CBC_INTEREST;
+        local_flags or_eq  CBC_INTEREST;
     }
     void UnsetInterest(void)
     {

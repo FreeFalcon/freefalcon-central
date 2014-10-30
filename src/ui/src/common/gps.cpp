@@ -409,7 +409,7 @@ void GlobalPositioningSystem::Update()
     if (MisTree_ and (Flags bitand _GPS_RESORT_MISSION_))
     {
         MisTree_->ReorderBranch(MisTree_->GetRoot());
-        Flags  or_eq  _GPS_MISSION_RESIZE_;
+        Flags or_eq  _GPS_MISSION_RESIZE_;
     }
 
     if (MisTree_ and (Flags bitand _GPS_MISSION_RESIZE_))

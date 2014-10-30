@@ -104,7 +104,7 @@ void AircraftClass::DoCountermeasures(void)
         {
             // Run the countdown to the next programmed event
             // 2000-09-02 S.G. dropProgrammedTimer IS int WHILE SimLibMajorFrameTime
-            // IS A float LESS THAN 1.0! NO WONDER IT'S NOT WORKING! ONLY USE int FOR NOW ON
+            // IS A float LESS THAN 1.0 NO WONDER IT'S NOT WORKING! ONLY USE int FOR NOW ON
             //if (dropProgrammedTimer > SimLibMajorFrameTime)
             if (dropProgrammedTimer + AutoProgramTiming < SimLibElapsedTime)
                 // {
@@ -443,7 +443,7 @@ void AircraftClass::EWSChaffBurst(void)
 
     if (theRwr)
     {
-        //RWR not on, no spikes!
+        //RWR not on, no spikes
         if ( not theRwr->IsOn() or not HasPower(AircraftClass::EWSChaffPower))
             return;
     }

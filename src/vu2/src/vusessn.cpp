@@ -257,7 +257,7 @@ static int MessageReceive(
             event = VuxCreateMessage(type, senderid, targetId);
         }
 
-        //sfr: we only read events when they have a size!
+        //sfr: we only read events when they have a size
         //but it would be good to know why message size is 0
         //have to compute message size here
         //for now, comment to force crash and see why we are getting 0 size
@@ -3722,7 +3722,7 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
 
         if (totalcount == 0)
         {
-            // nothing to do!  just return...
+            // nothing to do  just return...
             return VU_NO_OP;
         }
 

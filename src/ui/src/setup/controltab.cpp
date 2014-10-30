@@ -391,7 +391,7 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
 
             if (index >= 0)
             {
-                switch (index) // not every axis used the deadzone though.. only bipolar ones !
+                switch (index) // not every axis used the deadzone though.. only bipolar ones 
                 {
                     case SETUP_ADVANCED_DZ_SMALL:
                         UIInputStuff[j].theDeviceAxis->Deadzone = g_nDeadzoneSmall;
@@ -1006,7 +1006,7 @@ void AxisChangeCB(long, short hittype, C_Base *me)
     if (i == -2) // whoops, error in the above routine..
         return;
 
-    // now I know in which axis box I am !
+    // now I know in which axis box I am 
     long index = GetListBoxItemData(listbox, 0);
 
     if (index == -2) // whoops, error in the above routine..
@@ -1052,15 +1052,15 @@ void AxisChangeCB(long, short hittype, C_Base *me)
         else
         {
             // super-special exception case:
-            // I don´t want the mouse axis to act as a throttle !
+            // I don´t want the mouse axis to act as a throttle 
             if (DIAxisNames[index].DXDeviceID == SIM_MOUSE)
             {
                 if ((UIInputStuff[i].AxisLB == SETUP_ADVANCED_THROTTLE_AXIS) ||
                     (UIInputStuff[i].AxisLB == SETUP_ADVANCED_THROTTLE2_AXIS))
                 {
-                    // NEED TO RESET THE OLD NAME HERE !
-                    RePopulateAllListBoxes(win); // no change !
-                    return; // tadaa !
+                    // NEED TO RESET THE OLD NAME HERE 
+                    RePopulateAllListBoxes(win); // no change 
+                    return; // tadaa 
                 }
             }
 
@@ -1811,42 +1811,42 @@ void RefreshJoystickCB(long, short, C_Base *)
 
             if ((IO.povHatAngle[i] < 2250 or IO.povHatAngle[i] > 33750) and IO.povHatAngle[i] not_eq -1)
             {
-                flags  or_eq  0x01;
+                flags or_eq  0x01;
                 Direction = 0;
             }
             else if (IO.povHatAngle[i] < 6750)
             {
-                flags  or_eq  0x03;
+                flags or_eq  0x03;
                 Direction = 1;
             }
             else if (IO.povHatAngle[i] < 11250)
             {
-                flags  or_eq  0x02;
+                flags or_eq  0x02;
                 Direction = 2;
             }
             else if (IO.povHatAngle[i] < 15750)
             {
-                flags  or_eq  0x06;
+                flags or_eq  0x06;
                 Direction = 3;
             }
             else if (IO.povHatAngle[i] < 20250)
             {
-                flags  or_eq  0x04;
+                flags or_eq  0x04;
                 Direction = 4;
             }
             else if (IO.povHatAngle[i] < 24750)
             {
-                flags  or_eq  0x0C;
+                flags or_eq  0x0C;
                 Direction = 5;
             }
             else if (IO.povHatAngle[i] < 29250)
             {
-                flags  or_eq  0x08;
+                flags or_eq  0x08;
                 Direction = 6;
             }
             else if (IO.povHatAngle[i] < 33750)
             {
-                flags  or_eq  0x09;
+                flags or_eq  0x09;
                 Direction = 7;
             }
 
@@ -2465,7 +2465,7 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
             return TRUE;
 
         if (GetAsyncKeyState(VK_SHIFT) bitand 0x8001)
-            ShiftStates  or_eq  _SHIFT_DOWN_;
+            ShiftStates or_eq  _SHIFT_DOWN_;
         else
             ShiftStates and_eq compl _SHIFT_DOWN_;
 
@@ -3681,7 +3681,7 @@ void SetThrottleAndRudderBars(C_Base *control)
 {
     C_Line *line = NULL;
 
-    // Retro 17Jan2004 - have to cater for 2 throttles now !
+    // Retro 17Jan2004 - have to cater for 2 throttles now 
     /* do throttle mumbo-jumbo */
     line = (C_Line *)control->Parent_->FindControl(THROTTLE);
 
@@ -3786,7 +3786,7 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
 
     if ((newcontroller == SIM_MOUSE) or (newcontroller == SIM_NUMDEVICES))
     {
-        // ??? not allowed !
+        // ??? not allowed 
         ShiAssert(false);
     }
     else if (newcontroller == SIM_KEYBOARD) // hrmmm... no sure what´s up here

@@ -179,7 +179,7 @@ void MonochromeDisplay::Render2DPoint(float x, float y)
     the_bit  = 7 - (x1 bitand 0x7);
 
     currentValue   = (char *)(screen_buffer[page] + the_byte);
-    *currentValue  or_eq  (char)(1 << the_bit);
+    *currentValue or_eq  (char)(1 << the_bit);
 }
 
 
@@ -197,7 +197,7 @@ void MonochromeDisplay::Render2DPoint(int x1, int y1)
     the_bit  = 7 - (x1 bitand 0x7);
 
     currentValue   = (char *)(screen_buffer[page] + the_byte);
-    *currentValue  or_eq  (char)(1 << the_bit);
+    *currentValue or_eq  (char)(1 << the_bit);
 }
 
 

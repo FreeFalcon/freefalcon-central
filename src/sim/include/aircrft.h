@@ -184,7 +184,7 @@ public:
     };
     void StationFailed(StationFlags fl)
     {
-        StationsFailed  or_eq  fl;
+        StationsFailed or_eq  fl;
     };
     int GetStationFailed(StationFlags fl)
     {
@@ -270,7 +270,7 @@ public:
     };
     void INSOn(INSAlignFlags fl)
     {
-        INSFlags  or_eq  fl;
+        INSFlags or_eq  fl;
     };
     void INSOff(INSAlignFlags fl)
     {
@@ -332,7 +332,7 @@ public:
     };
     void AVTROn(AVTRStateFlags fl)
     {
-        AVTRFlags  or_eq  fl;
+        AVTRFlags or_eq  fl;
     };
     void AVTROff(AVTRStateFlags fl)
     {
@@ -365,7 +365,7 @@ public:
     };
     void LEFOn(LEFStateFlags fl)
     {
-        LEFFlags  or_eq  fl;
+        LEFFlags or_eq  fl;
     };
     void LEFOff(LEFStateFlags fl)
     {
@@ -583,7 +583,7 @@ public:
     };
     void SetAPFlag(APFlags flag)
     {
-        APFlag  or_eq  flag;
+        APFlag or_eq  flag;
     };
     void ClearAPFlag(APFlags flag)
     {
@@ -614,7 +614,7 @@ public:
     //DrawableTrail     *engineTrails[MAXENGINES];
     //DrawableTrail *rwingvortex, *lwingvortex;
     //DrawableTrail   *wingvapor;
-    //DrawableTrail   *dustTrail; // MLR 1/3/2004 - for the dumbass dust/mist trail effect!
+    //DrawableTrail   *dustTrail; // MLR 1/3/2004 - for the dumbass dust/mist trail effect
     // ********** NEW TRAIL STUFF *************
     DWORD       smokeTrail[TRAIL_MAX];
     DWORD       smokeTrail_trail[TRAIL_MAX];
@@ -660,7 +660,7 @@ public:
     unsigned int powerFlags;
     void PowerOn(AvionicsPowerFlags fl)
     {
-        powerFlags  or_eq  fl;
+        powerFlags or_eq  fl;
     };
     int HasPower(AvionicsPowerFlags fl);
     void PowerOff(AvionicsPowerFlags fl)
@@ -712,7 +712,7 @@ public:
     };
     void ElecSet(ElectricLights lt)
     {
-        elecLights  or_eq  lt;
+        elecLights or_eq  lt;
     };
     void ElecClear(ElectricLights lt)
     {

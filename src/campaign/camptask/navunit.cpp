@@ -796,11 +796,11 @@ int TaskForceClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spot
 
     // Check type of entity before GCI is used
     if (CheckValidType(this, e))
-        detTmp  or_eq  e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
+        detTmp or_eq  e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
 
     // Check type of entity before GCI is used
     if (CheckValidType(e, this))
-        detTmp  or_eq  GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
+        detTmp or_eq  GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
 
     if ( not (detTmp bitand REACTION_MASK))
         return 0;
@@ -859,11 +859,11 @@ int TaskForceClass::DetectVs(CampEntity e, float *d, int *combat, int *spot)
 
     // Check type of entity before GCI is used
     if (CheckValidType(this, e))
-        detTmp  or_eq  e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
+        detTmp or_eq  e->GetSpotted(GetTeam()) ? ENEMY_DETECTED : 0;
 
     // Check type of entity before GCI is used
     if (CheckValidType(e, this))
-        detTmp  or_eq  GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
+        detTmp or_eq  GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
 
     if ( not (detTmp bitand REACTION_MASK))
         return 0;

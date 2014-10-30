@@ -92,7 +92,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
                         ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
                         CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
 
-                        ddsd.dwFlags  or_eq  DDSD_WIDTH | DDSD_HEIGHT;
+                        ddsd.dwFlags or_eq  DDSD_WIDTH | DDSD_HEIGHT;
                         ddsd.dwWidth  = w;
                         ddsd.dwHeight = h;
                         ddsd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY | DDSCAPS_3DDEVICE;
@@ -106,7 +106,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
                         ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
                         CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
 
-                        ddsd.dwFlags  or_eq  DDSD_WIDTH | DDSD_HEIGHT;
+                        ddsd.dwFlags or_eq  DDSD_WIDTH | DDSD_HEIGHT;
                         ddsd.dwWidth  = w;
                         ddsd.dwHeight = h;
                         ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY | DDSCAPS_3DDEVICE;
@@ -122,7 +122,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
                             ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
                             CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
 
-                            ddsd.dwFlags  or_eq  DDSD_WIDTH | DDSD_HEIGHT;
+                            ddsd.dwFlags or_eq  DDSD_WIDTH | DDSD_HEIGHT;
                             ddsd.dwWidth  = w;
                             ddsd.dwHeight = h;
                             ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY | DDSCAPS_3DDEVICE;
@@ -132,8 +132,8 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
                         else
                         {
                             // Create the primary surface.
-                            ddsd.dwFlags  or_eq  DDSD_BACKBUFFERCOUNT;
-                            ddsd.ddsCaps.dwCaps  or_eq  DDSCAPS_PRIMARYSURFACE | DDSCAPS_3DDEVICE | DDSCAPS_COMPLEX | DDSCAPS_FLIP;
+                            ddsd.dwFlags or_eq  DDSD_BACKBUFFERCOUNT;
+                            ddsd.ddsCaps.dwCaps or_eq  DDSCAPS_PRIMARYSURFACE | DDSCAPS_3DDEVICE | DDSCAPS_COMPLEX | DDSCAPS_FLIP;
                             ddsd.dwBackBufferCount = 1;
                             CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
 
@@ -200,7 +200,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
                     case None:
                     {
-                        ddsd.dwFlags  or_eq  DDSD_WIDTH | DDSD_HEIGHT;
+                        ddsd.dwFlags or_eq  DDSD_WIDTH | DDSD_HEIGHT;
                         ddsd.dwWidth  = w;
                         ddsd.dwHeight = h;
                         ddsd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY | DDSCAPS_3DDEVICE;
@@ -245,7 +245,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
                     case None:
                     {
-                        ddsd.dwFlags  or_eq  DDSD_WIDTH | DDSD_HEIGHT;
+                        ddsd.dwFlags or_eq  DDSD_WIDTH | DDSD_HEIGHT;
                         ddsd.dwWidth  = w;
                         ddsd.dwHeight = h;
                         ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY | DDSCAPS_3DDEVICE;
@@ -305,15 +305,15 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
                     case None:
                     {
-                        ddsd.dwFlags  or_eq  DDSD_WIDTH | DDSD_HEIGHT;
+                        ddsd.dwFlags or_eq  DDSD_WIDTH | DDSD_HEIGHT;
                         ddsd.dwWidth  = w;
                         ddsd.dwHeight = h;
                         ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY | DDSCAPS_LOCALVIDMEM;
 
                         if (front == LocalVideoMem3D)
-                            ddsd.ddsCaps.dwCaps  or_eq  DDSCAPS_3DDEVICE;
+                            ddsd.ddsCaps.dwCaps or_eq  DDSCAPS_3DDEVICE;
                         else
-                            ddsd.ddsCaps.dwCaps  or_eq  DDSCAPS_OFFSCREENPLAIN;
+                            ddsd.ddsCaps.dwCaps or_eq  DDSCAPS_OFFSCREENPLAIN;
 
                         HRESULT hr = pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL);
 
@@ -406,7 +406,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
                     case None:
                     {
-                        ddsd.dwFlags  or_eq  DDSD_WIDTH | DDSD_HEIGHT;
+                        ddsd.dwFlags or_eq  DDSD_WIDTH | DDSD_HEIGHT;
                         ddsd.dwWidth  = w;
                         ddsd.dwHeight = h;
                         ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN;
@@ -648,7 +648,7 @@ void *ImageBuffer::Lock(bool bLockMutexOnly, bool bWriteOnly)
     // DWORD dwFlags = DDLOCK_NOSYSLOCK | DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR;
     DWORD dwFlags = DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR;
 
-    if (bWriteOnly) dwFlags  or_eq  DDLOCK_WRITEONLY;
+    if (bWriteOnly) dwFlags or_eq  DDLOCK_WRITEONLY;
 
     int nRetries = 1;
 
@@ -707,15 +707,15 @@ void ImageBuffer::SetChromaKey(UInt32 colorKey)
 
     // GREEN
     if (greenShift >= 0)
-        m_dwColorKey  or_eq  (colorKey >>  greenShift) bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask;
+        m_dwColorKey or_eq  (colorKey >>  greenShift) bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask;
     else
-        m_dwColorKey  or_eq  (colorKey << -greenShift) bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask;
+        m_dwColorKey or_eq  (colorKey << -greenShift) bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask;
 
     // BLUE
     if (blueShift >= 0)
-        m_dwColorKey  or_eq  (colorKey >>  blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
+        m_dwColorKey or_eq  (colorKey >>  blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
     else
-        m_dwColorKey  or_eq  (colorKey << -blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
+        m_dwColorKey or_eq  (colorKey << -blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
 
     DDCOLORKEY key = { m_dwColorKey, m_dwColorKey};
 
@@ -745,21 +745,21 @@ WORD ImageBuffer::Pixel32toPixel16(UInt32 ABGR)
     // GREEN
     if (greenShift >= 0)
     {
-        color  or_eq  (ABGR >>  greenShift) bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask;
+        color or_eq  (ABGR >>  greenShift) bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask;
     }
     else
     {
-        color  or_eq  (ABGR << -greenShift) bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask;
+        color or_eq  (ABGR << -greenShift) bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask;
     }
 
     // BLUE
     if (blueShift >= 0)
     {
-        color  or_eq  (ABGR >>  blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
+        color or_eq  (ABGR >>  blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
     }
     else
     {
-        color  or_eq  (ABGR << -blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
+        color or_eq  (ABGR << -blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
     }
 
     return (WORD)color;
@@ -785,21 +785,21 @@ DWORD ImageBuffer::Pixel32toPixel32(UInt32 ABGR)
     // GREEN
     if (greenShift >= 0)
     {
-        color  or_eq  (ABGR >>  greenShift) bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask;
+        color or_eq  (ABGR >>  greenShift) bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask;
     }
     else
     {
-        color  or_eq  (ABGR << -greenShift) bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask;
+        color or_eq  (ABGR << -greenShift) bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask;
     }
 
     // BLUE
     if (blueShift >= 0)
     {
-        color  or_eq  (ABGR >>  blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
+        color or_eq  (ABGR >>  blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
     }
     else
     {
-        color  or_eq  (ABGR << -blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
+        color or_eq  (ABGR << -blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
     }
 
     return color;
@@ -827,21 +827,21 @@ UInt32 ImageBuffer::Pixel16toPixel32(WORD pixel)
     // GREEN
     if (greenShift >= 0)
     {
-        color  or_eq  (pixel bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask) <<  greenShift;
+        color or_eq  (pixel bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask) <<  greenShift;
     }
     else
     {
-        color  or_eq  (pixel bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask) >> -greenShift;
+        color or_eq  (pixel bitand m_ddsdFront.ddpfPixelFormat.dwGBitMask) >> -greenShift;
     }
 
     // BLUE
     if (blueShift >= 0)
     {
-        color  or_eq  (pixel bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask) <<  blueShift;
+        color or_eq  (pixel bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask) <<  blueShift;
     }
     else
     {
-        color  or_eq  (pixel bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask) >> -blueShift;
+        color or_eq  (pixel bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask) >> -blueShift;
     }
 
     return color;

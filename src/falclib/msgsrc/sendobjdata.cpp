@@ -119,7 +119,7 @@ int FalconSendObjData::Process(uchar autodisp)
 #endif
 
         // Mark this block as being received.
-        session->objDataReceived[dataBlock.block / 8]  or_eq  (1 << (dataBlock.block % 8));
+        session->objDataReceived[dataBlock.block / 8] or_eq  (1 << (dataBlock.block % 8));
 
         // Check if we've gotten all our blocks
         for (int i = 0; i < dataBlock.totalBlocks; i++)

@@ -114,11 +114,11 @@ Note: I had a whopper of a bug here.  I had the declarations and
     instructions like ADD ESP,10h after certain calls.  This was driving
     me nuts until it dawned on me that the extra ADD after the calls
     were cleaning up the stack for CDECL calls but that Windows API
-    calls are all STDCALL.  I had a calling convention mismatch!
+    calls are all STDCALL.  I had a calling convention mismatch
 
     I just thought I'd mention this so that it might save you some
     problems if you do something like this.  Watch those calling
-    conventions!
+    conventions
 
 //////////////////////////////////////////////////////////////////////*/
 
@@ -169,7 +169,7 @@ SymMatchFileName(
 
 // The great Bugslayer idea of creating wrapper classes on structures
 //  that have size fields came from fellow MSJ columnist, Paul DiLascia.
-// Thanks, Paul!
+// Thanks, Paul
 
 // I did not wrap IMAGEHLP_SYMBOL because that is a variable size
 //  structure.

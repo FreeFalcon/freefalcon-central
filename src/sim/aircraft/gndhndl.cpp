@@ -117,7 +117,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
     float gearAbsorption;
     Tpoint pos, vec;
 
-    FeatureCollision(af->groundZ); // JPO force a check for onFlatFeature now!
+    FeatureCollision(af->groundZ); // JPO force a check for onFlatFeature now
     // Check for landing
     MonoPrint("LandingCheck onFlatFeature %s\n", onFlatFeature == TRUE ? "TRUE" : "FALSE");
 
@@ -253,7 +253,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
                                            (af->IsSet(AirframeClass::OverRunway)
                                             or af->IsSet(AirframeClass::OnObject)) // JB carrier
                                             and 
-                                           !onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.5F) and af->gearPos > 0.8F)
+                                            not onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.5F) and af->gearPos > 0.8F)
     {
         // ok touchdown
 
@@ -325,7 +325,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
     }
     else if (af->vt * impactAngle < sinkRate * 3.0F * (1.0F - ( not af->IsSet(AirframeClass::OverRunway) and not onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.5F) and af->gearPos > 0.8F)
     {
-        //we hit too hard for the landing gear, crunch!
+        //we hit too hard for the landing gear, crunch
 
         //if( not af->auxaeroData->animWheelRadius[0])
         SoundPos.Sfx(af->auxaeroData->sndTouchDown);
@@ -346,7 +346,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
                 for (int i = 0; i < af->NumGear(); i++)
                 {
-                    af->gear[i].flags  or_eq  GearData::GearProblem;
+                    af->gear[i].flags or_eq  GearData::GearProblem;
                     SetDOF(ComplexGearDOF[i]/*COMP_NOS_GEAR + i*/, 0.0F);
                 }
 
@@ -411,7 +411,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
                 for (int i = 0; i < af->NumGear(); i++)
                 {
-                    af->gear[i].flags  or_eq  GearData::GearProblem;
+                    af->gear[i].flags or_eq  GearData::GearProblem;
                 }
 
                 // JPO - change to only play for us.
