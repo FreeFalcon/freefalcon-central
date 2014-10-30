@@ -1261,8 +1261,8 @@ void RadarDopplerClass::DefaultAAMode(void)
         return;
     }
 
-    if (mode == GMT ||
-        mode == SEA ||
+    if (mode == GMT or
+        mode == SEA or
         mode == GM)
     {
         modeDesiredCmd = RWS;
@@ -1325,8 +1325,8 @@ void RadarDopplerClass::DefaultAGMode(void)
             {
                 // ASSOCIATOR moved this check from RadarDopplerClass::Display in Bscope.cpp to here so that it only
                 // defaults to AGR when first selected and than be changed manually to any other radar mode
-                if (FCC->GetSubMode() == FireControlComputer::CCIP or FCC->GetSubMode() == FireControlComputer::DTOSS ||
-                    FCC->GetSubMode() == FireControlComputer::STRAF ||
+                if (FCC->GetSubMode() == FireControlComputer::CCIP or FCC->GetSubMode() == FireControlComputer::DTOSS or
+                    FCC->GetSubMode() == FireControlComputer::STRAF or
                     FCC->GetSubMode() == FireControlComputer::MAN or   // Cobra - for JSOWa
                     FCC->GetMasterMode() == FireControlComputer::AirGroundRocket/*FCC->GetSubMode() == FireControlComputer::RCKT*/ and mode not_eq AGR)
                 {

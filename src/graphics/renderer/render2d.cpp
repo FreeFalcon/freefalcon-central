@@ -249,9 +249,9 @@ void Render2D::Render2DTri(float x1, float y1, float x2, float y2, float x3, flo
 
     //Clip test
     if (
-        (max(max(x1, x2), x3) > rightPixel) ||
-        (min(min(x1, x2), x3) < leftPixel) ||
-        (max(max(y1, y2), y3) > bottomPixel) ||
+        (max(max(x1, x2), x3) > rightPixel) or
+        (min(min(x1, x2), x3) < leftPixel) or
+        (max(max(y1, y2), y3) > bottomPixel) or
         (min(min(y1, y2), y3) < topPixel)
     )
         return;

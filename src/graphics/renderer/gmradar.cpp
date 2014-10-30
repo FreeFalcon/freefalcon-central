@@ -561,9 +561,9 @@ void RenderGMRadar::DrawBlip(DrawableObject* drawable, float GainScale, bool Sha
 
         //Clip test
         if (
-            (x + 1.0f >= rightPixel)  ||
-            (x      <= leftPixel)   ||
-            (y + 1.0f >= bottomPixel) ||
+            (x + 1.0f >= rightPixel)  or
+            (x      <= leftPixel)   or
+            (y + 1.0f >= bottomPixel) or
             (y      <= topPixel)
         )
             return;

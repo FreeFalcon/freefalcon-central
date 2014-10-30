@@ -943,18 +943,18 @@ void AirframeClass::Init(int idx)
                         }
 
                         if ( not IsSet(Simplified) and 
-                            (( not platform->OnGround() and vcas < 180.0f) ||
-                             (fabs(pshape) > 0.85F and fabs(rshape) > 0.85F) ||
-                             (fabs(alpha)  > 18.0F) or // and IsSet(LowSpdHorn) ) ||
+                            (( not platform->OnGround() and vcas < 180.0f) or
+                             (fabs(pshape) > 0.85F and fabs(rshape) > 0.85F) or
+                             (fabs(alpha)  > 18.0F) or // and IsSet(LowSpdHorn) ) or
                              (fabs(pshape) > 0.6F and fabs(rshape) > 0.6F and IsSet(LowSpdHorn))))
                         {
                             loadingFraction = weight / emptyWeight; //me123
 
-                            if (( not platform->OnGround() and vcas < 60.0f ||
+                            if (( not platform->OnGround() and vcas < 60.0f or
  not platform->OnGround() and fabs(alpha)  > 18.0F and 
                                  vcas < 60.0f +
                                  60 * (loadingFraction - 1.3F) +
-                                 10 * fabs(assymetry / weight) * 10.0F) ||
+                                 10 * fabs(assymetry / weight) * 10.0F) or
 
                                 alpha > 31.0F  - 9 * (loadingFraction - 1.3F) - //me123 addet 9
                                 //me123 bulshit IsSet(LowSpdHorn)*3.0F
@@ -1086,7 +1086,7 @@ void AirframeClass::Init(int idx)
                 }
 
                 //check for low speed warning tone
-                if (platform->platformAngles.sinthe > .707 and 1.8888F * theta * RTD + 45.0F > vcas ||
+                if (platform->platformAngles.sinthe > .707 and 1.8888F * theta * RTD + 45.0F > vcas or
                     (g_bRealisticAvionics and gearPos > 0.9F and cockpitFlightData.alpha >= 15.0F))
                 {
 

@@ -412,7 +412,7 @@ void GetJoystickInput()
     {
         ProcessJoystickInput(AXIS_THROTTLE, &device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis]);
 
-        if (( not UseKeyboardThrottle) ||
+        if (( not UseKeyboardThrottle) or
             (abs(JoyOutput[AXIS_THROTTLE][OldInput] - device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis]) > 500.0F))
         {
             UseKeyboardThrottle = FALSE;
@@ -479,7 +479,7 @@ void GetJoystickInput()
     {
         ProcessJoystickInput(AXIS_THROTTLE2, &device_axis_values[AxisMap.Throttle2.Device][AxisMap.Throttle2.Axis]);
 
-        if (( not UseKeyboardThrottle) ||
+        if (( not UseKeyboardThrottle) or
             (abs(JoyOutput[AXIS_THROTTLE2][OldInput] - device_axis_values[AxisMap.Throttle2.Device][AxisMap.Throttle2.Axis]) > 500.0F))
         {
             UseKeyboardThrottle = FALSE;

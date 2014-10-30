@@ -422,7 +422,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
                 // ASSOCIATOR moved this check to RadarDopplerClass::DefaultAGModehere so that it only
                 // defaults to AGR when first selected and than be changed manually to any other radar mode
                 /*FireControlComputer* pFCC = ((SimVehicleClass*)platform)->GetFCC();//me123 addet for ccip/DTOSS ground ranging check
-                  if(pFCC->GetSubMode() == FireControlComputer::CCIP or pFCC->GetSubMode() == FireControlComputer::DTOSS ||
+                  if(pFCC->GetSubMode() == FireControlComputer::CCIP or pFCC->GetSubMode() == FireControlComputer::DTOSS or
                   pFCC->GetSubMode() == FireControlComputer::***STRAF or pFCC->GetSubMode() == FireControlComputer::RCKT)
                   {
                   if(mode not_eq AGR) {
@@ -1227,7 +1227,7 @@ void RadarDopplerClass::RWSDisplay(void)
                             pFCC->MissileImpactTimeFlash > SimLibElapsedTime)
                         {
                             // Draw X
-                            if (pFCC->MissileImpactTimeFlash - SimLibElapsedTime  > 5.0f * CampaignSeconds ||
+                            if (pFCC->MissileImpactTimeFlash - SimLibElapsedTime  > 5.0f * CampaignSeconds or
                                 (vuxRealTime bitand 0x200))
                             {
                                 DrawSymbol(HitInd, 0, 0);
@@ -1883,7 +1883,7 @@ void RadarDopplerClass::TWSDisplay(void)
                     if (rdrObj == lockedTarget and 
                         pFCC->MissileImpactTimeFlash > SimLibElapsedTime)   // Draw X
                     {
-                        if (pFCC->MissileImpactTimeFlash - SimLibElapsedTime  > 5.0f * CampaignSeconds ||
+                        if (pFCC->MissileImpactTimeFlash - SimLibElapsedTime  > 5.0f * CampaignSeconds or
                             (vuxRealTime bitand 0x200))
                         {
                             DrawSymbol(HitInd, 0, 0);
@@ -2092,7 +2092,7 @@ void RadarDopplerClass::STTDisplay(void)
             // draw hit indication
             if (pFCC->MissileImpactTimeFlash > SimLibElapsedTime)   // Draw X
             {
-                if (pFCC->MissileImpactTimeFlash - SimLibElapsedTime > 5.0f * CampaignSeconds ||
+                if (pFCC->MissileImpactTimeFlash - SimLibElapsedTime > 5.0f * CampaignSeconds or
                     (vuxRealTime bitand 0x200))
                 {
                     DrawSymbol(HitInd, 0, 0);
@@ -3019,7 +3019,7 @@ void RadarDopplerClass::DrawDLZSymbol(void)
         }
 
         // Draw the ASEC symbol. if its flashing, or outside the NE zone JPO
-        if (g_bRealisticAvionics and ((vuxRealTime bitand 0x200) or lockedTargetData->range > pFCC->missileRneMax * 0.7f ||
+        if (g_bRealisticAvionics and ((vuxRealTime bitand 0x200) or lockedTargetData->range > pFCC->missileRneMax * 0.7f or
                                      lockedTargetData->range < pFCC->missileRneMin))
         {
             display -> SetColor(GetMfdColor(MFD_STEER_ERROR_CUE));
@@ -3098,8 +3098,8 @@ int RadarDopplerClass::GetBuggedData(float *x, float *y, float *dir, float *spee
         return FALSE;
 
     //MI I haven't seen a rdrSy[0] state of Bug.. thus we only get it in STT.
-    //if (lockedTargetData->rdrSy[0] >= Bug ||
-    /*if(lockedTarget ||
+    //if (lockedTargetData->rdrSy[0] >= Bug or
+    /*if(lockedTarget or
       (IsSet(STTingTarget) and not lockedTarget->BaseData()->OnGround())) */
     if (lockedTarget)//Cobra allow ground bug to show TODO work on symbology
     {

@@ -231,7 +231,7 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
             // A campaign thing or an objective (sim objectives have no sensor routine
             // so they can never make it to the contact list by themself)
             (
-                (curEmitter->IsObjective() and curEmitter->GetElectronicDetectionRange(Air) not_eq 0) ||
+                (curEmitter->IsObjective() and curEmitter->GetElectronicDetectionRange(Air) not_eq 0) or
                 // An objective (sim objectives have no sensor routine
                 // so they can never make it to the contact list by themself)
                 // that has a working radar or a campaign thing
@@ -544,7 +544,7 @@ void PlayerRwrClass::DrawContact(DetectListElement *record)
 
         // Draw the emitter symbol
         // JB 010727 Draw 'F' for friendly aircraft
-        if (g_bIFFRWR and (record->radarData->RWRsymbol == RWRSYM_ADVANCED_INTERCEPTOR ||
+        if (g_bIFFRWR and (record->radarData->RWRsymbol == RWRSYM_ADVANCED_INTERCEPTOR or
                           record->radarData->RWRsymbol == RWRSYM_BASIC_INTERCEPTOR) and 
  not GetRoE(record->entity->GetTeam(), platform->GetTeam(), ROE_AIR_ENGAGE))
         {
@@ -562,19 +562,19 @@ void PlayerRwrClass::DrawContact(DetectListElement *record)
 
         if (mode == FEC_RADAR_SEARCH_1 and radarfileData->Rwrsymbolsearch1)
         {
-            if ((radarfileData->Rwrsymbolsearch1 not_eq RWRSYM_SEARCH) ||
+            if ((radarfileData->Rwrsymbolsearch1 not_eq RWRSYM_SEARCH) or
                 radarfileData->Rwrsymbolsearch1 == RWRSYM_SEARCH and ShowSearch())
                 symbol = radarfileData->Rwrsymbolsearch1;
         }
         else if (mode == FEC_RADAR_SEARCH_2 and radarfileData->Rwrsymbolsearch2)
         {
-            if ((radarfileData->Rwrsymbolsearch2 not_eq RWRSYM_SEARCH) ||
+            if ((radarfileData->Rwrsymbolsearch2 not_eq RWRSYM_SEARCH) or
                 radarfileData->Rwrsymbolsearch2 == RWRSYM_SEARCH and ShowSearch())
                 symbol = radarfileData->Rwrsymbolsearch2;
         }
         else if (mode == FEC_RADAR_SEARCH_3 and radarfileData->Rwrsymbolsearch3)
         {
-            if ((radarfileData->Rwrsymbolsearch3 not_eq RWRSYM_SEARCH) ||
+            if ((radarfileData->Rwrsymbolsearch3 not_eq RWRSYM_SEARCH) or
                 radarfileData->Rwrsymbolsearch3 == RWRSYM_SEARCH and ShowSearch())
                 symbol = radarfileData->Rwrsymbolsearch3;
         }
@@ -673,11 +673,11 @@ void PlayerRwrClass::DoAudio(void)   // 2002-02-20 S.G. Just flagging it as not 
 
         if (detectionList[i].playIt or ( not detectionList[i].cantPlay and ( not detectionList[i].entity->IsSim() or not detectionList[i].entity->IsDead())))
         {
-            if ((detectionList[i].missileActivity) ||
-                (detectionList[i].playIt) ||
-                (detectionList[i].newDetection) ||
+            if ((detectionList[i].missileActivity) or
+                (detectionList[i].playIt) or
+                (detectionList[i].newDetection) or
                 (detectionList[i].selected and 
-                 ((detectionList[i].isLocked) ||
+                 ((detectionList[i].isLocked) or
                   ((SimLibElapsedTime - detectionList[i].lastPlayed) > (unsigned int) SEARCH_PERIOD))))
             {
                 ShiAssert(detectionList[i].entity);
@@ -768,11 +768,11 @@ void PlayerRwrClass::DoAudio(DetectListElement *record)
     if (record->playIt or ( not record->cantPlay and ( not record->entity->IsSim() or not record->entity->IsDead())))
     {
         // Play all launches and the selected emitter
-        if (//(record->missileActivity) ||
+        if (//(record->missileActivity) or
             //(record->playIt) or // JB 010727 RP5 RWR 2001-02-17 MODIFIED BY S.G. SO pressing HANDOFF plays the sound
-            (record->newDetection) ||
+            (record->newDetection) or
             (record->selected and 
-             //((record->isLocked)) ||
+             //((record->isLocked)) or
              ((float)SimLibElapsedTime - (float)record->lastPlayed > SEARCH_PERIOD)))
         {
             /*int testa = SFX_A50_Radar;//73
@@ -1098,9 +1098,9 @@ int PlayerRwrClass::IsFiltered(FalconEntity *entity)
         if (radarData)
         {
             if ( not ShowUnknowns() and 
-                (radarData->RWRsymbol == RWRSYM_UNKNOWN ||
-                 radarData->RWRsymbol == RWRSYM_UNK1 ||
-                 radarData->RWRsymbol == RWRSYM_UNK2 ||
+                (radarData->RWRsymbol == RWRSYM_UNKNOWN or
+                 radarData->RWRsymbol == RWRSYM_UNK1 or
+                 radarData->RWRsymbol == RWRSYM_UNK2 or
                  radarData->RWRsymbol == RWRSYM_UNK3))
             {
                 return TRUE;
@@ -1135,8 +1135,8 @@ void PlayerRwrClass::CheckEWS(void)
         return;
 
     //Check for Power and Failure
-    if ( not SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::UFCPower) ||
-        SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::ufc_fault) ||
+    if ( not SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::UFCPower) or
+        SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::ufc_fault) or
         SimDriver.GetPlayerAircraft()->IsExploding())
         return;
 
@@ -1151,7 +1151,7 @@ void PlayerRwrClass::CheckEWS(void)
             SimDriver.GetPlayerAircraft()->DropEWS();
         }
 
-        if (OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[SimDriver.GetPlayerAircraft()->EWSProgNum] > 1 ||
+        if (OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[SimDriver.GetPlayerAircraft()->EWSProgNum] > 1 or
             OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[SimDriver.GetPlayerAircraft()->EWSProgNum] > 1)
         {
             LaunchDetected = TRUE;

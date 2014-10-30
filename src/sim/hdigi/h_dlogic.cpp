@@ -136,11 +136,11 @@ void HeliBrain::TargetSelection(void)
     campTactic = campUnit->GetUnitTactic();
 
     // sanity check and make sure its on ground, what to do if not?...
-    if ( not target ||
-        campTactic == ATACTIC_RETROGRADE ||
-        campTactic == ATACTIC_IGNORE ||
-        campTactic == ATACTIC_AVOID ||
-        campTactic == ATACTIC_ABORT ||
+    if ( not target or
+        campTactic == ATACTIC_RETROGRADE or
+        campTactic == ATACTIC_IGNORE or
+        campTactic == ATACTIC_AVOID or
+        campTactic == ATACTIC_ABORT or
         campTactic == ATACTIC_REFUEL)
     {
         ClearTarget();
@@ -356,7 +356,7 @@ void HeliBrain::TargetSelection(SimObjectType *tlist)
         if (theObject->OnGround())
         {
 
-            if (GetRoE(side, b, ROE_GROUND_FIRE) == ROE_ALLOWED ||
+            if (GetRoE(side, b, ROE_GROUND_FIRE) == ROE_ALLOWED or
                 GetRoE(side, b, ROE_GROUND_CAPTURE) == ROE_ALLOWED)
             {
                 // favor ground units
@@ -382,8 +382,8 @@ void HeliBrain::TargetSelection(SimObjectType *tlist)
             }
             else
             */
-            if (GetRoE(side, b, ROE_AIR_FIRE) == ROE_ALLOWED ||
-                GetRoE(side, b, ROE_AIR_ENGAGE) == ROE_ALLOWED ||
+            if (GetRoE(side, b, ROE_AIR_FIRE) == ROE_ALLOWED or
+                GetRoE(side, b, ROE_AIR_ENGAGE) == ROE_ALLOWED or
                 GetRoE(side, b, ROE_AIR_ATTACK) == ROE_ALLOWED)
             {
                 // if the object is another helicopter, favor it

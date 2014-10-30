@@ -20,7 +20,7 @@ void RadarDopplerClass::MoveBeam(void)
     float az, el, theta;
 
     //MI no radar if RF Switch in SILENT or QUIET
-    if (SimDriver.GetPlayerAircraft() and (SimDriver.GetPlayerAircraft()->RFState == 1 ||
+    if (SimDriver.GetPlayerAircraft() and (SimDriver.GetPlayerAircraft()->RFState == 1 or
                                           SimDriver.GetPlayerAircraft()->RFState == 2))
     {
         SetEmitting(FALSE);

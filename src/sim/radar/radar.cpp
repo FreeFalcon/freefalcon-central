@@ -79,7 +79,7 @@ void RadarClass::SetPower(BOOL state)
     if (platform == SimDriver.GetPlayerAircraft())
     {
         if (((AircraftClass*)platform)->mFaults and (
-                ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::xmtr ||
+                ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::xmtr or
                 ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::bus))
         {
             state = FALSE;
@@ -113,7 +113,7 @@ void RadarClass::SetEmitting(BOOL state)
     if (platform == SimDriver.GetPlayerAircraft())
     {
         if (((AircraftClass*)platform)->mFaults and (
-                ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::xmtr ||
+                ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::xmtr or
                 ((AircraftClass*)platform)->mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::bus))
         {
             state = FALSE;
@@ -438,10 +438,10 @@ void RadarClass::SendTrackMsg(SimObjectType* tgtptr, unsigned int trackType, uns
     ++count;
 
     if (
-        (tgtptr == NULL) or (tgtptr->BaseData() == NULL) ||
-        (tgtptr->localData->lockmsgsend == Track_None and trackType == Track_Unlock) ||
-        (tgtptr->localData->lockmsgsend == Track_Launch and trackType == Track_Lock) ||
-        ( not ((SimBaseClass*)tgtptr->BaseData())->IsAirplane()) ||
+        (tgtptr == NULL) or (tgtptr->BaseData() == NULL) or
+        (tgtptr->localData->lockmsgsend == Track_None and trackType == Track_Unlock) or
+        (tgtptr->localData->lockmsgsend == Track_Launch and trackType == Track_Lock) or
+        ( not ((SimBaseClass*)tgtptr->BaseData())->IsAirplane()) or
         (
             tgtptr->localData->lockmsgsend == trackType and (
                 trackType not_eq Track_Lock or tgtptr->localData->lastRadarMode == hardpoint
@@ -476,7 +476,7 @@ void RadarClass::SendTrackMsg(SimObjectType* tgtptr, unsigned int trackType, uns
         if (
             (sess->CameraCount() > 0) and 
             (
-                (sess->GetCameraEntity(0)->Id() == platform->Id()) ||
+                (sess->GetCameraEntity(0)->Id() == platform->Id()) or
                 (sess->GetCameraEntity(0)->Id() == id)
             )
         )

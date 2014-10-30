@@ -463,7 +463,7 @@ void RadarDopplerClass::GMMode(void)
         {
             if (mode == GMT)
             {
-                if (lockedTarget->BaseData()->IsSim() and (lockedTarget->BaseData()->GetVt() < g_fGMTMinSpeed ||
+                if (lockedTarget->BaseData()->IsSim() and (lockedTarget->BaseData()->GetVt() < g_fGMTMinSpeed or
                         lockedTarget->BaseData()->GetVt() > g_fGMTMaxSpeed))
                     DropGMTrack();
                 else if (lockedTarget->BaseData()->IsCampaign() and lockedTarget->BaseData()->GetVt() <= 0.0F)
@@ -630,11 +630,11 @@ void RadarDopplerClass::SetAimPoint(float xCmd, float yCmd)
     }
 
     if (
-        (IsSOI() and not lockedTarget) ||
+        (IsSOI() and not lockedTarget) or
         (
             ((laserPod and laserPod->IsSOI()) or (mavDisplay and mavDisplay->IsSOI())) and 
             pac and pac->FCC and pac->FCC->preDesignate
-        ) ||
+        ) or
         (pac->FCC->GetSubMode() == FireControlComputer::CCRP)
     )
     {
@@ -2131,7 +2131,7 @@ void RadarDopplerClass::AddTargetReturnsOldStyle(GMList* curNode)
         dx = curNode->Object()->XPos() - GMat.x;
         dy = curNode->Object()->YPos() - GMat.y;
 
-        if (fabs(dx) > groundMapRange ||
+        if (fabs(dx) > groundMapRange or
             fabs(dy) > groundMapRange)
         {
             curNode = curNode->next;
@@ -2146,7 +2146,7 @@ void RadarDopplerClass::AddTargetReturnsOldStyle(GMList* curNode)
         ry = cosAz * dx - sinAz * dy;
         rx = sinAz * dx + cosAz * dy;
 
-        if (F_ABS(rx) > groundMapRange ||
+        if (F_ABS(rx) > groundMapRange or
             F_ABS(ry) > groundMapRange)
         {
             curNode = curNode->next;
@@ -2272,7 +2272,7 @@ void RadarDopplerClass::DoGMDesignate(GMList* curNode)
             ry = cosAz * dx - sinAz * dy;
             rx = sinAz * dx + cosAz * dy;
 
-            if (F_ABS(rx) > groundMapRange ||
+            if (F_ABS(rx) > groundMapRange or
                 F_ABS(ry) > groundMapRange)
             {
                 curNode = curNode->next;
@@ -2505,7 +2505,7 @@ void RadarDopplerClass::AGBottomRow()
         if (IsAGDclt(Swap) == FALSE) DefaultLabel(14);
 
         //MI RF Switch info
-        if (SimDriver.GetPlayerAircraft() and (SimDriver.GetPlayerAircraft()->RFState == 1 ||
+        if (SimDriver.GetPlayerAircraft() and (SimDriver.GetPlayerAircraft()->RFState == 1 or
                                               SimDriver.GetPlayerAircraft()->RFState == 2))
         {
             FackClass* mFaults = ((AircraftClass*)(SimDriver.GetPlayerAircraft()))->mFaults;
@@ -2696,7 +2696,7 @@ void RadarDopplerClass::GMMode(void)
                                 // 2002-04-03 MN testFeature is a CAMPAIGN object now  We can't do SimBaseClass stuff here.
                                 // Speed test however is valid, as it checks U_MOVING flag of unit
                                 // As there are no campaign units that consist only of soldiers, no need to check for them here
-                                if (testFeature->GetVt() > g_fGMTMinSpeed /*||
+                                if (testFeature->GetVt() > g_fGMTMinSpeed /*or
  ((SimBaseClass*)testFeature)->drawPointer and 
  ((SimBaseClass*)testFeature)->drawPointer->GetClass() == DrawableObject::Guys*/
                                    )
@@ -3000,7 +3000,7 @@ void RadarDopplerClass::GMMode(void)
                                 // 2002-04-03 MN testFeature is a CAMPAIGN object now  We can't do SimBaseClass stuff here.
                                 // Speed test however is valid, as it checks U_MOVING flag of unit
                                 // As there are no campaign units that consist only of soldiers, no need to check for them here
-                                if (testFeature->GetVt() > g_fGMTMinSpeed /*||
+                                if (testFeature->GetVt() > g_fGMTMinSpeed /*or
    ((SimBaseClass*)testFeature)->drawPointer and 
    ((SimBaseClass*)testFeature)->drawPointer->GetClass() == DrawableObject::Guys*/
                                    )
@@ -3268,7 +3268,7 @@ void RadarDopplerClass::GMMode(void)
             {
                 //MI changed to get movers on the list
                 //F4Assert( SimCompare( tmpList->Object(), tmpList->next->Object() ) == 1 );
-                F4Assert((SimCompare(tmpList->Object(), tmpList->next->Object()) == 1) ||
+                F4Assert((SimCompare(tmpList->Object(), tmpList->next->Object()) == 1) or
                          (SimCompare(tmpList->Object(), tmpList->next->Object()) == -1));
             }
 
@@ -3573,7 +3573,7 @@ void RadarDopplerClass::GMMode(void)
         {
             if (mode == GMT)
             {
-                if (lockedTarget->BaseData()->IsSim() and (lockedTarget->BaseData()->GetVt() < g_fGMTMinSpeed ||
+                if (lockedTarget->BaseData()->IsSim() and (lockedTarget->BaseData()->GetVt() < g_fGMTMinSpeed or
                         lockedTarget->BaseData()->GetVt() > g_fGMTMaxSpeed))
                     DropGMTrack();
                 else if (lockedTarget->BaseData()->IsCampaign() and lockedTarget->BaseData()->GetVt() <= 0.0F)

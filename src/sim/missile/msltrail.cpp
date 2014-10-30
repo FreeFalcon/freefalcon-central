@@ -108,8 +108,8 @@ void MissileClass::InitTrail(void)
             engGlow = new Drawable2D(DRAW2D_MISSILE_GLOW, 2.0, &newPoint);
             engGlowBSP1 = new DrawableBSP(MapVisId(VIS_MFLAME_S), &newPoint, &rot, 1.0f);
         }
-        else if (classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AIM9M ||
-                 classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AIM9P ||
+        else if (classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AIM9M or
+                 classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AIM9P or
                  classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AIM9R)
         {
             // smallish trail
@@ -118,9 +118,9 @@ void MissileClass::InitTrail(void)
             engGlow = new Drawable2D(DRAW2D_MISSILE_GLOW, 5.0, &newPoint);
             engGlowBSP1 = new DrawableBSP(MapVisId(VIS_MFLAME_S), &newPoint, &rot, 1.0f);
         }
-        else if (classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AIM120 ||
-                 classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AA12 ||
-                 classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AA11 ||
+        else if (classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AIM120 or
+                 classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AA12 or
+                 classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AA11 or
                  classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AA10C
                 )
         {
@@ -235,8 +235,8 @@ void MissileClass::UpdateTrail(void)
 
             //RV - I-Hawk - AIM-120 had no trail, it should have a weak trail
             /*
-            if (classPtr->vuClassData.classInfo_[VU_SPTYPE] not_eq SPTYPE_AIM120 ||
-            contrail ||
+            if (classPtr->vuClassData.classInfo_[VU_SPTYPE] not_eq SPTYPE_AIM120 or
+            contrail or
              g_nmissiletrial)
             */
             // add new head to trail

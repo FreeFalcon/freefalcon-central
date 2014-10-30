@@ -243,7 +243,7 @@ void HeliBrain::GunsEngage(void)
     targetData->ata = (float)acos(rx / targetData->range);
 
     // if target is beyond shootable parameters, just track it
-    if (targetData->range >= GUN_MAX_RANGE * 4.0f ||
+    if (targetData->range >= GUN_MAX_RANGE * 4.0f or
         targetData->ata >= GUN_MAX_ATA * 1.5f)
     {
         trackX = theObject->XPos();
@@ -456,27 +456,27 @@ void HeliBrain::FireControl(void)
     ** Should work now....
     if ( theObject->OnGround() )
     {
-       if ( targetData->range < 1000.0f ||
+       if ( targetData->range < 1000.0f or
         targetData->range > 10000.0f)
         return;
     }
     else
     {
-     if ( targetData->range < self->FCC->missileRneMin ||
+     if ( targetData->range < self->FCC->missileRneMin or
          targetData->range > self->FCC->missileRneMax  )
         {
         return;
         }
     }
 
-    if ( targetData->range < self->FCC->missileRneMin ||
+    if ( targetData->range < self->FCC->missileRneMin or
          targetData->range > self->FCC->missileRneMax  )
     {
        return;
     }
     */
 
-    if (self->FCC->GetMasterMode() == FireControlComputer::Missile ||
+    if (self->FCC->GetMasterMode() == FireControlComputer::Missile or
         self->FCC->GetMasterMode() == FireControlComputer::AirGroundMissile)
     {
         if (targetData->range < 2000.0f or targetData->range > maxWpnRange)
@@ -635,7 +635,7 @@ void HeliBrain::FireControl(void)
     // SetFlag(MslFireFlag);
     if (self->Sms->curWeapon)
     {
-        if (self->FCC->GetMasterMode() == FireControlComputer::Missile ||
+        if (self->FCC->GetMasterMode() == FireControlComputer::Missile or
             self->FCC->GetMasterMode() == FireControlComputer::AirGroundMissile)
         {
             // rotate the missile on hardpoint towards target
@@ -1029,8 +1029,8 @@ void HeliBrain::WeaponSelection(void)
         }
     }
 
-    if (lastRange > maxWpnRange ||
- not self->Sms->curWeapon  ||
+    if (lastRange > maxWpnRange or
+ not self->Sms->curWeapon  or
  not targetPtr)
     {
         self->FCC->SetMasterMode(FireControlComputer::Nav);

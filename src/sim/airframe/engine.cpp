@@ -258,7 +258,7 @@ void AirframeClass::EngineModel(float dt)
         /*------------------*/
         /* get gross thrust */
         /*------------------*/
-        if ((platform->mFaults->GetFault(FaultClass::eng_fault) bitand FaultClass::fl_out) ||
+        if ((platform->mFaults->GetFault(FaultClass::eng_fault) bitand FaultClass::fl_out) or
             (g_bUseAnalogIdleCutoff and IO.IsAxisCutOff(AXIS_THROTTLE)))
         {
             SetFlag(EngineStopped); //JPO - engine is now stopped
@@ -2360,9 +2360,9 @@ void AirframeClass::FuelTransfer(float dt)
     // only happens if externals are pressurized.
     if (airSource == AS_NORM or airSource == AS_DUMP)
     {
-        if (((engineFlags bitand WingFirst) ||
+        if (((engineFlags bitand WingFirst) or
              m_tanks[TANK_CLINE] <= 0.0f) and 
-            (m_tanks[TANK_REXT] > 0.0f ||
+            (m_tanks[TANK_REXT] > 0.0f or
              m_tanks[TANK_LEXT] > 0.0f))
         {
             FeedTank(TANK_WINGFR, TANK_REXT, dt);
@@ -2961,7 +2961,7 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
 
 
     // F-14 spools engine up when Mach < 0.9 and AOA over 18
-    if ((auxaeroData->typeAC == 6 or auxaeroData->typeAC == 7) ||
+    if ((auxaeroData->typeAC == 6 or auxaeroData->typeAC == 7) or
         (auxaeroData->typeEngine == 9 or auxaeroData->typeEngine == 10))
     {
         if (alpha >= 18.0F and mach <= 0.9F)
@@ -3185,7 +3185,7 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
     }
 
     // F-14 spools engine up when Mach < 0.9 and AOA over 18
-    if ((auxaeroData->typeAC == 6 or auxaeroData->typeAC == 7) ||
+    if ((auxaeroData->typeAC == 6 or auxaeroData->typeAC == 7) or
         (auxaeroData->typeEngine == 9 or auxaeroData->typeEngine == 10))
     {
         if (alpha >= 18.0F and mach <= 0.9F)

@@ -464,7 +464,7 @@ void RadarSuperClass::ExecAA(void)
     {
 
         // Drop lock if the guy is outside our radar cone
-        if ((fabs(lockedTarget->localData->az) > radarData->ScanHalfAngle) ||
+        if ((fabs(lockedTarget->localData->az) > radarData->ScanHalfAngle) or
             (fabs(lockedTarget->localData->el) > radarData->ScanHalfAngle))
         {
             if (lockedTarget) SendTrackMsg(lockedTarget, Track_Unlock);

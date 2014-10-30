@@ -887,7 +887,7 @@ BOOL ReadSFXTable(char *sndtable)
     UINT nsfx;
     int vrsn;
 
-    if (fread(&vrsn, sizeof(vrsn), 1, fp) not_eq 1 ||
+    if (fread(&vrsn, sizeof(vrsn), 1, fp) not_eq 1 or
         fread(&nsfx, sizeof(nsfx), 1, fp) not_eq 1)
     {
         SFX_DEF = BuiltinSFX;
@@ -1237,7 +1237,7 @@ BOOL WriteSFXTable(char *sndtable)
 
     int vrsn = SFX_TABLE_VRSN;
 
-    if (fwrite(&vrsn, sizeof(vrsn), 1, fp) not_eq 1 ||
+    if (fwrite(&vrsn, sizeof(vrsn), 1, fp) not_eq 1 or
         fwrite(&BuiltinNSFX, sizeof(BuiltinNSFX), 1, fp) not_eq 1)
     {
         ShiAssert( not "Write error on Sound Table");
@@ -1506,7 +1506,7 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
         if (playerAC)
         {
             if (
-                OTWDriver.DisplayInCockpit() and playerAC->OnGround() ||
+                OTWDriver.DisplayInCockpit() and playerAC->OnGround() or
  not playerAC->playBetty or not playerAC->IsSetFlag(MOTION_OWNSHIP)
             )
             {
@@ -1523,8 +1523,8 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
 
     if (gSoundObject)
     {
-        if ((SFX_DEF[ sfxId ].flags bitand SFX_POS_LOOPED) ||
-            override ||
+        if ((SFX_DEF[ sfxId ].flags bitand SFX_POS_LOOPED) or
+            override or
             ( not gSoundObject->IsPlaying(sfxId, 0)))
             gSoundObject->Sfx(sfxId, 0, pscale, volume, CamPos.x, CamPos.y, CamPos.z);
     }
@@ -1810,7 +1810,7 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol)
         if (playerAC)
         {
             if (
-                OTWDriver.DisplayInCockpit() and playerAC->OnGround() ||
+                OTWDriver.DisplayInCockpit() and playerAC->OnGround() or
  not playerAC->playBetty or not playerAC->IsSetFlag(MOTION_OWNSHIP)
             )
             {

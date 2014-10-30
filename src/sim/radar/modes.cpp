@@ -207,7 +207,7 @@ void RadarDopplerClass::SAMMode(void)
     }
 
     // Drop immediatly on leaving volume
-    if (fabs(lockedTargetData->ata) > MAX_ANT_EL)//me123 ||
+    if (fabs(lockedTargetData->ata) > MAX_ANT_EL)//me123 or
         //me123 fabs(lockedTargetData->el) > MAX_ANT_EL)
     {
         dropSAM = TRUE;
@@ -697,7 +697,7 @@ void RadarDopplerClass::TWSMode(void)
         {
             //me123 gimbal check addet
             // Drop lock if the guy is outside our radar cone
-            if ((fabs(lockedTarget->localData->az) > radarData->ScanHalfAngle) ||
+            if ((fabs(lockedTarget->localData->az) > radarData->ScanHalfAngle) or
                 (fabs(lockedTarget->localData->el) > radarData->ScanHalfAngle))
             {
                 ClearSensorTarget();
@@ -974,7 +974,7 @@ void RadarDopplerClass::TWSMode(void)
         if (lockedTarget)
         {
             // Drop lock if the guy is outside our radar cone and remove the track file
-            if ((fabs(lockedTarget->localData->az) > radarData->ScanHalfAngle) ||
+            if ((fabs(lockedTarget->localData->az) > radarData->ScanHalfAngle) or
                 (fabs(lockedTarget->localData->el) > radarData->ScanHalfAngle))
             {
                 ClearHistory(lockedTarget);
@@ -1060,7 +1060,7 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
         //me123 gimbal check addet //Cobra 10/31/04 TJL
 
         // Drop lock if the guy is outside our radar cone
-        if ((fabs(lockedTarget->localData->az) > radarData->ScanHalfAngle) ||
+        if ((fabs(lockedTarget->localData->az) > radarData->ScanHalfAngle) or
             (fabs(lockedTarget->localData->el) > radarData->ScanHalfAngle))
         {
             // MD -- 20040911: according to Mirv, ACM with a lock losing track at the
@@ -1071,7 +1071,7 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
             // with STTingTarget use dropTrackCmd as before.  May not be pretty but
             // it seems to work how Mirv wants it ;)
 
-            if (mode == RadarClass::ACM_30x20 or mode == RadarClass::ACM_SLEW ||
+            if (mode == RadarClass::ACM_30x20 or mode == RadarClass::ACM_SLEW or
                 mode == RadarClass::ACM_BORE or mode == RadarClass::ACM_10x60)
             {
                 ClearSensorTarget();
@@ -1088,7 +1088,7 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
     if ( not lockedTargetData)
         return;
 
-    if ( not g_bMLU and (dropTrackCmd and not didDesignate and mode == SAM) ||
+    if ( not g_bMLU and (dropTrackCmd and not didDesignate and mode == SAM) or
         g_bMLU and dropTrackCmd and not diddroptrack)//me123
     {
         reacqFlag = (int)(ReacqusitionCount / SEC_TO_MSEC * SimLibMajorFrameRate);
@@ -1328,7 +1328,7 @@ void RadarDopplerClass::ACMMode(void)
     else if (
  not lockedTarget and mode not_eq ACM_SLEW and 
         SimDriver.GetPlayerAircraft() and // JB 010113 CTD fix
-        (SimDriver.GetPlayerAircraft()->FCC->cursorYCmd not_eq 0 ||
+        (SimDriver.GetPlayerAircraft()->FCC->cursorYCmd not_eq 0 or
          SimDriver.GetPlayerAircraft()->FCC->cursorXCmd not_eq 0)
     )
     {
@@ -1342,7 +1342,7 @@ void RadarDopplerClass::ACMMode(void)
     else if (
         lockedTarget and mode not_eq ACM_SLEW and 
         SimDriver.GetPlayerAircraft() and 
-        (SimDriver.GetPlayerAircraft()->FCC->cursorYCmd not_eq 0 ||
+        (SimDriver.GetPlayerAircraft()->FCC->cursorYCmd not_eq 0 or
          SimDriver.GetPlayerAircraft()->FCC->cursorXCmd not_eq 0)
     )
     {

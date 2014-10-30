@@ -1599,7 +1599,7 @@ void HarmTargetingPod::DecreaseRange()
 // Check if emitter is inside the ALIC video
 bool HarmTargetingPod::IsInsideALIC(float &displayX, float &displayY)
 {
-    if (fabs(displayX) > (0.75f * zoomFactor) or displayY > ((1.05f + HTS_Y_OFFSET) * zoomFactor) ||
+    if (fabs(displayX) > (0.75f * zoomFactor) or displayY > ((1.05f + HTS_Y_OFFSET) * zoomFactor) or
         displayY < ((-0.3f + HTS_Y_OFFSET) * zoomFactor))
     {
         return false;
@@ -1705,13 +1705,13 @@ void HarmTargetingPod::UpdateDTSB(int symbol, float &displayX, float &displayY)
     }
 
     // Do not draw unknown threats into DTSB
-    if (symbol == RWRSYM_UNKNOWN ||
-        symbol == RWRSYM_UNK1 ||
-        symbol == RWRSYM_UNK2 ||
-        symbol == RWRSYM_UNK3 ||
-        symbol == RWRSYM_MIB_F_U ||
-        symbol == RWRSYM_VS ||
-        symbol == RWRSYM_MIB_F_S ||
+    if (symbol == RWRSYM_UNKNOWN or
+        symbol == RWRSYM_UNK1 or
+        symbol == RWRSYM_UNK2 or
+        symbol == RWRSYM_UNK3 or
+        symbol == RWRSYM_MIB_F_U or
+        symbol == RWRSYM_VS or
+        symbol == RWRSYM_MIB_F_S or
         symbol == RWRSYM_MIB_BW_S
        )
     {
@@ -1767,13 +1767,13 @@ void HarmTargetingPod::BoxTargetDTSB(int symbol, float &displayX, float &display
     }
 
     // Do not draw unknown threats into DTSB
-    if (symbol == RWRSYM_UNKNOWN ||
-        symbol == RWRSYM_UNK1 ||
-        symbol == RWRSYM_UNK2 ||
-        symbol == RWRSYM_UNK3 ||
-        symbol == RWRSYM_MIB_F_U ||
-        symbol == RWRSYM_VS ||
-        symbol == RWRSYM_MIB_F_S ||
+    if (symbol == RWRSYM_UNKNOWN or
+        symbol == RWRSYM_UNK1 or
+        symbol == RWRSYM_UNK2 or
+        symbol == RWRSYM_UNK3 or
+        symbol == RWRSYM_MIB_F_U or
+        symbol == RWRSYM_VS or
+        symbol == RWRSYM_MIB_F_S or
         symbol == RWRSYM_MIB_BW_S
        )
     {
@@ -1861,10 +1861,10 @@ bool HarmTargetingPod::IsInPriorityList(int symbol)
             break;
 
         case HP: // Get only high priority threats, basically only SAMs and AAA radars
-            if (symbol < RWRSYM_HAWK ||
+            if (symbol < RWRSYM_HAWK or
                 (symbol > 23 and symbol not_eq 111 and symbol not_eq 112 and 
                  symbol not_eq 117) and 
-                symbol not_eq RWRSYM_KSAM ||
+                symbol not_eq RWRSYM_KSAM or
                 symbol == RWRSYM_SEARCH)
             {
                 return false;
@@ -1879,11 +1879,11 @@ bool HarmTargetingPod::IsInPriorityList(int symbol)
 
         case HA: // Get only high altitude threats, basically all large SAMs
 
-            if ((symbol >= RWRSYM_HAWK and symbol <= RWRSYM_SA6) ||
-                symbol == RWRSYM_SA10 ||
-                symbol == RWRSYM_NIKE ||
-                symbol == 111 ||
-                symbol == 112 ||
+            if ((symbol >= RWRSYM_HAWK and symbol <= RWRSYM_SA6) or
+                symbol == RWRSYM_SA10 or
+                symbol == RWRSYM_NIKE or
+                symbol == 111 or
+                symbol == 112 or
                 symbol == 117)
             {
                 return true;
@@ -1898,14 +1898,14 @@ bool HarmTargetingPod::IsInPriorityList(int symbol)
 
         case LA: // Get only low altitude threats, basically all small SAMs and AAA
 
-            if (symbol == RWRSYM_SA8 ||
-                symbol == RWRSYM_SA9 ||
-                symbol == RWRSYM_SA13 ||
-                symbol == RWRSYM_AAA ||
-                symbol == RWRSYM_CHAPARAL ||
-                symbol == RWRSYM_CHAPARAL ||
-                symbol == RWRSYM_SA15 ||
-                (symbol >= 21 and symbol <= 23) ||
+            if (symbol == RWRSYM_SA8 or
+                symbol == RWRSYM_SA9 or
+                symbol == RWRSYM_SA13 or
+                symbol == RWRSYM_AAA or
+                symbol == RWRSYM_CHAPARAL or
+                symbol == RWRSYM_CHAPARAL or
+                symbol == RWRSYM_SA15 or
+                (symbol >= 21 and symbol <= 23) or
                 symbol == RWRSYM_KSAM
                )
             {

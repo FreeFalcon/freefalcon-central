@@ -2296,8 +2296,8 @@ void CSoundMgr::SetNotification(SoundStream *Stream)
     ShiAssert(Stream->lpDsNotify not_eq NULL);
     ShiAssert((Stream->Status bitand SND_USE_THREAD) not_eq 0);
 
-    if ((Stream->Status bitand SND_USE_THREAD) == 0 ||
-        Stream->notif == NULL ||
+    if ((Stream->Status bitand SND_USE_THREAD) == 0 or
+        Stream->notif == NULL or
         Stream->lpDsNotify == NULL) return;
 
     // set up notifications so we can refill buffers - we'll use the same event for now

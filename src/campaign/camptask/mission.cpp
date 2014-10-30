@@ -1899,7 +1899,7 @@ long SetWPTimesTanker(Flight u, MissionRequestClass *mis, bool type, CampaignTim
         // Lock time in some cases - only lock target waypoint if we have to refuel somewhere..
         w->UnSetWPFlag(WPF_SPEED_LOCKED);
 
-        if (/*w->GetWPAction() == WP_TAKEOFF ||*/ (w->GetWPFlags() bitand WPF_TARGET) /*|| (w->GetWPFlags() bitand WPF_ASSEMBLE)*/)
+        if (/*w->GetWPAction() == WP_TAKEOFF or*/ (w->GetWPFlags() bitand WPF_TARGET) /*or (w->GetWPFlags() bitand WPF_ASSEMBLE)*/)
             w->SetWPFlag(WPF_TIME_LOCKED);
 
         w = w->GetNextWP();

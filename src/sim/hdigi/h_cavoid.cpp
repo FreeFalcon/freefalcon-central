@@ -41,7 +41,7 @@ void HeliBrain::CollisionCheck(void)
         // aircraft objects only
         classPtr = (Falcon4EntityClassType*)obj->BaseData()->EntityType();
 
-        if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_AIRPLANE ||
+        if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_AIRPLANE or
             classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_HELICOPTER)
         {
             timeToImpact = (localData->range - hRange) / localData->rangedot;

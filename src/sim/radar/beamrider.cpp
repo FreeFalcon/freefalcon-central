@@ -152,9 +152,9 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
 
                 if (stat)
                 {
-                    //if (lockedTarget->BaseData()->IsSPJamming() ||
-                    // radarPlatform->IsDead() ||
-                    // radarPlatform->IsExploding() ||
+                    //if (lockedTarget->BaseData()->IsSPJamming() or
+                    // radarPlatform->IsDead() or
+                    // radarPlatform->IsExploding() or
                     // not radarPlatform->IsEmitting())
                     //{
                     if (lockedTarget)
@@ -220,9 +220,9 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
 
                 if (stat)
                 {
-                    //if (lockedTarget->BaseData()->IsSPJamming() ||
-                    // radarPlatform->IsDead() ||
-                    // radarPlatform->IsExploding() ||
+                    //if (lockedTarget->BaseData()->IsSPJamming() or
+                    // radarPlatform->IsDead() or
+                    // radarPlatform->IsExploding() or
                     // not radarPlatform->IsEmitting())
                     //{
                     if (lockedTarget)
@@ -401,7 +401,7 @@ void BeamRiderClass::SendTrackMsg(SimObjectType* tgtptr , unsigned int trackType
         if (
             (sess->CameraCount() > 0) and 
             (
-                sess->GetCameraEntity(0)->Id() == platform->Id() ||
+                sess->GetCameraEntity(0)->Id() == platform->Id() or
                 sess->GetCameraEntity(0)->Id() == id
             )
         )

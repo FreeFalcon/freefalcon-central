@@ -173,7 +173,7 @@ AirframeClass::SimpleModel(void)
             // track point.
             if ((g_bTankerFMFix and platform->DBrain() and platform->DBrain()->IsTanker() and 
                  platform->TBrain() /* and platform->TBrain()->IsSet(TankerBrain::IsRefueling)  and 
- platform->TBrain()->ReachedFirstTrackPoint() */) ||
+ platform->TBrain()->ReachedFirstTrackPoint() */) or
                 (g_bSimpleFMUpdates and vt > 1 and gearPos < 0.7F and 
                  platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::LandingMode and 
                  platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::RefuelingMode))

@@ -505,19 +505,19 @@ int SquadronClass::MoveUnit(CampaignTime time)
                 while (o)
                 {
                     // ONLY USE YOUR OWN AIRBASE IF GLOBALLY SET TO ACT THAT WAY
-                    //if ((o->GetType() == TYPE_AIRBASE and not IsHelicopter() and GetRoE(o->GetTeam(),us,ROE_AIR_USE_BASES)) ||
+                    //if ((o->GetType() == TYPE_AIRBASE and not IsHelicopter() and GetRoE(o->GetTeam(),us,ROE_AIR_USE_BASES)) or
                     // (o->GetType() == TYPE_ARMYBASE and IsHelicopter() and GetRoE(o->GetTeam(),us,ROE_AIR_USE_BASES)))
                     int enter = FALSE;
 
                     if (g_nAirbaseReloc bitand AirBaseRelocTeamOnly)
                     {
-                        if ((o->GetType() == TYPE_AIRBASE and not IsHelicopter() and o->GetTeam() == us) ||
+                        if ((o->GetType() == TYPE_AIRBASE and not IsHelicopter() and o->GetTeam() == us) or
                             (o->GetType() == TYPE_ARMYBASE and IsHelicopter() and o->GetTeam() == us))
                             enter = TRUE;
                     }
                     else
                     {
-                        if ((o->GetType() == TYPE_AIRBASE and not IsHelicopter() and GetRoE(o->GetTeam(), us, ROE_AIR_USE_BASES)) ||
+                        if ((o->GetType() == TYPE_AIRBASE and not IsHelicopter() and GetRoE(o->GetTeam(), us, ROE_AIR_USE_BASES)) or
                             (o->GetType() == TYPE_ARMYBASE and IsHelicopter() and GetRoE(o->GetTeam(), us, ROE_AIR_USE_BASES)))
                             enter = TRUE;
                     }
@@ -1046,8 +1046,8 @@ uchar SquadronClass::GetAvailableStores(int i)
     int have, max;
 
     // Check for infinate stuff
-    if (i == SquadronStoresDataTable[class_data->SpecialIndex].infiniteAA ||
-        i == SquadronStoresDataTable[class_data->SpecialIndex].infiniteAG ||
+    if (i == SquadronStoresDataTable[class_data->SpecialIndex].infiniteAA or
+        i == SquadronStoresDataTable[class_data->SpecialIndex].infiniteAG or
         i == SquadronStoresDataTable[class_data->SpecialIndex].infiniteGun)
         return 4;
 

@@ -133,8 +133,8 @@ int AirUnitClass::IsHelicopter() const
     }
 
     if (
-        GetSType() == STYPE_UNIT_ATTACK_HELO ||
-        GetSType() == STYPE_UNIT_TRANSPORT_HELO ||
+        GetSType() == STYPE_UNIT_ATTACK_HELO or
+        GetSType() == STYPE_UNIT_TRANSPORT_HELO or
         GetSType() == STYPE_UNIT_RECON_HELO
     )
     {

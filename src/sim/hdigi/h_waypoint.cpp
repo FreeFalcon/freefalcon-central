@@ -162,7 +162,7 @@ void HeliBrain::GoToCurrentWaypoint(void)
 
     // Reached the next waypoint?
     // RV - Biker - Never skip waypoints
-    if (rng < (600.0F * 600.0F) or (onStation not_eq NotThereYet) /*|| SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime()*/)
+    if (rng < (600.0F * 600.0F) or (onStation not_eq NotThereYet) /*or SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime()*/)
     {
         if (onStation == NotThereYet)
         {
@@ -175,9 +175,9 @@ void HeliBrain::GoToCurrentWaypoint(void)
     }
 
     // landing?
-    if (onStation == Landing ||
-        onStation == DropOff ||
-        onStation == Landed ||
+    if (onStation == Landing or
+        onStation == DropOff or
+        onStation == Landed or
         onStation == PickUp)
     {
         LandMe();

@@ -542,8 +542,8 @@ FalconEntity* VehRwrClass::CurSpike(FalconEntity *byHim, int *data)  // 2002-02-
             if (detectionList[i].isLocked)   // If not even locked, don't bother...
             {
                 if (((*data bitand RWR_GET_STT) and detectionList[i].radarMode == RadarClass::DigiSTT) or // The lock is of the right type
-                    ((*data bitand RWR_GET_SAM) and detectionList[i].radarMode == RadarClass::DigiSAM) ||
-                    ((*data bitand RWR_GET_TWS) and detectionList[i].radarMode == RadarClass::DigiTWS) ||
+                    ((*data bitand RWR_GET_SAM) and detectionList[i].radarMode == RadarClass::DigiSAM) or
+                    ((*data bitand RWR_GET_TWS) and detectionList[i].radarMode == RadarClass::DigiTWS) or
                     ((*data bitand RWR_GET_RWS) and detectionList[i].radarMode == RadarClass::DigiRWS))
                 {
                     if ( not byHim or detectionList[i].entity == byHim)   // 2002-02-10 ADDED BY S.G. If we are looking at a specific target, limit your search to it
@@ -557,8 +557,8 @@ FalconEntity* VehRwrClass::CurSpike(FalconEntity *byHim, int *data)  // 2002-02-
                             if (*data bitand RWR_PRIORITIZE_MASK)
                             {
                                 if (((*data bitand RWR_PRIORITIZE_STT) and detectionList[i].radarMode == RadarClass::DigiSTT) or // The lock is of the right priority, return it
-                                    ((*data bitand RWR_PRIORITIZE_SAM) and detectionList[i].radarMode == RadarClass::DigiSAM) ||
-                                    ((*data bitand RWR_PRIORITIZE_TWS) and detectionList[i].radarMode == RadarClass::DigiTWS) ||
+                                    ((*data bitand RWR_PRIORITIZE_SAM) and detectionList[i].radarMode == RadarClass::DigiSAM) or
+                                    ((*data bitand RWR_PRIORITIZE_TWS) and detectionList[i].radarMode == RadarClass::DigiTWS) or
                                     ((*data bitand RWR_PRIORITIZE_RWS) and detectionList[i].radarMode == RadarClass::DigiRWS))
                                 {
                                     *data = detectionList[i].radarMode; // Pass back the radar mode to the calling function

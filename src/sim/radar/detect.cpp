@@ -161,7 +161,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
                 float realaz = rdrData->rdrX[0] + (rdrData->rdrHd[0] - platform->Yaw());
                 realaz = RES180(realaz);
 
-                if (radarDatFile and (fabs(realaz - expectedX) > radarDatFile->MaxAngleDiffSam * DTR ||
+                if (radarDatFile and (fabs(realaz - expectedX) > radarDatFile->MaxAngleDiffSam * DTR or
                                      (fabs(obj->localData->range - expectedY)) > (expectedY * radarDatFile->MaxRangeDiffSam) / 100.0f))
                 {
                     S *= 0.0f; //hammer to zero
@@ -199,7 +199,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
             float realaz = rdrData->rdrX[1] + (rdrData->rdrHd[1] - platform->Yaw());
             realaz = RES180(realaz);
 
-            if (radarDatFile and (fabs(realaz - expectedX) > radarDatFile->MaxAngleDiffTws * DTR ||
+            if (radarDatFile and (fabs(realaz - expectedX) > radarDatFile->MaxAngleDiffTws * DTR or
                                  (fabs(obj->localData->range - expectedY)) > (expectedY * radarDatFile->MaxRangeDiffTws) / 100.0f))
             {
                 S *= 0.0f; //hammer to zero
@@ -210,8 +210,8 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
 
                 if (rdrData->rdrSy[1] == AimRel)rdrData->rdrSy[0] = AimFlash;
 
-                if (rdrData->rdrSy[1] == FlashTrack ||
-                    rdrData->rdrSy[1] == FlashBug  ||
+                if (rdrData->rdrSy[1] == FlashTrack or
+                    rdrData->rdrSy[1] == FlashBug  or
                     rdrData->rdrSy[1] == AimFlash)
                     rdrData->rdrSy[0] = Det;
 

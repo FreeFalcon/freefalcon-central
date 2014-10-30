@@ -212,8 +212,8 @@ void OnSimMouseInput(HWND)
                     //Wombat778 10-11-2003  This is a hack because I couldnt get the
                     // button finding code to run from here. go figure
                     if (
-                        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit ||
-                        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockF3 ||
+                        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit or
+                        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockF3 or
                         OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockEFOV
                     )
                     {
@@ -577,7 +577,7 @@ void OnSimMouseInput(HWND)
                     }
                 }
 
-                if ((OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode3DCockpit) ||
+                if ((OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode3DCockpit) or
                     (OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode2DCockpit))
                 {
                     // Update cursor position otherwise

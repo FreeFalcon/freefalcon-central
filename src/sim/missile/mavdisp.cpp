@@ -53,12 +53,12 @@ MaverickDisplayClass::MaverickDisplayClass(SimMoverClass* newPlatform) : Missile
 
     classPtr = (Falcon4EntityClassType*)platform->EntityType();
 
-    if (classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AGM65A ||
+    if (classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AGM65A or
         classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AGM65B)
     {
         displayType = AGM65_TV;
     }
-    else if (classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AGM65D ||
+    else if (classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AGM65D or
              classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AGM65G)
     {
         displayType = AGM65_IR;

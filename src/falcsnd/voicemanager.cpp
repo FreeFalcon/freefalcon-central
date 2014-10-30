@@ -452,8 +452,8 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                         }
                     }
                     else if (
-                        (pVC->node->from == playerID) ||
-                        (pVC->node->to == playerID) ||
+                        (pVC->node->from == playerID) or
+                        (pVC->node->to == playerID) or
                         (pVC->node->priority > best->node->priority)
                     )
                     {
@@ -477,10 +477,10 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                         (VM->decompQueue[i].from not_eq FalconLocalSession->GetPlayerEntityID()) and 
                         (best->node->priority == rpLifeThreatening) and 
                         (VM->decompQueue[i].priority not_eq rpLifeThreatening)
-                    ) ||
+                    ) or
                     (
                         best->node->from == FalconLocalSession->GetPlayerEntityID()
-                    ) ||
+                    ) or
                     (
                         (best and best->node->priority == rpLifeThreatening) and 
                         (VM->decompQueue[i].priority not_eq rpLifeThreatening)
@@ -1443,7 +1443,7 @@ CONVERSATION *list_a, *list_b;
   list_a = ( CONVERSATION * )parent_a->node;
   list_b = ( CONVERSATION * )parent_b->node;
 
- if (( not list_a)||( not list_b))
+ if (( not list_a)or( not list_b))
  return NULL;
 
    if( list_a->priority < list_b->priority )
@@ -1459,7 +1459,7 @@ CONVERSATION *list_a, *list_b;
   list_a = ( CONVERSATION * )parent_a->node;
   list_b = ( CONVERSATION * )parent_b->node;
 
- if (( not list_a)||( not list_b))
+ if (( not list_a)or( not list_b))
  return NULL;
 
    if( (list_a->playTime) < (list_b->playTime ) )

@@ -204,7 +204,7 @@ void HeliBrain::FollowLead(void)
         trackZ = newpos.z + 100.0F;
         //MonoPrint ("AGM Formation\n");
     }
-    else if (self->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb ||
+    else if (self->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb or
              self->FCC->GetMasterMode() == FireControlComputer::AirGroundRocket)
     {
         self->GetFormationPos(&newpos.x, &newpos.y, &newpos.z);

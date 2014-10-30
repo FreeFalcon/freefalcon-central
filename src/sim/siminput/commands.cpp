@@ -375,8 +375,8 @@ void SimRadarRangeStepUp(unsigned long, int state, void*)
         // actually works preperly.
         if (g_bRealisticAvionics and g_bAGRadarFixes)
         {
-            if (theRadar->GetRadarMode() == RadarClass::GM ||
-                theRadar->GetRadarMode() == RadarClass::GMT ||
+            if (theRadar->GetRadarMode() == RadarClass::GM or
+                theRadar->GetRadarMode() == RadarClass::GMT or
                 theRadar->GetRadarMode() == RadarClass::SEA)
             {
                 if (theRadar->IsSet(RadarDopplerClass::AutoAGRange))
@@ -405,8 +405,8 @@ void SimRadarRangeStepDown(unsigned long, int state, void*)
         // actually works preperly.
         if (g_bRealisticAvionics and g_bAGRadarFixes)
         {
-            if (theRadar->GetRadarMode() == RadarClass::GM ||
-                theRadar->GetRadarMode() == RadarClass::GMT ||
+            if (theRadar->GetRadarMode() == RadarClass::GM or
+                theRadar->GetRadarMode() == RadarClass::GMT or
                 theRadar->GetRadarMode() == RadarClass::SEA)
             {
                 if (theRadar->IsSet(RadarDopplerClass::AutoAGRange))
@@ -1152,8 +1152,8 @@ void SimCursorUp(unsigned long, int state, void*)
                 }
 
                 //ACM Modes get's us directly into ACM Slew
-                //if(theRadar and (theRadar->GetRadarMode() == RadarClass::ACM_30x20 ||
-                //   theRadar->GetRadarMode() == RadarClass::ACM_BORE ||
+                //if(theRadar and (theRadar->GetRadarMode() == RadarClass::ACM_30x20 or
+                //   theRadar->GetRadarMode() == RadarClass::ACM_BORE or
                 //   theRadar->GetRadarMode() == RadarClass::ACM_10x60))
                 //{
                 //if we have a lock, break it
@@ -1162,7 +1162,7 @@ void SimCursorUp(unsigned long, int state, void*)
                 //}
                 //  else
                 if (
-                    (theRadar and theRadar->IsSOI()) or (mavDisplay and mavDisplay->IsSOI()) ||
+                    (theRadar and theRadar->IsSOI()) or (mavDisplay and mavDisplay->IsSOI()) or
                     (laserPod and laserPod->IsSOI())
                 )
                 {
@@ -1234,8 +1234,8 @@ void SimCursorDown(unsigned long, int state, void*)
                 }
 
                 //ACM Modes get's us directly into ACM Slew
-                //if(theRadar and (theRadar->GetRadarMode() == RadarClass::ACM_30x20 ||
-                // theRadar->GetRadarMode() == RadarClass::ACM_BORE ||
+                //if(theRadar and (theRadar->GetRadarMode() == RadarClass::ACM_30x20 or
+                // theRadar->GetRadarMode() == RadarClass::ACM_BORE or
                 // theRadar->GetRadarMode() == RadarClass::ACM_10x60))
                 //{
                 //if we have a lock, break it
@@ -1244,7 +1244,7 @@ void SimCursorDown(unsigned long, int state, void*)
                 //}
                 //else
                 if (
-                    (theRadar and theRadar->IsSOI()) or (mavDisplay and mavDisplay->IsSOI()) ||
+                    (theRadar and theRadar->IsSOI()) or (mavDisplay and mavDisplay->IsSOI()) or
                     (laserPod and laserPod->IsSOI())
                 )
                 {
@@ -1312,8 +1312,8 @@ void SimCursorLeft(unsigned long, int state, void*)
                 }
 
                 //ACM Modes get's us directly into ACM Slew
-                //if(theRadar and (theRadar->GetRadarMode() == RadarClass::ACM_30x20 ||
-                // theRadar->GetRadarMode() == RadarClass::ACM_BORE ||
+                //if(theRadar and (theRadar->GetRadarMode() == RadarClass::ACM_30x20 or
+                // theRadar->GetRadarMode() == RadarClass::ACM_BORE or
                 // theRadar->GetRadarMode() == RadarClass::ACM_10x60))
                 //{
                 //if we have a lock, break it
@@ -1322,7 +1322,7 @@ void SimCursorLeft(unsigned long, int state, void*)
                 //}
                 //else
                 if (
-                    (theRadar and theRadar->IsSOI()) or (mavDisplay and mavDisplay->IsSOI()) ||
+                    (theRadar and theRadar->IsSOI()) or (mavDisplay and mavDisplay->IsSOI()) or
                     (laserPod and laserPod->IsSOI())
                 )
                 {
@@ -1390,8 +1390,8 @@ void SimCursorRight(unsigned long, int state, void*)
                 }
 
                 //ACM Modes get's us directly into ACM Slew
-                //if(theRadar and (theRadar->GetRadarMode() == RadarClass::ACM_30x20 ||
-                // theRadar->GetRadarMode() == RadarClass::ACM_BORE ||
+                //if(theRadar and (theRadar->GetRadarMode() == RadarClass::ACM_30x20 or
+                // theRadar->GetRadarMode() == RadarClass::ACM_BORE or
                 // theRadar->GetRadarMode() == RadarClass::ACM_10x60))
                 //{
                 //if we have a lock, break it
@@ -1400,7 +1400,7 @@ void SimCursorRight(unsigned long, int state, void*)
                 //}
                 //else
                 if (
-                    (theRadar and theRadar->IsSOI()) or (mavDisplay and mavDisplay->IsSOI()) ||
+                    (theRadar and theRadar->IsSOI()) or (mavDisplay and mavDisplay->IsSOI()) or
                     (laserPod and laserPod->IsSOI())
                 )
                 {
@@ -1470,10 +1470,10 @@ namespace
                 }
 
                 if (
-                    (theRadar and theRadar->IsSOI()) ||
-                    (mavDisplay and mavDisplay->IsSOI()) ||
-                    (laserPod and laserPod->IsSOI()) ||
-                    (theHTS and pac->GetSOI() == SimVehicleClass::SOI_WEAPON) ||
+                    (theRadar and theRadar->IsSOI()) or
+                    (mavDisplay and mavDisplay->IsSOI()) or
+                    (laserPod and laserPod->IsSOI()) or
+                    (theHTS and pac->GetSOI() == SimVehicleClass::SOI_WEAPON) or
                     (TheHud and TheHud->IsSOI())
                 )
                 {
@@ -1523,7 +1523,7 @@ void SimToggleAutopilot(unsigned long, int state, void*)
                 break;
 
             case APEnhanced:
-                if ( not SimDriver.GetPlayerAircraft()->OnGround() ||
+                if ( not SimDriver.GetPlayerAircraft()->OnGround() or
                     SimDriver.GetPlayerAircraft()->AutopilotType() == AircraftClass::CombatAP)
                     SimDriver.GetPlayerAircraft()->ToggleAutopilot();
 
@@ -1731,7 +1731,7 @@ void SimDropFlare(unsigned long, int state, void*)
         // RV - Biker - Hack AC with IFF now can drop programmed EWS (player only)
         // if( not g_bRealisticAvionics or not SimDriver.GetPlayerAircraft()->af->platform->IsF16())
         if (
- not g_bRealisticAvionics ||
+ not g_bRealisticAvionics or
  not (playerAC->af->platform->IsF16() or playerAC->af->platform->GetiffEnabled())
         )
         {
@@ -1944,7 +1944,7 @@ void SimNextAGWeapon(unsigned long val, int state, void* pButton)
 
     if (F4IsBadReadPtr(SimDriver.GetPlayerAircraft(), sizeof(AircraftClass)) or not SimDriver.GetPlayerAircraft()->FCC or // JB 010305 CTD
         F4IsBadReadPtr(SimDriver.GetPlayerAircraft()->FCC, sizeof(FireControlComputer)) or // JB 010305 CTD
-        SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::MissileOverride ||
+        SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::MissileOverride or
         SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::Dogfight)
         return;
 
@@ -2293,8 +2293,8 @@ void AFGearToggle(unsigned long, int state, void*)
         //at least when on ground as nothing happens with the gear anyway
         if (SimDriver.GetPlayerAircraft()->af->IsSet(AirframeClass::InAir))
         {
-            if (SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::gear_fault) ||
-                SimDriver.GetPlayerAircraft()->af->HydraulicB() == 0 ||
+            if (SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::gear_fault) or
+                SimDriver.GetPlayerAircraft()->af->HydraulicB() == 0 or
                 SimDriver.GetPlayerAircraft()->af->altGearDeployed)
             {
                 return;
@@ -2336,8 +2336,8 @@ void AFGearUp(unsigned long, int state, void*)
     {
         if (SimDriver.GetPlayerAircraft()->af->IsSet(AirframeClass::InAir))
         {
-            if (SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::gear_fault) ||
-                SimDriver.GetPlayerAircraft()->af->HydraulicB() == 0 ||
+            if (SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::gear_fault) or
+                SimDriver.GetPlayerAircraft()->af->HydraulicB() == 0 or
                 SimDriver.GetPlayerAircraft()->af->altGearDeployed)
             {
                 return;
@@ -2357,8 +2357,8 @@ void AFGearDown(unsigned long, int state, void*)
     {
         if (SimDriver.GetPlayerAircraft()->af->IsSet(AirframeClass::InAir))
         {
-            if (SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::gear_fault) ||
-                SimDriver.GetPlayerAircraft()->af->HydraulicB() == 0 ||
+            if (SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::gear_fault) or
+                SimDriver.GetPlayerAircraft()->af->HydraulicB() == 0 or
                 SimDriver.GetPlayerAircraft()->af->altGearDeployed)
             {
                 return;
@@ -3043,7 +3043,7 @@ void OTWSelectWeaponMode(unsigned long, int state, void*)
 //RAS -5Dec04- Added ext view if on ground if g_bExtViewOnGround is set
 void OTWSelectSatelliteMode(unsigned long, int state, void*)
 {
-    if (FalconLocalGame and SimDriver.GetPlayerAircraft() and (FalconLocalGame->rules.ExternalViewOn() ||
+    if (FalconLocalGame and SimDriver.GetPlayerAircraft() and (FalconLocalGame->rules.ExternalViewOn() or
  not FalconLocalGame->rules.ExternalViewOn() and SimDriver.GetPlayerAircraft()->OnGround() and 
             g_bExtViewOnGround) and \
         (state bitand KEY_DOWN) and \
@@ -3873,7 +3873,7 @@ void SimEmergencyJettison(unsigned long, int state, void*)
                 if (g_bRealisticAvionics)
                 {
                     //Set our display mode
-                    if (MfdDisplay[1]->GetCurMode() not_eq MFDClass::SMSMode ||
+                    if (MfdDisplay[1]->GetCurMode() not_eq MFDClass::SMSMode or
                         SimDriver.GetPlayerAircraft()->Sms->drawable->DisplayMode() not_eq SmsDrawable::EmergJet)
                     {
                         MfdDisplay[0]->EmergStoreMode = MfdDisplay[0]->CurMode();
@@ -5264,7 +5264,7 @@ void SimICPTILS(unsigned long, int state, void* pButton)
             if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->FCC and SimDriver.GetPlayerAircraft()->FCC->IsNavMasterMode())
             {
                 if (OTWDriver.pCockpitManager->mpIcp->GetICPSecondaryMode() == ILS_MODE and 
-                    (gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV ||
+                    (gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV or
                      gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN))
                 {
                     SimDriver.GetPlayerAircraft()->FCC->SetMasterMode(FireControlComputer::ILS);
@@ -5472,7 +5472,7 @@ void SimICPNav(unsigned long, int state, void* pButton)
             F4IsBadReadPtr(SimDriver.GetPlayerAircraft(), sizeof(AircraftClass)) or // JB 010317 CTD
  not SimDriver.GetPlayerAircraft()->FCC or // JB 010307 CTD
             F4IsBadReadPtr(SimDriver.GetPlayerAircraft()->FCC, sizeof(FireControlComputer)) or // JB 010307 CTD
-            SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::MissileOverride ||
+            SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::MissileOverride or
             SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::Dogfight) return;
 
         // Select our FCC/HUD mode based on the NAV sub mode (ILS or not)
@@ -5579,7 +5579,7 @@ void SimICPAA(unsigned long, int state, void* pButton)
         if (
             playerAC->FCC and 
             (
-                playerAC->FCC->GetMasterMode() == FireControlComputer::Dogfight ||
+                playerAC->FCC->GetMasterMode() == FireControlComputer::Dogfight or
                 playerAC->FCC->GetMasterMode() == FireControlComputer::MissileOverride
             )
         )
@@ -8662,9 +8662,9 @@ void SimTMSUp(unsigned long val, int state, void *)
                 {
                     //ACM Modes
                     if (
-                        theRadar->GetRadarMode() == RadarClass::ACM_30x20 ||
-                        theRadar->GetRadarMode() == RadarClass::ACM_SLEW ||
-                        theRadar->GetRadarMode() == RadarClass::ACM_BORE ||
+                        theRadar->GetRadarMode() == RadarClass::ACM_30x20 or
+                        theRadar->GetRadarMode() == RadarClass::ACM_SLEW or
+                        theRadar->GetRadarMode() == RadarClass::ACM_BORE or
                         theRadar->GetRadarMode() == RadarClass::ACM_10x60
                     )
                     {
@@ -8672,11 +8672,11 @@ void SimTMSUp(unsigned long val, int state, void *)
                         theRadar->SelectACMBore();
                     }
                     else if (
-                        theRadar->GetRadarMode() == RadarClass::RWS ||
-                        theRadar->GetRadarMode() == RadarClass::LRS ||
-                        theRadar->GetRadarMode() == RadarClass::VS ||
-                        theRadar->GetRadarMode() == RadarClass::TWS ||
-                        theRadar->GetRadarMode() == RadarClass::SAM ||
+                        theRadar->GetRadarMode() == RadarClass::RWS or
+                        theRadar->GetRadarMode() == RadarClass::LRS or
+                        theRadar->GetRadarMode() == RadarClass::VS or
+                        theRadar->GetRadarMode() == RadarClass::TWS or
+                        theRadar->GetRadarMode() == RadarClass::SAM or
                         theRadar->IsAG())
                     {
                         pac->FCC->designateCmd = TRUE;
@@ -8795,17 +8795,17 @@ void SimTMSDown(unsigned long val, int state, void *)
                 if (theRadar and theRadar->IsSOI())
                 {
                     //ACM Modes
-                    if (theRadar->GetRadarMode() == RadarClass::ACM_30x20 ||
-                        theRadar->GetRadarMode() == RadarClass::ACM_SLEW ||
-                        theRadar->GetRadarMode() == RadarClass::ACM_BORE ||
+                    if (theRadar->GetRadarMode() == RadarClass::ACM_30x20 or
+                        theRadar->GetRadarMode() == RadarClass::ACM_SLEW or
+                        theRadar->GetRadarMode() == RadarClass::ACM_BORE or
                         theRadar->GetRadarMode() == RadarClass::ACM_10x60)
                     {
                         //First, drop our track
                         SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = FALSE;//Changed from TRUE
                         theRadar->SelectACMVertical();//Cobra BMS bug fix 01/29/05
                     }
-                    else if (theRadar->GetRadarMode() == RadarClass::ACM_30x20 ||
-                             theRadar->GetRadarMode() == RadarClass::ACM_SLEW ||
+                    else if (theRadar->GetRadarMode() == RadarClass::ACM_30x20 or
+                             theRadar->GetRadarMode() == RadarClass::ACM_SLEW or
                              theRadar->GetRadarMode() == RadarClass::ACM_BORE)
                     {
                         theRadar->SelectACMVertical();
@@ -8868,18 +8868,18 @@ void SimTMSRight(unsigned long val, int state, void *)
                         if (theRadar)
                         {
                             //ACM Modes
-                            if (theRadar->GetRadarMode() == RadarClass::ACM_30x20 ||
-                                theRadar->GetRadarMode() == RadarClass::ACM_SLEW ||
-                                theRadar->GetRadarMode() == RadarClass::ACM_BORE ||
+                            if (theRadar->GetRadarMode() == RadarClass::ACM_30x20 or
+                                theRadar->GetRadarMode() == RadarClass::ACM_SLEW or
+                                theRadar->GetRadarMode() == RadarClass::ACM_BORE or
                                 theRadar->GetRadarMode() == RadarClass::ACM_10x60)
                             {
                                 SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = FALSE;
                                 theRadar->SelectACM30x20();
                                 theRadar->SetEmitting(TRUE);
                             }
-                            else if (theRadar->GetRadarMode() == RadarClass::RWS ||
-                                     theRadar->GetRadarMode() == RadarClass::LRS ||
-                                     theRadar->GetRadarMode() == RadarClass::VS ||
+                            else if (theRadar->GetRadarMode() == RadarClass::RWS or
+                                     theRadar->GetRadarMode() == RadarClass::LRS or
+                                     theRadar->GetRadarMode() == RadarClass::VS or
                                      theRadar->GetRadarMode() == RadarClass::SAM)
                                 theRadar->SelectTWS();
                             else if (theRadar->GetRadarMode() == RadarClass::TWS)
@@ -8894,17 +8894,17 @@ void SimTMSRight(unsigned long val, int state, void *)
                     if (theRadar)
                     {
                         //ACM Modes
-                        if (theRadar->GetRadarMode() == RadarClass::ACM_30x20 ||
-                            theRadar->GetRadarMode() == RadarClass::ACM_SLEW ||
-                            theRadar->GetRadarMode() == RadarClass::ACM_BORE ||
+                        if (theRadar->GetRadarMode() == RadarClass::ACM_30x20 or
+                            theRadar->GetRadarMode() == RadarClass::ACM_SLEW or
+                            theRadar->GetRadarMode() == RadarClass::ACM_BORE or
                             theRadar->GetRadarMode() == RadarClass::ACM_10x60)
                         {
                             SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = FALSE;
                             theRadar->SelectACM30x20();
                             theRadar->SetEmitting(TRUE);
                         }
-                        else if (theRadar->GetRadarMode() == RadarClass::RWS ||
-                                 theRadar->GetRadarMode() == RadarClass::LRS ||
+                        else if (theRadar->GetRadarMode() == RadarClass::RWS or
+                                 theRadar->GetRadarMode() == RadarClass::LRS or
                                  theRadar->GetRadarMode() == RadarClass::SAM)
                             theRadar->SelectTWS();
                         else if (theRadar->GetRadarMode() == RadarClass::TWS)
@@ -8927,18 +8927,18 @@ void SimTMSRight(unsigned long val, int state, void *)
                     if (theRadar)
                     {
                         //ACM Modes
-                        if (theRadar->GetRadarMode() == RadarClass::ACM_30x20 ||
-                            theRadar->GetRadarMode() == RadarClass::ACM_SLEW ||
-                            theRadar->GetRadarMode() == RadarClass::ACM_BORE ||
+                        if (theRadar->GetRadarMode() == RadarClass::ACM_30x20 or
+                            theRadar->GetRadarMode() == RadarClass::ACM_SLEW or
+                            theRadar->GetRadarMode() == RadarClass::ACM_BORE or
                             theRadar->GetRadarMode() == RadarClass::ACM_10x60)
                         {
                             SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = FALSE;
                             theRadar->SelectACM30x20();
                             theRadar->SetEmitting(TRUE);
                         }
-                        else if (theRadar->GetRadarMode() == RadarClass::RWS ||
-                                 theRadar->GetRadarMode() == RadarClass::LRS ||
-                                 theRadar->GetRadarMode() == RadarClass::VS ||
+                        else if (theRadar->GetRadarMode() == RadarClass::RWS or
+                                 theRadar->GetRadarMode() == RadarClass::LRS or
+                                 theRadar->GetRadarMode() == RadarClass::VS or
                                  theRadar->GetRadarMode() == RadarClass::SAM)
                             theRadar->SelectTWS();
                         else if (theRadar->GetRadarMode() == RadarClass::TWS)
@@ -9250,7 +9250,7 @@ void SimEWSModeMan(unsigned long val, int state, void *)
 
     if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and (state bitand KEY_DOWN))
     {
-        if ((SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::EWSPGMSwitch::Off) ||
+        if ((SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::EWSPGMSwitch::Off) or
             (SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::EWSPGMSwitch::Stby))
         {
             PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerAircraft(), SensorClass::RWR);
@@ -9745,13 +9745,13 @@ void SimDropProgrammed(unsigned long val, int state, void *)
             PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerAircraft(), SensorClass::RWR);
 
             //Check for Power and Failure
-            if ( not SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::UFCPower) ||
-                SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::ufc_fault) ||
+            if ( not SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::UFCPower) or
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::ufc_fault) or
                 SimDriver.GetPlayerAircraft()->IsExploding())
                 return;
 
             //Check for our switch
-            if (SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::EWSPGMSwitch::Off ||
+            if (SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::EWSPGMSwitch::Off or
                 SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::EWSPGMSwitch::Stby)
                 return;
 
@@ -9799,15 +9799,15 @@ void SimPinkySwitch(unsigned long val, int state, void *)
                 if (theRadar and theRadar->IsSOI())
                 {
                     //Toggle EXP and NORM
-                    if (theRadar->GetRadarMode() == RadarClass::RWS ||
-                        theRadar->GetRadarMode() == RadarClass::LRS ||
-                        theRadar->GetRadarMode() == RadarClass::SAM ||
+                    if (theRadar->GetRadarMode() == RadarClass::RWS or
+                        theRadar->GetRadarMode() == RadarClass::LRS or
+                        theRadar->GetRadarMode() == RadarClass::SAM or
                         theRadar->GetRadarMode() == RadarClass::TWS)
                     {
                         theRadar->ToggleFlag(RadarDopplerClass::EXP);
                     }
-                    else if (theRadar->GetRadarMode() == RadarClass::GM ||
-                             theRadar->GetRadarMode() == RadarClass::GMT ||
+                    else if (theRadar->GetRadarMode() == RadarClass::GM or
+                             theRadar->GetRadarMode() == RadarClass::GMT or
                              theRadar->GetRadarMode() == RadarClass::SEA)
                     {
                         theRadar->StepAGfov();
@@ -11043,9 +11043,9 @@ void SimTriggerSecondDetent(unsigned long val, int state, void *)
 
             //Gun
             if (SimDriver.GetPlayerAircraft()->FCC and 
-                (SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::Dogfight ||
-                 SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::MissileOverride ||
-                 SimDriver.GetPlayerAircraft()->FCC->GetSubMode() == FireControlComputer::STRAF ||
+                (SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::Dogfight or
+                 SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::MissileOverride or
+                 SimDriver.GetPlayerAircraft()->FCC->GetSubMode() == FireControlComputer::STRAF or
                  SimDriver.GetPlayerAircraft()->Sms->curWeaponType == wtGuns))
             {
                 SimDriver.GetPlayerAircraft()->GunFire = TRUE;
@@ -11081,8 +11081,8 @@ void AFFullFlap(unsigned long, int state, void*)
         //TJL 02/28/04 Adding Auto/Half/Full for F18's
         //10 = AUTO, 20 = HALF, 30 = FULL
     {
-        if (SimDriver.GetPlayerAircraft()->af->GetTypeAC() == 8 ||
-            SimDriver.GetPlayerAircraft()->af->GetTypeAC() == 9 ||
+        if (SimDriver.GetPlayerAircraft()->af->GetTypeAC() == 8 or
+            SimDriver.GetPlayerAircraft()->af->GetTypeAC() == 9 or
             SimDriver.GetPlayerAircraft()->af->GetTypeAC() == 10)
         {
             if (
@@ -11618,8 +11618,8 @@ void SimRangeKnobDown(unsigned long val, int state, void *)
         //MI
         if (theRadard)
         {
-            if (theRadard->GetRadarMode() == RadarClass::GM ||
-                theRadard->GetRadarMode() == RadarClass::GMT ||
+            if (theRadard->GetRadarMode() == RadarClass::GM or
+                theRadard->GetRadarMode() == RadarClass::GMT or
                 theRadard->GetRadarMode() == RadarClass::SEA)
             {
                 theRadard->StepAGgain(-1);
@@ -11646,8 +11646,8 @@ void SimRangeKnobUp(unsigned long val, int state, void *)
         //MI
         if (theRadard)
         {
-            if (theRadard->GetRadarMode() == RadarClass::GM ||
-                theRadard->GetRadarMode() == RadarClass::GMT ||
+            if (theRadard->GetRadarMode() == RadarClass::GM or
+                theRadard->GetRadarMode() == RadarClass::GMT or
                 theRadard->GetRadarMode() == RadarClass::SEA)
             {
                 theRadard->StepAGgain(1);

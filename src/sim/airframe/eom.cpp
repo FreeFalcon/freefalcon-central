@@ -1303,7 +1303,7 @@ float AirframeClass::CalculateVt(float dt)
             }
             else if (
  not IsSet(OnObject) and // JB carrier
-                (IsSet(GearBroken) or gearPos <= 0.3F or platform->platformAngles.cosphi < 0.9659F ||
+                (IsSet(GearBroken) or gearPos <= 0.3F or platform->platformAngles.cosphi < 0.9659F or
                  groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER)
             )
             {
@@ -1312,11 +1312,11 @@ float AirframeClass::CalculateVt(float dt)
                 if (
                     // JB carrier
  not IsSet(OnObject) and (
-                        groundType == COVERAGE_WATER ||
-                        groundType == COVERAGE_RIVER ||
-                        groundType == COVERAGE_THINFOREST ||
-                        groundType == COVERAGE_THICKFOREST ||
-                        groundType == COVERAGE_ROCKY ||
+                        groundType == COVERAGE_WATER or
+                        groundType == COVERAGE_RIVER or
+                        groundType == COVERAGE_THINFOREST or
+                        groundType == COVERAGE_THICKFOREST or
+                        groundType == COVERAGE_ROCKY or
                         groundType == COVERAGE_URBAN
                     )
                     // JB carrier

@@ -70,7 +70,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
     // have to check all triangles instead of stopping after the second reject loop below.
     // If a new set of un-culled triangles was encountered, we'd have to make a new polygon
     // and resubmit it.
-    if (gifPicture /*|| g_nGfxFix bitand 0x08*/)  // removed again, caused AG radar not to be displayed on Matrox G400
+    if (gifPicture /*or g_nGfxFix bitand 0x08*/)  // removed again, caused AG radar not to be displayed on Matrox G400
     {
         temp = inList;
         inList = outList;

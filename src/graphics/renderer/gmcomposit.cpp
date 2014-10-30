@@ -535,7 +535,7 @@ bool RenderGMComposite::BackgroundGeneration(Tpoint *from, Tpoint *at, float pla
         return FALSE;
 
     // Detect the beam reversal at the end of a sweep or a sweep restart
-    if ((prevBeamRight not_eq movingRight) /*|| (beamPercent < prevBeamPercent)*/ or DrawChanged)
+    if ((prevBeamRight not_eq movingRight) /*or (beamPercent < prevBeamPercent)*/ or DrawChanged)
     {
         //BackgroundGeneration( from, at, platformHdg, 101, prevBeamRight, Shaped );
         dx = (float)cos(radar.GetHdg());

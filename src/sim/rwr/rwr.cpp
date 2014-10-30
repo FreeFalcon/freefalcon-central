@@ -409,7 +409,7 @@ void RwrClass::DrawSymbol(VirtualDisplay *display, int symbolID, int boxed)
 
             break;
 
-        case RWRSYM_MIB_F_A||66:
+        case RWRSYM_MIB_F_A or 66:
             if (show)
                 display->TextCenter(0.0F, verticalTextCenter, "F", boxed);
             else

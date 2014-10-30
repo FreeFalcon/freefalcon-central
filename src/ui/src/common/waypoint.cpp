@@ -1566,7 +1566,7 @@ int WayPointErrorCode(WayPointClass *wp, Flight flt)
     // Check for bad target/airbase/patrol times
     action = wp->GetWPAction();
 
-    if (action == WP_TAKEOFF or action == WP_LAND or action == WP_STRIKE or action == WP_BOMB ||
+    if (action == WP_TAKEOFF or action == WP_LAND or action == WP_STRIKE or action == WP_BOMB or
         action == WP_INTERCEPT or action == WP_RECON or action == WP_NAVSTRIKE)
     {
         // Requires a valid campaign entity

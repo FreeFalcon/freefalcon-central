@@ -797,7 +797,7 @@ VU_ID FindAircraftTarget(AircraftClass* theAC)
         }
         else
         {
-            if (((MissileDisplayClass*)mslDisplay)->DisplayType() == MissileDisplayClass::AGM65_IR ||
+            if (((MissileDisplayClass*)mslDisplay)->DisplayType() == MissileDisplayClass::AGM65_IR or
                 ((MissileDisplayClass*)mslDisplay)->DisplayType() == MissileDisplayClass::AGM65_TV)
             {
                 if (theMissile->targetPtr)

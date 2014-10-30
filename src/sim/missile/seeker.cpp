@@ -25,7 +25,7 @@ void MissileClass::RunSeeker()
     // Shouldn't be necessary, but at this stage, lets be safe...
     // No seeker if in SAFE
     if (
- not sensorArray or not sensorArray[0] ||
+ not sensorArray or not sensorArray[0] or
         launchState == PreLaunch and parent and parent->IsAirplane() and 
         ((AircraftClass*)parent.get())->Sms->MasterArm() == SMSBaseClass::Safe
     )
@@ -59,7 +59,7 @@ void MissileClass::RunSeeker()
         (
             timpct * factor < inputData->mslActiveTtg and 
             sensorArray[0]->Type() not_eq SensorClass::Radar
-        ) ||
+        ) or
         (
             launchState == InFlight and sensorArray[0]->Type() not_eq SensorClass::Radar and 
             ( not isSlave or not targetPtr) //I-Hawk - was missing the parentheses here, caused heat seeker locking problems
@@ -203,7 +203,7 @@ void MissileClass::RunSeeker()
         (
             timpct * factor < inputData->mslActiveTtg and 
             sensorArray[0]->Type() not_eq SensorClass::Radar
-        ) ||
+        ) or
         (
             inputData->mslActiveTtg > 0 and 
             launchState == InFlight and sensorArray[0]->Type() not_eq SensorClass::Radar and 
@@ -319,8 +319,8 @@ void MissileClass::RunSeeker()
         ata = targetPtr->localData->ata;
 
         if (
-            ata > inputData->gimlim ||
-            fabs(sensorArray[0]->SeekerAz() - targetPtr->localData->az) > inputData->atamax ||
+            ata > inputData->gimlim or
+            fabs(sensorArray[0]->SeekerAz() - targetPtr->localData->az) > inputData->atamax or
             fabs(sensorArray[0]->SeekerEl() - targetPtr->localData->el) > inputData->atamax
         )
         {
@@ -368,7 +368,7 @@ void MissileClass::LimitSeeker(float az, float el)
 
     //  if (inputData->seekerType not_eq SensorClass::RadarHoming)
     {
-        /*     if ( targetPtr == NULL)// launchState == PreLaunch ||
+        /*     if ( targetPtr == NULL)// launchState == PreLaunch or
              {
                 azCmd = sensorArray[0]->SeekerAz();
                 elCmd = sensorArray[0]->SeekerEl();

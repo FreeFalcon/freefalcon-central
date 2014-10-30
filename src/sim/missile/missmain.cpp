@@ -903,7 +903,7 @@ int MissileClass::SetSeekerPos(float* az, float* el)
     *az = sensorArray[0]->SeekerAz();
     *el = sensorArray[0]->SeekerEl();
 
-    if (fabs(*az) == inputData->gimlim ||
+    if (fabs(*az) == inputData->gimlim or
         fabs(*el) == inputData->gimlim)
     {
         sensorArray[0]->SetSeekerPos(*az, *el);
@@ -1407,7 +1407,7 @@ MissileClass::ApplyProximityDamage(void)
                     // but we have got no missile kill or BombImpact -
                     // or the target can not be damaged by proximity damage
                     if (
- not targetPtr or testObject not_eq targetPtr->BaseData() ||
+ not targetPtr or testObject not_eq targetPtr->BaseData() or
                         (g_nMissileFix bitand 0x08) and testObject == targetPtr->BaseData() and 
                         done not_eq FalconMissileEndMessage::MissileKill and 
                         done not_eq FalconMissileEndMessage::BombImpact

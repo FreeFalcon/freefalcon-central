@@ -113,11 +113,11 @@ short GetFlightStatusID(Flight element)
                 {
                     if
                     (
-                        element->GetUnitMission() == AMIS_BARCAP ||
-                        element->GetUnitMission() == AMIS_BARCAP2 ||
-                        element->GetUnitMission() == AMIS_HAVCAP ||
-                        element->GetUnitMission() == AMIS_RESCAP ||
-                        element->GetUnitMission() == AMIS_TARCAP ||
+                        element->GetUnitMission() == AMIS_BARCAP or
+                        element->GetUnitMission() == AMIS_BARCAP2 or
+                        element->GetUnitMission() == AMIS_HAVCAP or
+                        element->GetUnitMission() == AMIS_RESCAP or
+                        element->GetUnitMission() == AMIS_TARCAP or
                         element->GetUnitMission() == AMIS_AMBUSHCAP
                     )
                     {
