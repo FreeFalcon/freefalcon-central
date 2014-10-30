@@ -905,10 +905,10 @@ void RenderOTW::TrimCornerSet(void)
                         }
 
                         // Rounding
-                        span->Tsector.startDraw = (span->Tsector.startDraw - 1) | 1;
-                        span->Tsector.stopDraw  = (span->Tsector.stopDraw  - 1) | 1;
-                        span->Rsector.startDraw = (span->Rsector.startDraw - 1) | 1;
-                        span->Rsector.stopDraw  = (span->Rsector.stopDraw  - 1) | 1;
+                        span->Tsector.startDraw = (span->Tsector.startDraw - 1) bitor 1;
+                        span->Tsector.stopDraw  = (span->Tsector.stopDraw  - 1) bitor 1;
+                        span->Rsector.startDraw = (span->Rsector.startDraw - 1) bitor 1;
+                        span->Rsector.stopDraw  = (span->Rsector.stopDraw  - 1) bitor 1;
                     }
                     else
                     {
@@ -937,8 +937,8 @@ void RenderOTW::TrimCornerSet(void)
                         // Rounding
                         span->Tsector.startDraw = span->Tsector.startDraw bitand compl 1;
                         span->Tsector.stopDraw  = span->Tsector.stopDraw bitand compl 1;
-                        span->Lsector.startDraw = (span->Lsector.startDraw - 1) | 1;
-                        span->Lsector.stopDraw  = (span->Lsector.stopDraw  - 1) | 1;
+                        span->Lsector.startDraw = (span->Lsector.startDraw - 1) bitor 1;
+                        span->Lsector.stopDraw  = (span->Lsector.stopDraw  - 1) bitor 1;
                     }
                 }
                 else
@@ -980,8 +980,8 @@ void RenderOTW::TrimCornerSet(void)
                         }
 
                         // Rounding
-                        span->Bsector.startDraw = (span->Bsector.startDraw - 1) | 1;
-                        span->Bsector.stopDraw  = (span->Bsector.stopDraw  - 1) | 1;
+                        span->Bsector.startDraw = (span->Bsector.startDraw - 1) bitor 1;
+                        span->Bsector.stopDraw  = (span->Bsector.stopDraw  - 1) bitor 1;
                         span->Rsector.startDraw = span->Rsector.startDraw bitand compl 1;
                         span->Rsector.stopDraw  = span->Rsector.stopDraw bitand compl 1;
                     }
@@ -1081,10 +1081,10 @@ void RenderOTW::TrimCornerSet(void)
                         span->Rsector.stopDraw  = MAX_NEGATIVE_I;
 
                         // Rounding
-                        span->Bsector.startDraw = (span->Bsector.startDraw - 1) | 1;
-                        span->Bsector.stopDraw  = (span->Bsector.stopDraw  - 1) | 1;
-                        span->Lsector.startDraw = (span->Lsector.startDraw - 1) | 1;
-                        span->Lsector.stopDraw  = (span->Lsector.stopDraw  - 1) | 1;
+                        span->Bsector.startDraw = (span->Bsector.startDraw - 1) bitor 1;
+                        span->Bsector.stopDraw  = (span->Bsector.stopDraw  - 1) bitor 1;
+                        span->Lsector.startDraw = (span->Lsector.startDraw - 1) bitor 1;
+                        span->Lsector.stopDraw  = (span->Lsector.stopDraw  - 1) bitor 1;
                     }
                     else
                     {
@@ -1118,8 +1118,8 @@ void RenderOTW::TrimCornerSet(void)
                         // Rounding
                         span->Bsector.startDraw = span->Bsector.startDraw bitand compl 1;
                         span->Bsector.stopDraw  = span->Bsector.stopDraw bitand compl 1;
-                        span->Rsector.startDraw = (span->Rsector.startDraw - 1) | 1;
-                        span->Rsector.stopDraw  = (span->Rsector.stopDraw  - 1) | 1;
+                        span->Rsector.startDraw = (span->Rsector.startDraw - 1) bitor 1;
+                        span->Rsector.stopDraw  = (span->Rsector.stopDraw  - 1) bitor 1;
                     }
                 }
                 else
@@ -1154,8 +1154,8 @@ void RenderOTW::TrimCornerSet(void)
                         span->Rsector.stopDraw  = MAX_NEGATIVE_I;
 
                         // Rounding
-                        span->Tsector.startDraw = (span->Tsector.startDraw - 1) | 1;
-                        span->Tsector.stopDraw  = (span->Tsector.stopDraw  - 1) | 1;
+                        span->Tsector.startDraw = (span->Tsector.startDraw - 1) bitor 1;
+                        span->Tsector.stopDraw  = (span->Tsector.stopDraw  - 1) bitor 1;
                         span->Lsector.startDraw = span->Lsector.startDraw bitand compl 1;
                         span->Lsector.stopDraw  = span->Lsector.stopDraw bitand compl 1;
                     }

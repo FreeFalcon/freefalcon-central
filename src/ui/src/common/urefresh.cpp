@@ -208,7 +208,7 @@ void UI_Refresher::AddMission(CampEntity entity)
                 if (Mission_)
                     Mission_->SetMenu(Owner_->MissionMenu_);
 
-                Owner_->SetFlags(Owner_->GetFlags() | _GPS_MISSION_RESIZE_);
+                Owner_->SetFlags(Owner_->GetFlags() bitor _GPS_MISSION_RESIZE_);
             }
         }
     }
@@ -221,7 +221,7 @@ void UI_Refresher::UpdateMission(CampEntity entity)
         if (GetFlightTime((Flight)entity) not_eq Mission_->GetTakeOffTime())
         {
             MissionUpdateTime((Flight)entity, Mission_);
-            Owner_->SetFlags(Owner_->GetFlags() | _GPS_RESORT_MISSION_);
+            Owner_->SetFlags(Owner_->GetFlags() bitor _GPS_RESORT_MISSION_);
         }
 
         if (GetFlightStatusID((Flight)entity) not_eq Mission_->GetStatusID())
@@ -241,7 +241,7 @@ void UI_Refresher::RemoveMission()
     Owner_->MisTree_->DeleteItem(Mission_->GetOwner());
     ShiAssert( not Owner_->MisTree_->Find(ID));
     Mission_ = NULL;
-    Owner_->SetFlags(Owner_->GetFlags() | _GPS_MISSION_RESIZE_);
+    Owner_->SetFlags(Owner_->GetFlags() bitor _GPS_MISSION_RESIZE_);
 }
 
 void UI_Refresher::AddMapItem(CampEntity entity)
@@ -433,7 +433,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
 
                     // 2002-02-24 ADDED BY S.G. Needs to set a logical line lenght and wrap it
                     MapItem_->Label->SetWordWrapWidth(72) ; // Avg for 12 chars
-                    MapItem_->Label->SetFlags(MapItem_->Label->GetFlags() | C_BIT_WORDWRAP) ;  // Add the 'word wrap flag to what's there already
+                    MapItem_->Label->SetFlags(MapItem_->Label->GetFlags() bitor C_BIT_WORDWRAP) ;  // Add the 'word wrap flag to what's there already
                     // END OF ADDED SECTION 2002-02-24
 
                     MapItem_->Label->SetText(gStringMgr->GetText(gStringMgr->AddText(buffer))) ;
@@ -467,7 +467,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
 
     if (MapItem_->Owner->UpdateInfo(MapItem_, x, y, perc, heading))
     {
-        Owner_->SetFlags(Owner_->GetFlags() | _GPS_MAP_REFRESH_);
+        Owner_->SetFlags(Owner_->GetFlags() bitor _GPS_MAP_REFRESH_);
     }
 
     // 2001-05-09 COMMENTED OUT BY S.G. X AND Y ARE ALREADY FINE AND THIS SCREWS THEM UP
@@ -619,7 +619,7 @@ void UI_Refresher::AddATOItem(CampEntity entity)
         if (Package_)
             Package_->SetMenu(PACKAGE_POP);
 
-        Owner_->SetFlags(Owner_->GetFlags() | _GPS_ATO_RESIZE_);
+        Owner_->SetFlags(Owner_->GetFlags() bitor _GPS_ATO_RESIZE_);
     }
     else if (entity->IsFlight() and ((Flight)entity)->Final())
     {
@@ -628,7 +628,7 @@ void UI_Refresher::AddATOItem(CampEntity entity)
         if (ATO_)
             ATO_->SetMenu(AIRUNIT_MENU);
 
-        Owner_->SetFlags(Owner_->GetFlags() | _GPS_ATO_RESIZE_);
+        Owner_->SetFlags(Owner_->GetFlags() bitor _GPS_ATO_RESIZE_);
     }
 }
 
@@ -644,7 +644,7 @@ void UI_Refresher::UpdateATOItem(CampEntity entity)
         if (Package_)
             Package_->SetMenu(PACKAGE_POP);
 
-        Owner_->SetFlags(Owner_->GetFlags() | _GPS_ATO_RESIZE_);
+        Owner_->SetFlags(Owner_->GetFlags() bitor _GPS_ATO_RESIZE_);
     }
 
     if (ATO_)
@@ -658,7 +658,7 @@ void UI_Refresher::UpdateATOItem(CampEntity entity)
         if (ATO_)
             ATO_->SetMenu(AIRUNIT_MENU);
 
-        Owner_->SetFlags(Owner_->GetFlags() | _GPS_ATO_RESIZE_);
+        Owner_->SetFlags(Owner_->GetFlags() bitor _GPS_ATO_RESIZE_);
     }
 }
 
@@ -680,7 +680,7 @@ void UI_Refresher::RemoveATOItem()
 
     Package_ = NULL;
     ATO_ = NULL;
-    Owner_->SetFlags(Owner_->GetFlags() | _GPS_ATO_RESIZE_);
+    Owner_->SetFlags(Owner_->GetFlags() bitor _GPS_ATO_RESIZE_);
 }
 
 void UI_Refresher::AddOOBItem(CampEntity entity)
@@ -714,7 +714,7 @@ void UI_Refresher::AddOOBItem(CampEntity entity)
             OOB_->SetMenu(Owner_->UnitMenu_);
     }
 
-    Owner_->SetFlags(Owner_->GetFlags() | _GPS_OOB_RESIZE_);
+    Owner_->SetFlags(Owner_->GetFlags() bitor _GPS_OOB_RESIZE_);
 }
 
 void UI_Refresher::AddOOBItem(Division div)
@@ -724,7 +724,7 @@ void UI_Refresher::AddOOBItem(Division div)
     if (OOB_)
         OOB_->SetMenu(Owner_->UnitMenu_);
 
-    Owner_->SetFlags(Owner_->GetFlags() | _GPS_OOB_RESIZE_);
+    Owner_->SetFlags(Owner_->GetFlags() bitor _GPS_OOB_RESIZE_);
 }
 
 void UI_Refresher::UpdateOOBItem(CampEntity entity)
@@ -749,5 +749,5 @@ void UI_Refresher::RemoveOOBItem()
         Owner_->OOBTree_->DeleteItem(((C_Squadron*)OOB_)->GetOwner());
 
     OOB_ = NULL;
-    Owner_->SetFlags(Owner_->GetFlags() | _GPS_OOB_RESIZE_);
+    Owner_->SetFlags(Owner_->GetFlags() bitor _GPS_OOB_RESIZE_);
 }

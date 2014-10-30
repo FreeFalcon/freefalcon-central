@@ -212,7 +212,7 @@ BOOL DeviceManager::ChooseDevice(int *usrDrvNum, int *usrDevNum, int *usrWidth)
             while (modeName = GetModeName(drvNum, devNum, modeNum))
             {
 
-                packedNum = (devNum << 24) | (drvNum << 8) | (modeNum);
+                packedNum = (devNum << 24) bitor (drvNum << 8) bitor (modeNum);
                 strcpy(name, drvName);
                 strcat(name, ":  ");
                 strcat(name, devName);
@@ -655,7 +655,7 @@ bool DXContext::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFulls
 
         if (g_bForceDXMultiThreadedCoopLevel) m_dwCoopFlags or_eq DDSCL_MULTITHREADED;
 
-        if (bFullscreen) m_dwCoopFlags or_eq DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN | DDSCL_ALLOWREBOOT;
+        if (bFullscreen) m_dwCoopFlags or_eq DDSCL_EXCLUSIVE bitor DDSCL_FULLSCREEN bitor DDSCL_ALLOWREBOOT;
         else m_dwCoopFlags or_eq DDSCL_NORMAL;
 
         CheckHR(m_pDD->SetCooperativeLevel(m_hWnd, m_dwCoopFlags));
@@ -854,7 +854,7 @@ void DXContext::AttachDepthBuffer(IDirectDrawSurface7 *p)
         DDSURFACEDESC2 ddsd;
         ZeroMemory(&ddsd, sizeof(ddsd));
         ddsd.dwSize = sizeof(ddsd);
-        ddsd.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
+        ddsd.dwFlags = DDSD_CAPS bitor DDSD_WIDTH bitor DDSD_HEIGHT bitor DDSD_PIXELFORMAT;
         ddsd.ddsCaps.dwCaps = DDSCAPS_ZBUFFER;
         ddsd.dwWidth = m_nWidth;
         ddsd.dwHeight = m_nHeight;

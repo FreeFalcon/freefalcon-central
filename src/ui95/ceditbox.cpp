@@ -72,7 +72,7 @@ C_EditBox::C_EditBox() : C_Control()
     UseCursor_ = 0;
     BgImage_ = NULL;
     OrigText_ = NULL;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_SELECTABLE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
 
     Font_ = NULL; // OW
     Text_ = NULL; // OW
@@ -496,7 +496,7 @@ void C_EditBox::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (Text_)
     {
         if (GetType() == C_TYPE_PASSWORD)
-            Text_->SetFlags((Text_->GetFlags() | C_BIT_PASSWORD) bitand compl C_BIT_OPAQUE);
+            Text_->SetFlags((Text_->GetFlags() bitor C_BIT_PASSWORD) bitand compl C_BIT_OPAQUE);
 
         Text_->Draw(surface, cliprect);
 
@@ -609,7 +609,7 @@ void C_EditBox::SetMaxLen(short len)
                 delete [] OrigText_;
         }
 
-        SetFlags(GetFlags() | C_BIT_FIXEDSIZE);
+        SetFlags(GetFlags() bitor C_BIT_FIXEDSIZE);
         MaxLen_ = len;
         Text_->SetFlags(GetFlags()& compl C_BIT_OPAQUE);
         Text_->SetFont(Font_);
@@ -802,7 +802,7 @@ void C_EditBox::Activate()
     Start_ = 0;
     End_ = (short)_tcsclen(Text_->GetText()); 
     Text_->SetOpaqueRange(Start_, End_);
-    Text_->SetFlags(Text_->GetFlags() | C_BIT_OPAQUE);
+    Text_->SetFlags(Text_->GetFlags() bitor C_BIT_OPAQUE);
     Cursor_ = 0;
     JustActivated_ = TRUE;
     Refresh();
@@ -849,7 +849,7 @@ BOOL C_EditBox::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
 
     if (SelStart_ not_eq SelEnd_)
     {
-        Text_->SetFlags(Text_->GetFlags() | C_BIT_OPAQUE);
+        Text_->SetFlags(Text_->GetFlags() bitor C_BIT_OPAQUE);
 
         if (SelStart_ < SelEnd_)
             Text_->SetOpaqueRange(SelStart_, SelEnd_);
@@ -880,7 +880,7 @@ BOOL C_EditBox::Drop(GRABBER *, WORD , WORD , C_Window *)
     if (Start_ < End_)
     {
         Text_->SetOpaqueRange(Start_, End_);
-        Text_->SetFlags(Text_->GetFlags() | C_BIT_OPAQUE);
+        Text_->SetFlags(Text_->GetFlags() bitor C_BIT_OPAQUE);
     }
     else
         Text_->SetFlags(Text_->GetFlags() bitand compl C_BIT_OPAQUE);
@@ -952,15 +952,15 @@ void C_EditBox::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CEB_SETFGCOLOR:
-            SetFgColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetFgColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CEB_SETBGCOLOR:
-            SetBgColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetBgColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CEB_SETCURSORCOLOR:
-            SetCursorColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetCursorColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CEB_SETDECIMALPLACES:
@@ -968,7 +968,7 @@ void C_EditBox::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CEB_SETOUTLINECOLOR:
-            SetOutlineColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetOutlineColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
     }
 }

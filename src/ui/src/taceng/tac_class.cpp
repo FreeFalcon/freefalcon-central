@@ -480,9 +480,9 @@ void tactical_mission::process_load(char *data, int size, int)
         (
             (len > 0) and 
             (
-                (buffer[len - 1] == '\n') ||
-                (buffer[len - 1] == '\r') ||
-                (buffer[len - 1] == '\t') ||
+                (buffer[len - 1] == '\n') or
+                (buffer[len - 1] == '\r') or
+                (buffer[len - 1] == '\t') or
                 (buffer[len - 1] == ' ')
             )
         )

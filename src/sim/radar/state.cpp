@@ -419,7 +419,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
             else
             {
                 // Reuse current range, within limits of course
-                if (flags bitand (DBS1 | DBS2) or mode == GMT or mode == SEA)
+                if (flags bitand (DBS1 bitor DBS2) or mode == GMT or mode == SEA)
                 {
                     maxIdx = NUM_RANGES - 3;
                 }
@@ -913,7 +913,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
             // No 80 mile range in DBS1, DBS2, GMT or SEA
             if (rangeChangeCmd)
             {
-                if (flags bitand (DBS1 | DBS2) or mode == GMT or mode == SEA)
+                if (flags bitand (DBS1 bitor DBS2) or mode == GMT or mode == SEA)
                 {
                     maxIdx = NUM_RANGES - 2;
                 }

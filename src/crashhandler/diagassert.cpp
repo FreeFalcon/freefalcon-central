@@ -42,7 +42,7 @@ typedef vector<ULONG> ADDRVECTOR ;
 static HINSTVECTOR g_HMODVector ;
 
 // The DiagAssert display options.
-static DWORD g_DiagAssertOptions = DA_SHOWMSGBOX | DA_SHOWODS ;
+static DWORD g_DiagAssertOptions = DA_SHOWMSGBOX bitor DA_SHOWODS ;
 
 // The symbol engine.
 static CSymbolEngine g_cSym ;

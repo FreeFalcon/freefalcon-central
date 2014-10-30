@@ -28,7 +28,7 @@
 
 #include "Debuggr.h"
 
-#define AMIS_SUPPORT_MASK AMIS_ADDAWACS | AMIS_ADDJSTAR | AMIS_ADDECM | AMIS_ADDTANKER
+#define AMIS_SUPPORT_MASK AMIS_ADDAWACS bitor AMIS_ADDJSTAR bitor AMIS_ADDECM bitor AMIS_ADDTANKER
 
 #define MIN_FORCE_ESCORT 12
 
@@ -703,8 +703,8 @@ int PackageClass::CheckNeedRequests(void)
         if ((wait_for bitand AMIS_BARCAP) or (wait_for bitand AMIS_SWEEP))
         {
             // if we're still waiting on these, they arn't planned yet and probably won't be.
-            wait_for or_eq AMIS_BARCAP | AMIS_SWEEP;
-            wait_for xor_eq AMIS_BARCAP | AMIS_SWEEP;
+            wait_for or_eq AMIS_BARCAP bitor AMIS_SWEEP;
+            wait_for xor_eq AMIS_BARCAP bitor AMIS_SWEEP;
         }
 
         if ((package_flags bitand AMIS_ADDBDA) and (mis_request.priority > MINIMUM_BDA_PRIORITY))
@@ -727,7 +727,7 @@ int PackageClass::CheckNeedRequests(void)
                 mis.tot = mis_request.tot + (CampaignTime)(MissionData[mis.mission].separation) * CampaignSeconds;
                 mis.tot_type = TYPE_EQ;
                 mis.roe_check = ROE_AIR_ENGAGE;
-                mis.caps = caps | MissionData[mis.mission].caps;
+                mis.caps = caps bitor MissionData[mis.mission].caps;
                 mis.speed = mis_request.speed;
                 mis.priority = GetPriority(&mis);
                 e = AttachFlight(&mis, this);
@@ -1226,7 +1226,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
         else
             newmis.context = enemyStrikesExpected;
 
-        newmis.flags = REQF_NEEDRESPONSE | REQF_ONETRY;
+        newmis.flags = REQF_NEEDRESPONSE bitor REQF_ONETRY;
 
         if (mis->flags bitand REQF_PART_OF_ACTION)
             newmis.flags or_eq REQF_PART_OF_ACTION;
@@ -1271,7 +1271,7 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
             newmis.flags or_eq REQF_PART_OF_ACTION;
 
         newmis.action_type = mis->action_type;
-        newmis.flags = REQF_NEEDRESPONSE | REQF_ONETRY;
+        newmis.flags = REQF_NEEDRESPONSE bitor REQF_ONETRY;
         newmis.aircraft = 2 * flights;
 
         if (newmis.aircraft > 4)
@@ -1553,7 +1553,7 @@ void PackageClass::FindSupportFlights(MissionRequest mis, int targetd)
         newmis.context = friendlyAssetsRefueling;
         newmis.priority = 50; // We REALLY need this tanker
         newmis.aircraft = 0;
-        newmis.flags = REQF_NEEDRESPONSE | REQF_ONETRY;
+        newmis.flags = REQF_NEEDRESPONSE bitor REQF_ONETRY;
         newmis.RequestMission();
         wait_for or_eq AMIS_ADDTANKER;
         wait_cycles = (uchar)PACKAGE_CYCLES_TO_WAIT;
@@ -1572,8 +1572,8 @@ void PackageClass::HandleRequestReceipt(int type, int them, VU_ID triggered_flig
     {
         case AMIS_BARCAP:
         case AMIS_SWEEP:
-            wait_for or_eq AMIS_BARCAP | AMIS_SWEEP;
-            wait_for xor_eq AMIS_BARCAP | AMIS_SWEEP;
+            wait_for or_eq AMIS_BARCAP bitor AMIS_SWEEP;
+            wait_for xor_eq AMIS_BARCAP bitor AMIS_SWEEP;
             responses or_eq PRESPONSE_CA;
             interceptor = triggered_flight;
             enemy = FindUnit(triggered_flight);
@@ -1594,7 +1594,7 @@ void PackageClass::HandleRequestReceipt(int type, int them, VU_ID triggered_flig
             // skip this if our current package has enough air strength
             mis.match_strength = GetUnitScore(enemy, Air);
 
-            // mis.match_strength = enemy->GetUnitRoleScore(ARO_CA, CALC_TOTAL, USE_EXP | USE_VEH_COUNT);
+            // mis.match_strength = enemy->GetUnitRoleScore(ARO_CA, CALC_TOTAL, USE_EXP bitor USE_VEH_COUNT);
             if (aa_strength > mis.match_strength)
                 return;
 
@@ -1625,7 +1625,7 @@ void PackageClass::HandleRequestReceipt(int type, int them, VU_ID triggered_flig
             if (mis.mission == AMIS_ESCORT or mis.mission == AMIS_HAVCAP)
             {
                 // Add a new flight to this package
-                mis.caps = caps | MissionData[mis.mission].caps;
+                mis.caps = caps bitor MissionData[mis.mission].caps;
                 mis.speed = mis_request.speed;
                 mis.targetID = element[0];
                 mis.priority = GetPriority(&mis);
@@ -2148,8 +2148,8 @@ int CallInOCAStrikes(MissionRequest mis)
         return 0;
 
     // Trigger OCA missions
-    CollectThreatsFast(mis->tx, mis->ty, 1, mis->who, FIND_NOAIR | FIND_NOMOVERS | FIND_FINDUNSPOTTED | FIND_NODETECT, &list);
-    CollectThreatsFast(mis->tx, mis->ty, 99, mis->who, FIND_NOAIR | FIND_NOMOVERS | FIND_FINDUNSPOTTED | FIND_NODETECT, &list);
+    CollectThreatsFast(mis->tx, mis->ty, 1, mis->who, FIND_NOAIR bitor FIND_NOMOVERS bitor FIND_FINDUNSPOTTED bitor FIND_NODETECT, &list);
+    CollectThreatsFast(mis->tx, mis->ty, 99, mis->who, FIND_NOAIR bitor FIND_NOMOVERS bitor FIND_FINDUNSPOTTED bitor FIND_NODETECT, &list);
     TargetThreats(mis->who, mis->priority, &list, LowAir, mis->tot, AMIS_ADDOCASTRIKE, &ts);
     return ts;
 }

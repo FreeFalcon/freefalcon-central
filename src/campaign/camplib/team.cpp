@@ -2094,7 +2094,7 @@ void NewInitiativePointSetting(Team who)
     //deb = fopen("c:\\temp\\deb2.txt", "a");
     //fprintf(deb, "Team %2d  Init = %3d  Init_old %d  LRInit = %3d  osts = %f  adta = %f  TIME = %d\n", who, TeamInfo[who]->GetInitiative(), initiative_old, longRunInitiative, (os*1.0)/ts, (oa*1.0)/ta, TheCampaign.CurrentTime/(3600*1000));
     //fprintf(deb, "Aircraft_start =  %d %d TheirLoss = %5.1f GroungVehicle_start = %d %d %5.1f\n", oa_start, oa, tloss, os_start, os, oloss);
-    //fprintf(deb, "Team %d  Rating = %3.2f    |    Team %d  Rating = %3.2f\n\n", who, TeamInfo[who]->playerRating, et, TeamInfo[et]->playerRating);
+    //fprintf(deb, "Team %d  Rating = %3.2f    bitor    Team %d  Rating = %3.2f\n\n", who, TeamInfo[who]->playerRating, et, TeamInfo[et]->playerRating);
     //fclose(deb);
     // end debug
 

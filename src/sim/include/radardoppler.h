@@ -250,8 +250,8 @@ protected:
         AzBar = 0x8000,
         Rng = 0x10000,
         Arrows = 0x20000,
-        DefaultAgDclt = Ovrd | Cntl | BupSen | FzSp | Cz | Dclt | Fmt1 | Fmt2 | Fmt3 | Swap | Arrows,
-        DefaultAaDclt = Ovrd | Cntl | Dclt | Fmt1 | Fmt2 | Fmt3 | Swap | Arrows,
+        DefaultAgDclt = Ovrd bitor Cntl bitor BupSen bitor FzSp bitor Cz bitor Dclt bitor Fmt1 bitor Fmt2 bitor Fmt3 bitor Swap bitor Arrows,
+        DefaultAaDclt = Ovrd bitor Cntl bitor Dclt bitor Fmt1 bitor Fmt2 bitor Fmt3 bitor Swap bitor Arrows,
     };
 
     class GMList

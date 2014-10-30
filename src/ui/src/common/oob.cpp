@@ -269,7 +269,7 @@ void SetupOOBWindow()
                         else
                             cat = 0;
 
-                        TeamID = (i << 24) | OOBCategories[j];
+                        TeamID = (i << 24) bitor OOBCategories[j];
 
                         team = gOOBTree->Find(TeamID);
 
@@ -410,7 +410,7 @@ void ToggleOOBTeamCB(long, short hittype, C_Base *control)
 
             if (btn and btn->GetState())
             {
-                root = gOOBTree->Find((TeamID << 24) | OOBCategories[i]);
+                root = gOOBTree->Find((TeamID << 24) bitor OOBCategories[i]);
 
                 if (root and root->Item_->GetFlags() bitand C_BIT_INVISIBLE)
                     root->Item_->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -435,7 +435,7 @@ void ToggleOOBTeamCB(long, short hittype, C_Base *control)
         if ( not DontTurnOff)
             for (i = 0; i < 4; i++)
             {
-                root = gOOBTree->Find((TeamID << 24) | OOBCategories[i]);
+                root = gOOBTree->Find((TeamID << 24) bitor OOBCategories[i]);
 
                 if (root)
                     root->Item_->SetFlagBitOn(C_BIT_INVISIBLE);
@@ -446,7 +446,7 @@ void ToggleOOBTeamCB(long, short hittype, C_Base *control)
     {
         for (j = 0; j < 8; j++)
         {
-            root = gOOBTree->Find((j << 24) | OOBCategories[i]);
+            root = gOOBTree->Find((j << 24) bitor OOBCategories[i]);
 
             if (root)
             {
@@ -534,8 +534,8 @@ void ToggleOOBFilterCB(long ID, short hittype, C_Base *control)
             if (btn and not (btn->GetFlags() bitand C_BIT_INVISIBLE) and btn->GetState())
             {
                 // 2002-01-04 MODIFIED BY S.G. GetTeam is 'based one' and not 'based zero' so I'll add '1' to i.
-                // root=gOOBTree->Find((GetTeam(static_cast<uchar>(i)) << 24) | Cat);
-                root = gOOBTree->Find((GetTeam(static_cast<uchar>(i + 1)) << 24) | Cat);
+                // root=gOOBTree->Find((GetTeam(static_cast<uchar>(i)) << 24) bitor Cat);
+                root = gOOBTree->Find((GetTeam(static_cast<uchar>(i + 1)) << 24) bitor Cat);
 
                 if (root and root->Item_->GetFlags() bitand C_BIT_INVISIBLE)
                     root->Item_->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -564,7 +564,7 @@ void ToggleOOBFilterCB(long ID, short hittype, C_Base *control)
      {
      for(j=0;j<8;j++)
      {
-     root=gOOBTree->Find((j << 24) | OOBCategories[i]); // Comment by S.G. Here j starting at zero is not going to harm anything since we do it for ALL teams so left as is
+     root=gOOBTree->Find((j << 24) bitor OOBCategories[i]); // Comment by S.G. Here j starting at zero is not going to harm anything since we do it for ALL teams so left as is
      if(root)
      {
      root=root->Child;
@@ -702,7 +702,7 @@ C_Entity *BuildDivisionInfo(Division div, Unit unit)
 
     // Create new parent class
     newinfo = new C_Entity;
-    newinfo->Setup((unit->GetTeam() << 24) | div->nid | UR_DIVISION, C_TYPE_MENU);
+    newinfo->Setup((unit->GetTeam() << 24) bitor div->nid bitor UR_DIVISION, C_TYPE_MENU);
     newinfo->SetWH(286, 37);
     newinfo->InitEntity();
 
@@ -1310,7 +1310,7 @@ C_Entity *AddDivisionToOOB(Division div)
 
     if (Team_Cat)
     {
-        item = gOOBTree->Find((un->GetTeam() << 24) | div->nid | UR_DIVISION);
+        item = gOOBTree->Find((un->GetTeam() << 24) bitor div->nid bitor UR_DIVISION);
 
         if (item)
             return((C_Entity *)item->Item_);
@@ -1441,7 +1441,7 @@ C_Base *AddItemToOOB(CampEntity entity)
 
                         if (DivID)
                         {
-                            subcat = gOOBTree->Find((entity->GetTeam() << 24) | DivID | UR_DIVISION);
+                            subcat = gOOBTree->Find((entity->GetTeam() << 24) bitor DivID bitor UR_DIVISION);
 
                             if ( not subcat)
                             {
@@ -1467,7 +1467,7 @@ C_Base *AddItemToOOB(CampEntity entity)
 
                     if (DivID)
                     {
-                        subcat = gOOBTree->Find((entity->GetTeam() << 24) | DivID | UR_DIVISION);
+                        subcat = gOOBTree->Find((entity->GetTeam() << 24) bitor DivID bitor UR_DIVISION);
 
                         if ( not subcat)
                         {
@@ -1496,7 +1496,7 @@ C_Base *AddItemToOOB(CampEntity entity)
                 if (idx >= 0)
                 {
                     Type = ObjectiveFilters[idx].UIType;
-                    subcat = gOOBTree->Find((entity->GetTeam() << 24) | Type);
+                    subcat = gOOBTree->Find((entity->GetTeam() << 24) bitor Type);
 
                     if ( not subcat)
                     {
@@ -1504,7 +1504,7 @@ C_Base *AddItemToOOB(CampEntity entity)
                         txt->Setup(Type, 0);
                         txt->SetFont(gOOBTree->GetFont());
                         txt->SetText(ObjectiveCategoryNames[FindTypeIndex(Type, OBJ_TypeList, _MAP_NUM_OBJ_TYPES_)]);
-                        subcat = gOOBTree->CreateItem((entity->GetTeam() << 24) | Type, C_TYPE_MENU, txt);
+                        subcat = gOOBTree->CreateItem((entity->GetTeam() << 24) bitor Type, C_TYPE_MENU, txt);
                         gOOBTree->AddChildItem(Team_Cat, subcat);
                     }
                 }
@@ -1572,11 +1572,11 @@ void MoveOOBSquadron(Squadron sqd, C_Squadron *Squadron)
             if (BaseInfo)
                 newloc = BaseInfo->GetOwner();
             else
-                newloc = gOOBTree->Find((sqd->GetTeam() << 24) | OOB_AIRFORCE);
+                newloc = gOOBTree->Find((sqd->GetTeam() << 24) bitor OOB_AIRFORCE);
         }
     }
     else
-        newloc = gOOBTree->Find((sqd->GetTeam() << 24) | OOB_AIRFORCE);
+        newloc = gOOBTree->Find((sqd->GetTeam() << 24) bitor OOB_AIRFORCE);
 
     if (newloc and newloc not_eq item->Parent)
     {

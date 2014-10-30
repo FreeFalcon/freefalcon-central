@@ -301,7 +301,7 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
     {
         // RV - Biker - Jammers now do overwrite AA and AG weapons
         //if ( not Weapon[hp] and ( not sl or not Weapon[lhp+1-hp])) // Only check for empty hard points
-        if ( not Weapon[hp] and ( not sl or not Weapon[lhp + 1 - hp]) or ((type_flags bitand WEAP_ECM or type_flags bitand WEAP_LASER_POD) and not (WeaponDataTable[Weapon[hp]].Flags bitand (WEAP_FUEL | WEAP_RECON)))) // Only check for empty hard points
+        if ( not Weapon[hp] and ( not sl or not Weapon[lhp + 1 - hp]) or ((type_flags bitand WEAP_ECM or type_flags bitand WEAP_LASER_POD) and not (WeaponDataTable[Weapon[hp]].Flags bitand (WEAP_FUEL bitor WEAP_RECON)))) // Only check for empty hard points
             //if ( not Weapon[hp] or (temp_flags bitand WEAP_LASER_POD))
         {
             if (vc->Weapons[hp] == 255) // This is a weapon list

@@ -1108,7 +1108,7 @@ void InitFontTool()
     static char FontWinName[] = "Font Window";
 
     myclass.cbSize = sizeof(myclass);
-    myclass.style = CS_HREDRAW | CS_VREDRAW;
+    myclass.style = CS_HREDRAW bitor CS_VREDRAW;
     myclass.lpfnWndProc = NULL;
     myclass.cbClsExtra = 0;
     myclass.cbWndExtra = 0;

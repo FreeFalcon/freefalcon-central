@@ -1150,7 +1150,7 @@ RES_EXPORT int ResAttach(const char * attach_point_arg, const char * filename, i
         table = hash_create(ARCHIVE_TABLE_SIZE, attach_point);
 
         strcpy(info.name, attach_point);                  /* insert a dummy entry into the global hash table  */
-        info.attrib = _A_SUBDIR | (unsigned int)FORCE_BIT;
+        info.attrib = _A_SUBDIR bitor (unsigned int)FORCE_BIT;
         info.time_create = 0;
         info.time_access = 0;
         info.size = 0;
@@ -1520,7 +1520,7 @@ RES_EXPORT int ResOpenFile(const char * name, int mode)
     {
         int check;
 
-        check = (_O_CREAT | _O_APPEND | _O_RDWR | _O_WRONLY);
+        check = (_O_CREAT bitor _O_APPEND bitor _O_RDWR bitor _O_WRONLY);
         check and_eq mode;
 
         if (check)   /* don't known why had to do it broken out like this - ask MSVC */
@@ -1893,7 +1893,7 @@ RES_EXPORT char * ResLoadFile(const char * filename,  char * buffer, size_t * si
 
 #endif /* RES_DEBUG_PARAMS */
 
-    file = ResOpenFile(filename, _O_RDONLY | _O_BINARY);
+    file = ResOpenFile(filename, _O_RDONLY bitor _O_BINARY);
 
     if (EMPTY(file))
         return(NULL);   /* message will already have been printed if using the debug version */
@@ -2164,7 +2164,7 @@ RES_EXPORT size_t ResWriteFile(int handle, const void * buffer, size_t count)
         return(0);
     }
 
-    if ( not (file -> mode bitand (_O_CREAT | _O_APPEND | _O_RDWR | _O_WRONLY)))
+    if ( not (file -> mode bitand (_O_CREAT bitor _O_APPEND bitor _O_RDWR bitor _O_WRONLY)))
     {
         SAY_ERROR(RES_ERR_PROBLEM_WRITING, file -> filename);
 #if (RES_MULTITHREAD)
@@ -2333,7 +2333,7 @@ RES_EXPORT int ResModifyFile(const char * name, int flags)
             return(FALSE);
         }
 
-        entry -> attrib = flags | FORCE_BIT;
+        entry -> attrib = flags bitor FORCE_BIT;
     }
     else
     {
@@ -2910,7 +2910,7 @@ RES_EXPORT int ResSeekFile(int handle, size_t offset, int origin)
     }
 
     /* If we are writing, do seek anyway */
-    if (FILE_HANDLES[ handle ].mode bitand (O_WRONLY | O_RDWR))
+    if (FILE_HANDLES[ handle ].mode bitand (O_WRONLY bitor O_RDWR))
     {
         FILE_HANDLES[ handle ].current_pos  = lseek(FILE_HANDLES[ handle ].os_handle, offset, origin);
     }
@@ -3733,7 +3733,7 @@ RES_EXPORT int ResAddPath(char * path, int recurse)
         return(FALSE);
 
     strcpy(data.name, buffer);                      /* insert a dummy entry into the global hash table  */
-    data.attrib = _A_SUBDIR | (unsigned int)FORCE_BIT;
+    data.attrib = _A_SUBDIR bitor (unsigned int)FORCE_BIT;
     data.time_create = 0;
     data.time_access = 0;
     data.size = 0;
@@ -3862,7 +3862,7 @@ RES_EXPORT int ResAddPath(char * path, int recurse)
                     if (entry)
                     {
                         entry -> size = data.size;
-                        entry -> attrib = data.attrib | FORCE_BIT;
+                        entry -> attrib = data.attrib bitor FORCE_BIT;
                     }
                 }
                 else
@@ -4483,7 +4483,7 @@ RES_EXPORT int ResExtractFile(const char * dst, const char * src)
 
     if (buffer)
     {
-        handle = ResOpenFile(fdst, _O_CREAT | _O_WRONLY | _O_BINARY);
+        handle = ResOpenFile(fdst, _O_CREAT bitor _O_WRONLY bitor _O_BINARY);
 
         if (handle not_eq -1)
         {
@@ -5042,7 +5042,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
         /* Tag the structure as our own flavor (specifically 'archive'), as well
            as use a vc++ uniqueness. */
 
-        stream -> _flag or_eq (_IOARCHIVE | _IOSTRG | _IOREAD);
+        stream -> _flag or_eq (_IOARCHIVE bitor _IOSTRG bitor _IOREAD);
 
 
         /* ---------------------------------------------------------------------------
@@ -5093,7 +5093,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
                 file -> csize       = 0;
                 file -> size        = entry -> size;
                 file -> filename    = MemStrDup(filename);
-                file -> mode        = _O_RDONLY | _O_BINARY;
+                file -> mode        = _O_RDONLY bitor _O_BINARY;
                 file -> device      = entry -> volume;
                 file -> zip         = NULL; /* only used if we need to deflate */
 
@@ -5132,7 +5132,7 @@ RES_EXPORT FILE * RES_FOPEN(const char * name, const char * mode)
                 file -> csize       = entry -> csize;
                 file -> size        = entry -> size;
                 file -> filename    = MemStrDup(filename);
-                file -> mode        = _O_RDONLY | _O_BINARY;
+                file -> mode        = _O_RDONLY bitor _O_BINARY;
                 file -> device      = entry -> volume;
 
 #ifdef USE_SH_POOLS
@@ -5216,7 +5216,7 @@ int __cdecl RES_FCLOSE(FILE * file)
 #if( RES_DEBUG_PARAMS )
     /* check to see if it's one of our two flavors of FILE ptrs */
 
-    if ( not file or not (file -> _flag, (_IOARCHIVE | _IOLOOSE)))
+    if ( not file or not (file -> _flag, (_IOARCHIVE bitor _IOLOOSE)))
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResFClose");
         return(EOF); /* error */
@@ -5448,7 +5448,7 @@ long __cdecl RES_FTELL(FILE * stream)
 
     offset = stream->_ptr - stream->_base;
 
-    if (stream->_flag bitand (_IOWRT | _IOREAD))
+    if (stream->_flag bitand (_IOWRT bitor _IOREAD))
     {
         if (stream -> _flag bitand _O_TEXT)
             for (p = stream->_base; p < stream->_ptr; p++)
@@ -5869,7 +5869,7 @@ int __cdecl RES_FSEEK(FILE * stream, long offset, int whence)
            won't cost quite so much */
 
         if (stream->_flag bitand _IORW)
-            stream->_flag and_eq compl (_IOWRT | _IOREAD);
+            stream->_flag and_eq compl (_IOWRT bitor _IOREAD);
         else
         {
             if ((stream->_flag bitand _IOREAD) and 
@@ -5973,7 +5973,7 @@ int __cdecl _filbuf(FILE * stream)
         return(EOF);
     }
 
-    // if( not (stream -> _flag bitand ( _IOARCHIVE | _IOLOOSE )) ) {
+    // if( not (stream -> _flag bitand ( _IOARCHIVE bitor _IOLOOSE )) ) {
     //    /* You can actually remove this error trap if you want fopen
     //       as well as ResFOpen */
     //    SAY_ERROR( RES_ERR_UNKNOWN, "Stream not created with ResFOpen" );
@@ -5986,7 +5986,7 @@ int __cdecl _filbuf(FILE * stream)
     // If its a string return
     if ( not inuse(stream) or
         ((stream->_flag bitand _IOSTRG) and 
- not (stream->_flag bitand (_IOLOOSE | _IOARCHIVE))))
+ not (stream->_flag bitand (_IOLOOSE bitor _IOARCHIVE))))
         return(EOF);
 
     /* if stream is opened as WRITE ONLY, set error and return */
@@ -6089,7 +6089,7 @@ int __cdecl _filbuf(FILE * stream)
             {
                 stream -> _flag or_eq _IOERR;
 
-                if (stream -> _flag bitand (_IOARCHIVE | _IOLOOSE))  /* make sure this is an fopen() file */
+                if (stream -> _flag bitand (_IOARCHIVE bitor _IOLOOSE))  /* make sure this is an fopen() file */
                     ResCheckMedia(file -> device);              /* if not, has media changed?        */
 
                 return(EOF);
@@ -6109,7 +6109,7 @@ int __cdecl _filbuf(FILE * stream)
         }
 
         //  Don't think I need this, but... _osfile_safe(i) expands to (_pioinfo_safe(i)->osfile)
-        //  if( not (stream -> _flag bitand ( _IOWRT | _IORW )) and ((_osfile_safe(_fileno(stream)) bitand (FTEXT|FEOFLAG)) == (FTEXT|FEOFLAG)))
+        //  if( not (stream -> _flag bitand ( _IOWRT bitor _IORW )) and ((_osfile_safe(_fileno(stream)) bitand (FTEXT|FEOFLAG)) == (FTEXT|FEOFLAG)))
         //      stream -> _flag or_eq _IOCTRLZ;
 
         /* Check for small _bufsiz (_SMALL_BUFSIZ). If it is small and
@@ -6175,7 +6175,7 @@ RES_EXPORT int ResDbgLogOpen(char * filename)
        octal 666 ensures that stack-crap won't accidently create this file as
        read-only.  Thank to Roger Fujii for this fix */
 
-    RES_DEBUG_FILE = _open(filename, _O_RDWR | _O_CREAT | _O_TEXT, 0x1b6 /* Choked on O666L and O666 */);
+    RES_DEBUG_FILE = _open(filename, _O_RDWR bitor _O_CREAT bitor _O_TEXT, 0x1b6 /* Choked on O666L and O666 */);
 
     if (RES_DEBUG_FILE == -1)
     {
@@ -7000,7 +7000,7 @@ HASH_ENTRY * hash_add(struct _finddata_t * data, HASH_TABLE * hsh)
             entry -> name = hash_strcpy(hsh, data -> name);
             entry -> offset = 0;
             entry -> size = data -> size;
-            entry -> attrib = data -> attrib | FORCE_BIT; /* FORCE_BIT ensures the field will be non-zero */
+            entry -> attrib = data -> attrib bitor FORCE_BIT; /* FORCE_BIT ensures the field will be non-zero */
             /* entry -> next stays the same         */
             /* hsh -> num_entries stays the same    */
             return(entry);
@@ -7037,7 +7037,7 @@ HASH_ENTRY * hash_add(struct _finddata_t * data, HASH_TABLE * hsh)
     entry -> name = hash_strcpy(hsh, data -> name);
     entry -> offset = 0;
     entry -> size = data -> size;
-    entry -> attrib = data -> attrib | FORCE_BIT; /* FORCE_BIT ensures the field will be non-zero */
+    entry -> attrib = data -> attrib bitor FORCE_BIT; /* FORCE_BIT ensures the field will be non-zero */
     entry -> next = NULL;
     entry -> archive = -1; // Changed on AUG30th  [KBR]
 #if( not RES_USE_FLAT_MODEL )
@@ -7879,10 +7879,10 @@ void _say_error(int error, const char * msg, int line, const char * filename)
 
     SHOULD_I_CALL_WITH(CALLBACK_ERROR, err_code, retval);
 
-    //    MessageBox( NULL, buffer, title, MB_OK | MB_ICONEXCLAMATION );
+    //    MessageBox( NULL, buffer, title, MB_OK bitor MB_ICONEXCLAMATION );
 
     if ( not retval)
-        MessageBox(RES_GLOBAL_HWND, buffer, title, MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(RES_GLOBAL_HWND, buffer, title, MB_OK bitor MB_ICONEXCLAMATION);
 }
 
 

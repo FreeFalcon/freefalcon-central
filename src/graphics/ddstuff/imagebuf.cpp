@@ -92,10 +92,10 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
                         ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
                         CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
 
-                        ddsd.dwFlags or_eq DDSD_WIDTH | DDSD_HEIGHT;
+                        ddsd.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
                         ddsd.dwWidth  = w;
                         ddsd.dwHeight = h;
-                        ddsd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY | DDSCAPS_3DDEVICE;
+                        ddsd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY bitor DDSCAPS_3DDEVICE;
                         CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSBack, NULL));
 
                         break;
@@ -106,10 +106,10 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
                         ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
                         CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
 
-                        ddsd.dwFlags or_eq DDSD_WIDTH | DDSD_HEIGHT;
+                        ddsd.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
                         ddsd.dwWidth  = w;
                         ddsd.dwHeight = h;
-                        ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY | DDSCAPS_3DDEVICE;
+                        ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY bitor DDSCAPS_3DDEVICE;
                         CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSBack, NULL));
 
                         break;
@@ -122,10 +122,10 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
                             ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
                             CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
 
-                            ddsd.dwFlags or_eq DDSD_WIDTH | DDSD_HEIGHT;
+                            ddsd.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
                             ddsd.dwWidth  = w;
                             ddsd.dwHeight = h;
-                            ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY | DDSCAPS_3DDEVICE;
+                            ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY bitor DDSCAPS_3DDEVICE;
                             CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSBack, NULL));
                         }
 
@@ -133,7 +133,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
                         {
                             // Create the primary surface.
                             ddsd.dwFlags or_eq DDSD_BACKBUFFERCOUNT;
-                            ddsd.ddsCaps.dwCaps or_eq DDSCAPS_PRIMARYSURFACE | DDSCAPS_3DDEVICE | DDSCAPS_COMPLEX | DDSCAPS_FLIP;
+                            ddsd.ddsCaps.dwCaps or_eq DDSCAPS_PRIMARYSURFACE bitor DDSCAPS_3DDEVICE bitor DDSCAPS_COMPLEX bitor DDSCAPS_FLIP;
                             ddsd.dwBackBufferCount = 1;
                             CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
 
@@ -149,7 +149,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
                     case None:
                     {
-                        ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_3DDEVICE;
+                        ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE bitor DDSCAPS_3DDEVICE;
                         CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
 
                         CheckHR(m_pDDSFront->QueryInterface(IID_IDirectDrawSurface7, (void **) &m_pDDSBack));
@@ -200,10 +200,10 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
                     case None:
                     {
-                        ddsd.dwFlags or_eq DDSD_WIDTH | DDSD_HEIGHT;
+                        ddsd.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
                         ddsd.dwWidth  = w;
                         ddsd.dwHeight = h;
-                        ddsd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY | DDSCAPS_3DDEVICE;
+                        ddsd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY bitor DDSCAPS_3DDEVICE;
                         CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
 
                         CheckHR(m_pDDSFront->QueryInterface(IID_IDirectDrawSurface7, (void **) &m_pDDSBack));
@@ -245,10 +245,10 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
                     case None:
                     {
-                        ddsd.dwFlags or_eq DDSD_WIDTH | DDSD_HEIGHT;
+                        ddsd.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
                         ddsd.dwWidth  = w;
                         ddsd.dwHeight = h;
-                        ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY | DDSCAPS_3DDEVICE;
+                        ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY bitor DDSCAPS_3DDEVICE;
                         HRESULT hr = pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL);
 
                         if (FAILED(hr))
@@ -305,10 +305,10 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
                     case None:
                     {
-                        ddsd.dwFlags or_eq DDSD_WIDTH | DDSD_HEIGHT;
+                        ddsd.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
                         ddsd.dwWidth  = w;
                         ddsd.dwHeight = h;
-                        ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY | DDSCAPS_LOCALVIDMEM;
+                        ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY bitor DDSCAPS_LOCALVIDMEM;
 
                         if (front == LocalVideoMem3D)
                             ddsd.ddsCaps.dwCaps or_eq DDSCAPS_3DDEVICE;
@@ -406,7 +406,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
                     case None:
                     {
-                        ddsd.dwFlags or_eq DDSD_WIDTH | DDSD_HEIGHT;
+                        ddsd.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
                         ddsd.dwWidth  = w;
                         ddsd.dwHeight = h;
                         ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN;
@@ -645,8 +645,8 @@ void *ImageBuffer::Lock(bool bLockMutexOnly, bool bWriteOnly)
     ZeroMemory(&ddsd, sizeof(ddsd));
     ddsd.dwSize = sizeof(ddsd);
 
-    // DWORD dwFlags = DDLOCK_NOSYSLOCK | DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR;
-    DWORD dwFlags = DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR;
+    // DWORD dwFlags = DDLOCK_NOSYSLOCK bitor DDLOCK_WAIT bitor DDLOCK_SURFACEMEMORYPTR;
+    DWORD dwFlags = DDLOCK_WAIT bitor DDLOCK_SURFACEMEMORYPTR;
 
     if (bWriteOnly) dwFlags or_eq DDLOCK_WRITEONLY;
 
@@ -868,10 +868,10 @@ void ImageBuffer::Compose(ImageBuffer *srcBuffer, RECT *dstRect, RECT *srcRect)
             rcSrc.left += m_rcFront.left;
             rcSrc.top += m_rcFront.top;
 
-            hr = m_pBltTarget->BltFast(rcSrc.left, rcSrc.top, srcBuffer->m_pDDSBack, dstRect, DDBLTFAST_WAIT | DDBLTFAST_NOCOLORKEY);
+            hr = m_pBltTarget->BltFast(rcSrc.left, rcSrc.top, srcBuffer->m_pDDSBack, dstRect, DDBLTFAST_WAIT bitor DDBLTFAST_NOCOLORKEY);
         }
 
-        else hr = m_pBltTarget->BltFast(srcRect->left, srcRect->top, srcBuffer->m_pDDSBack, dstRect, DDBLTFAST_WAIT | DDBLTFAST_NOCOLORKEY);
+        else hr = m_pBltTarget->BltFast(srcRect->left, srcRect->top, srcBuffer->m_pDDSBack, dstRect, DDBLTFAST_WAIT bitor DDBLTFAST_NOCOLORKEY);
     }
 
     else
@@ -915,10 +915,10 @@ void ImageBuffer::ComposeTransparent(ImageBuffer *srcBuffer, RECT *dstRect, RECT
             rcSrc.left += m_rcFront.left;
             rcSrc.top += m_rcFront.top;
 
-            hr = m_pBltTarget->BltFast(rcSrc.left, rcSrc.top, srcBuffer->m_pDDSBack, dstRect, DDBLTFAST_WAIT | DDBLTFAST_SRCCOLORKEY);
+            hr = m_pBltTarget->BltFast(rcSrc.left, rcSrc.top, srcBuffer->m_pDDSBack, dstRect, DDBLTFAST_WAIT bitor DDBLTFAST_SRCCOLORKEY);
         }
 
-        else hr = m_pBltTarget->BltFast(srcRect->left, srcRect->top, srcBuffer->m_pDDSBack, dstRect, DDBLTFAST_WAIT | DDBLTFAST_SRCCOLORKEY);
+        else hr = m_pBltTarget->BltFast(srcRect->left, srcRect->top, srcBuffer->m_pDDSBack, dstRect, DDBLTFAST_WAIT bitor DDBLTFAST_SRCCOLORKEY);
     }
 
     else
@@ -931,10 +931,10 @@ void ImageBuffer::ComposeTransparent(ImageBuffer *srcBuffer, RECT *dstRect, RECT
             rcSrc.top += m_rcFront.top;
             rcSrc.bottom += m_rcFront.top;
 
-            hr = m_pBltTarget->Blt(&rcSrc, srcBuffer->m_pDDSBack, dstRect, DDBLT_WAIT | DDBLT_KEYSRC, NULL);
+            hr = m_pBltTarget->Blt(&rcSrc, srcBuffer->m_pDDSBack, dstRect, DDBLT_WAIT bitor DDBLT_KEYSRC, NULL);
         }
 
-        else hr = m_pBltTarget->Blt(srcRect, srcBuffer->m_pDDSBack, dstRect, DDBLT_WAIT | DDBLT_KEYSRC, NULL);
+        else hr = m_pBltTarget->Blt(srcRect, srcBuffer->m_pDDSBack, dstRect, DDBLT_WAIT bitor DDBLT_KEYSRC, NULL);
     }
 
     ShiAssert(SUCCEEDED(hr));
@@ -1062,7 +1062,7 @@ void ImageBuffer::SwapBuffers(bool bDontFlip)
     RECT backRect = { 0, 0, m_ddsdBack.dwWidth, m_ddsdBack.dwHeight };
 
     if ( not m_bFrontRectValid) // assumes no clipper is attached (fullscreen) 
-        hr = m_pDDSFront->BltFast(m_rcFront.left, m_rcFront.top, m_pDDSBack, &backRect, DDBLTFAST_WAIT | DDBLTFAST_NOCOLORKEY);
+        hr = m_pDDSFront->BltFast(m_rcFront.left, m_rcFront.top, m_pDDSBack, &backRect, DDBLTFAST_WAIT bitor DDBLTFAST_NOCOLORKEY);
     else
         hr = m_pDDSFront->Blt(&m_rcFront, m_pDDSBack, &backRect, DDBLT_WAIT, NULL);
 

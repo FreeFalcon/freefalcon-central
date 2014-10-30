@@ -266,7 +266,7 @@ void PlayDogfightBite()
 
     HowIDid = FigureOutHowIDid();
 
-    if (HowIDid bitand (_FIRST_PLACE_ | _MOST_KILLS_) and SimDogfight.GetGameType() not_eq dog_Furball)
+    if (HowIDid bitand (_FIRST_PLACE_ bitor _MOST_KILLS_) and SimDogfight.GetGameType() not_eq dog_Furball)
     {
         SoundID = gDogfightBites->Pick(DF5);
 

@@ -13,7 +13,7 @@ C_Player::C_Player() : C_Control()
     Color_[0] = 0;
     Color_[1] = 0;
     Color_[2] = 0;
-    Defaultflags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER | C_BIT_USEBGFILL;
+    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER bitor C_BIT_USEBGFILL;
 }
 
 C_Player::C_Player(char **stream) : C_Control(stream)
@@ -44,14 +44,14 @@ void C_Player::InitEntity()
 {
     Icon_ = new O_Output;
     Icon_->SetOwner(this);
-    Icon_->SetFlags(Flags_ | C_BIT_HCENTER | C_BIT_VCENTER);
+    Icon_->SetFlags(Flags_ bitor C_BIT_HCENTER bitor C_BIT_VCENTER);
     Name_ = new O_Output;
     Name_->SetOwner(this);
     Name_->SetFlags(Flags_);
     Name_->SetTextWidth(20);
     Status_ = new O_Output;
     Status_->SetOwner(this);
-    Status_->SetFlags(Flags_ | C_BIT_HCENTER | C_BIT_VCENTER);
+    Status_->SetFlags(Flags_ bitor C_BIT_HCENTER bitor C_BIT_VCENTER);
 
     SetReady(1);
 }

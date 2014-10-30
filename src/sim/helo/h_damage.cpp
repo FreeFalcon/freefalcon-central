@@ -224,7 +224,7 @@ void HelicopterClass::RunExplosion(void)
             /*
             OTWDriver.AddSfxRequest(
             new SfxClass (SFX_FLAMING_PART, // type
-             SFX_MOVES | SFX_USES_GRAVITY | SFX_EXPLODE_WHEN_DONE,
+             SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_EXPLODE_WHEN_DONE,
              tmpSimBase, // sim base *
              3.0f + PRANDFloatPos() * 4.0F, // time to live
              1.0F ) ); // scale
@@ -248,7 +248,7 @@ void HelicopterClass::RunExplosion(void)
             /*
             OTWDriver.AddSfxRequest(
              new SfxClass (SFX_SMOKING_PART, // type
-             SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES | SFX_EXPLODE_WHEN_DONE,
+             SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES bitor SFX_EXPLODE_WHEN_DONE,
              tmpSimBase, // sim base *
              4.0f * PRANDFloatPos() + (float)((i+1)*(i+1)), // time to live
              1.0 ) ); // scale

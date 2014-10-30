@@ -146,11 +146,11 @@ BOOL CSoundMgr::InstallDSound(HWND hwnd, DWORD Priority, WAVEFORMATEX *fmt)
         // Set up DSBUFFERDESC structure.
         memset(&dsbdesc, 0, sizeof(DSBUFFERDESC)); // Zero it out.
         dsbdesc.dwSize = sizeof(DSBUFFERDESC);
-        dsbdesc.dwFlags = DSBCAPS_PRIMARYBUFFER | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN;
+        dsbdesc.dwFlags = DSBCAPS_PRIMARYBUFFER bitor DSBCAPS_CTRLVOLUME bitor DSBCAPS_CTRLPAN;
 
         if (g_bUse3dSound)
         {
-            dsbdesc.dwFlags or_eq DSBCAPS_CTRL3D | DSBCAPS_MUTE3DATMAXDISTANCE;
+            dsbdesc.dwFlags or_eq DSBCAPS_CTRL3D bitor DSBCAPS_MUTE3DATMAXDISTANCE;
         }
 
         // Buffer size is determined by sound hardware.
@@ -693,7 +693,7 @@ long CSoundMgr::LoadWaveFile(char *Filename, long Flags, SFX_DEF_ENTRY *sfx)
 
                     if (g_bUse3dSound and (sfx->flags bitand SFX_FLAGS_3D))
                     {
-                        dsbdesc.dwFlags or_eq DSBCAPS_CTRL3D | DSBCAPS_MUTE3DATMAXDISTANCE;
+                        dsbdesc.dwFlags or_eq DSBCAPS_CTRL3D bitor DSBCAPS_MUTE3DATMAXDISTANCE;
                     }
                     else
                     {
@@ -701,7 +701,7 @@ long CSoundMgr::LoadWaveFile(char *Filename, long Flags, SFX_DEF_ENTRY *sfx)
                             dsbdesc.dwFlags or_eq DSBCAPS_CTRLPAN;
                     }
 
-                    if (sfx->flags bitand (SFX_FLAGS_FREQ | SFX_POS_EXTERN))  // MLR 12/22/2003 - External sounds must have the Freq cap so doppler effects can be applied.
+                    if (sfx->flags bitand (SFX_FLAGS_FREQ bitor SFX_POS_EXTERN))  // MLR 12/22/2003 - External sounds must have the Freq cap so doppler effects can be applied.
                         dsbdesc.dwFlags or_eq DSBCAPS_CTRLFREQUENCY;
 
                     if ((sfx->flags bitand SFX_FLAGS_HIGH) == 0) // low priority sound
@@ -770,7 +770,7 @@ long CSoundMgr::AddRawSample(WAVEFORMATEX *Header, char *Data, long size, long F
         // Set up DSBUFFERDESC structure.
         memset(&dsbdesc, 0, sizeof(DSBUFFERDESC)); // Zero it out.
         dsbdesc.dwSize = sizeof(DSBUFFERDESC);
-        dsbdesc.dwFlags = DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME |
+        dsbdesc.dwFlags = DSBCAPS_CTRLPAN bitor DSBCAPS_CTRLVOLUME |
                           DSBCAPS_CTRLFREQUENCY |
                           DSBCAPS_GETCURRENTPOSITION2 ; // Need default controls (pan, volume, frequency).
 
@@ -1420,7 +1420,7 @@ void CSoundMgr::AssignSamples(void)
                             if (S->Buf[i].distsq >= 0)
                             {
 #ifdef SNDLOG
-                                fprintf(fp, "  Sample ID(%d %s) Buf[%d]  xyz(%.4f %.4f %.4f) | vxyz(%.4f %.4f %.4f) | Pitch(%f) | Vol(%.4f) | UID(%d) | Flags(%08x)\n",
+                                fprintf(fp, "  Sample ID(%d %s) Buf[%d]  xyz(%.4f %.4f %.4f) bitor vxyz(%.4f %.4f %.4f) bitor Pitch(%f) bitor Vol(%.4f) bitor UID(%d) bitor Flags(%08x)\n",
                                         S->ID,
                                         (S->Sfx ? S->Sfx->fileName : "none"),
                                         i,
@@ -1950,7 +1950,7 @@ long CSoundMgr::AddSampleToMgr(long Volume, long Frequency, long Direction, IDir
     New->Sfx   = sfx;
     New->Flags = sfx->flags;
 
-    if (New->Flags bitand (SFX_FLAGS_VMS | SFX_POS_INSIDE)) // only allocate 1 soundobject for these types
+    if (New->Flags bitand (SFX_FLAGS_VMS bitor SFX_POS_INSIDE)) // only allocate 1 soundobject for these types
     {
         New->DS3DBufferCount = 1;
     }
@@ -2075,7 +2075,7 @@ long CSoundMgr::CreateStream(WAVEFORMATEX *Format, float StreamSeconds) // Quesi
         // Set up DSBUFFERDESC structure.
         memset(&dsbdesc, 0, sizeof(DSBUFFERDESC)); // Zero it out.
         dsbdesc.dwSize = sizeof(DSBUFFERDESC);
-        dsbdesc.dwFlags = DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME |
+        dsbdesc.dwFlags = DSBCAPS_CTRLPAN bitor DSBCAPS_CTRLVOLUME |
                           DSBCAPS_CTRLFREQUENCY |
                           DSBCAPS_GETCURRENTPOSITION2 ; // Need default controls (pan, volume, frequency).
 
@@ -2184,7 +2184,7 @@ long CSoundMgr::SetStreamVolume(long ID, long Volume)
                 oldvol = Stream->Volume;
                 Stream->Volume = Volume;
 
-                if ( not (Stream->Status bitand (SND_STREAM_FADE_IN | SND_STREAM_FADE_OUT | SND_STREAM_FADEDOUT)))
+                if ( not (Stream->Status bitand (SND_STREAM_FADE_IN bitor SND_STREAM_FADE_OUT bitor SND_STREAM_FADEDOUT)))
                 {
                     hr = Stream->DSoundBuffer->SetVolume(Volume);
 
@@ -2837,7 +2837,7 @@ void CSoundMgr::StreamResumeFadeIn(SoundStream *Stream)
         return;
 
     Stream->Status or_eq SND_STREAM_FADE_IN;
-    Stream->Status and_eq compl (SND_STREAM_FADEDOUT | SND_STREAM_FADE_OUT);
+    Stream->Status and_eq compl (SND_STREAM_FADEDOUT bitor SND_STREAM_FADE_OUT);
     StreamResume(Stream);
 }
 
@@ -2919,7 +2919,7 @@ BOOL CSoundMgr::StartFileStream(long StreamID, char *filename, long Flags, long 
     Stream->LastPos = 0;
     Stream->memptr = NULL;
     Stream->startptr = NULL;
-    Stream->Status = 1 | SND_STREAM_FILE;
+    Stream->Status = 1 bitor SND_STREAM_FILE;
 
     if (Header.wFormatTag == WAVE_FORMAT_IMA_ADPCM)
     {
@@ -3008,7 +3008,7 @@ BOOL CSoundMgr::StartMemoryStream(long StreamID, RIFF_FILE *wave, long Flags)
     Stream->LastPos = 0;
     Stream->memptr = NULL;
     Stream->startptr = NULL;
-    Stream->Status = 1 | SND_STREAM_MEMORY;
+    Stream->Status = 1 bitor SND_STREAM_MEMORY;
 
     if (wave->Format->wFormatTag == WAVE_FORMAT_IMA_ADPCM)
     {
@@ -3088,7 +3088,7 @@ BOOL CSoundMgr::StartMemoryStream(long StreamID, char *Data, long size)
     Stream->LastPos = 0;
     Stream->memptr = Data;
     Stream->startptr = Data;
-    Stream->Status = 1 | SND_STREAM_MEMORY;
+    Stream->Status = 1 bitor SND_STREAM_MEMORY;
     ReadStream(Stream, 0, Stream->Size);
     Stream->DSoundBuffer->SetCurrentPosition(0);
     Stream->Status or_eq SND_USE_THREAD;
@@ -3122,7 +3122,7 @@ BOOL CSoundMgr::StartCallbackStream(long StreamID, void *classptr, DWORD (*cb)(v
     Stream->startptr = NULL;
     Stream->me = classptr;
     Stream->Callback = cb;
-    Stream->Status = 1 | SND_STREAM_CALLBACK;
+    Stream->Status = 1 bitor SND_STREAM_CALLBACK;
     ReadStream(Stream, 0, Stream->Size);
     Stream->DSoundBuffer->SetCurrentPosition(0);
     Stream->Status or_eq SND_USE_THREAD;
@@ -3237,7 +3237,7 @@ BOOL CSoundMgr::BuildObjectList(HANDLE hArray[], int *nHandles, SoundStream *sli
         }
 
         // any of the following we have to do more carefully.
-        if (Stream->Status bitand (SND_STREAM_PAN_LT | SND_STREAM_PAN_RT | SND_STREAM_FADE_IN | SND_STREAM_FADE_OUT))
+        if (Stream->Status bitand (SND_STREAM_PAN_LT bitor SND_STREAM_PAN_RT bitor SND_STREAM_FADE_IN bitor SND_STREAM_FADE_OUT))
         {
             return FALSE;
         }
@@ -3752,7 +3752,7 @@ LPDIRECTSOUNDBUFFER CSoundMgr::LoadWaveFile(char *Filename, SFX_DEF_ENTRY *sfx)
 
                 if (g_bUse3dSound and (sfx->flags bitand SFX_FLAGS_3D))
                 {
-                    dsbdesc.dwFlags or_eq DSBCAPS_CTRL3D | DSBCAPS_MUTE3DATMAXDISTANCE;
+                    dsbdesc.dwFlags or_eq DSBCAPS_CTRL3D bitor DSBCAPS_MUTE3DATMAXDISTANCE;
                 }
                 else
                 {

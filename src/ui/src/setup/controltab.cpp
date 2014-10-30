@@ -1055,7 +1055,7 @@ void AxisChangeCB(long, short hittype, C_Base *me)
             // I don´t want the mouse axis to act as a throttle 
             if (DIAxisNames[index].DXDeviceID == SIM_MOUSE)
             {
-                if ((UIInputStuff[i].AxisLB == SETUP_ADVANCED_THROTTLE_AXIS) ||
+                if ((UIInputStuff[i].AxisLB == SETUP_ADVANCED_THROTTLE_AXIS) or
                     (UIInputStuff[i].AxisLB == SETUP_ADVANCED_THROTTLE2_AXIS))
                 {
                     // NEED TO RESET THE OLD NAME HERE 

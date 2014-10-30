@@ -485,8 +485,8 @@ void SimulationLoopControl::Loop(void)
                         uchar flyState = sessionEntity->GetFlyState();
 
                         if (
-                            (flyState ==  FLYSTATE_FLYING) ||
-                            (flyState ==  FLYSTATE_WAITING) ||
+                            (flyState ==  FLYSTATE_FLYING) or
+                            (flyState ==  FLYSTATE_WAITING) or
                             (flyState ==  FLYSTATE_LOADING)
                         )
                         {

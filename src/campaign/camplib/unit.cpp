@@ -2158,7 +2158,7 @@ void UnitClass::DeaggregateFromData(VU_BYTE* data, long size)
     simdata.side = GetOwner();
     simdata.campBase = this;
     simdata.createType = SimInitDataClass::CampaignVehicle;
-    simdata.createFlags = SIDC_SILENT_INSERT | SIDC_FORCE_ID;
+    simdata.createFlags = SIDC_SILENT_INSERT bitor SIDC_FORCE_ID;
     simdata.ptIndex = 0;
 
     if (owning_session not_eq FalconLocalSession)
@@ -4338,7 +4338,7 @@ int UnitClass::GetUnitObjectivePath(Path p, Objective o, Objective t)
         flags or_eq PATH_ROADOK;
         // KCK: Commented out to prevent units from stalling
         // if (GetUnitCurrentRole() == GRO_ATTACK or GetUnitCurrentRole() == GRO_FIRESUPPORT)
-        flags or_eq PATH_ENEMYOK | PATH_ENEMYCOST;
+        flags or_eq PATH_ENEMYOK bitor PATH_ENEMYCOST;
 
         if (GetUnitNormalRole() == GRO_ENGINEER)
             flags or_eq PATH_ENGINEER;
@@ -4356,7 +4356,7 @@ int UnitClass::GetUnitGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, G
     if (GetDomain() == DOMAIN_LAND)
     {
         if (GetUnitFormation() == GFORM_COLUMN or GetUnitFormation() == GFORM_OVERWATCH or DistSqu(x, y, xx, yy) > 30)
-            flags or_eq PATH_ROADOK | PATH_ENEMYCOST;
+            flags or_eq PATH_ROADOK bitor PATH_ENEMYCOST;
 
         if (GetUnitNormalRole() == GRO_ENGINEER)
             flags or_eq PATH_ENGINEER;
@@ -5685,7 +5685,7 @@ Unit NewUnit(int domain, int type, int stype, int sptype, Unit parent)
 
     if (error)
     {
-        MessageBox(NULL, "Type conflict while creating unit.", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+        MessageBox(NULL, "Type conflict while creating unit.", "Error", MB_OK bitor MB_ICONSTOP bitor MB_SETFOREGROUND);
     }
 
     cur->BuildElements();
@@ -5723,7 +5723,7 @@ Unit NewUnit(short tid, VU_BYTE **stream, long *rem)
         }
         else
         {
-            MessageBox(NULL, "Type conflict while creating unit.", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+            MessageBox(NULL, "Type conflict while creating unit.", "Error", MB_OK bitor MB_ICONSTOP bitor MB_SETFOREGROUND);
         }
     }
     else if (classPtr->vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_LAND)
@@ -5738,7 +5738,7 @@ Unit NewUnit(short tid, VU_BYTE **stream, long *rem)
         }
         else
         {
-            MessageBox(NULL, "Type conflict while creating unit.", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+            MessageBox(NULL, "Type conflict while creating unit.", "Error", MB_OK bitor MB_ICONSTOP bitor MB_SETFOREGROUND);
         }
     }
     else if (classPtr->vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_SEA)
@@ -5749,12 +5749,12 @@ Unit NewUnit(short tid, VU_BYTE **stream, long *rem)
         }
         else
         {
-            MessageBox(NULL, "Type conflict while creating unit.", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+            MessageBox(NULL, "Type conflict while creating unit.", "Error", MB_OK bitor MB_ICONSTOP bitor MB_SETFOREGROUND);
         }
     }
     else
     {
-        MessageBox(NULL, "Type conflict while creating unit.", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+        MessageBox(NULL, "Type conflict while creating unit.", "Error", MB_OK bitor MB_ICONSTOP bitor MB_SETFOREGROUND);
         cur = NULL;
     }
 
@@ -5823,7 +5823,7 @@ int FindTaxiPt(Flight flight, Objective airbase, int checklist)
     // JPO - if this is true, we should be able to go anyway.as were after the min deag time.
     if (g_nDeagTimer > 0 and airbase and airbase->brain and SimLibElapsedTime > w->GetWPArrivalTime() - airbase->brain->MinDeagTime() - CampaignMinutes * g_nDeagTimer)
         goanyway = true;
-    else if (flight->IsSetFalcFlag(FEC_PLAYER_ENTERING | FEC_HASPLAYERS)) // players go too
+    else if (flight->IsSetFalcFlag(FEC_PLAYER_ENTERING bitor FEC_HASPLAYERS)) // players go too
         goanyway = true;
 
     // Cobra - Determine parking/spawning spots later in Aircraft.cpp FindBestSpawningPoint()

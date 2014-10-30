@@ -36,7 +36,7 @@ C_Marque::C_Marque() : C_Base()
     MarqueLen_ = -1;
     Text_ = NULL;
     BgImage_ = NULL;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_TIMER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_TIMER;
 }
 
 C_Marque::C_Marque(char **stream) : C_Base(stream)
@@ -270,11 +270,11 @@ void C_Marque::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CMRQ_SETFGCOLOR:
-            SetFGColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetFGColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CMRQ_SETBGCOLOR:
-            SetBGColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetBGColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CMRQ_SETFONT:

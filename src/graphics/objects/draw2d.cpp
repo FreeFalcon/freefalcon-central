@@ -209,7 +209,7 @@ TYPES2D gTypeTable[] =
 {
     // Air explosion
     {
-        ANIM_STOP | FADE_START | DO_FIVE_POINTS, // flags
+        ANIM_STOP bitor FADE_START bitor DO_FIVE_POINTS, // flags
         1.0f, // initAlpha
         0.0f, // fadeRate
         1, // texture id sequence
@@ -222,7 +222,7 @@ TYPES2D gTypeTable[] =
     },
     // Small Hit Explosion
     {
-        ANIM_HALF_RATE | ANIM_STOP | DO_FIVE_POINTS, // flags
+        ANIM_HALF_RATE bitor ANIM_STOP bitor DO_FIVE_POINTS, // flags
         1.0f, // initAlpha
         0.0f, // fadeRate
         0, // texture id sequence
@@ -235,7 +235,7 @@ TYPES2D gTypeTable[] =
     },
     // Smoke
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.9f,  // COBRA - RED - a Little More visible: was 1.0f, // initAlpha
         .00005f, // fadeRate
         10,
@@ -261,7 +261,7 @@ TYPES2D gTypeTable[] =
     },
     // Air Explosion 2
     {
-        ANIM_HALF_RATE | ANIM_STOP | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP, // flags
+        ANIM_HALF_RATE bitor ANIM_STOP bitor EXPLODE_SCATTER_PLOT bitor ANIM_NO_CLAMP, // flags
         0.8f, // initAlpha
         0.0f, // fadeRate
         1,
@@ -274,7 +274,7 @@ TYPES2D gTypeTable[] =
     },
     // Smoke Ring
     {
-        FADE_START | ANIM_HOLD_LAST , // flags
+        FADE_START bitor ANIM_HOLD_LAST , // flags
         1.0f, // initAlpha
         0.0008f, // fadeRate
         3,
@@ -287,7 +287,7 @@ TYPES2D gTypeTable[] =
     },
     // Small Chem Explosion
     {
-        ANIM_HALF_RATE | ANIM_STOP | DO_FIVE_POINTS, // flags
+        ANIM_HALF_RATE bitor ANIM_STOP bitor DO_FIVE_POINTS, // flags
         1.0f, // initAlpha
         0.0f, // fadeRate
         6, // texture id sequence
@@ -300,7 +300,7 @@ TYPES2D gTypeTable[] =
     },
     // Chem Explosion
     {
-        ANIM_HALF_RATE | ANIM_STOP | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP, // flags
+        ANIM_HALF_RATE bitor ANIM_STOP bitor EXPLODE_SCATTER_PLOT bitor ANIM_NO_CLAMP, // flags
         0.8f, // initAlpha
         0.0f, // fadeRate
         6,
@@ -313,7 +313,7 @@ TYPES2D gTypeTable[] =
     },
     // Small Debris Explosion
     {
-        ANIM_HALF_RATE | ANIM_STOP | DO_FIVE_POINTS, // flags
+        ANIM_HALF_RATE bitor ANIM_STOP bitor DO_FIVE_POINTS, // flags
         1.0f, // initAlpha
         0.0f, // fadeRate
         4, // texture id sequence
@@ -326,7 +326,7 @@ TYPES2D gTypeTable[] =
     },
     // Debris Explosion
     {
-        ANIM_HALF_RATE | ANIM_STOP | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP, // flags
+        ANIM_HALF_RATE bitor ANIM_STOP bitor EXPLODE_SCATTER_PLOT bitor ANIM_NO_CLAMP, // flags
         0.8f, // initAlpha
         0.0f, // fadeRate
         4,
@@ -339,7 +339,7 @@ TYPES2D gTypeTable[] =
     },
     // Cloud 5
     {
-        ANIM_HOLD_LAST | USES_BB_MATRIX, // flags
+        ANIM_HOLD_LAST bitor USES_BB_MATRIX, // flags
         1.0f, // initAlpha
         0.0f, // fadeRate
         3,
@@ -352,7 +352,7 @@ TYPES2D gTypeTable[] =
     },
     // Dustcloud
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.8f, // initAlpha
         .00005f, // fadeRate
         8,
@@ -365,7 +365,7 @@ TYPES2D gTypeTable[] =
     },
     // Gunsmoke
     {
-        ANIM_LOOP | FADE_START, // flags
+        ANIM_LOOP bitor FADE_START, // flags
         0.8f, // initAlpha
         .0001f, // fadeRate
         6,
@@ -378,7 +378,7 @@ TYPES2D gTypeTable[] =
     },
     // Air Smoke 2
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         1.0f, // initAlpha
         .0002f, // fadeRate
         10,
@@ -391,7 +391,7 @@ TYPES2D gTypeTable[] =
     },
     // Glowing explosion Object Square
     {
-        FADE_START | ALPHA_DAYLIGHT | ALPHA_BRIGHTEN | GLOW_SPHERE, // flags
+        FADE_START bitor ALPHA_DAYLIGHT bitor ALPHA_BRIGHTEN bitor GLOW_SPHERE, // flags
         1.0f, // initAlpha
         .0006f, // fadeRate
         NULL, // texture id sequence
@@ -404,7 +404,7 @@ TYPES2D gTypeTable[] =
     },
     // missile Glowing Object
     {
-        GLOW_SPHERE | GLOW_RAND_POINTS, // flags
+        GLOW_SPHERE bitor GLOW_RAND_POINTS, // flags
         0.9f, // initAlpha
         0.0f, // fadeRate
         NULL, // texture id sequence
@@ -417,7 +417,7 @@ TYPES2D gTypeTable[] =
     },
     // Glowing explosion Object Sphere
     {
-        GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT, // flags
+        GLOW_SPHERE bitor ALPHA_BRIGHTEN bitor ALPHA_DAYLIGHT, // flags
         0.6f, // initAlpha
         0.0f, // fadeRate
         NULL, // texture id sequence
@@ -482,7 +482,7 @@ TYPES2D gTypeTable[] =
     },
     // FIRE
     {
-        RAND_START_FRAME | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        RAND_START_FRAME bitor ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.9f, // initAlpha
         0.0f, // fadeRate
         0,
@@ -521,7 +521,7 @@ TYPES2D gTypeTable[] =
     },
     // Hit Explosion
     {
-        ANIM_HALF_RATE | ANIM_STOP | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP, // flags
+        ANIM_HALF_RATE bitor ANIM_STOP bitor EXPLODE_SCATTER_PLOT bitor ANIM_NO_CLAMP, // flags
         0.8f, // initAlpha
         0.0f, // fadeRate
         0,
@@ -535,7 +535,7 @@ TYPES2D gTypeTable[] =
     // Sparks
     /*
     {
-     ANIM_STOP | USES_BB_MATRIX | ANIM_HALF_RATE, // flags
+     ANIM_STOP bitor USES_BB_MATRIX bitor ANIM_HALF_RATE, // flags
      1.0f, // initAlpha
      0.0f, // fadeRate
      0,
@@ -549,7 +549,7 @@ TYPES2D gTypeTable[] =
     */
     // SPARKS explosion Object Star
     {
-        FADE_START | ALPHA_DAYLIGHT | ALPHA_BRIGHTEN | GLOW_SPHERE | GLOW_RAND_POINTS, // flags
+        FADE_START bitor ALPHA_DAYLIGHT bitor ALPHA_BRIGHTEN bitor GLOW_SPHERE bitor GLOW_RAND_POINTS, // flags
         1.0f, // initAlpha
         .0015f, // fadeRate
         NULL, // texture id sequence
@@ -562,7 +562,7 @@ TYPES2D gTypeTable[] =
     },
     // Artillery Explosion
     {
-        USES_TREE_MATRIX | ANIM_STOP, // flags
+        USES_TREE_MATRIX bitor ANIM_STOP, // flags
         0.8f, // initAlpha
         0.0f, // fadeRate
         3,
@@ -575,7 +575,7 @@ TYPES2D gTypeTable[] =
     },
     // shock ring
     {
-        USES_TREE_MATRIX | FADE_START | ANIM_HOLD_LAST, // flags
+        USES_TREE_MATRIX bitor FADE_START bitor ANIM_HOLD_LAST, // flags
         0.5f, // initAlpha
         0.0007f, // fadeRate
         4,
@@ -588,7 +588,7 @@ TYPES2D gTypeTable[] =
     },
     // long hanging smoke
     {
-        ANIM_HALF_RATE | ANIM_LOOP | FADE_START | DO_FIVE_POINTS, // flags
+        ANIM_HALF_RATE bitor ANIM_LOOP bitor FADE_START bitor DO_FIVE_POINTS, // flags
         1.0f, // initAlpha
         .00001f, // fadeRate
         6,
@@ -601,7 +601,7 @@ TYPES2D gTypeTable[] =
     },
     // Shaped FIRE DEBRIS
     {
-        ANIM_LOOP | TEXTURED_CONE | FADE_START, // flags
+        ANIM_LOOP bitor TEXTURED_CONE bitor FADE_START, // flags
         1.0f, // initAlpha
         0.0001f, // fadeRate
         6,
@@ -615,7 +615,7 @@ TYPES2D gTypeTable[] =
 
     // Water CLOUD
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.6f, // initAlpha
         .0001f, // fadeRate
         7,
@@ -628,7 +628,7 @@ TYPES2D gTypeTable[] =
     },
     // DARK DEBRIS
     {
-        GOURAUD_TRI | GLOW_RAND_POINTS,  // flags
+        GOURAUD_TRI bitor GLOW_RAND_POINTS,  // flags
         1.0f, // initAlpha
         0.0f, // fadeRate
         NULL, // texture id sequence
@@ -641,7 +641,7 @@ TYPES2D gTypeTable[] =
     },
     // FIRE DEBRIS
     {
-        GOURAUD_TRI | GLOW_RAND_POINTS,  // flags
+        GOURAUD_TRI bitor GLOW_RAND_POINTS,  // flags
         1.0f, // initAlpha
         0.0f, // fadeRate
         NULL, // texture id sequence
@@ -654,7 +654,7 @@ TYPES2D gTypeTable[] =
     },
     // LIGHT DEBRIS
     {
-        GOURAUD_TRI | GLOW_RAND_POINTS,  // flags
+        GOURAUD_TRI bitor GLOW_RAND_POINTS,  // flags
         1.0f, // initAlpha
         0.0f, // fadeRate
         NULL, // texture id sequence
@@ -667,7 +667,7 @@ TYPES2D gTypeTable[] =
     },
     // Glowing explosion Object Sphere
     {
-        GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT, // flags
+        GLOW_SPHERE bitor ALPHA_BRIGHTEN bitor ALPHA_DAYLIGHT, // flags
         0.8f, // initAlpha
         0.0009f, // fadeRate
         NULL, // texture id sequence
@@ -680,7 +680,7 @@ TYPES2D gTypeTable[] =
     },
     // shock ring -- small
     {
-        USES_TREE_MATRIX | FADE_START | ANIM_HOLD_LAST, // flags
+        USES_TREE_MATRIX bitor FADE_START bitor ANIM_HOLD_LAST, // flags
         0.6f, // initAlpha
         0.0007f, // fadeRate
         4,
@@ -693,7 +693,7 @@ TYPES2D gTypeTable[] =
     },
     // fast fading cloud
     {
-        ANIM_HALF_RATE | ANIM_LOOP | FADE_START | DO_FIVE_POINTS, // flags
+        ANIM_HALF_RATE bitor ANIM_LOOP bitor FADE_START bitor DO_FIVE_POINTS, // flags
         1.0f, // initAlpha
         .0005f, // fadeRate
         6,
@@ -706,7 +706,7 @@ TYPES2D gTypeTable[] =
     },
     // long hanging smoke 2
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.5f, // initAlpha
         .000015f, // fadeRate
         6,
@@ -719,7 +719,7 @@ TYPES2D gTypeTable[] =
     },
     // FLAME
     {
-        ANIM_LOOP | DO_FIVE_POINTS, // flags
+        ANIM_LOOP bitor DO_FIVE_POINTS, // flags
         0.7f, // initAlpha
         0.0f, // fadeRate
         4,
@@ -732,7 +732,7 @@ TYPES2D gTypeTable[] =
     },
     // FIRE EXPANDING
     {
-        FADE_START | RAND_START_FRAME | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        FADE_START bitor RAND_START_FRAME bitor ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.6f, // initAlpha
         .00045f, // fadeRate
         0,
@@ -745,7 +745,7 @@ TYPES2D gTypeTable[] =
     },
     // Dustcloud
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.4f, // initAlpha
         .00004f, // fadeRate
         8,
@@ -758,7 +758,7 @@ TYPES2D gTypeTable[] =
     },
     // fire hot
     {
-        ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.7f, // initAlpha
         .0009f, // fadeRate
         0,
@@ -771,7 +771,7 @@ TYPES2D gTypeTable[] =
     },
     // fire med
     {
-        ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.6f, // initAlpha
         .0009f, // fadeRate
         2,
@@ -784,7 +784,7 @@ TYPES2D gTypeTable[] =
     },
     // fire cool
     {
-        ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.4f, // initAlpha
         .0009f, // fadeRate
         4,
@@ -797,7 +797,7 @@ TYPES2D gTypeTable[] =
     },
     // fire 1
     {
-        FADE_LAST | ANIM_LOOP | SEQ_SCATTER_ANIM | SMOKE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        FADE_LAST bitor ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor SMOKE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         1.0f, // initAlpha
         0.0001f, // fadeRate
         0,
@@ -810,7 +810,7 @@ TYPES2D gTypeTable[] =
     },
     // fire 2
     {
-        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        FADE_START bitor ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.6f, // initAlpha
         0.0001f, // fadeRate
         0,
@@ -823,7 +823,7 @@ TYPES2D gTypeTable[] =
     },
     // fire 3
     {
-        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        FADE_START bitor ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.4f, // initAlpha
         0.0001f, // fadeRate
         2,
@@ -836,7 +836,7 @@ TYPES2D gTypeTable[] =
     },
     // fire 4
     {
-        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | SMOKE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        FADE_START bitor ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor SMOKE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.9f, // initAlpha
         0.00007f, // fadeRate
         0,
@@ -849,7 +849,7 @@ TYPES2D gTypeTable[] =
     },
     // fire 5
     {
-        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        FADE_START bitor ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.9f, // initAlpha
         0.00007f, // fadeRate
         0,
@@ -862,7 +862,7 @@ TYPES2D gTypeTable[] =
     },
     // fire 6
     {
-        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        FADE_START bitor ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.8f, // initAlpha
         0.0001f, // fadeRate
         0,
@@ -875,7 +875,7 @@ TYPES2D gTypeTable[] =
     },
     // Fire Smoke
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.9f, // COBRA - RED - a Little More visible: was 0.8f, // initAlpha
         .00005f, // fadeRate
         6,
@@ -888,7 +888,7 @@ TYPES2D gTypeTable[] =
     },
     // Trail Smoke
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         1.0f, // initAlpha
         .0002f, // fadeRate
         10,
@@ -901,7 +901,7 @@ TYPES2D gTypeTable[] =
     },
     // Trail Dust
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.5f, // COBRA - RED - a Little Less visible: was 0.8f, // initAlpha
         .0002f, // fadeRate
         8,
@@ -914,7 +914,7 @@ TYPES2D gTypeTable[] =
     },
     // fire 7
     {
-        ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor SEQ_SCATTER_ANIM bitor FIRE_SCATTER_PLOT bitor ALPHA_PER_TEXEL, // flags
         0.15f, // initAlpha
         0.0001f, // fadeRate
         6,
@@ -927,7 +927,7 @@ TYPES2D gTypeTable[] =
     },
     // Blue Cloud
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.6f, // initAlpha
         .0003f, // fadeRate
         9,
@@ -940,7 +940,7 @@ TYPES2D gTypeTable[] =
     },
     // STEAM CLOUD
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.8f, // initAlpha
         .00005f, // fadeRate
         7,
@@ -953,7 +953,7 @@ TYPES2D gTypeTable[] =
     },
     // Ground Flash
     {
-        GROUND_GLOW | GLOW_RAND_POINTS | GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT, // flags
+        GROUND_GLOW bitor GLOW_RAND_POINTS bitor GLOW_SPHERE bitor ALPHA_BRIGHTEN bitor ALPHA_DAYLIGHT, // flags
         0.4f, // initAlpha
         0.0005f, // fadeRate
         NULL, // texture id sequence
@@ -966,7 +966,7 @@ TYPES2D gTypeTable[] =
     },
     // Ground Glow
     {
-        GROUND_GLOW | GLOW_RAND_POINTS | GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT, // flags
+        GROUND_GLOW bitor GLOW_RAND_POINTS bitor GLOW_SPHERE bitor ALPHA_BRIGHTEN bitor ALPHA_DAYLIGHT, // flags
         0.2f, // initAlpha
         0.0f, // fadeRate
         NULL, // texture id sequence
@@ -979,7 +979,7 @@ TYPES2D gTypeTable[] =
     },
     // Missile Ground Glow
     {
-        GROUND_GLOW | GLOW_RAND_POINTS | GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT, // flags
+        GROUND_GLOW bitor GLOW_RAND_POINTS bitor GLOW_SPHERE bitor ALPHA_BRIGHTEN bitor ALPHA_DAYLIGHT, // flags
         0.2f, // initAlpha
         0.0f, // fadeRate
         NULL, // texture id sequence
@@ -992,7 +992,7 @@ TYPES2D gTypeTable[] =
     },
     // Big Smoke 1
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         1.0f, // initAlpha
         .00005f, // fadeRate
         10,
@@ -1005,7 +1005,7 @@ TYPES2D gTypeTable[] =
     },
     // Big Smoke 2
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         1.0f, // initAlpha
         .00005f, // fadeRate
         6,
@@ -1018,7 +1018,7 @@ TYPES2D gTypeTable[] =
     },
     // Big Dust 1
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         1.0f, // initAlpha
         .00006f, // fadeRate
         8,
@@ -1031,7 +1031,7 @@ TYPES2D gTypeTable[] =
     },
     // Incendiary Explosion
     {
-        FADE_START | ANIM_LOOP | ANIM_HALF_RATE | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP, // flags
+        FADE_START bitor ANIM_LOOP bitor ANIM_HALF_RATE bitor EXPLODE_SCATTER_PLOT bitor ANIM_NO_CLAMP, // flags
         1.0f, // initAlpha
         0.0001f, // fadeRate
         1,
@@ -1044,7 +1044,7 @@ TYPES2D gTypeTable[] =
     },
     // Water Wake
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        ANIM_LOOP bitor FADE_START bitor ALPHA_PER_TEXEL, // flags
         0.6f, // initAlpha
         0.00001f, // fadeRate
         7, // texid
@@ -1531,7 +1531,7 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
         }
     }
 
-    if (typeData.flags bitand (FIRE_SCATTER_PLOT | SMOKE_SCATTER_PLOT | EXPLODE_SCATTER_PLOT))
+    if (typeData.flags bitand (FIRE_SCATTER_PLOT bitor SMOKE_SCATTER_PLOT bitor EXPLODE_SCATTER_PLOT))
     {
         if (typeData.flags bitand ALPHA_PER_TEXEL)
             APLScatterPlot(renderer);
@@ -1862,7 +1862,7 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
 
             if (i == 0)
             {
-                gGlobTextures[0].LoadAndCreate(texfile, MPR_TI_CHROMAKEY | MPR_TI_PALETTE | MPR_TI_ALPHA);
+                gGlobTextures[0].LoadAndCreate(texfile, MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
                 Palette *globPal = gGlobTextures[0].GetPalette();
 
                 for (j = 0; j < 256; j++)
@@ -1888,11 +1888,11 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
             }
             else if (i < NUM_TEXTURES_USED)
             {
-                gGlobTextures[i].LoadAndCreate(texfile, MPR_TI_CHROMAKEY | MPR_TI_PALETTE | MPR_TI_ALPHA);
+                gGlobTextures[i].LoadAndCreate(texfile, MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
             }
             else
             {
-                gGlobTextures[i].LoadAndCreate(texfile, MPR_TI_CHROMAKEY | MPR_TI_PALETTE);
+                gGlobTextures[i].LoadAndCreate(texfile, MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE);
             }
         }
     }
@@ -2140,7 +2140,7 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
 
 
     // Load our normal textures
-    gAplTextures[0].LoadAndCreate("sfx01.APL", MPR_TI_CHROMAKEY | MPR_TI_PALETTE);
+    gAplTextures[0].LoadAndCreate("sfx01.APL", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE);
     Palette *aplPal0 = gAplTextures[0].GetPalette();
 
     for (j = 0; j < 256; j++)
@@ -2167,7 +2167,7 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
 
         // temp comment
         // gAplTextures[i].palette = gAplTextures[0].palette;
-        gAplTextures[i].LoadAndCreate(texfile, MPR_TI_CHROMAKEY | MPR_TI_PALETTE);
+        gAplTextures[i].LoadAndCreate(texfile, MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE);
         Palette *aplPalI = gAplTextures[i].GetPalette();
 
         for (j = 0; j < 256; j++)
@@ -2196,13 +2196,13 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
     }
 
     // Load our green textures
-    gAplTexturesGreen[0].LoadAndCreate("sfxg01.GIF", MPR_TI_CHROMAKEY | MPR_TI_PALETTE);
+    gAplTexturesGreen[0].LoadAndCreate("sfxg01.GIF", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE);
 
     for (i = 1; i < NUM_APL_TEXTURES; i++)
     {
         sprintf(texfile, "sfxg%02d.GIF", i + 1);
         gAplTexturesGreen[i].SetPalette(gAplTexturesGreen[0].GetPalette());
-        gAplTexturesGreen[i].LoadAndCreate(texfile, MPR_TI_CHROMAKEY | MPR_TI_PALETTE);
+        gAplTexturesGreen[i].LoadAndCreate(texfile, MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE);
     }
 
     // Initialize the lighting conditions and register for future time of day updates
@@ -2898,7 +2898,7 @@ void Draw2DLensFlare(class RenderOTW *renderer)
             v[i + 1].dwColour = ColorOut;
 
             // And draw the FAN
-            TheDXEngine.DX2D_AddPoly(LAYER_TOP, POLY_BB | POLY_FAN, (D3DXVECTOR3*)&position, v, radius, numLensFlareVerts + 2, NULL);
+            TheDXEngine.DX2D_AddPoly(LAYER_TOP, POLY_BB bitor POLY_FAN, (D3DXVECTOR3*)&position, v, radius, numLensFlareVerts + 2, NULL);
         }
 
 
@@ -3177,7 +3177,7 @@ int Drawable2D::GetAnimFrame(int dT, DWORD start)
         ms = 62;
     }
 
-    if (typeData.flags bitand (FIRE_SCATTER_PLOT | SMOKE_SCATTER_PLOT | EXPLODE_SCATTER_PLOT))
+    if (typeData.flags bitand (FIRE_SCATTER_PLOT bitor SMOKE_SCATTER_PLOT bitor EXPLODE_SCATTER_PLOT))
     {
         // ms = 124;
         curSFrame = dT / 164 + startSFrame;

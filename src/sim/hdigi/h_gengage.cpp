@@ -27,14 +27,14 @@ void HeliBrain::GunsEngageCheck(void)
     SimVehicleClass *theObject;
 
     // OutputDebugString("Entering Guns Engange Check\n");
-    ClearFlag(MslFireFlag | GunFireFlag);
+    ClearFlag(MslFireFlag bitor GunFireFlag);
 
     // no target
     if ( not targetPtr)
     {
         if (curMode == GunsEngageMode)
         {
-            ClearFlag(MslFireFlag | GunFireFlag);
+            ClearFlag(MslFireFlag bitor GunFireFlag);
             //MonoPrint("HELO BRAIN Exiting Guns Engange\n");
         }
 
@@ -46,7 +46,7 @@ void HeliBrain::GunsEngageCheck(void)
     {
         if (curMode == GunsEngageMode)
         {
-            ClearFlag(MslFireFlag | GunFireFlag);
+            ClearFlag(MslFireFlag bitor GunFireFlag);
             SelectNextWaypoint();
         }
 
@@ -87,7 +87,7 @@ void HeliBrain::GunsEngageCheck(void)
         {
             if (mslCheckTimer > 5.0f)
             {
-                ClearFlag(MslFireFlag | GunFireFlag);
+                ClearFlag(MslFireFlag bitor GunFireFlag);
 
                 if (hasAgWeapons == 0)
                     SelectNextWaypoint();
@@ -107,7 +107,7 @@ void HeliBrain::GunsEngageCheck(void)
         {
             if (mslCheckTimer > 5.0f)
             {
-                ClearFlag(MslFireFlag | GunFireFlag);
+                ClearFlag(MslFireFlag bitor GunFireFlag);
 
                 if (hasAaWeapons == 0)
                     SelectNextWaypoint();
@@ -132,7 +132,7 @@ void HeliBrain::GunsEngageCheck(void)
 
             if (curMode == GunsEngageMode)
             {
-                ClearFlag(MslFireFlag | GunFireFlag);
+                ClearFlag(MslFireFlag bitor GunFireFlag);
             }
 
             return;
@@ -189,7 +189,7 @@ void HeliBrain::GunsEngage(void)
     float ataerror;
     SimVehicleClass *theObject;
 
-    ClearFlag(MslFireFlag | GunFireFlag);
+    ClearFlag(MslFireFlag bitor GunFireFlag);
     mslCheckTimer += SimLibMajorFrameTime;
 
     if (targetPtr == NULL)

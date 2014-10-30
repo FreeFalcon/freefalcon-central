@@ -905,14 +905,14 @@ int AdvancedWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int Weap
         case wcCamera:
         case wcECM:
 
-            // rackDataFlags = RDF_SELECTIVE_JETT_RACK | RDF_SELECTIVE_JETT_WEAPON;
+            // rackDataFlags = RDF_SELECTIVE_JETT_RACK bitor RDF_SELECTIVE_JETT_WEAPON;
             // break;
         case wcAimWpn:
             rackDataFlags = 0;
             break;
 
         default:
-            rackDataFlags = RDF_EMERGENCY_JETT_RACK | RDF_SELECTIVE_JETT_RACK;
+            rackDataFlags = RDF_EMERGENCY_JETT_RACK bitor RDF_SELECTIVE_JETT_RACK;
     }
 
     // SP3 data
@@ -1003,7 +1003,7 @@ int AdvancedWeaponStation::GetRackDataFlags(void)
 
 int BasicWeaponStation::GetRackDataFlags(void)
 {
-    return RDF_EMERGENCY_JETT_RACK | RDF_SELECTIVE_JETT_RACK;
+    return RDF_EMERGENCY_JETT_RACK bitor RDF_SELECTIVE_JETT_RACK;
 }
 
 char *AdvancedWeaponStation::GetRackMnemonic(void)

@@ -14,15 +14,15 @@ const unsigned long AircraftClass::systemStates[PowerMaxState] =
     systemStates[0], //  PowerFlcs,
     systemStates[1], //   PowerBattery,
     systemStates[2] |
-    HUDPower | InteriorLightPower, // PowerEmergencyBus,
+    HUDPower bitor InteriorLightPower, // PowerEmergencyBus,
     systemStates[3] |
-    RaltPower | MFDPower | UFCPower | APPower | IFFPower, // PowerEssentialBus,
+    RaltPower bitor MFDPower bitor UFCPower bitor APPower bitor IFFPower, // PowerEssentialBus,
     systemStates[4] |
     SMSPower |
-    FCCPower | GPSPower | FCRPower | EWSRWRPower | MAPPower | DLPower | TISLPower |
-    LeftHptPower | RightHptPower | RwrPower |
-    InstrumentLightPower | InteriorLightPower | SpotLightPower |
-    EWSJammerPower | EWSChaffPower | EWSFlarePower | ChaffFlareCount | PFDPower, // PowerNonEssentialBus,
+    FCCPower bitor GPSPower bitor FCRPower bitor EWSRWRPower bitor MAPPower bitor DLPower bitor TISLPower |
+    LeftHptPower bitor RightHptPower bitor RwrPower |
+    InstrumentLightPower bitor InteriorLightPower bitor SpotLightPower |
+    EWSJammerPower bitor EWSChaffPower bitor EWSFlarePower bitor ChaffFlareCount bitor PFDPower, // PowerNonEssentialBus,
 };
 
 BOOL AircraftClass::HasPower(AvionicsPowerFlags fl)

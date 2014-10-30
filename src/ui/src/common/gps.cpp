@@ -301,7 +301,7 @@ void GlobalPositioningSystem::UpdateDivisions()
 
             if (u)
             {
-                cur = (UI_Refresher*)GPS_Hash->Find(u->GetCampID() | UR_DIVISION);
+                cur = (UI_Refresher*)GPS_Hash->Find(u->GetCampID() bitor UR_DIVISION);
 
                 if ( not cur)
                 {
@@ -311,8 +311,8 @@ void GlobalPositioningSystem::UpdateDivisions()
                     if (cur)
                     {
                         cur->Setup(div, this, Allowed_);
-                        //GPS_Hash->Add(div->nid | UR_DIVISION,cur); // this looks wrong
-                        GPS_Hash->Add(u->GetCampID() | UR_DIVISION, cur); // JPO - hope this is better.
+                        //GPS_Hash->Add(div->nid bitor UR_DIVISION,cur); // this looks wrong
+                        GPS_Hash->Add(u->GetCampID() bitor UR_DIVISION, cur); // JPO - hope this is better.
                     }
                 }
                 else

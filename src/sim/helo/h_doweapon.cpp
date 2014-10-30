@@ -113,8 +113,8 @@ void HelicopterClass::DoWeapons(void)
     ** edg: no more FCC stuff here.  All done in hdigi now
     if ( FCC->releaseConsent and Sms->curWeapon )
     {
-       if (FCC->GetMasterMode() == FireControlComputer::Missile ||
-        FCC->GetMasterMode() == FireControlComputer::Dogfight ||
+       if (FCC->GetMasterMode() == FireControlComputer::Missile or
+        FCC->GetMasterMode() == FireControlComputer::Dogfight or
         FCC->GetMasterMode() == FireControlComputer::MissileOverride)
        {
       theMissile = (MissileClass *)Sms->curWeapon;

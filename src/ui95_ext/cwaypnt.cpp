@@ -7,7 +7,7 @@ C_Waypoint::C_Waypoint() : C_Control()
     Root_ = NULL;
     _SetCType_(_CNTL_WAYPOINT_);
     SetReady(0);
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_SELECTABLE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
     WPScaleType_ = 0;
     MinWorldX_ = 0;
     MinWorldY_ = 0;
@@ -131,7 +131,7 @@ WAYPOINTLIST *C_Waypoint::AddWaypointToList(long CampID, short type, long NormID
     newitem->Icon->SetImage(C_STATE_2, OthrID);
 
     if (Dragable)
-        newitem->Icon->SetFlags((GetFlags() bitand compl (C_BIT_DRAGABLE)) | C_BIT_DRAGABLE);
+        newitem->Icon->SetFlags((GetFlags() bitand compl (C_BIT_DRAGABLE)) bitor C_BIT_DRAGABLE);
     else
         newitem->Icon->SetFlags((GetFlags() bitand compl (C_BIT_DRAGABLE)));
 

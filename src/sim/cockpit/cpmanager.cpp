@@ -107,7 +107,7 @@ MEM_POOL gCockMemPool;
  \
  sprintf( buffer, "Cockpit Error in %s at line %0d - bad string is %s", area, lineNum, badString);\
  choice = MessageBox(NULL, buffer, "Problem:  ",   \
- MB_ICONERROR | MB_ABORTRETRYIGNORE | MB_TASKMODAL); \
+ MB_ICONERROR bitor MB_ABORTRETRYIGNORE bitor MB_TASKMODAL); \
  if (choice == IDABORT) { \
  exit(-1); \
  } \
@@ -136,12 +136,12 @@ void CockpitError(int line, int errorpriority)
     if (errorpriority == 1 and g_nShow2DPitErrors >= errorpriority)
     {
         sprintf(temp, "Critical 2D Cockpit Error Detected in Block Before Line %d.  System Stability May Be Compromised.", line);
-        MessageBox(NULL, temp, "Critical Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+        MessageBox(NULL, temp, "Critical Error", MB_OK bitor MB_ICONSTOP bitor MB_SETFOREGROUND);
     }
     else if (errorpriority == 2 and g_nShow2DPitErrors >= errorpriority)
     {
         sprintf(temp, "2D Cockpit Error Detected in Block Before Line %d.", line);
-        MessageBox(NULL, temp, "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+        MessageBox(NULL, temp, "Error", MB_OK bitor MB_ICONSTOP bitor MB_SETFOREGROUND);
     }
 
 
@@ -611,10 +611,10 @@ CockpitManager::CockpitManager(
             char buf[0x400];
             sprintf(buf, "Verify error detected\n\nNumSurfaces:\t%.3d\t\tSurfaceTally:\t%.3d\nNumObjects:\t%.3d\t\tObjectTally:\t%.3d\nNumPanels:\t%.3d\t\tPanelTally:\t%.3d\nNumButtons:\t%.3d\t\tButtonTally:\t%.3d\nNumButtonViews:\t%.3d\t\tButtonViewTally:\t%.3d\t\n",
                     mNumSurfaces, mSurfaceTally, mNumObjects, mObjectTally, mNumPanels, mPanelTally, mNumButtons, mButtonTally, mNumButtonViews, mButtonViewTally);
-            ::MessageBox(NULL, buf, "FreeFalcon Cockpit Verifier", MB_OK | MB_SETFOREGROUND);
+            ::MessageBox(NULL, buf, "FreeFalcon Cockpit Verifier", MB_OK bitor MB_SETFOREGROUND);
         }
 
-        else ::MessageBox(NULL, "No errors.", "FreeFalcon Cockpit Verifier", MB_OK | MB_SETFOREGROUND);
+        else ::MessageBox(NULL, "No errors.", "FreeFalcon Cockpit Verifier", MB_OK bitor MB_SETFOREGROUND);
     }
 
     //Wombat778 10-18-2003 Hack for 1.25 resolutions
@@ -5713,7 +5713,7 @@ DWORD CockpitManager::ApplyLightingToRGB(DWORD inColor, bool useInst)
     DWORD red = inColor bitand 0xff0000;
     DWORD green = inColor bitand 0x00ff00;
     DWORD blue = inColor bitand 0x0000ff;
-    DWORD colorBGR = (red) | (green << 8) | (blue << 16);
+    DWORD colorBGR = (red) bitor (green << 8) bitor (blue << 16);
 
     return (OTWDriver.renderer->GetGreenMode()) ?
            CalculateNVGColor(CalculateColor(inColor, light[0], light[1], light[2])) :
@@ -5874,7 +5874,7 @@ DWORD CalculateColor(DWORD inColor, float rf, float gf, float bf)
     green = (int)(((inColor bitand 0x0000ff00) >>  8) *  gf);
     red = (int)(((inColor bitand 0x000000ff) >>  0) *  rf);
     alpha = inColor bitand 0xff000000;
-    outColor = (alpha) | (red << 0) | (green << 8) | (blue << 16);
+    outColor = (alpha) bitor (red << 0) bitor (green << 8) bitor (blue << 16);
 
     return outColor;
 }
@@ -5888,7 +5888,7 @@ DWORD InvertRGBOrder(DWORD inColor)
     c2 = (inColor bitand 0x00ff00);
     c3 = (inColor bitand 0x0000ff);
 
-    DWORD outColor = (c1 >> 16) | (c2) | (c3 << 16);
+    DWORD outColor = (c1 >> 16) bitor (c2) bitor (c3 << 16);
     return outColor;
 }
 
@@ -5913,7 +5913,7 @@ DWORD CalculateNVGColor(DWORD inColor)
     alpha = inColor bitand 0xff000000;
 
     nvgColor = (red + green + blue) / 3;
-    nvgColor = (nvgColor << 8) | alpha;
+    nvgColor = (nvgColor << 8) bitor alpha;
     return nvgColor;
 }
 

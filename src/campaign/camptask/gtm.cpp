@@ -283,10 +283,10 @@ int GroundTaskingManagerClass::Task(void)
     Cleanup();
 
     // Choose types of orders we can give
-    collect = COLLECT_AIRDEFENSE | COLLECT_SUPPORT | COLLECT_REPAIR | COLLECT_RESERVE | COLLECT_DEFEND | COLLECT_RADAR;
+    collect = COLLECT_AIRDEFENSE bitor COLLECT_SUPPORT bitor COLLECT_REPAIR bitor COLLECT_RESERVE bitor COLLECT_DEFEND bitor COLLECT_RADAR;
 
     if (action == GACTION_OFFENSIVE)
-        collect or_eq COLLECT_CAPTURE | COLLECT_ASSAULT | COLLECT_AIRBORNE | COLLECT_COMMANDO | COLLECT_SECURE;
+        collect or_eq COLLECT_CAPTURE bitor COLLECT_ASSAULT bitor COLLECT_AIRBORNE bitor COLLECT_COMMANDO bitor COLLECT_SECURE;
     else if (action == GACTION_MINOROFFENSIVE)
         collect or_eq COLLECT_SECURE;
     else if (action == GACTION_CONSOLIDATE)
@@ -506,18 +506,18 @@ int GroundTaskingManagerClass::GetAddBits(Objective o, int to_collect)
         return 0;
 
     if ( not o->IsSecondary())
-        add_now and_eq compl (COLLECT_RESERVE | COLLECT_CAPTURE | COLLECT_SECURE | COLLECT_ASSAULT | COLLECT_AIRBORNE | COLLECT_DEFEND);
+        add_now and_eq compl (COLLECT_RESERVE bitor COLLECT_CAPTURE bitor COLLECT_SECURE bitor COLLECT_ASSAULT bitor COLLECT_AIRBORNE bitor COLLECT_DEFEND);
 
     if (o->IsNearfront())
-        add_now and_eq compl (COLLECT_RESERVE | COLLECT_ASSAULT | COLLECT_AIRBORNE);
+        add_now and_eq compl (COLLECT_RESERVE bitor COLLECT_ASSAULT bitor COLLECT_AIRBORNE);
     else
-        add_now and_eq compl (COLLECT_CAPTURE | COLLECT_DEFEND);
+        add_now and_eq compl (COLLECT_CAPTURE bitor COLLECT_DEFEND);
 
     if (owner not_eq o->GetTeam())
-        add_now and_eq compl (COLLECT_RESERVE | COLLECT_SECURE | COLLECT_DEFEND | COLLECT_SUPPORT | COLLECT_REPAIR | COLLECT_AIRDEFENSE | COLLECT_RADAR);
+        add_now and_eq compl (COLLECT_RESERVE bitor COLLECT_SECURE bitor COLLECT_DEFEND bitor COLLECT_SUPPORT bitor COLLECT_REPAIR bitor COLLECT_AIRDEFENSE bitor COLLECT_RADAR);
 
     if (GetRoE(owner, o->GetTeam(), ROE_GROUND_CAPTURE) not_eq ROE_ALLOWED)
-        add_now and_eq compl (COLLECT_CAPTURE | COLLECT_ASSAULT | COLLECT_AIRBORNE | COLLECT_COMMANDO);
+        add_now and_eq compl (COLLECT_CAPTURE bitor COLLECT_ASSAULT bitor COLLECT_AIRBORNE bitor COLLECT_COMMANDO);
 
     if (o->Abandoned())
         add_now and_eq compl COLLECT_DEFEND;
@@ -634,7 +634,7 @@ int GroundTaskingManagerClass::BuildObjectiveLists(int to_collect)
                 ps = po->GetObjectivePriority();
             }
 
-            if (add_now bitand (COLLECT_RESERVE | COLLECT_CAPTURE | COLLECT_SECURE | COLLECT_ASSAULT | COLLECT_AIRBORNE | COLLECT_DEFEND | GORD_SUPPORT))
+            if (add_now bitand (COLLECT_RESERVE bitor COLLECT_CAPTURE bitor COLLECT_SECURE bitor COLLECT_ASSAULT bitor COLLECT_AIRBORNE bitor COLLECT_DEFEND bitor GORD_SUPPORT))
             {
                 GridIndex ox, oy;
                 o->GetLocation(&ox, &oy);
@@ -693,7 +693,7 @@ void GroundTaskingManagerClass::AddToList(Unit u, int orders)
 #endif
     curu = new UnitScoreNode;
     curu->unit = u;
-    curu->score = u->GetUnitRoleScore(GetGroundRole(orders), CALC_MAX, USE_VEH_COUNT | IGNORE_BROKEN);
+    curu->score = u->GetUnitRoleScore(GetGroundRole(orders), CALC_MAX, USE_VEH_COUNT bitor IGNORE_BROKEN);
 
     if ( not canidateList[orders])
         canidateList[orders] = curu;

@@ -2103,13 +2103,13 @@ void OTWDriverClass::Padlock_DrawSquares(BOOL highlightPriority)
                         int blue = (labelColor bitand 0x00ff0000) >> 16;
                         blue -= min(blue, colorsub);
 
-                        long newlabelColor = blue << 16 | green << 8 | red;
+                        long newlabelColor = blue << 16 bitor green << 8 bitor red;
 
                         renderer->SetColor(newlabelColor);
                     }
                     else if (g_bPadlockHudColor) //Wombat778 4-28-04 Made this a variable
                         // renderer->SetColor (PadlockColor); // Unz Changed to provide same color as hud
-                        renderer->SetColor(0xff000000 | TheHud->GetHudColor()); // MD -- 20040514: let's not use global variables for this one
+                        renderer->SetColor(0xff000000 bitor TheHud->GetHudColor()); // MD -- 20040514: let's not use global variables for this one
                     else
                         renderer->SetColor(0xffc0c0c0); // gray
 
@@ -2119,7 +2119,7 @@ void OTWDriverClass::Padlock_DrawSquares(BOOL highlightPriority)
                     // END OF ADDED SECTION
                     if (g_bPadlockHudColor) //Wombat778 4-28-04 Made this a variable
                         // renderer->SetColor (PadlockColor); //Unz For the colorblind...same as HUD color
-                        renderer->SetColor(0xff000000 | TheHud->GetHudColor()); // MD -- 20040514: let's not use global variables for this one
+                        renderer->SetColor(0xff000000 bitor TheHud->GetHudColor()); // MD -- 20040514: let's not use global variables for this one
                     else
                         renderer->SetColor(0xff0000ff);
 

@@ -650,7 +650,7 @@ int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int typ
     piece -> damage = MapVisId(DAMAGEF16_ID);
     piece -> mask = type;
     piece -> sfxtype = SFX_SMOKING_PART;
-    piece -> sfxflag = SFX_F16CRASHLANDING | SFX_MOVES | SFX_BOUNCES;
+    piece -> sfxflag = SFX_F16CRASHLANDING bitor SFX_MOVES bitor SFX_BOUNCES;
     piece -> lifetime = 300.0f;
 
     piece -> pitch = 0.0f;
@@ -1116,18 +1116,18 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
             if (PRANDFloatPos() > 0.5f)
             {
                 dirflag or_eq DAMAGEF16_TORIGHT;
-                i or_eq DAMAGEF16_LWING | DAMAGEF16_LSTAB;
+                i or_eq DAMAGEF16_LWING bitor DAMAGEF16_LSTAB;
             }
-            else i or_eq DAMAGEF16_RWING | DAMAGEF16_RSTAB;
+            else i or_eq DAMAGEF16_RWING bitor DAMAGEF16_RSTAB;
         }
         else
         {
             if (PRANDFloatPos() > 0.5f)
             {
                 dirflag or_eq DAMAGEF16_TOLEFT;
-                i or_eq DAMAGEF16_RWING | DAMAGEF16_RSTAB;
+                i or_eq DAMAGEF16_RWING bitor DAMAGEF16_RSTAB;
             }
-            else i or_eq DAMAGEF16_LWING | DAMAGEF16_LSTAB;
+            else i or_eq DAMAGEF16_LWING bitor DAMAGEF16_LSTAB;
         }
 
         int j = i xor 0x7f;
@@ -1357,7 +1357,7 @@ void AircraftClass::RunExplosion(void)
             /*
             OTWDriver.AddSfxRequest(
             new SfxClass (SFX_FLAMING_PART, // type
-             SFX_MOVES | SFX_USES_GRAVITY | SFX_EXPLODE_WHEN_DONE,
+             SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_EXPLODE_WHEN_DONE,
              tmpSimBase, // sim base *
              3.0f + PRANDFloatPos() * 4.0F, // time to live
              1.0F ) ); // scale
@@ -1377,7 +1377,7 @@ void AircraftClass::RunExplosion(void)
             /*
             OTWDriver.AddSfxRequest(
              new SfxClass (SFX_SMOKING_PART, // type
-             SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES | SFX_EXPLODE_WHEN_DONE,
+             SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES bitor SFX_EXPLODE_WHEN_DONE,
              tmpSimBase, // sim base *
              4.0f * PRANDFloatPos() + (float)((i+1)*(i+1)), // time to live
              1.0 ) ); // scale
@@ -1806,7 +1806,7 @@ void AircraftClass::ShowDamage(void)
             /*
             OTWDriver.AddSfxRequest(
              new SfxClass (SFX_TRAILSMOKE, // type
-             SFX_MOVES | SFX_NO_GROUND_CHECK, // flags
+             SFX_MOVES bitor SFX_NO_GROUND_CHECK, // flags
              &pos, // world pos
              &rearOffset, // vector
              3.5f, // time to live

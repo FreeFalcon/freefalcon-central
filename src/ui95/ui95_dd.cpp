@@ -170,13 +170,13 @@ void UI95_GetScreenColorInfo(DWORD &r_mask, WORD &r_shift, DWORD &g_mask, WORD &
 
 WORD UI95_RGB15Bit(WORD rgb)
 {
-    return static_cast<WORD>(rShift[(rgb >> 10) bitand 0x1f] | gShift[(rgb >> 5) bitand 0x1f] | bShift[rgb bitand 0x1f]); 
+    return static_cast<WORD>(rShift[(rgb >> 10) bitand 0x1f] bitor gShift[(rgb >> 5) bitand 0x1f] bitor bShift[rgb bitand 0x1f]); 
 }
 
 
 WORD UI95_RGB24Bit(unsigned long rgb)
 {
-    return static_cast<WORD>(rShift[(rgb >> 3) bitand 0x1f] | gShift[(rgb >> 11) bitand 0x1f] | bShift[(rgb >> 19) bitand 0x1f]);
+    return static_cast<WORD>(rShift[(rgb >> 3) bitand 0x1f] bitor gShift[(rgb >> 11) bitand 0x1f] bitor bShift[(rgb >> 19) bitand 0x1f]);
 }
 
 WORD UI95_ScreenToTga(WORD color)
@@ -187,14 +187,14 @@ WORD UI95_ScreenToTga(WORD color)
     g = ((color >> greens) bitand 0x1f) << 5;
     b = ((color >> blues) bitand 0x1f);
 
-    return static_cast<WORD>(r | g | b); 
+    return static_cast<WORD>(r bitor g bitor b); 
 }
 
 WORD UI95_ScreenToGrey(WORD color)
 {
     long grey = Grey_3[(color  >> reds) bitand 0x1f] + Grey_6[(color  >> greens) bitand 0x1f] + Grey_1[(color  >> blues) bitand 0x1f];
 
-    return static_cast<WORD>(rShift[grey] | gShift[grey] | bShift[grey]); 
+    return static_cast<WORD>(rShift[grey] bitor gShift[grey] bitor bShift[grey]); 
 }
 
 /*
@@ -262,8 +262,8 @@ IDirectDrawSurface *UI95_CreateDDSurface(IDirectDraw *DD,DWORD width,DWORD heigh
     ddDescription.dwSize = sizeof( ddDescription );
     ddDescription.dwFlags = DDSD_CAPS;
 
- ddDescription.ddsCaps.dwCaps or_eq DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN | DDSCAPS_3DDEVICE;
- ddDescription.dwFlags or_eq DDSD_WIDTH | DDSD_HEIGHT;
+ ddDescription.ddsCaps.dwCaps or_eq DDSCAPS_SYSTEMMEMORY bitor DDSCAPS_OFFSCREENPLAIN bitor DDSCAPS_3DDEVICE;
+ ddDescription.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
  ddDescription.dwWidth = width;
  ddDescription.dwHeight = height;
 
@@ -284,7 +284,7 @@ void *UI95_Lock(IDirectDrawSurface *ddSurface)
  memset( &UI95_ScreenFormat, 0, sizeof( UI95_ScreenFormat ) );
  UI95_ScreenFormat.dwSize = sizeof( UI95_ScreenFormat );
 
- result=ddSurface->Lock( NULL, &UI95_ScreenFormat, DDLOCK_SURFACEMEMORYPTR | DDLOCK_WAIT, NULL );
+ result=ddSurface->Lock( NULL, &UI95_ScreenFormat, DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_WAIT, NULL );
  if(result == DD_OK)
  return(UI95_ScreenFormat.lpSurface);
  UI95_DDErrorCheck( result );

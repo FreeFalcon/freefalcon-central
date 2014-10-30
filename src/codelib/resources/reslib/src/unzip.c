@@ -254,7 +254,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
         arc -> length = statbuf.st_size;
     }
 
-    if ((arc -> os_handle = _open(filename, O_RDONLY | O_BINARY)) < 0)
+    if ((arc -> os_handle = _open(filename, O_RDONLY bitor O_BINARY)) < 0)
     {
         ResCheckMedia(toupper(filename[0]) - 'A');   /* see if media has been swapped */
 
@@ -570,7 +570,7 @@ ARCHIVE * archive_create(const char * attach_point, const char * filename, HASH_
                 table = hash_create(ARCHIVE_TABLE_SIZE, path);
 
                 strcpy(info.name, path);                  /* insert a dummy entry into the global hash table  */
-                info.attrib = _A_SUBDIR | (unsigned int)FORCE_BIT;
+                info.attrib = _A_SUBDIR bitor (unsigned int)FORCE_BIT;
                 info.time_create = 0;
                 info.time_access = 0;
                 info.size = 0;
@@ -860,7 +860,7 @@ int getfiletomem(char * myfile, char **retbuf, long * size, COMPRESSED_FILE * cm
         construct_path(local_file_dir, filename, myfile, entry->file_position);
         // sprintf(filename, "%s%s", local_file_dir, myfile);
 
-        if ((fd = open(filename, O_BINARY | O_RDONLY)) >= 0)
+        if ((fd = open(filename, O_BINARY bitor O_RDONLY)) >= 0)
         {
 #ifdef USE_SH_POOLS
 
@@ -958,7 +958,7 @@ int getfiletomem(char * myfile, char **retbuf, long * size, COMPRESSED_FILE * cm
 
 static ush makeword(uch *b)
 {
-    return (ush)((b[1] << 8) | b[0]);
+    return (ush)((b[1] << 8) bitor b[0]);
 }
 
 
@@ -978,7 +978,7 @@ static ush makeword(uch *b)
 
 static ulg makelong(uch *sig)
 {
-    return (((ulg)sig[3]) << 24) | (((ulg)sig[2]) << 16) | (((ulg)sig[1]) << 8) | ((ulg)sig[0]);
+    return (((ulg)sig[3]) << 24) bitor (((ulg)sig[2]) << 16) bitor (((ulg)sig[1]) << 8) bitor ((ulg)sig[0]);
 }
 
 

@@ -56,7 +56,7 @@ void surfaceGetPointer(LPVOID surface,
     ZeroMemory(&ddsd, sizeof(ddsd));
     ddsd.dwSize = sizeof(ddsd);
 
-    HRESULT hr = pDS->Lock(NULL, &ddsd, DDLOCK_WAIT | DDLOCK_WRITEONLY | DDLOCK_SURFACEMEMORYPTR, NULL);
+    HRESULT hr = pDS->Lock(NULL, &ddsd, DDLOCK_WAIT bitor DDLOCK_WRITEONLY bitor DDLOCK_SURFACEMEMORYPTR, NULL);
 
     if (SUCCEEDED(hr))
     {
@@ -193,14 +193,14 @@ LPVOID surfaceCreate(LPVOID ddPointer, int dibWidth, int dibHeight)
     {
         DDSURFACEDESC2 ddsd;
         ZeroMemory(&ddsd, sizeof(ddsd));
-        ddsd.dwFlags = DDSD_CAPS | DDSD_PIXELFORMAT;
+        ddsd.dwFlags = DDSD_CAPS bitor DDSD_PIXELFORMAT;
         ddsd.dwSize = sizeof(ddsd);
         ddsd.ddpfPixelFormat = ddsdMode.ddpfPixelFormat;
 
-        ddsd.dwFlags or_eq DDSD_WIDTH | DDSD_HEIGHT;
+        ddsd.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
         ddsd.dwWidth  = dibWidth;
         ddsd.dwHeight = dibHeight;
-        ddsd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;
+        ddsd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY bitor DDSCAPS_OFFSCREENPLAIN;
         hr = pDD->CreateSurface(&ddsd, &pDS, NULL);
     }
 

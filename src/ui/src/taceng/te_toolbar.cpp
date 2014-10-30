@@ -502,8 +502,8 @@ static void tactical_debriefing_print(long, short hittype, C_Base *ctrl)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (TheCampaign.MissionEvaluator == NULL ||
-        TheCampaign.MissionEvaluator->flight_data == NULL ||
+    if (TheCampaign.MissionEvaluator == NULL or
+        TheCampaign.MissionEvaluator->flight_data == NULL or
         TheCampaign.MissionEvaluator->flight_data->mission == AMIS_TRAINING)
         return;
 

@@ -442,7 +442,7 @@ int GroundClass::Exec(void)
             OTWDriver.AddSfxRequest(
              new SfxClass(
              SFX_TRAILSMOKE, // type
-             SFX_MOVES | SFX_NO_GROUND_CHECK, // flags
+             SFX_MOVES bitor SFX_NO_GROUND_CHECK, // flags
              &pos, // world pos
              &vec, // vector
              3.5f, // time to live
@@ -1153,7 +1153,7 @@ int GroundClass::Exec(void)
                     OTWDriver.AddSfxRequest(
                      new SfxClass (SFX_VEHICLE_DUST, // type //JAM 03Oct03
                     // new SfxClass (SFX_GROUND_DUSTCLOUD, // type
-                     SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR | SFX_MOVES | SFX_NO_GROUND_CHECK,
+                     SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR bitor SFX_MOVES bitor SFX_NO_GROUND_CHECK,
                      &pos, // world pos
                      &vec,
                      1.0f, // time to live

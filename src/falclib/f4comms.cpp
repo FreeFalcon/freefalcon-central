@@ -212,7 +212,7 @@ int InitCommsStuff(ComDataClass *comData)
     }
 
     // We have UDP bitand RUDP and PTOP
-    FalconConnectionProtocol = FCP_UDP_AVAILABLE | FCP_RUDP_AVAILABLE;
+    FalconConnectionProtocol = FCP_UDP_AVAILABLE bitor FCP_RUDP_AVAILABLE;
     FalconConnectionType = FCT_PTOP_AVAILABLE;
     F4CommsConnectionCallback(F4COMMS_CONNECTED);
 

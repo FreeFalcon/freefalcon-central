@@ -411,7 +411,7 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
     if (rng < 2.0f or (onStation not_eq NotThereYet) or (SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime()))
     {
         // Should we repeat?
-        if (self and self->curWaypoint and self->curWaypoint->GetWPFlags() bitand (WPF_REPEAT | WPF_REPEAT_CONTINUOUS))
+        if (self and self->curWaypoint and self->curWaypoint->GetWPFlags() bitand (WPF_REPEAT bitor WPF_REPEAT_CONTINUOUS))
         {
             if ((self->curWaypoint->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS) or
                 SimLibElapsedTime < self->curWaypoint->GetWPDepartureTime())
@@ -610,7 +610,7 @@ void DigitalBrain::GoToCurrentWaypoint(void)
         SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime())
     {
         // Should we repeat?
-        if (self->curWaypoint->GetWPFlags() bitand (WPF_REPEAT | WPF_REPEAT_CONTINUOUS))
+        if (self->curWaypoint->GetWPFlags() bitand (WPF_REPEAT bitor WPF_REPEAT_CONTINUOUS))
         {
             if ((self->curWaypoint->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS) or
                 SimLibElapsedTime < self->curWaypoint->GetWPDepartureTime())

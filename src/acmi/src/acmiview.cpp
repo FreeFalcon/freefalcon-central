@@ -237,7 +237,7 @@ void ACMIView::SetupEntityUIMappings()
         ep = Tape()->GetSimTapeEntity(i);
 
         // we don't want to put chaff and flares into the list boxes
-        if (ep->flags bitand (ENTITY_FLAG_CHAFF | ENTITY_FLAG_FLARE))
+        if (ep->flags bitand (ENTITY_FLAG_CHAFF bitor ENTITY_FLAG_FLARE))
             continue;
 
         GetObjectName(ep->objBase, _entityUIMappings[i].name);

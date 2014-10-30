@@ -620,7 +620,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
     // if (who == 2 or who==6) { // A.S. debug
     // FILE *deb;
     // deb = fopen("c:\\temp\\deb1.txt", "a");
-    // fprintf(deb, "Team %2d  ReplaAvail = %3d  Needed = %3d | Repl_a = %2d repl_v = %3d | TIME = %d\n", who, TeamInfo[who]->GetReplacementsAvail(), rneeded, repl_sa, (repl_s-repl_sa) , TheCampaign.CurrentTime % CampaignHours );
+    // fprintf(deb, "Team %2d  ReplaAvail = %3d  Needed = %3d bitor Repl_a = %2d repl_v = %3d bitor TIME = %d\n", who, TeamInfo[who]->GetReplacementsAvail(), rneeded, repl_sa, (repl_s-repl_sa) , TheCampaign.CurrentTime % CampaignHours );
     // fclose(deb);
     // }
     //}

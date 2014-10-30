@@ -8,7 +8,7 @@ VU_BOOL VuResendMsgFilter::Test(VuMessage *message) const
 {
     if (
         (message->Flags() bitand VU_SEND_FAILED_MSG_FLAG) and 
-        (message->Flags() bitand (VU_RELIABLE_MSG_FLAG | VU_KEEPALIVE_MSG_FLAG))
+        (message->Flags() bitand (VU_RELIABLE_MSG_FLAG bitor VU_KEEPALIVE_MSG_FLAG))
     )
     {
         return TRUE;
@@ -35,7 +35,7 @@ VU_BOOL VuStandardMsgFilter::Test(VuMessage *message) const
         return FALSE;
     }
 
-    if (eventBit bitand (VU_DELETE_EVENT_BITS | VU_CREATE_EVENT_BITS))
+    if (eventBit bitand (VU_DELETE_EVENT_BITS bitor VU_CREATE_EVENT_BITS))
     {
         return TRUE;
     }

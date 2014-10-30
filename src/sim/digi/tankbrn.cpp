@@ -731,7 +731,7 @@ void TankerBrain::DriveBoom(void)
             ((DrawableBSP*)curThirsty->drawPointer)->SetLabel(label, ((DrawableBSP*)curThirsty->drawPointer)->LabelColor());
         }
 
-        if ( not (flags bitand (GivingGas | ClearingPlane)) and tankingPtr)
+        if ( not (flags bitand (GivingGas bitor ClearingPlane)) and tankingPtr)
         {
             if ((fabs(totalrange) < 6.0F * /*FRB*/ ScaledRM and 
                  fabs(boom[DROGUE].az - tmpAz)*RTD < 6.0F * /*FRB*/ ScaledRM and 
@@ -944,7 +944,7 @@ void TankerBrain::DriveBoom(void)
     }
 
 
-    if ( not (flags bitand (GivingGas | ClearingPlane)) and tankingPtr)
+    if ( not (flags bitand (GivingGas bitor ClearingPlane)) and tankingPtr)
     {
         if ((fabs(boom[BOOM].ext - tankingPtr->localData->range + 33.5F) < 1.0F * /*FRB*/ ScaledRM and 
              fabs(boom[BOOM].az - tmpAz)*RTD < 1.0F * /*FRB*/ ScaledRM and 
@@ -1758,7 +1758,7 @@ void TankerBrain::PurgeWaitQ(void)
 
 void TankerBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
 {
-    if ( not (flags bitand (IsRefueling | ClearingPlane)))
+    if ( not (flags bitand (IsRefueling bitor ClearingPlane)))
     {
         DigitalBrain::FrameExec(tList, tPtr);
 

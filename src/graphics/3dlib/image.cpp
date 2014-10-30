@@ -79,7 +79,7 @@ GLubyte *ConvertImage(GLImageInfo *fi, GLint mode, GLuint *chromakey)
                     break;
 
                 case COLOR_16M: // RGBA 32 bit color
-                    j = (a << 24) | (b << 16) | (g << 8) | r;
+                    j = (a << 24) bitor (b << 16) bitor (g << 8) bitor r;
                     break;
             }
 
@@ -289,7 +289,7 @@ GLint ReadBMP(CImageFileMemory *fi)
         for (j = 0; j < i; j++)
         {
             fi -> glReadMem(&bmprgb, sizeof(bmprgb));
-            *palptr++ = (bmprgb.rgbBlue << 16) | (bmprgb.rgbGreen << 8) | bmprgb.rgbRed;
+            *palptr++ = (bmprgb.rgbBlue << 16) bitor (bmprgb.rgbGreen << 8) bitor bmprgb.rgbRed;
         }
     }
 
@@ -432,7 +432,7 @@ GLint UnpackGIF(CImageFileMemory *fi)
 
         while (palOut < palStop)
         {
-            *palOut++ = 0xFF000000 | (palIn[2] << 16) | (palIn[1] << 8) | palIn[0];
+            *palOut++ = 0xFF000000 bitor (palIn[2] << 16) bitor (palIn[1] << 8) bitor palIn[0];
             palIn += 3;
         }
     }
@@ -482,7 +482,7 @@ GLint UnpackGIF(CImageFileMemory *fi)
 
                 while (palOut < palStop)
                 {
-                    *palOut = 0xFF000000 | (palIn[2] << 16) | (palIn[1] << 8) | palIn[0];
+                    *palOut = 0xFF000000 bitor (palIn[2] << 16) bitor (palIn[1] << 8) bitor palIn[0];
                     palIn += 3;
                 }
             }
@@ -901,7 +901,7 @@ GLulong *ReadLBMColorMap(CImageFileMemory *fi)
 
     while (palOut < palStop)
     {
-        *palOut++ = (palIn[2] << 16) | (palIn[1] << 8) | palIn[0];
+        *palOut++ = (palIn[2] << 16) bitor (palIn[1] << 8) bitor palIn[0];
         palIn += 3;
     }
 
@@ -1123,7 +1123,7 @@ GLint UnpackPCX(CImageFileMemory *fi)
 
     while (palOut < palStop)
     {
-        *palOut++ = 0xFF000000 | (palIn[2] << 16) | (palIn[1] << 8) | palIn[0];
+        *palOut++ = 0xFF000000 bitor (palIn[2] << 16) bitor (palIn[1] << 8) bitor palIn[0];
         palIn += 3;
     }
 
@@ -1215,7 +1215,7 @@ GLint WritePCX(int fileHandle, GLImageInfo *image)
             else
             {
                 // Require a count byte
-                *outP++ = (BYTE)(0xC0 | run);
+                *outP++ = (BYTE)(0xC0 bitor run);
                 *outP++ = value;
             }
 

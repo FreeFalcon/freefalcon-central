@@ -27,7 +27,7 @@ C_Tile::C_Tile() : C_Base()
     Image_ = NULL;
     _SetCType_(_CNTL_TILE_);
     SetReady(0);
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE;
 }
 
 C_Tile::C_Tile(char **stream) : C_Base(stream)

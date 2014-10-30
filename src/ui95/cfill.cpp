@@ -37,7 +37,7 @@ C_Fill::C_Fill() : C_Base()
     Step_ = 0.0f;
     DitherSize_ = 0;
     DitherPattern_ = NULL;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE;
 }
 
 C_Fill::C_Fill(char **stream) : C_Base(stream)
@@ -375,7 +375,7 @@ void C_Fill::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CFIL_SETCOLOR:
-            SetColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CFIL_SETGRADIENT:

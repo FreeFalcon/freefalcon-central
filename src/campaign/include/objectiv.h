@@ -231,7 +231,7 @@ public:
     }
     int IsNearfront(void)
     {
-        return (int)((O_THIRDLINE | O_SECONDLINE | O_FRONTLINE) bitand obj_data.obj_flags);
+        return (int)((O_THIRDLINE bitor O_SECONDLINE bitor O_FRONTLINE) bitand obj_data.obj_flags);
     }
     int IsBeach(void)
     {

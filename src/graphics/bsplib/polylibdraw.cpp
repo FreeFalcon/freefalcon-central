@@ -226,7 +226,7 @@ void DrawPolyF(PolyFC *poly)
 void DrawPolyL(PolyFCN *poly)
 {
     verts += poly->nVerts;
-    SetForegroundColor(PRIM_COLOP_COLOR | PRIM_COLOP_INTENSITY, poly->rgba, poly->I);
+    SetForegroundColor(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY, poly->rgba, poly->I);
     SelectState(RenderStateTable[poly->type]);
     TheStateStack.context->DrawPoly(PRIM_COLOP_NONE, poly, poly->xyz, NULL, NULL, NULL, true);
     TheStateStack.context->SetPalID(0);
@@ -236,7 +236,7 @@ void DrawPolyFL(PolyFCN *poly)
 {
     verts += poly->nVerts;
     SetSpecularFog();
-    SetForegroundColor(PRIM_COLOP_COLOR | PRIM_COLOP_INTENSITY, poly->rgba, poly->I);
+    SetForegroundColor(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY, poly->rgba, poly->I);
     SelectState(RenderStateTable[poly->type]);
     TheStateStack.context->DrawPoly(PRIM_COLOP_NONE, poly, poly->xyz, NULL, NULL, NULL, true);
     TheStateStack.context->SetPalID(0);
@@ -263,7 +263,7 @@ void DrawPolyGL(PolyVCN *poly)
 {
     verts += poly->nVerts;
     SelectState(RenderStateTable[poly->type]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR | PRIM_COLOP_INTENSITY, poly, poly->xyz, poly->rgba, poly->I, NULL, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY, poly, poly->xyz, poly->rgba, poly->I, NULL, false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -272,7 +272,7 @@ void DrawPolyFGL(PolyVCN *poly)
     verts += poly->nVerts;
     SetSpecularFog();
     SelectState(RenderStateTable[poly->type]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR | PRIM_COLOP_INTENSITY, poly, poly->xyz, poly->rgba, poly->I, NULL, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY, poly, poly->xyz, poly->rgba, poly->I, NULL, false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -350,7 +350,7 @@ void DrawPolyFTL(PolyTexFCN *poly)
 void DrawPolyATL(PolyTexFCN *poly)
 {
     verts += poly->nVerts;
-    SetForegroundColor(PRIM_COLOP_COLOR | PRIM_COLOP_INTENSITY, poly->rgba, poly->I);
+    SetForegroundColor(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY, poly->rgba, poly->I);
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
     TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, NULL, poly->uv, true);
@@ -361,7 +361,7 @@ void DrawPolyFATL(PolyTexFCN *poly)
 {
     verts += poly->nVerts;
     SetSpecularFog();
-    SetForegroundColor(PRIM_COLOP_COLOR | PRIM_COLOP_INTENSITY, poly->rgba, poly->I);
+    SetForegroundColor(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY, poly->rgba, poly->I);
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
     TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, NULL, poly->uv, true);
@@ -395,7 +395,7 @@ void DrawPolyATG(PolyTexVC *poly)
     SelectState(RenderStateTable[poly->type]);
     ShiAssert((poly->type == ATexG) or (poly->type == CATexG));
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR | PRIM_COLOP_TEXTURE, poly, poly->xyz, poly->rgba, NULL, poly->uv, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR bitor PRIM_COLOP_TEXTURE, poly, poly->xyz, poly->rgba, NULL, poly->uv, false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -406,7 +406,7 @@ void DrawPolyFATG(PolyTexVC *poly)
     SelectState(RenderStateTable[poly->type]);
     ShiAssert((poly->type == ATexG) or (poly->type == CATexG));
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR | PRIM_COLOP_TEXTURE, poly, poly->xyz, poly->rgba, NULL, poly->uv, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR bitor PRIM_COLOP_TEXTURE, poly, poly->xyz, poly->rgba, NULL, poly->uv, false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -415,7 +415,7 @@ void DrawPolyTGL(PolyTexVCN *poly)
     verts += poly->nVerts;
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_INTENSITY | PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, poly->I, poly->uv, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_INTENSITY bitor PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, poly->I, poly->uv, false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -425,7 +425,7 @@ void DrawPolyFTGL(PolyTexVCN *poly)
     SetSpecularFog();
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_INTENSITY | PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, poly->I, poly->uv, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_INTENSITY bitor PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, poly->I, poly->uv, false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -435,7 +435,7 @@ void DrawPolyATGL(PolyTexVCN *poly)
 
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR | PRIM_COLOP_INTENSITY | PRIM_COLOP_TEXTURE, poly, poly->xyz, poly->rgba, poly->I, poly->uv, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY bitor PRIM_COLOP_TEXTURE, poly, poly->xyz, poly->rgba, poly->I, poly->uv, false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -445,6 +445,6 @@ void DrawPolyFATGL(PolyTexVCN *poly)
     SetSpecularFog();
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR | PRIM_COLOP_INTENSITY | PRIM_COLOP_TEXTURE, poly, poly->xyz, poly->rgba, poly->I, poly->uv, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY bitor PRIM_COLOP_TEXTURE, poly, poly->xyz, poly->rgba, poly->I, poly->uv, false);
     TheStateStack.context->SetPalID(0);
 }

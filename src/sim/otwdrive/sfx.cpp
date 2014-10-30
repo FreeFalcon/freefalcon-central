@@ -330,7 +330,7 @@ SfxClass::SfxClass(FalconMissileEndMessage *endM,
 
     inACMI = FALSE;
     type = SFX_MESSAGE_TIMER;
-    flags = SFX_TIMER_FLAG | SFX_SECONDARY_DRIVER;
+    flags = SFX_TIMER_FLAG bitor SFX_SECONDARY_DRIVER;
     endMessage = endM;
     damMessage = damM;
     vec.x = 0.0f;
@@ -1119,7 +1119,7 @@ SfxClass::SfxClass(
     damMessage = NULL;
 
     viewPoint = OTWDriver.GetViewpoint();
-    flags = SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES;
+    flags = SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES;
 
     if (pos.x > -10000.0f and pos.x < 10000000.0f and 
         pos.y > -10000.0f and pos.y < 10000000.0f and 
@@ -3084,7 +3084,7 @@ BOOL SfxClass::Exec()
     int coverage = (groundType == COVERAGE_WATER) or (groundType == COVERAGE_RIVER);
 
     // does this object bounce?
-    if (hitGround and (flags bitand (SFX_BOUNCES | SFX_BOUNCES_HARD)) and not coverage)
+    if (hitGround and (flags bitand (SFX_BOUNCES bitor SFX_BOUNCES_HARD)) and not coverage)
     {
         // calcuate the new movement vector
         GroundReflection();
@@ -3392,7 +3392,7 @@ SfxClass::RunSecondarySfx(void)
 {
     Tpoint mpos, mvec, vec2;
     float distScale = 0.0F;
-    int mflags = SFX_MOVES | SFX_USES_GRAVITY | SFX_EXPLODE_WHEN_DONE;
+    int mflags = SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_EXPLODE_WHEN_DONE;
     int numBursts = 0, i = 0;
     float rads = 0.0F, radstep = 0.0F;
 
@@ -3572,7 +3572,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_GROUNDBURST, // type
-                 SFX_MOVES | SFX_USES_GRAVITY,
+                 SFX_MOVES bitor SFX_USES_GRAVITY,
                  &pos, // world pos
                  &mvec, // vel vector
                  20.0f, // time to live
@@ -3604,7 +3604,7 @@ SfxClass::RunSecondarySfx(void)
 
              OTWDriver.AddSfxRequest(
              new SfxClass( SFX_GROUNDBURST, // type
-             SFX_MOVES | SFX_USES_GRAVITY,
+             SFX_MOVES bitor SFX_USES_GRAVITY,
              &pos, // world pos
              &mvec, // vel vector
              20.0f, // time to live
@@ -3651,7 +3651,7 @@ SfxClass::RunSecondarySfx(void)
 
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_EXPLSTAR_GLOW, // type
-             SFX_MOVES | SFX_BOUNCES | SFX_USES_GRAVITY, // flags
+             SFX_MOVES bitor SFX_BOUNCES bitor SFX_USES_GRAVITY, // flags
              &mpos, // world pos
              &mvec, // vector
              1.3f, // time to live
@@ -3669,7 +3669,7 @@ SfxClass::RunSecondarySfx(void)
             /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_SPARK_TRACER, // type
-             SFX_MOVES | SFX_BOUNCES | SFX_USES_GRAVITY, // flags
+             SFX_MOVES bitor SFX_BOUNCES bitor SFX_USES_GRAVITY, // flags
              &mpos, // world pos
              &mvec, // vector
              1.3f, // time to live
@@ -3690,7 +3690,7 @@ SfxClass::RunSecondarySfx(void)
             /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_SPARK_TRACER, // type
-             SFX_MOVES | SFX_BOUNCES | SFX_USES_GRAVITY, // flags
+             SFX_MOVES bitor SFX_BOUNCES bitor SFX_USES_GRAVITY, // flags
              &mpos, // world pos
              &mvec, // vector
              1.3f, // time to live
@@ -3771,7 +3771,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_FIRE2, // type
-                 SFX_NO_GROUND_CHECK | SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR, // flags
+                 SFX_NO_GROUND_CHECK bitor SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR, // flags
                  &mpos, // world pos
                  &mvec, // vector
                  3.5f, // time to live
@@ -3807,7 +3807,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( FIRE2, // type
-                 SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR, // flags
+                 SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR, // flags
                  &mpos, // world pos
                  &mvec, // vector
                  3.5f, // time to live
@@ -4284,7 +4284,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass (SFX_STEAM_CLOUD, // type
-                 SFX_USES_GRAVITY | SFX_MOVES | SFX_NO_DOWN_VECTOR | SFX_NO_GROUND_CHECK,  // flags
+                 SFX_USES_GRAVITY bitor SFX_MOVES bitor SFX_NO_DOWN_VECTOR bitor SFX_NO_GROUND_CHECK,  // flags
                  &mpos, // world pos
                  &mvec, // vector
                  2.0f, // time to live
@@ -4341,7 +4341,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_FIRESMOKE, // type
-                         SFX_MOVES | SFX_NO_DOWN_VECTOR | SFX_NO_GROUND_CHECK,  // flags
+                         SFX_MOVES bitor SFX_NO_DOWN_VECTOR bitor SFX_NO_GROUND_CHECK,  // flags
                          &mpos, // world pos
                          &mvec, // vector
                          3.5f, // time to live
@@ -4353,7 +4353,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_TRAILSMOKE, // type
-                         SFX_MOVES | SFX_NO_DOWN_VECTOR | SFX_NO_GROUND_CHECK,  // flags
+                         SFX_MOVES bitor SFX_NO_DOWN_VECTOR bitor SFX_NO_GROUND_CHECK,  // flags
                          &mpos, // world pos
                          &mvec, // vector
                          3.5f, // time to live
@@ -4400,7 +4400,7 @@ SfxClass::RunSecondarySfx(void)
             /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_FIRESMOKE, // type
-             SFX_MOVES | SFX_NO_DOWN_VECTOR | SFX_NO_GROUND_CHECK,  // flags
+             SFX_MOVES bitor SFX_NO_DOWN_VECTOR bitor SFX_NO_GROUND_CHECK,  // flags
              &mpos, // world pos
              &mvec, // vector
              3.5f, // time to live
@@ -4471,7 +4471,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_FIRE4, // type
-                         SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                         SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
                          &mpos, // world pos
                          &mvec, // vel vector
                          1.5, // time to live
@@ -4486,7 +4486,7 @@ SfxClass::RunSecondarySfx(void)
                             /*
                             OTWDriver.AddSfxRequest(
                              new SfxClass( SFX_DEBRISTRAIL, // type
-                             SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                             SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                              &mpos, // world pos
                              &mvec, // vel vector
                              5.0, // time to live
@@ -4499,7 +4499,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_FIREBALL, // type
-                 SFX_MOVES | SFX_NO_GROUND_CHECK,
+                 SFX_MOVES bitor SFX_NO_GROUND_CHECK,
                  &mpos, // world pos
                  &mvec, // vel vector
                  3.0, // time to live
@@ -4557,7 +4557,7 @@ SfxClass::RunSecondarySfx(void)
                     {
                      OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_WATER_FIREBALL, // type
-                     SFX_MOVES | SFX_USES_GRAVITY,
+                     SFX_MOVES bitor SFX_USES_GRAVITY,
                      &mpos, // world pos
                      &mvec, // vel vector
                      3.0, // time to live
@@ -4570,7 +4570,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_WATERTRAIL, // type
-                         SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                         SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                          &mpos, // world pos
                          &mvec, // vel vector
                          3.0, // time to live
@@ -4619,7 +4619,7 @@ SfxClass::RunSecondarySfx(void)
                     /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_FIRE5, // type
-                     SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                     SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
                      &mpos, // world pos
                      &mvec, // vel vector
                      3.0, // time to live
@@ -4631,7 +4631,7 @@ SfxClass::RunSecondarySfx(void)
                     /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_DEBRISTRAIL_DUST, // type
-                     SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                     SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                      &mpos, // world pos
                      &mvec, // vel vector
                      3.0, // time to live
@@ -4643,7 +4643,7 @@ SfxClass::RunSecondarySfx(void)
                     /*
                      OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_DEBRISTRAIL, // type
-                     SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                     SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                      &mpos, // world pos
                      &mvec, // vel vector
                      8.0, // time to live
@@ -4670,7 +4670,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_DEBRISTRAIL, // type
-                 SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                 SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                  &mpos, // world pos
                  &mvec, // vel vector
                  3.0, // time to live
@@ -4740,7 +4740,7 @@ SfxClass::RunSecondarySfx(void)
                     /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass(SFX_FIRE_EXPAND_NOSMOKE, // type
-                     SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                     SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
                      &mpos, // world pos
                      &mvec, // vel vector
                      1.5, // time to live
@@ -4775,7 +4775,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_FIRETRAIL, // type
-                         SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                         SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                          &mpos, // world pos
                          &mvec, // vel vector
                          4.0, // time to live
@@ -4787,7 +4787,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                          OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_DEBRISTRAIL, // type
-                         SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                         SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                          &mpos, // world pos
                          &mvec, // vel vector
                          6.0, // time to live
@@ -4829,7 +4829,7 @@ SfxClass::RunSecondarySfx(void)
                     /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_BIG_DUST, // type
-                     SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                     SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
                      &mpos, // world pos
                      &mvec, // vel vector
                      1.5, // time to live
@@ -4841,7 +4841,7 @@ SfxClass::RunSecondarySfx(void)
                     /*
                      OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_BIG_SMOKE, // type
-                     SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                     SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
                      &mpos, // world pos
                      &mvec, // vel vector
                      1.5, // time to live
@@ -4883,7 +4883,7 @@ SfxClass::RunSecondarySfx(void)
                             /*
                             OTWDriver.AddSfxRequest(
                              new SfxClass( SFX_DEBRISTRAIL, // type
-                             SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                             SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                              &mpos, // world pos
                              &mvec, // vel vector
                              6.0, // time to live
@@ -4935,7 +4935,7 @@ SfxClass::RunSecondarySfx(void)
                 {
                  OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_EXPLCIRC_GLOW, // type
-                 SFX_MOVES | SFX_USES_GRAVITY,
+                 SFX_MOVES bitor SFX_USES_GRAVITY,
                  &pos, // world pos
                  &mvec, // vel vector
                  3.5f, // time to live
@@ -4947,7 +4947,7 @@ SfxClass::RunSecondarySfx(void)
                     /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_SPARKS, // type
-                     SFX_MOVES | SFX_USES_GRAVITY,
+                     SFX_MOVES bitor SFX_USES_GRAVITY,
                      &pos, // world pos
                      &mvec, // vel vector
                      3.5f, // time to live
@@ -4996,7 +4996,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_SMOKETRAIL, // type
-                 SFX_MOVES | SFX_USES_GRAVITY,
+                 SFX_MOVES bitor SFX_USES_GRAVITY,
                  &pos, // world pos
                  &mvec, // vel vector
                  1.0, // time to live
@@ -5013,7 +5013,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_SMOKETRAIL, // type
-                 SFX_MOVES | SFX_USES_GRAVITY,
+                 SFX_MOVES bitor SFX_USES_GRAVITY,
                  &pos, // world pos
                  &mvec, // vel vector
                  1.0, // time to live
@@ -5116,7 +5116,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_DEBRISTRAIL, // type
-                         SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                         SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                          &pos, // world pos
                          &mvec, // vel vector
                          6.0, // time to live
@@ -5128,7 +5128,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_FIRETRAIL, // type
-                         SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                         SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                          &pos, // world pos
                          &mvec, // vel vector
                          6.0, // time to live
@@ -5399,7 +5399,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_FIRE4, // type
-                         SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                         SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
                          &mpos, // world pos
                          &vec2, // vel vector
                          1.5, // time to live
@@ -5490,7 +5490,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_TRACER_FIRE, // type
-                         SFX_EXPLODE_WHEN_DONE | SFX_MOVES | SFX_NO_GROUND_CHECK , // flags
+                         SFX_EXPLODE_WHEN_DONE bitor SFX_MOVES bitor SFX_NO_GROUND_CHECK , // flags
                          &mpos, // world pos
                          &mvec, // vector for movement
                          travelDist/TRACER_VELOCITY, // time to live
@@ -5583,7 +5583,7 @@ SfxClass::RunSecondarySfx(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_TRACER_FIRE, // type
-                         SFX_EXPLODE_WHEN_DONE | SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR, // flags
+                         SFX_EXPLODE_WHEN_DONE bitor SFX_MOVES bitor SFX_NO_GROUND_CHECK bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR, // flags
                          &mpos, // world pos
                          &mvec, // vector for movement
                          travelDist/TRACER_VELOCITY, // time to live
@@ -5704,7 +5704,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_TRACER_FIRE, // type
-                 SFX_EXPLODE_WHEN_DONE | SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR, // flags
+                 SFX_EXPLODE_WHEN_DONE bitor SFX_MOVES bitor SFX_NO_GROUND_CHECK bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR, // flags
                  &mpos, // world pos
                  &mvec, // vector for movement
                  travelDist/TRACER_VELOCITY, // time to live
@@ -5765,7 +5765,7 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_TRACER_FIRE, // type
-                 SFX_EXPLODE_WHEN_DONE | SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR, // flags
+                 SFX_EXPLODE_WHEN_DONE bitor SFX_MOVES bitor SFX_NO_GROUND_CHECK bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR, // flags
                  &mpos, // world pos
                  &mvec, // vector for movement
                  travelDist/TRACER_VELOCITY, // time to live
@@ -6015,7 +6015,7 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_FIRE4, // type
-                         SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                         SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
                          &pos, // world pos
                          &vec, // vel vector
                          1.5, // time to live
@@ -6314,7 +6314,7 @@ SfxClass::ACMIExec(float currTime)
 
     newvec = vec;
 
-    if (flags bitand (SFX_USES_GRAVITY | SFX_TRAJECTORY))
+    if (flags bitand (SFX_USES_GRAVITY bitor SFX_TRAJECTORY))
     {
         // gravity = 32 ft/secSq
         newvec.z += 32.0f * dT;
@@ -6324,7 +6324,7 @@ SfxClass::ACMIExec(float currTime)
     newpos.x = pos.x + vec.x * dT;
     newpos.y = pos.y + vec.y * dT;
 
-    if (flags bitand (SFX_USES_GRAVITY | SFX_TRAJECTORY))
+    if (flags bitand (SFX_USES_GRAVITY bitor SFX_TRAJECTORY))
     {
         // pos(t) = p0 + v0(t) + 1/2a(t^2)
         newpos.z = pos.z + vec.z * dT + 0.5f * 32.0f * dT * dT;
@@ -6549,7 +6549,7 @@ SfxClass::StartRandomDebris(void)
             /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_FLARE_GFX, // type
-             SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+             SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
              &mpos, // world pos
              &mvec, // vel vector
              timetl, // time to live
@@ -6563,7 +6563,7 @@ SfxClass::StartRandomDebris(void)
             /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_AC_DEBRIS, // type
-             SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+             SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
              &mpos, // world pos
              &mvec, // vel vector
              timetl, // time to live
@@ -6575,7 +6575,7 @@ SfxClass::StartRandomDebris(void)
             /*
              OTWDriver.AddSfxRequest(
              new SfxClass( SFX_EXPLSTAR_GLOW, // type
-             SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+             SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
              &mpos, // world pos
              &mvec, // vel vector
              timetl, // time to live
@@ -6587,7 +6587,7 @@ SfxClass::StartRandomDebris(void)
             /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_AC_DEBRIS, // type
-             SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+             SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
              &mpos, // world pos
              &mvec, // vel vector
              timetl, // time to live

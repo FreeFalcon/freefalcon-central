@@ -130,7 +130,7 @@ extern int asAgg;
 // For testing
 unsigned char SHOWSTATS;
 int NoInput = 1;
-int gMoveFlags = PATH_ENEMYOK | PATH_ROADOK;
+int gMoveFlags = PATH_ENEMYOK bitor PATH_ROADOK;
 int gMoveType = Tracked;
 int gMoveWho = 6;
 extern BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
@@ -2231,60 +2231,60 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
 
         case ID_VIEW_BOTH:
             Mode = EditMode = 0;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND | MF_CHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND | MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND bitor MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND bitor MF_UNCHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_COVER:
             Mode = EditMode = 1;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND | MF_CHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND | MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND bitor MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND bitor MF_UNCHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_RELIEF:
             Mode = EditMode = 2;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND | MF_CHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND | MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND bitor MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND bitor MF_UNCHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_CLOUDS:
             Mode = EditMode = 5;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND | MF_CHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND | MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND bitor MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND bitor MF_UNCHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_LEVELS:
             Mode = EditMode = 6;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND | MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_BOTH, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_COVER, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RELIEF, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_CLOUDS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_LEVELS, MF_BYCOMMAND bitor MF_CHECKED);
             SetRefresh(MainMapData);
 
         case ID_VIEW_ROADS:
             RoadsOn = not RoadsOn;
 
             if (RoadsOn)
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_ROADS, MF_BYCOMMAND | MF_CHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_ROADS, MF_BYCOMMAND bitor MF_CHECKED);
             else
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_ROADS, MF_BYCOMMAND | MF_UNCHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_ROADS, MF_BYCOMMAND bitor MF_UNCHECKED);
 
             SetRefresh(MainMapData);
             break;
@@ -2293,9 +2293,9 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             RailsOn = not RailsOn;
 
             if (RailsOn)
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RAILS, MF_BYCOMMAND | MF_CHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RAILS, MF_BYCOMMAND bitor MF_CHECKED);
             else
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RAILS, MF_BYCOMMAND | MF_UNCHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_RAILS, MF_BYCOMMAND bitor MF_UNCHECKED);
 
             SetRefresh(MainMapData);
             break;
@@ -2305,9 +2305,9 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             Mode = 11;
 
             if (MainMapData->Emitters)
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_EMITTERS, MF_BYCOMMAND | MF_CHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_EMITTERS, MF_BYCOMMAND bitor MF_CHECKED);
             else
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_EMITTERS, MF_BYCOMMAND | MF_UNCHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_EMITTERS, MF_BYCOMMAND bitor MF_UNCHECKED);
 
             SetRefresh(MainMapData);
             break;
@@ -2317,9 +2317,9 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             Mode = 10;
 
             if (MainMapData->SAMs)
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_SAMS, MF_BYCOMMAND | MF_CHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_SAMS, MF_BYCOMMAND bitor MF_CHECKED);
             else
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_SAMS, MF_BYCOMMAND | MF_UNCHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_SAMS, MF_BYCOMMAND bitor MF_UNCHECKED);
 
             SetRefresh(MainMapData);
             break;
@@ -2328,70 +2328,70 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             PBubble = not PBubble;
 
             if (PBubble)
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PLAYERBUBBLE, MF_BYCOMMAND | MF_CHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PLAYERBUBBLE, MF_BYCOMMAND bitor MF_CHECKED);
             else
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PLAYERBUBBLE, MF_BYCOMMAND | MF_UNCHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PLAYERBUBBLE, MF_BYCOMMAND bitor MF_UNCHECKED);
 
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_OBJPRIORITY:
             ObjMode = 1;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJOWNER, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJPRIORITY, MF_BYCOMMAND | MF_CHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJTYPE, MF_BYCOMMAND | MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJOWNER, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJPRIORITY, MF_BYCOMMAND bitor MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJTYPE, MF_BYCOMMAND bitor MF_UNCHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_OBJOWNER:
             ObjMode = 0;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJOWNER, MF_BYCOMMAND | MF_CHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJPRIORITY, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJTYPE, MF_BYCOMMAND | MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJOWNER, MF_BYCOMMAND bitor MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJPRIORITY, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJTYPE, MF_BYCOMMAND bitor MF_UNCHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_OBJTYPE:
             ObjMode = 2;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJOWNER, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJPRIORITY, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJTYPE, MF_BYCOMMAND | MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJOWNER, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJPRIORITY, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_OBJTYPE, MF_BYCOMMAND bitor MF_CHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_REALUNITS:
             ShowReal = 1;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REALUNITS, MF_BYCOMMAND | MF_CHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PARENTUNITS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REINFORCEMENTS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_DIVISIONS, MF_BYCOMMAND | MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REALUNITS, MF_BYCOMMAND bitor MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PARENTUNITS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REINFORCEMENTS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_DIVISIONS, MF_BYCOMMAND bitor MF_UNCHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_PARENTUNITS:
             ShowReal = 0;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REALUNITS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PARENTUNITS, MF_BYCOMMAND | MF_CHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REINFORCEMENTS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_DIVISIONS, MF_BYCOMMAND | MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REALUNITS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PARENTUNITS, MF_BYCOMMAND bitor MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REINFORCEMENTS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_DIVISIONS, MF_BYCOMMAND bitor MF_UNCHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_DIVISIONS:
             ShowReal = 3;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REALUNITS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PARENTUNITS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REINFORCEMENTS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_DIVISIONS, MF_BYCOMMAND | MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REALUNITS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PARENTUNITS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REINFORCEMENTS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_DIVISIONS, MF_BYCOMMAND bitor MF_CHECKED);
             SetRefresh(MainMapData);
             break;
 
         case ID_VIEW_REINFORCEMENTS:
             ShowReal = 2;
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REALUNITS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PARENTUNITS, MF_BYCOMMAND | MF_UNCHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REINFORCEMENTS, MF_BYCOMMAND | MF_CHECKED);
-            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_DIVISIONS, MF_BYCOMMAND | MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REALUNITS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_PARENTUNITS, MF_BYCOMMAND bitor MF_UNCHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_REINFORCEMENTS, MF_BYCOMMAND bitor MF_CHECKED);
+            CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_DIVISIONS, MF_BYCOMMAND bitor MF_UNCHECKED);
             SetRefresh(MainMapData);
             break;
 
@@ -2400,13 +2400,13 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             {
                 ShowCodes = 0;
                 CleanupConverter();
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_TEXTURECODES, MF_BYCOMMAND | MF_UNCHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_TEXTURECODES, MF_BYCOMMAND bitor MF_UNCHECKED);
             }
             else
             {
                 ShowCodes = 1;
                 InitConverter(TheCampaign.TheaterName);
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_TEXTURECODES, MF_BYCOMMAND | MF_CHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_TEXTURECODES, MF_BYCOMMAND bitor MF_CHECKED);
             }
 
             break;
@@ -2495,7 +2495,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                 // Load the texture codes
                 ShowCodes = 1;
                 InitConverter(TheCampaign.TheaterName);
-                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_TEXTURECODES, MF_BYCOMMAND | MF_CHECKED);
+                CheckMenuItem(GetMenu(hMainWnd), ID_VIEW_TEXTURECODES, MF_BYCOMMAND bitor MF_CHECKED);
             }
 
             MatchObjectiveTypes();
@@ -3006,7 +3006,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             ResizeCursor();
 
             // set up it's menu bar
-            EnableMenuItem(GetMenu(hMainWnd), ID_FILE_MYSAVE, MF_BYCOMMAND | MF_DISABLED);
+            EnableMenuItem(GetMenu(hMainWnd), ID_FILE_MYSAVE, MF_BYCOMMAND bitor MF_DISABLED);
 
             if (hMainMenu = GetSubMenu(GetMenu(hMainWnd), 0))
                 DrawMenuBar(hMainWnd);
@@ -3305,11 +3305,11 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             if (resize)
             {
                 // Note: This should work, but currently doesnt. MSVC++ bug?
-                // AdjustWindowRect(&r, WS_OVERLAPPEDWINDOW |  WS_HSCROLL | WS_VSCROLL, TRUE);
+                // AdjustWindowRect(&r, WS_OVERLAPPEDWINDOW bitor  WS_HSCROLL bitor WS_VSCROLL, TRUE);
                 AdjustWindowRect(&r, WS_OVERLAPPEDWINDOW, TRUE);
                 r.right += GetSystemMetrics(SM_CXVSCROLL);
                 r.bottom += GetSystemMetrics(SM_CYHSCROLL);
-                SetWindowPos(hMainWnd, HWND_TOP, 0, 0, r.right - r.left, r.bottom - r.top, SWP_NOMOVE | SWP_NOZORDER);
+                SetWindowPos(hMainWnd, HWND_TOP, 0, 0, r.right - r.left, r.bottom - r.top, SWP_NOMOVE bitor SWP_NOZORDER);
                 PostMessage(hMainWnd, WM_PAINT, 0, 0);
             }
             else
@@ -3660,7 +3660,7 @@ void ProcessCommand(int Key)
                         i = LinkCampaignObjectives(&path, FromObjective, ToObjective);
 
                         if (i < 1)
-                            MessageBox(NULL, "No valid path found", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+                            MessageBox(NULL, "No valid path found", "Error", MB_OK bitor MB_ICONSTOP bitor MB_SETFOREGROUND);
 
                         if (MainMapData->ShowLinks and i > 0)
                         {
@@ -4077,7 +4077,7 @@ void CampMain(HINSTANCE hInstance, int nCmdShow)
     hCurPoint = LoadCursor(NULL, IDC_ARROW);
 
     // Set up the main window
-    mainwc.style = CS_HREDRAW | CS_VREDRAW;
+    mainwc.style = CS_HREDRAW bitor CS_VREDRAW;
     mainwc.lpfnWndProc = (WNDPROC)CampaignWndProc; // The client window procedure.
     mainwc.cbClsExtra = 0;                     // No room reserved for extra data.
     mainwc.cbWndExtra = sizeof(DWORD);
@@ -4092,13 +4092,13 @@ void CampMain(HINSTANCE hInstance, int nCmdShow)
     rect.right = 320;
     rect.bottom = 256;
     // Note: This should work, but currently doesnt. MSVC++ bug?
-    // AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW |  WS_HSCROLL | WS_VSCROLL, TRUE);
+    // AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW bitor  WS_HSCROLL bitor WS_VSCROLL, TRUE);
     AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, TRUE);
     rect.right += GetSystemMetrics(SM_CXVSCROLL);
     rect.bottom += GetSystemMetrics(SM_CYHSCROLL);
     hMainWnd = CreateWindow("CampTool",
                             "Campaign Tool",
-                            WS_OVERLAPPEDWINDOW |  WS_HSCROLL | WS_VSCROLL, // | WS_MAXIMIZE,
+                            WS_OVERLAPPEDWINDOW bitor  WS_HSCROLL bitor WS_VSCROLL, // bitor WS_MAXIMIZE,
                             CW_USEDEFAULT, //  WS_CLIPCHILDREN |
                             CW_USEDEFAULT,
                             rect.right - rect.left, /* init. x size */
@@ -4109,7 +4109,7 @@ void CampMain(HINSTANCE hInstance, int nCmdShow)
                             NULL);
 
     // set up data associated with this window
-    SetWindowPos(hMainWnd, HWND_TOP, 600, 400, 650, 600, SWP_NOSIZE | SWP_NOZORDER);
+    SetWindowPos(hMainWnd, HWND_TOP, 600, 400, 650, 600, SWP_NOSIZE bitor SWP_NOZORDER);
     ShowWindow(hMainWnd, SW_SHOW);
     UpdateWindow(hMainWnd);
     RefreshCampMap();
@@ -4120,7 +4120,7 @@ void CampaignWindow(HINSTANCE hInstance, int nCmdShow)
     WNDCLASS  toolwc;
 
     // Set up the time/location window
-    toolwc.style = CS_HREDRAW | CS_VREDRAW;
+    toolwc.style = CS_HREDRAW bitor CS_VREDRAW;
     toolwc.lpfnWndProc = (WNDPROC)ToolWndProc; // The client window procedure.
     toolwc.cbClsExtra = 0;                     // No room reserved for extra data.
     toolwc.cbWndExtra = sizeof(DWORD);
@@ -4144,7 +4144,7 @@ void CampaignWindow(HINSTANCE hInstance, int nCmdShow)
                             NULL);
 
     // set up data associated with this window
-    SetWindowPos(hToolWnd, HWND_TOP, 10, 10, 10, 10, SWP_NOSIZE | SWP_NOZORDER);
+    SetWindowPos(hToolWnd, HWND_TOP, 10, 10, 10, 10, SWP_NOSIZE bitor SWP_NOZORDER);
     ShowWindow(hToolWnd, SW_SHOW);
     UpdateWindow(hToolWnd);
 }

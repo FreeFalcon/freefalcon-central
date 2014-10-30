@@ -33,7 +33,7 @@ C_Blip::C_Blip() : C_Base()
     Last_ = NULL;
     memset(BlipImg_, NULL, sizeof(IMAGE_RSC*) * 8 * 8);
     _SetCType_(_CNTL_BLIP_);
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE;
 }
 
 C_Blip::C_Blip(char **stream) : C_Base(stream)

@@ -776,7 +776,7 @@ void AddMessageToChatWindow(VU_ID from, _TCHAR *message)
         txt->SetFGColor(color);
         txt->SetClient(2);
         txt->SetUserNumber(_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_);
-        txt->SetFlagBitOn(C_BIT_LEFT | C_BIT_WORDWRAP);
+        txt->SetFlagBitOn(C_BIT_LEFT bitor C_BIT_WORDWRAP);
         win->AddControl(txt);
         txt->Refresh();
 
@@ -2598,7 +2598,7 @@ void SimOpenChatBox(unsigned long, int state, void *)
         MaxInputLength = 60;
         AsciiAllowed = 0; // All
 
-        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() | SHOW_CHATBOX);
+        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitor SHOW_CHATBOX);
     }
 }
 

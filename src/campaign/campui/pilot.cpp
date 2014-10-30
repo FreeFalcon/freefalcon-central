@@ -64,10 +64,10 @@ void PilotClass::ResetStats(uchar airExperience)
     pilot_id = 0;
     pilot_status = PILOT_AVAILABLE;
     // MODIFIED BY S.G. SO PILOT SKILL ARE NOT JUST VETERAN AND ACE BUT BASED ON THE SQUADRON SKILL +-1
-    // pilot_skill_and_rating = 0x03 | (rand()%PILOT_SKILL_RANGE);
+    // pilot_skill_and_rating = 0x03 bitor (rand()%PILOT_SKILL_RANGE);
     airExperience -= 60; // From 60 to 100 (recruit to ace) down to 0 to 40
     airExperience /= 10; // Now from 0 to 4 like 'pilot_skill_and_rating' likes it
-    pilot_skill_and_rating = 0x30 | ((rand() % 3 - 1) + airExperience); // pilot_skill_and_rating will have +-1 from 'airExperience' base level
+    pilot_skill_and_rating = 0x30 bitor ((rand() % 3 - 1) + airExperience); // pilot_skill_and_rating will have +-1 from 'airExperience' base level
     // END OF MODIFIED SECTION
     aa_kills = 0;
     ag_kills = 0;

@@ -370,7 +370,7 @@ void RadarDopplerClass::GMMode(void)
                 if (canSee < .8f)
                 {
                     // clear both flags
-                    testFeature->UnSetFELocalFlag((FalconEntityLocalFlags)(FELF_ON_PLAYERS_GM_CONTACT_LIST | FELF_ON_PLAYERS_GMT_CONTACT_LIST));
+                    testFeature->UnSetFELocalFlag((FalconEntityLocalFlags)(FELF_ON_PLAYERS_GM_CONTACT_LIST bitor FELF_ON_PLAYERS_GMT_CONTACT_LIST));
                 }
                 else
                 {
@@ -887,7 +887,7 @@ int RadarDopplerClass::CheckGMBump(void)
     }
 
     // Max range available
-    if (flags bitand (DBS1 | DBS2) or mode == GMT or mode == SEA)
+    if (flags bitand (DBS1 bitor DBS2) or mode == GMT or mode == SEA)
     {
         maxIdx = NUM_RANGES - 2;
     }
@@ -988,7 +988,7 @@ void RadarDopplerClass::RestoreAGCursor()
         int maxIdx;
 
         // Reuse current range, within limits of course
-        if (flags bitand (DBS1 | DBS2) or mode == GMT or mode == SEA)
+        if (flags bitand (DBS1 bitor DBS2) or mode == GMT or mode == SEA)
         {
             maxIdx = NUM_RANGES - 3;
         }
@@ -1479,7 +1479,7 @@ void RadarDopplerClass::GMDisplay(void)
                 }
 
                 //((RenderGMComposite*)display)->StartDraw();
-                ((RenderGMComposite*)display)->SetBeam(&viewFrom, &GMat, &center, headingForDisplay, baseAz + beamAz, beamPercent, cursorAngle, (scanDir == ScanFwd), (flags bitand (DBS1 | DBS2)) ? true : false);
+                ((RenderGMComposite*)display)->SetBeam(&viewFrom, &GMat, &center, headingForDisplay, baseAz + beamAz, beamPercent, cursorAngle, (scanDir == ScanFwd), (flags bitand (DBS1 bitor DBS2)) ? true : false);
             }
 
             // OW - restore render target and start new scene
@@ -1825,7 +1825,7 @@ void RadarDopplerClass::GMDisplay(void)
         if (IsAGDclt(Cntl) == FALSE)
             LabelButton(4, "CNTL", NULL, IsSet(CtlMode));
 
-        if (IsSet(MenuMode | CtlMode))
+        if (IsSet(MenuMode bitor CtlMode))
             MENUDisplay();
         else
         {

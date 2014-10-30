@@ -478,8 +478,8 @@ void MissileClass::CommandGuide(void)
         if (file < 0)
         {
             theOne = this;
-            binfile = open("C:\\temp\\MissileTrack.bin", _O_CREAT | _O_TRUNC | _O_WRONLY | _O_BINARY, 0000666);
-            file = open("C:\\temp\\MissileTrack.txt", _O_CREAT | _O_TRUNC | _O_WRONLY, 0000666);
+            binfile = open("C:\\temp\\MissileTrack.bin", _O_CREAT bitor _O_TRUNC bitor _O_WRONLY bitor _O_BINARY, 0000666);
+            file = open("C:\\temp\\MissileTrack.txt", _O_CREAT bitor _O_TRUNC bitor _O_WRONLY, 0000666);
             sprintf(buffer, "Missile Guidance Dump started %2d:%2d.%2d for (0x%X)\n", now / 60000, now % 60000 / 1000, now % 1000 / 10, this);
             write(file, buffer, strlen(buffer));
             sprintf(buffer, "Time     Addr           T   rng   ttg   gndZ   xFromTgt yFromTgt zFromTgt xdot  ydot  zdot  yawCmd ptchCmd\n");

@@ -205,7 +205,7 @@ BOOL TLHELPGetLoadedModules(DWORD     dwPID        ,
                 //  This is so we match the functionality of the NT4
                 //  version of this function which will return the
                 //  correct total needed.
-                if ((TRUE == bBuffToSmall) ||
+                if ((TRUE == bBuffToSmall) or
                     (*puiRealCount == uiCount))
                 {
                     bBuffToSmall = TRUE ;

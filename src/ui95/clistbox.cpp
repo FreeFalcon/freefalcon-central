@@ -71,7 +71,7 @@ C_ListBox::C_ListBox() : C_Control()
     OpenCallback_ = NULL;
     Window_ = NULL;
     Handler_ = NULL;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER;
     Font_ = 0; // JPO initialise
 }
 
@@ -286,7 +286,7 @@ C_ListBox *C_ListBox::AddItem(long ID, short, _TCHAR *Str)
     newitem->Label_->SetColor(C_STATE_1, SelColor_);
     newitem->Label_->SetGroup(5551212);
     newitem->Label_->SetFont(Font_);
-    newitem->Label_->SetFlags((GetFlags() bitand compl (C_BIT_INVISIBLE | C_BIT_ABSOLUTE | C_BIT_USEBGFILL | C_BIT_REMOVE)));
+    newitem->Label_->SetFlags((GetFlags() bitand compl (C_BIT_INVISIBLE bitor C_BIT_ABSOLUTE bitor C_BIT_USEBGFILL bitor C_BIT_REMOVE)));
     newitem->Label_->SetOwner(this);
     newitem->Label_->SetParent(Parent_);
     newitem->Next = NULL;
@@ -917,23 +917,23 @@ void C_ListBox::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *Hndlr)
             break;
 
         case CLBP_SETBGCOLOR:
-            SetBgColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetBgColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CLBP_SETNORMALCOLOR:
-            SetNormColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetNormColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CLBP_SETSELCOLOR:
-            SetSelColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetSelColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CLBP_SETBARCOLOR:
-            SetBarColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetBarColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CLBP_SETLABELCOLOR:
-            SetLabelColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetLabelColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CLBP_SETVALUE:

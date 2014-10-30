@@ -302,7 +302,7 @@ static void MissionSelectCB(long, short hittype, C_Base *control)
         }
     }
 
-    control->SetState(static_cast<short>(control->GetState() | 1));
+    control->SetState(static_cast<short>(control->GetState() bitor 1));
     control->Refresh();
     CheckCampaignFlyButton();
     UI_Leave(Leave);
@@ -332,7 +332,7 @@ static void SelectMission(C_Base *control)
         }
     }
 
-    control->SetState(static_cast<short>(control->GetState() | 1));
+    control->SetState(static_cast<short>(control->GetState() bitor 1));
     control->Refresh();
     CheckCampaignFlyButton();
     UI_Leave(Leave);

@@ -488,13 +488,13 @@ void LogBookData::UpdateCampaign(CAMP_MISS_STRUCT *MissStats)
     if (MissStats->Flags bitand CRASH_UNDAMAGED and not g_bDisableCrashEjectCourtMartials) // JB 010118
     {
         Pilot.Campaign.TotalScore -= 25;
-        MissionResult or_eq CM_CRASH | COURT_MARTIAL;
+        MissionResult or_eq CM_CRASH bitor COURT_MARTIAL;
     }
 
     if (MissStats->Flags bitand EJECT_UNDAMAGED and not g_bDisableCrashEjectCourtMartials) // JB 010118
     {
         Pilot.Campaign.TotalScore -= 50;
-        MissionResult or_eq CM_EJECT | COURT_MARTIAL;
+        MissionResult or_eq CM_EJECT bitor COURT_MARTIAL;
     }
 
     short FrKills = static_cast<short>(MissStats->FriendlyFireKills);
@@ -504,12 +504,12 @@ void LogBookData::UpdateCampaign(CAMP_MISS_STRUCT *MissStats)
         if (Pilot.Campaign.FriendliesKilled == 0)
         {
             Pilot.Campaign.TotalScore -= 100;
-            MissionResult or_eq CM_FR_FIRE1 | COURT_MARTIAL;
+            MissionResult or_eq CM_FR_FIRE1 bitor COURT_MARTIAL;
         }
         else if (Pilot.Campaign.FriendliesKilled == 1)
         {
             Pilot.Campaign.TotalScore -= 200;
-            MissionResult or_eq CM_FR_FIRE2 | COURT_MARTIAL;
+            MissionResult or_eq CM_FR_FIRE2 bitor COURT_MARTIAL;
         }
         else
         {
@@ -519,10 +519,10 @@ void LogBookData::UpdateCampaign(CAMP_MISS_STRUCT *MissStats)
             {
                 Pilot.Campaign.TotalScore = 0;
                 Pilot.Rank = SEC_LT;
-                MissionResult or_eq CM_FR_FIRE3 | COURT_MARTIAL;
+                MissionResult or_eq CM_FR_FIRE3 bitor COURT_MARTIAL;
             }
             else
-                MissionResult or_eq CM_FR_FIRE2 | COURT_MARTIAL;
+                MissionResult or_eq CM_FR_FIRE2 bitor COURT_MARTIAL;
         }
 
         Pilot.Campaign.FriendliesKilled++;
@@ -718,25 +718,25 @@ void LogBookData::AwardMedals(CAMP_MISS_STRUCT *MissStats)
 
         if ((MedalPts > 9600) and (PlayerOptions.Realism > 0.9f) and MissStats->Score >= 4)
         {
-            MissionResult or_eq AWARD_MEDAL | MDL_AFCROSS;
+            MissionResult or_eq AWARD_MEDAL bitor MDL_AFCROSS;
             Pilot.Medals[AIR_FORCE_CROSS]++;
             Pilot.Campaign.TotalScore += 20;
         }
         else if ((MedalPts > 7800) and (PlayerOptions.Realism > 0.7f))
         {
-            MissionResult or_eq AWARD_MEDAL | MDL_SILVERSTAR;
+            MissionResult or_eq AWARD_MEDAL bitor MDL_SILVERSTAR;
             Pilot.Medals[SILVER_STAR]++;
             Pilot.Campaign.TotalScore += 15;
         }
         else if (MedalPts > 6000 and (PlayerOptions.Realism > 0.5f))
         {
-            MissionResult or_eq AWARD_MEDAL | MDL_DIST_FLY;
+            MissionResult or_eq AWARD_MEDAL bitor MDL_DIST_FLY;
             Pilot.Medals[DIST_FLY_CROSS]++;
             Pilot.Campaign.TotalScore += 10;
         }
         else if (MedalPts > 4800)
         {
-            MissionResult or_eq AWARD_MEDAL | MDL_AIR_MDL;
+            MissionResult or_eq AWARD_MEDAL bitor MDL_AIR_MDL;
             Pilot.Medals[AIR_MEDAL]++;
             Pilot.Campaign.TotalScore += 5;
         }
@@ -755,7 +755,7 @@ void LogBookData::AwardMedals(CAMP_MISS_STRUCT *MissStats)
 
     if (Pilot.Campaign.ConsecMissions >= 100)
     {
-        MissionResult or_eq AWARD_MEDAL | MDL_LONGEVITY;
+        MissionResult or_eq AWARD_MEDAL bitor MDL_LONGEVITY;
         Pilot.Campaign.ConsecMissions = 0;
         Pilot.Medals[LONGEVITY]++;
     }
@@ -770,7 +770,7 @@ void LogBookData::FinishCampaign(short WonLostTied)
         Pilot.Campaign.GamesWon++;
         Pilot.Campaign.TotalScore += 10;
         Pilot.Medals[KOREA_CAMPAIGN]++;
-        MissionResult or_eq AWARD_MEDAL | MDL_KOR_CAMP;
+        MissionResult or_eq AWARD_MEDAL bitor MDL_KOR_CAMP;
     }
     else if (WonLostTied < 0)
     {

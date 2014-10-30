@@ -91,7 +91,7 @@ C_Button::C_Button() : C_Control()
 
     origx_ = 0;
     origy_ = 0;
-    LabelFlags_ = C_BIT_HCENTER | C_BIT_VCENTER;
+    LabelFlags_ = C_BIT_HCENTER bitor C_BIT_VCENTER;
     HotSpot_.left = 0;
     HotSpot_.top = 0;
     HotSpot_.right = 0;
@@ -103,7 +103,7 @@ C_Button::C_Button() : C_Control()
     HotKey_ = 0;
     Font_ = 0;
     FixedHotSpot_ = 0;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_SELECTABLE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
 
     Root_ = NULL;
     BgImage_ = NULL;
@@ -194,22 +194,22 @@ void C_Button::SetLabelFlagBitsOn(long flags)
 
     // Mutually exclusive flags...
     if (flags bitand C_BIT_TOP)
-        LabelFlags_ and_eq compl (C_BIT_VCENTER | C_BIT_BOTTOM);
+        LabelFlags_ and_eq compl (C_BIT_VCENTER bitor C_BIT_BOTTOM);
 
     if (flags bitand C_BIT_BOTTOM)
-        LabelFlags_ and_eq compl (C_BIT_VCENTER | C_BIT_TOP);
+        LabelFlags_ and_eq compl (C_BIT_VCENTER bitor C_BIT_TOP);
 
     if (flags bitand C_BIT_VCENTER)
-        LabelFlags_ and_eq compl (C_BIT_TOP | C_BIT_BOTTOM);
+        LabelFlags_ and_eq compl (C_BIT_TOP bitor C_BIT_BOTTOM);
 
     if (flags bitand C_BIT_LEFT)
-        LabelFlags_ and_eq compl (C_BIT_HCENTER | C_BIT_RIGHT);
+        LabelFlags_ and_eq compl (C_BIT_HCENTER bitor C_BIT_RIGHT);
 
     if (flags bitand C_BIT_RIGHT)
-        LabelFlags_ and_eq compl (C_BIT_HCENTER | C_BIT_LEFT);
+        LabelFlags_ and_eq compl (C_BIT_HCENTER bitor C_BIT_LEFT);
 
     if (flags bitand C_BIT_HCENTER)
-        LabelFlags_ and_eq compl (C_BIT_LEFT | C_BIT_RIGHT);
+        LabelFlags_ and_eq compl (C_BIT_LEFT bitor C_BIT_RIGHT);
 
     SetLabelInfo();
 }
@@ -640,7 +640,7 @@ void C_Button::SetAnim(short ID, long AnimID, short animtype, short dir)
             }
         }
 
-        SetFlags((GetFlags() | C_BIT_TIMER));
+        SetFlags((GetFlags() bitor C_BIT_TIMER));
     }
 }
 
@@ -1488,19 +1488,19 @@ void C_Button::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CBTN_SETUPCOLOR:
-            SetColor(C_STATE_0, P[0] | (P[1] << 8) | (P[2] << 16));
+            SetColor(C_STATE_0, P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CBTN_SETDOWNCOLOR:
-            SetColor(C_STATE_1, P[0] | (P[1] << 8) | (P[2] << 16));
+            SetColor(C_STATE_1, P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CBTN_SETDISCOLOR:
-            SetColor(C_STATE_DISABLED, P[0] | (P[1] << 8) | (P[2] << 16));
+            SetColor(C_STATE_DISABLED, P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CBTN_SETSELCOLOR:
-            SetColor(C_STATE_SELECTED, P[0] | (P[1] << 8) | (P[2] << 16));
+            SetColor(C_STATE_SELECTED, P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CBTN_SETBUTTONIMAGE:
@@ -1520,7 +1520,7 @@ void C_Button::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CBTN_SETTEXTCOLOR:
-            SetLabelColor((short)P[0], P[1] | (P[2] << 8) | (P[3] << 16));
+            SetLabelColor((short)P[0], P[1] bitor (P[2] << 8) bitor (P[3] << 16));
             break;
 
         case CBTN_SETFILL:
@@ -1532,7 +1532,7 @@ void C_Button::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CBTN_SETBUTTONCOLOR:
-            SetColor((short)P[0], (P[1] | (P[2] << 8) | (P[3] << 16))); 
+            SetColor((short)P[0], (P[1] bitor (P[2] << 8) bitor (P[3] << 16))); 
             break;
 
         case CBTN_TEXTFLAGON:

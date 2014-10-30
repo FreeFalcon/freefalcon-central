@@ -397,7 +397,7 @@ void O_Output::SetTextWidth(long w)
     Label_ = new _TCHAR[LabelLen_ + 1];
 #endif
     memset(Label_, 0, sizeof(_TCHAR) * (LabelLen_));
-    SetFlags(flags_ | C_BIT_FIXEDSIZE);
+    SetFlags(flags_ bitor C_BIT_FIXEDSIZE);
     SetInfo();
 }
 

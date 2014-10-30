@@ -589,7 +589,7 @@ void AircraftClass::Init(SimInitDataClass* initData)
     {
         if (GetSType() == STYPE_AIR_FIGHTER_BOMBER and GetSPType() == SPTYPE_F16C)
         {
-            acFlags or_eq isF16 | isComplex;
+            acFlags or_eq isF16 bitor isComplex;
             // Turn on the nozzle
             SetSwitch(COMP_EXH_NOZZLE, 1);
 

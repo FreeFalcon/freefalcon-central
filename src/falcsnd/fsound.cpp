@@ -129,7 +129,7 @@ extern "C" LPDIRECTSOUND DIRECT_SOUND_OBJECT;
 BOOL ChatSetup(void);
 void ChatCleanup(void);
 
-long gSoundFlags = FSND_SOUND | FSND_REPETE;
+long gSoundFlags = FSND_SOUND bitor FSND_REPETE;
 static int soundCount = 0;
 
 BOOL gSoundManagerRunning = FALSE;
@@ -811,7 +811,7 @@ int F4SoundFXPlaying(int sfxId, int UID)
 void F4LoopSound(int soundIdx)
 {
     if (gSoundDriver and soundIdx not_eq SND_NO_HANDLE)
-        //gSoundDriver->PlaySample(soundIdx,SND_LOOP_SAMPLE | SND_EXCLUSIVE);
+        //gSoundDriver->PlaySample(soundIdx,SND_LOOP_SAMPLE bitor SND_EXCLUSIVE);
         gSoundDriver->PlaySample(soundIdx, SFX_POS_LOOPED);
 }
 
@@ -1053,7 +1053,7 @@ BOOL ReadSFXTableTXT(char *sndtable)
             }
 
 
-            if (SFX_DEF[i].flags bitand (SFX_POS_SELF | SFX_POS_EXTONLY | SFX_POS_EXTINT))
+            if (SFX_DEF[i].flags bitand (SFX_POS_SELF bitor SFX_POS_EXTONLY bitor SFX_POS_EXTINT))
             {
                 // for all those types, set the External flag
                 SFX_DEF[i].flags or_eq SFX_POS_EXTERN;

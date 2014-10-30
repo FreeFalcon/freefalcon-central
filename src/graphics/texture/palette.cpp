@@ -187,9 +187,9 @@ void Palette::LightTexturePalette(Tcolor *light)
     while (to < stop)
     {
         *to  = (FloatToInt32(*(from)   * r)) // Red
-               | (FloatToInt32(*(from + 1) * g) << 8) // Green
-               | (FloatToInt32(*(from + 2) * b) << 16) // Blue
-               | ((*(from + 3)) << 24); // Alpha
+               bitor (FloatToInt32(*(from + 1) * g) << 8) // Green
+               bitor (FloatToInt32(*(from + 2) * b) << 16) // Blue
+               bitor ((*(from + 3)) << 24); // Alpha
         from += 4;
         to ++;
     }
@@ -235,9 +235,9 @@ void Palette::LightTexturePaletteRange(Tcolor *light, int palStart, int palEnd)
     while (to < stop)
     {
         *to++  = (FloatToInt32(*(from)   * r)) // Red
-                 | (FloatToInt32(*(from + 1) * g) << 8) // Green
-                 | (FloatToInt32(*(from + 2) * b) << 16) // Blue
-                 | ((*(from + 3)) << 24); // Alpha
+                 bitor (FloatToInt32(*(from + 1) * g) << 8) // Green
+                 bitor (FloatToInt32(*(from + 2) * b) << 16) // Blue
+                 bitor ((*(from + 3)) << 24); // Alpha
         from += 4;
     }
 
@@ -292,9 +292,9 @@ void Palette::LightTexturePaletteBuilding(Tcolor *light)
     while (to < stop)
     {
         *to  = (FloatToInt32(*(from)   * r)) // Red
-               | (FloatToInt32(*(from + 1) * g) << 8) // Green
-               | (FloatToInt32(*(from + 2) * b) << 16) // Blue
-               | ((*(from + 3)) << 24); // Alpha
+               bitor (FloatToInt32(*(from + 1) * g) << 8) // Green
+               bitor (FloatToInt32(*(from + 2) * b) << 16) // Blue
+               bitor ((*(from + 3)) << 24); // Alpha
         from += 4;
         to ++;
     }
@@ -307,9 +307,9 @@ void Palette::LightTexturePaletteBuilding(Tcolor *light)
         while (to < stop)
         {
             *to  = (FloatToInt32(*(from)   * r)) // Red
-                   | (FloatToInt32(*(from + 1) * g) << 8) // Green
-                   | (FloatToInt32(*(from + 2) * b) << 16) // Blue
-                   | ((*(from + 3)) << 24); // Alpha
+                   bitor (FloatToInt32(*(from + 1) * g) << 8) // Green
+                   bitor (FloatToInt32(*(from + 2) * b) << 16) // Blue
+                   bitor ((*(from + 3)) << 24); // Alpha
             from += 4;
             to ++;
         }
@@ -398,9 +398,9 @@ void Palette::LightTexturePaletteReflection(Tcolor *light)
     while (to < stop)
     {
         *to  = (FloatToInt32(*(from)   * r)) // Red
-               | (FloatToInt32(*(from + 1) * g) << 8) // Green
-               | (FloatToInt32(*(from + 2) * b) << 16) // Blue
-               | (0x26000000); // Alpha
+               bitor (FloatToInt32(*(from + 1) * g) << 8) // Green
+               bitor (FloatToInt32(*(from + 2) * b) << 16) // Blue
+               bitor (0x26000000); // Alpha
         from += 4;
         to ++;
     }

@@ -920,7 +920,7 @@ int RebuildFrontList(int do_barcaps, int incremental)
                         FrontList->Remove(o);
                     }
 
-                    o->ClearObjFlags(O_FRONTLINE | O_SECONDLINE | O_THIRDLINE);
+                    o->ClearObjFlags(O_FRONTLINE bitor O_SECONDLINE bitor O_THIRDLINE);
                 }
 
                 o->SetAbandoned(0);
@@ -932,7 +932,7 @@ int RebuildFrontList(int do_barcaps, int incremental)
                 {
                     dirty = 1;
                     o->SetObjFlags(O_FRONTLINE);
-                    o->ClearObjFlags(O_SECONDLINE | O_THIRDLINE);
+                    o->ClearObjFlags(O_SECONDLINE bitor O_THIRDLINE);
                 }
 
                 if ( not incremental or not o->IsFrontline())
@@ -1060,7 +1060,7 @@ void MarkObjectives(void)
 
         while (o not_eq NULL)
         {
-            o->ClearObjFlags(O_SECONDLINE | O_THIRDLINE);
+            o->ClearObjFlags(O_SECONDLINE bitor O_THIRDLINE);
             o = GetNextObjective(&myit);
         }
     }

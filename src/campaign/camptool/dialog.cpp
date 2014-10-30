@@ -432,7 +432,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         O->SetObjectiveNameID(0);
 
                     if (renaming)
-                        SendMessage(hDlg, WM_COMMAND, IDC_OBJ_NAMECOMBO | (CBN_KILLFOCUS << 16) , 0);
+                        SendMessage(hDlg, WM_COMMAND, IDC_OBJ_NAMECOMBO bitor (CBN_KILLFOCUS << 16) , 0);
 
                     renaming = 0;
 
@@ -1887,7 +1887,7 @@ BOOL WINAPI MapDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 case IDC_MAP_RADAR2:
                 case IDC_MAP_RADAR3:
                     type = LOWORD(wParam);
-                    RedrawWindow(hDlg, NULL, NULL, RDW_INTERNALPAINT | RDW_INVALIDATE);
+                    RedrawWindow(hDlg, NULL, NULL, RDW_INTERNALPAINT bitor RDW_INVALIDATE);
                     break;
 
                 default:
@@ -2468,8 +2468,8 @@ BOOL OpenCampFile(HWND hWnd)
     CampFileName.nFileOffset       = 0;
     CampFileName.nFileExtension    = 0;
     CampFileName.lCustData         = 0;
-    CampFileName.Flags = OFN_SHOWHELP | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST |
-                         OFN_NOCHANGEDIR | OFN_HIDEREADONLY /* | OFN_ENABLEHOOK */ | OFN_LONGNAMES;
+    CampFileName.Flags = OFN_SHOWHELP bitor OFN_PATHMUSTEXIST bitor OFN_FILEMUSTEXIST |
+                         OFN_NOCHANGEDIR bitor OFN_HIDEREADONLY /* bitor OFN_ENABLEHOOK */ bitor OFN_LONGNAMES;
     // CampFileName.lpfnHook = (LPOFNHOOKPROC)MakeProcInstance(FileOpenHookProc, NULL);
     CampFileName.lpfnHook = NULL;
     CampFileName.lpstrFilter       = cmpFilter;
@@ -2533,7 +2533,7 @@ BOOL OpenTheaterFile(HWND hWnd)
     TheaterFileName.nFileOffset       = 0;
     TheaterFileName.nFileExtension    = 0;
     TheaterFileName.lCustData         = 0;
-    TheaterFileName.Flags = OFN_SHOWHELP | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_ENABLEHOOK;
+    TheaterFileName.Flags = OFN_SHOWHELP bitor OFN_PATHMUSTEXIST bitor OFN_FILEMUSTEXIST bitor OFN_HIDEREADONLY bitor OFN_ENABLEHOOK;
     TheaterFileName.lpfnHook = (LPOFNHOOKPROC)MakeProcInstance(FileOpenHookProc, NULL);
 
     TheaterFileName.lpstrFilter       = thrFilter;
@@ -2594,7 +2594,7 @@ BOOL CheckFile(HWND hWnd, OPENFILENAME file)
     if (file.Flags bitand OFN_FILEMUSTEXIST)
         wStyle = OF_READWRITE;
     else
-        wStyle = OF_READWRITE | OF_CREATE;
+        wStyle = OF_READWRITE bitor OF_CREATE;
 
     if ((hFile = OpenFile(file.lpstrFile, &OfStruct, wStyle)) == -1)
     {
@@ -2777,7 +2777,7 @@ BOOL SaveAsCampFile(HWND hWnd, int mode)
     CampFileName.nFileOffset       = 0;
     CampFileName.nFileExtension    = 0;
     CampFileName.lCustData         = 0;
-    CampFileName.Flags = OFN_ENABLEHOOK | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
+    CampFileName.Flags = OFN_ENABLEHOOK bitor OFN_HIDEREADONLY bitor OFN_OVERWRITEPROMPT bitor OFN_NOCHANGEDIR;
     CampFileName.lpfnHook = (LPOFNHOOKPROC)MakeProcInstance(FileSaveHookProc, NULL);
     CampFileName.lpTemplateName = (LPSTR)NULL;
 
@@ -2818,7 +2818,7 @@ BOOL SaveAsTheaterFile(HWND hWnd)
     TheaterFileName.nFileOffset       = 0;
     TheaterFileName.nFileExtension    = 0;
     TheaterFileName.lCustData         = 0;
-    TheaterFileName.Flags = OFN_ENABLEHOOK | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
+    TheaterFileName.Flags = OFN_ENABLEHOOK bitor OFN_HIDEREADONLY bitor OFN_OVERWRITEPROMPT bitor OFN_NOCHANGEDIR;
     TheaterFileName.lpfnHook = (LPOFNHOOKPROC)MakeProcInstance(FileSaveHookProc, NULL);
     TheaterFileName.lpTemplateName = (LPSTR)NULL;
 
@@ -2861,7 +2861,7 @@ BOOL SaveAsScriptedUnitFile(HWND hWnd)
     this_file.nFileOffset       = 0;
     this_file.nFileExtension    = 0;
     this_file.lCustData         = 0;
-    this_file.Flags = OFN_ENABLEHOOK | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
+    this_file.Flags = OFN_ENABLEHOOK bitor OFN_HIDEREADONLY bitor OFN_OVERWRITEPROMPT bitor OFN_NOCHANGEDIR;
     this_file.lpfnHook = (LPOFNHOOKPROC)MakeProcInstance(FileSaveHookProc, NULL);
     this_file.lpTemplateName = (LPSTR)NULL;
 

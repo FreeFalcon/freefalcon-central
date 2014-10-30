@@ -9,7 +9,7 @@ enum
 C_Custom::C_Custom() : C_Control()
 {
     _SetCType_(_CNTL_CUSTOM_);
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_MOUSEOVER;
 
     Section_ = 0;
 

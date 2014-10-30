@@ -496,7 +496,7 @@ void mlrVoice::PreExec()
             }
         }
 
-        if (sfx->flags bitand (SFX_POS_INSIDE | SFX_FLAGS_VMS) and 
+        if (sfx->flags bitand (SFX_POS_INSIDE bitor SFX_FLAGS_VMS) and 
  not isplayer and 
             owner->SPos->platform)
         {

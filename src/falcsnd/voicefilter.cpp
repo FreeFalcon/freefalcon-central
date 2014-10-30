@@ -397,7 +397,7 @@ char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID fro
         }
     }
 
-    char ret = (retval[0] | retval[1]);
+    char ret = (retval[0] bitor retval[1]);
 
     return ret;
 }

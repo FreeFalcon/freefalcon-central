@@ -58,7 +58,7 @@ public:
     }
     void SetPilotSR(uchar skill, uchar rating)
     {
-        pilot_skill_and_rating = (uchar)((rating << 4) | skill);
+        pilot_skill_and_rating = (uchar)((rating << 4) bitor skill);
     }
 };
 

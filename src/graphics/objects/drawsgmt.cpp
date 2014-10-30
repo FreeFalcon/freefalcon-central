@@ -2664,7 +2664,7 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
 
 
     // Load our textures
-    MissleTrailTexture.LoadAndCreate("MisTrail.gif", MPR_TI_CHROMAKEY | MPR_TI_PALETTE | MPR_TI_ALPHA);
+    MissleTrailTexture.LoadAndCreate("MisTrail.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
 
     for (j = 0; j < 256; j++)
     {
@@ -2695,12 +2695,12 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
         */
         MissleTrailTexture.palette->paletteData[j] = (intalp << 24) |
                 (b      << 16) |
-                (g      << 8) | r ;
+                (g      << 8) bitor r ;
     }
 
     MissleTrailTexture.palette->UpdateMPR(MissleTrailTexture.palette->paletteData);
 
-    FireTrailTexture.LoadAndCreate("FireTrail.gif", MPR_TI_CHROMAKEY | MPR_TI_PALETTE | MPR_TI_ALPHA);
+    FireTrailTexture.LoadAndCreate("FireTrail.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
 
     for (j = 0; j < 256; j++)
     {
@@ -2732,12 +2732,12 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
 
         FireTrailTexture.palette->paletteData[j] = (intalp << 24) |
                 (b      << 16) |
-                (g      << 8) | r ;
+                (g      << 8) bitor r ;
     }
 
     FireTrailTexture.palette->UpdateMPR(FireTrailTexture.palette->paletteData);
 
-    SmokeTrailTexture.LoadAndCreate("SmokeTrail.gif", MPR_TI_CHROMAKEY | MPR_TI_PALETTE | MPR_TI_ALPHA);
+    SmokeTrailTexture.LoadAndCreate("SmokeTrail.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
 
     for (j = 0; j < 256; j++)
     {
@@ -2760,12 +2760,12 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
         intalp = 100 + FloatToInt32(85.0f * alp);
         SmokeTrailTexture.palette->paletteData[j] = (intalp << 24) |
                 (b      << 16) |
-                (g      << 8) | r ;
+                (g      << 8) bitor r ;
     }
 
     SmokeTrailTexture.palette->UpdateMPR(SmokeTrailTexture.palette->paletteData);
 
-    GunTrailTexture.LoadAndCreate("GunTrail.apl", MPR_TI_CHROMAKEY | MPR_TI_PALETTE);
+    GunTrailTexture.LoadAndCreate("GunTrail.apl", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE);
 
     for (j = 0; j < 256; j++)
     {

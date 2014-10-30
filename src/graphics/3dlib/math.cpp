@@ -264,15 +264,15 @@ CalculateArcTan(GLfloat opposite,
 |                                                                           |
 |    Returns:      angle (16384 = 360 degrees)                              |
 |                                                                           |
-|    Note:                      | 90    /|                                  |
-|                               |  I  /  |                                  |
-|                       II      |   /    | opp                              |
-|                               | / adj  |                                  |
+|    Note:                      bitor 90    /|                                  |
+|                               bitor  I  /  bitor                                  |
+|                       II      bitor   /    bitor opp                              |
+|                               bitor / adj  bitor                                  |
 |               180 ------------+------------ 0                             |
-|                               |                                           |
-|                       III     |    IV                                     |
-|                               |                                           |
-|                               | 270                                       |
+|                               bitor                                           |
+|                       III     bitor    IV                                     |
+|                               bitor                                           |
+|                               bitor 270                                       |
 +---------------------------------------------------------------------------+
 |    Programmed by Erick Jap                           November 29, 1993    |
 +---------------------------------------------------------------------------+

@@ -434,7 +434,7 @@ int SquadronClass::MoveUnit(CampaignTime time)
                 mis.targetID = FalconNullId;
                 mis.mission = AMIS_ALERT;
                 mis.roe_check = ROE_AIR_ENGAGE;
-                mis.flags = REQF_ONETRY | REQF_USE_REQ_SQUAD | REQF_USERESERVES;
+                mis.flags = REQF_ONETRY bitor REQF_USE_REQ_SQUAD bitor REQF_USERESERVES;
                 mis.priority = 255; // High priority
                 mis.RequestMission();
             }
@@ -807,7 +807,7 @@ void SquadronClass::Scramble(void)
             mis.targetID = FalconNullId;
             mis.mission = AMIS_ALERT;
             mis.roe_check = ROE_AIR_ENGAGE;
-            mis.flags = REQF_ONETRY | REQF_USE_REQ_SQUAD | REQF_USERESERVES;
+            mis.flags = REQF_ONETRY bitor REQF_USE_REQ_SQUAD bitor REQF_USERESERVES;
             // High priority
             mis.priority = 255;
             int result = mis.RequestMission();
@@ -1483,7 +1483,7 @@ void SquadronClass::ShiftSchedule(int i)
 
 void SquadronClass::SetSchedule(int i, ulong a)
 {
-    if ((schedule[i] | a) not_eq (schedule[i]))
+    if ((schedule[i] bitor a) not_eq (schedule[i]))
     {
         schedule[i] or_eq a;
         //MakeSquadronDirty (DIRTY_SCHEDULE, DDP[126].priority);

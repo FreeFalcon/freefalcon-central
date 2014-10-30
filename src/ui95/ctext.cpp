@@ -36,7 +36,7 @@ C_Text::C_Text() : C_Base()
     FixedSize_ = 0;
     TimerCallback_ = NULL;
     BgImage_ = NULL;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE;
 }
 
 C_Text::C_Text(char **stream) : C_Base(stream)
@@ -322,11 +322,11 @@ void C_Text::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CTXT_SETFGCOLOR:
-            SetFGColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetFGColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CTXT_SETBGCOLOR:
-            SetBGColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetBGColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CTXT_SETBGIMAGE:

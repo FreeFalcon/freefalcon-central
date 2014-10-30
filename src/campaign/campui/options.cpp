@@ -87,7 +87,7 @@ void AdjustSquadronPilotSkills(Squadron u)
         if (skill < 0)
             skill = 0;
 
-        u->GetPilotData(i)->pilot_skill_and_rating = 0x30 | skill;
+        u->GetPilotData(i)->pilot_skill_and_rating = 0x30 bitor skill;
         u->GetPilotData(i)->pilot_status = PILOT_AVAILABLE;
         u->GetPilotData(i)->missions_flown = 0;
     }

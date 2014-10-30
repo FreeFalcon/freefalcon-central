@@ -70,7 +70,7 @@ static LOGFONT DefaultFont =
     OUT_DEFAULT_PRECIS,
     CLIP_DEFAULT_PRECIS,
     PROOF_QUALITY,
-    VARIABLE_PITCH | FF_SWISS,
+    VARIABLE_PITCH bitor FF_SWISS,
     "",
 };
 
@@ -163,11 +163,11 @@ BOOL C_Font::AddFont(long , LOGFONT *)
     {
         VOID *lpMsgBuf;
 
-        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER bitor FORMAT_MESSAGE_FROM_SYSTEM,
                       NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR) &lpMsgBuf, 0, NULL);
 
         // Display the string.
-        MessageBox(NULL, (char *)lpMsgBuf, "GetLastError", MB_OK | MB_ICONINFORMATION);
+        MessageBox(NULL, (char *)lpMsgBuf, "GetLastError", MB_OK bitor MB_ICONINFORMATION);
 
         // Free the buffer.
         LocalFree(lpMsgBuf);

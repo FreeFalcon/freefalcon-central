@@ -337,7 +337,7 @@ BSPLIST *C_BSPList::CreateContainer(long ID, Objective obj, short f, short fid, 
     if (visType >= 0)
     {
         // In many cases, our visType should be modified by our neighbors.
-        if ((obj->GetFeatureStatus(f) bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED and (FeatureEntryDataTable[fid].Flags bitand (FEAT_PREV_NORM | FEAT_NEXT_NORM)))
+        if ((obj->GetFeatureStatus(f) bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED and (FeatureEntryDataTable[fid].Flags bitand (FEAT_PREV_NORM bitor FEAT_NEXT_NORM)))
         {
             prevFlags = GetFeatureFlags(obj, static_cast<short>(f - 1));
             nextFlags = GetFeatureFlags(obj, static_cast<short>(f + 1));
@@ -365,7 +365,7 @@ BSPLIST *C_BSPList::CreateContainer(long ID, Objective obj, short f, short fid, 
             if ( not bspobj)
                 return(NULL);
 
-            bspobj->ID = ID | 0x8000;
+            bspobj->ID = ID bitor 0x8000;
 
             bspobj->object = new DrawableBridge(1.0F);
             bspobj->type = FEAT_ELEV_CONTAINER;
@@ -383,7 +383,7 @@ BSPLIST *C_BSPList::CreateContainer(long ID, Objective obj, short f, short fid, 
             if ( not bspobj)
                 return(NULL);
 
-            bspobj->ID = ID | 0x8000;
+            bspobj->ID = ID bitor 0x8000;
 
             bspobj->object = new DrawablePlatform(1.0F);
             bspobj->type = FEAT_FLAT_CONTAINER;
@@ -409,7 +409,7 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
     if (visType >= 0)
     {
         // In many cases, our visType should be modified by our neighbors.
-        if ((obj->GetFeatureStatus(f) bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED and (FeatureEntryDataTable[fid].Flags bitand (FEAT_PREV_NORM | FEAT_NEXT_NORM)))
+        if ((obj->GetFeatureStatus(f) bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED and (FeatureEntryDataTable[fid].Flags bitand (FEAT_PREV_NORM bitor FEAT_NEXT_NORM)))
         {
             prevFlags = GetFeatureFlags(obj, static_cast<short>(f - 1));
             nextFlags = GetFeatureFlags(obj, static_cast<short>(f + 1));
@@ -478,7 +478,7 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
             bspobj->object = new DrawableBuilding(visType, objPos, Yaw, 1.0F);
 
             // Am I Flat (can things drive across it)?
-            if (fc->Flags bitand (FEAT_FLAT_CONTAINER | FEAT_ELEV_CONTAINER))
+            if (fc->Flags bitand (FEAT_FLAT_CONTAINER bitor FEAT_ELEV_CONTAINER))
                 ((DrawablePlatform*)Parent->object)->InsertStaticSurface((DrawableBuilding*)bspobj->object);
             else
                 ((DrawablePlatform*)Parent->object)->InsertStaticObject(bspobj->object);

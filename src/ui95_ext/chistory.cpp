@@ -57,7 +57,7 @@ void C_History::AddIconSet(short idx, short team, short x, short y)
         Data_[idx].SetOwner(this);
         Data_[idx].SetImage(ImageID_[team]);
         Data_[idx].SetXY(x, y);
-        Data_[idx].SetFlags(C_BIT_HCENTER | C_BIT_VCENTER);
+        Data_[idx].SetFlags(C_BIT_HCENTER bitor C_BIT_VCENTER);
         Data_[idx].SetInfo();
     }
 }

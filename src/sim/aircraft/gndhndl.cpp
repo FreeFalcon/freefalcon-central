@@ -41,7 +41,7 @@ void AircraftClass::OnGroundInit(SimInitDataClass* initData)
 
     // set lights and gear
     SetAcStatusBits(
-        ACSTATUS_EXT_LIGHTS | ACSTATUS_GEAR_DOWN | ACSTATUS_EXT_NAVLIGHTS | ACSTATUS_EXT_NAVLIGHTSFLASH
+        ACSTATUS_EXT_LIGHTS bitor ACSTATUS_GEAR_DOWN bitor ACSTATUS_EXT_NAVLIGHTS bitor ACSTATUS_EXT_NAVLIGHTSFLASH
     );
 
     //curGroundPt = initData->ptIndex - 1;
@@ -237,7 +237,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
         /*
         OTWDriver.AddSfxRequest(
          new SfxClass ( SFX_LANDING_SMOKE, // type
-         SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_NO_DOWN_VECTOR | SFX_USES_GRAVITY,
+         SFX_MOVES bitor SFX_NO_GROUND_CHECK bitor SFX_NO_DOWN_VECTOR bitor SFX_USES_GRAVITY,
          &pos, // world pos
          &vec, // vel vector
          5.3f, // time to live
@@ -271,7 +271,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
         /*
         OTWDriver.AddSfxRequest(
          new SfxClass ( SFX_LANDING_SMOKE, // type
-         SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_NO_DOWN_VECTOR | SFX_USES_GRAVITY,
+         SFX_MOVES bitor SFX_NO_GROUND_CHECK bitor SFX_NO_DOWN_VECTOR bitor SFX_USES_GRAVITY,
          &pos, // world pos
          &vec, // vel vector
          5.3f, // time to live
@@ -306,7 +306,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
         /*
         OTWDriver.AddSfxRequest(
          new SfxClass ( SFX_LANDING_SMOKE, // type
-         SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_NO_DOWN_VECTOR | SFX_USES_GRAVITY,
+         SFX_MOVES bitor SFX_NO_GROUND_CHECK bitor SFX_NO_DOWN_VECTOR bitor SFX_USES_GRAVITY,
          &pos, // world pos
          &vec, // vel vector
          5.3f, // time to live

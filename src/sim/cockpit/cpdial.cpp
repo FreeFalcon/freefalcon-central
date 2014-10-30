@@ -334,7 +334,7 @@ void RenderNeedlePoly(TextureHandle *pTex, tagRECT *destrect, GLint alpha, float
 
     OTWDriver.renderer->context.RestoreState(alpha);
     OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
-    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
+    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
 }
 
 
@@ -403,7 +403,7 @@ void CPDial::CreateLit(void)
                 m_pPalette->AttachToTexture(pTex);
 
                 if (
- not pTex->Create("CPDial", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8,
+ not pTex->Create("CPDial", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8,
                                   (int)(mSrcRect.right - mSrcRect.left),
                                   (int)(mSrcRect.bottom - mSrcRect.top))
                 )

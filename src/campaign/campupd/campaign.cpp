@@ -1067,7 +1067,7 @@ void RebuildBubble(int forced)
                                         if (gCommsMgr and gCommsMgr->Online())
                                         {
                                             //me123
-                                            if ( not u->IsSetFalcFlag(FEC_PLAYER_ENTERING | FEC_HASPLAYERS))
+                                            if ( not u->IsSetFalcFlag(FEC_PLAYER_ENTERING bitor FEC_HASPLAYERS))
                                             {
                                                 minDeagTime = max(
                                                                   minDeagTime, nextTOTime - airbase->brain->MinDeagTime()
@@ -1082,7 +1082,7 @@ void RebuildBubble(int forced)
                                             }
                                         }
                                         else if (
-                                            u->IsSetFalcFlag(FEC_PLAYER_ENTERING | FEC_HASPLAYERS) and 
+                                            u->IsSetFalcFlag(FEC_PLAYER_ENTERING bitor FEC_HASPLAYERS) and 
                                             u->IsFlight()
                                         )
                                         {
@@ -1124,7 +1124,7 @@ void RebuildBubble(int forced)
                                 minDeagTime = w->GetWPArrivalTime(); // Carrier takeoff
 
                                 // JB carrier start
-                                if (u->IsSetFalcFlag(FEC_PLAYER_ENTERING | FEC_HASPLAYERS) and u->IsFlight())
+                                if (u->IsSetFalcFlag(FEC_PLAYER_ENTERING bitor FEC_HASPLAYERS) and u->IsFlight())
                                 {
                                     //JPO we need some extra time before takeoff if starting cold.
                                     if (((Flight)u)->GetEvalFlags() bitand FEVAL_START_COLD)

@@ -74,7 +74,7 @@ void TLevel::Setup(int level, int width, int height, const char *mapPath)
     // Open the block offset file for this level
     sprintf(filename, "%s\\Theater.o%0d", mapPath, level);
 
-    offsetFile = open(filename, O_BINARY | O_RDONLY , 0);
+    offsetFile = open(filename, O_BINARY bitor O_RDONLY , 0);
 
     if (offsetFile >= 0)
     {
@@ -112,7 +112,7 @@ void TLevel::Setup(int level, int width, int height, const char *mapPath)
 
         // We're dropping the top bit, so no legal offset can have it set
         ShiAssert( not (blocks[i].offset bitand 0x80000000));
-        blocks[i].offset = (blocks[i].offset << 1) | 1;
+        blocks[i].offset = (blocks[i].offset << 1) bitor 1;
         ShiAssert((blocks[i].offset bitand 0x00000001));
     }
 
@@ -291,7 +291,7 @@ void TLevel::ReleaseBlock(TBlock *block)
     {
 
         // We can free the block if TheLoader is either already done, or hasn't started yet.
-        if (block->Posts() ||
+        if (block->Posts() or
             TheLoader.CancelRequest(LoaderCallBack, block, NULL, block->fileOffset >> 1))
         {
 

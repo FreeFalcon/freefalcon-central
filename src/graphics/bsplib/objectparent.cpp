@@ -80,7 +80,7 @@ void ObjectParent::SetupTable(char *basename)
     // Open the master object file
     strcat(filename, ".DXH");
 
-    file = open(filename, _O_RDONLY | _O_BINARY | _O_SEQUENTIAL);
+    file = open(filename, _O_RDONLY bitor _O_BINARY bitor _O_SEQUENTIAL);
 
     if (file < 0)
     {

@@ -715,7 +715,7 @@ void TrackIR::InitTrackIR(HWND application_window)
     fclose(fp);
 #endif
 
-    DataFields = NPPitch | NPYaw | NPRoll | NPX | NPY | NPZ;
+    DataFields = NPPitch bitor NPYaw bitor NPRoll bitor NPX bitor NPY bitor NPZ;
 
     TEST_RESULT("NP_RequestData", NP_RequestData(DataFields))
 

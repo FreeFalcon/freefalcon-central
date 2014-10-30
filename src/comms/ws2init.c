@@ -132,7 +132,7 @@ int initialize_windows_sockets(WSADATA* windows_sockets_data)
             
             MessageBox(NULL,
                        "Could not find high enough version of WinSock",
-                       "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+                       "Error", MB_OK bitor MB_ICONSTOP bitor MB_SETFOREGROUND);
               
 			return EXIT_SUCCESS;
         }
@@ -146,7 +146,7 @@ int initialize_windows_sockets(WSADATA* windows_sockets_data)
                 
                  MessageBox(NULL,
                             "Could not find the correct version of WinSock",
-                            "Error",  MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+                            "Error",  MB_OK bitor MB_ICONSTOP bitor MB_SETFOREGROUND);
                   
                 CAPI_WSACleanup();
                 return EXIT_SUCCESS;

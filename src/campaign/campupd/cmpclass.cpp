@@ -756,17 +756,17 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
 
         if (Flags bitand CAMP_LIGHT)
         {
-            need_from_master = CAMP_NEED_PERSIST | CAMP_NEED_OBJ_DELTAS | CAMP_NEED_UNIT_DATA;
+            need_from_master = CAMP_NEED_PERSIST bitor CAMP_NEED_OBJ_DELTAS bitor CAMP_NEED_UNIT_DATA;
             need_from_all = 0;
             // need_from_all = CAMP_NEED_ENTITIES;
-            Flags or_eq need_from_master | need_from_all;
+            Flags or_eq need_from_master bitor need_from_all;
         }
         else
         {
-            need_from_master = CAMP_NEED_WEATHER | CAMP_NEED_PERSIST | CAMP_NEED_PRIORITIES | CAMP_NEED_OBJ_DELTAS | CAMP_NEED_TEAM_DATA | CAMP_NEED_UNIT_DATA | CAMP_NEED_VC;
+            need_from_master = CAMP_NEED_WEATHER bitor CAMP_NEED_PERSIST bitor CAMP_NEED_PRIORITIES bitor CAMP_NEED_OBJ_DELTAS bitor CAMP_NEED_TEAM_DATA bitor CAMP_NEED_UNIT_DATA bitor CAMP_NEED_VC;
             need_from_all = 0;
             // need_from_all = CAMP_NEED_ENTITIES;
-            Flags or_eq need_from_master | need_from_all;
+            Flags or_eq need_from_master bitor need_from_all;
 
             if ( not LoadPilotInfo(TheCampaign.Scenario))
                 NewPilotInfo();

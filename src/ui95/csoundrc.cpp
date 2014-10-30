@@ -165,7 +165,7 @@ void C_Sound::AddResSound(C_Resmgr *res)
             newentry = new SOUND_RES;
             newentry->ID = IDTable_->FindTextID(snd->Header->ID);
             newentry->SoundID = SND_NO_HANDLE;
-            newentry->flags = snd->Header->flags | SOUND_IN_RES;
+            newentry->flags = snd->Header->flags bitor SOUND_IN_RES;
             newentry->Volume = 0;
             newentry->LoopPoint = 0;
             newentry->Count = 0;
@@ -213,7 +213,7 @@ void C_Sound::AddResStream(C_Resmgr *res)
             newentry = new SOUND_RES;
             newentry->ID = IDTable_->FindTextID(snd->Header->ID);
             newentry->SoundID = SND_NO_HANDLE;
-            newentry->flags = snd->Header->flags | SOUND_IN_RES | SOUND_RES_STREAM;
+            newentry->flags = snd->Header->flags bitor SOUND_IN_RES bitor SOUND_RES_STREAM;
             newentry->Volume = 0;
             newentry->LoopPoint = 0;
             newentry->Count = 0;
@@ -335,7 +335,7 @@ BOOL C_Sound::StreamSound(long ID, char *file, long flags)
     newentry = new SOUND_RES;
     newentry->ID = ID;
     newentry->SoundID = SND_NO_HANDLE;
-    newentry->flags = SOUND_STREAM | flags;
+    newentry->flags = SOUND_STREAM bitor flags;
     newentry->Volume = 0;
     newentry->LoopPoint = 0;
     newentry->Sound = NULL;
@@ -547,11 +547,11 @@ void C_Sound::LocalFunction(short ID, long P[], _TCHAR *str, C_Handler *)
     switch (ID)
     {
         case CSND_LOADSOUND:
-            LoadSound(P[0], str, P[1] | P[2] | P[3] | P[4] | P[5] | P[6]);
+            LoadSound(P[0], str, P[1] bitor P[2] bitor P[3] bitor P[4] bitor P[5] bitor P[6]);
             break;
 
         case CSND_STREAMSOUND:
-            StreamSound(P[0], str, P[1] | P[2] | P[3] | P[4] | P[5] | P[6]);
+            StreamSound(P[0], str, P[1] bitor P[2] bitor P[3] bitor P[4] bitor P[5] bitor P[6]);
             break;
 
         case CSND_SETLOOPBACK:

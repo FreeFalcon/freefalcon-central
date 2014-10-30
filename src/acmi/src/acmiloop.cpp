@@ -458,7 +458,7 @@ void ACMIView::Draw()
 
             // is it in existance at the moment?
             // also no poles or anything on chaff and flares
-            if ((ep->flags bitand (ENTITY_FLAG_CHAFF | ENTITY_FLAG_FLARE)) ||
+            if ((ep->flags bitand (ENTITY_FLAG_CHAFF bitor ENTITY_FLAG_FLARE)) or
  not Tape()->IsEntityInFrame(i))
             {
                 continue;

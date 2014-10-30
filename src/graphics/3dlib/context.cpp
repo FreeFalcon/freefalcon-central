@@ -176,8 +176,8 @@ BOOL ContextMPR::Setup(ImageBuffer *pIB, DXContext *c)
         D3DVERTEXBUFFERDESC vbdesc;
         ZeroMemory(&vbdesc, sizeof(vbdesc));
         vbdesc.dwSize = sizeof(vbdesc);
-        vbdesc.dwFVF = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX2 | D3DFVF_SPECULAR;
-        vbdesc.dwCaps = D3DVBCAPS_WRITEONLY | D3DVBCAPS_DONOTCLIP ;//| D3DVBCAPS_VIDEOMEMORY;
+        vbdesc.dwFVF = D3DFVF_XYZRHW bitor D3DFVF_DIFFUSE bitor D3DFVF_TEX2 bitor D3DFVF_SPECULAR;
+        vbdesc.dwCaps = D3DVBCAPS_WRITEONLY bitor D3DVBCAPS_DONOTCLIP ;//| D3DVBCAPS_VIDEOMEMORY;
 
         //m_dwVBSize = 1024;
         m_dwVBSize = 32768;
@@ -1820,7 +1820,7 @@ void ContextMPR::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, in
         CheckHR(m_pD3DD->SetTexture(0, pDDSTex));
 
         // Render it (finally)
-        DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
+        DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
 
         FlushVB();
         InvalidateState();
@@ -2314,7 +2314,7 @@ bool ContextMPR::LockVB(int nVtxCount, void **p)
         m_dwStartVtx = 0;
 
         // we are done with this VB, hint driver that he can use a another memory block to prevent breaking DMA activity
-        hr = m_pVB->Lock(DDLOCK_SURFACEMEMORYPTR | DDLOCK_WRITEONLY | DDLOCK_WAIT | DDLOCK_DISCARDCONTENTS, p, &dwSize);
+        hr = m_pVB->Lock(DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_WRITEONLY bitor DDLOCK_WAIT bitor DDLOCK_DISCARDCONTENTS, p, &dwSize);
     }
 
     else if (m_pTLVtx)
@@ -2327,10 +2327,10 @@ bool ContextMPR::LockVB(int nVtxCount, void **p)
     {
         // we will only append data, dont interrupt DMA
         if (m_dwStartVtx)
-            hr = m_pVB->Lock(DDLOCK_SURFACEMEMORYPTR | DDLOCK_WRITEONLY | DDLOCK_WAIT | DDLOCK_NOOVERWRITE, p, &dwSize);
+            hr = m_pVB->Lock(DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_WRITEONLY bitor DDLOCK_WAIT bitor DDLOCK_NOOVERWRITE, p, &dwSize);
         // ok this is the first lock
         else
-            hr = m_pVB->Lock(DDLOCK_SURFACEMEMORYPTR | DDLOCK_WRITEONLY | DDLOCK_WAIT | DDLOCK_DISCARDCONTENTS, p, &dwSize);
+            hr = m_pVB->Lock(DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_WRITEONLY bitor DDLOCK_WAIT bitor DDLOCK_DISCARDCONTENTS, p, &dwSize);
     }
 
     ShiAssert(SUCCEEDED(hr));
@@ -2593,7 +2593,7 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
         if ((pEnd == NULL) or (vertcnt + pEnd->numVertices > 32768))
         {
 
-            m_pVBB->Lock(DDLOCK_WRITEONLY | DDLOCK_SURFACEMEMORYPTR | DDLOCK_DISCARDCONTENTS, (LPVOID *)&pIns, NULL);
+            m_pVBB->Lock(DDLOCK_WRITEONLY bitor DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_DISCARDCONTENTS, (LPVOID *)&pIns, NULL);
 
             while (pEnd not_eq pCur)
             {
@@ -3575,7 +3575,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
         // OW FIXME: this should be 1.0f / pData->z
         pVtx->rhw = 1.0f;
 
-        if (VtxInfo == (MPR_VI_COLOR | MPR_VI_TEXTURE))
+        if (VtxInfo == (MPR_VI_COLOR bitor MPR_VI_TEXTURE))
         {
             pVtx->color = D3DRGBA(pData->r, pData->g, pData->b, pData->a);
             pVtx->specular = m_colFOG;

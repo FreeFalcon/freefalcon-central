@@ -790,11 +790,11 @@ void SetupFlightSpecificControls(Flight flt)
                 else
                     lbox->AddItem(i + 1, C_TYPE_ITEM, WPActStr[i]);
 
-                menu->SetItemFlagBitOff(i | 0x200, C_BIT_INVISIBLE);
+                menu->SetItemFlagBitOff(i bitor 0x200, C_BIT_INVISIBLE);
             }
             else
             {
-                menu->SetItemFlagBitOn(i | 0x200, C_BIT_INVISIBLE);
+                menu->SetItemFlagBitOn(i bitor 0x200, C_BIT_INVISIBLE);
             }
         }
     }
@@ -815,11 +815,11 @@ void SetupFlightSpecificControls(Flight flt)
                 else
                     lbox->AddItem(i + 1, C_TYPE_ITEM, WPActStr[i]);
 
-                menu->SetItemFlagBitOff(i | 0x100, C_BIT_INVISIBLE);
+                menu->SetItemFlagBitOff(i bitor 0x100, C_BIT_INVISIBLE);
             }
             else
             {
-                menu->SetItemFlagBitOn(i | 0x100, C_BIT_INVISIBLE);
+                menu->SetItemFlagBitOn(i bitor 0x100, C_BIT_INVISIBLE);
             }
         }
     }
@@ -1843,11 +1843,11 @@ void set_waypoint_action(WayPoint wp, int action)
             break;
 
         case WP_AIRDROP:
-            flags = WPF_TARGET | WPF_LAND | WPF_TAKEOFF;
+            flags = WPF_TARGET bitor WPF_LAND bitor WPF_TAKEOFF;
             break;
 
         case WP_PICKUP:
-            flags = WPF_LAND | WPF_TAKEOFF;
+            flags = WPF_LAND bitor WPF_TAKEOFF;
             break;
 
         case WP_INTERCEPT:

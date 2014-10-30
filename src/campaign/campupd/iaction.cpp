@@ -1517,7 +1517,7 @@ void instant_action::move_player_flight(void)
 
         if (i == numWaypoints - 1)
         {
-            waypoint->SetWPFlags(WPF_REPEAT_CONTINUOUS | WPF_REPEAT);
+            waypoint->SetWPFlags(WPF_REPEAT_CONTINUOUS bitor WPF_REPEAT);
         }
 
         last_waypoint->SetNextWP(waypoint);
@@ -1788,7 +1788,7 @@ void instant_action::create_flight(ia_data &data)
         last_waypoint = waypoint;
     }
 
-    waypoint = new WayPointClass(nx, ny, FloatToInt32(data.altitude), 0, time, 0, WP_CA, WPF_REPEAT_CONTINUOUS | WPF_TARGET);
+    waypoint = new WayPointClass(nx, ny, FloatToInt32(data.altitude), 0, time, 0, WP_CA, WPF_REPEAT_CONTINUOUS bitor WPF_TARGET);
 
     last_waypoint->SetNextWP(waypoint);
 

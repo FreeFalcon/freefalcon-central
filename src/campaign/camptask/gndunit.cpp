@@ -2022,7 +2022,7 @@ int RequestAirborneTransport(Unit u)
     // Make the request
     mis.who = u->GetTeam();
     mis.vs = 0;
-    mis.flags = REQF_NEEDRESPONSE | REQF_ONETRY;
+    mis.flags = REQF_NEEDRESPONSE bitor REQF_ONETRY;
     mis.tot = TheCampaign.CurrentTime + 10 * CampaignMinutes;
     mis.tot_type = TYPE_NE;
     u->GetUnitDestination(&mis.tx, &mis.ty);

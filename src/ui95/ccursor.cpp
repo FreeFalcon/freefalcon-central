@@ -36,7 +36,7 @@ C_Cursor::C_Cursor() : C_Control()
     MaxX_ = 0;
     MaxY_ = 0;
     Percent_ = 40;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_DRAGABLE;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_DRAGABLE;
 }
 
 C_Cursor::C_Cursor(char **stream) : C_Control(stream)
@@ -197,11 +197,11 @@ void C_Cursor::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CCUR_SETCOLOR:
-            SetColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CCUR_SETBOXCOLOR:
-            SetBoxColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetBoxColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CCUR_SETPERCENTAGE:

@@ -502,7 +502,7 @@ HRESULT WINAPI DirectPlayMessageHandler(PVOID pvUserContext, DWORD dwMessageId, 
                                                 0,                      // dwTimeOut
                                                 NULL,                   // pvAsyncContext
                                                 NULL,                   // pvAsyncHandle
-                                                DPNSEND_SYNC | DPNSEND_GUARANTEED)))    // dwFlags
+                                                DPNSEND_SYNC bitor DPNSEND_GUARANTEED)))    // dwFlags
             {
                 printf("Failed Sending Data:  0x%x\n", hr);
             }
@@ -835,7 +835,7 @@ HRESULT HostSession()
     dpAppDesc.dwSize = sizeof(DPN_APPLICATION_DESC);
     dpAppDesc.guidApplication = g_guidApp;
     dpAppDesc.pwszSessionName = wszSession;
-    dpAppDesc.dwFlags = DPNSESSION_NODPNSVR | DPNSESSION_CLIENT_SERVER; //|DPNSESSION_MIGRATE_HOST;
+    dpAppDesc.dwFlags = DPNSESSION_NODPNSVR bitor DPNSESSION_CLIENT_SERVER; //|DPNSESSION_MIGRATE_HOST;
 
     // We are now ready to host the app
     if (FAILED(hr = g_pDPServer->Host(&dpAppDesc,              // AppDesc
@@ -1221,7 +1221,7 @@ HRESULT InitDirectPlayVoice()
 
     ZeroMemory(&dvClientConfig, sizeof(DVCLIENTCONFIG));
     dvClientConfig.dwSize = sizeof(DVCLIENTCONFIG);
-    dvClientConfig.dwFlags = /*DVCLIENTCONFIG_AUTOVOICEACTIVATED | */DVCLIENTCONFIG_AUTORECORDVOLUME;
+    dvClientConfig.dwFlags = /*DVCLIENTCONFIG_AUTOVOICEACTIVATED bitor */DVCLIENTCONFIG_AUTORECORDVOLUME;
     dvClientConfig.lRecordVolume = DVRECORDVOLUME_LAST;
     dvClientConfig.lPlaybackVolume = DVPLAYBACKVOLUME_DEFAULT;
     dvClientConfig.dwThreshold = DVTHRESHOLD_UNUSED;
@@ -2408,7 +2408,7 @@ void CreateGroup(unsigned long freq)
     *pdwData = dwCount + 1;
     ZeroMemory(&dpGroupInfo, sizeof(DPN_GROUP_INFO));
     dpGroupInfo.dwSize = sizeof(DPN_GROUP_INFO);
-    dpGroupInfo.dwInfoFlags = DPNINFO_NAME | DPNINFO_DATA ;
+    dpGroupInfo.dwInfoFlags = DPNINFO_NAME bitor DPNINFO_DATA ;
     dpGroupInfo.dwGroupFlags = DPNGROUP_AUTODESTRUCT;
     dpGroupInfo.pvData = pdwData;
     dpGroupInfo.dwDataSize = sizeof(DWORD);
@@ -2441,9 +2441,9 @@ void SendFreqid(DPNID dpnidplayer, DPNID dpnidgroup, unsigned long freq)
     if ( not dpnidplayer and g_bHost)
     {
         dpnidplayer = DPNID_ALL_PLAYERS_GROUP;
-        flags = DPNSEND_SYNC | DPNSEND_GUARANTEED;
+        flags = DPNSEND_SYNC bitor DPNSEND_GUARANTEED;
     }
-    else flags = DPNSEND_SYNC | DPNSEND_GUARANTEED | DPNSEND_NOLOOPBACK;
+    else flags = DPNSEND_SYNC bitor DPNSEND_GUARANTEED bitor DPNSEND_NOLOOPBACK;
 
     if (FAILED(hr = g_pDPServer->SendTo(dpnidplayer,    // dpnid
                                         &dpnBuffer,             // pBufferDesc

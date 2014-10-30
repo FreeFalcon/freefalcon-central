@@ -94,7 +94,7 @@ BOOL C_String::AddString(long ID, _TCHAR *str)
         return(FALSE);
 
     if (ID < IDSize_)
-        IDTable_[ID] = HashID | 0x40000000;
+        IDTable_[ID] = HashID bitor 0x40000000;
 
     return(TRUE);
 }
@@ -117,7 +117,7 @@ _TCHAR *C_String::GetString(long ID)
 
 long C_String::AddText(const _TCHAR *str)
 {
-    return(Root_->AddText(str) | 0x40000000);
+    return(Root_->AddText(str) bitor 0x40000000);
 }
 
 _TCHAR *C_String::GetText(long ID)

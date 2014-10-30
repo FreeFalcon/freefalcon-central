@@ -115,7 +115,7 @@ void CPSurface::CreateLit(void)
 
                 m_pPalette->AttachToTexture(pTex);
 
-                if ( not pTex->Create("CPSurface", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, mWidth, mHeight))
+                if ( not pTex->Create("CPSurface", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8, mWidth, mHeight))
                     throw _com_error(E_FAIL);
 
                 if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer, true, true)) // soon to be re-loaded by CPSurface::Translate3D
@@ -160,7 +160,7 @@ void CPSurface::CreateLit(void)
 
                         m_pPalette->AttachToTexture(pTex);
 
-                        if ( not pTex->Create("CPSurface - Tile", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8,
+                        if ( not pTex->Create("CPSurface - Tile", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8,
                                           (UInt16)min(dwMaxTextureWidth, dwWidthRemaining), (UInt16)min(dwMaxTextureHeight, dwHeightRemaining)))
                             throw _com_error(E_FAIL);
 
@@ -344,7 +344,7 @@ void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect, 
             OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
 
             // Render it (finally)
-            OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
+            OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
         }
 
         else
@@ -433,7 +433,7 @@ void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect, 
                     OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
 
                     // Render it (finally)
-                    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
+                    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
 
                     dwWidthRemaining -= dwMaxTextureWidth;
                     left += dwMaxTextureWidth;

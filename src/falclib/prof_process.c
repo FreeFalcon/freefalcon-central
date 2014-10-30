@@ -891,9 +891,9 @@ Prof_Report *Prof_create_report(void)
         if (displayed_quantity == Prof_CALL_GRAPH)
         {
             r[0].name = r[1].name = r[2].name = z->name;
-            r[0].value_flag = 1 | 2 | 4;
-            r[1].value_flag = 1 | 2 | 4;
-            r[2].value_flag = 1 | 2 | 4;
+            r[0].value_flag = 1 bitor 2 bitor 4;
+            r[1].value_flag = 1 bitor 2 bitor 4;
+            r[2].value_flag = 1 bitor 2 bitor 4;
             r[0].indent = 3;
             r[1].indent = 5;
             r[2].indent = 0;
@@ -902,7 +902,7 @@ Prof_Report *Prof_create_report(void)
         }
         else
         {
-            r->value_flag = 1 | 2 | 4;
+            r->value_flag = 1 bitor 2 bitor 4;
             r->name = z->name;
             r->zone = (void *) z;
             r->indent = 0;

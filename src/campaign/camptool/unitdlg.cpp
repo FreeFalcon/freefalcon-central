@@ -1727,7 +1727,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             }
             SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), WM_SETREDRAW, 1, 0);
             ResetNewSquadron(hDlg, squadron, flights);
-            SetWindowPos(hDlg, NULL, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+            SetWindowPos(hDlg, NULL, 0, 0, 0, 0, SWP_NOSIZE bitor SWP_NOZORDER);
             return (TRUE);
         }
         break;
@@ -1919,7 +1919,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         BSP = brief_string;
                         BTP = btitle;
                         DialogBox(hInst, MAKEINTRESOURCE(IDD_BRIEFDIALOG), FalconDisplay.appWin, (DLGPROC)BriefDialog);
-                        MessageBox(hDlg, brief_string, "Mission Debrief", MB_OK | MB_ICONINFORMATION | MB_SETFOREGROUND);
+                        MessageBox(hDlg, brief_string, "Mission Debrief", MB_OK bitor MB_ICONINFORMATION bitor MB_SETFOREGROUND);
                     }
 
                     break;
@@ -1934,7 +1934,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         BSP = brief_string;
                         BTP = btitle;
                         DialogBox(hInst, MAKEINTRESOURCE(IDD_BRIEFDIALOG), FalconDisplay.appWin, (DLGPROC)BriefDialog);
-                        MessageBox(hDlg, brief_string, "Mission Brief", MB_OK | MB_ICONINFORMATION | MB_SETFOREGROUND);
+                        MessageBox(hDlg, brief_string, "Mission Brief", MB_OK bitor MB_ICONINFORMATION bitor MB_SETFOREGROUND);
                     }
 
                     break;

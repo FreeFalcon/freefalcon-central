@@ -434,8 +434,8 @@ Decode(u_int32_t *output, const unsigned char *input, unsigned int len)
     unsigned int i, j;
 
     for (i = 0, j = 0; j < len; i++, j += 4)
-        output[i] = ((u_int32_t)input[j]) | (((u_int32_t)input[j + 1]) << 8) |
-                    (((u_int32_t)input[j + 2]) << 16) | (((u_int32_t)input[j + 3]) << 24);
+        output[i] = ((u_int32_t)input[j]) bitor (((u_int32_t)input[j + 1]) << 8) |
+                    (((u_int32_t)input[j + 2]) << 16) bitor (((u_int32_t)input[j + 3]) << 24);
 }
 #endif /* i386 */
 
@@ -447,13 +447,13 @@ static unsigned char PADDING[64] =
 };
 
 /* F, G, H and I are basic MD5 functions. */
-#define F(x, y, z) (((x) bitand (y)) | ((compl x) bitand (z)))
-#define G(x, y, z) (((x) bitand (z)) | ((y) bitand (compl z)))
+#define F(x, y, z) (((x) bitand (y)) bitor ((compl x) bitand (z)))
+#define G(x, y, z) (((x) bitand (z)) bitor ((y) bitand (compl z)))
 #define H(x, y, z) ((x) xor (y) xor (z))
-#define I(x, y, z) ((y) xor ((x) | (compl z)))
+#define I(x, y, z) ((y) xor ((x) bitor (compl z)))
 
 /* ROTATE_LEFT rotates x left n bits. */
-#define ROTATE_LEFT(x, n) (((x) << (n)) | ((x) >> (32-(n))))
+#define ROTATE_LEFT(x, n) (((x) << (n)) bitor ((x) >> (32-(n))))
 
 /*
  * FF, GG, HH, and II transformations for rounds 1, 2, 3, and 4.

@@ -1618,7 +1618,7 @@ void UpdateMissionWindow(long ID)
                     cur->Item_->SetState(0);
 
                 if (((C_Mission*)cur->Item_)->GetVUID() == gCurrentFlightID)
-                    cur->Item_->SetState(static_cast<short>(cur->Item_->GetState() | 1));
+                    cur->Item_->SetState(static_cast<short>(cur->Item_->GetState() bitor 1));
 
                 cur = cur->Next;
             }
@@ -2339,7 +2339,7 @@ BOOL AddWordWrapTextToWindow(C_Window *win, short *x, short *y, short, short end
         txt->SetFGColor(color);
         txt->SetFont(win->Font_);
         txt->SetUserNumber(_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_);
-        txt->SetFlagBitOn(C_BIT_LEFT | C_BIT_WORDWRAP);
+        txt->SetFlagBitOn(C_BIT_LEFT bitor C_BIT_WORDWRAP);
         txt->SetText(str);
         txt->SetClient(static_cast<short>(Client));
         win->AddControl(txt);
@@ -2631,7 +2631,7 @@ void RelocateSquadron()
                 }
 
                 bmp->SetXY(x / mapratio, y / mapratio);
-                bmp->SetFlagBitOn(C_BIT_HCENTER | C_BIT_VCENTER);
+                bmp->SetFlagBitOn(C_BIT_HCENTER bitor C_BIT_VCENTER);
                 rsc = (IMAGE_RSC*)res->Find(ObjPtr->IconIndex);
 
                 if (rsc)

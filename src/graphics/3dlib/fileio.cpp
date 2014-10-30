@@ -9,7 +9,7 @@ GLint CFileIO::openread(const char *filename)
 {
     ShiAssert(file == -1); // Make sure we're not double opening this file
 
-    file = GR_OPEN(filename, O_BINARY | O_RDONLY);
+    file = GR_OPEN(filename, O_BINARY bitor O_RDONLY);
 
     return (file >= 0); // Return FALSE if we got a negative number
 }
@@ -18,7 +18,7 @@ GLint CFileIO::openwrite(const char *filename, GLint binary)
 {
     ShiAssert(file == -1); // Make sure we're not double opening this file
 
-    int mode = O_RDWR | O_CREAT | O_TRUNC;
+    int mode = O_RDWR bitor O_CREAT bitor O_TRUNC;
 
     if (binary) mode or_eq O_BINARY;
     else mode or_eq O_TEXT;

@@ -830,7 +830,7 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
     BOOL useLast = TRUE;
 
     // Check the clipping flags on the verteces which bound this region
-    if (v0->clipFlag | v1->clipFlag | v2->clipFlag | v3->clipFlag)
+    if (v0->clipFlag bitor v1->clipFlag bitor v2->clipFlag bitor v3->clipFlag)
     {
         // If all verticies are clipped by the same edge, skip this square
         if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand v3->clipFlag)
@@ -840,7 +840,7 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
         vertPointers[2] = v2;
 
         // If any verteces are clipped, do separate triangles since the quad isn't necessarily planar
-        if (v0->clipFlag | v1->clipFlag | v2->clipFlag)
+        if (v0->clipFlag bitor v1->clipFlag bitor v2->clipFlag)
         {
             vertPointers[0] = v0;
             vertPointers[1] = v1;
@@ -848,7 +848,7 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
             useFirst = FALSE;
         }
 
-        if (v0->clipFlag | v2->clipFlag | v3->clipFlag)
+        if (v0->clipFlag bitor v2->clipFlag bitor v3->clipFlag)
         {
             vertPointers[1] = v0;
             vertPointers[3] = v3;
@@ -910,12 +910,12 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
     if (useFirst)
     {
         MPRVtxTexClr_t *arr[] = { v0, v1, v2, v3 };
-        context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, count, arr, terrain); //JAM 14Sep03
+        context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, count, arr, terrain); //JAM 14Sep03
     }
     else
     {
         MPRVtxTexClr_t *arr[] = { v0, v2, v3 };
-        context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, count, arr, terrain); //JAM 14Sep03
+        context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, count, arr, terrain); //JAM 14Sep03
     }
 
 }
@@ -926,7 +926,7 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
 void Render3D::DrawTriangle(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, int CullFlag, bool gifPicture, bool terrain)  //JAM 14Sep03
 {
     // Check the clipping flags on the verteces which bound this region
-    if (v0->clipFlag | v1->clipFlag | v2->clipFlag)
+    if (v0->clipFlag bitor v1->clipFlag bitor v2->clipFlag)
     {
         // If all verticies are clipped by the same edge, skip this triangle
         if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag)
@@ -960,7 +960,7 @@ void Render3D::DrawTriangle(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2
 
     // Draw the tri
     MPRVtxTexClr_t *arr[] = { v0, v1, v2 };
-    context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 3, arr, terrain); //JAM 14Sep03
+    context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 3, arr, terrain); //JAM 14Sep03
 }
 
 

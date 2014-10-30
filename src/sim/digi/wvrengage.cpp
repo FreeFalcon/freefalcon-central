@@ -932,7 +932,7 @@ int CanEngage(AircraftClass *self, int combatClass, SimObjectType* targetPtr, in
         retBvr = FALSE;
     }
 
-    return retBvr | retWvr;
+    return retBvr bitor retWvr;
 }
 
 #else

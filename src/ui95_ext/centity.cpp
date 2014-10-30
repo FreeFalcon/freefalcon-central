@@ -23,7 +23,7 @@ C_Entity::C_Entity() : C_Control()
     Status_ = NULL;
     Operational_ = 0;
     vuID = FalconNullId;
-    Defaultflags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER | C_BIT_USEBGFILL;
+    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER bitor C_BIT_USEBGFILL;
 }
 
 C_Entity::C_Entity(char **stream) : C_Control(stream)
@@ -54,7 +54,7 @@ void C_Entity::InitEntity()
 {
     Icon_ = new O_Output;
     Icon_->SetOwner(this);
-    Icon_->SetFlags(Flags_ | C_BIT_HCENTER | C_BIT_VCENTER);
+    Icon_->SetFlags(Flags_ bitor C_BIT_HCENTER bitor C_BIT_VCENTER);
     Name_ = new O_Output;
     Name_->SetOwner(this);
     Name_->SetFlags(Flags_);

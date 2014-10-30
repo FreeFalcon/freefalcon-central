@@ -555,7 +555,7 @@ void RenderOTW::PreSceneCloudOcclusion(float percent, DWORD color)
     {
 
         // Save the cloud color with alpha for post processing use.
-        cloudColor = (color bitand 0x00FFFFFF) | (FloatToInt32(percent * 255.9f) << 24);
+        cloudColor = (color bitand 0x00FFFFFF) bitor (FloatToInt32(percent * 255.9f) << 24);
 
     }
     else
@@ -1267,7 +1267,7 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
                 v1.x = (xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(span->Tsector.maxEndPoint - viewpoint->Y()));
                 v2.x = (xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(span->Tsector.minEndPoint - viewpoint->Y()));
 
-                SetColor((0x4040 << ((span->LOD - 2) * 8)) | 0x80000000);
+                SetColor((0x4040 << ((span->LOD - 2) * 8)) bitor 0x80000000);
                 Render2DLine((UInt16)v1.x, (UInt16)v1.y, (UInt16)v2.x, (UInt16)v2.y);
             }
 
@@ -1294,7 +1294,7 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
                 v1.y = (yRes >> 1) - TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(span->Rsector.maxEndPoint - viewpoint->X()));
                 v2.y = (yRes >> 1) - TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(span->Rsector.minEndPoint - viewpoint->X()));
 
-                SetColor((0x4040 << ((span->LOD - 2) * 8)) | 0x80000000);
+                SetColor((0x4040 << ((span->LOD - 2) * 8)) bitor 0x80000000);
                 Render2DLine((UInt16)v1.x, (UInt16)v1.y, (UInt16)v2.x, (UInt16)v2.y);
             }
 
@@ -1321,7 +1321,7 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
                 v1.x = (xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(span->Bsector.maxEndPoint - viewpoint->Y()));
                 v2.x = (xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(span->Bsector.minEndPoint - viewpoint->Y()));
 
-                SetColor((0x4040 << ((span->LOD - 2) * 8)) | 0x80000000);
+                SetColor((0x4040 << ((span->LOD - 2) * 8)) bitor 0x80000000);
                 Render2DLine((UInt16)v1.x, (UInt16)v1.y, (UInt16)v2.x, (UInt16)v2.y);
             }
 
@@ -1348,7 +1348,7 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
                 v1.y = (yRes >> 1) - TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(span->Lsector.maxEndPoint - viewpoint->X()));
                 v2.y = (yRes >> 1) - TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(span->Lsector.minEndPoint - viewpoint->X()));
 
-                SetColor((0x4040 << ((span->LOD - 2) * 8)) | 0x80000000);
+                SetColor((0x4040 << ((span->LOD - 2) * 8)) bitor 0x80000000);
                 Render2DLine((UInt16)v1.x, (UInt16)v1.y, (UInt16)v2.x, (UInt16)v2.y);
             }
 

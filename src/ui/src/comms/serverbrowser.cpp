@@ -496,7 +496,7 @@ static void OnSelchangeServerList(long n, short hittype, C_Base *control)
             }
 
             m_pSelectedItem = (C_ServerItem *) control;
-            m_pSelectedItem->SetState(static_cast<short>(control->GetState() | 1));
+            m_pSelectedItem->SetState(static_cast<short>(control->GetState() bitor 1));
             m_pSelectedItem->Refresh();
 
             // UI_Leave(Leave);
@@ -995,7 +995,7 @@ C_ServerItem::C_ServerItem() : C_Control()
 
     ZeroMemory(m_arrOutput, sizeof(m_arrOutput));
     Owner_ = NULL;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER;
 
     // cached properties
     m_nPing = 0;
@@ -1156,7 +1156,7 @@ BOOL C_ServerItem::Process(long ID, short HitType)
 
     if (HitType == C_TYPE_LMOUSEUP)
     {
-        SetState(static_cast<short>(GetState() | 1));
+        SetState(static_cast<short>(GetState() bitor 1));
         Refresh();
     }
 

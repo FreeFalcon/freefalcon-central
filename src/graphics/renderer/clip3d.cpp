@@ -314,7 +314,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
     // OW
 #if 0
     context.Primitive(MPR_PRM_TRIFAN,
-                      MPR_VI_COLOR | MPR_VI_TEXTURE,
+                      MPR_VI_COLOR bitor MPR_VI_TEXTURE,
                       (unsigned short)(nextOut - outList), sizeof(MPRVtxTexClr_t));
 
     for (v = outList; v < nextOut; v++)
@@ -325,7 +325,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
     }
 
 #else
-    context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE,
+    context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE,
                           (unsigned short)(nextOut - outList), (MPRVtxTexClr_t **)outList, terrain); //JAM 14Sep03
 #endif
 }

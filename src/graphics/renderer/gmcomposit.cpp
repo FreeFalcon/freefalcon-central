@@ -151,27 +151,27 @@ void RenderGMComposite::Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*,
     lTexHandle = new TextureHandle;
     ShiAssert(lTexHandle);
     lTexHandle->Create("GM Radar Left", 0, 0,
-                       GM_TEXTURE_SIZE, GM_TEXTURE_SIZE, TextureHandle::FLAG_HINT_DYNAMIC | TextureHandle::FLAG_MATCHPRIMARY |
+                       GM_TEXTURE_SIZE, GM_TEXTURE_SIZE, TextureHandle::FLAG_HINT_DYNAMIC bitor TextureHandle::FLAG_MATCHPRIMARY |
                        TextureHandle::FLAG_NOTMANAGED);
 
     rTexHandle = new TextureHandle;
     ShiAssert(rTexHandle);
     rTexHandle->Create("GM Radar Right", 0, 0,
-                       GM_TEXTURE_SIZE, GM_TEXTURE_SIZE, TextureHandle::FLAG_HINT_DYNAMIC | TextureHandle::FLAG_MATCHPRIMARY |
+                       GM_TEXTURE_SIZE, GM_TEXTURE_SIZE, TextureHandle::FLAG_HINT_DYNAMIC bitor TextureHandle::FLAG_MATCHPRIMARY |
                        TextureHandle::FLAG_NOTMANAGED);
 
     // Noise texture is twice as wide as the other textures to allow for random u (avoids time consuming re-generation)
     nTexHandle = new TextureHandle;
     ShiAssert(nTexHandle);
     paletteHandle->AttachToTexture(nTexHandle);
-    nTexHandle->Create("GM Radar Noise", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8,
+    nTexHandle->Create("GM Radar Noise", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8,
                        GM_TEXTURE_SIZE * 2, GM_TEXTURE_SIZE, TextureHandle::FLAG_HINT_STATIC);
 
     // Generate the green palette for the noise texture
     DWORD paletteData[256];
 
     for (int i = 0; i < 256; i++)
-        paletteData[i] = 0xFF000000 | (i << 8);
+        paletteData[i] = 0xFF000000 bitor (i << 8);
 
     paletteData[0] = 0;
 
@@ -697,7 +697,7 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
     radar.context.SetState(MPR_STA_DST_BLEND_FUNCTION, MPR_BF_ONE);
     //MI TEST
     radar.context.SelectTexture1((GLint) nTexHandle);
-    radar.context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
+    radar.context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
     // radar.context.InvalidateState();
 
     radar.EndDraw();

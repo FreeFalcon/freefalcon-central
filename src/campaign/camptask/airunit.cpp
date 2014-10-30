@@ -177,12 +177,12 @@ int GetUnitScore(Unit u, MoveType mt)
     {
         if (u->GetUnitCurrentRole() == ARO_CA)
         {
-            // return u->GetUnitRoleScore(ARO_CA, CALC_TOTAL, USE_EXP | USE_VEH_COUNT);
+            // return u->GetUnitRoleScore(ARO_CA, CALC_TOTAL, USE_EXP bitor USE_VEH_COUNT);
             return u->class_data->HitChance[mt] * u->GetTotalVehicles();
         }
         else
         {
-            // return u->GetUnitRoleScore(ARO_CA, CALC_TOTAL, USE_EXP | USE_VEH_COUNT)/3;
+            // return u->GetUnitRoleScore(ARO_CA, CALC_TOTAL, USE_EXP bitor USE_VEH_COUNT)/3;
             return u->class_data->HitChance[mt] * u->GetTotalVehicles() / 3;
         }
     }

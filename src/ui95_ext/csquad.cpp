@@ -31,7 +31,7 @@ C_Squadron::C_Squadron() : C_Control()
     Planes_ = NULL;
     Pilots_ = NULL;
     Players_ = NULL;
-    Defaultflags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER;
+    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER;
 }
 
 C_Squadron::C_Squadron(char **stream) : C_Control(stream)
@@ -62,7 +62,7 @@ void C_Squadron::InitSquadron()
 {
     Icon_ = new O_Output;
     Icon_->SetOwner(this);
-    Icon_->SetFlags(Flags_ | C_BIT_HCENTER | C_BIT_VCENTER);
+    Icon_->SetFlags(Flags_ bitor C_BIT_HCENTER bitor C_BIT_VCENTER);
     Name_ = new O_Output;
     Name_->SetOwner(this);
     Name_->SetFlags(Flags_);

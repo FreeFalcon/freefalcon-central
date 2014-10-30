@@ -3,7 +3,7 @@
 C_Victory::C_Victory() : C_Control()
 {
     _SetCType_(_CNTL_VICTORY_);
-    Defaultflags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER | C_BIT_USEBGFILL;
+    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER bitor C_BIT_USEBGFILL;
     Font_ = 1;
     Section_ = 0;
     State_ = 0;

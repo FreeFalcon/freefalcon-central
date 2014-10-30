@@ -203,10 +203,10 @@ int Detected(Unit u, FalconEntity *e, float *range)
         int det = 0;
 
         if (u->ZPos() - e->ZPos() > -5000.0f)
-            det = ENEMY_SAME_HEX | ENEMY_IN_RANGE | ENEMY_DETECTED | FRIENDLY_IN_RANGE;
+            det = ENEMY_SAME_HEX bitor ENEMY_IN_RANGE bitor ENEMY_DETECTED bitor FRIENDLY_IN_RANGE;
 
         if (e->ZPos() - u->ZPos() > -5000.0f)
-            det or_eq ENEMY_SAME_HEX | ENEMY_IN_RANGE | FRIENDLY_IN_RANGE | FRIENDLY_DETECTED;
+            det or_eq ENEMY_SAME_HEX bitor ENEMY_IN_RANGE bitor FRIENDLY_IN_RANGE bitor FRIENDLY_DETECTED;
 
         if (det)
             return(det);

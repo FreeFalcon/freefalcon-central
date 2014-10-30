@@ -289,7 +289,7 @@ ListAlloc(void)
 
     do
     {
-        if ((GLOBAL_ALLOC_TABLE -> avail < ALLOC_SAFETY) ||
+        if ((GLOBAL_ALLOC_TABLE -> avail < ALLOC_SAFETY) or
             (GLOBAL_ALLOC_TABLE -> index > (ALLOC_UNITS - ALLOC_SAFETY)))
 
             ListGlobalPack();

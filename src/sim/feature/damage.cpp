@@ -374,7 +374,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
             // grande finale
             // edg note: explode them all for now
             // if ( fc->Flags bitand FEAT_CAN_EXPLODE )
-            if (fc->Flags bitand (FEAT_CAN_BURN | FEAT_CAN_EXPLODE))
+            if (fc->Flags bitand (FEAT_CAN_BURN bitor FEAT_CAN_EXPLODE))
             {
                 ppos = pos;
                 ppos.z += minB.z * 0.15f;
@@ -510,7 +510,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
                     /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_FIRE5, // type
-                     SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                     SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
                      &ppos, // world pos
                      &vec, // vel vector
                      3.0, // time to live

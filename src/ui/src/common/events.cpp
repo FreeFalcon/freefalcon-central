@@ -138,7 +138,7 @@ static void AddMessageToWindow(C_Window *win, long client, int *y, CampaignTime 
     txt->SetW(wrap_w);
     txt->SetFGColor(0x00f0f0f0);
     txt->SetFont(win->Font_);
-    txt->SetFlagBitOn(C_BIT_LEFT | C_BIT_WORDWRAP);
+    txt->SetFlagBitOn(C_BIT_LEFT bitor C_BIT_WORDWRAP);
     txt->SetClient(static_cast<short>(client));
     txt->SetText(eventstr);
     win->AddControl(txt);
@@ -272,7 +272,7 @@ void ProcessEventArray(C_Window *win, void *events, int count)
         txt->SetW(wrap_w);
         txt->SetFGColor(0x00f0f0f0);
         txt->SetFont(win->Font_);
-        txt->SetFlagBitOn(C_BIT_LEFT | C_BIT_WORDWRAP);
+        txt->SetFlagBitOn(C_BIT_LEFT bitor C_BIT_WORDWRAP);
         txt->SetUserNumber(_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_);
         txt->SetText(Message_str);
         win->AddControl(txt);

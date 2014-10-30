@@ -794,7 +794,7 @@ FalconMessageFilter::FalconMessageFilter(FalconEvent::HandlingThread theThread, 
         vuFilterBits = vuMessageBits;
 #else
         // KCK: All threads must handle delete events
-        vuFilterBits = vuMessageBits | VU_DELETE_EVENT_BITS;
+        vuFilterBits = vuMessageBits bitor VU_DELETE_EVENT_BITS;
 #endif
     }
 #endif

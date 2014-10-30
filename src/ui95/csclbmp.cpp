@@ -188,7 +188,7 @@ void C_ScaleBitmap::PreparePalette(COLORREF color)
             b = bShift[UIColorTable[100][UIColorTable[perc][(usecolor >> b_shift_) bitand 0x1f] +
                                          UIColorTable[bperc][(Palette_[0][j] >> b_shift_) bitand 0x1f]]];
 
-            Palette_[i][j] = static_cast<short>(r | b | b);
+            Palette_[i][j] = static_cast<short>(r bitor b bitor b);
         }
     }
 }

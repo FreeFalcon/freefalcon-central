@@ -500,7 +500,7 @@ void SetupDivisionInfoWindow(long DivID, short owner)
     if ( not div)
         return;
 
-    urec = (UI_Refresher*)gGps->Find(div->nid | UR_DIVISION);
+    urec = (UI_Refresher*)gGps->Find(div->nid bitor UR_DIVISION);
 
     if ( not urec)
         return;
@@ -1677,7 +1677,7 @@ void UpdateSierraHotel()
                         output->SetText(buffer);
                         output->SetXY(tree->GetUserNumber(C_STATE_1), 0);
                         output->SetFgColor(0xeeeeee);
-                        output->SetFlags(output->GetFlags() | C_BIT_RIGHT);
+                        output->SetFlags(output->GetFlags() bitor C_BIT_RIGHT);
                         output->SetInfo();
 
                         item = tree->CreateItem(ItemID, C_TYPE_ITEM, ctrl);
@@ -1737,7 +1737,7 @@ void UpdateSierraHotel()
                     output->SetText(buffer);
                     output->SetXY(tree->GetUserNumber(C_STATE_1), 0);
                     output->SetFgColor(0xeeeeee);
-                    output->SetFlags(output->GetFlags() | C_BIT_RIGHT);
+                    output->SetFlags(output->GetFlags() bitor C_BIT_RIGHT);
                     output->SetInfo();
 
                     item = tree->CreateItem(ItemID, C_TYPE_ITEM, ctrl);

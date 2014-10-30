@@ -208,7 +208,7 @@ void BombClass::Init()
 
     // Cobra - GPS/JSOW
     if (EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
-        flags or_eq (IsGPS | IsJSOW);
+        flags or_eq (IsGPS bitor IsJSOW);
 
 }
 

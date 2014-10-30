@@ -456,7 +456,7 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
                     }
                 }
 
-                Stream->Status or_eq SND_STREAM_CONTINUE | SND_STREAM_LOOP;
+                Stream->Status or_eq SND_STREAM_CONTINUE bitor SND_STREAM_LOOP;
 
                 if ( not (snd->flags bitand SOUND_LOOP))
                     Stream->Status xor_eq SND_STREAM_LOOP;
@@ -492,7 +492,7 @@ void C_Music::AddInteractiveMusic(long Section, long Group, long MusicID)
     if ( not Music_)
         return;
 
-    ID = Count_[Section][Group] | (Section << 16) | (Group << 8);
+    ID = Count_[Section][Group] bitor (Section << 16) bitor (Group << 8);
 
     if (Music_->Find(ID))
         return;
@@ -508,7 +508,7 @@ void C_Music::StartInteractive(long Section, long Group)
 
     RepeatCount_ = 1;
 
-    ID = (rand() % Count_[Section][Group]) | (Section << 16) | (Group << 8);
+    ID = (rand() % Count_[Section][Group]) bitor (Section << 16) bitor (Group << 8);
 
     MusicID = (long)Music_->Find(ID);
 
@@ -566,7 +566,7 @@ void C_Music::PlayNextInteractive()
     if (ID == CurPiece_)
         ID = (CurPiece_ + 1) % Count_[Section_][Group_];
 
-    ID or_eq (Section_ << 16) | (Group_ << 8);
+    ID or_eq (Section_ << 16) bitor (Group_ << 8);
 
     MusicID = (long)Music_->Find(ID);
 

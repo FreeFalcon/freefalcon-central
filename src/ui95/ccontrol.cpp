@@ -851,7 +851,7 @@ void C_Base::BaseFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CNTL_SETFLAGBITON:
-            SetFlags(GetFlags() | P[0]);
+            SetFlags(GetFlags() bitor P[0]);
             break;
 
         case CNTL_SETFLAGBITOFF:
@@ -879,7 +879,7 @@ void C_Base::BaseFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CNTL_SETHOTKEY:
-            SetHotKey((WORD)(P[0] | P[1] | P[2] | P[3] | P[4] | P[5] | P[6]));
+            SetHotKey((WORD)(P[0] bitor P[1] bitor P[2] bitor P[3] bitor P[4] bitor P[5] bitor P[6]));
             break;
 
         case CNTL_CURSOR:
@@ -891,7 +891,7 @@ void C_Base::BaseFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CNTL_SETMOUSECOLOR:
-            SetMouseOverColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetMouseOverColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CNTL_SETMOUSEPERC:

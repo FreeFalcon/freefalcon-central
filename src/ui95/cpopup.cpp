@@ -921,7 +921,7 @@ BOOL C_PopupList::OpenWindow(short x, short y, short Dir)
     Window_->RefreshWindow();
     Window_->SetDepth(10000);
     Window_->SetCritical(Handler_->GetCritical());
-    Handler_->AddWindow(Window_, C_BIT_ENABLED | C_BIT_CANTMOVE);
+    Handler_->AddWindow(Window_, C_BIT_ENABLED bitor C_BIT_CANTMOVE);
 
     if (WinType_ == C_TYPE_EXCLUSIVE)
         MouseOver(x - Window_->GetX(), y - Window_->GetY(), this);
@@ -988,23 +988,23 @@ void C_PopupList::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *Hndlr)
             break;
 
         case CPU_SETNORMCOLOR:
-            SetNormColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetNormColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CPU_SETSELCOLOR:
-            SetSelColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetSelColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CPU_SETDISCOLOR:
-            SetDisColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetDisColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CPU_SETBARCOLOR:
-            SetBarColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetBarColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CPU_SETBGCOLOR:
-            SetBgColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetBgColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CPU_SETOPAQUE:
@@ -1012,7 +1012,7 @@ void C_PopupList::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *Hndlr)
             break;
 
         case CPU_SETBORDERCOLOR:
-            SetBorderColor(P[0] | ((P[1] bitand 0xff) << 8) | ((P[2] bitand 0xff) << 16));
+            SetBorderColor(P[0] bitor ((P[1] bitand 0xff) << 8) bitor ((P[2] bitand 0xff) << 16));
             break;
     }
 }

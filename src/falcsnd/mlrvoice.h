@@ -9,7 +9,7 @@
 VuEntity
    |
    +-F4SoundPos - positional data
-        |                 API interface
+        bitor                 API interface
  +-mlrVoiceHandle -> mlrVoice -> mlrBuffer
  +-SoundHandleNode -> mlrVoice
 

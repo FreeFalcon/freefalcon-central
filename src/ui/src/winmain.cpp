@@ -351,7 +351,7 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
 
     if ( not hPrevInstance)
     {
-        wc.style = CS_HREDRAW | CS_VREDRAW;
+        wc.style = CS_HREDRAW bitor CS_VREDRAW;
         wc.lpfnWndProc = (WNDPROC)SimWndProc; // The client window procedure.
         wc.cbClsExtra = 0;                     // No room reserved for extra data.
         wc.cbWndExtra = sizeof(DWORD);
@@ -1202,7 +1202,7 @@ void SystemLevelInit()
 
         if ( not LoadClassTable("Falcon4"))
         {
-            MessageBox(NULL, "No Entities Loaded.", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+            MessageBox(NULL, "No Entities Loaded.", "Error", MB_OK bitor MB_ICONSTOP bitor MB_SETFOREGROUND);
             exit(0);
         }
 
@@ -1210,7 +1210,7 @@ void SystemLevelInit()
 
         if ( not LoadTactics("Falcon4"))
         {
-            MessageBox(NULL, "No Tactics Loaded.", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+            MessageBox(NULL, "No Tactics Loaded.", "Error", MB_OK bitor MB_ICONSTOP bitor MB_SETFOREGROUND);
             exit(0);
         }
 
@@ -2270,7 +2270,7 @@ void ConsoleWrite(char* str)
     if (hStdIn == INVALID_HANDLE_VALUE)
     {
         FormatMessage(
-            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+            FORMAT_MESSAGE_ALLOCATE_BUFFER bitor FORMAT_MESSAGE_FROM_SYSTEM,
             NULL,
             GetLastError(),
             MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language

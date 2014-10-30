@@ -415,7 +415,7 @@ void AirframeClass::Axial(float dt)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_AC_DEBRIS, // type
-                         SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                         SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                          &pos, // world pos
                          &vec, // vel vector
                          3.0f, // time to live

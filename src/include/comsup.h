@@ -181,7 +181,7 @@ namespace ComSup
         else if (e.ErrorMessage()) strMsg += e.ErrorMessage();
         else strMsg += "Unspecified Error.";
 
-        ::MessageBox(NULL, strMsg.c_str(), "Information", MB_OK | MB_SETFOREGROUND | MB_ICONINFORMATION);
+        ::MessageBox(NULL, strMsg.c_str(), "Information", MB_OK bitor MB_SETFOREGROUND bitor MB_ICONINFORMATION);
     }
 
     // returns an ANSI string from a CLSID or GUID

@@ -358,7 +358,7 @@ void RViewPoint::UpdateMoon()
     {
         if (*texel not_eq 0)   // Don't touch the chromakeyed texels
         {
-            *dest++ = (BYTE)((*texel++) | 128); // Use the "green" set of palette entries
+            *dest++ = (BYTE)((*texel++) bitor 128); // Use the "green" set of palette entries
         }
         else
         {
@@ -390,12 +390,12 @@ void RViewPoint::SetupTextures()
     else
     {
         // Build the normal sun texture
-        SunTexture.LoadAndCreate("sun5.apl", MPR_TI_CHROMAKEY | MPR_TI_PALETTE);
+        SunTexture.LoadAndCreate("sun5.apl", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE);
         SunTexture.FreeImage();
 
         // Now load the image to construct the green sun texture
         // (Could do without this, but this is easy and done only once...)
-        if ( not GreenSunTexture.LoadImage("sun5.apl", MPR_TI_CHROMAKEY | MPR_TI_PALETTE))
+        if ( not GreenSunTexture.LoadImage("sun5.apl", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE))
         {
             ShiError("Failed to load sun texture(2)");
         }
@@ -424,10 +424,10 @@ void RViewPoint::SetupTextures()
     //JAM
 
     // Now setup the moon textures.  (We'll tweak them periodicaly in BuildMoon)
-    OriginalMoonTexture.LoadAndCreate("moon.gif", MPR_TI_CHROMAKEY | MPR_TI_PALETTE | MPR_TI_ALPHA);
-    MoonTexture.LoadAndCreate("moon.gif", MPR_TI_CHROMAKEY | MPR_TI_PALETTE | MPR_TI_ALPHA);
+    OriginalMoonTexture.LoadAndCreate("moon.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
+    MoonTexture.LoadAndCreate("moon.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
     GreenMoonTexture.SetPalette(MoonTexture.GetPalette());
-    GreenMoonTexture.LoadAndCreate("moon.gif", MPR_TI_CHROMAKEY | MPR_TI_PALETTE | MPR_TI_ALPHA);
+    GreenMoonTexture.LoadAndCreate("moon.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
 
     // build white moon with alpha
     Palette *moonPal = MoonTexture.GetPalette();

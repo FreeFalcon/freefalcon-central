@@ -1376,9 +1376,9 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
     if (SetupResult)
     {
 #ifdef NDEBUG
-        SetupResult = VerifyResult(pdev->SetCooperativeLevel(hWndMain, DISCL_EXCLUSIVE | DISCL_FOREGROUND));
+        SetupResult = VerifyResult(pdev->SetCooperativeLevel(hWndMain, DISCL_EXCLUSIVE bitor DISCL_FOREGROUND));
 #else // bye bye FFB :/
-        SetupResult = VerifyResult(pdev->SetCooperativeLevel(hWndMain, DISCL_EXCLUSIVE | DISCL_BACKGROUND));
+        SetupResult = VerifyResult(pdev->SetCooperativeLevel(hWndMain, DISCL_EXCLUSIVE bitor DISCL_BACKGROUND));
 #endif
     }
 
@@ -1924,7 +1924,7 @@ int JoystickPlayEffect(int effectNum, int data)
         // Direction is passed in in degrees, we convert to 100ths
         // of a degree to make it easier for the caller.
         rglDirections[0]        = data * 100;
-        diEffect.dwFlags        = DIEFF_OBJECTOFFSETS | DIEFF_POLAR;
+        diEffect.dwFlags        = DIEFF_OBJECTOFFSETS bitor DIEFF_POLAR;
         diEffect.cAxes          = 2;
         diEffect.rglDirection   = rglDirections;
         SetupResult = VerifyResult(gForceFeedbackEffect[effectNum]->SetParameters(&diEffect, DIEP_DIRECTION));

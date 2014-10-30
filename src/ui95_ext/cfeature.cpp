@@ -10,7 +10,7 @@ C_Feature::C_Feature() : C_Control()
     Operational_ = 0;
     vuID = FalconNullId;
     featureID_ = 0;
-    Defaultflags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER;
+    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER;
 }
 
 C_Feature::C_Feature(char **stream) : C_Control(stream)

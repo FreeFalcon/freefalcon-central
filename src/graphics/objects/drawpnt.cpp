@@ -146,7 +146,7 @@ void DrawablePoint::Draw(RenderOTW *renderer, int LOD)
             int blue = (labelColor bitand 0x00ff0000) >> 16;
             blue -= min(blue, colorsub); // minimum blue = 100
 
-            long newlabelColor = blue << 16 | green << 8 | red;
+            long newlabelColor = blue << 16 bitor green << 8 bitor red;
 
             x = labelPoint.x - renderer->ScreenTextWidth(label) / 2; // Centers text
             y = labelPoint.y - 12; // Place text above center of object

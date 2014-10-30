@@ -564,7 +564,7 @@ void RadarDopplerClass::STBYDisplay(void)
             LabelButton(4, "CNTL", NULL, IsSet(CtlMode));
         }
 
-        if (IsSet(MenuMode | CtlMode))
+        if (IsSet(MenuMode bitor CtlMode))
         {
             MENUDisplay();
             return;
@@ -720,7 +720,7 @@ void RadarDopplerClass::DrawBars(void)
 {
     char str[32];
 
-    if (IsSet(MenuMode | CtlMode)) return; // JPO special modes
+    if (IsSet(MenuMode bitor CtlMode)) return; // JPO special modes
 
     if (IsAADclt(AzBar)) return;
 
@@ -859,7 +859,7 @@ void RadarDopplerClass::DrawRange(void)
 {
     char str[8];
 
-    if (IsSet(MenuMode | CtlMode)) return;
+    if (IsSet(MenuMode bitor CtlMode)) return;
 
     display->SetColor(GetMfdColor(MFD_LABELS));
     float x18, y18;
@@ -876,7 +876,7 @@ void RadarDopplerClass::DrawRangeArrows(void)
     static const float arrowH = 0.0375f;
     static const float arrowW = 0.0433f;
 
-    if (IsSet(MenuMode | CtlMode)) return; // JPO special modes
+    if (IsSet(MenuMode bitor CtlMode)) return; // JPO special modes
 
     float x18, y18;
     float x19, y19;
@@ -981,7 +981,7 @@ void RadarDopplerClass::RWSDisplay(void)
 
     if (IsAADclt(Cntl) == FALSE) LabelButton(4, "CTNL", NULL, IsSet(CtlMode));
 
-    if (IsSet(MenuMode | CtlMode))
+    if (IsSet(MenuMode bitor CtlMode))
     {
         MENUDisplay();
     }
@@ -1306,7 +1306,7 @@ void RadarDopplerClass::SAMDisplay(void)
 
         if (IsAADclt(Cntl) == FALSE) LabelButton(4, "CTNL", NULL, IsSet(CtlMode));
 
-        if (IsSet(MenuMode | CtlMode))
+        if (IsSet(MenuMode bitor CtlMode))
         {
             MENUDisplay();
         }
@@ -1435,7 +1435,7 @@ void RadarDopplerClass::ACMDisplay(void)
 
     if (IsAADclt(Cntl) == FALSE) LabelButton(4, "CTNL", NULL, IsSet(CtlMode));
 
-    if (IsSet(MenuMode | CtlMode))
+    if (IsSet(MenuMode bitor CtlMode))
     {
         MENUDisplay();
     }
@@ -1503,7 +1503,7 @@ void RadarDopplerClass::TWSDisplay(void)
         LabelButton(4, "CTNL", NULL, IsSet(CtlMode));
     }
 
-    if (IsSet(MenuMode | CtlMode))
+    if (IsSet(MenuMode bitor CtlMode))
     {
         MENUDisplay();
     }
@@ -1939,7 +1939,7 @@ void RadarDopplerClass::VSModeDisplay(void)
 
     if (IsAADclt(Cntl) == FALSE) LabelButton(4, "CTNL", NULL, IsSet(CtlMode));
 
-    if (IsSet(MenuMode | CtlMode))
+    if (IsSet(MenuMode bitor CtlMode))
         MENUDisplay();
     else
         AABottomRow();
@@ -2152,7 +2152,7 @@ void RadarDopplerClass::VSDisplay(void)
 
     if (IsAADclt(Cntl) == FALSE) LabelButton(4, "CTNL", NULL, IsSet(CtlMode));
 
-    if (IsSet(MenuMode | CtlMode))
+    if (IsSet(MenuMode bitor CtlMode))
         MENUDisplay();
     else
         AABottomRow();
@@ -3300,7 +3300,7 @@ void RadarDopplerClass::AGRangingDisplay(void)
 
     LabelButton(4, "CNTL", NULL, IsSet(CtlMode));
 
-    if (IsSet(MenuMode | CtlMode))
+    if (IsSet(MenuMode bitor CtlMode))
     {
         MENUDisplay();
         return;

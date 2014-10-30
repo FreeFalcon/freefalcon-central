@@ -23,7 +23,7 @@ C_ATO_Package::C_ATO_Package() : C_Control()
     vuID = FalconNullId;
     Title_ = NULL;
     ShowWP_ = NULL;
-    Defaultflags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER;
+    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER;
 }
 
 C_ATO_Package::C_ATO_Package(char **stream) : C_Control(stream)

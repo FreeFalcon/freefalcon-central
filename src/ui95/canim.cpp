@@ -25,7 +25,7 @@ C_Anim::C_Anim() : C_Base()
     Anim_ = NULL;
     _SetCType_(_CNTL_ANIMATION_);
     SetReady(0);
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_TIMER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_TIMER;
 }
 
 C_Anim::C_Anim(char **stream) : C_Base(stream)

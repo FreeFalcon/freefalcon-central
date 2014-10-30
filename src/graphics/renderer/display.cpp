@@ -1345,7 +1345,7 @@ bool VirtualDisplay::SetupRttTarget(int tXres_, int tYres_, int tBpp_)
 
         renderTexture = new TextureHandle;
         renderTexture->Create("RttTarget", tBpp, 0, tXres_, tYres_,
-                              TextureHandle::FLAG_RENDERTARGET | TextureHandle::FLAG_HINT_DYNAMIC);
+                              TextureHandle::FLAG_RENDERTARGET bitor TextureHandle::FLAG_HINT_DYNAMIC);
 
         return true;
     }

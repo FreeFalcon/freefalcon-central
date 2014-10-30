@@ -783,7 +783,7 @@ void FireControlComputer::NextSubMode(void)
 
             // MD -- 20031203: removed this since sources seem to indicate that there is no such function in the real jet.
             //  ASSOCIATOR Added g_bEnableFCCSubNavCycle as an option and not g_bRealisticAvionics to not break the other modes
-            if (g_bEnableFCCSubNavCycle | not g_bRealisticAvionics)
+            if (g_bEnableFCCSubNavCycle bitor not g_bRealisticAvionics)
             {
                 switch (subMode)
                 {

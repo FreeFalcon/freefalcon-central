@@ -275,7 +275,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
     // OW
 #if 0
     context.Primitive(MPR_PRM_TRIFAN,
-                      MPR_VI_COLOR | MPR_VI_TEXTURE,
+                      MPR_VI_COLOR bitor MPR_VI_TEXTURE,
                       (unsigned short)(nextOut - outList), sizeof(MPRVtxTexClr_t));
 
     for (v = outList; v < nextOut; v++)
@@ -284,7 +284,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
     }
 
 #else
-    context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE,
+    context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE,
                           (unsigned short)(nextOut - outList), (MPRVtxTexClr_t **) outList);
 #endif
 }

@@ -836,7 +836,7 @@ void tactical_edit_mission(tactical_mission *)
 
     tactical_update_campaign_entities();
 
-    TheCampaign.Flags or_eq CAMP_TACTICAL | CAMP_TACTICAL_EDIT;
+    TheCampaign.Flags or_eq CAMP_TACTICAL bitor CAMP_TACTICAL_EDIT;
 
     TacticalEngagementSetup(true);
 

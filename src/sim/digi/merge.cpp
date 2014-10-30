@@ -73,7 +73,7 @@ void DigitalBrain::MergeManeuver(void)
         mergeTimer = SimLibElapsedTime + 3 * SEC_TO_MSEC;//me123 from 5
         mnverFlags = maneuverClassData[self->CombatClass()].flags;
 
-        switch (mnverFlags bitand (CanLevelTurn | CanSlice | CanUseVertical))
+        switch (mnverFlags bitand (CanLevelTurn bitor CanSlice bitor CanUseVertical))
         {
             case CanLevelTurn:
                 if ((mnverFlags bitand CanOneCircle) and (self->GetKias() < cornerSpeed))//me123
@@ -111,7 +111,7 @@ void DigitalBrain::MergeManeuver(void)
                 // Full burner for the pull
                 break;
 
-            case CanLevelTurn | CanSlice:
+            case CanLevelTurn bitor CanSlice:
 
                 // level turn or slice?
                 if ((self->GetKias() > cornerSpeed) and -self->ZPos() > 3000.0f)//me123
@@ -146,7 +146,7 @@ void DigitalBrain::MergeManeuver(void)
 
                 break;
 
-            case CanLevelTurn | CanUseVertical:
+            case CanLevelTurn bitor CanUseVertical:
 
                 // level turn or vertical?
                 if (self->GetKias() < cornerSpeed * 1.2) //me123
@@ -174,7 +174,7 @@ void DigitalBrain::MergeManeuver(void)
 
                 break;
 
-            case CanSlice | CanUseVertical:
+            case CanSlice bitor CanUseVertical:
 
                 // slice or vertical?
                 if ((self->GetKias() < cornerSpeed) and -self->ZPos() > 3000.0f) //me123
@@ -199,7 +199,7 @@ void DigitalBrain::MergeManeuver(void)
 
                 break;
 
-            case CanLevelTurn | CanSlice | CanUseVertical:
+            case CanLevelTurn bitor CanSlice bitor CanUseVertical:
 
                 // slice, level turn, or vertical?
                 if ((self->GetKias() < cornerSpeed * 0.7) and -self->ZPos() > 3000.0f) //me123

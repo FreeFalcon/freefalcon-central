@@ -142,7 +142,7 @@ int WriteBriefingToFile(_TCHAR *string, char *fname)
     if (g_bAppendToBriefingFile and not g_bBriefHTML) //No sense in appending HTML briefings
     {
         fileID = CreateFile(fullname, GENERIC_WRITE, 0, NULL, OPEN_ALWAYS,
-                            FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, NULL);
+                            FILE_ATTRIBUTE_NORMAL bitor FILE_FLAG_WRITE_THROUGH, NULL);
 
         if (fileID == INVALID_HANDLE_VALUE)
         {

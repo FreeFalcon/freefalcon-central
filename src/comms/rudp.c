@@ -506,18 +506,18 @@ extern "C" {
         }
         else if (cudp->rudp_data.reset_send == RUDP_PING)
         {
-            *flags = RUDPF_RESET | RUDP_PING;
+            *flags = RUDPF_RESET bitor RUDP_PING;
             *(long *)ptr = now;
             ptr += sizeof(long);
             size += sizeof(long);
         }
         else if (cudp->rudp_data.reset_send == RUDP_EXIT)
         {
-            *flags = RUDPF_RESET | RUDP_EXIT;
+            *flags = RUDPF_RESET bitor RUDP_EXIT;
         }
         else if (cudp->rudp_data.reset_send == RUDP_DROP)
         {
-            *flags = RUDPF_RESET | RUDP_DROP;
+            *flags = RUDPF_RESET bitor RUDP_DROP;
         }
         else
         {
@@ -2350,7 +2350,7 @@ extern "C" {
                     newsize --;
                 }
 
-                *out = (char)(0x80 | best_size);
+                *out = (char)(0x80 bitor best_size);
                 out ++;
                 *out = (char)(index - best);
                 out ++;

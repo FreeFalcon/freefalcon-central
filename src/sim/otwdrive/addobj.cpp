@@ -334,7 +334,7 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
                     // Am I Flat (can things drive across it)?
                     if (((SimFeatureClass*)theObject)->displayPriority <= PlayerOptions.BuildingDeaggLevel())
                     {
-                        if (theObject->IsSetCampaignFlag((FEAT_FLAT_CONTAINER | FEAT_ELEV_CONTAINER)))
+                        if (theObject->IsSetCampaignFlag((FEAT_FLAT_CONTAINER bitor FEAT_ELEV_CONTAINER)))
                             ((DrawablePlatform*)((SimFeatureClass*)baseObject)->baseObject)->InsertStaticSurface(((DrawableBuilding*)theObject->drawPointer));
                         else
                             ((DrawablePlatform*)((SimFeatureClass*)baseObject)->baseObject)->InsertStaticObject(theObject->drawPointer);

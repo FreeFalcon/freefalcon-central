@@ -157,7 +157,7 @@ C_Feature *BuildFeature(Objective obj, long featureID, Tpoint *)
             return(NULL);
 
         feat = new C_Feature;
-        feat->Setup(obj->GetCampID() << 16 | featureID, 0);
+        feat->Setup(obj->GetCampID() << 16 bitor featureID, 0);
         feat->SetFlagBitOff(C_BIT_USEBGFILL);
         feat->SetColor(0xc0c0c0, 0x00ff00);
         feat->InitEntity();
@@ -307,7 +307,7 @@ C_Feature *BuildUnit(Unit un, long vehno, long vehid, Tpoint *)
     {
         vc = GetVehicleClassData(classID);
         veh = new C_Feature;
-        veh->Setup(un->GetCampID() << 16 | vehid, 0);
+        veh->Setup(un->GetCampID() << 16 bitor vehid, 0);
         veh->SetFlagBitOff(C_BIT_USEBGFILL);
         veh->SetColor(0xc0c0c0, 0x00ff00);
         veh->InitEntity();
@@ -401,13 +401,13 @@ void AddUnitToTargetTree(Unit unit)
                     objPos.y = simdata.y;
                     objPos.z = simdata.z;
                     visType = Falcon4ClassTable[classID].visType[VIS_NORMAL];
-                    gUIViewer->LoadDrawableUnit(unit->GetCampID() << 16 | (v << 8) | (vehs + 1), visType, &objPos, simdata.heading, Falcon4ClassTable[classID].vuClassData.classInfo_[VU_DOMAIN], Falcon4ClassTable[classID].vuClassData.classInfo_[VU_TYPE], Falcon4ClassTable[classID].vuClassData.classInfo_[VU_STYPE]);
+                    gUIViewer->LoadDrawableUnit(unit->GetCampID() << 16 bitor (v << 8) bitor (vehs + 1), visType, &objPos, simdata.heading, Falcon4ClassTable[classID].vuClassData.classInfo_[VU_DOMAIN], Falcon4ClassTable[classID].vuClassData.classInfo_[VU_TYPE], Falcon4ClassTable[classID].vuClassData.classInfo_[VU_STYPE]);
 
-                    veh = BuildUnit(unit, v, (v << 8) | vehs + 1, &objPos);
+                    veh = BuildUnit(unit, v, (v << 8) bitor vehs + 1, &objPos);
 
                     if (veh)
                     {
-                        item = TargetTree->CreateItem(unit->GetCampID() << 16 | (v << 8) | (vehs + 1), C_TYPE_ITEM, veh);
+                        item = TargetTree->CreateItem(unit->GetCampID() << 16 bitor (v << 8) bitor (vehs + 1), C_TYPE_ITEM, veh);
 
                         if (item)
                         {
@@ -484,7 +484,7 @@ void AddObjectiveToTargetTree(Objective obj)
 
                 if (classPtr not_eq NULL)
                 {
-                    drawptr = gUIViewer->LoadDrawableFeature(obj->GetCampID() << 16 | f, obj, f, fid, classPtr, fc, &objPos, Parent);
+                    drawptr = gUIViewer->LoadDrawableFeature(obj->GetCampID() << 16 bitor f, obj, f, fid, classPtr, fc, &objPos, Parent);
 
                     if (drawptr not_eq NULL)
                     {
@@ -512,7 +512,7 @@ void AddObjectiveToTargetTree(Objective obj)
 
                             if (feat)
                             {
-                                item = TargetTree->CreateItem(obj->GetCampID() << 16 | f, C_TYPE_ITEM, feat);
+                                item = TargetTree->CreateItem(obj->GetCampID() << 16 bitor f, C_TYPE_ITEM, feat);
 
                                 if (item)
                                 {

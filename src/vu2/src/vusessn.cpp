@@ -113,7 +113,7 @@ static int ReadMessageHeader(VU_BYTE *data, VuMessageHeader* hdr)
 
     if (*data bitand 0x80)     // test for high bit set
     {
-        hdr->length_  = static_cast<ushort>(((data[0] << 8) | data[1]));
+        hdr->length_  = static_cast<ushort>(((data[0] << 8) bitor data[1]));
         hdr->length_ and_eq 0x7fff; // mask off huffman bit
         retsize       = MAX_MSG_HDR_SIZE;
     }
@@ -135,7 +135,7 @@ static int WriteMessageHeader(VU_BYTE *data, VuMessageHeader* hdr)
 
     if (hdr->length_ > 0x7f)
     {
-        ushort huff = static_cast<ushort>(0x8000 | hdr->length_);
+        ushort huff = static_cast<ushort>(0x8000 bitor hdr->length_);
         data[0] = static_cast<VU_BYTE>((huff >> 8) bitand 0xff);
         data[1] = static_cast<VU_BYTE>(huff bitand 0xff);
         retsize = MAX_MSG_HDR_SIZE;

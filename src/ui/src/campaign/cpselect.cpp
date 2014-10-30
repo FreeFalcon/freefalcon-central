@@ -440,8 +440,8 @@ void AddSquadronsToMap()
                 }
 
                 btn = new C_Button;
-                btn->Setup(((long)x << 16) | (long)y, C_TYPE_RADIO, (int)x, (int)y);
-                btn->SetFlagBitOn(C_BIT_HCENTER | C_BIT_VCENTER);
+                btn->Setup(((long)x << 16) bitor (long)y, C_TYPE_RADIO, (int)x, (int)y);
+                btn->SetFlagBitOn(C_BIT_HCENTER bitor C_BIT_VCENTER);
                 btn->SetGroup(-100);
                 btn->SetCluster(i + 1);
 
@@ -540,7 +540,7 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
                         txt->SetXY(10, icony);
                         txt->SetFont(win->Font_);
                         txt->SetUserNumber(_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_);
-                        txt->SetFlagBitOn(C_BIT_LEFT | C_BIT_WORDWRAP);
+                        txt->SetFlagBitOn(C_BIT_LEFT bitor C_BIT_WORDWRAP);
                         txt->SetW(123);
                         txt->SetFGColor(0x00e0e0e0);
                         txt->SetText(SquadPtr->airbaseName);
@@ -558,7 +558,7 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
                     btn->SetText(C_STATE_1, buffer);
                     btn->SetColor(C_STATE_0, 0xe0e0e0);
                     btn->SetColor(C_STATE_1, 0x00ff00);
-                    btn->SetFlagBitOn(C_BIT_LEFT | C_BIT_USELINE);
+                    btn->SetFlagBitOn(C_BIT_LEFT bitor C_BIT_USELINE);
                     btn->SetCallback(PickSquadronCB);
                     btn->SetUserNumber(_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_); // used in DeleteGameList to find records to remove
                     btn->SetHelpText(HELP_PICK_SQUADRON);

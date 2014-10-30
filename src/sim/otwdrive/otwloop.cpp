@@ -1085,7 +1085,7 @@ void OTWDriverClass::DisplayFrontText(void)
         renderer->TextCenter(0.0F, 0.92F, gAcmiStr);
     }
 
-    if (showFrontText bitand (SHOW_TE_SCORES | SHOW_DOGFIGHT_SCORES))
+    if (showFrontText bitand (SHOW_TE_SCORES bitor SHOW_DOGFIGHT_SCORES))
     {
         float centerX = DisplayOptions.DispWidth / 2.0F;
         float centerY = DisplayOptions.DispHeight / 2.0F;

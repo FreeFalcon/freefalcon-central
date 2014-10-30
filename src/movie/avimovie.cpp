@@ -317,7 +317,7 @@ void movieUnInit(void)
     LeaveCriticalSection(&movieCriticalSection);
 
     for (i = 0; i < numOfMovies; i++)
-        if (movie[i].status bitand (MOVIE_STATUS_IN_USE | MOVIE_STATUS_PLAYING))
+        if (movie[i].status bitand (MOVIE_STATUS_IN_USE bitor MOVIE_STATUS_PLAYING))
             movieClose(i);
 
     delete [] movie;
@@ -388,7 +388,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
     int retval;
 
     buf = (char *)malloc(CD_CACHE_SIZE);
-    hnd = open(aviFileName, _O_BINARY | _O_RDONLY);
+    hnd = open(aviFileName, _O_BINARY bitor _O_RDONLY);
     retval = read(hnd, buf, CD_CACHE_SIZE);
     close(hnd);
     free(buf);
@@ -873,7 +873,7 @@ int movieClose(int handle)
         return MOVIE_CLOSE_THREAD_ERROR;
     }
 
-    if ((item->status bitand MOVIE_STATUS_PLAYING) ||
+    if ((item->status bitand MOVIE_STATUS_PLAYING) or
         (item->status bitand MOVIE_STATUS_THREAD_RUNNING))
     {
         item->status or_eq MOVIE_STATUS_QUIT;
@@ -1004,7 +1004,7 @@ static unsigned int __stdcall fillerThread(void* itemIn)
     exitCode = MOVIE_OK;
     streams = &(item->aviStreams);
 
-    while ( not ((item->status bitand MOVIE_STATUS_QUIT) ||
+    while ( not ((item->status bitand MOVIE_STATUS_QUIT) or
              (item->status bitand MOVIE_STATUS_STOP_THREAD)))
     {
         /*
@@ -1265,7 +1265,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
             else
                 Sleep(10);
         }
-        else if ((item->status bitand MOVIE_STATUS_EOF) ||
+        else if ((item->status bitand MOVIE_STATUS_EOF) or
                  (item->status bitand MOVIE_STATUS_STOP_THREAD))
             break;
     }

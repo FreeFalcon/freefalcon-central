@@ -242,7 +242,7 @@ void CPAdi::CreateLit(void)
 
                 m_pPalette->AttachToTexture(pTex);
 
-                if ( not pTex->Create("CPAdi", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, (UInt16)(mSrcRect.right - mSrcRect.left), (UInt16)(mSrcRect.bottom - mSrcRect.top)))
+                if ( not pTex->Create("CPAdi", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8, (UInt16)(mSrcRect.right - mSrcRect.left), (UInt16)(mSrcRect.bottom - mSrcRect.top)))
                     throw _com_error(E_FAIL);
 
                 if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer, true, true)) // soon to be re-loaded by CPSurface::Translate3D
@@ -309,7 +309,7 @@ void CPAdi::CreateLit(void)
 
                     m_pPalette->AttachToTexture(pTex);
 
-                    if ( not pTex->Create("CPAdi", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, (UInt16)mBackSrc.right, (UInt16)mBackSrc.bottom))
+                    if ( not pTex->Create("CPAdi", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8, (UInt16)mBackSrc.right, (UInt16)mBackSrc.bottom))
                         throw _com_error(E_FAIL);
 
                     if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer, true, true)) // soon to be re-loaded by CPObject::Translate3D
@@ -560,7 +560,7 @@ void RenderADIPoly(tagRECT *srcrect, tagRECT *srcloc, tagRECT *destrect, GLint a
 
     OTWDriver.renderer->context.RestoreState(alpha);
     OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
-    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 90, pVtx, sizeof(pVtx[0]));
+    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 90, pVtx, sizeof(pVtx[0]));
 }
 
 //====================================================//
@@ -624,7 +624,7 @@ void CPAdi::DisplayBlit3D()
         OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
 
         // Render it (finally)
-        OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
+        OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
     }
 
     //Wombat778 3-24-04

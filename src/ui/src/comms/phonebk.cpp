@@ -151,8 +151,8 @@ void AddressInputCB(long ID, short hittype, C_Base *)
     C_Button *clientButtonControl = NULL;
 
     if (
-        ((win = gMainHandler->FindWindow(PB_WIN)) == NULL) ||
-        ((clientButtonControl = (C_Button*)win->FindControl(COMM_MODE_CLIENT)) == NULL) ||
+        ((win = gMainHandler->FindWindow(PB_WIN)) == NULL) or
+        ((clientButtonControl = (C_Button*)win->FindControl(COMM_MODE_CLIENT)) == NULL) or
         ((servButtonControl = (C_Button*)win->FindControl(COMM_MODE_SERV)) == NULL)
     )
     {

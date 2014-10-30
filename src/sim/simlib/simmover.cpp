@@ -46,7 +46,7 @@ static inline LPVOID MemAlloc2HeapAlloc(HANDLE heap, DWORD dwSize, DWORD dwFlags
 void GraphicsDataPoolInitializeStorage(void)
 {
 #ifdef USE_SH_POOLS
-    graphicsDOFDataPool = MemPoolInit(MEM_POOL_DEFAULT | MEM_POOL_SERIALIZE);
+    graphicsDOFDataPool = MemPoolInit(MEM_POOL_DEFAULT bitor MEM_POOL_SERIALIZE);
 #else
     graphicsDOFDataPool = HeapCreate(NULL, 0, 0);
 #endif
@@ -773,7 +773,7 @@ int SimMoverClass::Exec(void)
                         /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass(SFX_GUN_TRACER, // type
-                         SFX_MOVES | SFX_USES_GRAVITY, // flags
+                         SFX_MOVES bitor SFX_USES_GRAVITY, // flags
                          &pos, // world pos
                          &vec, // vector
                          3.0f, // time to live
@@ -828,7 +828,7 @@ int SimMoverClass::Exec(void)
                     /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass(SFX_GUN_TRACER, // type
-                     SFX_MOVES | SFX_USES_GRAVITY, // flags
+                     SFX_MOVES bitor SFX_USES_GRAVITY, // flags
                      &pos, // world pos
                      &vec, // vector
                      3.0f, // time to live

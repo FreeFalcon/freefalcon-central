@@ -15,7 +15,7 @@ C_Dog_Flight::C_Dog_Flight() : C_Control()
     Image_[1] = NULL;
     vuID = FalconNullId;
 
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER;
 }
 
 C_Dog_Flight::C_Dog_Flight(char **stream) : C_Control(stream)

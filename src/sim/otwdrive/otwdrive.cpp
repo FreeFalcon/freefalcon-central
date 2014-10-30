@@ -594,7 +594,7 @@ void OTWDriverClass::RunActionCamera(void)
                 (theObject->IsMissile() or
                  (
                      theObject->IsBomb() and 
- not (((BombClass*)theObject)->IsSetBombFlag(BombClass::IsFlare | BombClass::IsChaff)))
+ not (((BombClass*)theObject)->IsSetBombFlag(BombClass::IsFlare bitor BombClass::IsChaff)))
                 ) and 
  not theObject->IsEject() and 
                 (otwPlatform.get() not_eq weaponObject)
@@ -1531,7 +1531,7 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                         ((SimWeaponClass*)theObject)->Parent() == focusObj)
                     {
                         // 2002-02-15 ADDED BY S.G. Don't toggle to chaff and flares (NOTE THE '!' AT THE FRONT TO REVERSE THE CONDITION)
-                        if ( not (theObject->IsBomb() and (((BombClass *)theObject)->IsSetBombFlag(BombClass::IsFlare | BombClass::IsChaff))))
+                        if ( not (theObject->IsBomb() and (((BombClass *)theObject)->IsSetBombFlag(BombClass::IsFlare bitor BombClass::IsChaff))))
                         {
                             // END OF ADDED SECTION 2002-02-15
                             // is this the same as current?

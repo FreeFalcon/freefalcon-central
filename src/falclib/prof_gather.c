@@ -33,7 +33,7 @@ static void insert_node(Prof_Zone_Stack *q)
 {
     int h = hash(q->zone, q->parent);
     int x = h bitand zone_hash_mask;
-    int s = ((h << 4) + (h >> 4)) | 1;
+    int s = ((h << 4) + (h >> 4)) bitor 1;
 
     while (zone_hash[x] not_eq &Prof_dummy)
         x = (x + s) bitand zone_hash_mask;
@@ -110,7 +110,7 @@ Prof_extern_C Prof_Zone_Stack *Prof_StackAppend(Prof_Zone *zone)
 
         // compute a secondary hash function; force it to be odd
         // so it's relatively prime to the power-of-two table size
-        s = ((h << 4) + (h >> 4)) | 1;
+        s = ((h << 4) + (h >> 4)) bitor 1;
 
         for (;;)
         {

@@ -177,7 +177,7 @@ public:
     long CheckHotSpots(long relx, long rely);
     BOOL CheckKeyboard(unsigned char DKScanCode, unsigned char , unsigned char ShiftStates, long)
     {
-        if ((DKScanCode | (ShiftStates << 8)) == GetHotKey()) return(TRUE);
+        if ((DKScanCode bitor (ShiftStates << 8)) == GetHotKey()) return(TRUE);
 
         return(FALSE);
     }

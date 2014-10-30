@@ -58,7 +58,7 @@ void PlayerOptionsClass::Initialize(void)
 
      ACMIFileSize = 5;
 
-     SimFlags =  SIM_NO_BLACKOUT | SIM_UNLIMITED_CHAFF | SIM_NAMETAGS | SIM_UNLIMITED_FUEL; // Sim flags
+     SimFlags =  SIM_NO_BLACKOUT bitor SIM_UNLIMITED_CHAFF bitor SIM_NAMETAGS bitor SIM_UNLIMITED_FUEL; // Sim flags
      SimFlightModel = FMSimplified; // Flight model type
      SimWeaponEffect = WEExaggerated;
      SimAvionicsType = ATEasy;
@@ -66,7 +66,7 @@ void PlayerOptionsClass::Initialize(void)
      GeneralFlags = GEN_RULES_FLAGS; // General stuff
     */
     //JAM 07Dec03
-    DispFlags = DISP_HAZING | DISP_GOURAUD | DISP_SHADOWS | DISP_BILINEAR; // Display Options
+    DispFlags = DISP_HAZING bitor DISP_GOURAUD bitor DISP_SHADOWS bitor DISP_BILINEAR; // Display Options
     // DispTextureLevel = 4; //0-4
     DispTerrainDist = 80.0f; // sets ranges at which texture sets are switched
     DispMaxTerrainLevel = 0; //should be 0-2 can be up to 4

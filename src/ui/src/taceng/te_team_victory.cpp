@@ -1379,7 +1379,7 @@ C_Victory *MakeVCControl(victory_condition *vc)
     ebox->SetMaxInteger(99999);
     ebox->SetInteger(vc->get_points());
     ebox->SetBgColor(11370561); //
-    ebox->SetFlagBitOn(C_BIT_USEOUTLINE | C_BIT_RIGHT);
+    ebox->SetFlagBitOn(C_BIT_USEOUTLINE bitor C_BIT_RIGHT);
     ebox->SetCallback(VCSetPointsCB);
     vcntrl->SetPoints(ebox);
 
@@ -1786,7 +1786,7 @@ static void change_vc_team_name(long ID, short hittype, C_Base *ctrl)
 
     if
     (
-        ((old_team > 0) and (new_team > 0)) ||
+        ((old_team > 0) and (new_team > 0)) or
         ((new_team < 0) and (old_team < 0))
     )
     {
@@ -2510,7 +2510,7 @@ void TacEngGameOver()
         check_victory_conditions();
 
         TriggerTacEndGame(); // Tell UI to open window
-        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() | SHOW_TE_SCORES);
+        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitor SHOW_TE_SCORES);
     }
 }
 
@@ -2542,7 +2542,7 @@ void TacEngSetVCCompleted(long ID, int value)
         if ( not current_tactical_mission->get_game_over() and check_victory_conditions())
         {
             TriggerTacEndGame(); // Tell UI to open window
-            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() | SHOW_TE_SCORES);
+            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitor SHOW_TE_SCORES);
         }
     }
 }
@@ -2562,7 +2562,7 @@ void CheckForVictory(void)
             // Kevin, when you transmit the EndgameResult variable... there is a duplicate section of code to this in
             // te_team_victory.cpp at the bottom
             TriggerTacEndGame(); // Tell UI to open window
-            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() | SHOW_TE_SCORES);
+            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitor SHOW_TE_SCORES);
         }
     }
 }

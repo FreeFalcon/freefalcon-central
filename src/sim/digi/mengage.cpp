@@ -55,7 +55,7 @@ void DigitalBrain::MissileEngageCheck(void)
         if (targetPtr and curMissile and 
             targetData->range <= maxAAWpnRange * 1.05f  and 
             (targetData->range >= 3000.0f or not (((AircraftClass *)self)->Guns)) and 
-            targetData->ata < angLimit * 1.05f and self->CombatClass() <= 7/*CanEngage (self, self->CombatClass(), targetPtr, BVRManeuver | BVRManeuver*/) // 2002-03-11 MODIFIED BY S.G. Added parameter "BVRManeuver | BVRManeuver"
+            targetData->ata < angLimit * 1.05f and self->CombatClass() <= 7/*CanEngage (self, self->CombatClass(), targetPtr, BVRManeuver bitor BVRManeuver*/) // 2002-03-11 MODIFIED BY S.G. Added parameter "BVRManeuver bitor BVRManeuver"
         {
             if (targetPtr->BaseData()->IsSim() and ((SimBaseClass *)targetPtr->BaseData())->pctStrength <= 0.0f)
             {

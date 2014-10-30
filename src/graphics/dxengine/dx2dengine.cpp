@@ -356,7 +356,7 @@ void CDXEngine::DX2D_Reset(void)
     for (int i = 0; i < MAX_2D_BUFFERS; i++)
     {
         Dyn2DVertexBuffer[i].LastIndex = Dyn2DVertexBuffer[i].LastTapeIndex = 0;
-        Dyn2DVertexBuffer[i].Vb->Lock(DDLOCK_DISCARDCONTENTS | DDLOCK_NOSYSLOCK | DDLOCK_WAIT | DDLOCK_WRITEONLY, (void**)&Dyn2DVertexBuffer[i].VbPtr, NULL);;
+        Dyn2DVertexBuffer[i].Vb->Lock(DDLOCK_DISCARDCONTENTS bitor DDLOCK_NOSYSLOCK bitor DDLOCK_WAIT bitor DDLOCK_WRITEONLY, (void**)&Dyn2DVertexBuffer[i].VbPtr, NULL);;
     }
 }
 
@@ -1066,7 +1066,7 @@ void CDXEngine::DX2D_AddObject(DWORD ID, DWORD Layer, SurfaceStackType *Stack, D
     // Final Item in the list
     Draw.Next = 0xffffffff;
     // Assign Flags from the draw
-    Draw.Flags = POLY_3DOBJECT | ID;
+    Draw.Flags = POLY_3DOBJECT bitor ID;
     // Assign height, Add camera Offset as height is used to evaluate
     // Vertical object position, and assign right layer
     Draw.Height = Pos->z + CameraPos.z;
@@ -1752,7 +1752,7 @@ void CDXEngine::DX2D_Init(void)
     // Creates the Vertex Buffer Descriptor
     D3DVERTEXBUFFERDESC VBDesc;
     VBDesc.dwSize = sizeof(D3DVERTEXBUFFERDESC);
-    VBDesc.dwCaps = D3DVBCAPS_WRITEONLY | D3DVBCAPS_DONOTCLIP;
+    VBDesc.dwCaps = D3DVBCAPS_WRITEONLY bitor D3DVBCAPS_DONOTCLIP;
     VBDesc.dwFVF = D3DFVF_DYNAMIC;
     VBDesc.dwNumVertices = MAX_2D_VERTICES - 1;
 

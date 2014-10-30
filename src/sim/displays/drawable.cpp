@@ -81,8 +81,8 @@ unsigned int DrawableClass::GetAgedMfdColor(MfdColor type, int age)
 
     if (age == 0) return color;
 
-    color = (((color bitand 0xff0000) >> age) bitand 0xff0000) |  // RED (or BLUE)
-            (((color bitand 0xff00) >> age) bitand 0xff00) | //  GREEN
+    color = (((color bitand 0xff0000) >> age) bitand 0xff0000) bitor  // RED (or BLUE)
+            (((color bitand 0xff00) >> age) bitand 0xff00) bitor //  GREEN
             (((color bitand 0xff) >> age) bitand 0xff); // BLUE (or RED)
     return color;
 }

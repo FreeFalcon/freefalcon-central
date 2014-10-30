@@ -14,7 +14,7 @@ C_Pilot::C_Pilot() : C_Control()
     Callsign_ = NULL;
     vuID = FalconNullId;
 
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER;
 }
 
 C_Pilot::C_Pilot(char **stream) : C_Control(stream)

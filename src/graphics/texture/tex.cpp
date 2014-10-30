@@ -592,7 +592,7 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
         ZeroMemory(&ddsd, sizeof(ddsd));
 
         ddsd.dwSize = sizeof(ddsd);
-        ddsd.dwFlags = DDSD_CAPS | DDSD_PIXELFORMAT | DDSD_WIDTH | DDSD_HEIGHT;
+        ddsd.dwFlags = DDSD_CAPS bitor DDSD_PIXELFORMAT bitor DDSD_WIDTH bitor DDSD_HEIGHT;
         ddsd.ddsCaps.dwCaps = DDSCAPS_TEXTURE;
         ddsd.dwWidth  = m_nWidth;
         ddsd.dwHeight = m_nHeight;
@@ -600,7 +600,7 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
         if (info bitand MPR_TI_MIPMAP)
         {
             ddsd.dwMipMapCount = 5;
-            ddsd.ddsCaps.dwCaps or_eq DDSCAPS_MIPMAP | DDSCAPS_COMPLEX;
+            ddsd.ddsCaps.dwCaps or_eq DDSCAPS_MIPMAP bitor DDSCAPS_COMPLEX;
         }
         else
         {
@@ -637,7 +637,7 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
         if (dwFlags bitand FLAG_RENDERTARGET)
         {
             // Can't render to managed surfaces
-            dwFlags or_eq FLAG_NOTMANAGED | FLAG_MATCHPRIMARY;
+            dwFlags or_eq FLAG_NOTMANAGED bitor FLAG_MATCHPRIMARY;
 
             // HW devices cannot render to system memory surfaces
             if (rc and (rc->m_eDeviceCategory >= DXContext::D3DDeviceCategory_Hardware))
@@ -839,28 +839,28 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
         case D3DX_SF_A1R5G5B5:
         {
             PALETTEENTRY *pal = (PALETTEENTRY *)&m_dwChromaKey;
-            m_dwChromaKey = (pal[0].peRed >> 3) | ((pal[0].peGreen >> 3) << 5) | ((pal[0].peBlue >> 3) << 10) | ((pal[0].peFlags >> 7) << 15);
+            m_dwChromaKey = (pal[0].peRed >> 3) bitor ((pal[0].peGreen >> 3) << 5) bitor ((pal[0].peBlue >> 3) << 10) bitor ((pal[0].peFlags >> 7) << 15);
             break;
         }
 
         case D3DX_SF_A4R4G4B4:
         {
             PALETTEENTRY *pal = (PALETTEENTRY *) &m_dwChromaKey;
-            m_dwChromaKey = (pal[0].peRed >> 4) | ((pal[0].peGreen >> 4) << 4) | ((pal[0].peBlue >> 4) << 8) | ((pal[0].peFlags >> 4) << 12);
+            m_dwChromaKey = (pal[0].peRed >> 4) bitor ((pal[0].peGreen >> 4) << 4) bitor ((pal[0].peBlue >> 4) << 8) bitor ((pal[0].peFlags >> 4) << 12);
             break;
         }
 
         case D3DX_SF_R5G6B5:
         {
             PALETTEENTRY *pal = (PALETTEENTRY *) &m_dwChromaKey;
-            m_dwChromaKey = (pal[0].peRed >> 3) | ((pal[0].peGreen >> 2) << 5) | ((pal[0].peBlue >> 3) << 11);
+            m_dwChromaKey = (pal[0].peRed >> 3) bitor ((pal[0].peGreen >> 2) << 5) bitor ((pal[0].peBlue >> 3) << 11);
             break;
         }
 
         case D3DX_SF_R5G5B5:
         {
             PALETTEENTRY *pal = (PALETTEENTRY *) &m_dwChromaKey;
-            m_dwChromaKey = (pal[0].peRed >> 3) | ((pal[0].peGreen >> 3) << 5) | ((pal[0].peBlue >> 3) << 10);
+            m_dwChromaKey = (pal[0].peRed >> 3) bitor ((pal[0].peGreen >> 3) << 5) bitor ((pal[0].peBlue >> 3) << 10);
             break;
         }
 
@@ -965,7 +965,7 @@ inline WORD _RGB8toRGB565(DWORD sc)
     r >>= 3;
     g >>= 2;
     b >>= 3;
-    return static_cast<WORD>((r << 11) | (g << 5) | b);
+    return static_cast<WORD>((r << 11) bitor (g << 5) bitor b);
 }
 
 inline WORD _RGB8toRGB555(DWORD sc)
@@ -976,7 +976,7 @@ inline WORD _RGB8toRGB555(DWORD sc)
     r >>= 3;
     g >>= 3;
     b >>= 3;
-    return static_cast<WORD>((r << 10) | (g << 5) | b);
+    return static_cast<WORD>((r << 10) bitor (g << 5) bitor b);
 }
 
 inline WORD _RGB8toARGB1555(DWORD sc)
@@ -989,7 +989,7 @@ inline WORD _RGB8toARGB1555(DWORD sc)
     g >>= 3;
     b >>= 3;
     a = (a > 0) ? 1 : 0;
-    return ((a << 15) | (r << 10) | (g << 5) | b);
+    return ((a << 15) bitor (r << 10) bitor (g << 5) bitor b);
 }
 
 inline WORD _RGB8toARGB4444(DWORD sc)
@@ -1002,7 +1002,7 @@ inline WORD _RGB8toARGB4444(DWORD sc)
     g >>= 4;
     b >>= 4;
     a >>= 4;
-    return ((a << 12) | (r << 8) | (g << 4) | b);
+    return ((a << 12) bitor (r << 8) bitor (g << 4) bitor b);
 }
 
 bool TextureHandle::Reload()
@@ -1032,7 +1032,7 @@ bool TextureHandle::Reload()
         // JB 010305 CTD
         //if(F4IsBadReadPtr(m_pDDS,sizeof(IDirectDrawSurface7))) return false;
 
-        HRESULT hr = m_pDDS->Lock(NULL, &ddsd, DDLOCK_DONOTWAIT | DDLOCK_WRITEONLY | DDLOCK_SURFACEMEMORYPTR, NULL);
+        HRESULT hr = m_pDDS->Lock(NULL, &ddsd, DDLOCK_DONOTWAIT bitor DDLOCK_WRITEONLY bitor DDLOCK_SURFACEMEMORYPTR, NULL);
 
         if (FAILED(hr))
         {
@@ -1041,7 +1041,7 @@ bool TextureHandle::Reload()
                 // If the surface is lost, restore it and retry
                 CheckHR(m_pDDS->Restore());
 
-                CheckHR(m_pDDS->Lock(NULL, &ddsd, DDLOCK_WAIT | DDLOCK_WRITEONLY | DDLOCK_SURFACEMEMORYPTR, NULL));
+                CheckHR(m_pDDS->Lock(NULL, &ddsd, DDLOCK_WAIT bitor DDLOCK_WRITEONLY bitor DDLOCK_SURFACEMEMORYPTR, NULL));
             }
             else
             {
@@ -1150,7 +1150,7 @@ bool TextureHandle::Reload()
 
                     for (int i = 0; i < m_pPalAttach->m_nNumEntries; i++)
                     {
-                        dwTmp = (pal[i].peRed >> 3) | ((pal[i].peGreen >> 3) << 5) | ((pal[i].peBlue >> 3) << 10) | ((pal[i].peFlags >> 7) << 15);
+                        dwTmp = (pal[i].peRed >> 3) bitor ((pal[i].peGreen >> 3) << 5) bitor ((pal[i].peBlue >> 3) << 10) bitor ((pal[i].peFlags >> 7) << 15);
 
                         if (dwTmp not_eq (WORD)m_dwChromaKey)
                             palette[i] = dwTmp;
@@ -1200,7 +1200,7 @@ bool TextureHandle::Reload()
 
                     for (int i = 0; i < m_pPalAttach->m_nNumEntries; i++)
                     {
-                        dwTmp = (pal[i].peRed >> 4) | ((pal[i].peGreen >> 4) << 4) | ((pal[i].peBlue >> 4) << 8) | ((pal[i].peFlags >> 4) << 12);
+                        dwTmp = (pal[i].peRed >> 4) bitor ((pal[i].peGreen >> 4) << 4) bitor ((pal[i].peBlue >> 4) << 8) bitor ((pal[i].peFlags >> 4) << 12);
 
                         if (dwTmp not_eq (WORD) m_dwChromaKey)
                             palette[i] = dwTmp;
@@ -1248,7 +1248,7 @@ bool TextureHandle::Reload()
 
                     for (int i = 0; i < m_pPalAttach->m_nNumEntries; i++)
                     {
-                        dwTmp = (pal[i].peRed >> 3) | ((pal[i].peGreen >> 2) << 5) | ((pal[i].peBlue >> 3) << 11);
+                        dwTmp = (pal[i].peRed >> 3) bitor ((pal[i].peGreen >> 2) << 5) bitor ((pal[i].peBlue >> 3) << 11);
                         palette[i] = (WORD) dwTmp;
                     }
 
@@ -1291,7 +1291,7 @@ bool TextureHandle::Reload()
 
                     for (int i = 0; i < m_pPalAttach->m_nNumEntries; i++)
                     {
-                        dwTmp = (pal[i].peRed >> 3) | ((pal[i].peGreen >> 3) << 5) | ((pal[i].peBlue >> 3) << 10);
+                        dwTmp = (pal[i].peRed >> 3) bitor ((pal[i].peGreen >> 3) << 5) bitor ((pal[i].peBlue >> 3) << 10);
                         palette[i] = (WORD) dwTmp;
                     }
 
@@ -1386,7 +1386,7 @@ void TextureHandle::Clear()
         // Lock the surface
         ddsd.dwSize = sizeof(ddsd);
 
-        CheckHR(m_pDDS->Lock(NULL, &ddsd, DDLOCK_WAIT | DDLOCK_WRITEONLY | DDLOCK_SURFACEMEMORYPTR, NULL));
+        CheckHR(m_pDDS->Lock(NULL, &ddsd, DDLOCK_WAIT bitor DDLOCK_WRITEONLY bitor DDLOCK_SURFACEMEMORYPTR, NULL));
 
         // Can be larger but not smaller
         ShiAssert(m_nWidth <= (int) ddsd.dwWidth and m_nHeight <= (int) ddsd.dwHeight);
@@ -1548,7 +1548,7 @@ HRESULT CALLBACK TextureHandle::TextureSearchCallback(DDPIXELFORMAT* pddpf, VOID
     TEXTURESEARCHINFO* ptsi = (TEXTURESEARCHINFO *)param;
 
     // Skip any funky modes
-    if (pddpf->dwFlags bitand (DDPF_LUMINANCE | DDPF_BUMPLUMINANCE | DDPF_BUMPDUDV))
+    if (pddpf->dwFlags bitand (DDPF_LUMINANCE bitor DDPF_BUMPLUMINANCE bitor DDPF_BUMPDUDV))
     {
         return DDENUMRET_OK;
     }
@@ -1760,7 +1760,7 @@ static void SetMipLevelColor(MipLoadContext *pCtx)
     bfx.dwSize = sizeof(bfx);
     bfx.dwFillColor = RGB32ToSurfaceColor(arrMipColors[pCtx->nLevel], pCtx->lpDDSurface, &ddsd);
 
-    hr = pCtx->lpDDSurface->Blt(NULL, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &bfx);
+    hr = pCtx->lpDDSurface->Blt(NULL, NULL, NULL, DDBLT_COLORFILL bitor DDBLT_WAIT, &bfx);
 }
 
 static HRESULT WINAPI MipLoadCallback(LPDIRECTDRAWSURFACE7 lpDDSurface, LPDDSURFACEDESC2 lpDDSurfaceDesc, LPVOID lpContext)
@@ -1816,7 +1816,7 @@ bool Texture::SaveDDS_DXTn(const char *szFileName, BYTE* pDst, int dimensions, D
 
 #if _MSC_VER >= 1300
 
-    fileout = _open(szFileName, O_WRONLY | O_BINARY | O_CREAT, S_IWRITE);
+    fileout = _open(szFileName, O_WRONLY bitor O_BINARY bitor O_CREAT, S_IWRITE);
 
     options.MipMapType = dNoMipMaps;
     options.bBinaryAlpha = false;
@@ -1899,9 +1899,9 @@ bool Texture::DumpImageToFile(char *szFile, int palID)
      while(to < stop)
      {
      *to  =    (FloatToInt32(*(from)   * 0.f)) // Red
-     | (FloatToInt32(*(from+1) * 0.f) << 8) // Green
-     | (FloatToInt32(*(from+2) * 0.f) << 16) // Blue
-     | ((*(from+3)) << 24); // Alpha
+     bitor (FloatToInt32(*(from+1) * 0.f) << 8) // Green
+     bitor (FloatToInt32(*(from+2) * 0.f) << 16) // Blue
+     bitor ((*(from+3)) << 24); // Alpha
      from += 4;
      to++;
      }

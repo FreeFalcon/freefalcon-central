@@ -77,7 +77,7 @@ void MakePAKPalette()
     short i;
 
     for (i = 0; i < 101; i++)
-        PAKPalette[100 - i] = UI95_RGB24Bit(0x000000ff | (((i * 255) / 100) << 8) | (((i * 255) / 100) << 16));
+        PAKPalette[100 - i] = UI95_RGB24Bit(0x000000ff bitor (((i * 255) / 100) << 8) bitor (((i * 255) / 100) << 16));
 }
 
 void InitPAKMap()

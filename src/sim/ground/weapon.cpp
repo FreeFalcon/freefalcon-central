@@ -357,7 +357,7 @@ BOOL GroundClass::DoWeapons(void)
             vec.z = 0.0f;
             /*
             OTWDriver.AddSfxRequest( new SfxClass( SFX_SAM_LAUNCH,
-             SFX_MOVES | SFX_NO_GROUND_CHECK,
+             SFX_MOVES bitor SFX_NO_GROUND_CHECK,
              &pos,
              &vec,
              2.0f,

@@ -472,8 +472,8 @@ void AirframeClass::Init(int idx)
                 // lights on on the ground JPO
                 //MI not in realistic, now we have switches for that
                 platform->ClearAcStatusBits(
-                    AircraftClass::ACSTATUS_EXT_LIGHTS | AircraftClass::ACSTATUS_EXT_NAVLIGHTS |
-                    AircraftClass::ACSTATUS_EXT_NAVLIGHTSFLASH | AircraftClass::ACSTATUS_EXT_TAILSTROBE
+                    AircraftClass::ACSTATUS_EXT_LIGHTS bitor AircraftClass::ACSTATUS_EXT_NAVLIGHTS |
+                    AircraftClass::ACSTATUS_EXT_NAVLIGHTSFLASH bitor AircraftClass::ACSTATUS_EXT_TAILSTROBE
                 );
                 speedBrake = 0.0F;
                 pwrlev = -1.0F;

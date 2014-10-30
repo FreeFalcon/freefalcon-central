@@ -420,7 +420,7 @@ void CheckPasswordCB(long, short hittype, C_Base *control)
 
         if (UI_logbk.CheckPassword(pwd))
         {
-            LogState or_eq LB_EDITABLE | LB_CHECKED;
+            LogState or_eq LB_EDITABLE bitor LB_CHECKED;
             gMainHandler->HideWindow(control->Parent_);
             LogBook.LoadData(&UI_logbk.Pilot);
             UpdateKeyMapList(PlayerOptions.keyfile, 1);
@@ -459,7 +459,7 @@ void LoadLogBookWindows(LB_PILOT *Pilot = &LogBook.Pilot, int flag = LB_EDITABLE
 {
     UI_logbk.LoadData(Pilot);
 
-    LogState or_eq flag | LB_REFRESH_PILOT;
+    LogState or_eq flag bitor LB_REFRESH_PILOT;
 
 
     if (LBLoaded)
@@ -1903,7 +1903,7 @@ void NewLogbookCB(long, short hittype, C_Base *)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    LogState or_eq LB_EDITABLE | LB_CHECKED;
+    LogState or_eq LB_EDITABLE bitor LB_CHECKED;
 
     UI_logbk.Initialize();
     LBSetupControls();
@@ -2139,7 +2139,7 @@ void CloseLogWindowCB(long ID, short hittype, C_Base *control)
         return;
 
     PlayerOptions.LoadOptions(LogBook.OptionsFile());
-    LogState and_eq (LB_CHECKED | LB_LOADED_ONCE);
+    LogState and_eq (LB_CHECKED bitor LB_LOADED_ONCE);
     CloseWindowCB(ID, hittype, control);
 }
 

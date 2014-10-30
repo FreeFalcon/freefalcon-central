@@ -221,7 +221,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
             }
 
             // Can we see it (either with a valid lock, a jammed or fading signal?
-            if (canSee bitand (SG_JAMMING | SG_FADING)) // Is it a jammed or fading signal?
+            if (canSee bitand (SG_JAMMING bitor SG_FADING)) // Is it a jammed or fading signal?
                 // Yep, say so (weapon can't lock on 'Detection' but digi plane can track it)
                 tmpPtr->localData->sensorState[Radar] = Detection;
             else

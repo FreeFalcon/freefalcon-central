@@ -242,7 +242,7 @@ inline GLint   motr2intl(GLint l)
 
 inline GLint motr2inti(GLint n)
 {
-    return(((n bitand 0xff00) >> 8) | ((n bitand 0x00ff) << 8));
+    return(((n bitand 0xff00) >> 8) bitor ((n bitand 0x00ff) << 8));
 }
 
 //___________________________________________________________________________

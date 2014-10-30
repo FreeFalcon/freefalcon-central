@@ -446,8 +446,8 @@ public:
     int    lastTime; // last time we were updated
     float  lifespan; // in seconds
     float  life; // normalized
-    float LastTimeRest[2]; // COBRA - RED - Features for Frame Sequences | Modulo ime for animations
-    int FrameNr[2]; // COBRA - RED - Features for Frame Sequences | rame Number Displayed
+    float LastTimeRest[2]; // COBRA - RED - Features for Frame Sequences bitor Modulo ime for animations
+    int FrameNr[2]; // COBRA - RED - Features for Frame Sequences bitor rame Number Displayed
 
     static float      elapsedTime;
     static Trotation *rotation; // runtime computed, shared
@@ -773,7 +773,7 @@ bool SubPartPoly::Run(RenderOTW *renderer, ParticleNode *owner)
         if (DistCx < 0.0005f) return Alive;
 
         DWORD Alpha = FloatToInt32(255.0f * alpha /*RESCALE(DistCx, 0.001f, 0.005f, 0.3f, 1.0f)*/);
-        DWORD Color = 0x00202020 | (Alpha << 24);
+        DWORD Color = 0x00202020 bitor (Alpha << 24);
         TheDXEngine.Draw3DPoint((D3DVECTOR*)&owner->pos, Color);
 
         return Alive;
@@ -820,7 +820,7 @@ bool SubPartPoly::Run(RenderOTW *renderer, ParticleNode *owner)
         Quad[2].dwColour = Quad[3].dwColour = LoColor;
         Quad[0].dwSpecular = Quad[1].dwSpecular = Quad[2].dwSpecular = Quad[3].dwSpecular = LiteColor;
         // draw with BillBoard and declare as VISIBLE, the Visibility test was at function entry point ( DX2D_GetDistance()>0)
-        TheDXEngine.DX2D_AddQuad(LAYER_AUTO, POLY_BB | POLY_VISIBLE, (D3DXVECTOR3*)&owner->pos, Quad, size, TexHandle);
+        TheDXEngine.DX2D_AddQuad(LAYER_AUTO, POLY_BB bitor POLY_VISIBLE, (D3DXVECTOR3*)&owner->pos, Quad, size, TexHandle);
 
     }
     else
@@ -3158,7 +3158,7 @@ void  DrawableParticleSys::PS_PolyRun(void)
             Quad[3].pos.z = RotCx.cos;
 
             // draw with BillBoard and declare as VISIBLE, the Visibility test was at function entry point ( DX2D_GetDistance()>0)
-            TheDXEngine.DX2D_AddQuad(LAYER_AUTO, POLY_BB | POLY_VISIBLE, (D3DXVECTOR3*)&Part.pos, Quad, size, Poly.TexHandle);
+            TheDXEngine.DX2D_AddQuad(LAYER_AUTO, POLY_BB bitor POLY_VISIBLE, (D3DXVECTOR3*)&Part.pos, Quad, size, Poly.TexHandle);
         }
 
         Skip:
@@ -3953,7 +3953,7 @@ TRAIL_HANDLE DrawableParticleSys::PS_AddTrail(int ID, Tpoint *Pos, PS_PTR OWNER,
 
     if ( not TrailsHandle) TrailsHandle = 1;
 
-    Trail.Handle = TrailsHandle | ptr;
+    Trail.Handle = TrailsHandle bitor ptr;
     // Thehandle can not be NULL
 
     // Assign Position
@@ -4590,7 +4590,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
                         // Create the entry point for the line
                         Side[0].pos = *(D3DVECTOR*)&S1, Side[0].dwColour = F_TO_UARGB(LastColor.a, LastColor.r, LastColor.g, LastColor.b);
                         // Put the vertex in the Buffer
-                        TheDXEngine.DX2D_AddSingle(LAYER_AUTO, CAMERA_VERTICES | POLY_VISIBLE | CALC_DISTANCE | POLY_LINE | TAPE_ENTRY, (D3DXVECTOR3*)&XMMPos.d3d, Side, 0, NULL);
+                        TheDXEngine.DX2D_AddSingle(LAYER_AUTO, CAMERA_VERTICES bitor POLY_VISIBLE bitor CALC_DISTANCE bitor POLY_LINE bitor TAPE_ENTRY, (D3DXVECTOR3*)&XMMPos.d3d, Side, 0, NULL);
                         // now we are in Line Mode
                         LineMode = true;
                     }
@@ -4598,7 +4598,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
                     // Create the Next point for the line
                     Side[0].pos = *(D3DVECTOR*)&S0, Side[0].dwColour = F_TO_UARGB(Color.a, Color.r, Color.g, Color.b);
                     // Put the vertex in the Buffer
-                    TheDXEngine.DX2D_AddSingle(LAYER_AUTO, CAMERA_VERTICES | POLY_VISIBLE | CALC_DISTANCE | POLY_LINE | POLY_TAPE, (D3DXVECTOR3*)&XMMPos.d3d, Side, 0, NULL);
+                    TheDXEngine.DX2D_AddSingle(LAYER_AUTO, CAMERA_VERTICES bitor POLY_VISIBLE bitor CALC_DISTANCE bitor POLY_LINE bitor POLY_TAPE, (D3DXVECTOR3*)&XMMPos.d3d, Side, 0, NULL);
                 }
 
                 // The go to next segment
@@ -4751,10 +4751,10 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
                         // Draw the 2 side surfaces
                         if (DebugTrail)
                         {
-                            TheDXEngine.DX2D_AddBi(LAYER_AUTO, CAMERA_VERTICES | POLY_VISIBLE | CALC_DISTANCE | POLY_TAPE | TAPE_ENTRY, (D3DXVECTOR3*)&XMMPos.d3d, Side, SegmentSize, NULL);
+                            TheDXEngine.DX2D_AddBi(LAYER_AUTO, CAMERA_VERTICES bitor POLY_VISIBLE bitor CALC_DISTANCE bitor POLY_TAPE bitor TAPE_ENTRY, (D3DXVECTOR3*)&XMMPos.d3d, Side, SegmentSize, NULL);
                         }
                         else
-                            TheDXEngine.DX2D_AddBi(LAYER_AUTO, CAMERA_VERTICES | POLY_VISIBLE | CALC_DISTANCE | POLY_TAPE | TAPE_ENTRY, (D3DXVECTOR3*)&XMMPos.d3d, Side, SegmentSize, SideTexHandle);
+                            TheDXEngine.DX2D_AddBi(LAYER_AUTO, CAMERA_VERTICES bitor POLY_VISIBLE bitor CALC_DISTANCE bitor POLY_TAPE bitor TAPE_ENTRY, (D3DXVECTOR3*)&XMMPos.d3d, Side, SegmentSize, SideTexHandle);
 
                     }
 
@@ -4782,10 +4782,10 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
                     // Draw the 2 side surfaces
                     if (DebugTrail)
                     {
-                        TheDXEngine.DX2D_AddBi(LAYER_AUTO, CAMERA_VERTICES | POLY_VISIBLE | CALC_DISTANCE | POLY_TAPE, (D3DXVECTOR3*)&XMMPos.d3d, Side, SegmentSize, NULL);
+                        TheDXEngine.DX2D_AddBi(LAYER_AUTO, CAMERA_VERTICES bitor POLY_VISIBLE bitor CALC_DISTANCE bitor POLY_TAPE, (D3DXVECTOR3*)&XMMPos.d3d, Side, SegmentSize, NULL);
                     }
                     else
-                        TheDXEngine.DX2D_AddBi(LAYER_AUTO, CAMERA_VERTICES | POLY_VISIBLE | CALC_DISTANCE | POLY_TAPE, (D3DXVECTOR3*)&XMMPos.d3d, Side, SegmentSize, SideTexHandle);
+                        TheDXEngine.DX2D_AddBi(LAYER_AUTO, CAMERA_VERTICES bitor POLY_VISIBLE bitor CALC_DISTANCE bitor POLY_TAPE, (D3DXVECTOR3*)&XMMPos.d3d, Side, SegmentSize, SideTexHandle);
                 }
                 else
                     RecalcP1 = true;
@@ -4820,10 +4820,10 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
                     // Draw the ROMB
                     if (DebugTrail)
                     {
-                        TheDXEngine.DX2D_AddQuad(LAYER_AUTO, POLY_BB | CAMERA_VERTICES | POLY_VISIBLE | CALC_DISTANCE, &ST, Quad, NewSize, NULL);
+                        TheDXEngine.DX2D_AddQuad(LAYER_AUTO, POLY_BB bitor CAMERA_VERTICES bitor POLY_VISIBLE bitor CALC_DISTANCE, &ST, Quad, NewSize, NULL);
                     }
                     else
-                        TheDXEngine.DX2D_AddQuad(LAYER_AUTO, POLY_BB | CAMERA_VERTICES | POLY_VISIBLE | CALC_DISTANCE, &ST, Quad, NewSize, /*Part.*/TexHandle);
+                        TheDXEngine.DX2D_AddQuad(LAYER_AUTO, POLY_BB bitor CAMERA_VERTICES bitor POLY_VISIBLE bitor CALC_DISTANCE, &ST, Quad, NewSize, /*Part.*/TexHandle);
                 }
 
 

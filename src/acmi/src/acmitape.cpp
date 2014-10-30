@@ -2415,11 +2415,11 @@ long ACMITape::OpenTapeFile(char *fname)
     // open the tape file
     _tapeFileHandle = CreateFile(
                           fname,
-                          GENERIC_READ | GENERIC_WRITE,
+                          GENERIC_READ bitor GENERIC_WRITE,
                           FILE_SHARE_READ,
                           NULL,
                           OPEN_EXISTING,
-                          FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS,
+                          FILE_ATTRIBUTE_NORMAL bitor FILE_FLAG_RANDOM_ACCESS,
                           NULL);
 
     if (_tapeFileHandle == INVALID_HANDLE_VALUE)
@@ -4161,7 +4161,7 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
 
     // In many cases, our visType should be modified by our neighbors.
     if ((theObject->Status() bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED and 
-        (((SimFeatureClass*)theObject)->featureFlags bitand FEAT_NEXT_NORM ||
+        (((SimFeatureClass*)theObject)->featureFlags bitand FEAT_NEXT_NORM or
          ((SimFeatureClass*)theObject)->featureFlags bitand FEAT_PREV_NORM))
     {
         int idx = feat->slot;
@@ -4276,7 +4276,7 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
         theObject->drawPointer = new DrawableBuilding(visType, &simView, theObject->Yaw(), 1.0F);
 
         // Am I Flat (can things drive across it)?
-        if (theObject->IsSetCampaignFlag((FEAT_FLAT_CONTAINER | FEAT_ELEV_CONTAINER)))
+        if (theObject->IsSetCampaignFlag((FEAT_FLAT_CONTAINER bitor FEAT_ELEV_CONTAINER)))
             ((DrawablePlatform*)((SimFeatureClass*)baseObject)->baseObject)->InsertStaticSurface(((DrawableBuilding*)theObject->drawPointer));
         else
             ((DrawablePlatform*)((SimFeatureClass*)baseObject)->baseObject)->InsertStaticObject(theObject->drawPointer);

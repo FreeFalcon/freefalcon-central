@@ -61,7 +61,7 @@ C_Map::C_Map()
     CenterY_ = 0;
     ZoomLevel_ = _MAX_ZOOM_LEVEL_;
     scale_ = 1.0f;
-    flags_ = I_NEED_TO_DRAW | I_NEED_TO_DRAW_MAP;
+    flags_ = I_NEED_TO_DRAW bitor I_NEED_TO_DRAW_MAP;
 
     MapID = 0;
     Map_ = NULL;
@@ -371,7 +371,7 @@ void C_Map::CalculateDrawingParams()
     DrawWindow_->VY_[0] = -(short)((float)MapRect_.top * FEET_PER_PIXEL * scale_) + DrawWindow_->ClientArea_[0].top;
     SetTeamScales();
 
-    flags_ or_eq I_NEED_TO_DRAW | I_NEED_TO_DRAW_MAP;
+    flags_ or_eq I_NEED_TO_DRAW bitor I_NEED_TO_DRAW_MAP;
     short x, y;
     TheCampaign.GetBullseyeLocation(&x, &y);
 
@@ -442,7 +442,7 @@ THREAT_LIST *C_Map::AddThreat(CampEntity ent)
     // if(ent->IsUnit() and ent->IsEmitting())
     if (ent->IsUnit())
         // THIS IS WHAT I DO IN 1.08i2 BUT NOT REQUIRED IN 1.07 (SEE AT END OF FUNCTION FOR DETAIL)
-        // if(ent->IsUnit() and not ((Unit)ent)->Inactive() and (FindUnitType(ent) bitand (_UNIT_AIR_DEFENSE | _UNIT_BATTALION)))
+        // if(ent->IsUnit() and not ((Unit)ent)->Inactive() and (FindUnitType(ent) bitand (_UNIT_AIR_DEFENSE bitor _UNIT_BATTALION)))
         // UI_Refresher *gpsItem=NULL;
         // if(ent->IsUnit() and (gpsItem=(UI_Refresher*)gGps->Find(ent->GetCampID())) and gpsItem->MapItem_ and not (gpsItem->MapItem_->Flags bitand C_BIT_INVISIBLE))
     {
@@ -631,7 +631,7 @@ MAPICONLIST *C_Map::AddDivision(Division div)
 
         if (perc > 100) perc = 100;
 
-        cur = Team_[u->GetTeam()].Units->Type[Type]->Levels[0]->FindID(UR_DIVISION | div->nid);
+        cur = Team_[u->GetTeam()].Units->Type[Type]->Levels[0]->FindID(UR_DIVISION bitor div->nid);
 
         if (cur == NULL)
         {
@@ -640,8 +640,8 @@ MAPICONLIST *C_Map::AddDivision(Division div)
             div->GetLocation(&x, &y);
 
             return(Team_[u->GetTeam()].Units->Type[Type]->Levels[0]->AddIconToList(
-                       UR_DIVISION | div->nid,
-                       static_cast<short>(Type | _UNIT_DIVISION),
+                       UR_DIVISION bitor div->nid,
+                       static_cast<short>(Type bitor _UNIT_DIVISION),
                        UnitPtr->IconIndex,
                        x * FEET_PER_KM,
                        maxy - y * FEET_PER_KM,
@@ -1651,19 +1651,19 @@ void C_Map::UpdateWaypoint(Flight flt)
             if ( not IsValidWP(wp, flt) and check)
             {
                 CurWP_->SetState((flt->GetCampID() << 8) + i, 2);
-                CurWP_->SetState(0x40000000 | (flt->GetCampID() << 8) + i, 2);
+                CurWP_->SetState(0x40000000 bitor (flt->GetCampID() << 8) + i, 2);
                 CurWPZ_->SetState((flt->GetCampID() << 8) + i, 2);
             }
             else if (wp == flt->GetCurrentUnitWP())
             {
                 CurWP_->SetState((flt->GetCampID() << 8) + i, 1);
-                CurWP_->SetState(0x40000000 | (flt->GetCampID() << 8) + i, 1);
+                CurWP_->SetState(0x40000000 bitor (flt->GetCampID() << 8) + i, 1);
                 CurWPZ_->SetState((flt->GetCampID() << 8) + i, 1);
             }
             else
             {
                 CurWP_->SetState((flt->GetCampID() << 8) + i, 0);
-                CurWP_->SetState(0x40000000 | (flt->GetCampID() << 8) + i, 0);
+                CurWP_->SetState(0x40000000 bitor (flt->GetCampID() << 8) + i, 0);
                 CurWPZ_->SetState((flt->GetCampID() << 8) + i, 0);
             }
 
@@ -1711,7 +1711,7 @@ void C_Map::UpdateWaypoint(Flight flt)
 
         Team_[flt->GetTeam()].Waypoints->SetGroupState(flt->GetCampID() << 8, 0);
         Team_[flt->GetTeam()].Waypoints->SetState((flt->GetCampID() << 8) + i, 1);
-        Team_[flt->GetTeam()].Waypoints->SetState(0x40000000 | (flt->GetCampID() << 8) + i, 1);
+        Team_[flt->GetTeam()].Waypoints->SetState(0x40000000 bitor (flt->GetCampID() << 8) + i, 1);
         Team_[flt->GetTeam()].Waypoints->Refresh();
     }
 }
@@ -2644,7 +2644,7 @@ void C_Map::AddListsToWindow()
                 }
             }
 
-            SetTeamFlags(i, GetTeamFlags(i) | _MAP_THREATS_);
+            SetTeamFlags(i, GetTeamFlags(i) bitor _MAP_THREATS_);
         }
 
         if (Team_[i].Objectives == NULL)
@@ -2681,7 +2681,7 @@ void C_Map::AddListsToWindow()
                 }
             }
 
-            SetTeamFlags(i, GetTeamFlags(i) | _MAP_OBJECTIVES_);
+            SetTeamFlags(i, GetTeamFlags(i) bitor _MAP_OBJECTIVES_);
         }
 
         for (j = 0; j < _MAP_NUM_OBJ_TYPES_; j++)
@@ -2723,7 +2723,7 @@ void C_Map::AddListsToWindow()
                 }
             }
 
-            SetTeamFlags(i, GetTeamFlags(i) | _MAP_NAVAL_UNITS_);
+            SetTeamFlags(i, GetTeamFlags(i) bitor _MAP_NAVAL_UNITS_);
         }
 
         for (j = 0; j < _MAP_NUM_NAV_TYPES_; j++)
@@ -2773,7 +2773,7 @@ void C_Map::AddListsToWindow()
             }
 
             SetUnitLevel(0);
-            SetTeamFlags(i, GetTeamFlags(i) | _MAP_UNITS_);
+            SetTeamFlags(i, GetTeamFlags(i) bitor _MAP_UNITS_);
         }
 
         for (j = 0; j < _MAP_NUM_GND_TYPES_; j++)
@@ -2799,7 +2799,7 @@ void C_Map::AddListsToWindow()
             Team_[i].Waypoints->SetFont(Font);
             Team_[i].Waypoints->SetFlagBitOn(C_BIT_TOP);
             Team_[i].Waypoints->SetCursorID(CRSR_STEERPOINT);
-            SetTeamFlags(i, GetTeamFlags(i) | _MAP_WAYPOINTS_);
+            SetTeamFlags(i, GetTeamFlags(i) bitor _MAP_WAYPOINTS_);
         }
 
         DrawWindow_->AddControl(Team_[i].Waypoints);
@@ -2864,7 +2864,7 @@ void C_Map::AddListsToWindow()
                 }
             }
 
-            SetTeamFlags(i, GetTeamFlags(i) | _MAP_AIR_UNITS_);
+            SetTeamFlags(i, GetTeamFlags(i) bitor _MAP_AIR_UNITS_);
         }
 
         for (j = 0; j < _MAP_NUM_AIR_TYPES_; j++)
@@ -3005,7 +3005,7 @@ void C_Map::DrawMap()
     short i, j, k;
     short x, y;
 
-    if (flags_ bitand (I_NEED_TO_DRAW | I_NEED_TO_DRAW_MAP))
+    if (flags_ bitand (I_NEED_TO_DRAW bitor I_NEED_TO_DRAW_MAP))
     {
         // 2002-04-16 MN update the bullseye location when it changed
         TheCampaign.GetBullseyeLocation(&x, &y);

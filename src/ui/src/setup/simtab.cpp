@@ -11,9 +11,9 @@ Preset Presets[] =
 {
     {FMAccurate, ATRealisticAV, WEAccurate, APNormal, ARRealistic, PDRealistic, 0},
     {FMAccurate, ATRealistic, WEAccurate, APNormal, ARModerated, PDRealistic, SIM_UNLIMITED_CHAFF},
-    {FMAccurate, ATSimplified, WEEnhanced, APEnhanced, ARModerated, PDEnhanced, SIM_NO_BLACKOUT | SIM_UNLIMITED_CHAFF | SIM_NAMETAGS},
-    {FMSimplified, ATEasy, WEExaggerated, APEnhanced, ARSimplistic, PDEnhanced, SIM_NO_BLACKOUT | SIM_UNLIMITED_CHAFF | SIM_NAMETAGS | SIM_UNLIMITED_FUEL}, //need to put SIM_UNLIMITED_FUEL
-    {FMSimplified, ATEasy, WEExaggerated, APIntelligent, ARSimplistic, PDEnhanced, SIM_NO_BLACKOUT | SIM_UNLIMITED_AMMO | SIM_UNLIMITED_CHAFF | SIM_NAMETAGS | SIM_UNLIMITED_FUEL | SIM_NO_COLLISIONS},
+    {FMAccurate, ATSimplified, WEEnhanced, APEnhanced, ARModerated, PDEnhanced, SIM_NO_BLACKOUT bitor SIM_UNLIMITED_CHAFF bitor SIM_NAMETAGS},
+    {FMSimplified, ATEasy, WEExaggerated, APEnhanced, ARSimplistic, PDEnhanced, SIM_NO_BLACKOUT bitor SIM_UNLIMITED_CHAFF bitor SIM_NAMETAGS bitor SIM_UNLIMITED_FUEL}, //need to put SIM_UNLIMITED_FUEL
+    {FMSimplified, ATEasy, WEExaggerated, APIntelligent, ARSimplistic, PDEnhanced, SIM_NO_BLACKOUT bitor SIM_UNLIMITED_AMMO bitor SIM_UNLIMITED_CHAFF bitor SIM_NAMETAGS bitor SIM_UNLIMITED_FUEL bitor SIM_NO_COLLISIONS},
     //{FMSimplified,ATEasy,WEExaggerated,APIntelligent,ARSimplistic, PDSuper,SIM_NO_BLACKOUT|SIM_UNLIMITED_AMMO|SIM_UNLIMITED_CHAFF|SIM_NAMETAGS|SIM_UNLIMITED_FUEL|SIM_NO_COLLISIONS}, //back into these two after DEMO
 };
 

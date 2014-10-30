@@ -22,15 +22,15 @@
 #define F_TO_A(a) ((F_I32( a * 255.9f))<<24)
 #define F_TO_G(g) ((F_I32( g * 255.9f))<<8)
 #define F_TO_B(b) ((F_I32( b * 255.9f)))
-#define F_TO_RGB(r,g,b) ( F_TO_R(r) | F_TO_G(g) | F_TO_B(b))
-#define F_TO_ARGB(a,r,g,b) ( F_TO_A(a) | F_TO_RGB(r,g,b))
+#define F_TO_RGB(r,g,b) ( F_TO_R(r) bitor F_TO_G(g) bitor F_TO_B(b))
+#define F_TO_ARGB(a,r,g,b) ( F_TO_A(a) bitor F_TO_RGB(r,g,b))
 
 #define F_TO_UR(r) ((F_I32( r))<<16)
 #define F_TO_UA(a) ((F_I32( a))<<24)
 #define F_TO_UG(g) ((F_I32( g))<<8)
 #define F_TO_UB(b) ((F_I32( b)))
-#define F_TO_URGB(r,g,b) ( F_TO_UR(r) | F_TO_UG(g) | F_TO_UB(b))
-#define F_TO_UARGB(a,r,g,b) ( F_TO_UA(a) | F_TO_URGB(r,g,b))
+#define F_TO_URGB(r,g,b) ( F_TO_UR(r) bitor F_TO_UG(g) bitor F_TO_UB(b))
+#define F_TO_UARGB(a,r,g,b) ( F_TO_UA(a) bitor F_TO_URGB(r,g,b))
 
 
 

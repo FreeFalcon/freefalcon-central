@@ -1018,7 +1018,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                 }
 
                 // Can we see it (either with a valid lock, a jammed or fading signal?
-                if (canSee bitand (SG_JAMMING | SG_FADING)) // Is it a jammed or fading signal?
+                if (canSee bitand (SG_JAMMING bitor SG_FADING)) // Is it a jammed or fading signal?
                     tmpPtr->localData->sensorState[Radar] = Detection; // Yep, say so (weapon can't lock on 'Detection' but digi plane can track it)
                 else
                     tmpPtr->localData->sensorState[Radar] = SensorTrack; // It's a valid lock, mark it as such. Even when fading, we can launch
@@ -1173,7 +1173,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                 {
                     i ++;
                     ShiAssert(i < MAX_OBJECTS);
-                    rdrData->rdrDetect = rdrData->rdrDetect | 0x0010;
+                    rdrData->rdrDetect = rdrData->rdrDetect bitor 0x0010;
 
                     // 2000-11-17 ADDED BY S.G. ONLY WHEN WE HAVE 'NoTrack' DO WE SET IT TO 'Detection'. OTHERWISE WE DON'T TOUCH IT (IT MIGHT ALREADY BE 'SensorTrack')
                     if (rdrData->sensorState[Radar] == NoTrack)

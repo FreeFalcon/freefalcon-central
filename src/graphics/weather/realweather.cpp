@@ -1446,8 +1446,8 @@ bool RealWeather::ReadWeather(void)
                     strcpy(cpy, pch);
                 }
 
-                if (strcmp(cpy, "RA") == 0 or strcmp(cpy, "DZ") == 0 or strcmp(cpy, "SN") == 0 ||
-                    strcmp(cpy, "GR") == 0 or strcmp(cpy, "GS") == 0 or strcmp(cpy, "PL") == 0 ||
+                if (strcmp(cpy, "RA") == 0 or strcmp(cpy, "DZ") == 0 or strcmp(cpy, "SN") == 0 or
+                    strcmp(cpy, "GR") == 0 or strcmp(cpy, "GS") == 0 or strcmp(cpy, "PL") == 0 or
                     strcmp(cpy, "SG") == 0 or strcmp(cpy, "IC") == 0 or strcmp(cpy, "UP") == 0) //0/8
                 {
                     //Some form of precip present
@@ -1455,8 +1455,8 @@ bool RealWeather::ReadWeather(void)
                     memset(&cpy, 0, sizeof(cpy));
                 }
 
-                if (strcmp(cpy, "FG") == 0 or strcmp(cpy, "HZ") == 0 or strcmp(cpy, "FU") == 0 ||
-                    strcmp(cpy, "PY") == 0 or strcmp(cpy, "BR") == 0 or strcmp(cpy, "SA") == 0 ||
+                if (strcmp(cpy, "FG") == 0 or strcmp(cpy, "HZ") == 0 or strcmp(cpy, "FU") == 0 or
+                    strcmp(cpy, "PY") == 0 or strcmp(cpy, "BR") == 0 or strcmp(cpy, "SA") == 0 or
                     strcmp(cpy, "DU") == 0 or strcmp(cpy, "VA") == 0) //0/8
                 {
                     //Some form of visibility obstruction

@@ -64,7 +64,7 @@ C_ScrollBar::C_ScrollBar() : C_Control()
     SliderRect_.right = 0;
     SliderRect_.bottom = 0;
 
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_SELECTABLE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
 }
 
 C_ScrollBar::C_ScrollBar(char **stream) : C_Control(stream)
@@ -894,7 +894,7 @@ void C_ScrollBar::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CSCR_SETCOLORS:
-            SetColors(P[0] | (P[1] << 8) | (P[2] << 16), P[3] | (P[4] << 8) | (P[5] << 16), P[6] | (P[7] << 8) | (P[8] << 16));
+            SetColors(P[0] bitor (P[1] << 8) bitor (P[2] << 16), P[3] bitor (P[4] << 8) bitor (P[5] << 16), P[6] bitor (P[7] << 8) bitor (P[8] << 16));
             break;
 
         case CSCR_SETBUTTONIMAGES:
@@ -908,7 +908,7 @@ void C_ScrollBar::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CSCR_SETBGLINE:
-            SetLineColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetLineColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             SetFlagBitOn(C_BIT_USELINE);
             break;
     }

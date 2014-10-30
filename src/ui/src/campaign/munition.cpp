@@ -2124,7 +2124,7 @@ void SetCurrentLoadout()
         {
             if (cur->Control_->GetGroup() == j)
             {
-                if (cur->Control_->GetID() == ((j << 16) | gCurStores[FirstPlane].WeaponID[j]))
+                if (cur->Control_->GetID() == ((j << 16) bitor gCurStores[FirstPlane].WeaponID[j]))
                 {
                     Diff = 0;
 
@@ -2150,7 +2150,7 @@ void SetCurrentLoadout()
 
                     for (i = 0; i < 4; i++)
                     {
-                        if (PlaneEditList[i] and (cur->Control_->GetID() == ((j << 16) | gCurStores[i].WeaponID[j]) and i not_eq FirstPlane))
+                        if (PlaneEditList[i] and (cur->Control_->GetID() == ((j << 16) bitor gCurStores[i].WeaponID[j]) and i not_eq FirstPlane))
                             Diff = 1;
                     }
 
@@ -2477,7 +2477,7 @@ void MakeStoresList(C_Window *win, long client)
         txt->SetFont(win->Font_);
         txt->SetXY(x + (i - 1) * 30 - 3 + 15 + 6, 278);
         txt->SetFGColor(0xad8041);
-        txt->SetFlagBitOn(C_BIT_ABSOLUTE | C_BIT_HCENTER);
+        txt->SetFlagBitOn(C_BIT_ABSOLUTE bitor C_BIT_HCENTER);
         txt->SetUserNumber(_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_);
         win->AddControl(txt);
     }
@@ -2554,7 +2554,7 @@ void MakeStoresList(C_Window *win, long client)
             }
 
             txt = new C_Text;
-            txt->Setup((1 << 25) | cur->ID, 0);
+            txt->Setup((1 << 25) bitor cur->ID, 0);
             txt->SetText(availID);
             txt->SetFont(win->Font_);
             txt->SetXY(122, y + 4);
@@ -2566,7 +2566,7 @@ void MakeStoresList(C_Window *win, long client)
 
             // # on board
             txt = new C_Text;
-            txt->Setup((1 << 24) | cur->ID, 0);
+            txt->Setup((1 << 24) bitor cur->ID, 0);
             txt->SetFixedWidth(5);
             txt->SetText(" ");
             txt->SetFont(win->Font_);
@@ -2583,7 +2583,7 @@ void MakeStoresList(C_Window *win, long client)
                 if (cur->HardPoint[i])
                 {
                     btn = new C_Button;
-                    btn->Setup(i << 16 | cur->ID, C_TYPE_CUSTOM, x + ((HardPoints - i) - 1) * 30 + 1, y + 4);
+                    btn->Setup(i << 16 bitor cur->ID, C_TYPE_CUSTOM, x + ((HardPoints - i) - 1) * 30 + 1, y + 4);
                     btn->SetUserNumber(1, cur->HardPoint[i]);
                     btn->SetUserNumber(2, 1);
 

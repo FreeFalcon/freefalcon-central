@@ -560,34 +560,34 @@ long C_Window::SetCheckedUpdateRect(long x1, long y1, long x2, long y2)
                     if (y2 <= rectlist_[i].bottom)
                         clipflag or_eq _CHR_CLIP_BOTTOM;
 
-                    if (clipflag == (_CHR_CLIP_LEFT | _CHR_CLIP_TOP | _CHR_CLIP_RIGHT | _CHR_CLIP_BOTTOM))
+                    if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_TOP bitor _CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
                         return(0); // new rect is inside another rect
 
                     if ( not clipflag)
                         continue;
 
-                    if (clipflag == (_CHR_CLIP_RIGHT | _CHR_CLIP_BOTTOM))
+                    if (clipflag == (_CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
                     {
                         // case 1
                         SetCheckedUpdateRect(x1, y1, rectlist_[i].left, y2);
                         x1 = rectlist_[i].left;
                         y2 = rectlist_[i].top;
                     }
-                    else if (clipflag == (_CHR_CLIP_LEFT | _CHR_CLIP_BOTTOM))
+                    else if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_BOTTOM))
                     {
                         // case 2
                         SetCheckedUpdateRect(x1, y1, x2, rectlist_[i].top);
                         x1 = rectlist_[i].right;
                         y1 = rectlist_[i].top;
                     }
-                    else if (clipflag == (_CHR_CLIP_RIGHT | _CHR_CLIP_TOP))
+                    else if (clipflag == (_CHR_CLIP_RIGHT bitor _CHR_CLIP_TOP))
                     {
                         // case 3
                         SetCheckedUpdateRect(x1, y1, rectlist_[i].left, y2);
                         x1 = rectlist_[i].left;
                         y1 = rectlist_[i].bottom;
                     }
-                    else if (clipflag == (_CHR_CLIP_LEFT | _CHR_CLIP_TOP))
+                    else if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_TOP))
                     {
                         // case 4
                         SetCheckedUpdateRect(x1, rectlist_[i].bottom, x2, y2);
@@ -614,33 +614,33 @@ long C_Window::SetCheckedUpdateRect(long x1, long y1, long x2, long y2)
                         // case 8
                         rectlist_[i].right = x1;
                     }
-                    else if (clipflag == (_CHR_CLIP_LEFT | _CHR_CLIP_RIGHT | _CHR_CLIP_BOTTOM))
+                    else if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
                     {
                         // case 9
                         y2 = rectlist_[i].top;
                     }
-                    else if (clipflag == (_CHR_CLIP_TOP | _CHR_CLIP_RIGHT | _CHR_CLIP_BOTTOM))
+                    else if (clipflag == (_CHR_CLIP_TOP bitor _CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
                     {
                         // case 10
                         x2 = rectlist_[i].left;
                     }
-                    else if (clipflag == (_CHR_CLIP_TOP | _CHR_CLIP_LEFT | _CHR_CLIP_RIGHT))
+                    else if (clipflag == (_CHR_CLIP_TOP bitor _CHR_CLIP_LEFT bitor _CHR_CLIP_RIGHT))
                     {
                         // case 11
                         y1 = rectlist_[i].bottom;
                     }
-                    else if (clipflag == (_CHR_CLIP_LEFT | _CHR_CLIP_TOP | _CHR_CLIP_BOTTOM))
+                    else if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_TOP bitor _CHR_CLIP_BOTTOM))
                     {
                         // case 12
                         x1 = rectlist_[i].right;
                     }
-                    else if (clipflag == (_CHR_CLIP_TOP | _CHR_CLIP_BOTTOM))
+                    else if (clipflag == (_CHR_CLIP_TOP bitor _CHR_CLIP_BOTTOM))
                     {
                         // case 15
                         SetCheckedUpdateRect(x1, y1, rectlist_[i].left, y2);
                         x1 = rectlist_[i].right;
                     }
-                    else if (clipflag == (_CHR_CLIP_LEFT | _CHR_CLIP_RIGHT))
+                    else if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_RIGHT))
                     {
                         // case 16
                         SetCheckedUpdateRect(x1, y1, x2, rectlist_[i].top);
@@ -718,7 +718,7 @@ void C_Window::SetUpdateRect(long x1, long y1, long x2, long y2, long flags, lon
     else
         AddUpdateRect(x1, y1, x2, y2);
 
-    update_ or_eq C_DRAW_COPYWINDOW | C_DRAW_REFRESH;
+    update_ or_eq C_DRAW_COPYWINDOW bitor C_DRAW_REFRESH;
     Handler_->UpdateFlag or_eq C_DRAW_REFRESH;
 
     UI_Leave(Leave);
@@ -764,7 +764,7 @@ void C_Window::ClearCheckedUpdateRect(long x1, long y1, long x2, long y2)
                         rectflag_[i] = 0;
                     }
 
-                    if (clipflag == (_CHR_CLIP_LEFT | _CHR_CLIP_TOP | _CHR_CLIP_RIGHT | _CHR_CLIP_BOTTOM))
+                    if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_TOP bitor _CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
                     {
                         // clear rect is totally inside current rect... break into 4
                         rectflag_[i] = 0;
@@ -773,25 +773,25 @@ void C_Window::ClearCheckedUpdateRect(long x1, long y1, long x2, long y2)
                         SetCheckedUpdateRect(x2, y1, oldrect.right, y2);
                         SetCheckedUpdateRect(oldrect.left, y2, oldrect.right, oldrect.bottom);
                     }
-                    else if (clipflag == (_CHR_CLIP_RIGHT | _CHR_CLIP_BOTTOM))
+                    else if (clipflag == (_CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
                     {
                         // case 1
                         rectlist_[i].top = y2;
                         SetCheckedUpdateRect(x2, oldrect.top, oldrect.right, y2);
                     }
-                    else if (clipflag == (_CHR_CLIP_LEFT | _CHR_CLIP_BOTTOM))
+                    else if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_BOTTOM))
                     {
                         // case 2
                         rectlist_[i].top = y2;
                         SetCheckedUpdateRect(oldrect.left, oldrect.top, x1, y2);
                     }
-                    else if (clipflag == (_CHR_CLIP_RIGHT | _CHR_CLIP_TOP))
+                    else if (clipflag == (_CHR_CLIP_RIGHT bitor _CHR_CLIP_TOP))
                     {
                         // case 3
                         rectlist_[i].bottom = y1;
                         SetCheckedUpdateRect(x2, y1, oldrect.right, oldrect.bottom);
                     }
-                    else if (clipflag == (_CHR_CLIP_LEFT | _CHR_CLIP_TOP))
+                    else if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_TOP))
                     {
                         // case 4
                         rectlist_[i].bottom = y1;
@@ -817,42 +817,42 @@ void C_Window::ClearCheckedUpdateRect(long x1, long y1, long x2, long y2)
                         // case 8
                         rectlist_[i].right = x1;
                     }
-                    else if (clipflag == (_CHR_CLIP_LEFT | _CHR_CLIP_RIGHT | _CHR_CLIP_BOTTOM))
+                    else if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
                     {
                         // case 9
                         rectlist_[i].top = y2;
                         SetCheckedUpdateRect(oldrect.left, oldrect.top, x1, y2);
                         SetCheckedUpdateRect(x2, oldrect.top, oldrect.right, y2);
                     }
-                    else if (clipflag == (_CHR_CLIP_TOP | _CHR_CLIP_RIGHT | _CHR_CLIP_BOTTOM))
+                    else if (clipflag == (_CHR_CLIP_TOP bitor _CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
                     {
                         // case 10
                         rectlist_[i].left = x2;
                         SetCheckedUpdateRect(oldrect.left, oldrect.top, x2, y1);
                         SetCheckedUpdateRect(oldrect.left, y2, x2, oldrect.bottom);
                     }
-                    else if (clipflag == (_CHR_CLIP_TOP | _CHR_CLIP_LEFT | _CHR_CLIP_RIGHT))
+                    else if (clipflag == (_CHR_CLIP_TOP bitor _CHR_CLIP_LEFT bitor _CHR_CLIP_RIGHT))
                     {
                         // case 11
                         rectlist_[i].bottom = y1;
                         SetCheckedUpdateRect(oldrect.left, y1, x1, oldrect.bottom);
                         SetCheckedUpdateRect(x2, y1, oldrect.right, oldrect.bottom);
                     }
-                    else if (clipflag == (_CHR_CLIP_LEFT | _CHR_CLIP_TOP | _CHR_CLIP_BOTTOM))
+                    else if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_TOP bitor _CHR_CLIP_BOTTOM))
                     {
                         // case 12
                         rectlist_[i].right = x1;
                         SetCheckedUpdateRect(x1, oldrect.top, oldrect.right, y1);
                         SetCheckedUpdateRect(x1, y2, oldrect.right, oldrect.bottom);
                     }
-                    else if (clipflag == (_CHR_CLIP_TOP | _CHR_CLIP_BOTTOM))
+                    else if (clipflag == (_CHR_CLIP_TOP bitor _CHR_CLIP_BOTTOM))
                     {
                         // case 15
                         rectflag_[i] = 0;
                         SetCheckedUpdateRect(oldrect.left, oldrect.top, oldrect.right, y1);
                         SetCheckedUpdateRect(oldrect.left, y2, oldrect.right, oldrect.bottom);
                     }
-                    else if (clipflag == (_CHR_CLIP_LEFT | _CHR_CLIP_RIGHT))
+                    else if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_RIGHT))
                     {
                         // case 16
                         rectflag_[i] = 0;
@@ -1615,7 +1615,7 @@ void C_Window::Blend(WORD *front, UI95_RECT *frect, short fwidth, WORD *back, UI
             gb = UIColorTable[bperc][(back[bidx] bitand g_mask_) >> g_shift_];
             bb = UIColorTable[bperc][(back[bidx] bitand b_mask_) >> b_shift_];
 
-            dest[didx] = static_cast<WORD>(rShift[UIColorTable[100][rf + rb]] | gShift[UIColorTable[100][gf + gb]] | bShift[UIColorTable[100][bf + bb]]); 
+            dest[didx] = static_cast<WORD>(rShift[UIColorTable[100][rf + rb]] bitor gShift[UIColorTable[100][gf + gb]] bitor bShift[UIColorTable[100][bf + bb]]); 
             fidx++;
             bidx++;
             didx++;
@@ -1659,7 +1659,7 @@ void C_Window::BlendTransparent(WORD Mask, WORD *front, UI95_RECT *frect, short 
                 gb = UIColorTable[bperc][(back[bidx] bitand g_mask_) >> g_shift_];
                 bb = UIColorTable[bperc][(back[bidx] bitand b_mask_) >> b_shift_];
 
-                dest[didx] = static_cast<WORD>(rShift[UIColorTable[100][rf + rb]] | gShift[UIColorTable[100][gf + gb]] | bShift[UIColorTable[100][bf + bb]]); 
+                dest[didx] = static_cast<WORD>(rShift[UIColorTable[100][rf + rb]] bitor gShift[UIColorTable[100][gf + gb]] bitor bShift[UIColorTable[100][bf + bb]]); 
             }
             else
                 dest[didx] = back[bidx];
@@ -1699,7 +1699,7 @@ void C_Window::Translucency(WORD *front, UI95_RECT *frect, short fwidth, WORD *d
             gf = UIColorTable[0][(front[fidx] bitand g_mask_) >> g_shift_];
             bf = UIColorTable[0][(front[fidx] bitand b_mask_) >> b_shift_];
 
-            dest[j + i * dwidth] = static_cast<WORD>(rShift[rf] | gShift[gf] | bShift[bf]); 
+            dest[j + i * dwidth] = static_cast<WORD>(rShift[rf] bitor gShift[gf] bitor bShift[bf]); 
             fidx++;
             didx++;
         }
@@ -1774,9 +1774,9 @@ void C_Window::BlitTranslucent(SCREEN *surface, COLORREF color, long Perc, UI95_
             b = UIColorTable[operc][bc + UIColorTable[bgperc][(dc >> b_shift_) bitand 0x1f]];
 
             if (surface->bpp == 32) //XX
-                ((DWORD*)surface->mem)[ didx ] = RGB565toRGB8(static_cast<WORD>((rShift[r] | gShift[g] | bShift[b])));
+                ((DWORD*)surface->mem)[ didx ] = RGB565toRGB8(static_cast<WORD>((rShift[r] bitor gShift[g] bitor bShift[b])));
             else
-                surface->mem[didx] = static_cast<WORD>((rShift[r] | gShift[g] | bShift[b]));
+                surface->mem[didx] = static_cast<WORD>((rShift[r] bitor gShift[g] bitor bShift[b]));
 
 
             didx++;
@@ -1890,9 +1890,9 @@ void C_Window::CustomBlitTranslucent(SCREEN *surface, COLORREF color, long Perc,
                 b = UIColorTable[operc][UIColorTable[Perc - sub][bc] + UIColorTable[bgperc + sub][(dc >> b_shift_) bitand 0x1f]];
 
                 if (surface->bpp == 32)//XX
-                    ((DWORD*)surface->mem)[didx] = RGB565toRGB8(static_cast<short>(rShift[r] | gShift[g] | bShift[b]));
+                    ((DWORD*)surface->mem)[didx] = RGB565toRGB8(static_cast<short>(rShift[r] bitor gShift[g] bitor bShift[b]));
                 else
-                    surface->mem[didx] = static_cast<short>(rShift[r] | gShift[g] | bShift[b]);
+                    surface->mem[didx] = static_cast<short>(rShift[r] bitor gShift[g] bitor bShift[b]);
 
             }
 
@@ -1971,9 +1971,9 @@ void C_Window::DitherFill(SCREEN *surface, COLORREF color, long Perc, short size
             if (bf > 0x1f) bf = 0x1f;
 
             if (surface->bpp == 32) //XX
-                ((DWORD*)surface->mem)[didx] = RGB565toRGB8(static_cast<short>(rShift[rf] | gShift[gf] | bShift[bf]));
+                ((DWORD*)surface->mem)[didx] = RGB565toRGB8(static_cast<short>(rShift[rf] bitor gShift[gf] bitor bShift[bf]));
             else
-                surface->mem[didx] = static_cast<short>(rShift[rf] | gShift[gf] | bShift[bf]);
+                surface->mem[didx] = static_cast<short>(rShift[rf] bitor gShift[gf] bitor bShift[bf]);
 
             l++;
             didx++;
@@ -2102,7 +2102,7 @@ void C_Window::GradientFill(SCREEN *surface, COLORREF Color, long Perc, UI95_REC
     g = UIColorTable[Perc][(col bitand g_mask_) >> g_shift_];
     b = UIColorTable[Perc][(col bitand b_mask_) >> b_shift_];
 
-    col = rShift[r] | gShift[g] | bShift[b];
+    col = rShift[r] bitor gShift[g] bitor bShift[b];
 
     Fill(surface, (WORD)col, &d);
 }
@@ -2294,10 +2294,10 @@ BOOL C_Window::ClipLine(long *x1, long *y1, long *x2, long *y2, UI95_RECT *clip)
     }
     else
     {
-        if ((flag1 | flag2) bitand (LINE_CLIP_LEFT | LINE_CLIP_RIGHT))
+        if ((flag1 bitor flag2) bitand (LINE_CLIP_LEFT bitor LINE_CLIP_RIGHT))
             slope1 = (float)(*y2 - *y1) / (float)(*x2 - *x1);
 
-        if ((flag1 | flag2) bitand (LINE_CLIP_TOP | LINE_CLIP_BOTTOM))
+        if ((flag1 bitor flag2) bitand (LINE_CLIP_TOP bitor LINE_CLIP_BOTTOM))
             slope2 = (float)(*x2 - *x1) / (float)(*y2 - *y1);
 
         if (flag1 bitand LINE_CLIP_LEFT)
@@ -2905,7 +2905,7 @@ BOOL C_Window::CheckHotKeys(unsigned char DKScanCode, unsigned char, unsigned ch
 
     while (cur)
     {
-        if (cur->Control_->GetHotKey() == (DKScanCode | (ShiftStates << 8)))
+        if (cur->Control_->GetHotKey() == (DKScanCode bitor (ShiftStates << 8)))
         {
             cur->Control_->Process(cur->Control_->GetID(), C_TYPE_LMOUSEDOWN);
             cur->Control_->Process(cur->Control_->GetID(), C_TYPE_LMOUSEUP);

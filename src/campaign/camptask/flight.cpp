@@ -1861,7 +1861,7 @@ int CanItIdentify(CampEntity us, CampEntity them, float d, int mt)
 
     if (us->IsUnit())
     {
-        if (GetVehicleClassData(((UnitClass *)us)->class_data->VehicleType[0])->Flags bitand (VEH_HAS_NCTR | VEH_HAS_EXACT_RWR))
+        if (GetVehicleClassData(((UnitClass *)us)->class_data->VehicleType[0])->Flags bitand (VEH_HAS_NCTR bitor VEH_HAS_EXACT_RWR))
             couldIdent = TRUE;
     }
     else if (us->IsObjective())
@@ -2968,7 +2968,7 @@ int FlightClass::BuildMission(MissionRequestClass *mis)
         // Otherwise require tankers
         if (fuelNeeded > fuelAvail and not (MissionData[mis->mission].flags bitand AMIS_FUDGE_RANGE))
         {
-            pack->SetPackageFlags(AMIS_ADDTANKER | AMIS_NEEDTANKER);
+            pack->SetPackageFlags(AMIS_ADDTANKER bitor AMIS_NEEDTANKER);
             refuel = fuelNeeded - fuelAvail; // We use this for AddTankerWayPoints
         }
     }

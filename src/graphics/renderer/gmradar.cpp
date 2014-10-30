@@ -572,11 +572,11 @@ void RenderGMRadar::DrawBlip(DrawableObject* drawable, float GainScale, bool Sha
 
         if (BlitColor > 255.0f) BlitColor = 255.0f;
 
-        SetColor(0xFF000000 | (F_I32(BlitColor) << 8));
+        SetColor(0xFF000000 bitor (F_I32(BlitColor) << 8));
         Render2DPoint(x,      y);
 
         BlitColor /= 4.0f; //r * 64.0f * gain;
-        SetColor(0xFF000000 | (F_I32(BlitColor) << 8));
+        SetColor(0xFF000000 bitor (F_I32(BlitColor) << 8));
 
         if (r > 1.0f)
         {
@@ -774,7 +774,7 @@ void RenderGMRadar::DrawGMsquare(GroundMapVertex *v0, GroundMapVertex *v1, Groun
     ShiAssert(v2);
     ShiAssert(v3);
 
-    if (v0->clipFlag | v1->clipFlag | v2->clipFlag | v3->clipFlag)
+    if (v0->clipFlag bitor v1->clipFlag bitor v2->clipFlag bitor v3->clipFlag)
     {
 
         // Convert the structure format

@@ -21,28 +21,28 @@ void SetReliefType(CellData TheCell, ReliefType NewReliefType)
 {
     CellDataType Temp = (CellDataType)NewReliefType;
 
-    *TheCell = (CellDataType)((*TheCell bitand compl ReliefMask) | ((Temp << ReliefShift) bitand ReliefMask));
+    *TheCell = (CellDataType)((*TheCell bitand compl ReliefMask) bitor ((Temp << ReliefShift) bitand ReliefMask));
 }
 
 void SetGroundCover(CellData TheCell, CoverType NewGroundCover)
 {
     CellDataType Temp = (CellDataType)NewGroundCover;
 
-    *TheCell = (CellDataType)((*TheCell bitand compl GroundCoverMask) | ((Temp << GroundCoverShift) bitand GroundCoverMask));
+    *TheCell = (CellDataType)((*TheCell bitand compl GroundCoverMask) bitor ((Temp << GroundCoverShift) bitand GroundCoverMask));
 }
 
 void SetRoadCell(CellData TheCell, char Road)
 {
     CellDataType Temp = Road;
 
-    *TheCell = (CellDataType)((*TheCell bitand compl RoadMask) | ((Temp << RoadShift) bitand RoadMask));
+    *TheCell = (CellDataType)((*TheCell bitand compl RoadMask) bitor ((Temp << RoadShift) bitand RoadMask));
 }
 
 void SetRailCell(CellData TheCell, char Rail)
 {
     CellDataType Temp = Rail;
 
-    *TheCell = (CellDataType)((*TheCell bitand compl RailMask) | ((Temp << RailShift) bitand RailMask));
+    *TheCell = (CellDataType)((*TheCell bitand compl RailMask) bitor ((Temp << RailShift) bitand RailMask));
 }
 
 ReliefType GetReliefType(CellData TheCell)

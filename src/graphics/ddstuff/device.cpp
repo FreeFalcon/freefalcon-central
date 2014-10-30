@@ -111,7 +111,7 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
     {
 
         // set up and register window class
-        wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS | CS_NOCLOSE;
+        wc.style = CS_HREDRAW bitor CS_VREDRAW bitor CS_OWNDC bitor CS_DBLCLKS bitor CS_NOCLOSE;
         wc.lpfnWndProc = DefWindowProc;
         wc.cbClsExtra = 0;
         wc.cbWndExtra = sizeof(DWORD);
@@ -174,7 +174,7 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
         // If this is other than the default primary display, shrink the target window
         // on the desktop and don't let DirectX muck with it.
 #if 0
-        SetWindowPos(appWin, HWND_TOP, 0, 200, 10, 4, SWP_NOCOPYBITS | SWP_SHOWWINDOW);
+        SetWindowPos(appWin, HWND_TOP, 0, 200, 10, 4, SWP_NOCOPYBITS bitor SWP_SHOWWINDOW);
 #endif
 
         // Create the primary surface(s)

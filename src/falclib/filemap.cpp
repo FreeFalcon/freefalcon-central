@@ -2,6 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+#include <cISO646>
 #include <windows.h>
 
 void *map_file(char *filename, long bytestomap = 0)
@@ -33,7 +34,7 @@ void *map_file(char *filename, long bytestomap = 0)
           (
               file,
               NULL,
-              PAGE_READONLY | SEC_COMMIT,
+              PAGE_READONLY bitor SEC_COMMIT,
               0,
               0,
               NULL

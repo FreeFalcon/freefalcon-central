@@ -241,7 +241,7 @@ void DogfightClass::ApplySettingsToFlight(Flight flight)
         flight->UseFuel(1);
         flight->LoadWeapons(NULL, DefaultDamageMods, Air, numRadarMissiles, WEAP_FORCE_ON_ONE, WEAP_RADAR);
         flight->LoadWeapons(NULL, DefaultDamageMods, Air, numAllAspectMissiles, WEAP_FORCE_ON_ONE, WEAP_HEATSEEKER);
-        flight->LoadWeapons(NULL, DefaultDamageMods, Air, numRearAspectMissiles, WEAP_FORCE_ON_ONE, WEAP_HEATSEEKER | WEAP_REAR_ASPECT);
+        flight->LoadWeapons(NULL, DefaultDamageMods, Air, numRearAspectMissiles, WEAP_FORCE_ON_ONE, WEAP_HEATSEEKER bitor WEAP_REAR_ASPECT);
 
         if (flags bitand DF_ECM_AVAIL)
         {
@@ -682,7 +682,7 @@ void DogfightClass::RegenerateAircraft(AircraftClass *aircraft)
     {
         // KCK: This was intended to eventually allow regen only on keypress. Set automatically here
         SetLocalFlag(DF_PLAYER_REQ_REGEN);
-        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() | SHOW_DOGFIGHT_SCORES);
+        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitor SHOW_DOGFIGHT_SCORES);
     }
 
     // Set the time of death to NOW for use in delaying the regeneration.

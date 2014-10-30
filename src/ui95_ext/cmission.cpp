@@ -26,7 +26,7 @@ C_Mission::C_Mission() : C_Control()
     vuID = FalconNullId;
     Owner_ = NULL;
 
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER;
 }
 
 C_Mission::C_Mission(char **stream) : C_Control(stream)
@@ -219,7 +219,7 @@ BOOL C_Mission::Process(long ID, short HitType)
 
     if (HitType == C_TYPE_LMOUSEUP)
     {
-        SetState(static_cast<short>(GetState() | 1));
+        SetState(static_cast<short>(GetState() bitor 1));
         Refresh();
     }
 

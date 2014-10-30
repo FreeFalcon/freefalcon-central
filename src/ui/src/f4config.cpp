@@ -106,7 +106,7 @@ bool g_bUseDefinedGunDomain = FALSE; // 2002-04-17 ADDED BY S.G. Instead of 'fud
 #define PLockModeNoSnap 2
 #define PLockModeBreakLock 4
 #define PLockNoTrees 8
-int g_nPadlockMode = PLockModeNoSnap | PLockModeBreakLock | PLockNoTrees;
+int g_nPadlockMode = PLockModeNoSnap bitor PLockModeBreakLock bitor PLockNoTrees;
 
 // 2001-08-31 ADDED BY S.G. FOR AIRBASE RELOCATION CHOICE
 #define AirBaseRelocTeamOnly 1

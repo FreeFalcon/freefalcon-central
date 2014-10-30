@@ -1396,7 +1396,7 @@ public:
     enum
     {
         HYDR_A_SYSTEM = 0x01, HYDR_B_SYSTEM = 0x02,
-        HYDR_ALL = HYDR_A_SYSTEM | HYDR_B_SYSTEM,
+        HYDR_ALL = HYDR_A_SYSTEM bitor HYDR_B_SYSTEM,
         HYDR_A_BROKE = 0x04, HYDR_B_BROKE = 0x08, // whats permanently broke?
     };
     int HydraulicA()

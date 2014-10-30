@@ -272,7 +272,7 @@ void SimFeatureClass::JoinFlight(void)
     {
       classPtr = GetCampaignObject()->EntityType();
       // Should I have a brain?
-      if (classPtr->classInfo_[VU_TYPE] == TYPE_AIRBASE ||
+      if (classPtr->classInfo_[VU_TYPE] == TYPE_AIRBASE or
           classPtr->classInfo_[VU_TYPE] == TYPE_AIRSTRIP)
       {
          theBrain = new ATCBrain (this);

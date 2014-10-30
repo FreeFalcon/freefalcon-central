@@ -1533,7 +1533,7 @@ unsigned WINAPI DumpThread(LPVOID pData)
 
     // Create the file first.
     HANDLE hFile = CreateFileW(pParams->szFileName             ,
-                               GENERIC_READ | GENERIC_WRITE    ,
+                               GENERIC_READ bitor GENERIC_WRITE    ,
                                0                              ,
                                NULL                           ,
                                CREATE_ALWAYS                  ,

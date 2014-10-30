@@ -36,7 +36,7 @@ char *C_Clk_Tokens[] =
 C_Clock::C_Clock() : C_Control()
 {
     _SetCType_(_CNTL_CLOCK_);
-    Defaultflags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_SELECTABLE | C_BIT_MOUSEOVER;
+    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
     Font_ = 1;
     Day_ = NULL;
     Hour_ = NULL;
@@ -78,7 +78,7 @@ void C_Clock::Setup(long ID, short Type)
 
     Hour_ = new C_EditBox;
     Hour_->Setup(2, C_TYPE_INTEGER);
-    Hour_->SetFlags(Flags_ | C_BIT_RIGHT);
+    Hour_->SetFlags(Flags_ bitor C_BIT_RIGHT);
     Hour_->SetMaxLen(2);
     Hour_->SetMaxInteger(23);
     Hour_->SetMinInteger(0);
@@ -86,7 +86,7 @@ void C_Clock::Setup(long ID, short Type)
 
     Minute_ = new C_EditBox;
     Minute_->Setup(3, C_TYPE_INTEGER);
-    Minute_->SetFlags(Flags_ | C_BIT_LEADINGZEROS | C_BIT_RIGHT);
+    Minute_->SetFlags(Flags_ bitor C_BIT_LEADINGZEROS bitor C_BIT_RIGHT);
     Minute_->SetMaxLen(2);
     Minute_->SetMaxInteger(59);
     Minute_->SetMinInteger(0);
@@ -94,7 +94,7 @@ void C_Clock::Setup(long ID, short Type)
 
     Second_ = new C_EditBox;
     Second_->Setup(4, C_TYPE_INTEGER);
-    Second_->SetFlags(Flags_ | C_BIT_LEADINGZEROS | C_BIT_RIGHT);
+    Second_->SetFlags(Flags_ bitor C_BIT_LEADINGZEROS bitor C_BIT_RIGHT);
     Second_->SetMaxLen(2);
     Second_->SetMaxInteger(59);
     Second_->SetMinInteger(0);
@@ -167,7 +167,7 @@ void C_Clock::EnableDay()
 {
     Day_ = new C_EditBox;
     Day_->Setup(1, C_TYPE_INTEGER);
-    Day_->SetFlags(Flags_ | C_BIT_RIGHT);
+    Day_->SetFlags(Flags_ bitor C_BIT_RIGHT);
     Day_->SetMaxLen(2);
     Day_->SetMinInteger(1);
     Day_->SetMaxInteger(48);
@@ -232,7 +232,7 @@ void C_Clock::SetSubParents(C_Window *Parent)
     {
         Day_->SetFont(Font_);
         Day_->SetClient(GetClient());
-        Day_->SetFlags(Day_->GetFlags() | (Flags_ | C_BIT_RIGHT));
+        Day_->SetFlags(Day_->GetFlags() bitor (Flags_ bitor C_BIT_RIGHT));
         Day_->SetXYWH(GetX() + x, GetY(), w, h);
         Day_->SetFgColor(NormColor_);
         Day_->SetCursorColor(CursorColor_);
@@ -253,7 +253,7 @@ void C_Clock::SetSubParents(C_Window *Parent)
 
     Hour_->SetFont(Font_);
     Hour_->SetClient(GetClient());
-    Hour_->SetFlags(Hour_->GetFlags() | (Flags_ | C_BIT_RIGHT));
+    Hour_->SetFlags(Hour_->GetFlags() bitor (Flags_ bitor C_BIT_RIGHT));
     Hour_->SetXYWH(GetX() + x, GetY(), w, h);
     Hour_->SetFgColor(NormColor_);
     Hour_->SetCursorColor(CursorColor_);
@@ -270,7 +270,7 @@ void C_Clock::SetSubParents(C_Window *Parent)
 
     Minute_->SetFont(Font_);
     Minute_->SetClient(GetClient());
-    Minute_->SetFlags(Minute_->GetFlags() | (Flags_ | C_BIT_LEADINGZEROS | C_BIT_RIGHT));
+    Minute_->SetFlags(Minute_->GetFlags() bitor (Flags_ bitor C_BIT_LEADINGZEROS bitor C_BIT_RIGHT));
     Minute_->SetXYWH(GetX() + x, GetY(), w, h);
     Minute_->SetFgColor(NormColor_);
     Minute_->SetCursorColor(CursorColor_);
@@ -287,7 +287,7 @@ void C_Clock::SetSubParents(C_Window *Parent)
 
     Second_->SetFont(Font_);
     Second_->SetClient(GetClient());
-    Second_->SetFlags(Second_->GetFlags() | (Flags_ | C_BIT_LEADINGZEROS | C_BIT_RIGHT));
+    Second_->SetFlags(Second_->GetFlags() bitor (Flags_ bitor C_BIT_LEADINGZEROS bitor C_BIT_RIGHT));
     Second_->SetXYWH(GetX() + x, GetY(), w, h);
     Second_->SetFgColor(NormColor_);
     Second_->SetCursorColor(CursorColor_);
@@ -490,15 +490,15 @@ void C_Clock::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CLK_SETNORMCOLOR:
-            SetNormColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetNormColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CLK_SETSELCOLOR:
-            SetSelColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetSelColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CLK_SETCURSORCOLOR:
-            SetCursorColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetCursorColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
 
         case CLK_SETSEP0:

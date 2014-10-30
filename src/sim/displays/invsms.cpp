@@ -33,7 +33,7 @@ const static struct InvData
     { 0.40f, -0.62f,  0.35f, -0.60f, InvData::RJETT|InvData::NORACK|InvData::R2SLOT}, // HP 9*/
     { 0 }, // HP 0 is empty
     //MI tweaked values
-    { -0.90f, -0.50f, -0.95f, -0.50f, InvData::RJETT | InvData::NORACK | InvData::R2SLOT}, // HP 1
+    { -0.90f, -0.50f, -0.95f, -0.50f, InvData::RJETT bitor InvData::NORACK bitor InvData::R2SLOT}, // HP 1
     { -0.90f, -0.25f, -0.95f, -0.25f, InvData::R2SLOT}, // HP 2
     { -0.75f,  0.10f, -0.77f,  0.10f, 0}, // HP 3
     { -0.60f,  0.40f, -0.62f,  0.42f, 0}, // HP 4
@@ -41,7 +41,7 @@ const static struct InvData
     { 0.10f,  0.40f,  0.08f,  0.42f, 0}, // HP 6
     { 0.25f,  0.10f,  0.25f,  0.10f, 0}, // HP 7
     { 0.40f, -0.25f,  0.35f, -0.25f, InvData::R2SLOT}, // HP 8
-    { 0.40f, -0.50f,  0.35f, -0.50f, InvData::RJETT | InvData::NORACK | InvData::R2SLOT}, // HP 9
+    { 0.40f, -0.50f,  0.35f, -0.50f, InvData::RJETT bitor InvData::NORACK bitor InvData::R2SLOT}, // HP 9
 };
 
 void SmsDrawable::InventoryDisplay(int jettOnly)
@@ -121,7 +121,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
         tmpStr[1][0] = 0;
         tmpStr[2][0] = 0;
 
-        if (jettOnly and not (Sms->hardPoint[hp]->GetRackDataFlags() bitand (RDF_SELECTIVE_JETT_WEAPON | RDF_SELECTIVE_JETT_RACK)))
+        if (jettOnly and not (Sms->hardPoint[hp]->GetRackDataFlags() bitand (RDF_SELECTIVE_JETT_WEAPON bitor RDF_SELECTIVE_JETT_RACK)))
         {
             // non jettisonable - show nothing
         }

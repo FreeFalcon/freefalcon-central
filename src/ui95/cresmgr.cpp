@@ -4,7 +4,7 @@
 #define _IDX_HASH_SIZE_ 10
 
 // MACRO to convert to screen format from TARGA format (0rrrrrgggggbbbbb)
-#define COLOR15BIT(color,rs,gs,bs) ((((color >> 10) bitand 0x1f) << rs) | (((color >> 5) bitand 0x1f) << gs) | (((color) bitand 0x1f) << bs))
+#define COLOR15BIT(color,rs,gs,bs) ((((color >> 10) bitand 0x1f) << rs) bitor (((color >> 5) bitand 0x1f) << gs) bitor (((color) bitand 0x1f) << bs))
 
 extern C_Parser *gMainParser;
 extern char FalconUIArtDirectory[];

@@ -182,7 +182,7 @@ BOOL CreateSimCursors()
 
                     gpSimCursors[i].CursorRenderPalette->AttachToTexture(pTex);
 
-                    if ( not pTex->Create("CPHsi", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, gpSimCursors[i].Width, gpSimCursors[i].Height))
+                    if ( not pTex->Create("CPHsi", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8, gpSimCursors[i].Width, gpSimCursors[i].Height))
                         throw _com_error(E_FAIL);
 
                     if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) gpSimCursors[i].CursorRenderBuffer, true, true)) // soon to be re-loaded by CPSurface::Translate3D
@@ -359,7 +359,7 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
 
         OTWDriver.renderer->context.RestoreState(STATE_ALPHA_TEXTURE_NOFILTER);
         OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
-        OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
+        OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
         OTWDriver.renderer->EndDraw();
 
         //Wombat778 3-24-04 end

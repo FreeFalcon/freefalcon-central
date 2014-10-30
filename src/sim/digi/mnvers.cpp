@@ -301,8 +301,8 @@ float DigitalBrain::SetPstick(float pitchError , float gLimit, int commandType)
 {
     float stickFact = 0.0F, stickCmd = 0.0F;
 
-    af->ClearFlag(AirframeClass::GCommand | AirframeClass::AlphaCommand |
-                  AirframeClass::AutoCommand | AirframeClass::ErrorCommand);
+    af->ClearFlag(AirframeClass::GCommand bitor AirframeClass::AlphaCommand |
+                  AirframeClass::AutoCommand bitor AirframeClass::ErrorCommand);
 
     if (commandType == AirframeClass::ErrorCommand)
     {

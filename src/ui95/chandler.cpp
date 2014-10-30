@@ -801,7 +801,7 @@ void C_Handler::CheckTranslucentWindows()
             while (infront)
             {
                 if ((infront->win->GetFlags() bitand C_BIT_TRANSLUCENT)
-                   and (infront->win->update_ bitand (C_DRAW_COPYWINDOW | C_DRAW_REFRESH | C_DRAW_REFRESHALL))
+                   and (infront->win->update_ bitand (C_DRAW_COPYWINDOW bitor C_DRAW_REFRESH bitor C_DRAW_REFRESHALL))
                    and (infront->Flags bitand C_BIT_ENABLED))
                 {
                     for (i = 0; i < infront->win->rectcount_; i++)
@@ -835,7 +835,7 @@ enum
     _CHR_ClipTop = 0x02,
     _CHR_ClipRight = 0x04,
     _CHR_ClipBottom = 0x08,
-    _CHR_RemoveAll = _CHR_ClipLeft | _CHR_ClipTop | _CHR_ClipRight | _CHR_ClipBottom,
+    _CHR_RemoveAll = _CHR_ClipLeft bitor _CHR_ClipTop bitor _CHR_ClipRight bitor _CHR_ClipBottom,
 };
 
 BOOL C_Handler::ClipRect(UI95_RECT *src, UI95_RECT *dst, UI95_RECT *ClientArea)
@@ -1335,7 +1335,7 @@ void C_Handler::UpdateTimerControls(void)
         cur = cur->Next;
     }
 
-    if (UpdateFlag bitand (C_DRAW_REFRESH | C_DRAW_REFRESHALL))
+    if (UpdateFlag bitand (C_DRAW_REFRESH bitor C_DRAW_REFRESHALL))
         SetEvent(WakeOutput_);
 }
 
@@ -2816,7 +2816,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 if (gScreenShotEnabled)
                     gUI_TakeScreenShot = 1; // Set to take screen shot after screen is refreshed (2=Save to file)...
 
-                lParam = (lParam bitand 0xff00ffff) | DIK_SYSRQ;
+                lParam = (lParam bitand 0xff00ffff) bitor DIK_SYSRQ;
             }
             else
 
@@ -2834,7 +2834,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
             Repeat = lParam bitand 0xffff;
 
-            Key = (uchar)(((lParam >> 16) bitand 0xff) | ((lParam >> 17) bitand 0x80)); //
+            Key = (uchar)(((lParam >> 16) bitand 0xff) bitor ((lParam >> 17) bitand 0x80)); //
 
             if (GetKeyState(VK_SHIFT) bitand 0x80)
                 ShiftStates or_eq _SHIFT_DOWN_;

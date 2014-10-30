@@ -225,7 +225,7 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, UI95_RECT *rect, short x, shor
     newentry->Header = new ImageHeader;
     newentry->Header->Type = _RSC_IS_IMAGE_;
     newentry->Header->ID[0] = 0;
-    newentry->Header->flags = prior->Header->flags | _RSC_USECOLORKEY_;
+    newentry->Header->flags = prior->Header->flags bitor _RSC_USECOLORKEY_;
     newentry->Header->centerx = x;
     newentry->Header->centery = y;
     newentry->Header->w = (short)neww; 
@@ -367,7 +367,7 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, short x, short y, short w, sho
     newentry->Header = new ImageHeader;
     newentry->Header->Type = _RSC_IS_IMAGE_;
     newentry->Header->ID[0] = 0;
-    newentry->Header->flags = prior->Header->flags | _RSC_USECOLORKEY_;
+    newentry->Header->flags = prior->Header->flags bitor _RSC_USECOLORKEY_;
     newentry->Header->centerx = cx;
     newentry->Header->centery = cy;
     newentry->Header->w = (short)neww; 
@@ -589,7 +589,7 @@ C_Resmgr *C_Image::LoadImage(long ID, char *file, short x, short y)
     else
     {
 #endif
-        newentry->Header->flags = _RSC_16_BIT_ | _RSC_USECOLORKEY_;
+        newentry->Header->flags = _RSC_16_BIT_ bitor _RSC_USECOLORKEY_;
 #ifdef USE_SH_POOLS
         Image16 = (WORD*)MemAllocPtr(UI_Pools[UI_ART_POOL], sizeof(WORD) * (bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight), FALSE);
 #else

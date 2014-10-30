@@ -596,7 +596,7 @@ void DigitalBrain::FrameExec(SimObjectType* curTargetList, SimObjectType* curTar
     }
 
     // assume we're not going to be firing in this frame
-    ClearFlag(MslFireFlag | GunFireFlag);
+    ClearFlag(MslFireFlag bitor GunFireFlag);
 
     // check to see if our leader is dead and if not set leader to next in
     // flight (and/or ourself)

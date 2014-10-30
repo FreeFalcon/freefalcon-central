@@ -1962,8 +1962,8 @@ RDRackNode::RDRackNode()
     any = 0;
     wClassCount = 0;
     wClass = 0;
-    flags = RDF_EMERGENCY_JETT_RACK   | RDF_SELECTIVE_JETT_RACK  |
-            RDF_EMERGENCY_JETT_WEAPON | RDF_SELECTIVE_JETT_WEAPON;
+    flags = RDF_EMERGENCY_JETT_RACK   bitor RDF_SELECTIVE_JETT_RACK  |
+            RDF_EMERGENCY_JETT_WEAPON bitor RDF_SELECTIVE_JETT_WEAPON;
 }
 
 
@@ -2100,7 +2100,7 @@ void RDLoadRackData(void)
             On("rackjettmodes")
             {
                 int i;
-                rn->flags and_eq compl (RDF_EMERGENCY_JETT_RACK | RDF_SELECTIVE_JETT_RACK); // clear flags
+                rn->flags and_eq compl (RDF_EMERGENCY_JETT_RACK bitor RDF_SELECTIVE_JETT_RACK); // clear flags
                 char *enums[] = {"emergency", "selective", 0};
 
                 while (-1 not_eq (i = TokenEnum(enums, -1)))
@@ -2121,7 +2121,7 @@ void RDLoadRackData(void)
             On("weapjettmodes")
             {
                 int i;
-                rn->flags and_eq compl (RDF_EMERGENCY_JETT_WEAPON | RDF_SELECTIVE_JETT_WEAPON); // clear flags
+                rn->flags and_eq compl (RDF_EMERGENCY_JETT_WEAPON bitor RDF_SELECTIVE_JETT_WEAPON); // clear flags
                 char *enums[] = {"emergency", "selective", 0};
 
                 while (-1 not_eq (i = TokenEnum(enums, -1)))
@@ -2309,7 +2309,7 @@ void RDLoadRackData(void)
                 On("pylonjettmodes")
                 {
                     int i;
-                    pn->flags and_eq compl (RDF_EMERGENCY_JETT_PYLON | RDF_SELECTIVE_JETT_PYLON); // clear flags
+                    pn->flags and_eq compl (RDF_EMERGENCY_JETT_PYLON bitor RDF_SELECTIVE_JETT_PYLON); // clear flags
                     char *enums[] = {"emergency", "selective", 0};
 
                     while (-1 not_eq (i = TokenEnum(enums, -1)))
@@ -2371,7 +2371,7 @@ void RDCopyRackData(int count, RDPylonNode *pn, RDRackNode *rn, RDRackData *rd)
     rd->rackCT   = rn->rackCT;
     rd->pylonCT   = pn->pylonCT;
     rd->rackStations  = rn->stations;
-    rd->flags         = pn->flags | rn->flags | RDF_BMSDEFINITION;
+    rd->flags         = pn->flags bitor rn->flags bitor RDF_BMSDEFINITION;
     rd->pylonmnemonic = pn->mnemonic;
     rd->rackmnemonic  = rn->mnemonic;
     rd->count         = count;

@@ -291,7 +291,7 @@ void OpenOOBWindowCB(long, short hittype, C_Base *control)
 
     SetCursor(gCursors[CRSR_WAIT]);
     gMainHandler->EnableWindowGroup(control->GetGroup());
-    gGps->SetAllowed(gGps->GetAllowed() | UR_OOB);
+    gGps->SetAllowed(gGps->GetAllowed() bitor UR_OOB);
     long curtime = GetCurrentTime();
     gGps->Update();
     MonoPrint("GPS: OOB Allow time = %1ld\n", GetCurrentTime() - curtime);
@@ -824,7 +824,7 @@ void SetupMapMgr(bool noawacsmap)
             gMapMgr->SetMapImage(BIG_MAP_ID);
 
         gMapMgr->SetZoomLevel(1);
-        gMapMgr->SetTeamFlags(0, _MAP_OBJECTIVES_ | _MAP_UNITS_);
+        gMapMgr->SetTeamFlags(0, _MAP_OBJECTIVES_ bitor _MAP_UNITS_);
         gMapMgr->SetLogRanges(0.0f, 0.0f, 740.0f, 70.0f);
         gMapMgr->SetStrtRanges(0.0f, 0.0f, 740.0f, 1000.0f);
 
@@ -867,7 +867,7 @@ void SetupGPS(C_TreeList *MissionTree)
     gGps->SetMissionTree(MissionTree);
     gGps->SetATOTree(gATOAll);
     gGps->SetOOBTree(gOOBTree);
-    gGps->SetAllowed(UR_MISSION | UR_MAP);
+    gGps->SetAllowed(UR_MISSION bitor UR_MAP);
     gGps->SetObjectiveMenu(OBJECTIVE_POP);
     gGps->SetUnitMenu(UNIT_POP);
     gGps->SetMissionMenu(0); // Don't know what these are yet
@@ -2351,7 +2351,7 @@ static void OpenATOWindowCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    gGps->SetAllowed(gGps->GetAllowed() | UR_ATO | UR_SQUADRON);
+    gGps->SetAllowed(gGps->GetAllowed() bitor UR_ATO bitor UR_SQUADRON);
     gGps->Update();
 
     gMainHandler->EnableWindowGroup(control->GetGroup());

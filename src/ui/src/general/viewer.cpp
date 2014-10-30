@@ -349,7 +349,7 @@ int UI_Deaggregate(ObjectiveClass* objective)
 
             if (classPtr not_eq NULL)
             {
-                drawptr = LoadFeature(objective->GetCampID() << 16 | f, classPtr->visType[objective->GetFeatureStatus(f)], &objPos, (float)FeatureEntryDataTable[fid].Facing);
+                drawptr = LoadFeature(objective->GetCampID() << 16 bitor f, classPtr->visType[objective->GetFeatureStatus(f)], &objPos, (float)FeatureEntryDataTable[fid].Facing);
 
                 if (drawptr not_eq NULL)
                 {
@@ -361,7 +361,7 @@ int UI_Deaggregate(ObjectiveClass* objective)
 
                     if (feat)
                     {
-                        item = tree->CreateItem(objective->GetCampID() << 16 | f, C_TYPE_ITEM, feat);
+                        item = tree->CreateItem(objective->GetCampID() << 16 bitor f, C_TYPE_ITEM, feat);
 
                         if (item)
                             tree->AddChildItem(parent, item);

@@ -39,7 +39,7 @@ C_Slider::C_Slider() : C_Control()
     BgImage_ = NULL; // draw at x,y of control
     Slider_ = NULL;
 
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_SELECTABLE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
 }
 
 C_Slider::C_Slider(char **stream) : C_Control(stream)

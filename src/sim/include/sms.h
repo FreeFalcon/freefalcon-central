@@ -30,8 +30,8 @@ enum JettisonMode // MLR 3/2/2004 - Jettison Mode
     JettisonNone    = 0,
     Emergency       = 1 << 1,
     SelectiveWeapon = 1 << 2,
-    SelectiveRack   = 1 << 3 | SelectiveWeapon,
-    SelectivePylon  = 1 << 4 | SelectiveRack,
+    SelectiveRack   = 1 << 3 bitor SelectiveWeapon,
+    SelectivePylon  = 1 << 4 bitor SelectiveRack,
     RippedOff       = 1 << 5
 };
 

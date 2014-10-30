@@ -298,7 +298,7 @@ void DigitalBrain::MissileDefeatCheck(void)
                     // It's in the air long enough, give us a count down timer, skill based. Also set the first bit to say we're in count down
                     else
                     {
-                        missileFiredTime = (SimLibElapsedTime + rand() % (((SimLibElapsedTime - missileFiredTime) - SEC_TO_MSEC * SkillLevel()) + 1) + SEC_TO_MSEC * (SkillLevel() + 1)) | 0x1;  // 2002-01-28 MODIFIED BY S.G. Added '+ 1' in the '%' section to prevent a rare divide by 0 CTD.
+                        missileFiredTime = (SimLibElapsedTime + rand() % (((SimLibElapsedTime - missileFiredTime) - SEC_TO_MSEC * SkillLevel()) + 1) + SEC_TO_MSEC * (SkillLevel() + 1)) bitor 0x1;  // 2002-01-28 MODIFIED BY S.G. Added '+ 1' in the '%' section to prevent a rare divide by 0 CTD.
                         // Don't go in MissileDefeatMode.
                         return;
                     }

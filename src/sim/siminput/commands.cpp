@@ -287,7 +287,7 @@ void OTWToggleScoreDisplay(unsigned long, int state, void*)
         }
         else
         {
-            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() | flag);
+            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitor flag);
         }
     }
 }
@@ -9899,8 +9899,8 @@ void SimToggleExtLights(unsigned long, int state, void*)
             ac->SetSwitch(COMP_TAIL_STROBE, FALSE);
             ac->SetSwitch(COMP_NAV_LIGHTS, FALSE);
             ac->ClearAcStatusBits(
-                AircraftClass::ACSTATUS_EXT_LIGHTS | AircraftClass::ACSTATUS_EXT_NAVLIGHTS |
-                AircraftClass::ACSTATUS_EXT_NAVLIGHTSFLASH | AircraftClass::ACSTATUS_EXT_TAILSTROBE);
+                AircraftClass::ACSTATUS_EXT_LIGHTS bitor AircraftClass::ACSTATUS_EXT_NAVLIGHTS |
+                AircraftClass::ACSTATUS_EXT_NAVLIGHTSFLASH bitor AircraftClass::ACSTATUS_EXT_TAILSTROBE);
 
             if (OTWDriver.GetVirtualCockpit())
             {
@@ -9915,8 +9915,8 @@ void SimToggleExtLights(unsigned long, int state, void*)
             ac->SetSwitch(COMP_TAIL_STROBE, TRUE);
             ac->SetSwitch(COMP_NAV_LIGHTS, TRUE);
             ac->SetAcStatusBits(
-                AircraftClass::ACSTATUS_EXT_LIGHTS | AircraftClass::ACSTATUS_EXT_NAVLIGHTS |
-                AircraftClass::ACSTATUS_EXT_NAVLIGHTSFLASH | AircraftClass::ACSTATUS_EXT_TAILSTROBE);
+                AircraftClass::ACSTATUS_EXT_LIGHTS bitor AircraftClass::ACSTATUS_EXT_NAVLIGHTS |
+                AircraftClass::ACSTATUS_EXT_NAVLIGHTSFLASH bitor AircraftClass::ACSTATUS_EXT_TAILSTROBE);
 
             if (OTWDriver.GetVirtualCockpit())
             {

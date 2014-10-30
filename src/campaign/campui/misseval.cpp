@@ -1892,7 +1892,7 @@ void MissionEvaluationClass::CollectThreats(Flight flight, WayPoint tw)
     if (tw)
     {
         tw->GetWPLocation(&x, &y);
-        CollectThreats(x, y, tw->GetWPAltitude(), FIND_NOAIR | FIND_FINDUNSPOTTED, dists);
+        CollectThreats(x, y, tw->GetWPAltitude(), FIND_NOAIR bitor FIND_FINDUNSPOTTED, dists);
     }
 
     // Collect threats along route
@@ -1923,7 +1923,7 @@ void MissionEvaluationClass::CollectThreats(Flight flight, WayPoint tw)
         {
             x = fx + (GridIndex)(xd * step + 0.5F);
             y = fy + (GridIndex)(yd * step + 0.5F);
-            CollectThreats(x, y, tw->GetWPAltitude(), FIND_NOAIR | FIND_FINDUNSPOTTED, dists);
+            CollectThreats(x, y, tw->GetWPAltitude(), FIND_NOAIR bitor FIND_FINDUNSPOTTED, dists);
         }
 
         w = nw;

@@ -71,7 +71,7 @@ SIM_INT SimLibPrintError(char *fmt, ...)
 
     va_end(ap);
 
-    MessageBox(FalconDisplay.appWin, new_str, "ERROR", MB_OK | MB_ICONSTOP);
+    MessageBox(FalconDisplay.appWin, new_str, "ERROR", MB_OK bitor MB_ICONSTOP);
     return (SIMLIB_OK);
 }
 

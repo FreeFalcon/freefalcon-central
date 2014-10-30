@@ -181,7 +181,7 @@ void GunClass::InitLocalData(int type)
     // ok, try and figure out what the domain is from the
     // weapon hit chance table
     if (
-        wcPtr->HitChance[ NoMove ] > 0 or wcPtr->HitChance[ Foot ] > 0 or wcPtr->HitChance[ Wheeled ] > 0 ||
+        wcPtr->HitChance[ NoMove ] > 0 or wcPtr->HitChance[ Foot ] > 0 or wcPtr->HitChance[ Wheeled ] > 0 or
         wcPtr->HitChance[ Tracked ] > 0 or wcPtr->HitChance[ Naval ] > 0 or wcPtr->HitChance[ Rail ] > 0
     )
     {
@@ -530,7 +530,7 @@ int GunClass::Exec(
                             // /*
                             // OTWDriver.AddSfxRequest(
                             // new SfxClass( SFX_FIRE4, // type
-                            // SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                            // SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
                             // &pos, // world pos
                             // &vec, // vel vector
                             // 1.5, // time to live
@@ -544,7 +544,7 @@ int GunClass::Exec(
                             // /*
                             // OTWDriver.AddSfxRequest(
                             // new SfxClass( SFX_FIRE5, // type
-                            // SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                            // SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
                             // &pos, // world pos
                             // &vec, // vel vector
                             // 1.5, // time to live
@@ -558,7 +558,7 @@ int GunClass::Exec(
                             // /*
                             // OTWDriver.AddSfxRequest(
                             // new SfxClass( SFX_DEBRISTRAIL, // type
-                            // SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                            // SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
                             // &pos, // world pos
                             // &vec, // vel vector
                             // 1.5, // time to live
@@ -815,7 +815,7 @@ int GunClass::Exec(
 
                     int groundType = OTWDriver.GetGroundType(pos.x, pos.y);
 
-                    if ( not (groundType == COVERAGE_WATER ||
+                    if ( not (groundType == COVERAGE_WATER or
                           groundType == COVERAGE_RIVER))
                     {
                         // MLR this effect creates the other effects by default
@@ -836,7 +836,7 @@ int GunClass::Exec(
                         // /*
                         // OTWDriver.AddSfxRequest(
                         // new SfxClass (SFX_GROUND_DUSTCLOUD, // type
-                        // SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR | SFX_MOVES | SFX_NO_GROUND_CHECK,
+                        // SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR bitor SFX_MOVES bitor SFX_NO_GROUND_CHECK,
                         // &pos, // world pos
                         // &vec,
                         // 1.0f, // time to live
@@ -852,7 +852,7 @@ int GunClass::Exec(
                         // /*
                         // OTWDriver.AddSfxRequest(
                         // new SfxClass( SFX_FIRE4, // type
-                        // SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                        // SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
                         // &pos, // world pos
                         // &vec, // vel vector
                         // 1.5, // time to live
@@ -1146,7 +1146,7 @@ int GunClass::Exec(
 
         OTWDriver.AddSfxRequest(
          new SfxClass(SFX_GUN_TRACER, // type
-         SFX_MOVES | SFX_USES_GRAVITY, // flags
+         SFX_MOVES bitor SFX_USES_GRAVITY, // flags
          &pos, // world pos
          &vec, // vector
          3.0f, // time to live

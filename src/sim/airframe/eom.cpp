@@ -1339,7 +1339,7 @@ float AirframeClass::CalculateVt(float dt)
                             platform->SetDOF(ComplexGearDOF[i] /*COMP_NOS_GEAR + i*/, 0.0F);
                         }
 
-                        gear[i].flags or_eq GearData::GearBroken | GearData::DoorBroken;
+                        gear[i].flags or_eq GearData::GearBroken bitor GearData::DoorBroken;
                     }
 
                     SetFlag(GearBroken);
@@ -1500,7 +1500,7 @@ float AirframeClass::CalculateVt(float dt)
                         if (NumGear() > 1 and platform->IsComplex())
                         {
                             platform->SetDOF(ComplexGearDOF[which] /*COMP_NOS_GEAR + which*/, 0.0F);
-                            gear[which].flags or_eq GearData::GearBroken | GearData::DoorBroken;
+                            gear[which].flags or_eq GearData::GearBroken bitor GearData::DoorBroken;
                         }
 
                         // gear breaks sound
@@ -1592,8 +1592,8 @@ float AirframeClass::CalculateVt(float dt)
             {
                 if ( not IsSet(IsDigital))
                 {
-                    gear[which].flags or_eq (GearData::DoorStuck | GearData::GearStuck
-                                          | GearData::DoorBroken | GearData::GearBroken);
+                    gear[which].flags or_eq (GearData::DoorStuck bitor GearData::GearStuck
+                                          bitor GearData::DoorBroken bitor GearData::GearBroken);
                     ((AircraftClass*)platform)->mFaults->SetFault(FaultClass::gear_fault,
                             FaultClass::ldgr, FaultClass::fail, TRUE);
                     // gear breaks sound

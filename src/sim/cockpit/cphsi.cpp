@@ -828,7 +828,7 @@ void RenderHSIPoly(tagRECT *srcrect, tagRECT *destrect, GLint alpha, TextureHand
 
     OTWDriver.renderer->context.RestoreState(alpha);
     OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
-    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 90, pVtx, sizeof(pVtx[0]));
+    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 90, pVtx, sizeof(pVtx[0]));
 }
 
 
@@ -1291,7 +1291,7 @@ void CPHsiView::CreateLit(void)
 
                 m_pPalette->AttachToTexture(pTex);
 
-                if ( not pTex->Create("CPHsi", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, mCompassWidth, mCompassHeight))
+                if ( not pTex->Create("CPHsi", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8, mCompassWidth, mCompassHeight))
                 {
                     throw _com_error(E_FAIL);
                 }

@@ -24,7 +24,7 @@ C_Line::C_Line() : C_Base()
 {
     _SetCType_(_CNTL_LINE_);
     Color_ = 0;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE;
 }
 
 C_Line::C_Line(char **stream) : C_Base(stream)
@@ -103,7 +103,7 @@ void C_Line::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CLIN_SETCOLOR:
-            SetColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            SetColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
             break;
     }
 }

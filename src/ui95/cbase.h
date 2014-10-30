@@ -173,7 +173,7 @@ public:
     }
     void DisableGroup(long ID)
     {
-        SetFlags(Flags_ | C_BIT_INVISIBLE);
+        SetFlags(Flags_ bitor C_BIT_INVISIBLE);
     }
     void SetParent(C_Window *win)
     {

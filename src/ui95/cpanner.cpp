@@ -42,7 +42,7 @@ C_Panner::C_Panner() : C_Control()
     for (i = 0; i < PAN_MAX_IMAGES; i++)
         Image_[i] = NULL;
 
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_DRAGABLE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_DRAGABLE bitor C_BIT_MOUSEOVER;
 }
 
 C_Panner::C_Panner(char **stream) : C_Control(stream)

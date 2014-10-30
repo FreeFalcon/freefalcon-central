@@ -70,7 +70,7 @@ void FalconDisplayConfiguration::Setup(int languageNum)
     DeviceIndependentGraphicsSetup(FalconTerrainDataDir, Falcon3DDataDir, FalconMiscTexDataDir);
 
     // set up and register window class
-    wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_NOCLOSE;
+    wc.style = CS_HREDRAW bitor CS_VREDRAW bitor CS_OWNDC bitor CS_NOCLOSE;
     wc.lpfnWndProc = FalconMessageHandler;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = sizeof(DWORD);
@@ -205,7 +205,7 @@ void FalconDisplayConfiguration::MakeWindow(void)
 void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, int Driver)
 {
     // Force exectution in the main thread to avoid problems with worker threads setting directx cooperative levels (which is illegal)
-    LRESULT result = SendMessage(appWin, FM_DISP_ENTER_MODE, newMode, theDevice | (Driver << 16));
+    LRESULT result = SendMessage(appWin, FM_DISP_ENTER_MODE, newMode, theDevice bitor (Driver << 16));
 }
 
 void FalconDisplayConfiguration::_EnterMode(DisplayMode newMode, int theDevice, int Driver)

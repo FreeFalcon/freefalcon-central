@@ -1080,7 +1080,7 @@ void ObjectiveClass::DeaggregateFromData(VU_BYTE* data, long size)
     simdata.z = 0;
     simdata.side = GetOwner();
     simdata.campBase = this;
-    simdata.createFlags = SIDC_SILENT_INSERT | SIDC_FORCE_ID;
+    simdata.createFlags = SIDC_SILENT_INSERT bitor SIDC_FORCE_ID;
 
     if (session not_eq FalconLocalSession)
     {
@@ -2322,7 +2322,7 @@ void ObjectiveClass::SetFeatureStatus(int f, int n)
     }
 
     f -= i * 4;
-    obj_data.fstatus[i] = (uchar)((obj_data.fstatus[i] bitand compl (3 << (f * 2))) | (n << (f * 2)));
+    obj_data.fstatus[i] = (uchar)((obj_data.fstatus[i] bitand compl (3 << (f * 2))) bitor (n << (f * 2)));
     //MakeObjectiveDirty (DIRTY_STATUS, DDP[9].priority);
     MakeObjectiveDirty(DIRTY_STATUS, SEND_NOW);
     SetDelta(1);
@@ -2348,7 +2348,7 @@ void ObjectiveClass::SetFeatureStatus(int f, int n, int from)
     }
 
     f -= i * 4;
-    obj_data.fstatus[i] = (uchar)((obj_data.fstatus[i] bitand compl (3 << (f * 2))) | (n << (f * 2)));
+    obj_data.fstatus[i] = (uchar)((obj_data.fstatus[i] bitand compl (3 << (f * 2))) bitor (n << (f * 2)));
     ResetObjectiveStatus();
     SetDelta(1);
 }

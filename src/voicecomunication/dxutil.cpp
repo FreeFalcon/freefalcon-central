@@ -666,7 +666,7 @@ HRESULT _DbgOut(TCHAR* strFile, DWORD dwLine, HRESULT hr, TCHAR* strMsg)
 //-----------------------------------------------------------------------------
 VOID DXUtil_Trace(TCHAR* strMsg, ...)
 {
-#if defined(DEBUG) | defined(_DEBUG)
+#if defined(DEBUG) bitor defined(_DEBUG)
     TCHAR strBuffer[512];
 
     va_list args;

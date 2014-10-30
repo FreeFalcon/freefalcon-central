@@ -153,7 +153,7 @@ static inline void IntersectSide(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL c
     }
 
     // Now determine if the point is out to the sides
-    if (flag bitand (CLIP_TOP | CLIP_BOTTOM))
+    if (flag bitand (CLIP_TOP bitor CLIP_BOTTOM))
     {
         TheStateStack.ClipInfoPool[v->xyz].clipFlag = GetHorizontalClipFlags(x, z);
     }

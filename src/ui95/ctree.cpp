@@ -64,7 +64,7 @@ C_TreeList::C_TreeList() : C_Control()
     SearchCB_ = NULL;
     SortCB_ = NULL;
     SortType_ = TREE_SORT_BY_ID;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_SELECTABLE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
 }
 
 C_TreeList::C_TreeList(char **stream) : C_Control(stream)
@@ -1609,7 +1609,7 @@ void C_TreeList::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CTL_ADDTEXTITEM:
-            AddTextItem(P[0], P[1], P[2], P[3], P[4] | (P[5] << 8) | (P[6] << 16));
+            AddTextItem(P[0], P[1], P[2], P[3], P[4] bitor (P[5] << 8) bitor (P[6] << 16));
             break;
 
         case CTL_ADDBITMAPITEM:
@@ -1625,7 +1625,7 @@ void C_TreeList::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CTL_HELPITEMTEXT:
-            SetHelpItemText(P[0], P[1], P[2], P[3], P[4], P[5] | (P[6] << 8) | (P[7] << 16));
+            SetHelpItemText(P[0], P[1], P[2], P[3], P[4], P[5] bitor (P[6] << 8) bitor (P[7] << 16));
             break;
 
         case CTL_HELPITEMFONT:
@@ -1641,7 +1641,7 @@ void C_TreeList::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CTL_ADDWORDWRAPITEM:
-            AddWordWrapItem(P[0], P[1], P[2], P[3], (long)P[4], P[5] | (P[6] << 8) | (P[7] << 16));
+            AddWordWrapItem(P[0], P[1], P[2], P[3], (long)P[4], P[5] bitor (P[6] << 8) bitor (P[7] << 16));
             break;
     }
 }

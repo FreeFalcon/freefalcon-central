@@ -180,8 +180,8 @@ AirTaskingManagerClass::AirTaskingManagerClass(ushort type, Team t) : CampManage
     awacsList = new ListClass;
     tankerList = new ListClass;
     ecmList = new ListClass;
-    requestList = new ListClass(LADT_FREE_USER_DATA | LADT_SORTED_LIST);
-    delayedList = new ListClass(LADT_FREE_USER_DATA | LADT_SORTED_LIST);
+    requestList = new ListClass(LADT_FREE_USER_DATA bitor LADT_SORTED_LIST);
+    delayedList = new ListClass(LADT_FREE_USER_DATA bitor LADT_SORTED_LIST);
     squadronList = NULL;
     packageList = NULL;
     airbaseList = NULL;
@@ -203,8 +203,8 @@ AirTaskingManagerClass::AirTaskingManagerClass(VU_BYTE **stream, long *rem) : Ca
     awacsList = new ListClass;
     tankerList = new ListClass;
     ecmList = new ListClass;
-    requestList = new ListClass(LADT_FREE_USER_DATA | LADT_SORTED_LIST);
-    delayedList = new ListClass(LADT_FREE_USER_DATA | LADT_SORTED_LIST);
+    requestList = new ListClass(LADT_FREE_USER_DATA bitor LADT_SORTED_LIST);
+    delayedList = new ListClass(LADT_FREE_USER_DATA bitor LADT_SORTED_LIST);
     squadronList = NULL;
     packageList = NULL;
     supplyBase = 0;
@@ -245,8 +245,8 @@ AirTaskingManagerClass::AirTaskingManagerClass(FILE *file) : CampManagerClass(fi
     awacsList = new ListClass;
     tankerList = new ListClass;
     ecmList = new ListClass;
-    requestList = new ListClass(LADT_FREE_USER_DATA | LADT_SORTED_LIST);
-    delayedList = new ListClass(LADT_FREE_USER_DATA | LADT_SORTED_LIST);
+    requestList = new ListClass(LADT_FREE_USER_DATA bitor LADT_SORTED_LIST);
+    delayedList = new ListClass(LADT_FREE_USER_DATA bitor LADT_SORTED_LIST);
     squadronList = NULL;
     packageList = NULL;
     supplyBase = 0;

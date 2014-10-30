@@ -18,7 +18,7 @@ DWORD RGB565toRGB8(WORD sc)
     g <<= 2;//scale 0..63 to 0..255
     b <<= 3;
     //pack rgb888
-    return (r << 16) | (g << 8) | b; //ARGB
+    return (r << 16) bitor (g << 8) bitor b; //ARGB
 }
 //XX
 WORD RGB8toRGB565(DWORD sc)
@@ -31,7 +31,7 @@ WORD RGB8toRGB565(DWORD sc)
     g >>= 2;//scale to 0..63 from 0..255
     b >>= 3;
     //pack rgb565
-    return static_cast<WORD>((r << 11) | (g << 5) | b); //ARGB
+    return static_cast<WORD>((r << 11) bitor (g << 5) bitor b); //ARGB
 }
 
 
@@ -879,7 +879,7 @@ void IMAGE_RSC::Blend8BitFast(WORD *dest, long front, long back)
                    ]];
 
         sptr++;
-        *dptr++ = static_cast<WORD>(r | g | b);
+        *dptr++ = static_cast<WORD>(r bitor g bitor b);
     }
 }
 
@@ -918,7 +918,7 @@ void IMAGE_RSC::Blend8BitTransparentFast(WORD *dest, long front, long back)
                            UIColorTable[front][(Palette[*sptr] >> Owner->blues) bitand 0x1f] +
                            UIColorTable[back][(*dptr >> Owner->blues) bitand 0x1f]
                        ]];
-            *dptr++ = static_cast<WORD>(r | g | b);
+            *dptr++ = static_cast<WORD>(r bitor g bitor b);
         }
         else
             dptr++;
@@ -1032,9 +1032,9 @@ void IMAGE_RSC::Blend8Bit(long doffset, long dwidth, WORD *dest, long front, lon
 
 
             if ( not b32)
-                *dptr = static_cast<WORD>(r | g | b); //565
+                *dptr = static_cast<WORD>(r bitor g bitor b); //565
             else
-                *dptr2  = RGB565toRGB8(static_cast<WORD>(r | g | b));
+                *dptr2  = RGB565toRGB8(static_cast<WORD>(r bitor g bitor b));
 
             ++dptr;
             ++dptr2;
@@ -1108,10 +1108,10 @@ void IMAGE_RSC::Blend8BitTransparent(long doffset, long dwidth, WORD *dest, long
                 sptr++;
 
                 if ( not b32)
-                    *dptr++ = static_cast<WORD>(r | g | b);
+                    *dptr++ = static_cast<WORD>(r bitor g bitor b);
                 else
                 {
-                    DWORD dc = RGB565toRGB8(static_cast<WORD>(r | g | b));
+                    DWORD dc = RGB565toRGB8(static_cast<WORD>(r bitor g bitor b));
                     *(reinterpret_cast<DWORD*>(dptr)) = dc;
                     dptr += 2;
                 }
@@ -1192,10 +1192,10 @@ void IMAGE_RSC::Blend8BitPart(long soffset, long scopy, long ssize, long doffset
 
             //XX *dptr++=static_cast<WORD>(r|g|b);
             if ( not b32)
-                *dptr++ = static_cast<WORD>(r | g | b);
+                *dptr++ = static_cast<WORD>(r bitor g bitor b);
             else
             {
-                DWORD dc = RGB565toRGB8(static_cast<WORD>(r | g | b));
+                DWORD dc = RGB565toRGB8(static_cast<WORD>(r bitor g bitor b));
                 *(reinterpret_cast<DWORD*>(dptr)) = dc;
                 *dptr += 2;
             }
@@ -1272,10 +1272,10 @@ void IMAGE_RSC::Blend8BitTransparentPart(long soffset, long scopy, long ssize, l
 
                 //XX *dptr++=static_cast<WORD>(r|g|b);
                 if ( not b32)
-                    *dptr++ = static_cast<WORD>(r | g | b);
+                    *dptr++ = static_cast<WORD>(r bitor g bitor b);
                 else
                 {
-                    DWORD dc = RGB565toRGB8(static_cast<WORD>(r | g | b));
+                    DWORD dc = RGB565toRGB8(static_cast<WORD>(r bitor g bitor b));
                     *(reinterpret_cast<DWORD*>(dptr)) = dc;
 
                     *dptr += 2;
@@ -1333,7 +1333,7 @@ void IMAGE_RSC::Blend16BitFast(WORD *dest, long front, long back)
                    ]];
 
         sptr++;
-        *dptr++ = static_cast<WORD>(r | g | b);
+        *dptr++ = static_cast<WORD>(r bitor g bitor b);
     }
 }
 
@@ -1373,7 +1373,7 @@ void IMAGE_RSC::Blend16BitTransparentFast(WORD *dest, long front, long back)
                            UIColorTable[front][(*sptr >> Owner->blues) bitand 0x1f] +
                            UIColorTable[back][(dc >> Owner->blues) bitand 0x1f]
                        ]];
-            *dptr++ = static_cast<WORD>(r | g | b);
+            *dptr++ = static_cast<WORD>(r bitor g bitor b);
         }
         else
             dptr++;
@@ -1439,10 +1439,10 @@ void IMAGE_RSC::Blend16Bit(long doffset, long dwidth, WORD *dest, long front, lo
             sptr++;
 
             if ( not b32)
-                *dptr++ = static_cast<WORD>(r | g | b);
+                *dptr++ = static_cast<WORD>(r bitor g bitor b);
             else
             {
-                *(reinterpret_cast<DWORD*>(dptr)) = RGB565toRGB8(static_cast<WORD>(r | g | b));
+                *(reinterpret_cast<DWORD*>(dptr)) = RGB565toRGB8(static_cast<WORD>(r bitor g bitor b));
 
                 *dptr += 2;
             }
@@ -1510,10 +1510,10 @@ void IMAGE_RSC::Blend16BitTransparent(long doffset, long dwidth, WORD *dest, lon
                 sptr++;
 
                 if ( not b32)
-                    *dptr++ = static_cast<WORD>(r | g | b);
+                    *dptr++ = static_cast<WORD>(r bitor g bitor b);
                 else
                 {
-                    *(reinterpret_cast<DWORD*>(dptr)) = RGB565toRGB8(static_cast<WORD>(r | g | b));
+                    *(reinterpret_cast<DWORD*>(dptr)) = RGB565toRGB8(static_cast<WORD>(r bitor g bitor b));
                     *dptr += 2;
                 }
             }
@@ -1591,10 +1591,10 @@ void IMAGE_RSC::Blend16BitPart(long soffset, long scopy, long ssize, long doffse
             sptr++;
 
             if ( not b32)
-                *dptr++ = static_cast<WORD>(r | g | b);
+                *dptr++ = static_cast<WORD>(r bitor g bitor b);
             else
             {
-                *(reinterpret_cast<DWORD*>(dptr)) = RGB565toRGB8(static_cast<WORD>(r | g | b));
+                *(reinterpret_cast<DWORD*>(dptr)) = RGB565toRGB8(static_cast<WORD>(r bitor g bitor b));
                 *dptr += 2;
             }
 
@@ -1668,10 +1668,10 @@ void IMAGE_RSC::Blend16BitTransparentPart(long soffset, long scopy, long ssize, 
 
                 //XX *dptr++=static_cast<WORD>(r|g|b);
                 if ( not b32)
-                    *dptr++ = static_cast<WORD>(r | g | b);
+                    *dptr++ = static_cast<WORD>(r bitor g bitor b);
                 else
                 {
-                    *(reinterpret_cast<DWORD*>(dptr)) = RGB565toRGB8(static_cast<WORD>(r | g | b));
+                    *(reinterpret_cast<DWORD*>(dptr)) = RGB565toRGB8(static_cast<WORD>(r bitor g bitor b));
                     *dptr += 2;
                 }
             }

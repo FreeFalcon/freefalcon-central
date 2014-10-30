@@ -72,7 +72,7 @@ C_MapIcon::C_MapIcon() : C_Control()
     _SetCType_(_CNTL_MAPICON_);
     SetReady(0);
     ShowCircles_ = 0;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_SELECTABLE | C_BIT_HCENTER | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_SELECTABLE bitor C_BIT_HCENTER bitor C_BIT_MOUSEOVER;
     SetDefaultFlags();
     Team_ = 0;
 

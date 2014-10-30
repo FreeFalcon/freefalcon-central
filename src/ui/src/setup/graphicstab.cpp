@@ -1233,7 +1233,7 @@ void BuildResolutionList(C_ListBox *lbox)
     {
         // For now we only allow 640x480, 800x600, 1280x960, 1600x1200
         // (MPR already does the 4:3 aspect ratio check for us)
-        if (height > 400 and ((width == 640 or width == 800 or width == 1024 ||
+        if (height > 400 and ((width == 640 or width == 800 or width == 1024 or
                               (width == 1280 and height == 960) or width == 1600 or HighResolutionHackFlag)))
         {
             if (depth == 8 or depth == 24)

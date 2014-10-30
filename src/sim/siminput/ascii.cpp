@@ -1,58 +1,59 @@
+#include <cISO646>
 #include "ascii.h"
 
 struct ASCII_TABLE Key_Chart[256] =
 {
     {   0,  0,  0,  0,  0,  0,  0,  0,      0, 0, 0, 0, 0, 0, 0, 0, }, // 0 (Space holder)    0x00
     {   0,  0,  0,  0,  0,  0,  0,  0,      0, 0, 0, 0, 0, 0, 0, 0, }, // DIK_ESCAPE          0x01
-    {  49, 33,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_1               0x02
-    {  50, 64,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_2               0x03
-    {  51, 35,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_3               0x04
-    {  52, 36,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_4               0x05
-    {  53, 37,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_5               0x06
-    {  54, 94,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_6               0x07
-    {  55, 38,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_7               0x08
-    {  56, 42,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_8               0x09
-    {  57, 40,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_9               0x0A
-    {  48, 41,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_0               0x0B
-    {  45, 95,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_MINUS           0x0C    /* - on main keyboard */
-    {  61, 43,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_EQUALS          0x0D
+    {  49, 33,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_1               0x02
+    {  50, 64,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_2               0x03
+    {  51, 35,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_3               0x04
+    {  52, 36,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_4               0x05
+    {  53, 37,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_5               0x06
+    {  54, 94,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_6               0x07
+    {  55, 38,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_7               0x08
+    {  56, 42,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_8               0x09
+    {  57, 40,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_9               0x0A
+    {  48, 41,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_0               0x0B
+    {  45, 95,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_MINUS           0x0C    /* - on main keyboard */
+    {  61, 43,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_DIGIT_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_EQUALS          0x0D
     {   0,  0,  0,  0,  0,  0,  0,  0,      0, 0, 0, 0, 0, 0, 0, 0, }, // DIK_BACK            0x0E    /* backspace */
     {   0,  0,  0,  0,  0,  0,  0,  0,      0, 0, 0, 0, 0, 0, 0, 0, }, // DIK_TAB             0x0F
-    { 113, 81,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_Q               0x10
-    { 119, 87,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_W               0x11
-    { 101, 69,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_E               0x12
-    { 114, 82,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_R               0x13
-    { 116, 84,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_T               0x14
-    { 121, 89,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_Y               0x15
-    { 117, 85,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_U               0x16
-    { 105, 73,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_I               0x17
-    { 111, 79,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_O               0x18
-    { 112, 80,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_P               0x19
+    { 113, 81,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_Q               0x10
+    { 119, 87,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_W               0x11
+    { 101, 69,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_E               0x12
+    { 114, 82,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_R               0x13
+    { 116, 84,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_T               0x14
+    { 121, 89,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_Y               0x15
+    { 117, 85,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_U               0x16
+    { 105, 73,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_I               0x17
+    { 111, 79,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_O               0x18
+    { 112, 80,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_P               0x19
     {  91, 123,  0,  0,  0,  0,  0,  0,      _IS_ASCII_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_LBRACKET        0x1A
     {  93, 125,  0,  0,  0,  0,  0,  0,      _IS_ASCII_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_RBRACKET        0x1B
     {   0,  0,  0,  0,  0,  0,  0,  0,      0, 0, 0, 0, 0, 0, 0, 0, }, // DIK_RETURN          0x1C    /* Enter on main keyboard */
     {   0,  0,  0,  0,  0,  0,  0,  0,      0, 0, 0, 0, 0, 0, 0, 0, }, // DIK_LCONTROL        0x1D
-    {  97, 65,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_A               0x1E
-    { 115, 83,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_S               0x1F
-    { 100, 68,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_D               0x20
-    { 102, 70,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_F               0x21
-    { 103, 71,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_G               0x22
-    { 104, 72,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_H               0x23
-    { 106, 74,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_J               0x24
-    { 107, 75,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_K               0x25
-    { 108, 76,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_L               0x26
+    {  97, 65,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_A               0x1E
+    { 115, 83,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_S               0x1F
+    { 100, 68,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_D               0x20
+    { 102, 70,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_F               0x21
+    { 103, 71,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_G               0x22
+    { 104, 72,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_H               0x23
+    { 106, 74,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_J               0x24
+    { 107, 75,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_K               0x25
+    { 108, 76,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_L               0x26
     {  59, 58,  0,  0,  0,  0,  0,  0,      _IS_ASCII_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_SEMICOLON       0x27
     {  39, 34,  0,  0,  0,  0,  0,  0,      _IS_ASCII_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_APOSTROPHE      0x28
     {  96, 126,  0,  0,  0,  0,  0,  0,      _IS_ASCII_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_GRAVE           0x29    /* accent grave */
     {   0,  0,  0,  0,  0,  0,  0,  0,      0, 0, 0, 0, 0, 0, 0, 0, }, // DIK_LSHIFT          0x2A
     {  92, 124,  0,  0,  0,  0,  0,  0,      _IS_ASCII_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_BACKSLASH       0x2B
-    { 122, 90,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_Z               0x2C
-    { 120, 88,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_X               0x2D
-    {  99, 67,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_C               0x2E
-    { 118, 86,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_V               0x2F
-    {  98, 66,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_B               0x30
-    { 110, 78,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_N               0x31
-    { 109, 77,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ | _IS_ALPHA_, _IS_ASCII_ | _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_M               0x32
+    { 122, 90,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_Z               0x2C
+    { 120, 88,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_X               0x2D
+    {  99, 67,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_C               0x2E
+    { 118, 86,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_V               0x2F
+    {  98, 66,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_B               0x30
+    { 110, 78,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_N               0x31
+    { 109, 77,  0,  0,  0,  0,  0,  0,      _IS_ASCII_ bitor _IS_ALPHA_, _IS_ASCII_ bitor _IS_ALPHA_, 0, 0, 0, 0, 0, 0, }, // DIK_M               0x32
     {  44, 60,  0,  0,  0,  0,  0,  0,      _IS_ASCII_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_COMMA           0x33
     {  46, 62,  0,  0,  0,  0,  0,  0,      _IS_ASCII_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_PERIOD          0x34    /* . on main keyboard */
     {  47, 63,  0,  0,  0,  0,  0,  0,      _IS_ASCII_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_SLASH           0x35    /* / on main keyboard */
@@ -73,18 +74,18 @@ struct ASCII_TABLE Key_Chart[256] =
     {   0,  0,  0,  0,  0,  0,  0,  0,      0, 0, 0, 0, 0, 0, 0, 0, }, // DIK_F10             0x44
     {   0,  0,  0,  0,  0,  0,  0,  0,      0, 0, 0, 0, 0, 0, 0, 0, }, // DIK_NUMLOCK         0x45
     {   0,  0,  0,  0,  0,  0,  0,  0,      0, 0, 0, 0, 0, 0, 0, 0, }, // DIK_SCROLL          0x46    /* Scroll Lock */
-    {   0, 55,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ | _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD7         0x47
-    {   0, 56,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ | _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD8         0x48
-    {   0, 57,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ | _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD9         0x49
+    {   0, 55,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ bitor _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD7         0x47
+    {   0, 56,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ bitor _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD8         0x48
+    {   0, 57,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ bitor _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD9         0x49
     {  45, 45,  0,  0,  0,  0,  0,  0,      _IS_ASCII_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_SUBTRACT        0x4A    /* - on numeric keypad */
-    {   0, 52,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ | _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD4         0x4B
-    {   0, 53,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ | _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD5         0x4C
-    {   0, 54,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ | _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD6         0x4D
+    {   0, 52,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ bitor _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD4         0x4B
+    {   0, 53,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ bitor _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD5         0x4C
+    {   0, 54,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ bitor _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD6         0x4D
     {  43, 43,  0,  0,  0,  0,  0,  0,      _IS_ASCII_, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_ADD             0x4E    /* + on numeric keypad */
-    {   0, 49,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ | _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD1         0x4F
-    {   0, 50,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ | _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD2         0x50
-    {   0, 51,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ | _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD3         0x51
-    {   0, 48,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ | _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD0         0x52
+    {   0, 49,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ bitor _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD1         0x4F
+    {   0, 50,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ bitor _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD2         0x50
+    {   0, 51,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ bitor _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD3         0x51
+    {   0, 48,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_ bitor _IS_DIGIT_, 0, 0, 0, 0, 0, 0, }, // DIK_NUMPAD0         0x52
     {   0, 46,  0,  0,  0,  0,  0,  0,      0, _IS_ASCII_, 0, 0, 0, 0, 0, 0, }, // DIK_DECIMAL         0x53    /* . on numeric keypad */
     {   0,  0,  0,  0,  0,  0,  0,  0,      0, 0, 0, 0, 0, 0, 0, 0, }, // 0 (Space holder)    0x54
     {   0,  0,  0,  0,  0,  0,  0,  0,      0, 0, 0, 0, 0, 0, 0, 0, }, // 0 (Space holder)    0x55

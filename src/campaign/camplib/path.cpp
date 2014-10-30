@@ -136,7 +136,7 @@ int GetGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy, in
     // Debug stuff
     //ulong time,newtime;
     //time = GetTickCount();
-    retval = ASD->ASSearch(p, o, t, GetNeighborCoord, RETURN_PARTIAL_ON_FAIL | RETURN_PARTIAL_ON_MAX, maxSearch, maxCost);
+    retval = ASD->ASSearch(p, o, t, GetNeighborCoord, RETURN_PARTIAL_ON_FAIL bitor RETURN_PARTIAL_ON_MAX, maxSearch, maxCost);
     //newtime = GetTickCount();
     //MonoPrint("Finding Grid Path: %d,%d -> %d,%d   Time to find: %d (Result: %d)\n",x,y,xx,yy,newtime-time,retval);
 #ifdef CAMPTOOL
@@ -208,7 +208,7 @@ int GetObjectivePath(Path p, Objective o, Objective t, int type, int who, int fl
     //ulong time,newtime;
     //GridIndex x,y,xx,yy;
     //time = GetTickCount();
-    retval = ASD->ASSearch(p, o, t, GetNeighborObject, RETURN_PARTIAL_ON_FAIL | RETURN_PARTIAL_ON_MAX, maxSearch, maxCost);
+    retval = ASD->ASSearch(p, o, t, GetNeighborObject, RETURN_PARTIAL_ON_FAIL bitor RETURN_PARTIAL_ON_MAX, maxSearch, maxCost);
     //newtime = GetTickCount();
     //o->GetLocation(&x,&y);
     //t->GetLocation(&xx,&yy);
@@ -240,7 +240,7 @@ int FindLinkPath(Path p, Objective O1, Objective O2, MoveType mt)
     if (mt == NoMove)
     {
         moveType = Wheeled;
-        moveFlags = PATH_ROADOK | PATH_BASIC;
+        moveFlags = PATH_ROADOK bitor PATH_BASIC;
     }
     else
     {
@@ -269,7 +269,7 @@ costtype CostToArrive(Unit u, int orders, GridIndex x, GridIndex y, Objective t)
 
     // Movement options
     if (GetGroundRole(orders) == GRO_ATTACK)
-        flags or_eq PATH_ENEMYOK; // | PATH_ENEMYCOST;
+        flags or_eq PATH_ENEMYOK; // bitor PATH_ENEMYCOST;
 
     if (u->GetSType() == STYPE_UNIT_AIRMOBILE)
         flags or_eq PATH_AIRBORNE;

@@ -17,20 +17,20 @@ VoiceMapper g_voicemap;
 
 const unsigned int  VoiceMapper::default_voices[] =
 {
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 0
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 1
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 2
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 3
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 4
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 5
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 6
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 7
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 8
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 9
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 10
-    VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 11
-    VOICE_ATC | VOICE_SIDE_ALL, // 12
-    VOICE_ATC | VOICE_SIDE_ALL, // 13
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 0
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 1
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 2
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 3
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 4
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 5
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 6
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 7
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 8
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 9
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 10
+    VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 11
+    VOICE_ATC bitor VOICE_SIDE_ALL, // 12
+    VOICE_ATC bitor VOICE_SIDE_ALL, // 13
 };
 const int  VoiceMapper::max_default_voices = sizeof(default_voices) / sizeof(default_voices[0]);
 
@@ -41,7 +41,7 @@ static VoiceMapper::namemap Names[] =
     { "awacs", VoiceMapper::VOICE_AWACS},
     { "fac", VoiceMapper::VOICE_FAC},
     { "pilot", VoiceMapper::VOICE_PILOT},
-    { "all", VoiceMapper::VOICE_PILOT | VoiceMapper::VOICE_ATC | VoiceMapper::VOICE_AWACS | VoiceMapper::VOICE_FAC},
+    { "all", VoiceMapper::VOICE_PILOT bitor VoiceMapper::VOICE_ATC bitor VoiceMapper::VOICE_AWACS bitor VoiceMapper::VOICE_FAC},
     { "any", VoiceMapper::VOICE_SIDE_ALL},
     { "1", VoiceMapper::VOICE_SIDE1},
     { "2", VoiceMapper::VOICE_SIDE2},
@@ -190,7 +190,7 @@ int VoiceMapper::GetNextVoice(int start, int type, int side)
 {
     ShiAssert(type > 0 and type < VOICE_SIDE_BASE);
     ShiAssert(side >= 0 and side <= 7);
-    unsigned int match = type | (VOICE_SIDE_BASE << side);
+    unsigned int match = type bitor (VOICE_SIDE_BASE << side);
     int selected = 0;
     int recno = 0;
 

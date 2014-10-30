@@ -600,7 +600,7 @@ void MenuSetCirclesCB(long, short, C_Base *)
         else
         {
             filterState[CIRCLE_SAM_LOW] = filterState[CIRCLE_SAM_HIGH] = filterState[CIRCLE_RADAR_LOW] = filterState[CIRCLE_RADAR_HIGH] = false;
-            gMapMgr->HideThreatType(_THR_SAM_LOW | _THR_SAM_HIGH | _THR_RADAR_LOW | _THR_RADAR_HIGH);
+            gMapMgr->HideThreatType(_THR_SAM_LOW bitor _THR_SAM_HIGH bitor _THR_RADAR_LOW bitor _THR_RADAR_HIGH);
         }
 
         gMapMgr->DrawMap();
@@ -875,8 +875,8 @@ void SteerPointMenuOpenCB(C_Base *, C_Base *)
             menu->SetItemState(CLIMB_IMMEDIATE, 1);
 
         menu->SetItemState(wp->GetWPFormation() + 1, 1);
-        menu->SetItemState(wp->GetWPAction() | 0x200, 1);
-        menu->SetItemState(wp->GetWPRouteAction() | 0x100, 1);
+        menu->SetItemState(wp->GetWPAction() bitor 0x200, 1);
+        menu->SetItemState(wp->GetWPRouteAction() bitor 0x100, 1);
     }
 }
 
@@ -2548,47 +2548,47 @@ void HookupCampaignMenus()
             menu->SetCallback(i, MenuFormationCB);
 
         // Enroute menu (hand add the valid ones)
-        menu->AddItem(WP_NOTHING | 0x100, C_TYPE_RADIO, WPActStr[39], MID_ENR_ACTION);
-        menu->SetCallback(WP_NOTHING | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_NOTHING | 0x100, 3);
-        menu->AddItem(WP_CA | 0x100, C_TYPE_RADIO, WPActStr[WP_CA], MID_ENR_ACTION);
-        menu->SetCallback(WP_CA | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_CA | 0x100, 3);
-        menu->AddItem(WP_ESCORT | 0x100, C_TYPE_RADIO, WPActStr[WP_ESCORT], MID_ENR_ACTION);
-        menu->SetCallback(WP_ESCORT | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_ESCORT | 0x100, 3);
-        menu->AddItem(WP_SEAD | 0x100, C_TYPE_RADIO, WPActStr[WP_SEAD], MID_ENR_ACTION);
-        menu->SetCallback(WP_SEAD | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_SEAD | 0x100, 3);
-        menu->AddItem(WP_SAD | 0x100, C_TYPE_RADIO, WPActStr[WP_SAD], MID_ENR_ACTION);
-        menu->SetCallback(WP_SAD | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_SAD | 0x100, 3);
-        menu->AddItem(WP_ELINT | 0x100, C_TYPE_RADIO, WPActStr[WP_ELINT], MID_ENR_ACTION);
-        menu->SetCallback(WP_ELINT | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_ELINT | 0x100, 3);
-        menu->AddItem(WP_TANKER | 0x100, C_TYPE_RADIO, WPActStr[WP_TANKER], MID_ENR_ACTION);
-        menu->SetCallback(WP_TANKER | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_TANKER | 0x100, 3);
-        menu->AddItem(WP_JAM | 0x100, C_TYPE_RADIO, WPActStr[WP_JAM], MID_ENR_ACTION);
-        menu->SetCallback(WP_JAM | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_JAM | 0x100, 3);
-        menu->AddItem(WP_ASW | 0x100, C_TYPE_RADIO, WPActStr[WP_ASW], MID_ENR_ACTION);
-        menu->SetCallback(WP_ASW | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_ASW | 0x100, 3);
-        menu->AddItem(WP_RECON | 0x100, C_TYPE_RADIO, WPActStr[WP_RECON], MID_ENR_ACTION);
-        menu->SetCallback(WP_RECON | 0x100, MenuEnrouteCB);
-        menu->SetItemGroup(WP_RECON | 0x100, 3);
+        menu->AddItem(WP_NOTHING bitor 0x100, C_TYPE_RADIO, WPActStr[39], MID_ENR_ACTION);
+        menu->SetCallback(WP_NOTHING bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_NOTHING bitor 0x100, 3);
+        menu->AddItem(WP_CA bitor 0x100, C_TYPE_RADIO, WPActStr[WP_CA], MID_ENR_ACTION);
+        menu->SetCallback(WP_CA bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_CA bitor 0x100, 3);
+        menu->AddItem(WP_ESCORT bitor 0x100, C_TYPE_RADIO, WPActStr[WP_ESCORT], MID_ENR_ACTION);
+        menu->SetCallback(WP_ESCORT bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_ESCORT bitor 0x100, 3);
+        menu->AddItem(WP_SEAD bitor 0x100, C_TYPE_RADIO, WPActStr[WP_SEAD], MID_ENR_ACTION);
+        menu->SetCallback(WP_SEAD bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_SEAD bitor 0x100, 3);
+        menu->AddItem(WP_SAD bitor 0x100, C_TYPE_RADIO, WPActStr[WP_SAD], MID_ENR_ACTION);
+        menu->SetCallback(WP_SAD bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_SAD bitor 0x100, 3);
+        menu->AddItem(WP_ELINT bitor 0x100, C_TYPE_RADIO, WPActStr[WP_ELINT], MID_ENR_ACTION);
+        menu->SetCallback(WP_ELINT bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_ELINT bitor 0x100, 3);
+        menu->AddItem(WP_TANKER bitor 0x100, C_TYPE_RADIO, WPActStr[WP_TANKER], MID_ENR_ACTION);
+        menu->SetCallback(WP_TANKER bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_TANKER bitor 0x100, 3);
+        menu->AddItem(WP_JAM bitor 0x100, C_TYPE_RADIO, WPActStr[WP_JAM], MID_ENR_ACTION);
+        menu->SetCallback(WP_JAM bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_JAM bitor 0x100, 3);
+        menu->AddItem(WP_ASW bitor 0x100, C_TYPE_RADIO, WPActStr[WP_ASW], MID_ENR_ACTION);
+        menu->SetCallback(WP_ASW bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_ASW bitor 0x100, 3);
+        menu->AddItem(WP_RECON bitor 0x100, C_TYPE_RADIO, WPActStr[WP_RECON], MID_ENR_ACTION);
+        menu->SetCallback(WP_RECON bitor 0x100, MenuEnrouteCB);
+        menu->SetItemGroup(WP_RECON bitor 0x100, 3);
 
         // Action Menu
         for (i = 0; i <= WP_FAC; i++)
         {
             if ( not i)
-                menu->AddItem(i | 0x200, C_TYPE_RADIO, WPActStr[39], MID_ACTION);
+                menu->AddItem(i bitor 0x200, C_TYPE_RADIO, WPActStr[39], MID_ACTION);
             else
-                menu->AddItem(i | 0x200, C_TYPE_RADIO, WPActStr[i], MID_ACTION);
+                menu->AddItem(i bitor 0x200, C_TYPE_RADIO, WPActStr[i], MID_ACTION);
 
-            menu->SetCallback(i | 0x200, MenuActionCB);
-            menu->SetItemGroup(i | 0x200, 4);
+            menu->SetCallback(i bitor 0x200, MenuActionCB);
+            menu->SetItemGroup(i bitor 0x200, 4);
         }
     }
 }

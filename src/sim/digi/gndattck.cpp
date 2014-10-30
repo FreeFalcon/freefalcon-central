@@ -213,7 +213,7 @@ void DigitalBrain::GroundAttackMode(void)
     if ((SimLibElapsedTime > nextAGTargetTime) and (Sms->CurRippleCount() == 0))
     {
         // 2001-07-20 S.G. ONLY CHANGE 'onStation' IF OUR WEAPON STATUS CHANGED...
-        int tempWeapon = (hasHARM << 24) | (hasAGMissile << 16) | (hasGBU << 8) | hasBomb;
+        int tempWeapon = (hasHARM << 24) bitor (hasAGMissile << 16) bitor (hasGBU << 8) bitor hasBomb;
 
         SelectGroundWeapon();
 
@@ -245,7 +245,7 @@ void DigitalBrain::GroundAttackMode(void)
         }
 
         // So if we choose a different weapon, we'll set our FCC
-        if (((hasHARM << 24) | (hasAGMissile << 16) | (hasGBU << 8) | hasBomb) not_eq tempWeapon)
+        if (((hasHARM << 24) bitor (hasAGMissile << 16) bitor (hasGBU << 8) bitor hasBomb) not_eq tempWeapon)
         {
             if (onStation == Final)
             {
@@ -2390,13 +2390,13 @@ void DigitalBrain::SelectGroundWeapon(void)
         }
     }
 
-    if (hasAGMissile | hasBomb | hasHARM | hasRocket | hasGBU)
+    if (hasAGMissile bitor hasBomb bitor hasHARM bitor hasRocket bitor hasGBU)
     {
         SetATCFlag(HasAGWeapon);
 
         // 2001-05-27 ADDED BY S.G. IF WE HAVE HARMS AND OUR TARGET IS NOT EMITTING, CLEAR hasHARM ONLY IF WE HAVE SOMETHING ELSE ON BOARD
         // 2001-06-20 MODIFIED BY S.G. EVEN IF ONLY HAVE HARMS, DO THIS. HOPEFULLY WING WILL REJOIN AND LEAD WILL TERMINATE IF ON SEAD STRIKES
-        //   if (hasHARM and groundTargetPtr and (hasAGMissile | hasBomb | hasRocket | hasGBU)) {
+        //   if (hasHARM and groundTargetPtr and (hasAGMissile bitor hasBomb bitor hasRocket bitor hasGBU)) {
         if (hasHARM and groundTargetPtr)
         {
             // If it's a sim entity, look at its radar type)
@@ -2430,14 +2430,14 @@ void DigitalBrain::SelectGroundWeapon(void)
     }
 
     // 2001-06-30 ADDED BY S.G. SO THE TRUE WEAPON STATE IS KEPT...
-    if (hasAGMissile | hasBomb | hasHARM | hasRocket | hasGBU)
+    if (hasAGMissile bitor hasBomb bitor hasHARM bitor hasRocket bitor hasGBU)
         SetATCFlag(HasCanUseAGWeapon);
     else
         ClearATCFlag(HasCanUseAGWeapon);
 
     // END OF ADDED SECTION
 
-    hasWeapons = hasAGMissile | hasBomb | hasHARM | hasRocket | hasGun | hasGBU;
+    hasWeapons = hasAGMissile bitor hasBomb bitor hasHARM bitor hasRocket bitor hasGun bitor hasGBU;
 
     // 2001-06-20 ADDED BY S.G. LEAD WILL TAKE ITS WING WEAPON LOADOUT INTO CONSIDERATION BEFORE ABORTING
     // 2001-06-30 MODIFIED BY S.G. IF NOT A ENROUTE SEAD TARGET, SKIP HARMS AS AVAILABLE IF IT CAN'T BE FIRED
@@ -4628,7 +4628,7 @@ int DigitalBrain::HARMSetup(float rx, float ry, float ata, float approxRange)
             if (approxRange < 0.25F * rMax)
             {
                 // 2001-06-24 ADDED BY S.G. TRY WITH SOMETHING ELSE IF YOU CAN
-                if (hasAGMissile | hasBomb | hasRocket | hasGun | hasGBU)
+                if (hasAGMissile bitor hasBomb bitor hasRocket bitor hasGun bitor hasGBU)
                     retval = FALSE - 1;
                 else
                 {
@@ -4697,7 +4697,7 @@ int DigitalBrain::HARMSetup(float rx, float ry, float ata, float approxRange)
             if (approxRange < 0.25F * rMax)
             {
                 // 2001-06-24 ADDED BY S.G. TRY WITH SOMETHING ELSE IF YOU CAN
-                if (hasAGMissile | hasBomb | hasRocket | hasGun | hasGBU)
+                if (hasAGMissile bitor hasBomb bitor hasRocket bitor hasGun bitor hasGBU)
                     retval = FALSE - 1;
                 else
                 {
@@ -4817,7 +4817,7 @@ int DigitalBrain::JSOWSetup(float rx, float ry, float ata, float approxRange)
             //It's close to target so try some other weapon
             if (approxRange < 0.25F * rMax)
             {
-                if (hasAGMissile | hasBomb | hasRocket | hasGun | hasGBU)
+                if (hasAGMissile bitor hasBomb bitor hasRocket bitor hasGun bitor hasGBU)
                     retval = FALSE - 1;
                 else
                 {

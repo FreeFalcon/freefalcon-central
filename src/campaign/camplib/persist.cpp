@@ -265,7 +265,7 @@ void NewTimedPersistantObject(int vistype, CampaignTime removalTime, float x, fl
     persistantListTail = slot;
     PersistantObjects[slot].Init(vistype, x, y);
     PersistantObjects[slot].unionData.removeTime = removalTime;
-    PersistantObjects[slot].flags = SPLF_IS_TIMED | SPLF_IN_USE;
+    PersistantObjects[slot].flags = SPLF_IS_TIMED bitor SPLF_IN_USE;
 }
 
 void NewLinkedPersistantObject(int vistype, VU_ID campObjID, int campIdx, float x, float y)
@@ -300,7 +300,7 @@ void NewLinkedPersistantObject(int vistype, VU_ID campObjID, int campIdx, float 
     PersistantObjects[slot].unionData.campObject.creator_ = campObjID.creator_;
     PersistantObjects[slot].unionData.campObject.num_ = campObjID.num_;
     PersistantObjects[slot].unionData.campObject.index_ = (uchar)campIdx;
-    PersistantObjects[slot].flags = SPLF_IS_LINKED | SPLF_IN_USE;
+    PersistantObjects[slot].flags = SPLF_IS_LINKED bitor SPLF_IN_USE;
 }
 
 void SavePersistantList(char* scenario)

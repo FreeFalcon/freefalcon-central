@@ -197,7 +197,7 @@ public:
     }
     operator VU_KEY() const
     {
-        return (VU_KEY)(((unsigned short)creator_ << 16) | ((unsigned short)num_));
+        return (VU_KEY)(((unsigned short)creator_ << 16) bitor ((unsigned short)num_));
     }
 
     // note: these are private to prevent (mis)use

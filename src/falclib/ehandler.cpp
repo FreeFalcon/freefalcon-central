@@ -409,7 +409,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
     // Replace the executable filename with our error log file name.
     lstrcpy(FilePart, "crashlog.txt");
     HANDLE LogFile = CreateFile(ModuleName, GENERIC_WRITE, 0, 0,
-                                OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, 0);
+                                OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL bitor FILE_FLAG_WRITE_THROUGH, 0);
 
     if (LogFile == INVALID_HANDLE_VALUE)
     {
@@ -497,7 +497,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
         // us to figure out the call stack, parameters, local variables, etc.
         hprintf(LogFile, "Stack dump:\r\n");
         // lets try for everything
-        DWORD options = GSTSO_PARAMS | GSTSO_MODULE | GSTSO_SYMBOL | GSTSO_SRCLINE;
+        DWORD options = GSTSO_PARAMS bitor GSTSO_MODULE bitor GSTSO_SYMBOL bitor GSTSO_SRCLINE;
 
         const char *stackmsg = GetFirstStackTraceString(options, data);
 

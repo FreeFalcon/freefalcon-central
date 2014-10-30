@@ -1703,7 +1703,7 @@ void HudClass::DrawBoresightCross(void)
             display->TextCenter(xCenter, yCenter + 0.15F, "NO RAD", 0);
     }
 
-    if (HudData.IsSet(HudDataType::RadarBoresight | HudDataType::RadarSlew))
+    if (HudData.IsSet(HudDataType::RadarBoresight bitor HudDataType::RadarSlew))
     {
         if ( not g_bRealisticAvionics)
         {
@@ -2394,7 +2394,7 @@ void HudClass::HudColorStep(void)
 void HudClass::CalculateBrightness(float percent, DWORD* color)
 {
     HudBrightness = 1.0f * percent;
-    *color = (*color bitand 0x00ffffff) | ((FloatToInt32(255 * percent)) << 24);
+    *color = (*color bitand 0x00ffffff) bitor ((FloatToInt32(255 * percent)) << 24);
 }
 
 // COBRA - RED - Completely rewritten

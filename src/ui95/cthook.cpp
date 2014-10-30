@@ -19,7 +19,7 @@ C_TimerHook::C_TimerHook() : C_Base()
     DrawCallback_ = NULL;
     _SetCType_(_CNTL_TIMERHOOK_);
     SetReady(0);
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_TIMER | C_BIT_REMOVE;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_TIMER bitor C_BIT_REMOVE;
 }
 
 C_TimerHook::C_TimerHook(char **stream) : C_Base(stream)

@@ -501,7 +501,7 @@ int SimVehicleClass::Exec(void)
         // /*
         // OTWDriver.AddSfxRequest(
         // new SfxClass (SFX_AC_DEBRIS, // type
-        // SFX_MOVES | SFX_USES_GRAVITY, // flags
+        // SFX_MOVES bitor SFX_USES_GRAVITY, // flags
         // &pos, // world pos
         // &vec, // vector
         // 3.5f, // time to live

@@ -20,9 +20,9 @@
    MACRO to switch from big to little endian.
 */
 
-#define  RIFFCODE(a,b,c,d) ((((long) d) << 24) | \
-                           (((long) c) << 16) | \
-                           (((long) b) << 8) | \
+#define  RIFFCODE(a,b,c,d) ((((long) d) << 24) bitor \
+                           (((long) c) << 16) bitor \
+                           (((long) b) << 8) bitor \
                            (((long) a)))
 
 #define  RIFF_TOKEN_SIZE      4
@@ -62,7 +62,7 @@ int aviOpen(char *aviFileName, char *audioFileName,
     if ( not aviFileName)
         return RIFF_BAD_FILENAME;
 
-    streams->handle = AVI_OPEN(aviFileName, _O_RDONLY | _O_BINARY);
+    streams->handle = AVI_OPEN(aviFileName, _O_RDONLY bitor _O_BINARY);
 
     if (streams->handle == -1)
         return RIFF_OPEN_FAILED;
@@ -161,7 +161,7 @@ int aviOpen(char *aviFileName, char *audioFileName,
             */
 
             streams->externalSoundHandle =
-                AVI_OPEN(audioFileName, _O_RDONLY | _O_BINARY);
+                AVI_OPEN(audioFileName, _O_RDONLY bitor _O_BINARY);
 
             if (streams->externalSoundHandle == -1)
                 return RIFF_OPEN_AUDIO_FAILED;
@@ -613,7 +613,7 @@ int aviReadRecord(PAVISTREAMS streams)
 
                 recordLen -= (chunkLength + 8);
 
-                if ((streams->audioFlag bitand STREAM_AUDIO_EXTERNAL) ||
+                if ((streams->audioFlag bitand STREAM_AUDIO_EXTERNAL) or
  not (streams->audioFlag bitand STREAM_AUDIO_ON))
                     AVI_SEEK(streams->handle, chunkLength, \
                              SEEK_CUR);

@@ -42,7 +42,7 @@ BOOL FileMemMap::Open(const char *filename, BOOL rw, BOOL nomap)
                   rw == TRUE ? FILE_SHARE_WRITE : FILE_SHARE_READ,
                   NULL,
                   OPEN_EXISTING,
-                  FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS,
+                  FILE_ATTRIBUTE_NORMAL bitor FILE_FLAG_RANDOM_ACCESS,
                   NULL
               );
 
@@ -56,7 +56,7 @@ BOOL FileMemMap::Open(const char *filename, BOOL rw, BOOL nomap)
     m_hMap = CreateFileMapping(
                  m_hFile,
                  NULL,
-                 rw == TRUE ? (PAGE_READWRITE) : (PAGE_READONLY | SEC_COMMIT),
+                 rw == TRUE ? (PAGE_READWRITE) : (PAGE_READONLY bitor SEC_COMMIT),
                  0,
                  0,
                  NULL

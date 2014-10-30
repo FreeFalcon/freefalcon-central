@@ -1603,7 +1603,7 @@ bool TextureDB::SaveDDS_DXTn(const char *szFileName, BYTE* pDst, int dimensions)
 
 #if _MSC_VER >= 1300
 
-    fileout = _open(szFileName, O_WRONLY | O_BINARY | O_CREAT, S_IWRITE);
+    fileout = _open(szFileName, O_WRONLY bitor O_BINARY bitor O_CREAT, S_IWRITE);
 
     options.MipMapType = dNoMipMaps;
     options.bBinaryAlpha = false;

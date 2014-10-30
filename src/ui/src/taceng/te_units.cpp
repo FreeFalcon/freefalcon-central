@@ -596,7 +596,7 @@ void PickTeamCB(long, short hittype, C_Base *)
 
 void tactical_show_ato_window(void)
 {
-    gGps->SetAllowed(gGps->GetAllowed() | UR_ATO | UR_SQUADRON);
+    gGps->SetAllowed(gGps->GetAllowed() bitor UR_ATO bitor UR_SQUADRON);
     gGps->Update();
 
     gMainHandler->EnableWindowGroup(7001);
@@ -608,7 +608,7 @@ void tactical_show_ato_window(void)
 
 void tactical_show_oob_window(void)
 {
-    gGps->SetAllowed(gGps->GetAllowed() | UR_OOB);
+    gGps->SetAllowed(gGps->GetAllowed() bitor UR_OOB);
 
     gMainHandler->EnableWindowGroup(7009);
 }
@@ -1152,7 +1152,7 @@ void SetupPackageControls(C_Window *win, C_Base *caller)
     }
 
     // sfr: addpackage
-    if ( /* not (TheCampaign.Flags bitand (CAMP_TACTICAL|CAMP_TACTICAL_EDIT)) ||*/
+    if ( /* not (TheCampaign.Flags bitand (CAMP_TACTICAL|CAMP_TACTICAL_EDIT)) or*/
         (EdittingPackage and not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and takeoff < TheCampaign.CurrentTime))
     {
         // Disable these controls in campaign, or in run mode if the package has departed
@@ -1749,7 +1749,7 @@ void tactical_make_package(long, short hittype, C_Base *)
             mis.mission = static_cast<uchar>(type);
             mis.priority = static_cast<short>(gPackagePriority);
             mis.aircraft = 2;
-            mis.flags or_eq REQF_ALLOW_ERRORS | REQF_TE_MISSION;
+            mis.flags or_eq REQF_ALLOW_ERRORS bitor REQF_TE_MISSION;
 
             new_package->SetUnitDestination(MapX, MapY);
             new_package->SetLocation(MapX, MapY);
@@ -2444,7 +2444,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
                 mis.tot += 10 * CampaignMinutes; // Try and get us in front of our pickup point
         }
 
-        mis.flags or_eq REQF_ALLOW_ERRORS | REQF_TE_MISSION;
+        mis.flags or_eq REQF_ALLOW_ERRORS bitor REQF_TE_MISSION;
         error = new_flight->BuildMission(&mis);
 
         if (error not_eq PRET_SUCCESS)

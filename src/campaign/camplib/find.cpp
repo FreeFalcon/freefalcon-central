@@ -275,7 +275,7 @@ void* PackXY(GridIndex x, GridIndex y)
 {
     long     t;
 
-    t = x | (y << 16);
+    t = x bitor (y << 16);
     return (void*) t;
 }
 

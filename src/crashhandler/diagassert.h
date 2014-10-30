@@ -131,8 +131,8 @@ extern "C" {
 #define VERIFY(x)   ASSERT(x)
 
     // Full blow assert with all the trimmings.
-#define SUPERASSERT(x) ASSERTMACRO ( DA_SHOWSTACKTRACE |    \
-                                        DA_SHOWMSGBOX  |    \
+#define SUPERASSERT(x) ASSERTMACRO ( DA_SHOWSTACKTRACE bitor    \
+                                        DA_SHOWMSGBOX  bitor    \
                                         DA_SHOWODS      ,   \
                                      x                  , )
 

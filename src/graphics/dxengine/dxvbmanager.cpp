@@ -513,7 +513,7 @@ bool CDXVbManager::SetupModel(DWORD ID, BYTE *Root, DWORD Class)
 
         // Copy the Vertices in the Assigned Vertex Buffer
         LOCK_VB_MANAGER;
-        CheckHR(pVBuffers[ID].Vb->Lock(DDLOCK_NOOVERWRITE | DDLOCK_NOSYSLOCK | DDLOCK_SURFACEMEMORYPTR | DDLOCK_WAIT | DDLOCK_WRITEONLY, &ptr, NULL));
+        CheckHR(pVBuffers[ID].Vb->Lock(DDLOCK_NOOVERWRITE bitor DDLOCK_NOSYSLOCK bitor DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_WAIT bitor DDLOCK_WRITEONLY, &ptr, NULL));
         memcpy((void*)((BYTE*)ptr + (pVBuffers[ID].BaseOffset * VERTEX_STRIDE)), Root + pVPool, dwNVertices * VERTEX_STRIDE);
         pVBuffers[ID].Vb->Unlock();
         // Exit the Critical section
@@ -861,7 +861,7 @@ void CDXVbManager::OpenSimpleBuffer(void)
 {
     if ( not SimpleBuffer.VbPtr)
     {
-        SimpleBuffer.Vb->Lock(DDLOCK_DISCARDCONTENTS | DDLOCK_NOSYSLOCK | DDLOCK_WAIT | DDLOCK_WRITEONLY, (void**)&TheVbManager.SimpleBuffer.VbPtr, NULL);
+        SimpleBuffer.Vb->Lock(DDLOCK_DISCARDCONTENTS bitor DDLOCK_NOSYSLOCK bitor DDLOCK_WAIT bitor DDLOCK_WRITEONLY, (void**)&TheVbManager.SimpleBuffer.VbPtr, NULL);
         SimpleBuffer.Points = SimpleBuffer.Lines = 0;
         SimpleBuffer.MaxLines = SimpleBuffer.MaxPoints = 0;
     }

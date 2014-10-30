@@ -67,7 +67,7 @@ int FalconUnitMessage::Process(uchar autodisp)
             ShiAssert(dataBlock.data1 < VEHICLE_GROUPS_PER_UNIT);
 
             if (u->GetType() == TYPE_SQUADRON and u->GetDomain() == DOMAIN_AIR)
-                ((Squadron)u)->SetSchedule(dataBlock.data1, dataBlock.data2 | dataBlock.data3);
+                ((Squadron)u)->SetSchedule(dataBlock.data1, dataBlock.data2 bitor dataBlock.data3);
 
             break;
 

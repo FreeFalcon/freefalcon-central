@@ -7,7 +7,7 @@ C_MapMover::C_MapMover() : C_Control()
     SY_ = 0;
     Draging_ = 0;
     DrawCallback_ = NULL;
-    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_DRAGABLE | C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_DRAGABLE bitor C_BIT_MOUSEOVER;
 }
 
 C_MapMover::C_MapMover(char **stream) : C_Control(stream)

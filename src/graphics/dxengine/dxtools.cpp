@@ -333,7 +333,7 @@ bool DXScript_Chaff(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 
     // update frame number every 100 mSec
     if ( not (obj->SwitchValues[0] bitand 0x8000))
-        obj->SwitchValues[0] = (obj->SwitchValues[0] bitand 0xffff0000) | (1 << ((Delta bitand 0xffff) - (obj->SwitchValues[0] >> 16) bitand 0x00ffff));
+        obj->SwitchValues[0] = (obj->SwitchValues[0] bitand 0xffff0000) bitor (1 << ((Delta bitand 0xffff) - (obj->SwitchValues[0] >> 16) bitand 0x00ffff));
 
     return true;
 }

@@ -2848,7 +2848,7 @@ WeaponType SMSClass::GetNextWeapon(WeaponDomain domainDesired)
         }
         // ASSOCIATOR 03/12/03: Added this check so that we can now properly cycle AG guns without relying on the
         // buggy g_bUseDefinedGunDomain that causes AI to crash
-        else if (hardPoint[stationUnderTest] and (hardPoint[stationUnderTest]->GetWeaponData()->domain | wdBoth) and 
+        else if (hardPoint[stationUnderTest] and (hardPoint[stationUnderTest]->GetWeaponData()->domain bitor wdBoth) and 
                  (hardPoint[stationUnderTest]->weaponCount not_eq 0 and hardPoint[stationUnderTest]->GetWeaponType() == wtGuns))
         {
             newType = hardPoint[stationUnderTest]->GetWeaponType();
