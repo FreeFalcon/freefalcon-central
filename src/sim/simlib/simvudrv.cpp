@@ -112,7 +112,7 @@ VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME t
 
     // invalid entity or time smaller than fine
     if (
-        (timeDelta < FINE_POSITIONAL_UPDATES_PERIOD) ||
+        (timeDelta < FINE_POSITIONAL_UPDATES_PERIOD) or
         (entity->VuState() not_eq VU_MEM_ACTIVE)
         /* or ( not ToleranceReached())*/
     )

@@ -422,7 +422,7 @@ void TheaterList::SetPathName(char *dest, char *src, char *reldir)
     //if (src == NULL or src[0] == 0) return; // leave alone
     if (src == NULL or src[0] == 0)
         strcpy(dest, reldir);
-    else if ((src[1] == ':' and isalpha(src[0])) ||
+    else if ((src[1] == ':' and isalpha(src[0])) or
              (src[0] == '\\' and src[1] == '\\')) // probably full pathname
         strcpy(dest, src);
     else

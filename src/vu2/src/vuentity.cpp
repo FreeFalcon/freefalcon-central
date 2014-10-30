@@ -798,7 +798,7 @@ collisionLineEntity1D(BIG_SCALAR d1,
                       BIG_SCALAR objd,
                       BIG_SCALAR radius)
 {
-    if (((d1 < d2) and (d2 > (objd - radius)) and (d1 < (objd + radius))) ||
+    if (((d1 < d2) and (d2 > (objd - radius)) and (d1 < (objd + radius))) or
         ((d1 >= d2) and (d1 >= (objd - radius)) and (d2 <= (objd + radius))))
     {
         return TRUE;

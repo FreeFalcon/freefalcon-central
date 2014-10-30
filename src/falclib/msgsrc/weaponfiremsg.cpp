@@ -86,7 +86,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
 
                 // JPO - special case AMRAAM call
                 // 2001-09-16 M.N. CHANGED FROM FalconWeaponsFire::MRM TO CT ID CHECK -> Aim-7 IS ALSO A MRM, BUT HAS A FOX-1 CALL
-                if (WeaponDataTable[GetWeaponIdFromDescriptionIndex(dataBlock.fWeaponID - VU_LAST_ENTITY_TYPE)].Index == 227 ||
+                if (WeaponDataTable[GetWeaponIdFromDescriptionIndex(dataBlock.fWeaponID - VU_LAST_ENTITY_TYPE)].Index == 227 or
                     WeaponDataTable[GetWeaponIdFromDescriptionIndex(dataBlock.fWeaponID - VU_LAST_ENTITY_TYPE)].Index == 228)
                 {
                     radioMessage->dataBlock.message = rcFIREAMRAAM;

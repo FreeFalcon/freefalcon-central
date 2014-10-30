@@ -250,8 +250,8 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
 
     //MonoPrint("Processing Chatter Message ID: %d  %d\n", message, us);
 
-    if ((FalconLocalSession->GetFlyState() == FLYSTATE_FLYING) ||
-        (SimDriver.RunningCampaign() and not noUIcomms) ||
+    if ((FalconLocalSession->GetFlyState() == FLYSTATE_FLYING) or
+        (SimDriver.RunningCampaign() and not noUIcomms) or
         (to and to == us))
     {
         if ( not us)
@@ -343,7 +343,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
         if (to and (to_package == player_package) and us and us->GetTeam() == to->GetTeam())
             playbits or_eq TO_PACKAGE;
 
-        if ((to and to_package == player_package and us->GetTeam() == to->GetTeam()) ||
+        if ((to and to_package == player_package and us->GetTeam() == to->GetTeam()) or
             (from and from_package == player_package and us and us->GetTeam() == from->GetTeam()))
             playbits or_eq TOFROM_PACKAGE;
 
@@ -353,7 +353,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
 
 
         if (from and us and (DistSqu(from->XPos(), from->YPos(), us->XPos(), us->YPos()) < RADIO_PROX_RANGE * RADIO_PROX_RANGE)
-           and us and ((to and us->GetTeam() == to->GetTeam()) ||
+           and us and ((to and us->GetTeam() == to->GetTeam()) or
                       (from and us->GetTeam() == from->GetTeam())))
             playbits or_eq IN_PROXIMITY;
 

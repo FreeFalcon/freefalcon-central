@@ -358,11 +358,11 @@ VU_ERRCODE VuMaster::GeneratePositionUpdate(bool reliable, bool oob, VU_TIME tim
 inline bool VuMaster::ToleranceReached()
 {
     return
-        (abs(entity_->XPos() - xsent_) >= MOVE_TOLERANCE) ||
-        (abs(entity_->YPos() - ysent_) >= MOVE_TOLERANCE) ||
-        (abs(entity_->ZPos() - zsent_) >= MOVE_TOLERANCE) ||
-        (abs(entity_->Yaw()   - yawsent_) >= TURN_TOLERANCE) ||
-        (abs(entity_->Pitch() - pitchsent_) >= TURN_TOLERANCE) ||
+        (abs(entity_->XPos() - xsent_) >= MOVE_TOLERANCE) or
+        (abs(entity_->YPos() - ysent_) >= MOVE_TOLERANCE) or
+        (abs(entity_->ZPos() - zsent_) >= MOVE_TOLERANCE) or
+        (abs(entity_->Yaw()   - yawsent_) >= TURN_TOLERANCE) or
+        (abs(entity_->Pitch() - pitchsent_) >= TURN_TOLERANCE) or
         (abs(entity_->Roll()  - rollsent_) >= TURN_TOLERANCE)
         ;
 }

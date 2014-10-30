@@ -1518,7 +1518,7 @@ int MissionEvaluationClass::MissionSuccess(FlightDataClass *flight_ptr)
             else
                 losses = friendly_ga_losses;
 
-            if (package_element->status_flags bitand MISEVAL_FLIGHT_GOT_TO_TARGET ||
+            if (package_element->status_flags bitand MISEVAL_FLIGHT_GOT_TO_TARGET or
                 package_element->status_flags bitand MISEVAL_FLIGHT_ABORT_BY_AWACS)
             {
                 if (package_element->status_flags bitand MISEVAL_FLIGHT_HIT_BY_GROUND and losses)
@@ -1639,8 +1639,8 @@ int MissionEvaluationClass::MissionSuccess(FlightDataClass *flight_ptr)
         case AMIS_INT:
         case AMIS_BAI:
         case AMIS_PATROL:
-            if (flight_ptr->status_flags bitand MISEVAL_FLIGHT_GOT_AKILL ||
-                flight_ptr->status_flags bitand MISEVAL_FLIGHT_GOT_GKILL ||
+            if (flight_ptr->status_flags bitand MISEVAL_FLIGHT_GOT_AKILL or
+                flight_ptr->status_flags bitand MISEVAL_FLIGHT_GOT_GKILL or
                 flight_ptr->status_flags bitand MISEVAL_FLIGHT_GOT_NKILL)
             {
                 // Calculate hit ratio bitand kills

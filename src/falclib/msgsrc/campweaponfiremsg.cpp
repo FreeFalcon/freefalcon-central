@@ -1327,7 +1327,7 @@ FireMissileAtSim(CampEntity shooter, SimBaseClass *simTarg, short weapId)
     /*
     // Need to send a launch message if this missile is radar guided
     if (theMissile->sensorArray and 
-    (theMissile->sensorArray[0]->Type() == SensorClass::Radar ||
+    (theMissile->sensorArray[0]->Type() == SensorClass::Radar or
     theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming)) {
 
     // Create and fill in the message structure

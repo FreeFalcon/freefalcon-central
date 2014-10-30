@@ -1414,14 +1414,14 @@ int AircraftClass::Exec(void)
                 (
                     pctStrength < -0.4f and pctStrength > -0.6f and 
                     (
-                        dyingType == SimVehicleClass::DIE_INTERMITTENT_SMOKE ||
-                        dyingType == SimVehicleClass::DIE_SHORT_FIREBALL ||
-                        dyingType == 5 ||
-                        dyingType == 6 ||
+                        dyingType == SimVehicleClass::DIE_INTERMITTENT_SMOKE or
+                        dyingType == SimVehicleClass::DIE_SHORT_FIREBALL or
+                        dyingType == 5 or
+                        dyingType == 6 or
                         dyingType == SimVehicleClass::DIE_SMOKE
                     ) and 
                     isDigital
-                ) ||
+                ) or
                 (
                     ejectTriggered
                 )
@@ -2116,7 +2116,7 @@ int AircraftClass::Exec(void)
         // for now we remove GLOC for AI and only apply it on the player's aircraft
         // 2002-03-08 make AI Gloc configurable for testing
         // RV - Biker - Don't blackout for AI -> they cannot handle atm
-        if (SimDriver.GetPlayerEntity() == this /*|| g_bAIGloc*/)
+        if (SimDriver.GetPlayerEntity() == this /*or g_bAIGloc*/)
         {
             if ( not PlayerOptions.BlackoutOn())
             {
@@ -2190,12 +2190,12 @@ int AircraftClass::Exec(void)
             {
                 // First See if the timer has elapsed or the target is died
                 if (
-                    SimLibElapsedTime > DBrain()->targetSpotWingTimer ||
+                    SimLibElapsedTime > DBrain()->targetSpotWingTimer or
  not DBrain()->targetSpotWingTarget or DBrain()->targetSpotWingTarget->IsDead()
                 )
                 {
                     // 2002-03-07 MODIFIDED BY S.G.
-                    //Added '|| not DBrain()->targetSpotWingTarget' but should NOT be required
+                    //Added 'or not DBrain()->targetSpotWingTarget' but should NOT be required
                     // If so, kill the camera and clear out everything associated with this targetSpot
                     // sfr: cleanup camera mess
                     FalconLocalSession->RemoveCamera(DBrain()->targetSpotWing);
@@ -2235,12 +2235,12 @@ int AircraftClass::Exec(void)
             {
                 // First See if the timer has elapsed or the target is died
                 if (
-                    SimLibElapsedTime > DBrain()->targetSpotElementTimer ||
- not DBrain()->targetSpotElementTarget ||
+                    SimLibElapsedTime > DBrain()->targetSpotElementTimer or
+ not DBrain()->targetSpotElementTarget or
                     DBrain()->targetSpotElementTarget->IsDead()
                 )
                 {
-                    // 2002-03-07 MODIFIDED BY S.G. Added '||
+                    // 2002-03-07 MODIFIDED BY S.G. Added 'or
                     // not DBrain()->targetSpotElementTarget' but should NOT be required
                     // sfr: cleanup camera mess
                     FalconLocalSession->RemoveCamera(DBrain()->targetSpotElement);
@@ -2279,13 +2279,13 @@ int AircraftClass::Exec(void)
             if (DBrain()->targetSpotFlight)
             {
                 // First See if the timer has elapsed or the target is died
-                if (SimLibElapsedTime > DBrain()->targetSpotFlightTimer ||
- not DBrain()->targetSpotFlightTarget ||
+                if (SimLibElapsedTime > DBrain()->targetSpotFlightTimer or
+ not DBrain()->targetSpotFlightTarget or
                     DBrain()->targetSpotFlightTarget->IsDead()
                    )
                 {
                     // 2002-03-07 MODIFIDED BY S.G.
-                    // Added '|| not DBrain()->targetSpotFlightTarget' but should NOT be required
+                    // Added 'or not DBrain()->targetSpotFlightTarget' but should NOT be required
                     // If so, kill the camera and clear out everything associated with this targetSpot
                     // sfr: cleanup camera mess
                     FalconLocalSession->RemoveCamera(DBrain()->targetSpotFlight);
@@ -2579,7 +2579,7 @@ int AircraftClass::Exec(void)
             if (this not_eq SimDriver.GetPlayerEntity() and g_fAIRefuelSpeed)
                 refuelHelp = g_fAIRefuelSpeed;
 
-            if ( not tanker or not tanker->IsAirplane() ||
+            if ( not tanker or not tanker->IsAirplane() or
  not af->AddFuel(refuelRate * SimLibMajorFrameTime * refuelHelp * refuelHelp)
                )
             {
@@ -3177,7 +3177,7 @@ void AircraftClass::SetPowerOutput(float)
 
         diff = specialData.powerOutputNet - value;
 
-        if ((diff < -g_nMPPowerXmitThreshold) or (diff > g_nMPPowerXmitThreshold) ||
+        if ((diff < -g_nMPPowerXmitThreshold) or (diff > g_nMPPowerXmitThreshold) or
  not value and specialData.powerOutputNet) // Xmit if RPM just changed to 0
         {
             //MonoPrint ("%08x SPO %f\n", this, powerOutput);
@@ -3222,7 +3222,7 @@ void AircraftClass::SetPowerOutput(float)
 
         diff = specialData.powerOutputNet - value;
 
-        if ((diff < -g_nMPPowerXmitThreshold) or (diff > g_nMPPowerXmitThreshold) ||
+        if ((diff < -g_nMPPowerXmitThreshold) or (diff > g_nMPPowerXmitThreshold) or
  not value and specialData.powerOutputNet) // Xmit if RPM just changed to 0
         {
 
@@ -3240,7 +3240,7 @@ void AircraftClass::SetPowerOutput(float)
 
         diff = specialData.powerOutputNet2 - value;
 
-        if ((diff < -g_nMPPowerXmitThreshold) or (diff > g_nMPPowerXmitThreshold) ||
+        if ((diff < -g_nMPPowerXmitThreshold) or (diff > g_nMPPowerXmitThreshold) or
  not value and specialData.powerOutputNet2) // Xmit if RPM just changed to 0
         {
             specialData.powerOutputNet2 = static_cast<uchar>(value);
@@ -3365,7 +3365,7 @@ void AircraftClass::PreFlight()
     //Targeting Pod cooled
     PodCooling = 0.0F;
     //MI HUD
-    // if(TheHud and this == SimDriver.GetPlayerEntity() and ( not OnGround() ||
+    // if(TheHud and this == SimDriver.GetPlayerEntity() and ( not OnGround() or
     // PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RAMP))
     //ATARIBABY/WOMBAT Hud sym wheel ramp start fix
     // MD -- 20041216: this has to move to MakePlayerVehicle().  For MP games, it turns out that
@@ -3739,8 +3739,8 @@ void AircraftClass::SetCursorCmdsByAnalog(void)
                     mavDisplay = (MaverickDisplayClass*)((MissileClass*)playerAC->Sms->GetCurrentWeapon())->display;
                 }
 
-                if ((theRadar and theRadar->IsSOI()) or (mavDisplay and mavDisplay->IsSOI()) ||
-                    (laserPod and laserPod->IsSOI()) or (TheHud and TheHud->IsSOI()) ||
+                if ((theRadar and theRadar->IsSOI()) or (mavDisplay and mavDisplay->IsSOI()) or
+                    (laserPod and laserPod->IsSOI()) or (TheHud and TheHud->IsSOI()) or
                     (theHTS and playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
                 {
                     FCC->cursorXCmd = xValue;

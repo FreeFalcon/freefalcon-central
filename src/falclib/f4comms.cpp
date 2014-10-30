@@ -402,7 +402,7 @@ bool AddDanglingSession(VU_ID owner, VU_ADDRESS address)
             VU_ADDRESS sAdd = session->GetAddress();
 
             if (
-                //(session->OwnerId().creator_.value_ == CAPI_DANGLING_ID) ||
+                //(session->OwnerId().creator_.value_ == CAPI_DANGLING_ID) or
                 (session->OwnerId().creator_.value_ == owner.creator_) and 
                 (sAdd == address)
             )
@@ -482,7 +482,7 @@ int RemoveDanglingSession(VuSessionEntity *newSess)
         VU_ADDRESS oldAdd = session->GetAddress();
 
         if (
-            (session->OwnerId().creator_.value_ == CAPI_DANGLING_ID) ||
+            (session->OwnerId().creator_.value_ == CAPI_DANGLING_ID) or
             (newSess->OwnerId().creator_.value_ == session->OwnerId().creator_)
         )
         {
@@ -994,7 +994,7 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
         }
 
         if (
-            (gConnectionStatus == F4COMMS_CONNECTED ||
+            (gConnectionStatus == F4COMMS_CONNECTED or
              (g_ipadress and not strcmpi(g_ipadress, "0.0.0.0"))) and 
  not stoppingvoice and not g_pDPServer and not g_pDPClient and (g_ipadress)
         )

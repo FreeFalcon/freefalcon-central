@@ -116,7 +116,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
     {
         pos.z -= 40.0f;
 
-        if ( not (dataBlock.groundType == COVERAGE_WATER ||
+        if ( not (dataBlock.groundType == COVERAGE_WATER or
               dataBlock.groundType == COVERAGE_RIVER))
         {
             F4SoundFXSetPos(SFX_IMPACTG1 + PRANDInt6(), TRUE, pos.x, pos.y, pos.z, 1.0f, 0, sid);
@@ -407,7 +407,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
     else if (type == TYPE_GUN)
     {
         // hit water?
-        if ((dataBlock.groundType == COVERAGE_WATER ||
+        if ((dataBlock.groundType == COVERAGE_WATER or
              dataBlock.groundType == COVERAGE_RIVER))
         {
             F4SoundFXSetPos(SFX_SPLASH, TRUE, pos.x, pos.y, pos.z, 1.0f, 0, sid);
@@ -753,7 +753,7 @@ int FalconMissileEndMessage::Process(uchar autodisp)
         }
 
         // hit water?
-        if ((dataBlock.groundType == COVERAGE_WATER ||
+        if ((dataBlock.groundType == COVERAGE_WATER or
              dataBlock.groundType == COVERAGE_RIVER))
         {
             F4SoundFXSetPos(SFX_SPLASH, TRUE, pos.x, pos.y, pos.z, 1.0f);

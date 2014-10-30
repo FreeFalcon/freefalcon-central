@@ -602,10 +602,10 @@ CockpitManager::CockpitManager(
 
     if (cockpit_verifier)
     {
-        if (mSurfaceTally not_eq mNumSurfaces ||
-            mObjectTally not_eq mNumObjects ||
-            mPanelTally not_eq mNumPanels ||
-            mButtonTally not_eq mNumButtons ||
+        if (mSurfaceTally not_eq mNumSurfaces or
+            mObjectTally not_eq mNumObjects or
+            mPanelTally not_eq mNumPanels or
+            mButtonTally not_eq mNumButtons or
             mButtonViewTally not_eq mNumButtonViews)
         {
             char buf[0x400];

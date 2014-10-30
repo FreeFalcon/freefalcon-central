@@ -263,7 +263,7 @@ void PilotInputs::Update()
     else
     {
         if (
-            ( not g_bRealisticAvionics) ||
+            ( not g_bRealisticAvionics) or
             ((playerAC) and ( not playerAC->TrimAPDisc))
         )
         {

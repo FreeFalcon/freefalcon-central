@@ -86,9 +86,9 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
 
     int printit = 0;
 
-    if (monoall == 0 ||
-        ((theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG) and monoall == 1) ||
-        ((theEvent->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG) and monoall == 2) ||
+    if (monoall == 0 or
+        ((theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG) and monoall == 1) or
+        ((theEvent->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG) and monoall == 2) or
         ((theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG) and 
          (theEvent->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG) and monoall == 3)
        )

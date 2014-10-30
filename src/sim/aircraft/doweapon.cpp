@@ -158,8 +158,8 @@ void AircraftClass::DoWeapons()
                 Sms->SelectiveJettison();
         }
         // Firing A-A Missiles
-        else if (FCC->GetMasterMode() == FireControlComputer::Missile ||
-                 FCC->GetMasterMode() == FireControlComputer::Dogfight ||
+        else if (FCC->GetMasterMode() == FireControlComputer::Missile or
+                 FCC->GetMasterMode() == FireControlComputer::Dogfight or
                  FCC->GetMasterMode() == FireControlComputer::MissileOverride)
         {
             if (FCC->releaseConsent and not FCC->postDrop)
@@ -197,9 +197,9 @@ void AircraftClass::DoWeapons()
                         // JPO - two cases- dogfight mode has its own sub mode.
                         // all others use the regular.
                         if ((FCC->GetMasterMode() not_eq FireControlComputer::Dogfight and 
-                             FCC->GetSubMode() == FireControlComputer::Aim9) ||
+                             FCC->GetSubMode() == FireControlComputer::Aim9) or
                             (FCC->GetMasterMode() == FireControlComputer::Dogfight and 
-                             FCC->GetDgftSubMode() == FireControlComputer::Aim9)  ||
+                             FCC->GetDgftSubMode() == FireControlComputer::Aim9)  or
                             (FCC->GetMasterMode() == FireControlComputer::MissileOverride and 
                              // ASSOCIATOR: Added MissileOverride here to get remembered mode
                              FCC->GetMrmSubMode() == FireControlComputer::Aim9))
@@ -230,9 +230,9 @@ void AircraftClass::DoWeapons()
                         // END OF ADDED SECTION
 
                         else if (
-                            FCC->GetSubMode() == FireControlComputer::Aim120 ||
+                            FCC->GetSubMode() == FireControlComputer::Aim120 or
                             (FCC->GetMasterMode() == FireControlComputer::Dogfight and 
-                             FCC->GetDgftSubMode() == FireControlComputer::Aim120) ||
+                             FCC->GetDgftSubMode() == FireControlComputer::Aim120) or
                             (FCC->GetMasterMode() == FireControlComputer::MissileOverride and 
                              // ASSOCIATOR: Added MissileOverride here to get remembered mode
                              FCC->GetMrmSubMode() == FireControlComputer::Aim120)
@@ -267,7 +267,7 @@ void AircraftClass::DoWeapons()
             }
         }
         // Firing A-G Missiles
-        else if (FCC->GetMasterMode() == FireControlComputer::AirGroundMissile ||
+        else if (FCC->GetMasterMode() == FireControlComputer::AirGroundMissile or
                  FCC->GetMasterMode() == FireControlComputer::AirGroundHARM)
         {
             if (FCC->releaseConsent and not FCC->postDrop)

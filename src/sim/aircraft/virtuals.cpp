@@ -679,7 +679,7 @@ void AircraftClass::ConfigurePlayerAvionics(void)
     ShiAssert(this == SimDriver.GetPlayerEntity());
 
     // Configure the avionics appropriatly
-    if (SimDriver.RunningDogfight() ||
+    if (SimDriver.RunningDogfight() or
         (SimDriver.RunningInstantAction() and instant_action::is_fighter_sweep()))
     {
         CPButtonObject* pButton = OTWDriver.pCockpitManager->GetButtonPointer(ICP_AA_BUTTON_ID);
@@ -730,7 +730,7 @@ void AircraftClass::MakeNonPlayerVehicle()
     UnSetFalcFlag(FEC_HASPLAYERS);
 
     if (
- not HasPilot() ||
+ not HasPilot() or
         ((DBrain()->ATCStatus() < tReqTaxi) and OnGround() and not af->IsSet(AirframeClass::OnObject))
     )
     {

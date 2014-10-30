@@ -297,7 +297,7 @@ void FarTexDB::SetLightLevel(void)
             }
             else if (PlayerOptions.Season == 2) //Winter
             {
-                if ( not (tmpR == tmpG and tmpR == tmpB) or tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //|| (tmpR == 255 and tmpG == 255))) //Greyscale //or pure color
+                if ( not (tmpR == tmpG and tmpR == tmpB) or tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //or (tmpR == 255 and tmpG == 255))) //Greyscale //or pure color
                 {
                     RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 

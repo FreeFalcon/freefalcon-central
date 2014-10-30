@@ -695,8 +695,8 @@ void CPPanel::SetPalette()
             mpObjects[i]->Translate3D(lightPlt);
         }
         else if (
-            (dynamic_cast<CPHsi*>(mpObjects[i]) not_eq NULL) ||
-            (dynamic_cast<CPAdi*>(mpObjects[i]) not_eq NULL) ||
+            (dynamic_cast<CPHsi*>(mpObjects[i]) not_eq NULL) or
+            (dynamic_cast<CPAdi*>(mpObjects[i]) not_eq NULL) or
             (dynamic_cast<CPIndicator*>(mpObjects[i]) not_eq NULL)
         )
         {

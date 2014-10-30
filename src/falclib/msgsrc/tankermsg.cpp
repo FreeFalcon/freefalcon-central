@@ -242,7 +242,7 @@ int FalconTankerMessage::Process(uchar autodisp)
                 {
                     pos = ((TankerBrain*)theTanker->Brain())->AddToQ(component);
 
-                    if (thirstyOne->OwnerId() not_eq vuLocalSessionEntity->Game()->OwnerId() ||
+                    if (thirstyOne->OwnerId() not_eq vuLocalSessionEntity->Game()->OwnerId() or
                         component->OwnerId() == vuLocalSessionEntity->Game()->OwnerId())
                         //me123 dont add other players. they need to request them self for now.
                         //otherwice we have a problem getign the wingmen after the players fueled.

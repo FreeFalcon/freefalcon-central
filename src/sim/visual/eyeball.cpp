@@ -172,9 +172,9 @@ float EyeballClass::GetSignature(SimObjectType* obj)
             {
                 // Are the exterior lights turned on?
                 if (
-                    aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_LIGHTS) ||
-                    aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_NAVLIGHTS) ||
-                    aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_TAILSTROBE) ||
+                    aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_LIGHTS) or
+                    aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_NAVLIGHTS) or
+                    aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_TAILSTROBE) or
                     aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_LANDINGLIGHT)
                 )
                 {

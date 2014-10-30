@@ -58,7 +58,7 @@ int FalconEjectMessage::Process(uchar autodisp)
         // KCK: Determanistic rescue right now.. might want to check for chopper actually
         // arriving at some point in the far, far future.
         if (
-            GetOwner(TheCampaign.CampMapData, x, y) == flight->GetTeam() ||
+            GetOwner(TheCampaign.CampMapData, x, y) == flight->GetTeam() or
  not ((flight->GetCampID() + dataBlock.ePilotID) % 3))
         {
             ps = PILOT_RESCUED;

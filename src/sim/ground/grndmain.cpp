@@ -364,10 +364,10 @@ void GroundClass::Init(SimInitDataClass* initData)
 
     Sms->SetCurHardpoint(-1);
 
-    if ((GetType() == TYPE_WHEELED and GetSType() == STYPE_WHEELED_AIR_DEFENSE) ||
-        (GetType() == TYPE_WHEELED and GetSType() == STYPE_WHEELED_AAA) ||
-        (GetType() == TYPE_TRACKED and GetSType() == STYPE_TRACKED_AIR_DEFENSE) ||
-        (GetType() == TYPE_TRACKED and GetSType() == STYPE_TRACKED_AAA) ||
+    if ((GetType() == TYPE_WHEELED and GetSType() == STYPE_WHEELED_AIR_DEFENSE) or
+        (GetType() == TYPE_WHEELED and GetSType() == STYPE_WHEELED_AAA) or
+        (GetType() == TYPE_TRACKED and GetSType() == STYPE_TRACKED_AIR_DEFENSE) or
+        (GetType() == TYPE_TRACKED and GetSType() == STYPE_TRACKED_AAA) or
         (GetType() == TYPE_TOWED and GetSType() == STYPE_TOWED_AAA))
     {
         isAirDefense = TRUE;

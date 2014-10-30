@@ -143,7 +143,7 @@ inline void glGetFileExtension(const char *file, char *ext)
         nextchar = *file;
 
         if (currchar == '.' and 
-            ((prevchar not_eq '.' and prevchar not_eq '\\') ||
+            ((prevchar not_eq '.' and prevchar not_eq '\\') or
              (nextchar not_eq '.' and nextchar not_eq '\\'))) break;
 
         prevchar = currchar;

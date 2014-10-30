@@ -655,7 +655,7 @@ void SimulationDriver::Cycle()
                 // There is code in ::SimBaseClass that sets the flag FELF_ADDED_DURING_SIMDRIVER_CYCLE.
                 // We need to make sure we clear it here.
                 if (
- not processObjsAddedInCycle ||
+ not processObjsAddedInCycle or
                     (processObjsAddedInCycle and theObject->IsSetFELocalFlag(FELF_ADDED_DURING_SIMDRIVER_CYCLE))
                 )
                 {
@@ -921,7 +921,7 @@ AircraftClass *SimulationDriver::GetPlayerAircraft() const
 
 void SimulationDriver::UpdateIAStats(SimBaseClass* oldEntity)
 {
-    if ((oldEntity->IsSetFlag(MOTION_MSL_AI)) ||
+    if ((oldEntity->IsSetFlag(MOTION_MSL_AI)) or
         (oldEntity->IsSetFlag(MOTION_BMB_AI)))
     {
         //InstantAction.ExpendWeapons(oldEntity);
@@ -1002,7 +1002,7 @@ void SimulationDriver::WakeCampaignBase(int isUnit, CampBaseClass* baseEntity, T
         {
             // Wake vehicles by percentage
             if (
-                (woken <= last_to_add) ||
+                (woken <= last_to_add) or
                 (theObject->GetSlot() == ((Unit)baseEntity)->class_data->RadarVehicle)
             )
             {
@@ -1155,7 +1155,7 @@ SimBaseClass* SimulationDriver::FindNearestThreat(float* bearing, float* range, 
         if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and not theObject->IsEject() and not theObject->IsDying() and 
             GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile and theObject->GetCampaignObject()->GetSpotted(myTeam))
         {
-            if (theObject->GetSType() == STYPE_AIR_FIGHTER ||
+            if (theObject->GetSType() == STYPE_AIR_FIGHTER or
                 theObject->GetSType() == STYPE_AIR_FIGHTER_BOMBER)
             {
                 if (retval == NULL)
@@ -1215,7 +1215,7 @@ SimBaseClass* SimulationDriver::FindNearestThreat(short *x, short *y, float* alt
         if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and not theObject->IsEject() and not theObject->IsDying() and 
             GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile and theObject->GetCampaignObject()->GetSpotted(myTeam))
         {
-            if (theObject->GetSType() == STYPE_AIR_FIGHTER ||
+            if (theObject->GetSType() == STYPE_AIR_FIGHTER or
                 theObject->GetSType() == STYPE_AIR_FIGHTER_BOMBER)
             {
                 if (retval == NULL)
@@ -1277,7 +1277,7 @@ SimBaseClass* SimulationDriver::FindNearestThreat(AircraftClass* aircraft, short
         if (theObject->IsAirplane() and not theObject->IsDead() and not theObject->OnGround() and not theObject->IsEject() and not theObject->IsDying() and 
             GetTTRelations((Team)theObject->GetTeam(), myTeam) >= Hostile and theObject->GetCampaignObject()->GetSpotted(myTeam))
         {
-            if (theObject->GetSType() == STYPE_AIR_FIGHTER ||
+            if (theObject->GetSType() == STYPE_AIR_FIGHTER or
                 theObject->GetSType() == STYPE_AIR_FIGHTER_BOMBER)
             {
                 if (retval == NULL)
@@ -1409,7 +1409,7 @@ CampBaseClass* SimulationDriver::FindNearestCampThreat(AircraftClass* aircraft, 
     {
         if (theUnit->IsFlight() and not theUnit->IsDead() and GetTTRelations((Team)theUnit->GetTeam(), myTeam) >= Hostile and theUnit->GetSpotted(myTeam))
         {
-            if (theUnit->GetSType() == STYPE_UNIT_FIGHTER ||
+            if (theUnit->GetSType() == STYPE_UNIT_FIGHTER or
                 theUnit->GetSType() == STYPE_UNIT_FIGHTER_BOMBER)
             {
                 if (retval == NULL)
@@ -2200,14 +2200,14 @@ void SimulationDriver::POVKludgeFunction(DWORD povHatAngle)   // VWF POV Kludge 
 
     //static DWORD previousAngle = -1;
 
-    //if((povHatAngle == -1 and previousAngle not_eq -1) ||
+    //if((povHatAngle == -1 and previousAngle not_eq -1) or
     // (povHatAngle not_eq -1 and previousAngle == -1)) {
 
-    if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit  ||
+    if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit  or
         OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockF3  or // 2002-02-17 MODIFIED BY S.G. Needed now for the 'break lock by POV' to work
         OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockEFOV or // 2002-02-17 MODIFIED BY S.G. Needed now for the 'break lock by POV' to work
-        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeOrbit  ||
-        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeChase  ||
+        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeOrbit  or
+        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeChase  or
         OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeSatellite)
     {
         /*

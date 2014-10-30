@@ -1155,7 +1155,7 @@ int VuTargetEntity::SendNormalPriority(VuCommsContext* ctxt, VuMessage *msg)
             totsize + ctxt->normalSendPacketPtr_ - ctxt->normalSendPacket_ > ctxt->maxPackSize_ or (
                 // different origins
                 ctxt->normalSendPacketPtr_ not_eq ctxt->normalSendPacket_ and (
-                    msg->Sender().creator_ not_eq ctxt->normalPendingSenderId_.creator_ ||
+                    msg->Sender().creator_ not_eq ctxt->normalPendingSenderId_.creator_ or
                     msg->Destination() not_eq ctxt->normalPendingSendTargetId_
                 )
             )
@@ -1223,7 +1223,7 @@ int VuTargetEntity::SendLowPriority(VuCommsContext* ctxt, VuMessage *msg)
                 // write would exceed packet size
                 ctxt->lowSendPacketPtr_ not_eq ctxt->lowSendPacket_ and (
                     // different origins
-                    msg->Sender().creator_ not_eq ctxt->lowPendingSenderId_.creator_ ||
+                    msg->Sender().creator_ not_eq ctxt->lowPendingSenderId_.creator_ or
                     msg->Destination() not_eq ctxt->lowPendingSendTargetId_
                 )
             )
@@ -2234,7 +2234,7 @@ void VuSessionEntity::CloseSession()
             if ((ent not_eq this) and (ent->OwnerId() == Id()) and (ent->IsGlobal()))
             {
                 if (
-                    (sess == NULL) or (ent->IsTransferrable() == 0) ||
+                    (sess == NULL) or (ent->IsTransferrable() == 0) or
                     ((ent->IsGame() and ((VuGameEntity *)ent)->SessionCount() == 0))
                 )
                 {
@@ -3763,7 +3763,7 @@ VU_ERRCODE VuGameEntity::Distribute(VuSessionEntity* sess)
                     next = dbiter.GetNext();
 
                     if ((ent->OwnerId().creator_ == sess->SessionId()) and (sess not_eq ent) and 
-                        (sess->VuState() not_eq VU_MEM_ACTIVE ||
+                        (sess->VuState() not_eq VU_MEM_ACTIVE or
                          (ent->IsTransferrable() and not ent->IsGlobal())))
                     {
                         vuDatabase->Remove(ent);

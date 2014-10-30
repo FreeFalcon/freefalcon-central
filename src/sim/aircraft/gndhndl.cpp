@@ -134,13 +134,13 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
     if (IsSetFalcFlag(FEC_INVULNERABLE))
         sinkRate *= 2.0F;
 
-    if (groundType == COVERAGE_WATER ||
-        groundType == COVERAGE_RIVER ||
+    if (groundType == COVERAGE_WATER or
+        groundType == COVERAGE_RIVER or
         ( not onFlatFeature and 
  not af->IsSet(AirframeClass::OverRunway) and 
-         (groundType == COVERAGE_THINFOREST ||
-          groundType == COVERAGE_THICKFOREST ||
-          groundType == COVERAGE_ROCKY ||
+         (groundType == COVERAGE_THINFOREST or
+          groundType == COVERAGE_THICKFOREST or
+          groundType == COVERAGE_ROCKY or
           groundType == COVERAGE_URBAN)))
     {
         message = CreateGroundCollisionMessage(this, FloatToInt32(maxStrength));
@@ -185,7 +185,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
 
 
-    if (fabs(noseAngle) >= impactTest ||
+    if (fabs(noseAngle) >= impactTest or
         ( not af->IsSet(AirframeClass::OnObject) and platformAngles.sinthe < 0.0F or platformAngles.sinthe < -0.01F) or // JB carrier
         platformAngles.cosphi < 0.94F)
     {

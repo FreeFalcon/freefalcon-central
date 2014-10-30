@@ -217,7 +217,7 @@ GLint ReadDDS(CImageFileMemory *fi)
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
     {
-        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') ||
+        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') or
             ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '5'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth;
@@ -366,7 +366,7 @@ GLint ReadAPL(CImageFileMemory *fi)
     }
 
     // Read the palette then the image data
-    if ((fi -> glReadMem(fi -> image.palette, 1024) not_eq 1024)       ||
+    if ((fi -> glReadMem(fi -> image.palette, 1024) not_eq 1024)       or
         (fi -> glReadMem(fi -> image.image,   imageSize) not_eq imageSize))
     {
         glReleaseMemory(fi -> image.palette);
@@ -570,7 +570,7 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
     {
         if (bitsleft == 8)
         {
-            if (++p >= q and (((blocksize = fi->glReadCharMem()) < 1) ||
+            if (++p >= q and (((blocksize = fi->glReadCharMem()) < 1) or
                              (q = (p = b) + fi->glReadMem(b, blocksize)) < (b + blocksize)))
                 return(UNEXPECTED_EOF);
 
@@ -586,7 +586,7 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
         }
         else
         {
-            if (++p >= q and (((blocksize = fi->glReadCharMem()) < 1) ||
+            if (++p >= q and (((blocksize = fi->glReadCharMem()) < 1) or
                              (q = (p = b) + fi->glReadMem(b, blocksize)) < (b + blocksize)))
                 return(UNEXPECTED_EOF);
 
@@ -599,7 +599,7 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
             }
             else
             {
-                if (++p >= q and (((blocksize = fi->glReadCharMem()) < 1) ||
+                if (++p >= q and (((blocksize = fi->glReadCharMem()) < 1) or
                                  (q = (p = b) + fi->glReadMem(b, blocksize)) < (b + blocksize)))
                     return(UNEXPECTED_EOF);
 
@@ -1050,8 +1050,8 @@ GLint UnpackPCX(CImageFileMemory *fi)
     GLubyte *palIn;
     GLulong *palOut, *palStop;
 
-    if ((fi->glReadMem((GLubyte *)&pcx, sizeof(PCXHEAD)) not_eq sizeof(PCXHEAD)) ||
-        (pcx.manufacturer not_eq 10) ||
+    if ((fi->glReadMem((GLubyte *)&pcx, sizeof(PCXHEAD)) not_eq sizeof(PCXHEAD)) or
+        (pcx.manufacturer not_eq 10) or
         (pcx.version not_eq 5))
     {
 

@@ -1012,7 +1012,7 @@ void LoadFlight(VU_ID flightID)
         if ( not i)
             Object.PosZ = 0;
 
-        if (classPtr->visType[0] == MapVisId(VIS_F16C) ||
+        if (classPtr->visType[0] == MapVisId(VIS_F16C) or
             (((DrawableBSP*)obj->object)->instance.ParentObject->nSwitches >= 10 and 
              ((DrawableBSP*)obj->object)->instance.ParentObject->nDOFs >= 24))
         {
@@ -1201,7 +1201,7 @@ BOOL MuniTimeCB(C_Base *control)
 
                     for (int hpi = 0; hpi < HARDPOINT_MAX ; ++hpi)
                     {
-                        if ((gOriginalStores[aci].WeaponID[hpi] not_eq flightLOS.WeaponID[hpi]) ||
+                        if ((gOriginalStores[aci].WeaponID[hpi] not_eq flightLOS.WeaponID[hpi]) or
                             (gOriginalStores[aci].WeaponCount[hpi] not_eq flightLOS.WeaponCount[hpi]))
                         {
                             // update the info for the loadout
@@ -2260,7 +2260,7 @@ void SetupLoadoutDisplay()
                                         slist = StoresList::_AIR_TO_GROUND_;
                                     }
                                 }
-                                else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_ROCKET ||
+                                else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_ROCKET or
                                          classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_LAUNCHER)
                                 {
                                     wtype = StoresList::_TYPE_ROCKET_;
@@ -2356,7 +2356,7 @@ void SetupLoadoutDisplay()
                                 slist = StoresList::_AIR_TO_GROUND_;
                             }
                         }
-                        else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_ROCKET ||
+                        else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_ROCKET or
                                  classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_LAUNCHER)
                         {
                             wtype = StoresList::_TYPE_ROCKET_;

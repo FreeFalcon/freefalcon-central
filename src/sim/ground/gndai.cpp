@@ -716,8 +716,8 @@ void GNDAIClass::ProcessTargeting(void)
     // RV - Biker - Switch to next target if we did take a hit (pctStrength <= 0.0f)
     //if( not self->targetPtr or self->targetPtr->BaseData()->IsDead() or newUnit not_eq oldUnit)
     if (
- not self->targetPtr ||
-        ((SimBaseClass *)self->targetPtr->BaseData())->pctStrength <= 0.0f ||
+ not self->targetPtr or
+        ((SimBaseClass *)self->targetPtr->BaseData())->pctStrength <= 0.0f or
         self->targetPtr->BaseData()->IsDead() or newUnit not_eq oldUnit
     )
     {
@@ -1776,9 +1776,9 @@ static int InPosition(GNDAIClass* us)
     // Particularly the fact that MSVC/Intel don't always ensure that compare arguments are rounded
     // to the same precision before the compare.
 
-    if (us->ideal_x not_eq us->self->XPos() ||
-        us->ideal_y not_eq us->self->YPos() ||
-        us->battalionCommand->self->XDelta() not_eq 0.0F ||
+    if (us->ideal_x not_eq us->self->XPos() or
+        us->ideal_y not_eq us->self->YPos() or
+        us->battalionCommand->self->XDelta() not_eq 0.0F or
         us->battalionCommand->self->YDelta() not_eq 0.0F)
 
         return 0;

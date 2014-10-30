@@ -79,8 +79,8 @@ VU_BOOL VuStandardFilter::Test(VuEntity* ent)
     (
         ((ushort)(ent->FlagValue()) bitand idmask_.val_) and 
         (
-            (localSession_ == DONT_CARE) ||
-            ((localSession_ == TRUE) and (ent->IsLocal())) ||
+            (localSession_ == DONT_CARE) or
+            ((localSession_ == TRUE) and (ent->IsLocal())) or
             ((localSession_ == FALSE) and ( not ent->IsLocal()))
         )
     )

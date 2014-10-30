@@ -2263,8 +2263,8 @@ BOOL C_Window::ClipLine(long *x1, long *y1, long *x2, long *y2, UI95_RECT *clip)
         return(TRUE);
 
     if (((flag1 bitand flag2) bitand LINE_CLIP_LEFT) or // If both points are on the same side of the clip rect... don't draw
-        ((flag1 bitand flag2) bitand LINE_CLIP_TOP) ||
-        ((flag1 bitand flag2) bitand LINE_CLIP_RIGHT) ||
+        ((flag1 bitand flag2) bitand LINE_CLIP_TOP) or
+        ((flag1 bitand flag2) bitand LINE_CLIP_RIGHT) or
         ((flag1 bitand flag2) bitand LINE_CLIP_BOTTOM))
         return(FALSE);
 

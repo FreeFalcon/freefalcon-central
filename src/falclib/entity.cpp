@@ -1866,7 +1866,7 @@ int FindBestRackID(int rackgroup, int count)
 
 int FindBestRackIDByPlaneAndWeapon(int planerg, int weaponrg, int count)
 {
-    if (planerg < 0 or planerg >= MaxRackGroups ||
+    if (planerg < 0 or planerg >= MaxRackGroups or
         weaponrg < 0 or weaponrg >= MaxRackGroups)
         return -1;
 

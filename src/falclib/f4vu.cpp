@@ -433,7 +433,7 @@ void VuxGetIdAndWraps(const VuEntity *ce, VU_ID_NUMBER &id, VU_ID_NUMBER &low, V
  VU_ID_NUMBER *idp;
  ushort type = e->Type();
  if (
- (type > VU_PLAYER_POOL_GROUP_ENTITY_TYPE) ||
+ (type > VU_PLAYER_POOL_GROUP_ENTITY_TYPE) or
  (type < VU_SESSION_ENTITY_TYPE)
  ){
  FalconEntity *fe = static_cast<FalconEntity*>(e);

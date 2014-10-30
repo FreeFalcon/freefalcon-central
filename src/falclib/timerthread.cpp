@@ -184,7 +184,7 @@ void SetTime(unsigned long currentTime)
 
     // ShiAssert
     // (
-    // (gameCompressionRatio == 0) ||
+    // (gameCompressionRatio == 0) or
     // (TheCampaign.IsSuspended ())
     // );
 }

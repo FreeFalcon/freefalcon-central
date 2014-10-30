@@ -76,7 +76,7 @@ void AircraftClass::GatherInputs(void)
     {
         // No autopilot for ownship if broken
         if (
- not IsSetFlag(MOTION_OWNSHIP) ||
+ not IsSetFlag(MOTION_OWNSHIP) or
  not (mFaults and mFaults->GetFault(FaultClass::flcs_fault) == FaultClass::a_p)
         )
         {

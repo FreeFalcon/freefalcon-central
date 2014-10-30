@@ -412,7 +412,7 @@ void AircraftClass::DropEWS()
     FlareCount = 0;
 
     //make noise
-    if ((counterMeasureStation[FLARE_STATION].weaponCount > 0 ||
+    if ((counterMeasureStation[FLARE_STATION].weaponCount > 0 or
          counterMeasureStation[CHAFF_STATION].weaponCount > 0) and 
         (EWSPGM() == Man or EWSPGM() == Semi or EWSPGM() == Auto))
     {

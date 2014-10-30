@@ -518,7 +518,7 @@ long C_PopupList::CheckHotSpots(long relX, long relY)
     if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED))
         return(0);
 
-    if (relX < Parent_->ClientArea_[GetClient()].left or relX > Parent_->ClientArea_[GetClient()].right ||
+    if (relX < Parent_->ClientArea_[GetClient()].left or relX > Parent_->ClientArea_[GetClient()].right or
         relY < Parent_->ClientArea_[GetClient()].top or relY > Parent_->ClientArea_[GetClient()].bottom)
         return(0);
 
@@ -598,7 +598,7 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
     POPUPLIST *cur;
     short i, item, w, h;
 
-    if (relX < Parent_->ClientArea_[GetClient()].left or relX > Parent_->ClientArea_[GetClient()].right ||
+    if (relX < Parent_->ClientArea_[GetClient()].left or relX > Parent_->ClientArea_[GetClient()].right or
         relY < Parent_->ClientArea_[GetClient()].top or relY > Parent_->ClientArea_[GetClient()].bottom)
     {
         /* CloseSubMenus();

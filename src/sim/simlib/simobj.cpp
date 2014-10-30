@@ -191,7 +191,7 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
         // Inherit certain attributes from campaign parent
         // HACK HACK HACK HACK HACK
         if (FalconLocalGame->GetGameType() == game_Dogfight and initData->campBase->IsUnit())
-            //    if ((initData->campUnit and initData->campUnit->IsSetFalcFlag(FEC_REGENERATING)) ||
+            //    if ((initData->campUnit and initData->campUnit->IsSetFalcFlag(FEC_REGENERATING)) or
             //    (initData->campObj and initData->campObj->IsSetFalcFlag(FEC_REGENERATING)))
             // END HACK
         {
@@ -596,7 +596,7 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
     {
         return FALSE;
     }
-    else if (self->IsAirplane() and (self->OnGround() /*|| curUpdate->IsHelicopter()*/)) // 2002-03-05 MODIFIED BY S.G. Choppers are fare game now under some condition so don't screen them out
+    else if (self->IsAirplane() and (self->OnGround() /*or curUpdate->IsHelicopter()*/)) // 2002-03-05 MODIFIED BY S.G. Choppers are fare game now under some condition so don't screen them out
     {
         return FALSE;
     }
@@ -609,8 +609,8 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
         if (self->GetTeam() == curUpdate->GetTeam())
             airRange = 100.0F * 100.0F;
         else if (curUpdate->IsSim() and 
-                 (((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER ||
-                  ((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER_BOMBER ||
+                 (((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER or
+                  ((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER_BOMBER or
                   // 2002-03-05 MODIFIED BY S.G. Duh, it's missionClass, not missionType that holds AAMission
                   //   ((AircraftClass*)self)->DBrain()->MissionType() == DigitalBrain::AAMission) )
                   ((AircraftClass*)self)->DBrain()->MissionClass() == DigitalBrain::AAMission))
@@ -618,8 +618,8 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
             airRange = 20.0F * NM_TO_FT * 20.0F * NM_TO_FT;
         }
         else if (curUpdate->IsCampaign() and 
-                 (((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER ||
-                  ((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER_BOMBER ||
+                 (((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER or
+                  ((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER_BOMBER or
                   // 2002-03-05 MODIFIED BY S.G. Duh, it's missionClass, not missionType that holds AAMission
                   //   ((AircraftClass*)self)->DBrain()->MissionType() == DigitalBrain::AAMission) )
                   ((AircraftClass*)self)->DBrain()->MissionClass() == DigitalBrain::AAMission))

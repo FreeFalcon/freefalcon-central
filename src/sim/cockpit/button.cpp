@@ -96,7 +96,7 @@ void CPButtonObject::HandleEvent(int event)
 void CPButtonObject::HandleMouseEvent(int event)
 {
 
-    if (event == CP_MOUSE_BUTTON0 ||
+    if (event == CP_MOUSE_BUTTON0 or
         event == CP_MOUSE_BUTTON1)
     {
 

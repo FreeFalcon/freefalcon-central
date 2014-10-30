@@ -1186,8 +1186,8 @@ void MenuUnitStatusCB(long, short, C_Base *)
                     {
                         // 2002-02-21 ADDED BY S.G. If not spotted by the player's team or not editing a TE, can't get its status...
                         if (
-                            (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) ||
-                            (gGps->GetTeamNo() == ent->GetTeam()) ||
+                            (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) or
+                            (gGps->GetTeamNo() == ent->GetTeam()) or
                             ent->GetIdentified(static_cast<Team>(gGps->GetTeamNo()))
                         )
                         {

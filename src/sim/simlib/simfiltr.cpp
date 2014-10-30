@@ -49,7 +49,7 @@ VU_BOOL AllSimFilter::Test(VuEntity* ent1)
         if (
             classPtr->classInfo_[VU_DOMAIN] > DOMAIN_ABSTRACT and 
             (
-                classPtr->classInfo_[VU_CLASS] == CLASS_VEHICLE ||
+                classPtr->classInfo_[VU_CLASS] == CLASS_VEHICLE or
                 classPtr->classInfo_[VU_CLASS] == CLASS_FEATURE
             ) and 
             (((FalconEntity*)ent1)->IsSim()) and 
@@ -214,7 +214,7 @@ VU_BOOL SimLocalFilter::Test(VuEntity* ent1)
             (
                 classPtr->classInfo_[VU_CLASS]  == CLASS_VEHICLE and 
                 classPtr->classInfo_[VU_DOMAIN] == DOMAIN_AIR
-            ) ||
+            ) or
             (
                 classPtr->classInfo_[VU_DOMAIN] == DOMAIN_AIR and 
                 classPtr->classInfo_[VU_CLASS] == CLASS_SFX and 

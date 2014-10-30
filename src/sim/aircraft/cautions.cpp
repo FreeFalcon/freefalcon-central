@@ -246,7 +246,7 @@ void AircraftClass::CautionCheck(void)
         // JPO - dump dumps cabin pressure, off means its not there anyway.
         // 10000 is a guess - thats where you requirte oxygen
         // MD -- 20031105: the dash one says this caution kicks in at 27k MSL
-        if (ZPos() < -27000 and (af->GetAirSource() == AirframeClass::AS_DUMP ||
+        if (ZPos() < -27000 and (af->GetAirSource() == AirframeClass::AS_DUMP or
                                 af->GetAirSource() == AirframeClass::AS_OFF))
         {
             if ( not mFaults->GetFault(cabin_press_fault))
@@ -1020,7 +1020,7 @@ void AircraftClass::StoreToDamage(WeaponClass thing)
                 }
             }
 
-            if (thing == wcBombWpn or thing == wcRocketWpn or thing == wcAgmWpn ||
+            if (thing == wcBombWpn or thing == wcRocketWpn or thing == wcAgmWpn or
                 thing == wcHARMWpn or thing == wcSamWpn or thing == wcGbuWpn)
             {
                 if (GetNz() > af->curMaxGs + GToleranceBombs)
@@ -1280,7 +1280,7 @@ void AircraftClass::SetExternalData(void)
         OTWDriver.pCockpitManager->mMiscStates.SetRefuelState(0);
     }
 
-    if (playerAC->af->IsSet(AirframeClass::NoseSteerOn) ||
+    if (playerAC->af->IsSet(AirframeClass::NoseSteerOn) or
         (OTWDriver.pCockpitManager->mMiscStates.mRefuelState == 2))  // contact
         cockpitFlightData.SetLightBit(FlightData::RefuelAR);
     else
@@ -1427,7 +1427,7 @@ void AircraftClass::SetExternalData(void)
     else
         cockpitFlightData.ClearLightBit2(FlightData::EcmPwr);
 
-    if (playerAC->mFaults->GetFault(FaultClass::epod_fault) ||
+    if (playerAC->mFaults->GetFault(FaultClass::epod_fault) or
         playerAC->mFaults->GetFault(FaultClass::blkr_fault))
         cockpitFlightData.SetLightBit2(FlightData::EcmFail);
     else
@@ -1498,7 +1498,7 @@ void AircraftClass::SetExternalData(void)
     // have to do for now.
     // Lamp should be on if the TFR mode is standby or if the AP Override is being held during TFR operation.
 
-    if ((theLantirn and (theLantirn->GetTFRMode() == LantirnClass::TFR_STBY)) ||
+    if ((theLantirn and (theLantirn->GetTFRMode() == LantirnClass::TFR_STBY)) or
         ((playerAC->lastapType == AircraftClass::LantirnAP) and playerAC->IsOn(AircraftClass::Override)))
         cockpitFlightData.SetLightBit(FlightData::TFR_STBY);
     else
@@ -1506,8 +1506,8 @@ void AircraftClass::SetExternalData(void)
 
     // MD -- 20031011: this is a different logic flow that is used when looking at the cockpit
     // because here we only care about the lamp state not where the handle is (up/down)
-    if (playerAC->mFaults->GetFault(FaultClass::gear_fault) ||
-        (playerAC->mFaults->GetFault(to_ldg_config) and playerAC->af->gearPos == 0.0F) ||
+    if (playerAC->mFaults->GetFault(FaultClass::gear_fault) or
+        (playerAC->mFaults->GetFault(to_ldg_config) and playerAC->af->gearPos == 0.0F) or
         ((playerAC->af->gearPos not_eq 0.0F) and (playerAC->af->gearPos not_eq 1.0F)))
         cockpitFlightData.SetLightBit2(FlightData::GEARHANDLE);
     else
@@ -1568,7 +1568,7 @@ void AircraftClass::SetExternalData(void)
 
     // MD -- 20031221: This one is for Mirv -- separate light for the lower half of the ENG FIRE/ENGINE split face
     // lamp on the right side of the glareshield.
-    if (((af->rpm <= 0.6F) and (((AircraftClass*)(playerAC))->MainPower() == AircraftClass::MainPowerMain)) ||
+    if (((af->rpm <= 0.6F) and (((AircraftClass*)(playerAC))->MainPower() == AircraftClass::MainPowerMain)) or
         (cockpitFlightData.ftit > 1100.0F))
         cockpitFlightData.SetLightBit2(FlightData::ENGINE);
     else

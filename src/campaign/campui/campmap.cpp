@@ -176,7 +176,7 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
                     own = GetOwner(TheCampaign.CampMapData, rx, ry);
 
                     // Let the ownership map decide if we're over water or not
-                    //if (GetCover(rx,ry) not_eq Water or GetCover(rx+PAK_MAP_RATIO-1,ry) not_eq Water ||
+                    //if (GetCover(rx,ry) not_eq Water or GetCover(rx+PAK_MAP_RATIO-1,ry) not_eq Water or
                     // GetCover(rx,ry+PAK_MAP_RATIO-1) not_eq Water)
                     if (own)
                     {
@@ -221,8 +221,8 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
                     ry = y * MAP_RATIO;
 
                     if (
-                        GetCover(rx, ry) not_eq Water ||
-                        GetCover(rx + MAP_RATIO - 1, ry) not_eq Water ||
+                        GetCover(rx, ry) not_eq Water or
+                        GetCover(rx + MAP_RATIO - 1, ry) not_eq Water or
                         GetCover(rx, ry + MAP_RATIO - 1) not_eq Water
                     )
                     {
@@ -303,8 +303,8 @@ uchar* UpdateCampMap(int type, uchar* map_data, GridIndex cx, GridIndex cy)
                     ry = y * MAP_RATIO;
 
                     if (
-                        GetCover(rx, ry) not_eq Water ||
-                        GetCover(rx + MAP_RATIO - 1, ry) not_eq Water ||
+                        GetCover(rx, ry) not_eq Water or
+                        GetCover(rx + MAP_RATIO - 1, ry) not_eq Water or
                         GetCover(rx, ry + MAP_RATIO - 1) not_eq Water
                     )
                     {

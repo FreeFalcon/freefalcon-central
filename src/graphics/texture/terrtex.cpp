@@ -459,7 +459,7 @@ void TextureDB::StoreMPRPalette(SetEntry *pSet)
         }
         else if (PlayerOptions.Season == 2) //Winter
         {
-            if ( not (tmpR == tmpG and tmpR == tmpB) or tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //|| (tmpR == 255 and tmpG == 255))) //Greyscale //or pure color
+            if ( not (tmpR == tmpG and tmpR == tmpB) or tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //or (tmpR == 255 and tmpG == 255))) //Greyscale //or pure color
             {
                 RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
@@ -1444,7 +1444,7 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
     {
-        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') ||
+        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') or
             ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '5'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth;
@@ -1532,7 +1532,7 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
     {
-        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') ||
+        if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') or
             ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '5'))
         {
             ddsd.dwLinearSize = ddsd.dwWidth * ddsd.dwWidth;

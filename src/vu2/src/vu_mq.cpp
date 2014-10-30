@@ -208,7 +208,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
 
     // if message is remote or is a local message loopback, place in local queues
     if (
- not msg->IsLocal() ||
+ not msg->IsLocal() or
         ((msg->Flags() bitand VU_LOOPBACK_MSG_FLAG) and msg->IsLocal())
     )
     {

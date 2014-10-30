@@ -440,7 +440,7 @@ void CPKneeView::DrawMap()
             //this points to the pixel
             UInt8 *pixelPointer = rowFirstPointer + dstCol;
 
-            if (((srcRowInitOffset + dstRow) >= h) or ((srcRowInitOffset + dstRow) < 0) ||
+            if (((srcRowInitOffset + dstRow) >= h) or ((srcRowInitOffset + dstRow) < 0) or
                 ((srcColInitOffset + dstCol) >= w) or ((srcColInitOffset + dstCol) < 0))
             {
                 //we use a transparent pixel...

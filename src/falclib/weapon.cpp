@@ -35,7 +35,7 @@ int GetWeaponRange(int w, int mt)
         return 0;
 
     // if (
-    // F4IsBadReadPtr(&(WeaponDataTable[w]), sizeof(WeaponClassDataType)) ||
+    // F4IsBadReadPtr(&(WeaponDataTable[w]), sizeof(WeaponClassDataType)) or
     // F4IsBadReadPtr(&(WeaponDataTable[w].HitChance[mt]), sizeof(uchar)))
     // JB 011205 (too much CPU) // JB 010331 CTD
     if (w < 0 or w >= NumWeaponTypes)

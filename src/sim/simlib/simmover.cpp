@@ -462,9 +462,9 @@ void SimMoverClass::PositionUpdateDone()
 bool SimMoverClass::UpdatePositionFromLastOwner(unsigned long ms)
 {
     if (
-        (FalconLocalGame == NULL) ||
-        (lastOwnerId == FalconNullId) ||
-        (lastOwnerId == FalconLocalSessionId) ||
+        (FalconLocalGame == NULL) or
+        (lastOwnerId == FalconNullId) or
+        (lastOwnerId == FalconLocalSessionId) or
         (vuDatabase->Find(lastOwnerId) == NULL)
     )
     {
@@ -1150,7 +1150,7 @@ void SimMoverClass::UpdateLOS(SimObjectType *obj)
     OTWDriver.GetAreaFloorAndCeiling(&bottom, &top);
 
     if (
-        (ZPos() < top and obj->BaseData()->ZPos() < top) ||
+        (ZPos() < top and obj->BaseData()->ZPos() < top) or
         (OTWDriver.CheckLOS(this, obj->BaseData()))
     )
     {

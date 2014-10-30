@@ -453,7 +453,7 @@ void Texture::FreePalette()
     {
         // sfr: added palette check and corectedx the > to >=
         if (
-            (palette < &ThePaletteBank.PalettePool[0]) ||
+            (palette < &ThePaletteBank.PalettePool[0]) or
             (palette >= &ThePaletteBank.PalettePool[ThePaletteBank.nPalettes])
         )
         {

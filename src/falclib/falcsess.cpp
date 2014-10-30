@@ -892,8 +892,8 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     if (FalconLocalGame and Game() == FalconLocalGame and FalconLocalGame->IsLocal())
     {
         if (
-            assignedAircraftNum not_eq aircraftNum ||
-            assignedPilotSlot not_eq pilotSlot ||
+            assignedAircraftNum not_eq aircraftNum or
+            assignedPilotSlot not_eq pilotSlot or
             assignedPlayerFlightPtr not_eq playerFlightPtr
         )
         {

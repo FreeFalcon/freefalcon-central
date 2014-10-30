@@ -898,7 +898,7 @@ int GroundClass::MissileTrack(void)
         if (zft < maxAlt or zft > minAlt)
             return FALSE;
 
-        // if (targetPtr->localData->range > wc->Range*KM_TO_FT /*|| targetPtr->localData->range < wc->Range*KM_TO_FT*0.1F */)
+        // if (targetPtr->localData->range > wc->Range*KM_TO_FT /*or targetPtr->localData->range < wc->Range*KM_TO_FT*0.1F */)
         // return FALSE;
         if (targetPtr->localData->range > theMissile->GetRMax(-target->ZPos(), 0,
                 targetPtr->localData->az, targetPtr->BaseData()->GetVt(), targetPtr->localData->ataFrom))

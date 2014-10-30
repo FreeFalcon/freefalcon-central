@@ -1898,7 +1898,7 @@ void AircraftClass::ShowDamage(void)
              -ZPos() > minwingvortexalt and 
              -ZPos() < maxwingvortexalt) and 
 
-            ((currentAOA > wingvortexAlpha and currentG > wingvortexgs) ||
+            ((currentAOA > wingvortexAlpha and currentG > wingvortexgs) or
              (currentAOA > wingvortexAlphaHigh and currentAOA < wingvortexAlphaLimit and 
               currentVCAS > vortexMinSpeedLimit)))
         {

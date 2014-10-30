@@ -110,7 +110,7 @@ const char *DeviceManager::GetModeName(int driverNum, int devNum, int modeNum)
     {
         // For now we only allow 640x480, 800x600, 1280x960, 1600x1200
         // (MPR already does the 4:3 aspect ratio check for us)
-        if (pddsd->ddpfPixelFormat.dwRGBBitCount >= 16 and (pddsd->dwWidth == 640 or pddsd->dwWidth == 800 or pddsd->dwWidth == 1024 ||
+        if (pddsd->ddpfPixelFormat.dwRGBBitCount >= 16 and (pddsd->dwWidth == 640 or pddsd->dwWidth == 800 or pddsd->dwWidth == 1024 or
                 (pddsd->dwWidth == 1280 and pddsd->dwHeight == 960) or pddsd->dwWidth == 1600 or HighResolutionHackFlag))
         {
             if (modeNum == 0)
@@ -503,7 +503,7 @@ DeviceManager::DDDriverInfo::D3DDeviceInfo::D3DDeviceInfo(D3DDEVICEDESC7 &devDes
 
 bool DeviceManager::DDDriverInfo::D3DDeviceInfo::IsHardware()
 {
-    if (IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRGBDevice) or IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRefDevice) ||
+    if (IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRGBDevice) or IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRefDevice) or
         IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRampDevice) or IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DMMXDevice))
         return false;
     else if (IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DHALDevice))
@@ -672,7 +672,7 @@ bool DXContext::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFulls
         */
 
         //JAM 25Oct03 - Let's avoid user error and disable these.
-        // if(IsEqualIID(m_guidD3D, IID_IDirect3DRGBDevice) or IsEqualIID(m_guidD3D, IID_IDirect3DRefDevice) ||
+        // if(IsEqualIID(m_guidD3D, IID_IDirect3DRGBDevice) or IsEqualIID(m_guidD3D, IID_IDirect3DRefDevice) or
         // IsEqualIID(m_guidD3D, IID_IDirect3DRampDevice) or IsEqualIID(m_guidD3D, IID_IDirect3DMMXDevice))
         // m_eDeviceCategory = D3DDeviceCategory_Software;
         // if(IsEqualIID(m_guidD3D, IID_IDirect3DHALDevice))
@@ -905,7 +905,7 @@ void DXContext::CheckCaps()
     if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps bitand D3DPRASTERCAPS_ZTEST))
         MonoPrint(" No Z Test support\n");
 
-    if (m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps == D3DPCMPCAPS_ALWAYS ||
+    if (m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps == D3DPCMPCAPS_ALWAYS or
         m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps == D3DPCMPCAPS_NEVER)
         MonoPrint(" No Alpha Test support\n");
 

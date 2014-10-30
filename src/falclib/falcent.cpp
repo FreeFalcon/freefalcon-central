@@ -250,9 +250,9 @@ void FalconEntity::MakeDirty(Dirty_Class bits, Dirtyness score)
 
     // send only local units which are active (in DB) and if the unit is more dirty than currently is
     if (
-        ( not IsLocal()) ||
-        (VuState() not_eq VU_MEM_ACTIVE) ||
-        (score <= dirty_score) ||
+        ( not IsLocal()) or
+        (VuState() not_eq VU_MEM_ACTIVE) or
+        (score <= dirty_score) or
  not (TheCampaign.Flags bitand CAMP_LOADED)
     )
     {

@@ -718,8 +718,8 @@ RES_EXPORT int ResInit(HWND hwnd)
             dev -> type = (char)(GetDriveType(root));
             dev -> letter = root[0];
 
-            if ((dev -> type == DRIVE_FIXED) ||
-                (dev -> type == DRIVE_CDROM) ||
+            if ((dev -> type == DRIVE_FIXED) or
+                (dev -> type == DRIVE_CDROM) or
                 (dev -> type == DRIVE_RAMDISK))
             {
 
@@ -3988,8 +3988,8 @@ RES_EXPORT int ResBuildPathname(int index, char * path_in, char * path_out)
 
 #if( RES_DEBUG_PARAMS )
 
-    if ((index < RES_DIR_NONE)  ||
-        (index >= RES_DIR_LAST) ||
+    if ((index < RES_DIR_NONE)  or
+        (index >= RES_DIR_LAST) or
         ( not path_out))
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResBuildPathname");
@@ -4211,8 +4211,8 @@ RES_EXPORT void ResAssignPath(int index, char * path)
 
 #if( RES_DEBUG_PARAMS )
 
-    if ((index <= RES_DIR_NONE) ||
-        (index >= RES_DIR_LAST) ||
+    if ((index <= RES_DIR_NONE) or
+        (index >= RES_DIR_LAST) or
         ( not path))
     {
         SAY_ERROR(RES_ERR_INCORRECT_PARAMETER, "ResAssignPath");
@@ -5832,7 +5832,7 @@ int __cdecl RES_FSEEK(FILE * stream, long offset, int whence)
     }
     else
     {
-        if ( not inuse(stream) ||
+        if ( not inuse(stream) or
             ((whence not_eq SEEK_SET) and 
              (whence not_eq SEEK_CUR) and 
              (whence not_eq SEEK_END)))
@@ -5984,7 +5984,7 @@ int __cdecl _filbuf(FILE * stream)
 
     //LRKLUDGE
     // If its a string return
-    if ( not inuse(stream) ||
+    if ( not inuse(stream) or
         ((stream->_flag bitand _IOSTRG) and 
  not (stream->_flag bitand (_IOLOOSE | _IOARCHIVE))))
         return(EOF);
@@ -7401,9 +7401,9 @@ void hash_purge(HASH_TABLE * hsh, const char * archive, const char * volume, con
 
             while (curr)
             {
-                if ((volume and (curr -> volume == *volume)) ||
-                    (archive and (curr -> archive == *archive)) ||
-                    (directory and (curr -> directory == *directory)) ||
+                if ((volume and (curr -> volume == *volume)) or
+                    (archive and (curr -> archive == *archive)) or
+                    (directory and (curr -> directory == *directory)) or
                     (filename and not strcmp(entry -> name, filename)))
                 {
                     if (curr -> dir)
@@ -7424,9 +7424,9 @@ void hash_purge(HASH_TABLE * hsh, const char * archive, const char * volume, con
             }
         }
 
-        if ((volume and (entry -> volume == *volume)) ||
-            (archive and (entry -> archive == *archive)) ||
-            (directory and (entry -> directory == *directory)) ||
+        if ((volume and (entry -> volume == *volume)) or
+            (archive and (entry -> archive == *archive)) or
+            (directory and (entry -> directory == *directory)) or
             (filename and not strcmp(entry -> name, filename)))
         {
             if (entry -> dir)
@@ -7792,7 +7792,7 @@ void split_path(const char * in_name, char * out_filename, char * out_dirpath)
 
     for (i = len; i >= 0; i--)
     {
-        if ((fullpath[i] == ASCII_BACKSLASH) ||
+        if ((fullpath[i] == ASCII_BACKSLASH) or
             (fullpath[i] == ASCII_COLON))
         {
             if (out_filename) strcpy(out_filename, &fullpath[i + 1]);

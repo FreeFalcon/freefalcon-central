@@ -847,9 +847,9 @@ int SimVehicleClass::Exec(void)
         //    if( not AddParticleEffect(PSFX_VEHICLE_DIE_INTERMITTENT_FIRE,&pos,&vec))
         //    {
         //
-        //    if ( pctStrength > -0.6f ||
-        //    pctStrength > -0.7f and pctStrength < -0.65 ||
-        //    pctStrength > -0.8f and pctStrength < -0.75 ||
+        //    if ( pctStrength > -0.6f or
+        //    pctStrength > -0.7f and pctStrength < -0.65 or
+        //    pctStrength > -0.8f and pctStrength < -0.75 or
         //    pctStrength > -0.9f and pctStrength < -0.85 )
         //    {
         //    float randamt  =   PRANDFloatPos();
@@ -1017,7 +1017,7 @@ int SimVehicleClass::Exec(void)
 
         // when we've bottomed out, kablooey
         // Have a look how AC behave when on ground
-        if (pctStrength <= -1.0f /*|| OnGround()*/)
+        if (pctStrength <= -1.0f /*or OnGround()*/)
         {
             if (GetDomain() == DOMAIN_LAND and GetType() not_eq TYPE_FOOT)
             {
@@ -1164,8 +1164,8 @@ void SimVehicleClass::SOIManager(SOI newSOI)
         int dType = theMissile->GetDisplayType();
 
         if (
-            dType == MissileClass::DisplayBW ||
-            dType == MissileClass::DisplayIR ||
+            dType == MissileClass::DisplayBW or
+            dType == MissileClass::DisplayIR or
             dType == MissileClass::DisplayHTS
         )
         {
@@ -1489,7 +1489,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
     // If this is our own aircraft and if we have disabled the damage jitter or a 25% chance
     // Or otherwise a 13% chance (AI controlled aircraft won't be able to fly with a bias so we want the % to be low)
     if (hitPoints > 0 and 
-        ((IsSetFlag(MOTION_OWNSHIP) and (g_bDisableFunkyChicken or (rand() bitand 0x3) == 0x3)) ||
+        ((IsSetFlag(MOTION_OWNSHIP) and (g_bDisableFunkyChicken or (rand() bitand 0x3) == 0x3)) or
          (rand() bitand 0x7) == 0x7))
     {
         rBias += ioPerturb / 2 * PRANDFloat();
@@ -1808,8 +1808,8 @@ void SimVehicleClass::StepSOI(int dir)
 
     if (theMissile and theMissile->IsMissile())
     {
-        if (theMissile->GetDisplayType() == MissileClass::DisplayBW ||
-            theMissile->GetDisplayType() == MissileClass::DisplayIR ||
+        if (theMissile->GetDisplayType() == MissileClass::DisplayBW or
+            theMissile->GetDisplayType() == MissileClass::DisplayIR or
             theMissile->GetDisplayType() == MissileClass::DisplayHTS)
         {
             mslDisplay = (MissileDisplayClass*)theMissile->display;
@@ -1835,12 +1835,12 @@ void SimVehicleClass::StepSOI(int dir)
             o If the aft (down) position is selected, the SOI moves to the MFD of the highest priority.
             Subsequent aft depressions move the SOI to the opposite MFD.
             */
-            if (FCC->GetSubMode() == FireControlComputer::CCIP ||
-                FCC->GetSubMode() == FireControlComputer::DTOSS ||
-                //FCC->GetSubMode() == FireControlComputer::RCKT ||
+            if (FCC->GetSubMode() == FireControlComputer::CCIP or
+                FCC->GetSubMode() == FireControlComputer::DTOSS or
+                //FCC->GetSubMode() == FireControlComputer::RCKT or
                 FCC->GetMasterMode() == FireControlComputer::AirGroundRocket or // MLR 4/3/2004 -
-                FCC->GetSubMode() == FireControlComputer::STRAF ||
-                FCC->GetSubMode() == FireControlComputer::CCRP ||
+                FCC->GetSubMode() == FireControlComputer::STRAF or
+                FCC->GetSubMode() == FireControlComputer::CCRP or
                 FCC->GetSubMode() == FireControlComputer::LADD)
             {
                 SOIManager(SOI_HUD);

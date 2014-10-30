@@ -68,7 +68,7 @@ void CBEECMFailLight(void * pObject)
     if (playerAC->HasSPJamming())
     {
         if (
-            playerAC->mFaults->GetFault(FaultClass::epod_fault) ||
+            playerAC->mFaults->GetFault(FaultClass::epod_fault) or
             playerAC->mFaults->GetFault(FaultClass::blkr_fault)
         )
         {
@@ -1095,8 +1095,8 @@ void CBECaution15(void * pObject)
     pCPLight = (CPLight*) pObject;
     faultSys = ((AircraftClass*) pCPLight->mpOwnship)->mFaults;
 
-    pCPLight->mState = (playerAC->af->rpm * 37.0F) < 15.0F ||
-                       faultSys->GetFault(FaultClass::eng_fault) not_eq 0 ||
+    pCPLight->mState = (playerAC->af->rpm * 37.0F) < 15.0F or
+                       faultSys->GetFault(FaultClass::eng_fault) not_eq 0 or
  not playerAC->af->HydraulicOK();
 }
 /////////
@@ -1154,7 +1154,7 @@ void CBECaution16(void * pObject)
         (
             (playerAC->af->rpm <= 0.6F) and 
             (playerAC->MainPower() == AircraftClass::MainPowerMain)
-        ) ||
+        ) or
         (cockpitFlightData.ftit > 1100.0F)
     )
     {
@@ -1198,7 +1198,7 @@ void CBEEng2WarningLight(void * pObject)
 
     if (
         ((playerAC->af->rpm2 <= 0.6F) and 
-         (playerAC->MainPower() == AircraftClass::MainPowerMain)) ||
+         (playerAC->MainPower() == AircraftClass::MainPowerMain)) or
         (cockpitFlightData.ftit2 > 1100.0F)
     )
     {

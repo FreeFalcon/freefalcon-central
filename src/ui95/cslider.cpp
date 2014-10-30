@@ -151,11 +151,11 @@ long C_Slider::CheckHotSpots(long relX, long relY)
 
     if (
         /*
-         (relX < (GetX()+SX_)) ||
-         (relX > (GetX()+(Slider_->Header->w)+SX_)) ||
-         (relY < (GetY()+SY_)) ||
+         (relX < (GetX()+SX_)) or
+         (relX > (GetX()+(Slider_->Header->w)+SX_)) or
+         (relY < (GetY()+SY_)) or
          (relY > (GetY()+(Slider_->Header->h)+SY_))*/
-        (relX < GetX()) or (relX > (GetX() + GetW())) ||
+        (relX < GetX()) or (relX > (GetX() + GetW())) or
         (relY < GetY()) or (relY > (GetY() + GetH()))
     )
     {
