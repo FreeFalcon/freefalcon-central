@@ -76,7 +76,7 @@ The entire fixed‑function D3D7 pipeline was replaced with a D3D11 backend.
 * **Instant Action**: unlimited ammo / chaff / flares (independent of options); fixed a weapon
   count leak that blocked missile launches.
 * **MRM / AIM‑120**: launches in maddog (MRM) as it should; HUD MRM redesign (wider circle,
-  speed/altitude inside, BMS‑style).
+  speed/altitude inside, according to doc about real ASE size).
 * **Differential braking** (per‑wheel brakes + steering).
 * **Audio**: restored radio chatter / ST80 voice codec.
 
