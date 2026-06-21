@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  FFViper patch for FreeFalcon 6 (modern WiX v4+ / "wix build").
+  Overlays our updated exe + data assets onto an existing FreeFalcon 6 install.
+  Build (paths point at the game dir holding the assets):
+    wix build FFViperPatch.wxs -d GameDir="G:\Games\FreeFalcon6" ^
+      -ext WixToolset.UI.wixext -o FFViperPatch.msi
+  The user browses to their FreeFalcon 6 folder during install (INSTALLFOLDER).
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <Package Name="FFViper Patch for FreeFalcon 6"
+           Manufacturer="Artscout"
+           Version="1.0.0.0"
+           UpgradeCode="{7B2E9C14-3A6F-4D2B-9E1A-2C5D8F0B3A47}"
+           Scope="perMachine"
+           Compressed="yes">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of the FFViper patch is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- Force-overwrite our files even if the existing (data) files look newer/modified. -->
+    <Property Id="REINSTALLMODE" Value="amus" />
+
+    <!-- Auto-detect the FreeFalcon 6 / Falcon 4.0 install dir from the registry so the folder
+         picker is pre-filled. The game is 32-bit, so the value lives in the 32-bit hive
+         (WOW6432Node on x64). If not found, INSTALLFOLDER falls back to its directory default. -->
+    <Property Id="INSTALLFOLDER">
+      <RegistrySearch Id="FF6BaseDir" Root="HKLM"
+                      Key="Software\Microprose\Falcon\4.0" Name="baseDir"
+                      Type="directory" Bitness="always32" />
+    </Property>
+
+    <!-- Folder picker (defaults to the detected FF6 folder, else Program Files; user can browse). -->
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+    <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+    <ui:WixUI Id="WixUI_InstallDir" />
+
+    <StandardDirectory Id="ProgramFilesFolder">
+      <Directory Id="INSTALLFOLDER" Name="FreeFalcon6">
+        <Directory Id="dShaders" Name="shaders" />
+        <Directory Id="dConfig" Name="config">
+          <Directory Id="dProfiles" Name="profiles">
+            <Directory Id="dDefault" Name="default" />
+          </Directory>
+        </Directory>
+        <Directory Id="dArt" Name="art">
+          <Directory Id="dSetup" Name="setup" />
+          <Directory Id="dMain" Name="main" />
+          <Directory Id="dFonts" Name="fonts" />
+          <Directory Id="dUiskin" Name="uiskin">
+            <Directory Id="dFf4" Name="ff4" />
+          </Directory>
+          <Directory Id="dCkptart" Name="ckptart" />
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <Feature Id="Patch" Title="FFViper Patch" AllowAbsent="no">
+      <ComponentGroupRef Id="PatchFiles" />
+    </Feature>
+  </Package>
+
+  <Fragment>
+    <ComponentGroup Id="PatchFiles">
+      <!-- root: exe + config -->
+      <Component Directory="INSTALLFOLDER">
+        <File Source="$(GameDir)\FFViper.exe" />
+      </Component>
+      <Component Directory="INSTALLFOLDER">
+        <File Source="$(GameDir)\ffviper.cfg" />
+      </Component>
+
+      <!-- shaders\ (runtime-loaded FFEmu.hlsl, per the game-dir shader path) -->
+      <Component Directory="dShaders">
+        <File Source="$(GameDir)\FFEmu.hlsl" />
+      </Component>
+
+      <!-- config\ + config\profiles\default\ -->
+      <Component Directory="dConfig">
+        <File Source="$(GameDir)\config\controls.xml" />
+      </Component>
+      <!-- The shipped default pilot profile (folder dir 0). profiles.xml itself is NOT shipped -
+           the game seeds a clean one (Viper/dir 0) at first run. <GUID>.xml/axismapping.xml are
+           per-device and created at runtime, so they are not shipped either.
+           options.pop (PlayerOptions) and rules.rul (RulesClass) are also NOT shipped: they are
+           per-pilot and written on first save; the loaders fall back to in-code defaults when the
+           file is absent (playerop.cpp / rules.cpp), so seeding them is unnecessary. -->
+      <Component Directory="dDefault">
+        <File Source="$(GameDir)\config\profiles\default\keyboard.xml" />
+      </Component>
+      <Component Directory="dDefault">
+        <File Source="$(GameDir)\config\profiles\default\logbook.xml" />
+      </Component>
+
+      <!-- art\setup\ -->
+      <Component Directory="dSetup">
+        <File Source="$(GameDir)\art\setup\advanced.scf" />
+      </Component>
+      <Component Directory="dSetup">
+        <File Source="$(GameDir)\art\setup\controladvanced.scf" />
+      </Component>
+      <Component Directory="dSetup">
+        <File Source="$(GameDir)\art\setup\USERIDS.ID" />
+      </Component>
+
+      <!-- art\main\ -->
+      <Component Directory="dMain">
+        <File Source="$(GameDir)\art\main\lcktxtrc.irc" />
+      </Component>
+
+      <!-- art\fonts\ -->
+      <Component Directory="dFonts">
+        <File Source="$(GameDir)\art\fonts\FONTIDS.ID" />
+      </Component>
+      <Component Directory="dFonts">
+        <File Source="$(GameDir)\art\fonts\FONTS.TXT" />
+      </Component>
+
+      <!-- art\uiskin\ff4\ (controls window image resource) -->
+      <Component Directory="dFf4">
+        <File Source="$(GameDir)\art\uiskin\ff4\win_all.idx" />
+      </Component>
+      <Component Directory="dFf4">
+        <File Source="$(GameDir)\art\uiskin\ff4\win_all.rsc" />
+      </Component>
+
+      <!-- art\ckptart\ (DED color etc.) -->
+      <Component Directory="dCkptart">
+        <File Source="$(GameDir)\art\ckptart\3Dckpit.dat" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
