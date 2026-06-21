@@ -1,6 +1,6 @@
 #ifndef _VUTYPES_H_
 #define _VUTYPES_H_
-#include <cISO646>
+#include <iso646.h>
 
 // vutypes.h
 // sfr: vu base types

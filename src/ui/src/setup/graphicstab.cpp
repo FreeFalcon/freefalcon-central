@@ -1229,8 +1229,24 @@ void BuildResolutionList(C_ListBox *lbox)
     // OW
 #if 1
 
+    extern bool g_bUseD3D11;
+
     while (FalconDisplay.devmgr.GetMode(Driver, Card, i++, &width, &height, &depth))
     {
+        // PHASE 5: under D3D11 GetMode returns an already-curated list (incl. widescreen),
+        // the 4:3 filter and DDraw depth checks are not needed -- take the mode as is.
+        if (g_bUseD3D11)
+        {
+            sprintf(buf2, "%0dx%0d - %d Bit", width, height, depth);
+            lbox->AddItem(i - 1, C_TYPE_ITEM, buf2);
+
+            if (width == DisplayOptions.DispWidth and height == DisplayOptions.DispHeight and depth == DisplayOptions.DispDepth)
+                isel = i - 1;
+
+            nNumItems++;
+            continue;
+        }
+
         // For now we only allow 640x480, 800x600, 1280x960, 1600x1200
         // (MPR already does the 4:3 aspect ratio check for us)
         if (height > 400 and ((width == 640 or width == 800 or width == 1024 or
@@ -1350,6 +1366,11 @@ void SetAdvanced()
     button = (C_Button *) win->FindControl(SETUP_ADVANCED_MIPMAPPING);
 
     if (button) button->SetState(DisplayOptions.bMipmapping ? C_STATE_1 : C_STATE_0);
+
+    // #33: windowed/fullscreen toggle for the 3D session
+    button = (C_Button *) win->FindControl(SETUP_ADVANCED_WINDOWED);
+
+    if (button) button->SetState(DisplayOptions.bWindowed ? C_STATE_1 : C_STATE_0);
 
     button = (C_Button *) win->FindControl(SETUP_ADVANCED_RENDER_TO_TEXTURE);
 

@@ -535,7 +535,7 @@ struct Mode2Cam
 const static Mode2Cam theModeTable[] =
 {
     {OTWDriverClass::ModeChase, FLY_BY_CAMERA},
-    // {OTWDriverClass::ModeChase, CHASE_CAMERA}, // theCamID doesn´t matter here..
+    // {OTWDriverClass::ModeChase, CHASE_CAMERA}, // theCamID doesnï¿½t matter here..
     {OTWDriverClass::ModeOrbit, ORBIT_CAMERA},
     {OTWDriverClass::ModeSatellite, SATELLITE_CAMERA},
     {OTWDriverClass::ModeWeapon, WEAPON_CAMERA},
@@ -621,9 +621,9 @@ void OTWDriverClass::DisplayInfoBar(void)
         strcat(tmpo, ((DrawableBSP *)otwPlatform->drawPointer)->Label());
 
         // 2 issues here:
-        // a) string could be longer as the locally allocated one (bad thing (tm)) - however that´s unlikely, see above
+        // a) string could be longer as the locally allocated one (bad thing (tm)) - however thatï¿½s unlikely, see above
         // b) string could be longer than physical screen size.. FreeFalcon then displays nothing.. also a bit suboptimal..
-        // solution for b) need to get renderer->TextWidth() working, if it is >1 then we don´t add a chunk.. or so..
+        // solution for b) need to get renderer->TextWidth() working, if it is >1 then we donï¿½t add a chunk.. or so..
         if (( not otwPlatform->IsGroundVehicle()) and ( not otwPlatform->IsBomb()))
         {
             char tmp[30];
@@ -733,7 +733,7 @@ void OTWDriverClass::DrawSubTitles(void)  // Retro 16Dec2003 (all)
                 {
                     renderer->SetColor(theLabels[i]->theColour);
                     // renderer->TextLeft(-0.95F,  (0.90F-i*0.03F), theLabels[i]->theString);
-                    // Retro 10Jan2004 - lower so that they don´t collide with LEF/TEF display
+                    // Retro 10Jan2004 - lower so that they donï¿½t collide with LEF/TEF display
                     renderer->TextLeft(-0.95F, (0.84F - i * 0.03F), theLabels[i]->theString);
                 }
 
@@ -759,7 +759,7 @@ void OTWDriverClass::DisplayFrontText(void)
     //Prof(DisplayFrontText); // Retro 15/10/03
     //Prof_update(ProfilerActive); // Retro 16/10/03
 
-    // Retro 7May2004 - for pretty screens we don´t want any 2d text on our screen
+    // Retro 7May2004 - for pretty screens we donï¿½t want any 2d text on our screen
     // See OTWDriver.h for explanation
     if (takePrettyScreenShot == EXECUTE)
     {
@@ -1624,7 +1624,7 @@ void OTWDriverClass::RenderFrame()
 
     // Retro 31Dec2003 start
     // the position here might not be the best.. has to coordinated with the g_bLookCloserFix I think..
-    // Should be coordinated with wombat´s keypresses: if this active
+    // Should be coordinated with wombatï¿½s keypresses: if this active
     // is used, then the keypresses (and maybe the 'l' key) should
     // be deactivated
     if (( not actionCameraMode) and ( not MouseMenuActive))
@@ -2478,7 +2478,12 @@ void OTWDriverClass::RenderFrame()
                 CameraChange = false;
             }
 
-            renderer->context.FlushPolyLists();
+            // #48: do NOT clear depth between terrain and the object flush -- keep one
+            // coherent depth buffer so world objects are occluded by the ground (and the
+            // pit, drawn at near-Z, still beats the terrain). The sky background is pushed
+            // to the far plane (RenderOTW::DrawSky, context.m_2DPrimZ) so it no longer
+            // occludes the cockpit. ClearZBuffer() below is a no-op in D3D11.
+            renderer->context.FlushPolyLists(false);
             renderer->ClearZBuffer();
         }
 

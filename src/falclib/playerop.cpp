@@ -148,23 +148,37 @@ void PlayerOptionsClass::Initialize(void)
 }
 
 
+// Artscout - 2026: player options live in the active pilot's profile folder
+// (config\profiles\<dir>\options.pop), not config\<callsign>.pop. Forward-declared to avoid
+// pulling the sim controlsxml header into falclib; the symbol resolves at the final exe link.
+extern bool ControlsXml_ActiveProfilePath(char *out, int outSize);
+
 //filename should be callsign of player
 int PlayerOptionsClass::LoadOptions(_TCHAR* filename)
 {
     size_t success = 0;
     _TCHAR path[_MAX_PATH];
+    char  prof[_MAX_PATH];
     long size;
     FILE *fp;
 
-    _stprintf(path, _T("%s\\config\\%s.pop"), FalconDataDirectory, filename);
+    ControlsXml_ActiveProfilePath(prof, sizeof(prof));
+    _stprintf(path, _T("%s\\options.pop"), prof);
 
     fp = _tfopen(path, _T("rb"));
 
     if ( not fp)
     {
         MonoPrint(_T("Couldn't open %s's player options\n"), filename);
-        _stprintf(path, _T("%s\\Config\\default.pop"), FalconDataDirectory);
-        fp = _tfopen(path, "rb");
+        // fallback: shipped default profile, then the legacy config\default.pop
+        _stprintf(path, _T("%s\\config\\profiles\\default\\options.pop"), FalconDataDirectory);
+        fp = _tfopen(path, _T("rb"));
+
+        if ( not fp)
+        {
+            _stprintf(path, _T("%s\\config\\default.pop"), FalconDataDirectory);
+            fp = _tfopen(path, "rb");
+        }
 
         if ( not fp)
         {
@@ -258,9 +272,11 @@ int PlayerOptionsClass::SaveOptions(_TCHAR* filename)
 {
     FILE *fp;
     _TCHAR path[_MAX_PATH];
+    char  prof[_MAX_PATH];
     size_t success = 0;
 
-    _stprintf(path, _T("%s\\config\\%s.pop"), FalconDataDirectory, filename);
+    ControlsXml_ActiveProfilePath(prof, sizeof(prof));   // options in the profile folder
+    _stprintf(path, _T("%s\\options.pop"), prof);
 
     if ((fp = _tfopen(path, "wb")) == NULL)
     {

@@ -7,6 +7,7 @@
  display.
 \***************************************************************************/
 #include <cISO646>
+#include "portio_compat.h"	// _outp/_outpw (removed from the CRT)
 #include <conio.h>
 #include <math.h>
 #include "Mono2D.h"

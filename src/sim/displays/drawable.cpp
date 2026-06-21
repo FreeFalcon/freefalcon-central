@@ -33,7 +33,7 @@ void DrawableClass::DrawBorder()
 
 unsigned int DrawableClass::MFDColors[] =   // JPO MLU MFD Colors
 {
-    0xFF00FF00, // green (default)
+    0xFFFFFFFF, // #7: WHITE by default (was green 0xFF00FF00) -- F-16 MFD realism, per user request 2026-06-17. HUD/RWR unaffected (own color)
     0xFFFFFFFF, // white
     0xFF0000ff, // red
     0xFF00ffff, // yellow
@@ -41,13 +41,13 @@ unsigned int DrawableClass::MFDColors[] =   // JPO MLU MFD Colors
     0xFFff00ff, // magenta
     0xFFff0000, // blue
     0xFF7b7b7b, // grey
-    0xFF66ff00, // bright green
+    0xFFFFFFFF, // #2: bright green -> white (MFD text white everywhere, per request 2026-06-17)
     0xFFafafaf, // "whity gray"
 };
 
 unsigned int DrawableClass::AltMFDColors[] =   // JPO Alternative High contrast color table (for color blind use)
 {
-    0xFF00CC00, // green (default)
+    0xFFFFFFFF, // #7: WHITE by default (was green 0xFF00CC00) -- consistent with MFDColors
     0xFFFFFFFF, // white
     0xFF6666ff, // pink
     0xFF00ffff, // yellow
@@ -55,7 +55,7 @@ unsigned int DrawableClass::AltMFDColors[] =   // JPO Alternative High contrast 
     0xFFff00ff, // magenta
     0xFFff0000, // blue
     0xFF7b7b7b, // grey
-    0xFF66ff00, // bright green
+    0xFFFFFFFF, // #2: bright green -> white
     0xFFafafaf, // "whity gray"
 };
 

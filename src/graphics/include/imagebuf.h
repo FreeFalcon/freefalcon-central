@@ -18,6 +18,11 @@
 class DisplayDevice;
 enum MPRSurfaceType;
 
+// PHASE 5 (RTT): D3D11 types for the off-screen render target (MFD/HUD/radar).
+struct ID3D11Texture2D;
+struct ID3D11RenderTargetView;
+struct ID3D11ShaderResourceView;
+
 #include <ddraw.h>
 #include "context.h"
 
@@ -124,6 +129,20 @@ public:
 
     // Swap rolls of front and back buffers (page flip, blt, or nothing depending on types)
     void SwapBuffers(bool bDontFlip);
+    void PresentD3D11();	// PHASE 2: blit the CPU buffer into the D3D11 backbuffer
+
+    // PHASE 5 (RTT): off-screen render target for MFD/HUD/radar under D3D11.
+    bool IsScreenBuffer() const { return m_bIsScreenBuffer; }
+    // Creates a D3D11 RTT texture (RTV+SRV) sized to the buffer; idempotent.
+    bool EnsureD3D11RenderTarget();
+    // Binds the RTT as render target (+viewport over the whole buffer) and optionally clears.
+    void BindD3D11RenderTarget(bool clear);
+    // SRV for sampling the RTT as a panel texture (NULL if not RTT/not created).
+    ID3D11ShaderResourceView* GetD3D11SRV() const { return m_pD3D11SRV; }
+    // Artscout - 2026: menu 3D-viewer (#34). Read a rect out of this off-screen RTT and convert
+    // it into a 565 CPU buffer (the screen UI surface), so a 3D model preview becomes part of the
+    // normal 2D blit instead of going through the present-mode chroma path (which blacks it out).
+    void BlitD3D11RTTTo565(unsigned short* dst, int dstStridePix, int dstHeightPix, int x, int y, int w, int h);
 
     // Helpful function to drop a screen capture to disk (BACK buffer to 24 bit RAW file)
     void BackBufferToRAW(char *filename);
@@ -146,6 +165,8 @@ protected:
     DDSURFACEDESC2 m_ddsdBack;
     int width;
     int height;
+    bool m_bIsScreenBuffer;	// PHASE 1: screen buffer (drives Present)
+    BYTE *m_pSysMem;	// PHASE 1/2: RGB565 CPU buffer under D3D11
     int redShift;
     int greenShift;
     int blueShift;
@@ -153,6 +174,13 @@ protected:
     IDirectDrawSurface7 *m_pBltTarget;
     CRITICAL_SECTION m_cs;
     bool m_bBitsLocked;
+
+    // PHASE 5 (RTT): D3D11 off-screen render target.
+    ID3D11Texture2D*          m_pD3D11RTTex;
+    ID3D11RenderTargetView*   m_pD3D11RTV;
+    ID3D11ShaderResourceView* m_pD3D11SRV;
+    // Artscout - 2026: lazily-created STAGING copy of the RTT for GPU->CPU readback (#34 menu 3D).
+    ID3D11Texture2D*          m_pD3D11Staging;
 };
 
 

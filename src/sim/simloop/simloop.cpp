@@ -15,6 +15,7 @@
 #include "ui/include/FalcUser.h"
 #include "ThreadMgr.h"
 #include "dispcfg.h"
+#include "dispopts.h" // #33: DisplayOptions.bWindowed
 #include "simDrive.h"
 #include "OTWDrive.h"
 #include "sinput.h"
@@ -936,6 +937,10 @@ void SimulationLoopControl::StartLoop(void)
              delayCounter--;
             }*/
 
+            // #33: apply the windowed/fullscreen choice for the 3D session only (the menu
+            // window is restored on exit). Restyles the shared window in place.
+            FalconDisplay.EnterSimWindowMode(DisplayOptions.bWindowed);
+
             g_intellivibeData.In3D = true;
             g_intellivibeData.IsEndFlight = false;
 
@@ -960,6 +965,9 @@ void SimulationLoopControl::StartLoop(void)
 
             g_intellivibeData.In3D = false;
             memcpy(gSharedIntellivibe, &g_intellivibeData, sizeof(g_intellivibeData));
+
+            // #33: restore the menu window mode after leaving the 3D session.
+            FalconDisplay.LeaveSimWindowMode();
 
             OTWDriver.ShowSimpleWaitScreen("leave");
         }

@@ -1,7 +1,7 @@
 #ifndef _SIXDOF_H
 #define _SIXDOF_H
 
-#include <cISO646>
+#include <iso646.h>
 #include "mathlib/math.h"
 #include "mathlib/vector.h"
 #include "mathlib/matrix.h"

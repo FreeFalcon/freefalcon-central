@@ -30,6 +30,7 @@ Dave Power (x4373)
 #include "logbook.h"
 #include "sim/include/sinput.h"
 #include "sim/include/simio.h"
+#include "sim/include/controlsxml.h"   // #53: axes from the profile XML
 #include "cmusic.h"
 #include "dispcfg.h"
 #include "Graphics/Include/draw2d.h"
@@ -101,6 +102,11 @@ SIM_INT Calibrate(void);
 void InitKeyDescrips(void);
 void CleanupKeys(void);
 void RefreshJoystickCB(long ID, short hittype, C_Base *control);
+// Artscout - 2026: modal button-assign dialog (defined in controltab.cpp). While it is open the
+// user may not leave options; the setup-exit callbacks below bounce back to it.
+bool ControlTab_IsButtonAssignOpen(void);
+void ControlTab_ForceCloseButtonAssign(void);
+void ControlTab_KeepButtonAssignFront(void);
 BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount);
 void CalibrateCB(long ID, short hittype, C_Base *control);
 BOOL SaveKeyMapList(char *filename);
@@ -112,6 +118,11 @@ void SaveKeyButtonCB(long ID, short hittype, C_Base *control);
 void LoadKeyButtonCB(long ID, short hittype, C_Base *control);
 void ControllerSelectCB(long ID, short hittype, C_Base *control);
 void BuildControllerList(C_ListBox *lbox);
+// #22: search / device filter for the function list in the main controls window
+void KeyListSearchCB(long ID, short hittype, C_Base *control);
+void KeyListDevFilterCB(long ID, short hittype, C_Base *control);
+extern char g_keyFilter[64];
+extern int  g_keyDevFilter;
 void HideKeyStatusLines(C_Window *win);
 void RecenterJoystickCB(long ID, short hittype, C_Base *control);
 void AdvancedControlCB(long ID, short hittype, C_Base *control); // Retro 31Dec2003
@@ -601,12 +612,20 @@ void STPSetupControls(void)
 #if 1
         // OW
         // Handled in BuildResolutionList
-        DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(DisplayOptions.DispVideoDriver);
-
-        if (pDI)
+        // #39: in D3D11 the current mode is ALREADY selected in BuildResolutionList (isel by g_d3d11Modes index).
+        // The old FindDisplayMode searches m_arrModes (EMPTY in D3D11) -> -1 -> SetValue(0) -> overwrote
+        // the selection with index 0 (640/800). Because of that Apply from ANY tab (sound etc.) reset
+        // the resolution to 800x600 (SaveValues reads SET_RESOLUTION regardless of the active tab).
+        extern bool g_bUseD3D11;
+        if ( not g_bUseD3D11)
         {
-            int nIndex = pDI->FindDisplayMode(DisplayOptions.DispWidth, DisplayOptions.DispHeight, DisplayOptions.DispDepth);
-            lbox->SetValue(nIndex not_eq -1 ? nIndex : 0);
+            DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(DisplayOptions.DispVideoDriver);
+
+            if (pDI)
+            {
+                int nIndex = pDI->FindDisplayMode(DisplayOptions.DispWidth, DisplayOptions.DispHeight, DisplayOptions.DispDepth);
+                lbox->SetValue(nIndex not_eq -1 ? nIndex : 0);
+            }
         }
 
 #else
@@ -1023,11 +1042,52 @@ void STPSetupControls(void)
 
     if (lbox)
     {
+        // #19: load the saved axis mapping into the settings MENU ONCE per session.
+        // ReadAxisMappingFile is otherwise only called when entering the sim (siloop), so
+        // in the menu FlightControlDevice=-1 -> the controller dropdown showed keyboard, and
+        // changing it calls IO.Reset() and wipes pitch/roll (MOZA X/Y bug). We load
+        // once devices are already enumerated (needed for the GUID remap).
+        static bool s_uiAxisLoaded = false;
+
+        if ( not s_uiAxisLoaded and gTotalJoy > 0)
+        {
+            extern AxisMapping AxisMap;
+            ControlsXml_ReadAxes(&AxisMap);   // #53: axes from the profile axismapping.xml (not binary)
+            IO.RemapAxisMappingByGUID();
+            s_uiAxisLoaded = true;
+        }
+
         BuildControllerList(lbox);
 
         extern AxisMapping AxisMap; // Retro 31Dec2003
         lbox->SetValue(AxisMap.FlightControlDevice + 1); // Retro 31Dec2003
         lbox->Refresh();
+    }
+
+    // #22: device filter for the function list (SEPARATE from JOYSTICK_SELECT — no POV/FFB).
+    // Defaults to Keyboard (show keyboard combos as before). Filters are reset when
+    // the window opens so the previous visit's state is not carried over.
+    g_keyFilter[0] = 0;
+    g_keyDevFilter = -1;
+
+    {
+        C_ListBox *devf = (C_ListBox *)win->FindControl(SETUP_KEY_DEVFILTER);
+
+        if (devf)
+        {
+            BuildControllerList(devf);            // Keyboard + all joysticks
+            devf->SetValue(SIM_KEYBOARD + 1);     // default — Keyboard (keys)
+            devf->SetCallback(KeyListDevFilterCB);
+            devf->Refresh();
+        }
+
+        C_EditBox *sb = (C_EditBox *)win->FindControl(SETUP_KEY_SEARCH);
+
+        if (sb)
+        {
+            sb->SetText("");
+            sb->SetCallback(KeyListSearchCB);
+        }
     }
 
     //if (S_joycaps.wCaps bitand JOYCAPS_HASZ)
@@ -1404,7 +1464,8 @@ static void SaveValues(void)
         DisplayOptions.DispHeight = nHeight;
         DisplayOptions.DispDepth = nDepth;
 
-        ShiAssert(DisplayOptions.DispWidth <= 1600);
+        // PHASE 5: widescreen (1920/2560/3840) — old 1600 cap removed
+        ShiAssert(DisplayOptions.DispWidth <= 3840);
         FalconDisplay.SetSimMode(DisplayOptions.DispWidth, DisplayOptions.DispHeight, DisplayOptions.DispDepth); // OW
 #else
         DisplayOptions.DispWidth = static_cast<short>(lbox->GetTextID());
@@ -1737,6 +1798,11 @@ static void SaveValues(void)
 
     if (button) DisplayOptions.bMipmapping = button->GetState() == C_STATE_1;
 
+    // #33: windowed/fullscreen toggle for the 3D session (applied on entering 3D)
+    button = (C_Button *)win->FindControl(SETUP_ADVANCED_WINDOWED);
+
+    if (button) DisplayOptions.bWindowed = button->GetState() == C_STATE_1;
+
     button = (C_Button *) win->FindControl(SETUP_ADVANCED_RENDER_TO_TEXTURE);
 
     if (button) DisplayOptions.bRender2Texture = button->GetState() == C_STATE_1;
@@ -1767,6 +1833,9 @@ static void SaveValues(void)
 
 void ShutdownSetup()
 {
+    // Artscout - 2026: defensive — never leave the modal assign dialog floating after teardown.
+    ControlTab_ForceCloseButtonAssign();
+
     if (Objects)
     {
         delete [] Objects;
@@ -1819,6 +1888,14 @@ void CloseSetupWindowCB(long ID, short hittype, C_Base *control)
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
+
+    // Artscout - 2026: modal — can't leave options while the button-assign dialog is up.
+    // Ignore the exit and pop the dialog back to the front; only its OK/Cancel release control.
+    if (ControlTab_IsButtonAssignOpen())
+    {
+        ControlTab_KeepButtonAssignFront();
+        return;
+    }
 
     ShutdownSetup();
     PlayerOptions.LoadOptions();
@@ -1884,6 +1961,12 @@ void SetupOkCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
+    // Artscout - 2026: modal — block leaving options while the button-assign dialog is up.
+    if (ControlTab_IsButtonAssignOpen())
+    {
+        ControlTab_KeepButtonAssignFront();
+        return;
+    }
 
     SaveValues();
     InitSoundSetup();
@@ -1936,6 +2019,13 @@ void CancelSetupCB(long ID, short hittype, C_Base *control)
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
+
+    // Artscout - 2026: modal — block leaving options while the button-assign dialog is up.
+    if (ControlTab_IsButtonAssignOpen())
+    {
+        ControlTab_KeepButtonAssignFront();
+        return;
+    }
 
     ShutdownSetup();
     PlayerOptions.LoadOptions();
@@ -2024,10 +2114,13 @@ static void HookupSetupControls(long ID)
     if (button not_eq NULL)
         button->SetCallback(SetupRadioCB);
 
+    // #53 CONTROLLERS tab now opens the dedicated tabbed controls window
+    // (SETUP_CONTROL_ADVANCED_WIN: CONTROLS SETUP / AXIS SETUP / ADVANCED) instead of
+    // switching to the in-place controllers page. The old "Advanced" button is gone.
     button = (C_Button *)win->FindControl(CONTROLLERS_TAB);
 
     if (button not_eq NULL)
-        button->SetCallback(SetupRadioCB);
+        button->SetCallback(AdvancedControlCB);
 
 
     //Sim Tab

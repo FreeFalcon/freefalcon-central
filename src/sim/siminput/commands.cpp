@@ -6349,7 +6349,8 @@ void SimToggleUHFMaster(unsigned long, int state, void*)
     // }
 }
 
-#include <dvoice.h>
+// #include <dvoice.h> (removed from the SDK)
+struct IDirectPlayVoiceClient;
 extern IDirectPlayVoiceClient* g_pVoiceClient;
 void SimTransmitCom1(unsigned long val, int state, void *)
 {
@@ -9767,6 +9768,52 @@ void SimDropProgrammed(unsigned long val, int state, void *)
         }
     }
 }
+// ============================================================================
+// CMS (Countermeasures Management Switch) -- a HOTAS 5-position switch.
+// A composition of existing EWS/ECM functions under one control (BMS-style),
+// adapted to FreeFalcon's 4-program EWS model (programs 5/6 are NOT in the data
+// -> bypass analogs). All subfunctions self-gate on g_bRealisticAvionics/owner/KEY_DOWN.
+// ============================================================================
+
+// CMS FWD: reset the currently selected manual program (1-4).
+void SimCMSUp(unsigned long val, int state, void *cb)
+{
+    SimDropProgrammed(val, state, cb);
+}
+
+// CMS AFT: enable EWS AUTO mode + turn ECM on (and consent for SEMI).
+void SimCMSDown(unsigned long val, int state, void *cb)
+{
+    SimEWSModeAuto(val, state, cb);
+    SimECMConsent(val, state, cb);   // specifically Consent ("enable"), not SimECMOn (toggle)
+}
+
+// CMS RIGHT: disable AUTO (Stby) + ECM to standby (stop jamming).
+void SimCMSRight(unsigned long val, int state, void *cb)
+{
+    SimEWSModeStby(val, state, cb);
+    SimECMStandby(val, state, cb);
+}
+
+// CMS LEFT: bypass analog of prog 6 -- exactly ONE chaff + ONE flare (flags directly,
+// because on a realistic F-16 SimDropChaff/Flare go into a program themselves).
+void SimCMSLeft(unsigned long, int state, void *)
+{
+    AircraftClass *pac = SimDriver.GetPlayerAircraft();
+
+    if (pac and pac->IsSetFlag(MOTION_OWNSHIP) and (state bitand KEY_DOWN))
+    {
+        pac->dropChaffCmd = TRUE;
+        pac->dropFlareCmd = TRUE;
+    }
+}
+
+// CMS DEPRESS: bypass analog of prog 5 -- reset the selected program.
+void SimCMSPress(unsigned long val, int state, void *cb)
+{
+    SimDropProgrammed(val, state, cb);
+}
+
 //MI
 void SimPinkySwitch(unsigned long val, int state, void *)
 {

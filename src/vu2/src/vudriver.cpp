@@ -30,7 +30,7 @@
 
 // useful function
 /** returns time interval in seconds between the 2 timestamps. Returns negative if last_timestamp is bigger */
-inline double GetDT(VU_TIME timestamp, VU_TIME last_timestamp)
+double GetDT(VU_TIME timestamp, VU_TIME last_timestamp)
 {
     // look out here, time is unsigned, hence the check
     if (timestamp > last_timestamp)

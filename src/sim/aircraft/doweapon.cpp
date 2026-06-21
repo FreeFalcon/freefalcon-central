@@ -40,7 +40,11 @@ extern int g_nMissileFix;
 
 // Start Gilman HACK
 int gNumWeaponsInAir = 0;
-static int gMaxIAWeaponsFired = 12;
+// #21: was 12 -- the player hit this cap and the trigger went dead (felt like missiles
+// "hanging"). Raised to an effectively-unlimited ceiling so IA never blocks firing, while
+// still bounding runaway entity spawn. The counter is now leak-proof (SimWeaponClass
+// decrements on teardown via countedInAir), so this reflects real concurrent player missiles.
+static int gMaxIAWeaponsFired = 500;
 // End Gilman weapon count hack
 
 //MI CAT mod

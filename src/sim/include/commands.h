@@ -533,6 +533,13 @@ void SimWheelBrakes(unsigned long val, int state, void *);
 void SimECMOn(unsigned long val, int state, void *);
 void SimECMStandby(unsigned long val, int state, void *); //Wombat778 11-3-2003 + MD 20031128
 void SimECMConsent(unsigned long val, int state, void *); //Wombat778 11-3-2003 + MD 20031128
+// CMS (Countermeasures Management Switch) -- a 5-position HOTAS switch (composition of EWS/ECM).
+// BMS names: Up=Forward, Down=Aft, Press=Depress.
+void SimCMSUp(unsigned long val, int state, void *);
+void SimCMSDown(unsigned long val, int state, void *);
+void SimCMSLeft(unsigned long val, int state, void *);
+void SimCMSRight(unsigned long val, int state, void *);
+void SimCMSPress(unsigned long val, int state, void *);
 void SimRandomError(unsigned long val, int state, void *); //THW 2003-11-16
 
 void SoundOff(unsigned long val, int state, void * pButton);

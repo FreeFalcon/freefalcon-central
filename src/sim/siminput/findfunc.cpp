@@ -213,6 +213,11 @@ static struct UserFunctionListEntry UserFunctionList[] =
     USER_FUNCTION(SimECMOn)
     USER_FUNCTION(SimECMStandby) //Wombat778 11-3-2003 + MD 20031128
     USER_FUNCTION(SimECMConsent) //Wombat778 11-3-2003 + MD 20031128
+    USER_FUNCTION(SimCMSUp)        // CMS Fwd: reset the selected program (1-4)
+    USER_FUNCTION(SimCMSDown)      // CMS Aft: AUTO + ECM on/consent
+    USER_FUNCTION(SimCMSLeft)      // CMS Left: bypass — 1 chaff + 1 flare
+    USER_FUNCTION(SimCMSRight)     // CMS Right: AUTO off + ECM standby
+    USER_FUNCTION(SimCMSPress)     // CMS Press: reset the selected program (prog 5 analog)
     USER_FUNCTION(SimRadarElevationCenter)
     USER_FUNCTION(SimHsiCourseInc)
     USER_FUNCTION(SimHsiCourseDec)
@@ -978,4 +983,31 @@ char * FindStringFromFunction(InputFunctionType func)
     }
 
     return (retval);
+}
+
+// Accessors to enumerate the function table from the UI (#18 assignment window).
+int GetUserFunctionCount(void)
+{
+    int i = 0;
+
+    while (UserFunctionList[i].theFunc)
+        i++;
+
+    return i;
+}
+
+InputFunctionType GetUserFunctionByIndex(int idx)
+{
+    if (idx < 0 or idx >= GetUserFunctionCount())
+        return NULL;
+
+    return UserFunctionList[idx].theFunc;
+}
+
+char * GetUserFunctionName(int idx)
+{
+    if (idx < 0 or idx >= GetUserFunctionCount())
+        return NULL;
+
+    return UserFunctionList[idx].funcName;
 }

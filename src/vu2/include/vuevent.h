@@ -1,7 +1,7 @@
 #ifndef _VUEVENT_H_
 #define _VUEVENT_H_
 
-#include <cISO646>
+#include <iso646.h>
 #include "vu_fwd.h"
 #include "vutypes.h"
 #include "vu.h"

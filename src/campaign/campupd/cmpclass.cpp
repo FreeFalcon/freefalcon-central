@@ -116,6 +116,7 @@ extern void InitTheaterLists(void);
 extern void DisposeBaseLists(void);
 extern void DisposeCampaignLists(void);
 extern void DisposeTheaterLists(void);
+void TrashInstantActionObjectives(void);   // #55 below in this file (purge IA objectives in EndCampaign)
 
 #define TIMEOUT_CYCLES 30 // Seconds to wait for requested info
 
@@ -1034,6 +1035,16 @@ void CampaignClass::EndCampaign()
             MissionEvaluator = NULL;
             DumpDivisionData();
             DisposeCampaignEvents();
+        }
+        else
+        {
+            // #55 Instant Action LEAK: a light campaign (CAMP_LIGHT) skips the block above, BUT
+            // LoadCampaign loads the theater with objectives (VU entities) into vuDatabase EVERY Fly.
+            // Without an explicit unload they pile up (ObjectiveClass/RadarRangeClass/links/Tpoint/CS,
+            // +tens of MB) -> std::bad_alloc on the ~3rd entry. Remove the scenario's objectives here
+            // (under Camp+Vu locks, mirroring TrashCampaignUnits). This doesn't affect a campaign --
+            // it doesn't have CAMP_LIGHT, and objectives load once.
+            TrashInstantActionObjectives();
         }
 
         if ( not (Flags bitand CAMP_ONLINE))
@@ -2412,6 +2423,26 @@ void TrashCampaignUnits(void)
         u->KillUnit();
         vuDatabase->Remove(u);
         u = (Unit) myit.GetNext();
+    }
+}
+
+// #55 Instant Action LEAK: remove the scenario's objectives from vuDatabase on exit (EndCampaign,
+// the CAMP_LIGHT branch). AllObjList is a filtered list of all objectives (VuFilteredList).
+// Mirroring TrashCampaignUnits: VuListIterator tolerates Remove during traversal. Called
+// under already-held Camp+Vu critical sections. NOT called for a campaign (no CAMP_LIGHT there,
+// objectives load once and live until the campaign ends).
+void TrashInstantActionObjectives(void)
+{
+    if ( not AllObjList)
+        return;
+
+    VuListIterator myit(AllObjList);
+    VuEntity *e = myit.GetFirst();
+
+    while (e)
+    {
+        vuDatabase->Remove(e);
+        e = myit.GetNext();
     }
 }
 

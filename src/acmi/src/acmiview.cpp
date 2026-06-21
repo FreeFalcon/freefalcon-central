@@ -551,7 +551,7 @@ void ACMIView::InitGraphics(C_Window *win)
         // _renderer->SetSmoothShadingMode(FALSE);
     }
 
-    TheVbManager.Setup(gMainHandler->GetFront()->GetDisplayDevice()->GetDefaultRC()->m_pD3D);
+    TheVbManager.Setup();   // #34 C1
 
     sw = (float)gMainHandler->GetFront()->targetXres();
     sh = (float)gMainHandler->GetFront()->targetYres();

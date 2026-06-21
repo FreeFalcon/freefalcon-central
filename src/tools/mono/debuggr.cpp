@@ -1,4 +1,5 @@
 #include <cISO646>
+#include "portio_compat.h"	// _outp/_outpw (removed from the CRT)
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>

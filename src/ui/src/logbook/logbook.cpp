@@ -13,10 +13,147 @@
 #include "cmpclass.h"
 #include "textids.h"
 #include "F4Version.h"
+#include "sim/include/controlsxml.h"   // Artscout - 2026: per-pilot profile (logbook.xml + controls)
 
 #pragma warning(disable : 4244)  // for all the short += short's
 
 class LogBookData LogBook;
+
+// Artscout - 2026: bind the pilot to its profile dir (config\profiles\<dir>) so the logbook
+// and the control bindings live together per pilot. The default placeholder pilot ("Viper",
+// logbook never customised) maps to profiles\default; any real callsign gets a numbered dir.
+// createIfNew=true (on save) registers a brand-new pilot in profiles.xml and seeds its folder.
+static void SyncPilotProfile(const _TCHAR *callsign, bool createIfNew)
+{
+    // The default pilot "Viper" always occupies dir 0 (folder "default"); any other callsign gets
+    // a numbered dir on first save. createIfNew=true (save) registers a new pilot.
+    const _TCHAR *cs = (callsign and callsign[0]) ? callsign : _T("Viper");
+
+    if (_tcsicmp(cs, _T("Viper")) == 0)
+        ControlsXml_EnsureDefaultPilot("Viper");     // dir 0 / folder default, dedup
+    else if (createIfNew)
+        ControlsXml_CreateProfile(cs);               // creates dir if new, else selects it
+    else
+        ControlsXml_SelectProfileForCallsign(cs);
+}
+
+// Password XOR masks (also used by EncryptPwd below). The pilot password is stored XOR-encrypted
+// in LB_PILOT; the XOR is symmetric, so the same pass both encrypts and decrypts.
+static char PwdMask[]  = "Who needs a password";
+static char PwdMask2[] = "Repent, FreeFalcon is coming";
+
+// Artscout - 2026: convert the password buffer between stored (encrypted) and plain text. We keep
+// the logbook.xml password in the clear so an unset password is just "" (not the "E..." garbage
+// you get from writing the encrypted empty string into a text attribute).
+static void XorPassword(char *buf)
+{
+    for (int i = 0; i < PASSWORD_LEN; i++)
+    {
+        buf[i] ^= PwdMask[i % strlen(PwdMask)];
+        buf[i] ^= PwdMask2[i % strlen(PwdMask2)];
+    }
+}
+
+// Artscout - 2026: map between the binary LB_PILOT and the readable CxLogbook mirror used for
+// profiles\<dir>\logbook.xml (so the saved logbook is human-readable, not an opaque blob).
+static void PilotToCx(const LB_PILOT &p, CxLogbook &c)
+{
+    memset(&c, 0, sizeof(c));
+    strncpy(c.name,         p.Name,         sizeof(c.name) - 1);
+    strncpy(c.callsign,     p.Callsign,     sizeof(c.callsign) - 1);
+    { char pw[PASSWORD_LEN + 1]; memcpy(pw, p.Password, PASSWORD_LEN); XorPassword(pw); pw[PASSWORD_LEN] = 0;
+      strncpy(c.password, pw, sizeof(c.password) - 1); }   // decrypt -> plain text for the XML
+    strncpy(c.commissioned, p.Commissioned, sizeof(c.commissioned) - 1);
+    strncpy(c.optionsFile,  p.OptionsFile,  sizeof(c.optionsFile) - 1);
+    strncpy(c.picture,      p.Picture,      sizeof(c.picture) - 1);
+    strncpy(c.patch,        p.Patch,        sizeof(c.patch) - 1);
+    strncpy(c.personal,     p.Personal,     sizeof(c.personal) - 1);
+    strncpy(c.squadron,     p.Squadron,     sizeof(c.squadron) - 1);
+    c.flightHours     = p.FlightHours;
+    c.aceFactor       = p.AceFactor;
+    c.rank            = (int)p.Rank;
+    c.voice           = p.voice;
+    c.pictureResource = p.PictureResource;
+    c.patchResource   = p.PatchResource;
+    for (int i = 0; i < NUM_MEDALS and i < 8; i++) c.medals[i] = p.Medals[i];
+    c.df_matchesWon      = p.Dogfight.MatchesWon;
+    c.df_matchesLost     = p.Dogfight.MatchesLost;
+    c.df_matchesWonVHum  = p.Dogfight.MatchesWonVHum;
+    c.df_matchesLostVHum = p.Dogfight.MatchesLostVHum;
+    c.df_kills           = p.Dogfight.Kills;
+    c.df_killed          = p.Dogfight.Killed;
+    c.df_humanKills      = p.Dogfight.HumanKills;
+    c.df_killedByHuman   = p.Dogfight.KilledByHuman;
+    c.cmp_gamesWon                  = p.Campaign.GamesWon;
+    c.cmp_gamesLost                 = p.Campaign.GamesLost;
+    c.cmp_gamesTied                 = p.Campaign.GamesTied;
+    c.cmp_missions                  = p.Campaign.Missions;
+    c.cmp_totalScore                = p.Campaign.TotalScore;
+    c.cmp_totalMissionScore         = p.Campaign.TotalMissionScore;
+    c.cmp_consecMissions            = p.Campaign.ConsecMissions;
+    c.cmp_kills                     = p.Campaign.Kills;
+    c.cmp_killed                    = p.Campaign.Killed;
+    c.cmp_humanKills                = p.Campaign.HumanKills;
+    c.cmp_killedByHuman             = p.Campaign.KilledByHuman;
+    c.cmp_killedBySelf              = p.Campaign.KilledBySelf;
+    c.cmp_airToGround               = p.Campaign.AirToGround;
+    c.cmp_static                    = p.Campaign.Static;
+    c.cmp_naval                     = p.Campaign.Naval;
+    c.cmp_friendliesKilled          = p.Campaign.FriendliesKilled;
+    c.cmp_missSinceLastFriendlyKill = p.Campaign.MissSinceLastFriendlyKill;
+}
+
+static void CxToPilot(const CxLogbook &c, LB_PILOT &p)
+{
+    memset(&p, 0, sizeof(p));
+    strncpy(p.Name,         c.name,         sizeof(p.Name) - 1);
+    strncpy(p.Callsign,     c.callsign,     sizeof(p.Callsign) - 1);
+    // Artscout - 2026: the password feature is unused; do NOT load it from XML. A stale/garbage
+    // value (e.g. an encrypted blob from an older save) would make CheckPassword("") fail and pop
+    // the "password required" prompt on entry. Force the encrypted-empty form so it always passes;
+    // the next save rewrites logbook.xml with password="". (void)c.password keeps the field around.
+    (void)c.password;
+    { char pw[PASSWORD_LEN + 1]; memset(pw, 0, sizeof(pw)); XorPassword(pw); memcpy(p.Password, pw, PASSWORD_LEN); }
+    strncpy(p.Commissioned, c.commissioned, sizeof(p.Commissioned) - 1);
+    strncpy(p.OptionsFile,  c.optionsFile,  sizeof(p.OptionsFile) - 1);
+    strncpy(p.Picture,      c.picture,      sizeof(p.Picture) - 1);
+    strncpy(p.Patch,        c.patch,        sizeof(p.Patch) - 1);
+    strncpy(p.Personal,     c.personal,     sizeof(p.Personal) - 1);
+    strncpy(p.Squadron,     c.squadron,     sizeof(p.Squadron) - 1);
+    p.FlightHours     = c.flightHours;
+    p.AceFactor       = c.aceFactor;
+    p.Rank            = (LB_RANK)c.rank;
+    p.voice           = (short)c.voice;
+    p.PictureResource = c.pictureResource;
+    p.PatchResource   = c.patchResource;
+    for (int i = 0; i < NUM_MEDALS and i < 8; i++) p.Medals[i] = (uchar)c.medals[i];
+    p.Dogfight.MatchesWon      = (short)c.df_matchesWon;
+    p.Dogfight.MatchesLost     = (short)c.df_matchesLost;
+    p.Dogfight.MatchesWonVHum  = (short)c.df_matchesWonVHum;
+    p.Dogfight.MatchesLostVHum = (short)c.df_matchesLostVHum;
+    p.Dogfight.Kills           = (short)c.df_kills;
+    p.Dogfight.Killed          = (short)c.df_killed;
+    p.Dogfight.HumanKills      = (short)c.df_humanKills;
+    p.Dogfight.KilledByHuman   = (short)c.df_killedByHuman;
+    p.Campaign.GamesWon                 = (short)c.cmp_gamesWon;
+    p.Campaign.GamesLost                = (short)c.cmp_gamesLost;
+    p.Campaign.GamesTied                = (short)c.cmp_gamesTied;
+    p.Campaign.Missions                 = (short)c.cmp_missions;
+    p.Campaign.TotalScore               = c.cmp_totalScore;
+    p.Campaign.TotalMissionScore        = c.cmp_totalMissionScore;
+    p.Campaign.ConsecMissions           = (short)c.cmp_consecMissions;
+    p.Campaign.Kills                    = (short)c.cmp_kills;
+    p.Campaign.Killed                   = (short)c.cmp_killed;
+    p.Campaign.HumanKills               = (short)c.cmp_humanKills;
+    p.Campaign.KilledByHuman            = (short)c.cmp_killedByHuman;
+    p.Campaign.KilledBySelf             = (short)c.cmp_killedBySelf;
+    p.Campaign.AirToGround              = (short)c.cmp_airToGround;
+    p.Campaign.Static                   = (short)c.cmp_static;
+    p.Campaign.Naval                    = (short)c.cmp_naval;
+    p.Campaign.FriendliesKilled         = (short)c.cmp_friendliesKilled;
+    p.Campaign.MissSinceLastFriendlyKill = (short)c.cmp_missSinceLastFriendlyKill;
+    p.CheckSum = 0;
+}
 
 #define _USE_REGISTRY_ 1
 #define BAD_READ 2
@@ -44,9 +181,18 @@ int LogBookData::Load(void)
     HKEY theKey;
     long retval;
 
+    char activeCs[64];
+
     if (strlen(g_strLgbk) not_eq 0)
     {
         sprintf(Pilot.Callsign, "%s", g_strLgbk);
+    }
+    // Artscout - 2026: prefer the last-selected pilot recorded in profiles.xml (kept current when a
+    // pilot is chosen in the logbook). The rest of the pilot is filled in by LoadData from the XML.
+    else if (ControlsXml_GetActiveProfileName(activeCs, sizeof(activeCs)))
+    {
+        _tcsncpy(Pilot.Callsign, activeCs, _CALLSIGN_LEN_);
+        Pilot.Callsign[_CALLSIGN_LEN_] = 0;
     }
     else
     {
@@ -140,7 +286,9 @@ void LogBookData::Initialize(void)
 
     if (gCommsMgr)
     {
-        sprintf(path, "%s\\config\\%s.plc", FalconDataDirectory, Pilot.Callsign);
+        char prof[_MAX_PATH];
+        ControlsXml_ActiveProfilePath(prof, sizeof(prof));
+        sprintf(path, "%s\\stats.plc", prof);   // comms stats in the profile folder
         gCommsMgr->SetStatsFile(path);
     }
 }
@@ -190,52 +338,74 @@ int LogBookData::LoadData(_TCHAR *callsign)
 
     ShiAssert(callsign);
 
-    _stprintf(path, _T("%s\\config\\%s.lbk"), FalconDataDirectory, callsign);
+    // Artscout - 2026: select this pilot's profile, then prefer profiles\<dir>\logbook.xml.
+    // Legacy config\<callsign>.lbk is still read as a fallback and migrated to XML on success.
+    SyncPilotProfile(callsign, false);
 
-    fp = _tfopen(path, _T("rb"));
-
-    if ( not fp)
+    bool loadedFromXml = false;
     {
-        MonoPrint(_T("Couldn't open %s's logbook.\n"), callsign);
-        Initialize();
-        return FALSE;
+        CxLogbook cx;
+
+        if (ControlsXml_ReadLogbook(&cx))
+        {
+            CxToPilot(cx, Pilot);
+            loadedFromXml = true;
+        }
     }
 
-    fseek(fp, 0, SEEK_END);
-    size = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
-
-    if (size not_eq sizeof(LB_PILOT))
+    if ( not loadedFromXml)
     {
-        MonoPrint(_T("%s's logbook is old file format.\n"), callsign);
+        _stprintf(path, _T("%s\\config\\%s.lbk"), FalconDataDirectory, callsign);
+
+        fp = _tfopen(path, _T("rb"));
+
+        if ( not fp)
+        {
+            MonoPrint(_T("Couldn't open %s's logbook.\n"), callsign);
+            Initialize();
+            return FALSE;
+        }
+
+        fseek(fp, 0, SEEK_END);
+        size = ftell(fp);
+        fseek(fp, 0, SEEK_SET);
+
+        if (size not_eq sizeof(LB_PILOT))
+        {
+            MonoPrint(_T("%s's logbook is old file format.\n"), callsign);
+            fclose(fp);
+            Initialize();
+            return FALSE;
+        }
+
+        success = fread(&Pilot, sizeof(LB_PILOT), 1, fp);
         fclose(fp);
-        Initialize();
-        return FALSE;
-    }
 
-    success = fread(&Pilot, sizeof(LB_PILOT), 1, fp);
-    fclose(fp);
+        if (success not_eq 1)
+        {
+            MonoPrint(_T("Failed to read %s's logbook.\n"), callsign);
+            Initialize();
+            return BAD_READ;
+        }
 
-    if (success not_eq 1)
-    {
-        MonoPrint(_T("Failed to read %s's logbook.\n"), callsign);
-        Initialize();
-        return BAD_READ;
-    }
+        DecryptBuffer(0x58, (uchar*)&Pilot, sizeof(LB_PILOT));
 
-    DecryptBuffer(0x58, (uchar*)&Pilot, sizeof(LB_PILOT));
+        if (Pilot.CheckSum) // Somebody changed the data... init
+        {
+            MonoPrint("Failed checksum");
+            Initialize();
+            return(FALSE);
+        }
 
-
-    if (Pilot.CheckSum) // Somebody changed the data... init
-    {
-        MonoPrint("Failed checksum");
-        Initialize();
-        return(FALSE);
+        // Artscout - 2026: one-time migration of the legacy .lbk into the profile's logbook.xml.
+        { CxLogbook cx; PilotToCx(Pilot, cx); ControlsXml_WriteLogbook(&cx); }
     }
 
     if (gCommsMgr)
     {
-        sprintf(path, "%s\\config\\%s.plc", FalconDataDirectory, callsign);
+        char prof[_MAX_PATH];
+        ControlsXml_ActiveProfilePath(prof, sizeof(prof));
+        sprintf(path, "%s\\stats.plc", prof);   // comms stats in the profile folder
         gCommsMgr->SetStatsFile(path);
     }
 
@@ -262,6 +432,7 @@ int LogBookData::LoadData(LB_PILOT *NewPilot)
 
         if (this == &LogBook)
         {
+            SyncPilotProfile(Pilot.Callsign, false);   // Artscout - 2026: point at this pilot's profile
             FalconLocalSession->SetPlayerName(NameWRank());
             FalconLocalSession->SetPlayerCallsign(Callsign());
             FalconLocalSession->SetAceFactor(AceFactor());
@@ -280,27 +451,20 @@ int LogBookData::LoadData(LB_PILOT *NewPilot)
 
 int LogBookData::SaveData(void)
 {
-    FILE *fp;
     _TCHAR path[_MAX_PATH];
 
-    _stprintf(path, _T("%s\\config\\%s.lbk"), FalconDataDirectory, Pilot.Callsign);
-
-    if ((fp = _tfopen(path, _T("wb"))) == NULL)
-    {
-        MonoPrint(_T("Couldn't save logbook"));
-        return FALSE;
-    }
-
-    EncryptBuffer(0x58, (uchar*)&Pilot, sizeof(LB_PILOT));
-
-    fwrite(&Pilot, sizeof(LB_PILOT), 1, fp);
-    fclose(fp);
-
-    DecryptBuffer(0x58, (uchar*)&Pilot, sizeof(LB_PILOT));
+    // Artscout - 2026: the logbook now lives ONLY in profiles\<dir>\logbook.xml (readable XML).
+    // A real pilot's first save registers its profile (numbered dir) and seeds the folder. The
+    // legacy encrypted config\<callsign>.lbk is no longer written.
+    SyncPilotProfile(Pilot.Callsign, true);
+    { CxLogbook cx; PilotToCx(Pilot, cx); ControlsXml_WriteLogbook(&cx); }
 
     if (gCommsMgr)
     {
-        sprintf(path, "%s\\config\\%s.plc", FalconDataDirectory, Pilot.Callsign);
+        // comms stats live in the pilot's profile folder, not config\<callsign>.plc
+        char prof[_MAX_PATH];
+        ControlsXml_ActiveProfilePath(prof, sizeof(prof));
+        sprintf(path, "%s\\stats.plc", prof);
         gCommsMgr->SetStatsFile(path);
     }
 
@@ -370,9 +534,6 @@ void LogBookData::Encrypt(void)
 
 #endif
 }
-
-static char PwdMask[] = "Who needs a password";
-static char PwdMask2[] = "Repent, FreeFalcon is coming";
 
 void LogBookData::EncryptPwd(void)
 {

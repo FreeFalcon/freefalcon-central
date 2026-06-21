@@ -1,6 +1,7 @@
 #include "stdhdr.h"
 #include "commands.h"
 #include "inpFunc.h"
+#include "controlsxml.h"   // #53: XML function catalog (name -> BMS label)
 #include "otwdrive.h"
 #include "cpmanager.h"
 #include "falclib/include/f4find.h"
@@ -523,106 +524,132 @@ void CallInputFunction(unsigned long val, int state)
     }
 }
 
-void LoadFunctionTables(_TCHAR *fname)
+// #20: remap a joystick buttonId by the saved device GUID to the current enumeration
+// DirectInput. buttonId = joyIndex*128 + localBtn (see sijoy.cpp:307). If a device
+// with this GUID is connected now -- recompute joyIndex; otherwise keep as is
+// (device absent -- no harm done). Analogous to RemapAxisMappingByGUID for axes.
+static int RemapJoyButtonIdByGUID(int savedButtonId, const GUID& savedGUID)
 {
-    SimlibFileClass* funcFile;
-    char tmpStr[_MAX_PATH];
-    char funcName[_MAX_PATH];
-    char fileName[_MAX_PATH];
-    //char pilotName[_MAX_PATH] = {0};
-    int key1, mod1;
-    int key2, mod2;
-    int flags, buttonId, mouseSide;
-    InputFunctionType theFunc;
+    static const GUID zero = {0};
 
-    sprintf(fileName, "%s\\config\\%s.key", FalconDataDirectory, fname);
+    if (memcmp(&savedGUID, &zero, sizeof(GUID)) == 0)
+        return savedButtonId;
 
-    funcFile = SimlibFileClass::Open(fileName, SIMLIB_READ);
+    int local = savedButtonId % SIMLIB_MAX_DIGITAL;
 
-    if (funcFile == NULL)
+    for (int i = SIM_JOYSTICK1; i < SIM_NUMDEVICES; ++i)
     {
-        sprintf(fileName, "%s\\config\\keystrokes.key", FalconDataDirectory);
-        funcFile = SimlibFileClass::Open(fileName, SIMLIB_READ);
-
-        if (funcFile == NULL)
-        {
-            SimLibPrintError("No Function Table File\n");
-            return;
-        }
+        if (memcmp(&gDIDevGUIDs[i], &savedGUID, sizeof(GUID)) == 0)
+            return (i - SIM_JOYSTICK1) * SIMLIB_MAX_DIGITAL + local;
     }
 
-    while (funcFile->ReadLine(tmpStr, sizeof(tmpStr)) == SIMLIB_OK)
+    return savedButtonId;   // device is not connected right now
+}
+
+// #20: extract "GUID=<32 hex>" from a .key line. Returns true and writes 16 bytes to out.
+static bool ParseLineDeviceGUID(const char* line, GUID* out)
+{
+    const char* gp = strstr(line, "GUID=");
+
+    if ( not gp)
+        return false;
+
+    gp += 5;
+    unsigned char* b = (unsigned char*)out;
+
+    for (int i = 0; i < (int)sizeof(GUID); ++i)
     {
-        // Skip Comments
-        if (tmpStr[0] == '#')
+        unsigned int v;
+
+        if (sscanf(gp + i * 2, "%2x", &v) not_eq 1)
+            return false;
+
+        b[i] = (unsigned char)v;
+    }
+
+    return true;
+}
+
+void LoadFunctionTables(_TCHAR *fname)
+{
+    // #53: bindings are loaded from the active profile's XML (config\profiles\<active>\...)
+    // instead of keystrokes.key. fname is ignored (the profile comes from profiles.xml).
+    (void)fname;
+
+    // Artscout - 2026: make sure the active profile reflects the persisted last-selected pilot
+    // (profiles.xml <active>) before we read any bindings - otherwise startup/options would load
+    // the "default" profile until the logbook UI is opened.
+    ControlsXml_RestoreActiveProfile();
+
+    // --- keyboard: keyboard.xml ---
+    static CxKbBind kb[1200];
+    int nkb = ControlsXml_ReadKeyboard(kb, 1200);
+
+    for (int i = 0; i < nkb; i++)
+    {
+        if (kb[i].k2 < 0)
+            continue;   // entry without a key
+
+        InputFunctionType f = FindFunctionFromString(kb[i].func);
+
+        if (not f)
             continue;
 
-        sscanf(tmpStr, "%s %d %d %x %x %x %x %*[^\n]", funcName, &buttonId, &mouseSide, &key2, &mod2, &key1, &mod1);
+        int flags = kb[i].m2 + (kb[i].k1 << SECOND_KEY_SHIFT) + (kb[i].m1 << SECOND_KEY_MOD_SHIFT);
+        UserFunctionTable.AddFunction(kb[i].k2, flags, kb[i].cpbtn, kb[i].mouse, f);
+    }
 
+    // --- devices: <GUID>.xml ONLY for those found during enumeration (gDIDevButtons>0) ---
+    static const GUID zeroGuid = {0};
+    static CxBtnBind bb[512];
+    char guidStr[2 * sizeof(GUID) + 1];
 
-        theFunc = FindFunctionFromString(funcName);
+    for (int dev = SIM_JOYSTICK1; dev < SIM_NUMDEVICES; dev++)
+    {
+        if (gDIDevButtons[dev] <= 0)
+            continue;
 
-        if (theFunc)
+        if (memcmp(&gDIDevGUIDs[dev], &zeroGuid, sizeof(GUID)) == 0)
+            continue;
+
+        const unsigned char *gbytes = (const unsigned char *)&gDIDevGUIDs[dev];
+
+        for (int k = 0; k < (int)sizeof(GUID); k++)
+            sprintf(guidStr + k * 2, "%02X", gbytes[k]);
+
+        guidStr[2 * sizeof(GUID)] = 0;
+
+        int nb = ControlsXml_ReadDevice(guidStr, bb, 512);
+        int slotOff = dev - SIM_JOYSTICK1;
+
+        for (int i = 0; i < nb; i++)
         {
-            if (key1 == -1)
+            InputFunctionType f = FindFunctionFromString(bb[i].func);
+
+            if (not f)
+                continue;
+
+            if (bb[i].isPov)
             {
-                flags = mod1 + (key2 << SECOND_KEY_SHIFT) + (mod2 << SECOND_KEY_MOD_SHIFT);
-
-                //for (int i=0; i<UserFunctionTable.NumHashEntries; i++)
-                for (int i = DIK_1; i <= DIK_0; i++)
-
-                {
-                    //Find this key combo
-                    UserFunctionTable.AddFunction(i, flags, buttonId, mouseSide, theFunc);
-                }
-
-                UserFunctionTable.AddFunction(DIK_ESCAPE, flags, buttonId, mouseSide, theFunc);
-                UserFunctionTable.AddFunction(DIK_SYSRQ, flags, buttonId, mouseSide, theFunc); // screen shot
+                UserFunctionTable.SetPOVFunction(bb[i].id, bb[i].dir, f, bb[i].cpbtn);
             }
             else
             {
-                //this function has no key combo assigned
-                if (key2 == -1)
-                    continue;
-
-                if (key2 == -2)
-                {
-                    UserFunctionTable.SetButtonFunction(buttonId, theFunc, mouseSide);
-                    //int this case mouseside contains the cockpit button ID while
-                    //buttonID is the corresponding joystick button
-                }
-                else if (key2 == -3)
-                {
-                    UserFunctionTable.SetPOVFunction(buttonId, mod2, theFunc, mouseSide);
-                    //int this case mouseside contains the cockpit button ID while
-                    //buttonID is the corresponding hat
-                    //mod2 is the direction the hat is pressed
-                }
-                else
-                {
-                    //Find this key combo
-                    flags = mod2 + (key1 << SECOND_KEY_SHIFT) + (mod1 << SECOND_KEY_MOD_SHIFT);
-                    UserFunctionTable.AddFunction(key2, flags, buttonId, mouseSide, theFunc);
-                }
+                // per-GUID file: remap to the current device slot (local button + slot offset)
+                int newId = slotOff * SIMLIB_MAX_DIGITAL + (bb[i].id % SIMLIB_MAX_DIGITAL);
+                UserFunctionTable.SetButtonFunction(newId, f, bb[i].cpbtn);
             }
         }
-        else
-        {
-            // MonoPrint ("ERROR  %s not found\n", funcName);
-#ifdef DEBUG
-            //sprintf (tmpStr, "ERROR  %s not found\n", funcName);
-            //OutputDebugString (tmpStr);
-#endif
-        }
     }
-
-    funcFile->Close();
-    delete funcFile;
 
     //Wombat778 10-07-2003 Load scroll wheel functions. Added these here because I need to be 100% sure that keys have been loaded.
     scrollupfunc = FindFunctionFromString(g_strScrollUpFunction);
     scrolldownfunc = FindFunctionFromString(g_strScrollDownFunction);
     middlebuttonfunc = FindFunctionFromString(g_strMiddleButtonFunction);
+
+    // #53: load the prebuilt XML function catalog (C++ name -> BMS label [+category]).
+    // The file config\controls.xml is generated OFFLINE (tools\gen_controls_xml.py); the sim only reads.
+    ControlsXml_LoadCatalog();
 }
 
 void InputBuildString(unsigned long i)

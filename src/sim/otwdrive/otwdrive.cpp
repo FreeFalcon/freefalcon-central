@@ -2096,7 +2096,7 @@ void OTWDriverClass::Enter(void)
     // COBRA - DX - Switching btw Old and New Engine - Initialize DX Engine and VB Manager
     if (g_bUse_DX_Engine)
     {
-        TheVbManager.Setup(OTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3D);
+        TheVbManager.Setup();   // #34 C1: D3D7 device arg removed
     }
 
     SetupSplashScreen();
@@ -2505,7 +2505,7 @@ void OTWDriverClass::Enter(void)
         displaceCamera = false; // Retro 25Dec2003
 
     // Retro 16Dec2003 - wipes internal structs clear of messages of last mission
-    // 'drawSubTitles' doesn´t destroy or create the radiolabel class - it just governs if the labels are created
+    // 'drawSubTitles' doesnï¿½t destroy or create the radiolabel class - it just governs if the labels are created
     // with this variable the user can temporarily kill the subtitles, however if he wants them off alltogether he
     // has to do this in the UI
     if ((PlayerOptions.getSubtitles()) and (radioLabel))

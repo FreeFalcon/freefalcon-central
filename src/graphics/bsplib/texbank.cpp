@@ -37,7 +37,7 @@ BYTE* TextureBankClass::TexBuffer;
 DWORD TextureBankClass::TexBufferSize;
 bool TextureBankClass::RatedLoad;
 short *TextureBankClass::CacheLoad, *TextureBankClass::CacheRelease;
-short TextureBankClass::LoadIn, TextureBankClass::LoadOut, TextureBankClass::ReleaseIn, TextureBankClass::ReleaseOut;
+volatile short TextureBankClass::LoadIn, TextureBankClass::LoadOut, TextureBankClass::ReleaseIn, TextureBankClass::ReleaseOut;
 
 DWORD gDebugTextureID;
 
@@ -561,7 +561,10 @@ void TextureBankClass::ReadImageDDS(DWORD id)
     fp = fopen(szFile, "rb");
 
     // RV - RED - Avoid CTD if a missing texture
-    if ( not fp) return;
+    if ( not fp)
+    {
+        return;
+    }
 
     fread(&dwMagic, 1, sizeof(DWORD), fp);
     ShiAssert(dwMagic == MAKEFOURCC('D', 'D', 'S', ' '));
@@ -865,13 +868,42 @@ void TextureBankClass::WaitUpdates(void)
     // Pause the Loader...
     TheLoader.SetPause(true);
 
-    while ( not TheLoader.Paused());
+    // PHASE 5 (hang-fix): the busy-wait for pause confirmation must NOT hang forever.
+    // The loader thread may sleep on WaitForSingleObject(INFINITE), be dead,
+    // or lose a race with the auto-reset event -> paused never becomes PAUSED,
+    // and the main thread would hang forever (black screen on 3D exit). Timeout ~2s.
+    {
+        DWORD t0 = GetTickCount();
+        while ( not TheLoader.Paused())
+        {
+            if (GetTickCount() - t0 > 2000)
+            {
+                // Loader pause acknowledgement timed out -> bail rather than hang.
+                TheLoader.SetPause(false);
+                return;
+            }
+            Sleep(0);   // yield a quantum, don't burn a core
+        }
+    }
 
     // Not slow loading
     RatedLoad = false;
 
-    // Parse all objects till any opration to do
-    while (UpdateBank());
+    // Parse all objects till any opration to do.
+    // PHASE 5 (hang-fix): cap on the iteration count. If a request can't complete and
+    // re-queues (e.g. a missing terrain .dds, terrtex.cpp:1435),
+    // UpdateBank() would return true forever -> a hang. Log and bail out.
+    {
+        long guard = 0;
+        while (UpdateBank())
+        {
+            if (++guard > 200000)
+            {
+                // Drain cap hit (a request that never completes would loop forever) -> bail.
+                break;
+            }
+        }
+    }
 
     // Restore rated loading
     RatedLoad = true;

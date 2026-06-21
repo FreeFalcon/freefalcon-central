@@ -1,6 +1,6 @@
 #ifndef _C_BASE_CLASS_
 #define _C_BASE_CLASS_
-#include <cISO646>
+#include <iso646.h>
 
 class C_Window;
 

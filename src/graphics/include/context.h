@@ -8,7 +8,7 @@
 #ifndef _3DEJ_CONTEXT_H_
 #define _3DEJ_CONTEXT_H_
 
-#include <cISO646>
+#include <iso646.h>
 #include "define.h"
 
 #if not defined(MPR_INTERNAL)
@@ -21,6 +21,17 @@
 #include <d3dtypes.h>
 #include "alloc.h"
 #include "../../mathlib/color.h"
+
+// Artscout - 2026: ODR/layout guard. ContextMPR contains 8-byte-aligned members (__int64 in
+// the nested Stats struct), so its size/alignment depend on the active struct packing. Many
+// legacy headers use the old "#pragma pack(1) ... #pragma pack()" style; when such a header is
+// mid-pack while this file is first included (it differs per translation unit by include order),
+// ContextMPR ends up packed differently in different .cpp files. That made the cursor path
+// (sicursor.cpp) see ContextMPR 16 bytes smaller and the VirtualDisplay::context member 4 bytes
+// earlier than the engine that constructs it -> ContextMPR methods were called with a this
+// pointer 4 bytes off, dropping the screen 2D batch (sky/HUD/MFD vanished on mouse move; Release
+// only, because Debug shared a consistent layout). Pin packing to 8 here so every TU agrees.
+#pragma pack(push, 8)
 
 #ifdef  __cplusplus
 extern  "C" {
@@ -375,6 +386,8 @@ extern  "C" {
         BYTE *m_pImageData; // Copy if palettized src image data if the device doesnt not support palettized textures
         bool m_bImageDataOwned; // self allocated or not
         int m_nImageDataStride;
+        void *m_pD3D11Tex; // PHASE 3: ID3D11Texture2D* (m_pDDS holds the SRV); NULL under D3D7
+        void *m_pD3D11RTV; // PHASE 5 (RTT): ID3D11RenderTargetView* for FLAG_RENDERTARGET textures
 
         enum _TextureHandleFlags
         {
@@ -463,6 +476,10 @@ extern  "C" {
         std::vector<TextureHandle *> m_arrAttachedTextures;
         short m_nNumEntries;
         DWORD *m_pPalData;
+        // PHASE 5 (D3D11): cache of the last baked palette - re-bake attached textures only
+        // when it actually changes (Translate3D is called every frame).
+        DWORD m_arrBaked[256];
+        bool  m_bBakedValid;
 
 #ifdef _DEBUG
     public:
@@ -564,8 +581,12 @@ extern  "C" {
         STATE_MULTITEXTURE,
         STATE_MULTITEXTURE_ALPHA,
 
+        STATE_RTT_SOFT, // #7 AA-RTT: soft composite of the displays atlas (D3D11/MSAA only)
+
+        STATE_WATER, // #12: animated water terrain tile (D3D11 only)
+
         //
-        MAXIMUM_MPR_STATE = 38
+        MAXIMUM_MPR_STATE = 41
     };
 
 
@@ -794,6 +815,14 @@ extern  "C" {
         float ZNEAR;
         float gZBias;
 
+        // #48: NDC depth assigned to 2D screen-space primitives (DrawPrimitive with
+        // MPRVtx_t/MPRVtxTexClr_t). Default 0.0 = near plane (UI/HUD overlays drawn on top,
+        // painter order). The sky background is also drawn through the 2D path; with a single
+        // coherent depth buffer (#48) a near-plane sky would write depth 0 and occlude the
+        // cockpit. The sky draw temporarily sets this to 1.0 (far plane) so the pit and the
+        // world correctly draw in front of it. Restored to 0.0 after the sky.
+        float m_2DPrimZ;
+
         float szCX1; // COBRA - RED - Constant to be calculated once for Drawing
         float szCX2; // COBRA - RED - Constant to be calculated once for Drawing
         float zNear; // COBRA - RED - Constant to be calculated once for Drawing
@@ -838,6 +867,7 @@ extern  "C" {
         short m_nCurPrimType;
         LVERTEX *m_pLVtx;
         TLVERTEX *m_pTLVtx;
+        TLVERTEX *m_pVBCpu;	// PHASE 4: CPU vertex backing for the D3D11 screen path (replaces m_pVB->Lock)
         int mIdx;
         DWORD plainPolyVCnt, texturedPolyVCnt, translucentPolyVCnt;
         SPolygon *plainPolys, *texturedPolys, *translucentPolys;
@@ -913,6 +943,9 @@ extern  "C" {
         void Stats();
 
     public:
+        // PHASE 5 (RTT): public wrapper over FlushVB - so FinishRtt flushes the displays'
+        // pending content into the renderTexture BEFORE switching to the backbuffer.
+        void FlushPending() { FlushVB(); }
         void DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdxPtr, int *IIdxPtr, Ptexcoord *uv, bool bUseFGColor = false);
         void Draw2DPoint(Tpoint *v0);
         void Draw2DPoint(float x, float y);
@@ -927,7 +960,14 @@ extern  "C" {
         void LockViewport();
         void UnlockViewport();
         void GetViewport(RECT *prc);
-        void FlushPolyLists();
+        // #48: clearDepthBeforeObjects -- legacy D3D11 workaround that wiped the depth
+        // buffer between the screen-path terrain and the object-path flush so the cockpit
+        // would draw on top. It also destroyed terrain->object occlusion (objects showed
+        // through the ground). The OTW world pass now passes false to keep a single
+        // coherent depth buffer (the proven D3D7 ordering: pit at near-Z + terrain +
+        // world objects all z-tested together). Mini-scene displays (radar/MFD/mirror/
+        // c3dview) keep the default true so their behaviour is unchanged.
+        void FlushPolyLists(bool clearDepthBeforeObjects = true);
         // ASSO
         void ZeroViewport();
     };
@@ -935,5 +975,7 @@ extern  "C" {
 #ifdef  __cplusplus
 };
 #endif
+
+#pragma pack(pop)	// Artscout - 2026: end ODR/layout packing guard (see top of file)
 
 #endif // _3DEJ_CONTEXT_H_

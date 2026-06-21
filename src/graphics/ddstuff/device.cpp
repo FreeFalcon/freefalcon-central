@@ -35,6 +35,10 @@ DisplayDevice::~DisplayDevice()
 
 // Initialize our device.  This must be called before any images
 // are constructed.
+// PHASE 1 (D3D7->D3D11): under D3D11 DDraw mode enumeration is not needed.
+extern bool g_bUseD3D11;
+extern int  g_d3d11ReqWidth, g_d3d11ReqHeight, g_d3d11ReqDepth;
+
 void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int depth, bool fullScreen, BOOL dblBuffer, HWND win, BOOL bWillCallSwapBuffer)
 {
     RECT rect;
@@ -65,6 +69,13 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
 
     // For now, we go figure out the number for the resolution we want
     // TODO:  Change the DisplayDevice API to require the resNum to be passed in?
+    if (g_bUseD3D11)
+    {
+        g_d3d11ReqWidth = width; g_d3d11ReqHeight = height; g_d3d11ReqDepth = depth ? depth : 32;
+        resNum = 0;
+    }
+    else
+    {
     for (resNum = 0; TRUE; resNum++)
     {
         if (FalconDisplay.devmgr.GetMode(driverNum, devNum, resNum, &w, &h, &d))
@@ -82,6 +93,7 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
             sprintf(message, "Requested unavailable resolution %0dx%0dx%0d", width, height, depth);
             ShiError(message);
         }
+    }
     }
 
     // Create an MPR device handle for this device
@@ -126,7 +138,9 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
         RegisterClass(&wc);
 
         // Choose an appropriate window style
-        if (fullScreen)
+        // PHASE 1 (D3D7->D3D11): under D3D11 we render in a WINDOW -- always WS_OVERLAPPEDWINDOW (frame/controls).
+        extern bool g_bUseD3D11;
+        if (fullScreen && !g_bUseD3D11)
         {
             style = WS_POPUP;
         }

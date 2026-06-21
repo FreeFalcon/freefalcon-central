@@ -56,6 +56,7 @@ void SimWeaponClass::InitLocalData()
     SetSendCreate(VuEntity::VU_SC_SEND_OOB);
 
     rackSlot = -1;
+    countedInAir = 0;	// #21
     nextOnRail.reset();
     parent.reset();
     shooterPilotSlot = 255;
@@ -94,6 +95,17 @@ void SimWeaponClass::InitLocalData()
 
 void SimWeaponClass::CleanupLocalData()
 {
+    // #21: leak-proof decrement. MissileClass::Sleep early-returns when the missile is no
+    // longer awake, so the gNumWeaponsInAir decrement in SimWeaponClass::Sleep can be
+    // skipped on some teardown paths -> the IA counter leaked up and blocked firing. Teardown
+    // (CleanupLocalData) always runs, and countedInAir guarantees we decrement exactly once
+    // whether it happened in Sleep or here.
+    if (countedInAir)
+    {
+        gNumWeaponsInAir--;
+        countedInAir = 0;
+    }
+
     nextOnRail.reset();
     parent.reset();
 }
@@ -111,12 +123,13 @@ void SimWeaponClass::Init()
 
 int SimWeaponClass::Sleep()
 {
-    if (SimDriver.RunningInstantAction())
+    // #21: decrement symmetrically -- only if THIS weapon incremented the counter in Wake.
+    // Independent of parent/mode state here, so the counter cannot leak (a stale parent at
+    // Sleep used to skip the decrement and eventually block all firing in Instant Action).
+    if (countedInAir)
     {
-        if (parent.get() == SimDriver.GetPlayerEntity())
-        {
-            gNumWeaponsInAir --;
-        }
+        gNumWeaponsInAir--;
+        countedInAir = 0;
     }
 
     parent.reset();
@@ -132,11 +145,17 @@ int SimWeaponClass::Sleep()
 
 int SimWeaponClass::Wake(void)
 {
-    if (SimDriver.RunningInstantAction())
+    // #21: count ONLY the player's offensive missiles toward the Instant Action throttle
+    // (doweapon.cpp gMaxIAWeaponsFired). Bombs and especially countermeasures (chaff/flare,
+    // which are now unlimited in IA and dispensed constantly) are BombClass -> IsBomb()==TRUE
+    // and are excluded, otherwise they would fill the budget and block missile firing.
+    // 'countedInAir' makes the matching Sleep decrement leak-proof.
+    if (SimDriver.RunningInstantAction() and not countedInAir and not IsBomb())
     {
         if (parent.get() == SimDriver.GetPlayerEntity())
         {
             ++gNumWeaponsInAir;
+            countedInAir = 1;
         }
     }
 

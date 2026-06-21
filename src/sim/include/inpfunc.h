@@ -42,7 +42,7 @@ public:
 
     // Retro 31Dec2003 - these values are also in sinput.h should not be defined in duplicate
     // FIXME
-#define SIMLIB_MAX_DIGITAL 32
+#define SIMLIB_MAX_DIGITAL 128 // DIJOYSTATE2: up to 128 buttons/device (was 32)
 #define SIM_NUMDEVICES 16
 #define SIMLIB_MAX_POV 4
 
@@ -81,5 +81,10 @@ void CallInputFunction(unsigned long val, int state, void *);
 void LoadFunctionTables(_TCHAR *fname = PlayerOptions.GetKeyfile());
 InputFunctionType FindFunctionFromString(char* str);
 char * FindStringFromFunction(InputFunctionType func);
+
+// Enumeration of the function table for the assignment UI (#18)
+int GetUserFunctionCount(void);
+InputFunctionType GetUserFunctionByIndex(int idx);
+char * GetUserFunctionName(int idx);
 
 #endif

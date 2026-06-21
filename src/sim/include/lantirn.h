@@ -1,7 +1,7 @@
 #ifndef LANTIRN_H
 #define LANTIRN_H
 
-#include <cISO646>
+#include <iso646.h>
 #include "drawable.h"
 
 struct Tpoint;

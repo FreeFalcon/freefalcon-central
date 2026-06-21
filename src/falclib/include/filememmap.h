@@ -2,7 +2,7 @@
 // Class wrapper for memory mapped files - Julian Onions
 #ifndef _FILE_MEM_MAP_H
 #define _FILE_MEM_MAP_H
-#include <cISO646>
+#include <iso646.h>
 #include <windows.h>
 
 

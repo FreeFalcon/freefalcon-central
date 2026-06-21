@@ -89,10 +89,7 @@ public:
     CDXEngine(void);
     ~CDXEngine(void);
 
-    IDirect3DDevice7* GetD3DD(void)
-    {
-        return m_pD3DD;
-    };
+    // #34 C1: GetD3DD() removed (D3D7 device gone; no callers)
 
 
     // Various functions for Debug
@@ -109,7 +106,7 @@ public:
 #endif
 
 #ifdef DEBUG_ENGINE
-    void DrawFrameSurfaces(NodeScannerType *NODE, float Alpha = 1.0f);
+    // #34 DrawFrameSurfaces removed (dead EDIT_ENGINE D3D7 wireframe draw)
     bool UseZBias;
     static IDirect3DDevice7 *m_pD3DD;
     static IDirect3D7 *m_pD3D;
@@ -121,13 +118,12 @@ public:
     void FlushBuffers(void);
     void DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const Ppoint *Pos, const float sx, const float sy, const float sz, const float scale, bool CameraSpace = false, DWORD LightID = NULL);
     void DrawBlip(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const Ppoint *Pos, const float sx, const float sy, const float sz, const float scale, bool CameraSpace);
-    void Setup(IDirect3DDevice7 *pD3DD, IDirect3D7 *pD3D, IDirectDraw7 *pDD);
+    void Setup();   // #34 C1: D3D7 device args removed
     void Release(void);
     void SetCamera(D3DXMATRIX *Settings, D3DVECTOR Pos, D3DXMATRIX *BB);
     void SetProjection(D3DXMATRIX *Settings)
     {
-        Projection = *Settings;
-        m_pD3DD->SetTransform(D3DTRANSFORMSTATE_PROJECTION, (LPD3DMATRIX)&Projection);
+        Projection = *Settings;   // #34 C1: D3D11 sets proj via the shader cbuffer
     }
     void SetWorld(D3DXMATRIX *Settings)
     {
@@ -152,7 +148,7 @@ public:
         m_FogColor = *Color;
     }
     void CreateZeroTexture(void);
-    void SelectDDSTexture(IDirectDrawSurface7 * TexID);
+    // #34 C1: SelectDDSTexture removed (no definition / no callers)
     void SelectTexture(GLint texID);
     void ClearLights(void)
     {
@@ -161,7 +157,7 @@ public:
     DWORD SetStencilMode(DWORD Stencil);
     void ClearStencil(void)
     {
-        m_pD3DD->Clear(NULL, NULL, D3DCLEAR_STENCIL, 0, 1.0f, 0);
+        // #34 C1: no D3D7 device; D3D11 clears stencil per-frame on the backend.
         m_StencilRef = 0;
         SetStencilMode(STENCIL_OFF);
     }
@@ -275,11 +271,7 @@ private:
 
 
     // The main D3DD used by the Engine
-#ifndef DEBUG_ENGINE
-    static IDirect3DDevice7 *m_pD3DD;
-    static IDirect3D7 *m_pD3D;
-    static IDirectDraw7 *m_pDD;
-#endif
+    // #34 C1: CDXEngine D3D7 device members (m_pD3DD/m_pD3D/m_pDD) removed.
     //The Stacks for Surfaces
     SURFACE_STACK(m_AlphaStack, MAX_ALPHA_SURFACES);
     SURFACE_STACK(m_SolidStack, MAX_SOLID_SURFACES);

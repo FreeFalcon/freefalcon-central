@@ -50,6 +50,11 @@
 #define NRANDPOS ((float)( (float)rand()/(float)RAND_MAX ))
 #define DTR 0.01745329F
 
+// #54 per-emitter particle cap per frame -- a fuse against emission blowup on a huge
+// PS_ElapsedTime (after a long loading frame) -> infinite while(qty>=1) -> hang.
+// Any real effect (including big explosions) << this; triggers only on an abnormal dt.
+#define PS_MAX_EMIT_PER_FRAME 4096.0f
+
 extern int g_nGfxFix;
 extern char FalconDataDirectory[];
 extern char FalconObjectDataDir[];
@@ -2179,7 +2184,17 @@ int DrawableParticleSys::GetNameId(char *name)
 
 #else
 
-        if (PPN[l] and PPN[l]->name and stricmp(name, PPN[l]->name) == 0) return l;
+        // #21/particles: the loader (below, "copy pointers to PPN array") writes into PPN[id]
+        // an INDEX into PS_PPN (USE_NEW_PS scheme), not a real pointer. USE_NEW_PS is nowhere
+        // defined -> this #else branch dereferenced the index as a pointer -> crash on
+        // missile-end in Instant Action. Treat PPN[l] as an index + bounds (holes in PPN
+        // = 0xCDCDCDCD -> exceed PPNCount -> skipped).
+        {
+            DWORD psi = (DWORD)PPN[l];
+
+            if (psi < (DWORD)PPNCount and PS_PPN[psi].name and stricmp(name, PS_PPN[psi].name) == 0)
+                return l;
+        }
 
 #endif
     }
@@ -3280,6 +3295,14 @@ void  DrawableParticleSys::PS_EmitterRun(void)
         }
 
 
+        // #54 EMISSION-BLOWUP GUARD (load hang): for PSEM_PERSEC qty = rate *
+        // PS_ElapsedTime + rollover; after a LONG frame (load/stall) PS_ElapsedTime is huge
+        // -> qty = millions -> while(qty>=1) spews particles forever (stack: PS_EmitterRun ->
+        // GetRandomPosition -> rand) -> rendering never finishes the frame -> 'hung'. Cap the emission
+        // per frame at a reasonable ceiling (any real effect << this; a big dt must not flood).
+        if (qty > PS_MAX_EMIT_PER_FRAME)
+            qty = PS_MAX_EMIT_PER_FRAME;
+
         while (qty >= 1)
         {
             float v;
@@ -3396,6 +3419,9 @@ void DrawableParticleSys::PS_GenerateEmitters(PS_PTR owner, PS_PPType &PPN)
 // Thhe public Call
 void DrawableParticleSys::PS_AddParticleEx(int ID, Tpoint *Pos, Tpoint *Vel)
 {
+    // FIX (FF6 data vs FF7 code): SFX may send an unregistered particle-ID,
+    // then PPN[ID] -> a garbage index -> PS_PPN[garbage] AV. Validate as IsValidPSId.
+    if (ID < 0 or not IsValidPSId(ID)) return;
     PS_AddParticle((int)PPN[ID], Pos, Vel);
 }
 
@@ -3403,6 +3429,10 @@ void DrawableParticleSys::PS_AddParticleEx(int ID, Tpoint *Pos, Tpoint *Vel)
 // Adds a PARTICLE NODE to the Particle nodes list, setups all it's parameters
 void DrawableParticleSys::PS_AddParticle(int ID, Tpoint *Pos, Tpoint *Vel, Tpoint *Aim, float fRotationRate, PS_PTR Cluster, PS_PTR Light)
 {
+    // FIX: backstop -- the resolved ID must be within the PS_PPN malloc block,
+    // else PS_PPN[ID] = out of bounds (AV). Guards against FF6 data desync.
+    if (ID < 0 or (DWORD)ID >= MAX_PARTICLE_PARAMETERS) return;
+
     // Get a free slot
     PS_PTR ptr = PS_AddItem(PS_PARTICLES_IDX);
 
@@ -4328,12 +4358,16 @@ float GetCollisionPoint(D3DXVECTOR3 A, D3DXVECTOR3 B, float R)
 
 void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &Origin, DWORD &Entry, DWORD &Exit, DWORD Elements, PS_PTR tpn)
 {
-    float Life, Alpha;
+    float Life = 0.0f, Alpha = 0.0f;	// #36: init (/RTCu in PS_SubTrailRun -- goto Skip/branches)
     XMMVector XMMPos, Div2;
-    float TimeStep = PS_ElapsedTime, LastSize;
+    // #36: Size/LastSize hoisted to function scope and initialized. There was a crash (Debug RTC
+    // /RTCu) in PS_SubTrailRun:4896 'LastSize = Size' -- `goto Skip` (4475) jumped over
+    // the declaration `float Size=...` (4486) -> Size uninitialized. Surfaced after enabling
+    // PS_Exec (#36). Now Size lives the whole function, default 0.
+    float TimeStep = PS_ElapsedTime, LastSize = 0.0f, Size = 0.0f;
     bool TrailValid = false, EntrySegment = true, TrailCompleted = false, RecalcP1 = true, LineMode = false;
     DWORD Index = Entry;
-    psRGBA Color, LastColor, ColorStep, ColorNew;
+    psRGBA Color = {0}, LastColor = {0}, ColorStep = {0}, ColorNew = {0};	// #36: init (Color read at label Skip before assignment on goto -> /RTCu)
 
     // Get the Trail parameter Node
     PS_TPType &TPN = PS_TPN[tpn];
@@ -4353,8 +4387,8 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
     D3DDYNVERTEX Quad[4];
     D3DDYNVERTEX Side[2];
     D3DXVECTOR3 S0, S1, ST, SL, V1, SVector;
-    DWORD dwColor;
-    float LastSU, LastSegAlpha, ST_Distance, S0_Distance, SegmentSize, S1_Distance;
+    DWORD dwColor = 0;	// #36: init (/RTCu)
+    float LastSU = 0.0f, LastSegAlpha = 0.0f, ST_Distance = 0.0f, S0_Distance = 0.0f, SegmentSize = 0.0f, S1_Distance = 0.0f;	// #36: init (read at label Skip/segments before write on goto)
     bool Flip = false;
 
 
@@ -4439,8 +4473,8 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
 
         //**********************************************************************************
 
-        // Update Size
-        float   Size = (BaseSize + SizeRate * InvLogLife) * Part.SizeRnd;
+        // Update Size (#36: was `float Size=` -- now an assignment to the function local, see above)
+        Size = (BaseSize + SizeRate * InvLogLife) * Part.SizeRnd;
 
         // Update position...
         S0.x += Part.Offset.x * InvLogLife + Part.Wind.x * WindStep;
@@ -4622,7 +4656,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
              Quad[3].tu=tu[3], Quad[3].tv=tv[3];
             */
 
-            float TexStep, NewTex, SizeStep, NewSize;
+            float TexStep = 0.0f, NewTex = 0.0f, SizeStep = 0.0f, NewSize = 0.0f;	// #36 /RTCu: path past the assignment (4687) -> use (4727) on garbage
             float SegmentStep, SegmentDone;
 
             // Check if segment or part of it inside frag radius
@@ -4699,7 +4733,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
 
 
                 // Update Alpha based on distance
-                float SegAlpha, AlphaMixCx;//, AlphaMixCx3;
+                float SegAlpha = 0.0f, AlphaMixCx = 0.0f;//, AlphaMixCx3;	// #36: init (/RTCu -- read before write on branch/goto)
                 // Update the Alpha Mix CX
                 AlphaMixCx = ((ST_Distance - FragMixOut) / FragMixSpan);
                 // to be used Cubed
@@ -4942,6 +4976,13 @@ void DrawableParticleSys::PS_Exec(class RenderOTW *renderer)
     PS_RunTime = TheTimeManager.GetClockTime();
     PS_ElapsedTime = (float)(PS_RunTime - PS_LastTime) * .001f;
     PS_LastTime = PS_RunTime;
+
+    // #54 LOAD-HANG ROOT: after a long frame (load/stall) the delta is huge ->
+    // emission qty = rate*PS_ElapsedTime explodes -> infinite while(qty>=1) -> rendering hangs;
+    // plus particle 'teleport' (pos += vel*hugeDt). Clamp dt to a reasonable max (>> a normal
+    // frame, but not a second). Protects the WHOLE particle engine (emission+integration), not just emission.
+    if (PS_ElapsedTime > 0.1f) PS_ElapsedTime = 0.1f;
+    if (PS_ElapsedTime < 0.0f) PS_ElapsedTime = 0.0f;   // in case of a negative delta (clock change)
 
     // Setup Colors
     TheTimeOfDay.GetTextureLightingColor(&PS_HiLightCx);

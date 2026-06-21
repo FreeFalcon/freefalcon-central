@@ -94,24 +94,31 @@ BOOL RenderOTW::DrawSky(void)
     // Update the sky color based on our current attitude and position
     AdjustSkyColor();
 
+    // #48: the sky is drawn through the 2D screen-primitive path (default near-plane depth).
+    // With a single coherent depth buffer (objects occluded by terrain) a near sky would
+    // write depth 0 and occlude the cockpit. Push the sky background to the far plane so the
+    // pit and the world draw in front of it. Restored before returning.
+    context.m_2DPrimZ = 1.0f;
+    BOOL needTerrain;
 
     if ( not skyRoof)
     {
         DrawSkyNoRoof();
-        return TRUE; // Need to draw terrain
+        needTerrain = TRUE; // Need to draw terrain
     }
-
-
-    if (viewpoint->Z() < -SKY_ROOF_HEIGHT)
+    else if (viewpoint->Z() < -SKY_ROOF_HEIGHT)
     {
         DrawSkyAbove();
-        return FALSE; // Don't need to draw terrain
+        needTerrain = FALSE; // Don't need to draw terrain
     }
     else
     {
         DrawSkyBelow();
-        return TRUE; // Need to draw terrain
+        needTerrain = TRUE; // Need to draw terrain
     }
+
+    context.m_2DPrimZ = 0.0f; // restore near plane for UI/HUD 2D primitives
+    return needTerrain;
 }
 
 

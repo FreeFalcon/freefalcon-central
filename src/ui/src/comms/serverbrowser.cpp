@@ -1035,7 +1035,7 @@ void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
     _bstr_t str;
     int x, n;
 
-    SetID((long) pGame);
+    SetID((long) pGame.GetInterfacePtr());
     SetType(0);
     SetDefaultFlags();
     SetReady(1);

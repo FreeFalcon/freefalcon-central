@@ -502,14 +502,10 @@ void BeamRiderClass::ConsiderDecoy(SimObjectType *target)
             // Only take the bait if we can see the thing
             if (cosATA >= cos(CM_EFFECTIVE_ANGLE))
             {
-#ifdef DEBUG
-                /* SetSensorTarget( new SimObjectType(OBJ_TAG, platform, cm) );*/
-#else
-
+                // #47 ROOT: was limited to #else (Release build only) -> in Debug the missile did NOT
+                // track the decoy (S.G. even asked 'why only in release?'). UNCONDITIONALLY.
                 SetSensorTarget(new SimObjectType(cm));
-                // 2000-11-24 QUESTION BY S.G. me123, WHY DID YOU LIMIT IT TO 'RELEASE MODE'?
                 chafftime = SimLibElapsedTime;
-#endif
             }
         }
 

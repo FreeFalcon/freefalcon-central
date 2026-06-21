@@ -161,9 +161,16 @@ int GameManagerClass::CheckPlayerStatus(FalconEntity *entity)
 
 void GameManagerClass::AnnounceEntry()
 {
+    // Guard: the player entity is sometimes NULL on sim entry (a pre-existing intermittent --
+    // GetPlayerEntity() not ready yet) -> playerEntity->Id() crashed on this=NULL (crash
+    // VuEntity::Id line 155 <- AnnounceEntry). Skip the announce (it's for status in
+    // multiplayer; in single-player/when not ready it's harmless).
+    SimBaseClass *playerEntity = (SimBaseClass*) FalconLocalSession->GetPlayerEntity();
+    if ( not playerEntity)
+        return;
+
     // Announce our entry to the other players
     FalconPlayerStatusMessage *msg = new FalconPlayerStatusMessage(FalconLocalSessionId, FalconLocalGame);
-    SimBaseClass *playerEntity = (SimBaseClass*) FalconLocalSession->GetPlayerEntity();
 
     _tcscpy(msg->dataBlock.callsign, FalconLocalSession->GetPlayerCallsign());
     msg->dataBlock.playerID         = playerEntity->Id();

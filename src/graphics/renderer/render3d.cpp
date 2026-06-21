@@ -267,9 +267,14 @@ void Render3D::SetFOV(float horizontal_fov, float NearZ)
         matProj.m01 *= oneOVERtanHFOV;
         matProj.m02 *= oneOVERtanHFOV;
 
+        // PHASE 5 (D3D11): Falcon body-frame (X=forward,Y=right,Z=down) -- RIGHT-handed,
+        // D3D clip is LEFT-handed; the RH->LH conversion MUST contain a reflection (det=-1).
+        // It was m02=-1 (det=+1, NO reflection): clip_z=-vx -> objects ahead went behind the
+        // near-plane (ground/panel/HUD/MFD vanished), behind (the seat) drew, everything
+        // mirrored. m02=+1: clip_z=+vx (forward = forward), det=-1 (correct RH->LH).
         D3DXMATRIX Flip;
         ZeroMemory(&Flip, sizeof(Flip));
-        Flip.m02 = -1.0f;
+        Flip.m02 = 1.0f;	// RH->LH for D3D11 (cockpit). Test m02=-1: objects do NOT appear that way (#16).
         Flip.m21 = -1.0f;
         Flip.m10 = 1.0f;
         Flip.m33 = 1.0f;

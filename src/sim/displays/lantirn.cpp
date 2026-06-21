@@ -76,7 +76,7 @@ void LantirnClass::DisplayInit(ImageBuffer* image)
     irrend = new RenderIR;
     privateDisplay = irrend;
     irrend->Setup(image, OTWDriver.GetViewpoint());
-    irrend->SetColor(0xff00ff00);
+    irrend->SetColor(0xffffffff);
     irrend->SetFOV(10.0F * DTR);
 }
 
@@ -100,7 +100,7 @@ void LantirnClass::DrawTerrain()
     display->SetColor(0x03000000);
     display->Tri(-1.0F, -1.0F, -1.0F, 1.0F, 1.0F, 1.0F);
     display->Tri(-1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F);
-    display->SetColor(0xff00ff00);
+    display->SetColor(0xffffffff);
 #endif
     Trotation viewRotation;
     mlTrig tha, psi, phi;

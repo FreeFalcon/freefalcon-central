@@ -4,6 +4,11 @@
 
 int gTotalJoy = 0;
 _TCHAR* gDIDevNames[SIM_NUMDEVICES - SIM_JOYSTICK1] = {NULL};
+// button count per device (DIDEVCAPS.dwButtons), index [SIM_JOYSTICK1+joy]; for the UI #18
+int gDIDevButtons[SIM_NUMDEVICES] = {0};
+// device instance GUID (a stable ID across runs), index [SIM_JOYSTICK1+joy];
+// for robust axis binding (#19). A zero GUID = slot unused.
+GUID gDIDevGUIDs[SIM_NUMDEVICES] = {0};
 
 //********************************************************************
 //

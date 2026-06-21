@@ -1382,7 +1382,7 @@ void ConstructOrderedSentence(short maxsize, _TCHAR *string, _TCHAR *format, ...
 
             while (count >= 0)
             {
-                sprintf(argstring, va_arg(params, _TCHAR*));
+                { _TCHAR *_a = va_arg(params, _TCHAR*); if (_a) { _tcsncpy(argstring, _a, MAX_STRLEN_PER_TOKEN-1); argstring[MAX_STRLEN_PER_TOKEN-1]=0; } else argstring[0]=0; }
                 count--;
             }
 
@@ -1731,7 +1731,7 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
 
                 while (argnum >= 0)
                 {
-                    sprintf(argstring, va_arg(params, _TCHAR*));
+                    { _TCHAR *_a = va_arg(params, _TCHAR*); if (_a) { _tcsncpy(argstring, _a, MAX_STRLEN_PER_TOKEN-1); argstring[MAX_STRLEN_PER_TOKEN-1]=0; } else argstring[0]=0; }
                     argnum--;
                 }
 

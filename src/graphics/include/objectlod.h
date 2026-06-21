@@ -69,7 +69,8 @@ protected:
     static BYTE *LodBuffer;
     static DWORD LodBufferSize;
     static bool RatedLoad;
-    static short *CacheLoad, *CacheRelease, LoadIn, LoadOut, ReleaseIn, ReleaseOut;
+    static short *CacheLoad, *CacheRelease;
+    static volatile short LoadIn, LoadOut, ReleaseIn, ReleaseOut;
 
 
 public:

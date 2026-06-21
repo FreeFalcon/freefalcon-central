@@ -31,7 +31,7 @@ void LantirnDrawable::DisplayInit(ImageBuffer* image)
     privateDisplay = new RenderIR;
     ((RenderIR*)privateDisplay)->Setup(image, OTWDriver.GetViewpoint());
 
-    privateDisplay->SetColor(0xff00ff00);
+    privateDisplay->SetColor(0xffffffff);
     ((Render3D*)privateDisplay)->SetFOV(28.0f * DTR);
 }
 

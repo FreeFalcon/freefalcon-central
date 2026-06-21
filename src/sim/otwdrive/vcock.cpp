@@ -1,6 +1,7 @@
 #include "Graphics/Include/canvas3d.h"
 #include "Graphics/Include/drawbsp.h"
 #include "Graphics/Include/renderow.h"
+#include "Graphics/Include/texbank.h"   // PHASE 5: TheTextureBank.WaitUpdates() for synchronous loading of cockpit textures
 #include "stdhdr.h"
 #include "soundfx.h"
 #include "fsound.h"
@@ -61,6 +62,20 @@ extern char FalconCockpitThrDirectory[];
 void CallFunc(InputFunctionType theFunc, unsigned long val, int state, void* pButton); //Wombat778 03-06-04
 
 float resScale = 0.66667f;
+// #7 AA RTT font: display-text size multiplier for the enlarged RTT atlas (1024).
+// Zones scale by resScale, but the pixel font does not; this multiplier is applied
+// in ScreenText/ScreenTextWidth/Height ONLY during the RTT pass (g_rttBatchActive).
+// 1.0 = no scale (atlas 512/high resolution). Set in the 1024 blocks below.
+float g_rttFontScale = 1.0f;
+
+// #7 display SSAA (variant 2, VR goal): a SINGLE supersampling multiplier for the RTT atlas.
+// Atlas = 768*SS, zones *SS (resScale), font *SS (g_rttFontScale) -- all three consistent,
+// so the apparent symbology size is preserved, but there are SS times more pixels. DrawRttQuad
+// (bilinear) downscales atlas->panel = clean AA of lines/circle/text WITHOUT 'jumps' in
+// height or 'clunkiness' (previously at high-res zones did NOT scale -> text '+2x').
+// 1.0 = off (as before). 2.0 = 4x samples. 3.0 = 9x samples (atlas 768*3=2304,
+// zones fit: max 750*3=2250 < 2304). Atlas memory 2304^2*4 ~ 21 MB -- acceptable.
+float g_rttSS = 3.0f;
 //ATARIBABY start added for new 3d pit code
 float DEDw;
 float DEDh;
@@ -673,12 +688,16 @@ bool OTWDriverClass::VCock_SetRttCanvas(char** plinePtr, Render2D** canvaspp, in
     if ( not bRTTTarget)
     {
         // Cobra - Lower screen resolutions need a smaller canvas (font is too small)
-        if (FindBestResolution() < 1280)
-        {
-            resScale = 512.0f / (float)txRes;
-            txRes = 512;
-            tyRes = 512;
-        }
+        // PHASE: 1024 instead of 512 = ~1:1 RTT atlas (shared by ALL displays:
+        // HUD/DED/RWR/MFD/PFL). resScale also scales the zones (below), so
+        // the apparent font size is preserved, while lines/fonts render into more
+        // pixels -> DrawRttQuad (bilinear) downscales = antialiasing on all displays.
+        // #7 SSAA: a single multiplier for atlas/zones/font (see g_rttSS). Without a gate by
+        // resolution -- always supersample. Zone base = 768 (zones are hardcoded for it).
+        resScale       = g_rttSS;
+        g_rttFontScale = g_rttSS;
+        txRes = (int)(768.0f * g_rttSS);
+        tyRes = (int)(768.0f * g_rttSS);
 
         VirtualDisplay::SetupRttTarget(txRes, tyRes, tBpp);
     }
@@ -755,21 +774,18 @@ bool OTWDriverClass::VCock_SetRttCanvas(char** plinePtr, Render2D** canvaspp, in
         }
     }
 
-    // Cobra - Lower screen resolutions need a smaller canvas (font is too small)
-    if (FindBestResolution() < 1280)
-    {
-        if (tLeft > 1)
-            tLeft = (int)(resScale * (float)tLeft);
+    // #7 SSAA: always scale zones by resScale(=g_rttSS) -- consistent with atlas/font.
+    if (tLeft > 1)
+        tLeft = (int)(resScale * (float)tLeft);
 
-        if (tRight > 1)
-            tRight = (int)(resScale * (float)tRight);
+    if (tRight > 1)
+        tRight = (int)(resScale * (float)tRight);
 
-        if (tTop > 1)
-            tTop = (int)(resScale * (float)tTop);
+    if (tTop > 1)
+        tTop = (int)(resScale * (float)tTop);
 
-        if (tBottom > 1)
-            tBottom = (int)(resScale * (float)tBottom);
-    }
+    if (tBottom > 1)
+        tBottom = (int)(resScale * (float)tBottom);
 
     *canvaspp = canvas = new Render2D;
     canvas->Setup(renderer->GetImageBuffer());
@@ -963,12 +979,20 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
                        &txRes, &tyRes, &tBpp) >= 2)
             {
                 // Cobra - Lower screen resolutions need a smaller canvas (font is too small)
-                if (FindBestResolution() < 1280)
-                {
-                    resScale = 512.0f / (float)txRes;
-                    txRes = 512;
-                    tyRes = 512;
-                }
+                // PHASE: 1024 = RTT atlas ~1:1 (antialiasing of all displays), see
+                // VCock_SetRttCanvas. resScale scales the zones -> apparent size preserved.
+                // #7: the high-res atlas experiment was reverted -- glyph size in the atlas (=pixels=
+                // stability) and the VISIBLE size are linked via g_rttFontScale (one number), they can't
+                // be separated by tuning. A large atlas gave sharpness only at the cost of +2x size; at
+                // normal size there's no gain. The real fix for swimming at normal size is
+                // supersampling the display panels (per-sample shading on an MSAA target), separately.
+                // #7 SSAA (variant 2): supersample the atlas by a single multiplier g_rttSS, as in
+                // VCock_SetRttCanvas. Zone base = 768; atlas = 768*SS; zones/font *SS. All three
+                // consistent -> apparent size preserved, AA via the bilinear downscale of DrawRttQuad.
+                resScale       = g_rttSS;
+                g_rttFontScale = g_rttSS;
+                txRes = (int)(768.0f * g_rttSS);
+                tyRes = (int)(768.0f * g_rttSS);
 
                 VirtualDisplay::SetupRttTarget(txRes, tyRes, tBpp);
                 bRTTTarget = true;
@@ -1036,21 +1060,18 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
                 tBottom = tlMFDbottom;
             }
 
-            // Cobra - Lower screen resolutions need a smaller canvas (font is too small)
-            if (FindBestResolution() < 1280)
-            {
-                if (tLeft > 1)
-                    tLeft = (int)(resScale * (float)tLeft);
+            // #7 SSAA: always scale MFD zones by resScale(=g_rttSS) -- consistent with atlas/font.
+            if (tLeft > 1)
+                tLeft = (int)(resScale * (float)tLeft);
 
-                if (tRight > 1)
-                    tRight = (int)(resScale * (float)tRight);
+            if (tRight > 1)
+                tRight = (int)(resScale * (float)tRight);
 
-                if (tTop > 1)
-                    tTop = (int)(resScale * (float)tTop);
+            if (tTop > 1)
+                tTop = (int)(resScale * (float)tTop);
 
-                if (tBottom > 1)
-                    tBottom = (int)(resScale * (float)tBottom);
-            }
+            if (tBottom > 1)
+                tBottom = (int)(resScale * (float)tBottom);
 
             lMFDul = ul;
             lMFDur = ur;
@@ -1083,21 +1104,18 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
                 tBottom = trMFDbottom;
             }
 
-            // Cobra - Lower screen resolutions need a smaller canvas (font is too small)
-            if (FindBestResolution() < 1280)
-            {
-                if (tLeft > 1)
-                    tLeft = (int)(resScale * (float)tLeft);
+            // #7 SSAA: always scale MFD zones by resScale(=g_rttSS) -- consistent with atlas/font.
+            if (tLeft > 1)
+                tLeft = (int)(resScale * (float)tLeft);
 
-                if (tRight > 1)
-                    tRight = (int)(resScale * (float)tRight);
+            if (tRight > 1)
+                tRight = (int)(resScale * (float)tRight);
 
-                if (tTop > 1)
-                    tTop = (int)(resScale * (float)tTop);
+            if (tTop > 1)
+                tTop = (int)(resScale * (float)tTop);
 
-                if (tBottom > 1)
-                    tBottom = (int)(resScale * (float)tBottom);
-            }
+            if (tBottom > 1)
+                tBottom = (int)(resScale * (float)tBottom);
 
             rMFDul = ul;
             rMFDur = ur;
@@ -1453,9 +1471,9 @@ void OTWDriverClass::VCock_HeadCalc(void)
         //ATARIBABY start new dynamic head movement more like old DID EF2000 days :-)
         if (g_b3dDynamicPilotHead)
         {
-            float actualtilt;
-            float actualrollrate;
-            float actualpan;
+            float actualtilt = 0.0f;	// FIX: assigned only when dt!=0, else RTC uninitialized
+            float actualrollrate = 0.0f;
+            float actualpan = 0.0f;
             //ATARIBABY disabled now - fwd/back lean cause normals problems and i not know solution yet
             //float actualaccel;
 
@@ -1671,6 +1689,13 @@ void OTWDriverClass::VCock_Exec(void)
         DrawableBSP *bsp = (DrawableBSP*)SimDriver.GetPlayerAircraft()->drawPointer;
         int t = bsp->GetTextureSet();
         vrCockpit->SetTextureSet(t % vrCockpit->GetNTextureSet());
+
+        // PHASE 5 (D3D11, white cockpit panels): SetTextureSet references the cockpit texture set
+        // into the loader queue, but the async loader thread is unreliable under D3D11 (loads part and stalls:
+        // 912/2046 ok, 1308/1888/3599/3212/1290 -- not). Drain the queue synchronously (an engine
+        // mechanism, as in RenderOTW::PreLoadScene). After loading the queue is empty -> WaitUpdates
+        // early-returns (zero cost). Loads ALL cockpit textures before drawing.
+        TheTextureBank.WaitUpdates();
     }
 
 
@@ -2930,7 +2955,6 @@ void OTWDriverClass::VCock_Exec(void)
     // ASSO: BEGIN
     if (renderer->HasRttTarget())
     {
-
         renderer->EndDraw(); //588
         renderer->StartRtt(renderer);
 
@@ -3277,6 +3301,10 @@ void OTWDriverClass::VCock_Exec(void)
                 MfdDisplay[1]->GetDrawable()->GetDisplay()->DrawRttQuad();
             }
         }
+
+        // DIAG (RTT): raw atlas overlay -- DISABLED (diagnosis obtained: uneven height = texel-bleed
+        // of font rows, fixed by an inset). Enable if needed.
+        //renderer->DrawRttDebugOverlay();
     }
 
     // ASSO: END

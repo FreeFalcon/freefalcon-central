@@ -2,7 +2,7 @@
 #define _AIRCRAFT_CLASS_H
 
 
-#include <cISO646>
+#include <iso646.h>
 #include "simVeh.h"
 #include "hardpnt.h"
 #include "fsound.h"

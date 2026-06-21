@@ -1911,7 +1911,7 @@ BOOL OTWDriverClass::Padlock_CheckOcclusion(float az, float el)
     // removed, doesn't seem to work well
     /* else if ((az >= 100 * DTR or az <= -100 * DTR) and fabs(el) > (180 * DTR -fabs(az))) {
 
-     // At 180°, maximum is 100°, at 175° maximum is 50°.....
+     // At 180ï¿½, maximum is 100ï¿½, at 175ï¿½ maximum is 50ï¿½.....
      isOccluded = TRUE;
      }*/
     else
@@ -2341,15 +2341,19 @@ void OTWDriverClass::SetmpPadlockPriorityObject(SimBaseClass* newObject)
         if (mpPadlockPriorityObject and mpPadlockPriorityObject->IsSim() and 
             (otwPlatform.get() not_eq mpPadlockPriorityObject) and not mpPadlockPriorityObject->IsWeapon())
         {
-#ifdef DEBUG
-            //simObjectPtr = new SimObjectType (OBJ_TAG, NULL, mpPadlockPriorityObject);
-#else
+            // #47 UAF ROOT: create UNCONDITIONALLY (in Debug the DEBUG branch was empty -> simObjectPtr
+            // stayed the same/garbage -> Reference on garbage; the #25 null-guard only partly masked it).
             simObjectPtr = new SimObjectType(newObject);
-#endif
 
-            // And assign it and reference it
+            // And assign it and reference it.
+            // GUARD: the original FF7 code assumed new always succeeds. Under
+            // memory pressure/heap corruption (see known-issues) the overridden operator new may
+            // return NULL -> ->Reference() read NULL+4 (crash on F3 view switching).
+            // If the object isn't created -- leave mfdVirtualDisplay=NULL (all accesses below
+            // are already under if (mfdVirtualDisplay)).
             mfdVirtualDisplay = (Render2D*)simObjectPtr;
-            ((SimObjectType *)mfdVirtualDisplay)->Reference();
+            if (simObjectPtr)
+                ((SimObjectType *)mfdVirtualDisplay)->Reference();
         }
 
     }

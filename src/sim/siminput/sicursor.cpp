@@ -320,8 +320,16 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
         //Wombat778 3-24-04  If rendered cursor is enabled, dont blit, but render it instead
 
         OTWDriver.renderer->StartDraw();
-        OTWDriver.renderer->CenterOriginInViewport();
-        OTWDriver.renderer->SetViewport(-1.0, 1.0, 1.0, -1.0);
+
+        // Artscout - 2026: the legacy D3D7 cursor path called CenterOriginInViewport()/
+        // SetViewport(-1,1,1,-1) to set up a 2D coord space. In the D3D11 screen path that is
+        // both unnecessary and harmful: the cursor vertices below are already in ABSOLUTE screen
+        // pixels (CursorDest.*) and DrawPrimitive feeds them straight to sx/sy while the screen
+        // VS maps pixel->NDC by the backbuffer size (scaleX/shiftX are never applied here). Those
+        // two calls only mutated the SHARED OTW renderer's persistent 2D transform (scaleX/shiftX
+        // and dmatrix translation), which nothing re-applies per frame -> the next frame's 2D
+        // screen-path (sky gradient, HUD, MFD) mapped off-screen permanently after one mouse
+        // move (clouds/world/cockpit use the object path and were unaffected). Dropped.
 
         TextureHandle *pTex = gpSimCursors[gSelectedCursor].CursorRenderTexture[0];
         // Setup vertices
@@ -361,6 +369,14 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
         OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
         OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
         OTWDriver.renderer->EndDraw();
+
+        // Artscout - 2026: the cursor binds its texture to stage 0, which leaves the renderer's
+        // sticky m_hasTex0=TRUE. That flag is NOT cleared by InvalidateState/StartFrame, so the
+        // next frame's texture-state-but-no-real-texture 2D draws (HUD lines, MFD/DED symbology,
+        // sky gradient bands) keep FF_TEXTURE0 set, sample an empty gTex0 and get chroma-keyed
+        // away -> they vanish (Release: cursor texture actually binds; Debug: m_pDDS still null,
+        // so the leak was hidden). Unbind stage 0 so the no-texture default is restored.
+        OTWDriver.renderer->context.SelectTexture1(0);
 
         //Wombat778 3-24-04 end
     }

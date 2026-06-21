@@ -1,7 +1,7 @@
 #ifndef VUSESS_H_
 #define VUSESS_H_
 
-#include <cISO646>
+#include <iso646.h>
 #include <list>
 // sfr: uses list instead of map... may be faster than map
 #define SESSION_USES_LIST_FOR_PU 1

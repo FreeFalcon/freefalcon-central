@@ -46,6 +46,10 @@ extern int gPlayerExitMenuShown;
 extern bool g_bRealisticAvionics;
 extern bool g_bRollLinkedNWSRudder; // ASSOCIATOR 30/11/03 Added for roll unlinked rudder and NWS on the ground
 
+// #57 differential-braking yaw gain (taxi steering from the left/right toe-brake difference).
+// Negative so the aircraft turns TOWARD the braked side (left brake -> nose left, right -> right).
+float g_fDiffBrakeYaw = -0.2f;
+
 float gSpeedyGonzales = 1.0f;
 static float lastVt = 0.0F;  // Only allows for one player A/C
 
@@ -1106,6 +1110,21 @@ void AirframeClass::CalcGroundTurnRate(float dt)
         beta *= 0.8F;
     }
 
+    // #57 differential braking yaw: the difference between the right and left analog toe brakes
+    // produces a yaw moment for taxi steering. Analog axes only - the digital keyboard wheelbrake
+    // (IsSet(WheelBrakes)) stays symmetric and adds no yaw. Strongest at taxi speed, fades out as
+    // speed builds (rudder/NWS take over). g_fDiffBrakeYaw tunes strength/sign (flip if reversed).
+    if (platform->IsPlayer() and platform->OnGround() and not IsSet(GearBroken) and vt > 0.0F
+        and IO.AnalogIsUsed(AXIS_BRAKE_LEFT) and IO.AnalogIsUsed(AXIS_BRAKE_RIGHT))
+    {
+        float bl = (15000 - IO.GetAxisValue(AXIS_BRAKE_LEFT)) / 15000.0F;
+        float br = (15000 - IO.GetAxisValue(AXIS_BRAKE_RIGHT)) / 15000.0F;
+        float diff = br - bl;   // >0 = right wheel braked harder -> nose yaws right
+        float spdFade = max(0.0F, 1.0F - vt / (60.0F * KNOTS_TO_FTPSEC));
+        r += diff * g_fDiffBrakeYaw * spdFade;
+        r = max(-4.0F, min(r, 4.0F));
+    }
+
     float slip = (float)fabs(vt * platform->platformAngles.sinbet);
 
     if (slip > 3.0F and vt > 25.0F * KNOTS_TO_FTPSEC and platform == SimDriver.GetPlayerEntity() and 
@@ -1178,12 +1197,18 @@ float AirframeClass::CalcMuFric(int groundType)
         // (say because parking brake is on), then apply braking full force, otherwise
         // make it proportional with the analog axis value.  Oh, and AP must be off, since
         // smart combat AP still wants to use brakes as well.
-        // NB: Right now there is no support for differential braking
         // MD -- 20040111: reversed axis direction per testing feedback
+        // #57 differential braking: longitudinal deceleration uses BOTH toe-brake axes (average),
+        // so pressing both pedals = full braking; the left/right DIFFERENCE drives the yaw moment
+        // in CalcGroundTurnRate. The digital keyboard wheelbrake (IsSet(WheelBrakes)) stays symmetric.
 
         if (IO.AnalogIsUsed(AXIS_BRAKE_LEFT))
             if (platform->IsPlayer() and (wheelbrakes <= 0.1F) and (platform->AutopilotType() == AircraftClass::APOff))
-                wheelbrakes = (15000 - IO.GetAxisValue(AXIS_BRAKE_LEFT)) / 15000.0F;  // not quite so binary on/off
+            {
+                float bl = (15000 - IO.GetAxisValue(AXIS_BRAKE_LEFT)) / 15000.0F;   // not quite so binary on/off
+                float br = IO.AnalogIsUsed(AXIS_BRAKE_RIGHT) ? (15000 - IO.GetAxisValue(AXIS_BRAKE_RIGHT)) / 15000.0F : bl;
+                wheelbrakes = (bl + br) * 0.5F;
+            }
 
         if ( not IsSet(OverRunway))
             Mu_fric += 0.04F - 0.1F * wheelbrakes;

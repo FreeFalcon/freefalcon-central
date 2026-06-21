@@ -9,7 +9,7 @@
 #ifndef TIMEMGR_H
 #define TIMEMGR_H
 
-#include <cISO646>
+#include <iso646.h>
 #include "grtypes.h"
 
 

@@ -2,11 +2,11 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{0fa851a1-7fd3-49f4-8c9e-75af189b4af2}</UniqueIdentifier>
+      <UniqueIdentifier>{17aa3f08-f6ed-459a-8d95-9684522e9d77}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{c08a837b-bb41-4909-a5b0-330c60cd8652}</UniqueIdentifier>
+      <UniqueIdentifier>{137833ba-402b-41b1-acc1-be869e3846dd}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
     </Filter>
   </ItemGroup>
@@ -15,6 +15,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="context.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="d3dxcompat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="fileio.cpp">
@@ -34,31 +37,31 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Include\ALLOC.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\context.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="costable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="../include/alloc.h">
+    <ClInclude Include="..\Include\fileio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="../include/context.h">
+    <ClInclude Include="..\Include\filemem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="../include/fileio.h">
+    <ClInclude Include="..\Include\grinline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="../include/filemem.h">
+    <ClInclude Include="..\Include\grmath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="../include/grinline.h">
+    <ClInclude Include="..\Include\image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="../include/grmath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="../include/image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="../include/radix.h">
+    <ClInclude Include="..\Include\RADIX.H">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

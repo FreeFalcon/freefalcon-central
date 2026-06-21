@@ -26,6 +26,7 @@ public:
     bool bFontTexelAlignment;
     bool bSpecularLighting;
     bool bScreenCoordinateBiasFix; //Wombat778 4-01-04
+    bool bWindowed; // #33: run the 3D session in a window (false = borderless fullscreen)
 
     enum TEXMODE
     {

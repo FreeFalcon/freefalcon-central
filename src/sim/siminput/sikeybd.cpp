@@ -25,10 +25,22 @@ void OnSimKeyboardInput()
     dwElements = DKEYBOARD_BUFFERSIZE;
     hResult = gpDIDevice[SIM_KEYBOARD]->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), ObjData, &dwElements, 0);
 
-    if (hResult == DIERR_INPUTLOST)
+    // PHASE 5 (fix 'keyboard dead after Alt+Tab'): on focus loss the device
+    // becomes INPUTLOST/NOTACQUIRED. Previously the code just marked FALSE and didn't reclaim
+    // the acquisition -> input wasn't restored. Now we re-Acquire and retry.
+    if (hResult == DIERR_INPUTLOST or hResult == DIERR_NOTACQUIRED)
     {
-        gpDeviceAcquired[SIM_KEYBOARD] = FALSE;
-        return;
+        if (SUCCEEDED(gpDIDevice[SIM_KEYBOARD]->Acquire()))
+        {
+            gpDeviceAcquired[SIM_KEYBOARD] = TRUE;
+            dwElements = DKEYBOARD_BUFFERSIZE;
+            hResult = gpDIDevice[SIM_KEYBOARD]->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), ObjData, &dwElements, 0);
+        }
+        else
+        {
+            gpDeviceAcquired[SIM_KEYBOARD] = FALSE;
+            return;
+        }
     }
 
     if (SUCCEEDED(hResult))

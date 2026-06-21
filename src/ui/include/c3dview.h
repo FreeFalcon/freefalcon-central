@@ -19,6 +19,7 @@ private:
     C_BSPList *objects_; // loaded objects list
 
     ImageBuffer *m_pImgGray; // OW
+    ImageBuffer *m_pRTT; // Artscout - 2026 (#34): off-screen RTT for D3D11 menu 3D-viewer (see View3d)
 
 
     float CameraHeading_, CameraPitch_, CameraRoll_;
@@ -65,6 +66,7 @@ public:
         sh = 600;
         LockOnView_ = 0;
         m_pImgGray = NULL; // OW
+        m_pRTT = NULL; // Artscout - 2026 (#34)
     }
     ~C_3dViewer()
     {

@@ -289,9 +289,18 @@ void DrawableBSP::GetDynamicCoords(int vertID, float *dx, float *dy, float *dz)
 /**************************************************************************
     Set one of the switch control masks in the model
 ***************************************************************************/
+// #47 forward decl (falclib/include/isbad.h): guard reads on objects that may have been freed
+// (0xDD) while still referenced by another list (e.g. OTWDriver litObjectRoot).
+extern bool F4IsBadReadPtr(const void *lp, unsigned int ucb);
+
 void DrawableBSP::SetSwitchMask(int switchNumber, UInt32 mask)
 {
     ShiAssert(id >= 0);
+
+    // #47 UAF guard: this DrawableBSP can be freed while still in litObjectRoot (the destructor
+    // does not unlink it; only feature/damage paths call RemoveFromLitList). instance.ParentObject
+    // then holds 0xDDDDDDDD and ->nSwitches faults. Bail if the parent object isn't readable.
+    if (F4IsBadReadPtr(instance.ParentObject, sizeof(*instance.ParentObject))) return;
 
     // THIS IS A HACK TO TOLERATE OBJECTS WHICH DON'T YET HAVE DOFS
     // THIS SHOULD BE REMOVED IN THE LATE BETA AND SHIPPING VERSIONS
@@ -305,6 +314,9 @@ void DrawableBSP::SetSwitchMask(int switchNumber, UInt32 mask)
 UInt32 DrawableBSP::GetSwitchMask(int switchNumber)
 {
     ShiAssert(id >= 0);
+
+    // #47 UAF guard (see SetSwitchMask)
+    if (F4IsBadReadPtr(instance.ParentObject, sizeof(*instance.ParentObject))) return 0;
 
     // THIS IS A HACK TO TOLERATE OBJECTS WHICH DON'T YET HAVE DOFS
     // THIS SHOULD BE REMOVED IN THE LATE BETA AND SHIPPING VERSIONS

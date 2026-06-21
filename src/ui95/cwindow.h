@@ -225,6 +225,18 @@ private:
     void Fill(SCREEN *surface, WORD Color, UI95_RECT *rect);
 
 public:
+    // #22: access to the active (focused) control -- needed so the window's KB callback
+    // can yield input to the active editbox (search field) instead of grabbing the keys.
+    C_Base *GetCurControl() { return CurControl_; }
+
+    // #22: clear focus from the active control (ESC in the search field -> release input).
+    // Body in .cpp -- C_Base is only forward-declared in this header.
+    void ClearActiveControl();
+
+    // #22: scroll the client's vertical scrollbar by wheel (the row-buttons don't catch the wheel
+    // themselves -- a fallback from the wheel dispatcher). Returns TRUE if scrolled.
+    BOOL WheelClient(long client, int increments, WORD mx, WORD my);
+
     C_Handler *Handler_; // Pointer to Handler class
 
     C_Window();

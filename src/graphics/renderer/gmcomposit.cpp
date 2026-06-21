@@ -713,8 +713,22 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
 
     // Now blit the final viewport image to the texture
     ImageBuffer *pSrcBuffer = DisplayOptions.bRender2Texture ? m_pRenderTarget : m_pRenderBuffer;
-    HRESULT hr = targetHandle->m_pDDS->Blt(NULL, pSrcBuffer->targetSurface(), NULL, DDBLT_WAIT, NULL);
-    ShiAssert(SUCCEEDED(hr));
+    extern bool g_bUseD3D11;
+    if (g_bUseD3D11)
+    {
+        // PHASE 5 (RTT): instead of DDraw Blt -- bind the panel texture's SRV to
+        // the buffer's RTT texture (content already drawn into it under D3D11). targetSurface
+        // is NULL under D3D11, Blt would crash.
+        if (targetHandle && pSrcBuffer)
+        {
+            targetHandle->m_pDDS = (IDirectDrawSurface7 *)pSrcBuffer->GetD3D11SRV();
+        }
+    }
+    else
+    {
+        HRESULT hr = targetHandle->m_pDDS->Blt(NULL, pSrcBuffer->targetSurface(), NULL, DDBLT_WAIT, NULL);
+        ShiAssert(SUCCEEDED(hr));
+    }
 
     if ( not DisplayOptions.bRender2Texture)
     {

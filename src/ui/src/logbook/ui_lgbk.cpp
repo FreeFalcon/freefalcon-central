@@ -34,6 +34,7 @@
 #include "playerop.h"
 #include "userids.h"
 #include "logbook.h"
+#include "sim/include/controlsxml.h"   // Artscout - 2026: pilot list from profiles.xml
 #include "userids.h"
 #include "cstringrc.h"
 #include "textids.h"
@@ -526,93 +527,40 @@ int SetPilot(_TCHAR *callsign, C_ListBox *lbox)
     return FALSE;
 }
 
+// Artscout - 2026: the pilot list now comes from config\profiles.xml (each pilot = a <profile>
+// entry), not from globbing config\*.lbk - the logbook is stored per profile as logbook.xml.
+// fspec/cutext/exclude_te are kept for signature compatibility; only excludelist is still honored.
 void GetPilotList(C_Window *win, _TCHAR *fspec, _TCHAR *excludelist[],
                   C_ListBox *lbox, BOOL cutext, BOOL exclude_te)
 {
-    char path[100];
-    WIN32_FIND_DATA filedata;
-    HANDLE ffhnd;
-    BOOL last, ignore;
-    long i; //,y=0;
-    int items = 0;
-    _TCHAR *dst, *ptr, *extension;
+    (void)fspec; (void)cutext; (void)exclude_te;
 
     if ( not win or not lbox) return;
 
-    ffhnd = FindFirstFile(fspec, &filedata);
-    last = (ffhnd not_eq INVALID_HANDLE_VALUE);
-
     lbox->RemoveAllItems();
 
-    if (exclude_te)
+    char names[64][24];
+    int n = ControlsXml_ListProfiles(names, 64);
+
+    int items = 0;
+
+    for (int k = 0; k < n; k++)
     {
-        ptr = fspec;
-        dst = path;
-        extension = NULL;
-
-        while (*ptr)
-        {
-            if (*ptr == '\\')
-                extension = dst;
-
-            *dst = *ptr;
-            dst ++;
-            ptr ++;
-        }
-
-        *dst = '\0';
-
-        if (extension)
-            *extension = '\0';
-    }
-
-    while (last)
-    {
-        if (cutext)
-        {
-            ptr = filedata.cFileName;
-            extension = NULL;
-
-            while (*ptr)
-            {
-                if (*ptr == '.')
-                    extension = ptr;
-
-                ptr ++;
-            }
-
-            if (extension)
-                *extension = 0;
-        }
-
-        ignore = FALSE;
+        BOOL ignore = FALSE;
 
         if (excludelist)
-        {
-            i = 0;
-
-            while (excludelist[i] and not ignore)
-            {
-                if (stricmp(excludelist[i], filedata.cFileName) == 0)
+            for (int i = 0; excludelist[i] and not ignore; i++)
+                if (stricmp(excludelist[i], names[k]) == 0)
                     ignore = TRUE;
-
-                i++;
-            }
-        }
 
         if ( not ignore)
         {
             items++;
-            lbox->AddItem(items, C_TYPE_ITEM, filedata.cFileName);
+            lbox->AddItem(items, C_TYPE_ITEM, names[k]);
         }
-
-        last = FindNextFile(ffhnd, &filedata);
     }
 
     lbox->Refresh();
-
-    if (ffhnd not_eq INVALID_HANDLE_VALUE)
-        FindClose(ffhnd);  // JPO handle leak
 }
 
 void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
@@ -1838,21 +1786,13 @@ void LoadPilotCB(long, short hittype, C_Base *control)
                 }
             }
 
-            //was the callsign changed? if so rename file, save change, and update list
+            //was the callsign changed? if so rename the profile entry, save change, update list
             if (_tcsicmp(UI_logbk.Callsign(), ebox->GetText()))
             {
-                _TCHAR orig[MAX_PATH];
-                _TCHAR newfile[MAX_PATH];
-
-                //rename file
-                _stprintf(orig, _T("%s\\config\\%s.lbk"), FalconDataDirectory, UI_logbk.Callsign());
-                _stprintf(newfile, _T("%s\\config\\%s.lbk"), FalconDataDirectory, ebox->GetText());
-                _trename(orig, newfile);
-
-                _stprintf(orig, _T("%s\\config\\%s.plc"), FalconDataDirectory, UI_logbk.Callsign());
-                _stprintf(newfile, _T("%s\\config\\%s.plc"), FalconDataDirectory, ebox->GetText());
-                _trename(orig, newfile);
-                //store change in memory
+                // Artscout - 2026: the pilot's data lives in its numbered profile folder, so a
+                // rename only relabels the profiles.xml entry (the dir/folder stays). No more
+                // config\<callsign>.lbk/.plc renames.
+                ControlsXml_RenameProfile(UI_logbk.Callsign(), ebox->GetText());
                 UI_logbk.SetCallsign(ebox->GetText());
             }
 
@@ -1906,6 +1846,10 @@ void NewLogbookCB(long, short hittype, C_Base *)
     LogState or_eq LB_EDITABLE bitor LB_CHECKED;
 
     UI_logbk.Initialize();
+    // Artscout - 2026: clear the default "Viper" callsign so the user must type a unique one;
+    // an empty callsign would otherwise fall back to the default profile (dir 0) instead of
+    // getting its own numbered profile folder on save.
+    UI_logbk.SetCallsign(_T(""));
     LBSetupControls();
 }
 
@@ -2004,21 +1948,9 @@ int SaveControlValues(void)
 
         if (_tcsicmp(UI_logbk.Callsign(), callsign))
         {
-            _TCHAR orig[MAX_PATH];
-            _TCHAR newfile[MAX_PATH];
-
-            _stprintf(orig, _T("%s\\config\\%s.lbk"), FalconDataDirectory, UI_logbk.Callsign());
-            _stprintf(newfile, _T("%s\\config\\%s.lbk"), FalconDataDirectory, callsign);
-            _trename(orig, newfile);
-
-            _stprintf(orig, _T("%s\\config\\%s.pop"), FalconDataDirectory, UI_logbk.OptionsFile());
-            _stprintf(newfile, _T("%s\\config\\%s.pop"), FalconDataDirectory, callsign);
-            _trename(orig, newfile);
-
-            UI_logbk.SetOptionsFile(UI_logbk.Callsign());
-            _stprintf(orig, _T("%s\\config\\%s.rul"), FalconDataDirectory, UI_logbk.Callsign());
-            _stprintf(newfile, _T("%s\\config\\%s.rul"), FalconDataDirectory, callsign);
-            _trename(orig, newfile);
+            // Artscout - 2026: data lives in the numbered profile folder; renaming a pilot only
+            // relabels its profiles.xml entry (folder + logbook.xml/keyboard/pop/rul stay put).
+            ControlsXml_RenameProfile(UI_logbk.Callsign(), callsign);
         }
 
         UI_logbk.SetCallsign(callsign);

@@ -13,8 +13,16 @@
 */
 #include <cISO646>
 #include <math.h>
+#include <stdio.h>
+#include <windows.h>
 #include "Matrix.h"
 #include "canvas3d.h"
+
+// PHASE 5 (RTT): during the RTT batch (StartRtt..FinishRtt) HUD/MFD (Canvas3D) draw into
+// renderTexture -- they must draw FLAT (2D, base VirtualDisplay), not be projected onto
+// the 3D-canvas plane (else 3D rotation with roll + tiny scale from FOV). The panel's 3D
+// orientation is provided by DrawRttQuad. Outside the batch Canvas3D works as usual (direct 3D HUD).
+extern bool g_rttBatchActive;
 
 /*
 ** Setup
@@ -150,6 +158,8 @@ void Canvas3D::Update(const Tpoint *loc, const Trotation *rot)
 \***************************************************************************/
 void Canvas3D::Point(float x1, float y1)
 {
+    if (g_rttBatchActive) { VirtualDisplay::Point(x1, y1); return; }	// RTT: flat
+
     float x, y;
     Tpoint p;
     float xres, yres;
@@ -183,6 +193,8 @@ void Canvas3D::Point(float x1, float y1)
 \***************************************************************************/
 void Canvas3D::Line(float x1, float y1, float x2, float y2)
 {
+    if (g_rttBatchActive) { VirtualDisplay::Line(x1, y1, x2, y2); return; }	// RTT: flat
+
     float x;
     int clipFlag;
     Tpoint  p1, p2;
@@ -287,6 +299,8 @@ void Canvas3D::Line(float x1, float y1, float x2, float y2)
 \***************************************************************************/
 void Canvas3D::Tri(float x1, float y1, float x2, float y2, float x3, float y3)
 {
+    if (g_rttBatchActive) { VirtualDisplay::Tri(x1, y1, x2, y2, x3, y3); return; }	// RTT: flat
+
     float x;
     Tpoint  p1, p2, p3;
     float   xres, yres;
@@ -386,6 +400,8 @@ void Canvas3D::Tri(float x1, float y1, float x2, float y2, float x3, float y3)
 \***************************************************************************/
 void Canvas3D::TextLeft(float x1, float y1, const char *string, int boxed)
 {
+    if (g_rttBatchActive) { VirtualDisplay::TextLeft(x1, y1, string, boxed); return; }	// RTT: flat
+
     float x, y;
     ThreeDVertex ps1, ps2;
     Tpoint p1;
@@ -503,6 +519,7 @@ void Canvas3D::TextLeft(float x1, float y1, const char *string, int boxed)
 
 void Canvas3D::TextLeftVertical(float x1, float y1, const char *string, int boxed)
 {
+    if (g_rttBatchActive) { VirtualDisplay::TextLeftVertical(x1, y1, string, boxed); return; }	// RTT: flat
     if ( not *string)
         return;
 
@@ -519,6 +536,7 @@ void Canvas3D::TextLeftVertical(float x1, float y1, const char *string, int boxe
 \***************************************************************************/
 void Canvas3D::TextRight(float x1, float y1, const char *string, int boxed)
 {
+    if (g_rttBatchActive) { VirtualDisplay::TextRight(x1, y1, string, boxed); return; }	// RTT: flat
     if ( not *string)
         return;
 
@@ -534,6 +552,7 @@ void Canvas3D::TextRight(float x1, float y1, const char *string, int boxed)
 \***************************************************************************/
 void Canvas3D::TextRightVertical(float x1, float y1, const char *string, int boxed)
 {
+    if (g_rttBatchActive) { VirtualDisplay::TextRightVertical(x1, y1, string, boxed); return; }	// RTT: flat
     if ( not *string)
         return;
 
@@ -552,6 +571,7 @@ void Canvas3D::TextRightVertical(float x1, float y1, const char *string, int box
 \***************************************************************************/
 void Canvas3D::TextCenter(float x1, float y1, const char *string, int boxed)
 {
+    if (g_rttBatchActive) { VirtualDisplay::TextCenter(x1, y1, string, boxed); return; }	// RTT: flat
     if ( not *string)
         return;
 
@@ -563,6 +583,7 @@ void Canvas3D::TextCenter(float x1, float y1, const char *string, int boxed)
 
 void Canvas3D::TextCenterVertical(float x1, float y1, const char *string, int boxed)
 {
+    if (g_rttBatchActive) { VirtualDisplay::TextCenterVertical(x1, y1, string, boxed); return; }	// RTT: flat
     if ( not *string)
         return;
 

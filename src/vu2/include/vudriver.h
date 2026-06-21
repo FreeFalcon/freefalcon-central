@@ -10,7 +10,7 @@ class VuEntity;
 class VuEvent;
 
 /** returns the dt for position computations based on time variation */
-inline double GetDT(VU_TIME timestamp, VU_TIME last_timestamp);
+double GetDT(VU_TIME timestamp, VU_TIME last_timestamp);
 
 //////////////
 // VUDRIVER //

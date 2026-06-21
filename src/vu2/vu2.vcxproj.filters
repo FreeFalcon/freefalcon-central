@@ -2,11 +2,11 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{a91031de-395e-4ff3-8014-b534bfe04c52}</UniqueIdentifier>
+      <UniqueIdentifier>{3c900be7-4268-44b9-bed9-776f1dc3ccb2}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{f08ec3bd-5550-4f22-916b-5d00d4c2fc54}</UniqueIdentifier>
+      <UniqueIdentifier>{be37c4bc-f291-47f2-ba10-eb59b53ec94d}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
     </Filter>
   </ItemGroup>
@@ -137,6 +137,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\vu_iterator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vu_mem_pool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\vu_mf.h">

@@ -99,7 +99,8 @@ protected:
     static TexFlagsType *TexFlags;
     static void CreateCallBack(LoaderQ* request);
     static bool   RatedLoad; // This flag makes textures loaded once x loader frame
-    static short  *CacheLoad, *CacheRelease, LoadIn, LoadOut, ReleaseIn, ReleaseOut;
+    static short  *CacheLoad, *CacheRelease;
+    static volatile short LoadIn, LoadOut, ReleaseIn, ReleaseOut;
 
 public:
     static bool UpdateBank(void);

@@ -140,6 +140,11 @@ public:
     void _Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, long x, long y, UI95_RECT *cliprect); //XX
     void _Draw32(SCREEN *surface, _TCHAR *str, long length, DWORD dwColor, long x, long y, UI95_RECT *cliprect); //XX
 
+    // GDI path for characters outside the bitmap font (Cyrillic CP1251): render the string
+    // with a system TTF (RUSSIAN_CHARSET) + alpha-composite onto SCREEN. cliprect is optional.
+    bool NeedGDI(_TCHAR *str, long length);
+    void DrawGDI(SCREEN *surface, _TCHAR *str, long length, WORD color, long x, long y, UI95_RECT *cliprect);
+
     //void Draw(SCREEN *surface,_TCHAR *str,short length,WORD color,long x,long y,UI95_RECT *cliprect);
     void DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color, WORD bgcolor, long x, long y, UI95_RECT *cliprect);
     //void DrawSolid(SCREEN *surface,_TCHAR *str,short length,WORD color,WORD bgcolor,long x,long y,UI95_RECT *cliprect);

@@ -25,7 +25,7 @@ enum MfdColor
     MFD_HOSTILE = MFD_RED,
     MFD_FRIENDLY = MFD_GREEN,
     MFD_TEAMDATA = MFD_CYAN,
-    MFD_UNKNOWN = MFD_YELLOW,
+    MFD_UNKNOWN = MFD_WHITE,	// #3: radar targets (unidentified) yellow -> white (per request 2026-06-17)
     MFD_DATALINK = MFD_MAGENTA,
     MFD_SWITCHFLASH = MFD_GREY,
     MFD_SEADBOX = MFD_WHITE,
@@ -58,10 +58,10 @@ enum MfdColor
     MFD_ATTACK_STEERING_CUE = MFD_WHITE,
     MFD_STEER_ERROR_CUE = MFD_WHITE,
     MFD_AA_MODE_RANGE_MARK = MFD_GREEN,
-    MFD_FCR_UNK_TRACK = MFD_YELLOW,
+    MFD_FCR_UNK_TRACK = MFD_WHITE,	// #3: FCR track (unidentified) yellow -> white
     MFD_FCR_UNK_TRACK_TAIL = MFD_MAGENTA,
     MFD_FCR_UNK_TRACK_FLASH = MFD_RED,
-    MFD_FCR_BUGGED = MFD_YELLOW,
+    MFD_FCR_BUGGED = MFD_WHITE,	// #3: the bugged FCR target ('box') yellow -> white
     MFD_FCR_BUGGED_TAIL = MFD_MAGENTA,
     MFD_FCR_BUGGED_FLASH_TAIL = MFD_RED,
     MFD_KILL_X = MFD_RED,

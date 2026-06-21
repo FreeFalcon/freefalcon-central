@@ -54,17 +54,23 @@ void RViewPoint::Setup(float gndRange, int maxDetail, int minDetail, bool isZBuf
     // Setup our base class's terrain information
     float *ranges = new float[minDetail + 1];
 
+    // Artscout - 2026: terrain draw-distance multipliers. kNearDrawScale pushes out the detailed
+    // near-terrain LOD rings; kFarTileScale pushes out the lowest-detail "far tiles" ring (the
+    // distant fog-blended terrain). Both ~1.5x. Independent so each band can be tuned separately.
+    const float kNearDrawScale = 1.5f;
+    const float kFarTileScale   = 1.5f;
+
     for (i = minDetail; i >= 0; i--)
     {
         // Store this detail levels active range
         if (i == minDetail)
         {
             // Account for only drawing out to .707 of the lowest detail level
-            ranges[i] = gndRange * 1.414f;
+            ranges[i] = gndRange * 1.414f * kFarTileScale;
         }
         else
         {
-            ranges[i] = gndRange;
+            ranges[i] = gndRange * kNearDrawScale;
         }
 
         // Make each cover half the distance of the one before

@@ -34,11 +34,12 @@ DrawableTracer::DrawableTracer(void)
     tailEnd.y = 0.0F;
     tailEnd.z = 0.0F;
     radius = width = 0.5f;
-    alpha = 0.2f;
+    alpha = 0.85f;   // #31 was 0.2 -> barely visible even additive; brighter + glow
     r = 1.00f;
     g = 1.00f;
     b = 0.50f;
     type = TRACER_TYPE_TRACER;
+    lastMoveMs = 0;   // Artscout - 2026: armed on first real movement in Draw()
 }
 
 /***************************************************************************\
@@ -55,11 +56,12 @@ DrawableTracer::DrawableTracer(float w)
     tailEnd.y = 0.0F;
     tailEnd.z = 0.0F;
     radius = width = w;
-    alpha = 0.2f;
+    alpha = 0.85f;   // #31 was 0.2 -> barely visible even additive; brighter + glow
     r = 1.00f;
     g = 1.00f;
     b = 0.50f;
     type = TRACER_TYPE_TRACER;
+    lastMoveMs = 0;   // Artscout - 2026: armed on first real movement in Draw()
 }
 
 /***************************************************************************\
@@ -71,11 +73,12 @@ DrawableTracer::DrawableTracer(Tpoint *p, float w)
     position = *p;
     tailEnd = *p;
     radius = width = w;
-    alpha = 0.2f;
+    alpha = 0.85f;   // #31 was 0.2 -> barely visible even additive; brighter + glow
     r = 1.00f;
     g = 1.00f;
     b = 0.50f;
     type = TRACER_TYPE_TRACER;
+    lastMoveMs = 0;   // Artscout - 2026: armed on first real movement in Draw()
 }
 
 
@@ -109,15 +112,32 @@ void DrawableTracer::Draw(class RenderOTW *renderer, int)
 
     // COBRA - RED - Tracers are updated on by the Gun Exec... this makes flying tracers to freeze
     // if no more 'driven' by the gun EXEC... they appear stopped at midair
+    // Artscout - 2026: the gun Exec runs at the sim rate; at high render FPS many frames pass
+    // between updates, so a *live* tracer's position is unchanged on most frames. The old code
+    // removed it on the first such frame, which made the tracer stream sparse/faint in Release
+    // (high FPS) while looking fine in slow Debug. Only cull once the position has been frozen for
+    // STALE_MS of real time; keep drawing the tracer in the meantime.
+    static const DWORD TRACER_STALE_MS = 150;
+
     if (LastPos.x == position.x and LastPos.z == position.z and LastPos.y == position.y and gameCompressionRatio)
     {
-        if (parentList) parentList->RemoveMe();
+        if (lastMoveMs == 0)
+            lastMoveMs = GetTickCount();   // start the staleness clock on first draw
 
-        return;
+        if ((GetTickCount() - lastMoveMs) > TRACER_STALE_MS)
+        {
+            if (parentList) parentList->RemoveMe();
+
+            return;
+        }
+        // still recent: fall through and draw it at its current position this frame
     }
-
-    // Get the last position for next comparison
-    LastPos = position;
+    else
+    {
+        // Get the last position for next comparison and stamp the move time
+        LastPos = position;
+        lastMoveMs = GetTickCount();
+    }
 
 #if 1
     // 2000-10-11 REMOVED BY S.G. SO TRACER BALL DO LONGER HAVE 'Silver bullet'
@@ -358,8 +378,16 @@ BOOL DrawableTracer::ConstructWidth(RenderOTW *renderer,
         mag = (float)sqrt(widthX * widthX + widthY * widthY + widthZ * widthZ);
     }
 
+    // #31 DCS/BMS style: a tracer should keep a visible (angular) thickness at distance,
+    // not collapse into a subpixel. start = camera-centric coords, |start| = distance to the camera.
+    // Minimum world width = distance * an angular coefficient -> ~constant on-screen thickness.
+    float camDist = (float)sqrt(start->x * start->x + start->y * start->y + start->z * start->z);
+    float effWidth = width;
+    float minWidth = camDist * 0.0040f;   // ~ angular size; tuned: visible but not a 'log'
+    if (effWidth < minWidth) effWidth = minWidth;
+
     // Normalize the width vector, then scale it to 1/2 of the total width of the segment
-    normalizer = scale * width / mag;
+    normalizer = scale * effWidth / mag;
     widthX *= normalizer;
     widthY *= normalizer;
     widthZ *= normalizer;

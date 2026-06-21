@@ -58,7 +58,7 @@ void GetBullseyeToOwnship(char *string);   //Wombat778 10-16-2003
 // For HUD coloring
 static DWORD HUDcolor[] =
 {
-    0xff00ff00,
+    0xff00ff00,	// #7: the ORIGINAL bright green (reverted #95E6AE/#AEECC9 -- with the tinted glass the pale ones overbright)
     0xff0000ff,
     0xffff0000,
     0xffffff00,
@@ -114,7 +114,7 @@ float hudWinX[NUM_WIN] =
     -0.5F,   -0.5F,  -0.5F,  -0.5F,    0.55F,  //20..24 //MI tweaked
     0.55F,  -0.3F,  -0.20F, -0.175F, -0.65F,  //25..29
     0.0F,    0.52F,  0.35F,  0.55F,  -0.7F,   //30..34
-    -0.9F,    0.52F,  0.65F, -0.70F,   0.65F,  //35..39   // sfr: altitude correction (index 39, from .65 to 50) // RED - RESTORED
+    -0.9F,    0.52F,  0.65F, -0.70F,   0.65F,  //35..39   // speed(38)=-0.70, altitude(39)=+0.65 (stock). With a correct ASEC 262mr (R~0.915) the tapes are inside the circle anyway -- no inward shift needed.
     -0.325F, -0.325F, 0.56F, -0.3F,   -0.05F,  //40..44
     0.8F,   -0.65F, -0.75F, -0.75F,  -0.65F,  //45-49 TJL 03/07/04
     0.8F,   -0.8F,  -0.90F,  -0.8F,   -0.8F   //50-54

@@ -26,7 +26,7 @@ void GunClass::InitTracers()
     for (i = 0; i < numTracers; i++)
     {
         rgbScale = 1.0f - (float)((float)i / (float)numTracers);
-        tracers[i] = new DrawableTracer(0.5f + (float)((float)i * 0.15f));
+        tracers[i] = new DrawableTracer(1.6f + (float)((float)i * 0.25f)); // #31 wider (was 0.5+i*0.15) -> more visible/glow
 
         if (i == 0)
             tracers[i]->SetAlpha(0.8f);
@@ -48,7 +48,7 @@ void GunClass::InitTracers()
 
     for (i = 0; i < numFirstTracers; i++)
     {
-        firstTracer[i] = new DrawableTracer(0.5f + (float)((float)i * 0.15f));
+        firstTracer[i] = new DrawableTracer(1.6f + (float)((float)i * 0.25f)); // #31 wider
         firstTracer[i]->SetAlpha(0.7f + (float)((float)i * 0.1f));
     }
 
@@ -118,7 +118,7 @@ void GunClass::UpdateTracers(int firing)
             pos.z = bulptr->z;
 
             // float rtmp = max( 0.5f, PRANDFloatPos() ) * SimLibMajorFrameTime;
-            float rtmp = SimLibMajorFrameTime * 0.2f;
+            float rtmp = SimLibMajorFrameTime * 2.5f;   // #31 longer tracer streak (0.2 -> 0.6 -> 2.5, DCS-style long trail)
             end.x = bulptr->x - bulptr->xdot * rtmp;
             end.y = bulptr->y - bulptr->ydot * rtmp;
             end.z = bulptr->z - bulptr->zdot * rtmp;

@@ -12,6 +12,9 @@
 #include "Rotate.h"
 #include "Device.h"
 #include "ImageBuf.h"
+#include "Graphics/DXEngine/D3D11Backend.h"	// PHASE 1: D3D11 backend
+#include "Graphics/DXEngine/d3d11/D3D11Renderer.h"	// PHASE 5: composite the 2D UI over 3D
+#include <d3d11.h>	// PHASE 5 (RTT): off-screen render target
 #include "FalcLib/include/debuggr.h"
 #include "Falclib/Include/IsBad.h"
 //#define _IMAGEBUFFER_PROTECT_SURF_LOCK
@@ -38,6 +41,14 @@ ImageBuffer::ImageBuffer()
     m_pDDSBack = NULL;
     ZeroMemory(&m_rcFront, sizeof(m_rcFront));
     m_pBltTarget = NULL;
+    m_bIsScreenBuffer = false;
+    m_pSysMem = NULL;
+
+    // PHASE 5 (RTT)
+    m_pD3D11RTTex = NULL;
+    m_pD3D11RTV = NULL;
+    m_pD3D11SRV = NULL;
+    m_pD3D11Staging = NULL;
 
 #ifdef _IMAGEBUFFER_PROTECT_SURF_LOCK
     InitializeCriticalSection(&m_cs);
@@ -73,6 +84,28 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
         device = dev;
         width = w;
         height = h;
+
+        // PHASE 1 (D3D7->D3D11): no DDraw surfaces. CPU buffer 16-bit RGB565, the UI composites
+        // via Lock; the screen buffer (front==Primary) drives Present.
+        extern bool g_bUseD3D11;
+        if (g_bUseD3D11)
+        {
+            m_bIsScreenBuffer = (front == Primary);
+            ZeroMemory(&m_ddsdFront, sizeof(m_ddsdFront));
+            ZeroMemory(&m_ddsdBack, sizeof(m_ddsdBack));
+            m_ddsdFront.ddpfPixelFormat.dwRGBBitCount = 16;
+            m_ddsdFront.ddpfPixelFormat.dwRBitMask = 0xF800;
+            m_ddsdFront.ddpfPixelFormat.dwGBitMask = 0x07E0;
+            m_ddsdFront.ddpfPixelFormat.dwBBitMask = 0x001F;
+            m_ddsdBack.lPitch = width * 2;
+            ComputeColorShifts();
+            if (m_pSysMem) { free(m_pSysMem); m_pSysMem = NULL; }   // #55 don't leak on a repeated Setup without Cleanup
+            m_pSysMem = (BYTE*)malloc((size_t)width * height * 2);
+            if (m_pSysMem) memset(m_pSysMem, 0, (size_t)width * height * 2);
+            m_bReady = TRUE;
+            return TRUE;
+        }
+
 
         IDirectDraw7Ptr pDD(dev->GetMPRdevice());
 
@@ -550,6 +583,18 @@ void ImageBuffer::Cleanup(void)
     }
 
     m_pBltTarget = NULL;
+
+    // PHASE 5 (RTT): release the off-screen render target
+    if (m_pD3D11SRV)     { m_pD3D11SRV->Release();     m_pD3D11SRV = NULL; }
+    if (m_pD3D11RTV)     { m_pD3D11RTV->Release();     m_pD3D11RTV = NULL; }
+    if (m_pD3D11RTTex)   { m_pD3D11RTTex->Release();   m_pD3D11RTTex = NULL; }
+    if (m_pD3D11Staging) { m_pD3D11Staging->Release(); m_pD3D11Staging = NULL; }
+
+    // #55 MEMORY-LEAK ROOT on 3D enter/exit: the D3D11 surface CPU buffer (565), malloc'd in
+    // Setup() line 101, was NEVER freed -> every ImageBuffer (cockpit 2x35MB, display 7MB,
+    // MFD...) leaked its backing buffer on EVERY entry -> ~70+MB/cycle -> std::bad_alloc.
+    // Cleanup is called from ~ImageBuffer -> free it here.
+    if (m_pSysMem) { free(m_pSysMem); m_pSysMem = NULL; }
 }
 
 
@@ -629,6 +674,8 @@ void ImageBuffer::UpdateFrontWindowRect(RECT *rect)
 // Fix in memory and return and pointer to the memory associated with our back buffer
 void *ImageBuffer::Lock(bool bLockMutexOnly, bool bWriteOnly)
 {
+    extern bool g_bUseD3D11;
+    if (g_bUseD3D11) return m_pSysMem;	// PHASE 1/2: CPU buffer; no DDraw
 #ifdef _IMAGEBUFFER_PROTECT_SURF_LOCK
     EnterCriticalSection(&m_cs);
 
@@ -674,6 +721,8 @@ Retry:
 // Reliquish our exclusive pointer to the memory associated with our back buffer
 void ImageBuffer::Unlock()
 {
+    extern bool g_bUseD3D11;
+    if (g_bUseD3D11) return;	// PHASE 1/2: no DDraw Unlock
     ShiAssert(IsReady());
 
     if (m_bBitsLocked)
@@ -1020,9 +1069,170 @@ void ImageBuffer::ComposeRoundRot(ImageBuffer *srcBuffer, RECT *srcRect, RECT *d
 }
 
 // Move this image's back buffer contents into its front buffer, possibly making it visible.
+// PHASE 2 (2D UI): blits THIS CPU buffer to the D3D11 backbuffer and presents (regardless of
+// m_bIsScreenBuffer). CopyToPrimary calls on Front_ (the composited UI frame).
+// PHASE 5 (RTT): create an off-screen render target (RTV+SRV) sized to the buffer.
+bool ImageBuffer::EnsureD3D11RenderTarget()
+{
+    extern bool g_bUseD3D11;
+    if (!g_bUseD3D11 || !g_pD3D11Backend) return false;
+    if (m_bIsScreenBuffer) return false;          // screen buffer = backbuffer
+    if (m_pD3D11RTV && m_pD3D11SRV) return true;  // already created
+    if (width <= 0 || height <= 0) return false;
+
+    ID3D11Device* dev = g_pD3D11Backend->GetDevice();
+    if (!dev) return false;
+
+    D3D11_TEXTURE2D_DESC td; ZeroMemory(&td, sizeof(td));
+    td.Width = width; td.Height = height; td.MipLevels = 1; td.ArraySize = 1;
+    td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;       // = backbuffer format (the screen path draws the same)
+    td.SampleDesc.Count = 1;
+    td.Usage = D3D11_USAGE_DEFAULT;
+    td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+    if (FAILED(dev->CreateTexture2D(&td, NULL, &m_pD3D11RTTex))) return false;
+    if (FAILED(dev->CreateRenderTargetView(m_pD3D11RTTex, NULL, &m_pD3D11RTV)))
+    { m_pD3D11RTTex->Release(); m_pD3D11RTTex = NULL; return false; }
+    if (FAILED(dev->CreateShaderResourceView(m_pD3D11RTTex, NULL, &m_pD3D11SRV)))
+    { m_pD3D11RTV->Release(); m_pD3D11RTV = NULL; m_pD3D11RTTex->Release(); m_pD3D11RTTex = NULL; return false; }
+    return true;
+}
+
+// PHASE 5 (RTT): bind as render target (MFD/HUD/radar content is drawn here).
+void ImageBuffer::BindD3D11RenderTarget(bool clear)
+{
+    if (!EnsureD3D11RenderTarget()) return;
+    ID3D11DeviceContext* ctx = g_pD3D11Backend->GetContext();
+    if (!ctx) return;
+
+    ctx->OMSetRenderTargets(1, &m_pD3D11RTV, NULL);   // depth not needed for 2D content
+    D3D11_VIEWPORT vp;
+    vp.TopLeftX = 0; vp.TopLeftY = 0;
+    vp.Width = (FLOAT)width; vp.Height = (FLOAT)height;
+    vp.MinDepth = 0.0f; vp.MaxDepth = 1.0f;
+    ctx->RSSetViewports(1, &vp);
+
+    if (clear) { const FLOAT z[4] = { 0, 0, 0, 0 }; ctx->ClearRenderTargetView(m_pD3D11RTV, z); }
+
+    // the renderer's gScreenSize = the RTT size (VS_Screen: pixel->NDC by this size)
+    if (g_pD3D11Renderer) g_pD3D11Renderer->SetViewportSize(width, height);
+}
+
+// Artscout - 2026 (#34 menu 3D-viewer): copy a [x,y,w,h] rect out of this off-screen RTT into a
+// 565 CPU buffer (the on-screen UI surface). The C_3dViewer renders a model into a screen-sized
+// off-screen RTT; we read its viewport rect back and stamp it into the menu's 2D surface, so the
+// model appears in the normal full 2D blit instead of the present-mode chroma path (black-out).
+void ImageBuffer::BlitD3D11RTTTo565(unsigned short* dst, int dstStridePix, int dstHeightPix, int x, int y, int w, int h)
+{
+    extern bool g_bUseD3D11;
+    if (!g_bUseD3D11 || !g_pD3D11Backend || !dst) return;
+    if (!m_pD3D11RTTex) return;                 // nothing was rendered into the RTT
+
+    ID3D11Device* dev = g_pD3D11Backend->GetDevice();
+    ID3D11DeviceContext* ctx = g_pD3D11Backend->GetContext();
+    if (!dev || !ctx) return;
+
+    // Lazily create the STAGING copy (same size/format as the RTT, CPU-readable).
+    if (!m_pD3D11Staging)
+    {
+        D3D11_TEXTURE2D_DESC td; ZeroMemory(&td, sizeof(td));
+        td.Width = width; td.Height = height; td.MipLevels = 1; td.ArraySize = 1;
+        td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        td.SampleDesc.Count = 1;
+        td.Usage = D3D11_USAGE_STAGING;
+        td.BindFlags = 0;
+        td.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+        if (FAILED(dev->CreateTexture2D(&td, NULL, &m_pD3D11Staging))) return;
+    }
+
+    ctx->CopyResource(m_pD3D11Staging, m_pD3D11RTTex);
+
+    D3D11_MAPPED_SUBRESOURCE map;
+    if (FAILED(ctx->Map(m_pD3D11Staging, 0, D3D11_MAP_READ, 0, &map))) return;
+
+    // Clip the requested rect to both the RTT (source) and the destination buffer.
+    int x0 = x, y0 = y;
+    if (x0 < 0) x0 = 0;
+    if (y0 < 0) y0 = 0;
+    int x1 = x + w, y1 = y + h;
+    if (x1 > width)  x1 = width;
+    if (y1 > height) y1 = height;
+    if (x1 > dstStridePix) x1 = dstStridePix;
+    if (y1 > dstHeightPix) y1 = dstHeightPix;
+
+    const BYTE* srcBase = (const BYTE*)map.pData;
+    for (int row = y0; row < y1; ++row)
+    {
+        const BYTE* src = srcBase + (size_t)row * map.RowPitch + (size_t)x0 * 4;
+        unsigned short* d = dst + (size_t)row * dstStridePix + x0;
+        for (int col = x0; col < x1; ++col)
+        {
+            BYTE r = src[0], g = src[1], b = src[2];   // R8G8B8A8
+            *d++ = (unsigned short)(((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3));
+            src += 4;
+        }
+    }
+
+    ctx->Unmap(m_pD3D11Staging, 0);
+}
+
+void ImageBuffer::PresentD3D11()
+{
+    extern bool g_bUseD3D11;
+    extern bool g_bD3D11GPUDraw;
+    if (!g_bUseD3D11 || !g_pD3D11Backend) return;
+    // PHASE 5: 2D UI. On a GPU frame (3D scene in the RTV) composite the UI OVER 3D with
+    // black chroma-key (in-sim overlays: text/cursor/dialogs). On a pure 2D frame
+    // (menu) -- a full blit from m_pSysMem.
+    // #7 MSAA: on a 3D frame resolve the multisample target into the swapchain backbuffer BEFORE any UI
+    // (and before present), regardless of m_pSysMem presence/render validity. Without MSAA -- no-op.
+    if (g_bD3D11GPUDraw)
+        g_pD3D11Backend->ResolveMsaaToBackBuffer();
+    if (m_pSysMem)
+    {
+        if (g_bD3D11GPUDraw && g_pD3D11Renderer && g_pD3D11Renderer->IsValid())
+        {
+            g_pD3D11Renderer->CompositeUISurface(m_pSysMem, width, height);
+            // On a 3D frame clear the CPU layer to black (=transparent): overlays are drawn
+            // anew each frame, else stale content (old menu) ghosts over the 3D.
+            memset(m_pSysMem, 0, (size_t)width * height * 2);
+        }
+        else if (!g_bD3D11GPUDraw)
+            g_pD3D11Backend->BlitBitmap565(m_pSysMem, width, height);
+    }
+    g_pD3D11Backend->Present(true);
+    g_bD3D11GPUDraw = false;
+}
+
 void ImageBuffer::SwapBuffers(bool bDontFlip)
 {
     ShiAssert(IsReady());
+
+    extern bool g_bUseD3D11;
+    extern bool g_bD3D11GPUDraw;
+    if (g_bUseD3D11)
+    {
+        if (m_bIsScreenBuffer && g_pD3D11Backend)
+        {
+            // PHASE 5: GPU frame (3D) -> composite UI over 3D; 2D (menu) -> blit.
+            // #7 MSAA: 3D frame -> resolve the multisample target into the backbuffer before UI/present (no-op without MSAA).
+            if (g_bD3D11GPUDraw)
+                g_pD3D11Backend->ResolveMsaaToBackBuffer();
+            if (m_pSysMem)
+            {
+                if (g_bD3D11GPUDraw && g_pD3D11Renderer && g_pD3D11Renderer->IsValid())
+                {
+                    g_pD3D11Renderer->CompositeUISurface(m_pSysMem, width, height);
+                    memset(m_pSysMem, 0, (size_t)width * height * 2);
+                }
+                else if (!g_bD3D11GPUDraw)
+                    g_pD3D11Backend->BlitBitmap565(m_pSysMem, width, height);
+            }
+            g_pD3D11Backend->Present(true);
+            g_bD3D11GPUDraw = false;
+        }
+        return;
+    }
+
 
     // Return right away is there is nothing to do
     if (m_pDDSBack == NULL)

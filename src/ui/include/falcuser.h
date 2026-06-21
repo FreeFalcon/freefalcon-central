@@ -59,6 +59,10 @@ enum
     FM_DISP_ENTER_MODE,
     FM_DISP_LEAVE_MODE,
     FM_DISP_TOGGLE_FULLSCREEN,
+    // #33: switch the shared app window between windowed/fullscreen for the 3D session only.
+    // Marshalled to the main thread (window ops must run there); wParam = windowed (1/0).
+    FM_DISP_ENTER_SIM_WINMODE,
+    FM_DISP_LEAVE_SIM_WINMODE,
 };
 
 #endif

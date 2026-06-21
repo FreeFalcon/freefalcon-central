@@ -180,12 +180,14 @@ int AddParticleEffect(char *name, Tpoint *pos, Tpoint *vec)
             vec = &zero;
         }
 
-
-        DrawableParticleSys *ps;
-        ps = new DrawableParticleSys(id, 1);
-        ps->AddParticle(id, pos, vec);// Cobra - the SFX.cpp type is used in AddParticle(), so give the ID thru function
-
-        OTWDriver.AddSfxRequest(new SfxClass(ps));
+        // #23: previously this created the OLD DrawableParticleSys + ->AddParticle(), which
+        // in the active build (USE_NEW_PS undefined) went into the #else branch -> new ParticleNode
+        // -> ParticleNode::Init reads PPN[id] as a POINTER, though the loader writes there
+        // an INDEX into PS_PPN -> dereferencing the index -> AV (crash on missile detonation in IA).
+        // Route through the NEW system PS_AddParticleEx -- like TryParticleEffect for
+        // all other effects (guns etc.). The old subsystem (ParticleNode/EmitterNode/
+        // particleList) no longer has live callers and becomes dead code.
+        DrawableParticleSys::PS_AddParticleEx(id, pos, vec);
         return 1;
     }
 
@@ -2281,7 +2283,9 @@ SfxClass::~SfxClass(void)
 
         if (baseObj)
         {
-            if (baseObj->drawPointer->InDisplayList())
+            // PHASE 5: FF6-data guard (drawPointer could be NULL/broken); delete NULL is safe
+            if (baseObj->drawPointer and not F4IsBadReadPtr(baseObj->drawPointer, sizeof(DrawableObject))
+                and baseObj->drawPointer->InDisplayList())
             {
                 viewPoint->RemoveObject(baseObj->drawPointer);
             }
@@ -3055,8 +3059,11 @@ BOOL SfxClass::Exec()
         objpos.x = baseObj->XPos();
         objpos.y = baseObj->YPos();
         objpos.z = baseObj->ZPos();
-        ((DrawableBSP*)(baseObj->drawPointer))->Update(&objpos, &objrot);
-        baseObj->drawPointer->SetScale(OTWDriver.Scale());
+        if (baseObj->drawPointer and not F4IsBadReadPtr(baseObj->drawPointer, sizeof(DrawableObject)))	// PHASE 5: FF6-data guard
+        {
+            ((DrawableBSP*)(baseObj->drawPointer))->Update(&objpos, &objrot);
+            baseObj->drawPointer->SetScale(OTWDriver.Scale());
+        }
         return TRUE;
     }
 
@@ -3213,7 +3220,9 @@ SfxClass::Draw(void)
             objBSP->SetScale(scaleOTW);
         }
 
-        if (baseObj)
+        // PHASE 5: drawPointer guard (FF6 data yields broken/NULL baseObj->drawPointer ->
+        // SetScale read this+0x14 with this~NULL -> AV on 3D entry).
+        if (baseObj and baseObj->drawPointer and not F4IsBadReadPtr(baseObj->drawPointer, sizeof(DrawableObject)))
         {
             baseObj->drawPointer->SetScale(scaleOTW);
         }
@@ -3273,8 +3282,11 @@ SfxClass::Draw(void)
     if (baseObj)
     {
         OTWDriver.ObjectSetData(baseObj.get(), &pos, &rot);
-        ((DrawableBSP*)(baseObj->drawPointer))->Update(&pos, &rot);
-        baseObj->drawPointer->SetScale(scaleOTW);
+        if (baseObj->drawPointer and not F4IsBadReadPtr(baseObj->drawPointer, sizeof(DrawableObject)))	// PHASE 5: FF6-data guard
+        {
+            ((DrawableBSP*)(baseObj->drawPointer))->Update(&pos, &rot);
+            baseObj->drawPointer->SetScale(scaleOTW);
+        }
     }
 
     // for drawable trails

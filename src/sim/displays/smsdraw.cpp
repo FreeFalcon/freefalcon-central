@@ -441,7 +441,7 @@ void SmsDrawable::DisplayInit(ImageBuffer* image)
     privateDisplay = new Render2D;
     ((Render2D*)privateDisplay)->Setup(image);
 
-    privateDisplay->SetColor(0xff00ff00);
+    privateDisplay->SetColor(0xffffffff);	// #2: the SMS page (right MFD) was green -> white (realism, per request 2026-06-17)
     isDisplayed = TRUE;
 }
 

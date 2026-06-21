@@ -28,6 +28,8 @@
 #include "FalcLib/include/dispopts.h"
 #include "Graphics/DXEngine/DXEngine.h"
 #include "Graphics/DXEngine/DXVBManager.h"
+#include "Graphics/DXEngine/d3d11/D3D11Renderer.h"	// terrain fog: g_pD3D11Renderer->SetFog
+extern bool g_bUseD3D11;
 
 //JAM 18Nov03
 #include "RealWeather.h"
@@ -856,6 +858,19 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
 
     // reset 2D Engine
     TheDXEngine.DX2D_Reset();
+
+    // Terrain fog (D3D11): once per frame set the haze color and distance.
+    // The shader fogs the screen pass by distance (1/rhw) -> distant terrain
+    // dissolves into haze (removes the 'steps' / 'too close' effect).
+    if (g_bUseD3D11 and g_pD3D11Renderer)
+    {
+        Tcolor *fc = GetFogColor();
+        unsigned long argb = 0xFF000000u
+            | ((unsigned long)(fc->r * 255.0f) << 16)
+            | ((unsigned long)(fc->g * 255.0f) << 8)
+            | ((unsigned long)(fc->b * 255.0f));
+        g_pD3D11Renderer->SetFog(argb, haze_start, haze_start + haze_depth);
+    }
     // OK - Here it kills the lights from the Pit, as the Pit has is own call out of the DrawScene
     // Passed into the DX Engine, at the end of any data flush, as it's the end of a scene
     //TheDXEngine.ClearLights();
@@ -1190,9 +1205,12 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
 
 
     // Update Particle Sys
-#ifdef USE_NEW_PS
+    // #36 ROOT: PS_Exec (running/drawing the NEW particle system) was under #ifdef USE_NEW_PS,
+    // and USE_NEW_PS is DEFINED NOWHERE -> PS_Exec was never called. Yet particles ARE ADDED via
+    // PS_AddParticleEx (no #ifdef, see #23) -> accumulated but never drawn. Result: explosions/
+    // smoke/effects missing (TryParticleEffect routes them into particles). PS_Exec's body and its callees
+    // compile unconditionally. Call it always. (The loader's USE_NEW_PS #else branches stay as in #23.)
     DrawableParticleSys::PS_Exec(this);
-#endif
 
     // Restore the FOV if it was changed by the tunnel code
     if (tunnelSolidWidth > 0.0f)
@@ -1973,6 +1991,21 @@ void RenderOTW::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
         }
     }
 
+
+    // #14: distant terrain uses state_far = STATE_GOURAUD, which under D3D11 has NO
+    // shader fog (FF_FOG), and the old vertex-specular fog (TheStateStack.SetFog below)
+    // is ignored under D3D11 (VS_Screen: o.Spec=0). Without this the far zone draws in the PURE
+    // terrain color -> a sharp 'stepped' boundary with the fogged mid zone (which the shader pulls
+    // toward the haze color). Bake the haze color straight into the GOURAUD vertex color so the far zone
+    // seamlessly continues the fully-fogged edge. D3D11 only, far zone only.
+    extern bool g_bUseD3D11;
+    if (g_bUseD3D11 and distance > haze_start + haze_depth)
+    {
+        Tcolor *fc = GetFogColor();
+        r = fc->r;
+        g = fc->g;
+        b = fc->b;
+    }
 
     vert->r = r;
     vert->g = g;

@@ -736,7 +736,7 @@ void C_Handler::CheckHelpText(SCREEN *surface)
 {
     C_Fontmgr *font;
 
-    if (OverLast_.Control_ and OverLast_.Tip_ and GetCurrentTime() > (DWORD)(OverLast_.Time_ + 1000))
+    if (OverLast_.Control_ and OverLast_.Tip_ and GetCurrentTime() > (DWORD)(OverLast_.Time_ + 250))   // #53 tooltip delay 1000 -> 250 ms
     {
         font = gFontList->Find(OverLast_.HelpFont_);
 
@@ -1217,6 +1217,18 @@ void C_Handler::CopyToPrimary()
 
     if ( not DrawFlags)
         return;
+
+    // PHASE 1/2 (D3D7->D3D11): UI95 draws into Front_ (CPU). Compose doesn't work under D3D11 (DDraw),
+    // blit the composited Front_ directly to the backbuffer + Present.
+    extern bool g_bUseD3D11;
+    if (g_bUseD3D11)
+    {
+        if (Front_) Front_->PresentD3D11();
+        else if (Primary_) Primary_->PresentD3D11();
+        UpdateFlag = 0;
+        rectcount_ = 0;
+        return;
+    }
 
     // OW now handled by running in software mode on V1 and V2
 #if 0
@@ -2171,7 +2183,11 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     MouseZ and_eq HIWORD(wParam);
     // here we invert, since positive in mouse wheel
     // is forward, and forward is up in screen coordinates (neg values)
-    Grab_.Control_->Wheel(MouseZ ? 1 : -1, MouseX, MouseY);
+    // #22: if the control under the cursor didn't handle the wheel (list rows = buttons), scroll
+    // the vertical scrollbar of that control's CLIENT -- gives wheel scrolling over the list.
+    if ( not Grab_.Control_->Wheel(MouseZ ? 1 : -1, MouseX, MouseY))
+        overme->WheelClient(Grab_.Control_->GetClient(), MouseZ ? 1 : -1, MouseX, MouseY);
+
     ret = TRUE;
 }
     break;

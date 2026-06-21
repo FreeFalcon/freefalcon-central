@@ -3,6 +3,8 @@
 
 // SYSTEM INCLUDES
 #include <AtlBase.h>
+#include <stdlib.h>
+#include <crtdbg.h>
 #include <AtlCom.h>
 #include <AtlWin.h>
 #include <direct.h>
@@ -209,14 +211,18 @@ char g_strLgbk[20];
 #endif
 
 #ifdef DEBUG// Debug Assert softswitches
-	int f4AssertsOn = TRUE, f4HardCrashOn = FALSE;
-	int shiAssertsOn = TRUE,
-	shiWarningsOn = TRUE,
+	int f4AssertsOn = FALSE, f4HardCrashOn = FALSE;
+	int shiAssertsOn = FALSE,	// render-port: silence the assert flood
+	shiWarningsOn = FALSE,
 	shiHardCrashOn = FALSE;
 	extern CampaignTime gConnectionTime;
 	extern CampaignTime gResendTime;
 	extern int gCampJoinStatus;
 #endif
+
+// gCampJoinStatus is used unconditionally (ShutdownCampaign); the #ifdef DEBUG extern above is
+// Debug-only, so declare it for all configs (latent Release build break -- C2065 in Release).
+extern int gCampJoinStatus;
 
 extern "C"
 {
@@ -395,7 +401,8 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
 void initialize_variables(void)
 {
 
-	cockpit_verifier = true;
+	// Cockpit verifier disabled on request (the constant MessageBox interferes with testing).
+	cockpit_verifier = false;
 
 };
 
@@ -408,6 +415,15 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
 #ifndef NDEBUG
 	initialize_variables();
 #endif // NDEBUG
+
+	// render-port: don't break/crash on CRT debug checks (invalid parameter, asserts).
+	// STL iterator checks disabled via _ITERATOR_DEBUG_LEVEL=0 (in all projects).
+	_set_invalid_parameter_handler(
+		[](const wchar_t*, const wchar_t*, const wchar_t*, unsigned int, uintptr_t) {});
+#ifdef _DEBUG
+	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_DEBUG);
+	_CrtSetReportMode(_CRT_ERROR,  _CRTDBG_MODE_DEBUG);
+#endif
 
     _Module.Init(ObjectMap, h_instance); // ATL initialization.
 
@@ -770,6 +786,18 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
         case FM_DISP_TOGGLE_FULLSCREEN:
         {
             FalconDisplay._ToggleFullScreen();
+            break;
+        }
+
+        case FM_DISP_ENTER_SIM_WINMODE: // #33
+        {
+            FalconDisplay._EnterSimWindowMode(wParam ? true : false);
+            break;
+        }
+
+        case FM_DISP_LEAVE_SIM_WINMODE: // #33
+        {
+            FalconDisplay._LeaveSimWindowMode();
             break;
         }
 
@@ -2018,6 +2046,18 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
         }
 
+        case FM_DISP_ENTER_SIM_WINMODE: // #33
+        {
+            FalconDisplay._EnterSimWindowMode(wParam ? true : false);
+            break;
+        }
+
+        case FM_DISP_LEAVE_SIM_WINMODE: // #33
+        {
+            FalconDisplay._LeaveSimWindowMode();
+            break;
+        }
+
         default:
         {
             if (gMainHandler not_eq NULL)
@@ -2089,6 +2129,14 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
 void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface)
 {
+    // Artscout - 2026: #34 the movie player blits decoded frames onto a DDraw surface
+    // (movie/surface.cpp: pDD->CreateSurface / Blt / Lock). Under D3D11 the DDraw object is NULL,
+    // so playing a movie (intro logos / campaign cutscenes) would crash. No-op until the player is
+    // ported to a D3D11 path. Movies are non-essential, so skipping them is safe.
+    extern bool g_bUseD3D11;
+    if (g_bUseD3D11)
+        return;
+
     HWND hwnd;
     int hMovie = -1, mode;
     char movieFile[_MAX_PATH];

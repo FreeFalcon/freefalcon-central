@@ -265,8 +265,10 @@ void AircraftClass::DropChaff(void)
     }
 
 
-    // If this is the player and they want unlimited chaff, let 'em have it
-    if (IsSetFlag(MOTION_OWNSHIP) and PlayerOptions.UnlimitedChaff())
+    // If this is the player and they want unlimited chaff, let 'em have it.
+    // #21: Instant Action is ALWAYS unlimited, independent of the UnlimitedChaff option
+    // (RunningInstantAction() keeps this scoped to IA so other modes are unaffected).
+    if (IsSetFlag(MOTION_OWNSHIP) and (PlayerOptions.UnlimitedChaff() or SimDriver.RunningInstantAction()))
         counterMeasureStation[CHAFF_STATION].weaponCount++;
 }
 
@@ -386,8 +388,10 @@ void AircraftClass::DropFlare(void)
          F4SoundFXSetDist(SFX_BB_CHAFLARE, FALSE, 0.0f, 1.0f);*/
     }
 
-    // If this is the player and they want unlimited chaff, let 'em have it
-    if (IsSetFlag(MOTION_OWNSHIP) and PlayerOptions.UnlimitedChaff())
+    // If this is the player and they want unlimited flares, let 'em have it.
+    // #21: Instant Action is ALWAYS unlimited, independent of the UnlimitedChaff option
+    // (RunningInstantAction() keeps this scoped to IA so other modes are unaffected).
+    if (IsSetFlag(MOTION_OWNSHIP) and (PlayerOptions.UnlimitedChaff() or SimDriver.RunningInstantAction()))
         counterMeasureStation[FLARE_STATION].weaponCount++;
 }
 

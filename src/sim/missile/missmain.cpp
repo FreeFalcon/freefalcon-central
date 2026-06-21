@@ -1130,11 +1130,10 @@ MissileClass::EndMissile(void)
                     if (targetPtr)
                         targetPtr->Release();
 
-#ifdef DEBUG
-                    /*    targetPtr = new SimObjectType( OBJ_TAG, NULL, campBaseObj );*/
-#else
+                    // #47 UAF ROOT (explicit): in Debug the DEBUG branch is empty -> after Release targetPtr
+                    // was NOT reassigned -> Reference() below poked the mutex/refCount in freed
+                    // memory (0xDD). Create UNCONDITIONALLY.
                     targetPtr = new SimObjectType(campBaseObj);
-#endif
                     targetPtr->Reference();
                 }
 

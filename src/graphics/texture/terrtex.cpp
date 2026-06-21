@@ -1420,6 +1420,10 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     token = strtok(szTemp, sep);
     sprintf(szFileName, "%s%s.dds", texturePathD, token);
 
+    // res prefix: 'L'(0)/'M'(1)/original 'H'(2). Remember the original character,
+    // so if L/M is missing we fall back to H (always present in the Korea data).
+    char origCh = szFileName[strlen(texturePathD)];
+
     if (res == 1)
     {
         szFileName[strlen(texturePathD)] = 'M';
@@ -1430,6 +1434,15 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     }
 
     fp = fopen(szFileName, "rb");
+
+    // No L/M .dds (the Korea data has only H) -> load H into this res slot.
+    // No palette fallback (no file there either -> ShiError -> exit -> crash) and
+    // no garbage. This way near terrain gets a valid texture instead of black.
+    if ( not fp and origCh not_eq szFileName[strlen(texturePathD)])
+    {
+        szFileName[strlen(texturePathD)] = origCh;
+        fp = fopen(szFileName, "rb");
+    }
 
     // FRB - bad dds file name
     if ( not fp)
@@ -1524,6 +1537,17 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     }
 
     fp = fopen(szFileName, "rb");
+
+    // No L/M night -> fall back to H night (origCh). If that's missing too -> bail out
+    // cleanly without fread(NULL) (day already loaded; handleN stays uncreated).
+    if ( not fp and origCh not_eq szFileName[strlen(texturePathD)])
+    {
+        szFileName[strlen(texturePathD)] = origCh;
+        fp = fopen(szFileName, "rb");
+    }
+    if ( not fp)
+        return;
+
     fread(&dwMagic, 1, sizeof(DWORD), fp);
     ShiAssert(dwMagic == MAKEFOURCC('D', 'D', 'S', ' '));
 

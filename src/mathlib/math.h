@@ -103,8 +103,8 @@ static inline float SqrtSSE(float x)
     return x;
 }
 
-#define sqrt SqrtSSE
-#define sqrtf SqrtSSE
+//#define sqrt SqrtSSE  // poisoned <cmath> (C2382)
+//#define sqrtf SqrtSSE
 
 #else //_MSC_VER >= 1300
 

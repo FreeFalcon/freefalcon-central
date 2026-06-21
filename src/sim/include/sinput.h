@@ -130,6 +130,8 @@ extern VU_TIME gTimeLastMouseMove;
 extern VU_TIME gTimeLastCursorUpdate; //Wombat778 1-24-04
 extern int gTotalJoy;
 extern _TCHAR* gDIDevNames[SIM_NUMDEVICES - SIM_JOYSTICK1];
+extern int gDIDevButtons[SIM_NUMDEVICES]; // button count per device (for the assignment UI #18)
+extern GUID gDIDevGUIDs[SIM_NUMDEVICES]; // device instance GUID (stable axis/button binding #19)
 extern DIDEVCAPS gCurJoyCaps;
 
 // Functions called by other modules

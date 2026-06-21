@@ -40,7 +40,7 @@ DO_NOT_WORK_AROUND_SRCLINE_BUG - Define this to NOT work around the
 #ifndef _SYMBOLENGINE_H
 #define _SYMBOLENGINE_H
 
-#include <cISO646>
+#include <iso646.h>
 #include "imagehlp.h"
 #include <tchar.h>
 

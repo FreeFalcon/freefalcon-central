@@ -1,6 +1,6 @@
 #ifndef _F4THREADS_H
 #define _F4THREADS_H
-#include <cISO646>
+#include <iso646.h>
 
 /** @file f4thread.h FreeFalcon thread and mutex API. */
 

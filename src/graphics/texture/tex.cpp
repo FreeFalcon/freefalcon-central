@@ -10,6 +10,9 @@
 #include "Tex.h"
 #include "dxtlib.h"
 #include "PalBank.h"
+#include "Graphics/DXEngine/d3d11/D3D11TextureManager.h"	// PHASE 3
+#include "Graphics/DXEngine/D3D11Backend.h"	// PHASE 5 (RTT)
+#include <d3d11.h>	// PHASE 5 (RTT)
 #include "FalcLib/include/playerop.h"
 #include "FalcLib/include/dispopts.h"
 
@@ -518,6 +521,7 @@ TextureHandle::TextureHandle()
     m_pPalAttach = NULL;
     m_pImageData = NULL;
     m_nImageDataStride = -1;
+    m_pD3D11Tex = NULL;
 
 #ifdef _DEBUG
     InterlockedIncrement((long *)&m_dwNumHandles); // Number of instances
@@ -532,7 +536,8 @@ TextureHandle::~TextureHandle()
     //InterlockedExchangeAdd((long *)&m_dwTotalBytes,-sizeof(*this));
     //InterlockedExchangeAdd((long *)&m_dwTotalBytes,-m_strName.size());
 
-    if (m_pDDS)
+    extern bool g_bUseD3D11;
+    if (m_pDDS and not g_bUseD3D11)	// PHASE 3: under D3D11 m_pDDS is an SRV, GetSurfaceDesc is invalid
     {
         DDSURFACEDESC2 ddsd;
         ZeroMemory(&ddsd, sizeof(ddsd));
@@ -560,6 +565,9 @@ TextureHandle::~TextureHandle()
 
     m_pDDS = NULL;
 
+    // PHASE 3: release the D3D11 texture (m_pDDS already released the SRV above -- it's IUnknown)
+    if (m_pD3D11Tex) { ((IUnknown*)m_pD3D11Tex)->Release(); m_pD3D11Tex = NULL; }
+
     if (m_pPalAttach) m_pPalAttach->DetachFromTexture(this);
 
     if (m_pImageData and m_bImageDataOwned) delete[] m_pImageData;
@@ -585,6 +593,49 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
 
     m_nWidth = width;
     m_nHeight = height;
+
+    // PHASE 3 (D3D7->D3D11): engine textures are stubbed (m_pDDS=NULL), startup proceeds; the real
+    // load into a D3D11 texture is later. UI menus composite on the CPU.
+    extern bool g_bUseD3D11;
+    if (g_bUseD3D11)
+    {
+        m_pDDS = NULL;
+        m_pD3D11Tex = NULL;
+        m_pD3D11RTV = NULL;
+        if      (info & MPR_TI_DXT1) m_eSurfFmt = D3DX_SF_DXT1;
+        else if (info & MPR_TI_DXT3) m_eSurfFmt = D3DX_SF_DXT3;
+        else if (info & MPR_TI_DXT5) m_eSurfFmt = D3DX_SF_DXT5;
+        else                         m_eSurfFmt = D3DX_SF_A8R8G8B8;
+
+        // PHASE 5 (RTT): a render-target texture (3D cockpit: MFD/HUD draw into it,
+        // the panel samples it via DrawRttQuad). RTV+SRV, format like the backbuffer.
+        if ((dwFlags bitand FLAG_RENDERTARGET) and g_pD3D11Backend and width > 0 and height > 0)
+        {
+            ID3D11Device* dev = g_pD3D11Backend->GetDevice();
+            if (dev)
+            {
+                D3D11_TEXTURE2D_DESC td; ZeroMemory(&td, sizeof(td));
+                td.Width = width; td.Height = height; td.MipLevels = 1; td.ArraySize = 1;
+                td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+                td.SampleDesc.Count = 1;
+                td.Usage = D3D11_USAGE_DEFAULT;
+                td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+                ID3D11Texture2D* tex = NULL;
+                if (SUCCEEDED(dev->CreateTexture2D(&td, NULL, &tex)) and tex)
+                {
+                    ID3D11RenderTargetView*   rtv = NULL;
+                    ID3D11ShaderResourceView* srv = NULL;
+                    dev->CreateRenderTargetView(tex, NULL, &rtv);
+                    dev->CreateShaderResourceView(tex, NULL, &srv);
+                    m_pD3D11Tex  = tex;
+                    m_pD3D11RTV  = rtv;
+                    m_pDDS       = (IDirectDrawSurface7*)srv;
+                    m_nActualWidth = width; m_nActualHeight = height;
+                }
+            }
+        }
+        return true;
+    }
 
     try
     {
@@ -810,6 +861,48 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
     }
 }
 
+// PHASE 5: resolves an 8-bit palettized source (indices) into a D3D11 RGBA texture (tex+srv).
+// Factored out of Load so Reload() goes the same path -- rebaking on a palette change
+// (Translate3D). In D3D7 indices lived on the GPU and a palette change went via the hardware
+// SetEntries; in D3D11 there is no hardware palette, so on every real palette change
+// we must rebake RGBA from the saved source indices.
+static bool ResolvePaletteToD3D11(D3D11Texture &out, int w, int h, int stride,
+                                  const UInt8 *src, const DWORD *pal, int nEnt,
+                                  DWORD flags, DWORD chromaKey)
+{
+    if ( not g_pD3D11TextureManager or not g_pD3D11TextureManager->IsValid()) return false;
+    if (w <= 0 or h <= 0 or not src) return false;
+    if (stride <= 0) stride = w;
+
+    const int fmt = D3D11TextureManager::DxgiFormatFromMPR(flags);
+    const bool useChroma = (flags bitand MPR_TI_CHROMAKEY) != 0;
+    const bool useAlpha  = (flags bitand MPR_TI_ALPHA) != 0;
+    const DWORD chromaRGB = chromaKey & 0x00FFFFFF;
+
+    // Alpha rules mirror the D3D7 path: chroma entry -> alpha 0 (alpha-test discards),
+    // MPR_TI_ALPHA -> alpha from the palette, else opaque. pal[i] is already swizzled to 0xAARRGGBB.
+    DWORD resolved[256];
+    for (int i = 0; i < 256; ++i)
+    {
+        DWORD c = (pal and i < nEnt) ? pal[i] : 0xFF000000;
+        if (useChroma and (c & 0x00FFFFFF) == chromaRGB) c &= 0x00FFFFFF;  // transparent
+        else if (useAlpha) c = c;                                          // alpha from the palette
+        else c |= 0xFF000000;                                             // opaque
+        resolved[i] = c;
+    }
+
+    DWORD *rgba = (DWORD*)malloc((size_t)w * h * 4);
+    if ( not rgba) return false;
+    for (int y = 0; y < h; ++y)
+        for (int x = 0; x < w; ++x)
+            rgba[y * w + x] = resolved[src[y * stride + x] & 0xFF];
+
+    TexMipData mip = { rgba, w * 4 };
+    bool ok = g_pD3D11TextureManager->Create(out, w, h, fmt, &mip, 1);
+    free(rgba);
+    return ok;
+}
+
 bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotLoadBits, bool bDoNotCopyBits, int nImageDataStride)
 {
     ShiAssert(TexBuffer);
@@ -818,6 +911,98 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
     if ( not TexBuffer)
     {
         return false;
+    }
+
+    extern bool g_bUseD3D11;
+    if (g_bUseD3D11)
+    {
+        // PHASE 3: real load into a D3D11 texture. Immutable (the loader thread --
+        // CreateTexture2D/SRV are thread-safe; we don't touch the context).
+        if ( not g_pD3D11TextureManager or not g_pD3D11TextureManager->IsValid()) return true;
+
+        const int w = m_nWidth, h = m_nHeight;
+        if (w <= 0 or h <= 0) return true;
+
+        // reload -- release the old one
+        if (m_pDDS) { ((IUnknown*)m_pDDS)->Release(); m_pDDS = NULL; }
+        if (m_pD3D11Tex) { ((IUnknown*)m_pD3D11Tex)->Release(); m_pD3D11Tex = NULL; }
+
+        m_nActualWidth = w; m_nActualHeight = h;
+        m_dwChromaKey = RGBA_MAKE(RGBA_GETBLUE(chroma), RGBA_GETGREEN(chroma), RGBA_GETRED(chroma), RGBA_GETALPHA(chroma));
+
+        const int fmt = D3D11TextureManager::DxgiFormatFromMPR(m_dwFlags);
+        const bool isDXT = (m_eSurfFmt == D3DX_SF_DXT1 or m_eSurfFmt == D3DX_SF_DXT3 or m_eSurfFmt == D3DX_SF_DXT5);
+        D3D11Texture out;
+        bool ok = false;
+
+        if (isDXT)
+        {
+            int bb = D3D11TextureManager::BlockBytes(fmt);
+            int bytes = ((w + 3) / 4) * ((h + 3) / 4) * bb;
+            ok = g_pD3D11TextureManager->CreateBCn(out, w, h, fmt, TexBuffer, bytes);
+        }
+        else if (m_dwFlags bitand MPR_TI_PALETTE)
+        {
+            int stride = (nImageDataStride > 0) ? nImageDataStride : w;
+            // Save the source indices: on a palette change (Translate3D) Reload() rebakes
+            // RGBA. The owner (CPSurface/CPObject mpSourceBuffer) keeps the buffer alive, so
+            // we keep only the pointer (bDoNotCopyBits == true on these paths).
+            if ( not bDoNotCopyBits)
+            {
+                if (m_pImageData and m_bImageDataOwned) delete[] m_pImageData;
+                m_pImageData = new BYTE[(size_t)stride * h];
+                if (m_pImageData) memcpy(m_pImageData, TexBuffer, (size_t)stride * h);
+                m_bImageDataOwned = true;
+            }
+            else
+            {
+                if (m_pImageData and m_bImageDataOwned) delete[] m_pImageData;
+                m_pImageData = TexBuffer;
+                m_bImageDataOwned = false;
+            }
+            m_nImageDataStride = stride;
+
+            DWORD *pal = (m_pPalAttach and m_pPalAttach->m_pPalData) ? m_pPalAttach->m_pPalData : NULL;
+            int nEnt = m_pPalAttach ? m_pPalAttach->m_nNumEntries : 0;
+            ok = ResolvePaletteToD3D11(out, w, h, stride, TexBuffer, pal, nEnt, m_dwFlags, m_dwChromaKey);
+        }
+        else if (m_dwFlags bitand MPR_TI_RGB16)
+        {
+            // PHASE 5: 16-bit B5G6R5 -- stride w*2 (previously else sent w*4 -> broken/white)
+            TexMipData mip = { TexBuffer, w * 2 };
+            ok = g_pD3D11TextureManager->Create(out, w, h, fmt, &mip, 1);
+        }
+        else if (m_dwFlags bitand MPR_TI_RGB24)
+        {
+            // PHASE 5: 24-bit BGR -> 32-bit BGRA (fmt=B8G8R8A8), source 3 bytes/pixel
+            DWORD *rgba = (DWORD*)malloc((size_t)w * h * 4);
+            if (rgba)
+            {
+                const BYTE *s = TexBuffer;
+                for (int p = 0; p < w * h; ++p)
+                {
+                    BYTE b = s[0], g = s[1], r = s[2]; s += 3;
+                    rgba[p] = (DWORD)b | ((DWORD)g << 8) | ((DWORD)r << 16) | 0xFF000000;
+                }
+                TexMipData mip = { rgba, w * 4 };
+                ok = g_pD3D11TextureManager->Create(out, w, h, fmt, &mip, 1);
+                free(rgba);
+            }
+        }
+        else
+        {
+            // 32-bit ARGB source directly (B8G8R8A8)
+            TexMipData mip = { TexBuffer, w * 4 };
+            ok = g_pD3D11TextureManager->Create(out, w, h, fmt, &mip, 1);
+        }
+
+        if (ok)
+        {
+            m_pDDS = (IDirectDrawSurface7*)out.srv;	// SelectTexture casts back to an SRV
+            m_pD3D11Tex = out.tex;
+        }
+
+        return true;
     }
 
 #ifdef DEBUG
@@ -1007,6 +1192,30 @@ inline WORD _RGB8toARGB4444(DWORD sc)
 
 bool TextureHandle::Reload()
 {
+    extern bool g_bUseD3D11;
+    if (g_bUseD3D11)
+    {
+        // PHASE 5: rebake the palettized texture for the updated palette (Translate3D).
+        // Non-palettized textures in D3D11 load once -- nothing to do here.
+        if ( not (m_dwFlags bitand MPR_TI_PALETTE)) return true;
+        if ( not m_pImageData) return false;
+
+        DWORD *pal = (m_pPalAttach and m_pPalAttach->m_pPalData) ? m_pPalAttach->m_pPalData : NULL;
+        int nEnt = m_pPalAttach ? m_pPalAttach->m_nNumEntries : 0;
+
+        D3D11Texture out;
+        if ( not ResolvePaletteToD3D11(out, m_nWidth, m_nHeight, m_nImageDataStride,
+                                       m_pImageData, pal, nEnt, m_dwFlags, m_dwChromaKey))
+            return false;
+
+        if (m_pDDS)     ((IUnknown*)m_pDDS)->Release();
+        if (m_pD3D11Tex) ((IUnknown*)m_pD3D11Tex)->Release();
+        m_pDDS      = (IDirectDrawSurface7*)out.srv;
+        m_pD3D11Tex = out.tex;
+        m_nActualWidth = m_nWidth; m_nActualHeight = m_nHeight;
+        return true;
+    }
+
     // No DX context
     if ( not m_pDDS) return false;
 
@@ -1378,6 +1587,14 @@ void TextureHandle::RestoreAll()
 //FIXME
 void TextureHandle::Clear()
 {
+    // Artscout - 2026: this is the legacy D3D7 DDraw Lock/clear path. Under D3D11 m_pDDS is either
+    // NULL or actually an SRV (cast), so m_pDDS->Lock() would crash. It fired entering AG radar mode
+    // (RenderGMComposite::SetRange -> rTexHandle->Clear() with m_pDDS==NULL). The GM radar composite
+    // is still a DDraw subsystem (Blt/Lock) not yet ported to D3D11 -- no-op here to avoid the crash.
+    extern bool g_bUseD3D11;
+    if (g_bUseD3D11 or not m_pDDS)
+        return;
+
     DDSURFACEDESC2 ddsd;
     ZeroMemory(&ddsd, sizeof(ddsd));
 

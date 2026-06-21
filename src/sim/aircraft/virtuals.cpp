@@ -16,6 +16,8 @@
 #include "airframe.h"
 #include "initdata.h"
 #include "object.h"
+#include "simio.h"    // #32 IO / AXIS_THROTTLE for syncing the engine to the physical throttle on entry
+#include "sinput.h"   // #32 ReadThrottle()
 #include "fsound.h"
 #include "soundfx.h"
 #include "otwdrive.h"
@@ -363,13 +365,26 @@ void AircraftClass::MakePlayerVehicle(void)
         af->SetFlag(AirframeClass::ThrottleCheck);
         af->SetFlag(AirframeClass::EngineOff);
         af->SetFlag(AirframeClass::EngineOff2);//TJL 01/14/04 Multi-engine
-        af->pwrlev = af->throtl;
-        af->pwrlevEngine1 = af->engine1Throttle;//TJL 01/14/04 Multi-engine
-        af->pwrlevEngine2 = af->engine2Throttle;//TJL 01/14/04 Multi-engine
+
+        // #32 with an analog throttle, seed pwrlev/throtl from the PHYSICAL throttle position so the
+        // throttle-check baseline is the real stick position, not idle. Engine on/off state unchanged.
+        if (IO.AnalogIsUsed(AXIS_THROTTLE))
+        {
+            float t = ReadThrottle();
+            af->pwrlev = af->throtl = t;
+            af->pwrlevEngine1 = af->engine1Throttle = t;
+            af->pwrlevEngine2 = af->engine2Throttle = t;
+        }
+        else
+        {
+            af->pwrlev = af->throtl;
+            af->pwrlevEngine1 = af->engine1Throttle;//TJL 01/14/04 Multi-engine
+            af->pwrlevEngine2 = af->engine2Throttle;//TJL 01/14/04 Multi-engine
+        }
     }
 
-    // Unlimited fuel?
-    if (PlayerOptions.UnlimitedFuel())
+    // Unlimited fuel? #21: also unconditionally in Instant Action (independent of option).
+    if (PlayerOptions.UnlimitedFuel() or SimDriver.RunningInstantAction())
     {
         VuListIterator updateWalker(GetCampaignObject()->GetComponents());
         curEntity = updateWalker.GetFirst();
@@ -496,7 +511,10 @@ void AircraftClass::MakePlayerVehicle(void)
         af->SetSimpleMode(SIMPLE_MODE_OFF);
     }
 
-    if (PlayerOptions.UnlimitedFuel())
+    // #21: Instant Action ALWAYS gives the player unlimited fuel, independent of the option.
+    // This is the player-setup path that previously CLEARED NoFuelBurn when the option was
+    // off, overriding the flag set in aircraft.cpp -> fuel still ran out in IA.
+    if (PlayerOptions.UnlimitedFuel() or SimDriver.RunningInstantAction())
         af->SetFlag(AirframeClass::NoFuelBurn);
     else
         af->ClearFlag(AirframeClass::NoFuelBurn);
@@ -775,7 +793,11 @@ void AircraftClass::MakeNonPlayerVehicle()
 
     // sfr using function here
     SetIsDigital(1);
-    Sms->SetUnlimitedAmmo(FALSE);
+
+    // #21: in Instant Action do not disable unlimited ammo (same as fuel)
+    if ( not SimDriver.RunningInstantAction())
+        Sms->SetUnlimitedAmmo(FALSE);
+
     FCC->SetMasterMode(FireControlComputer::Missile);
     FCC->SetSubMode(FireControlComputer::Aim9);
 }

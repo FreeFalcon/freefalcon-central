@@ -1681,6 +1681,10 @@ void VoiceManager::SetChannelVolume(int channel, int volume)
 
 void VoiceManager::AddNoise(VOICE_STREAM_BUFFER *streamBuffer, VU_ID from, int channel)
 {
+    // #35: PREVIOUSLY there was an unconditional return here (chatter vanished!) -- it dropped not only
+    // the noising but also the channel VOLUME setting by distance (SetChannelVolume below),
+    // so voices played silently. The volume block is restored; the risky
+    // sample-noising loop is disabled by a separate return before it (see below).
     unsigned long i;
     int level = 255, minLevel = 253, volume, nonoise;
     VuEntity *fromEnt = NULL;
@@ -1723,6 +1727,11 @@ void VoiceManager::AddNoise(VOICE_STREAM_BUFFER *streamBuffer, VU_ID from, int c
         SetChannelVolume(channel, volume);
     }
 
+
+    // #35: the noising loop is disabled -- it used to crash on a 'wild' dataInWaveBuffer. Volume
+    // (above) is already set -- that's what's needed for chatter audibility. Restore noising later,
+    // once we confirm streamBuffer validity (the static isn't critical).
+    return;
 
     unsigned char  *pos = streamBuffer->waveBuffer;
 

@@ -13,6 +13,12 @@
 #include "Context.h" // ASSO:
 #include "Tex.h" // ASSO:
 
+// Artscout - 2026: ODR/layout guard (see context.h). VirtualDisplay embeds a ContextMPR member
+// (`context`); its offset must match in every translation unit, otherwise callers compute a
+// wrong `this` for context.* (the mouse-cursor 2D-vanish bug). Pin packing to 8 so the member
+// layout is identical regardless of any ambient "#pragma pack" leaking in via include order.
+#pragma pack(push, 8)
+
 
 //#define USE_ORIGINAL_FONT
 //#define USE_STROKE_FONT
@@ -243,6 +249,7 @@ public:
     void AdjustRttViewport();
     void ResetRttViewport();
     void DrawRttQuad();
+    void DrawRttDebugOverlay();	// debug helper: draw the raw renderTexture into a screen corner
     int HasRttTarget();
     void GetRttCanvas(Tpoint* Canvas);
 protected:
@@ -271,6 +278,8 @@ protected:
     static Render3D* r3d;
     // ASSO: END
 };
+
+#pragma pack(pop)	// Artscout - 2026: end ODR/layout packing guard (see top of file)
 
 
 #endif // _DISPLAY_H_

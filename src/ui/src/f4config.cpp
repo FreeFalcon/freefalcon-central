@@ -2,9 +2,13 @@
 // Falcon4.cfg stuff
 
 #include <cISO646>
+
 #include <stdio.h>
 #include <windows.h>
 #include "../../SIM/INCLUDE/Phyconst.h" //JAM 19Sep03
+
+// PHASE 1 D3D7->D3D11: when true DXContext::Init brings up D3D11Backend instead of DDraw7/D3D7.
+bool g_bUseD3D11 = true;
 
 template<class T>
 class ConfigOption
@@ -268,6 +272,10 @@ bool g_bOldDustTrail = false; // 1 = use old dust trail (from trail.txt)
 bool g_bHearThunder = true; // Cobra - 1 = Play thunder.wav 0 = no thunder sound
 int g_nPSKillFPS = 0;  // Cobra - Stop PS effects when FPS drops below g_nPSKillFPS
 bool g_bHighSFX = false; // Cobra - Switch between internal high-activity and low-activity PS effects
+bool g_bWaterShader = false; // #12: DEFERRED -- water shimmer in the screen path emphasized
+// the per-tile texture grid and the near/far LOD seam (see water-shader memory). Off by
+// default; the STATE_WATER/FF_WATER infrastructure is parked for a proper future pass
+// (continuous world coords + unified near/far). Enable with FFViper.cfg "WaterShader 1".
 bool g_bAllHaveIFF = false; // Cobra - Give all a/c IFF interrogator
 bool g_bAnimPilotHead = true; // Cobra - Animate the pilot's head
 float g_fPilotActInterval = 0.5f; // Cobra - Pilot animation act interval (minutes)
@@ -311,7 +319,7 @@ bool g_bHiResUI = true; // false = 800x600, true = 1024x768
 bool g_bAWACSFuel = false; // for debug, shows fuel of flight in UI when AWACSSupport = true
 //bool g_bShowManeuverLabels = true; // for debug, shows currently performed BVR/WVR maneuver in SIM
 bool g_bFullScreenNVG = true; // a NVG makes tunnel vision, but a pilot can turn around his head...
-bool g_bLogUiErrors = false; // debug UI
+bool g_bLogUiErrors = true; // debug UI (#18: temporarily on -- the .scf parser log to ui95err.log)
 bool g_bLoadoutSquadStoreResupply = true; // code checked bitand working
 bool g_bDisplayTrees = false; // if true, loads falcon4tree.fed/ocd instead of falcon4.fed/ocd. If tree version not available, loads falcon4.fed/ocd
 bool g_bRequestHelp = true; // enable RequestHelp in DLOGIC.cpp
@@ -717,7 +725,7 @@ bool g_bHsdStptFix = true;
 
 bool g_bUnlimitedAmmo = false;//Cobra name says it all ;)
 bool g_bUseNew3dpit = false; //ATARIBABY Use new 3dpit code - needs new 3d pit model
-bool g_bStartIn3Dpit = false;  // Cobra - start in 3D cockpit
+bool g_bStartIn3Dpit = true;  // Cobra - start in 3D cockpit. PHASE 5/VR: default TRUE -- the 2D cockpit is being removed, virtual 3D cockpit by default
 //bool g_bUse6DOFTir = false; // Retro 24Dez2004
 float g_f3DHeadTilt = 15.0f; //Cobra - Head tilt when entering the 3D cockpit
 float g_f3DPitFOV = 60.0f; //Cobra - FOV when entering the 3D cockpit
@@ -977,6 +985,7 @@ static ConfigOption<bool> BoolOpts[] =
     { "OldDustTrail", &g_bOldDustTrail}, // Cobra - Use old dust trail sfx
     { "HearThunder", &g_bHearThunder}, // Cobra - Play thunder.wav
     { "HighSFX", &g_bHighSFX}, // Cobra - Switch internal PS effects levels
+    { "WaterShader", &g_bWaterShader}, // #12: animated water tiles (D3D11)
     { "AllHaveIFF", &g_bAllHaveIFF}, // Cobra - Give all a/c IFF interrogator
     { "UseRC135", &g_bUseRC135}, // Cobra = FRB - Use the RC-135 for ELINT (radar) ID'ing
     { "FFDBC", &g_bFFDBC},

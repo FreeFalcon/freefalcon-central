@@ -155,7 +155,7 @@ void CPDed::DisplayDraw(void)
                     //  OTWDriver.renderer->SetColor(0xFF00A200);
                     OTWDriver.renderer->SetColor(mColor[1]);
 
-                VirtualDisplay::SetFont(mpCPManager->DEDFont());
+                VirtualDisplay::SetFont(mpCPManager->DEDFont()); // dedfont from 16_ckpit.dat (test: =2 -> Ded_Font_d)
                 //MI to space them properly with the new DED
 #if 0
                 OTWDriver.renderer->ScreenText((float)mpLinePos[0].left + 1.0F, (float)mpLinePos[0].top, line1);

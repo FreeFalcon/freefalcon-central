@@ -1921,6 +1921,7 @@ enum
     SETUP_ADVANCED_MIPMAPPING = 70153,
     SETUP_ADVANCED_LINEAR_MIPMAP_FILTERING = 70154,
     SETUP_ADVANCED_RENDER_TO_TEXTURE = 70155,
+    SETUP_ADVANCED_WINDOWED = 70156, // #33: windowed/fullscreen toggle for the 3D session
     SETUP_ADVANCED_RENDER_2DCOCKPIT = 70163,
     AAPPLY = 70165,
     SETUP_REALWEATHER = 70207,
@@ -1953,6 +1954,28 @@ enum
     SETUP_ADVANCED_RUDDER_AXIS = 70226,
     SETUP_ADVANCED_THROTTLE_AXIS = 70227,
     // Retro end
+
+    // Device button assignment window (#18, 2026-06-16). Block 70400+ is free (max was 70346).
+    SETUP_BTNASSIGN_WIN = 70400, // the window itself
+    BTNASSIGN_DEVICE_LIST = 70401, // device selection dropdown (from gDIDevNames)
+    BTNASSIGN_FUNC_LIST = 70402, // function listbox with the selected device's button column
+    BTNASSIGN_MODIFIER_LIST = 70403, // modifier dropdown (Shift/Ctrl/Alt) — keyboard only
+    BTNASSIGN_SEARCH = 70404, // function search field
+    BTNASSIGN_DEVICE_LABEL = 70405, // label with the selected device's name
+    BTNASSIGN_TITLE = 70406, // window title
+    BTNASSIGN_LBL_DEVICE = 70407, // "Device:" label
+    BTNASSIGN_LBL_MOD = 70408, // "Modifier:" label
+    BTNASSIGN_LBL_SEARCH = 70409, // "Search:" label
+    BTNASSIGN_OPEN = 70410, // (reserved) open button; the window is currently opened from KeycodeCB
+    BTNASSIGN_BUTTON_LIST = 70411, // device button selection dropdown (manual mode)
+    BTNASSIGN_ASSIGN = 70412, // "Assign" button (manual mode)
+    BTNASSIGN_AUTODETECT = 70413, // autodetect hint text (capture of a physical press)
+    BTNASSIGN_LBL_BUTTON = 70414, // "Button:" label
+    BTNASSIGN_DETECTED = 70415, // "detected: ..." field (autodetect result)
+    BTNASSIGN_CLEAR = 70416, // per-device Clear for the new UI (#53): clears
+                             // previously assigned buttons ONLY on the device being detected
+    BTNASSIGN_DETECT = 70417, // "Detect" button: arms autodetect for ONE press (press again -> re-arm)
+    // end of block #18
 
     // Retro 25Dec2003
     SETUP_SIM_INFOBAR = 70228,
@@ -2009,13 +2032,17 @@ enum
     SETUP_ADVANCED_BRAKE_RIGHT = 70268,
     SETUP_ADVANCED_REVERSE_BRAKE_LEFT = 70269,
     SETUP_ADVANCED_REVERSE_BRAKE_RIGHT = 70270,
+    SETUP_ADVANCED_BRAKE_RIGHT_VAL = 500009,   // #57 right toe brake value bar (differential braking)
+    SETUP_ADVANCED_SAT_BRAKERIGHT  = 500010,   // #57 right toe brake saturation listbox
 
     SETUP_ADVANCED_THROTTLE2_AXIS = 70271,
     SETUP_ADVANCED_MOUSELOOK_SENS = 70272,
 
     SETUP_ADVANCED_FLIGHT_TAB = 70273,
     SETUP_ADVANCED_AVIONICS_TAB = 70274,
-    SETUP_ADVANCED_GENERAL_TAB = 70275,
+    SETUP_ADVANCED_GENERAL_TAB = 70275,   // #53 reused as the "Advanced" tab (cluster 10001)
+    SETUP_CONTROL_TAB_MAIN = 70276,       // #53 "Main" tab (button list), cluster 10005
+    SETUP_CONTROL_TAB_VIEW = 70277,       // #53 "View Controls" tab, cluster 10004
     // ..ends
 
     // Retro 31Dec2003
@@ -2117,6 +2144,14 @@ enum
     SETUP_ADVANCED_PITCH_VAL = 70344,
     SETUP_ADVANCED_BANK_VAL = 70345,
     SETUP_ADVANCED_ENABLE_TOUCHBUDDY = 70346,
+
+    // #24: axis-selection dropdowns for pitch/roll (previously set via the controller dropdown)
+    SETUP_ADVANCED_PITCH_AXIS = 70417,
+    SETUP_ADVANCED_BANK_AXIS = 70418,
+
+    // #22: function search + device filter in the main controls window
+    SETUP_KEY_SEARCH = 70419,
+    SETUP_KEY_DEVFILTER = 70420,
 
     JETNET_WIN = 70166,
     JETNET_BROWSER_BACK = 70167,
@@ -2312,6 +2347,19 @@ enum
     MAPPING                                     = 110000,
     HLINE                                       = 120000,
     VLINE                                       = 130000,
+    CLEARBTN                                    = 150000,   // #52 base ID of the per-row Clear button (CLEARBTN+count); range 150000.. is free
+    TBLHDR_FUNC                                 = 500000,   // #53 CONTROLS SETUP table header "FUNCTION"
+    TBLHDR_KEY                                  = 500001,   // #53 header "KEYBOARD"
+    KEYCTX_MENU                                 = 500002,   // #53 right-click context menu on a keyboard cell
+    KEYCTX_ASSIGN                               = 500003,   // #53 context menu item "Assign..."
+    KEYCTX_CLEAR                                = 500004,   // #53 context menu item "Clear"
+    SETUP_CONTROL_BACK                          = 500005,   // #53 "Back" button (returns to the main options window)
+    SETUP_CTL_PROFILE                           = 500006,   // #53 "SETTINGS FOR: <callsign>" text in the CONTROLS SETUP tab
+    SETUP_CTL_SEARCHLBL                          = 500007,   // #53 "SEARCH BY ACTION:" label (text set in code)
+    TBLHDR_SEP                                   = 500008,   // #53 horizontal separator under the header row (width clamped to the table right border in code)
+    DEVSEP_BASE                                 = 500050,   // #53 full-height vertical column separator (DEVSEP_BASE + columnIndex)
+    DEVHDR_BASE                                 = 500100,   // #53 device column header (DEVHDR_BASE + visibleDevIndex)
+    DEVCELL_BASE                                = 510000,   // #53 device cell in a row (DEVCELL_BASE + visibleDevIndex*1000 + count); range 460000..660000 is free
     CLOUD_MENU                                  = 131025,
     CLOUD_0                                     = 131026,
     CLOUD_1                                     = 131027,

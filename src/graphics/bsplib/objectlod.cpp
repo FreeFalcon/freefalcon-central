@@ -34,7 +34,8 @@ FileMemMap  ObjectLOD::ObjectLodMap;
 BYTE *ObjectLOD::LodBuffer;
 DWORD ObjectLOD::LodBufferSize;
 bool ObjectLOD::RatedLoad;
-short *ObjectLOD::CacheLoad, *ObjectLOD::CacheRelease, ObjectLOD::LoadIn, ObjectLOD::LoadOut, ObjectLOD::ReleaseIn, ObjectLOD::ReleaseOut;
+short *ObjectLOD::CacheLoad, *ObjectLOD::CacheRelease;
+volatile short ObjectLOD::LoadIn, ObjectLOD::LoadOut, ObjectLOD::ReleaseIn, ObjectLOD::ReleaseOut;
 
 
 CRITICAL_SECTION ObjectLOD::cs_ObjectLOD;

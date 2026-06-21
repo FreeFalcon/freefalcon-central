@@ -19,6 +19,11 @@
 // sfr: @TODO remove this hack
 #include "Falclib/Include/IsBad.h"
 
+// #12: animated water for water-coverage terrain tiles (D3D11 only). Toggle via FFViper.cfg
+// "WaterShader". Near tiles only (far water shimmer is not visible).
+extern bool g_bUseD3D11;
+extern bool g_bWaterShader;
+
 //#define SET_FG_COLOR_ON_FLAT // Call SetColor for each flat shaded terrain chunck
 
 
@@ -83,6 +88,11 @@ void RenderOTW::DrawTerrainSquare(int r, int c, int LOD)
         if (LOD <= TheMap.LastNearTexLOD())
         {
             TheTerrTextures.Select(&context, post->texID);
+            // #12: water = terrain at sea level (z ~ 0, ocean surface is exactly 0). The
+            // texture-set terrainType is mis-tagged over the ocean in this theater, so detect
+            // water by elevation instead. Rivers/mountain lakes (not at z=0) are not covered.
+            if (g_bUseD3D11 and g_bWaterShader and post->z > -2.0f and post->z < 2.0f)
+                context.RestoreState(STATE_WATER);
         }
         else
         {
@@ -173,6 +183,11 @@ void RenderOTW::DrawUpConnector(int r, int c, int LOD)
         if (LOD < TheMap.LastNearTexLOD())
         {
             TheTerrTextures.Select(&context, post->texID);
+            // #12: water = terrain at sea level (z ~ 0, ocean surface is exactly 0). The
+            // texture-set terrainType is mis-tagged over the ocean in this theater, so detect
+            // water by elevation instead. Rivers/mountain lakes (not at z=0) are not covered.
+            if (g_bUseD3D11 and g_bWaterShader and post->z > -2.0f and post->z < 2.0f)
+                context.RestoreState(STATE_WATER);
         }
         else
         {
@@ -328,6 +343,11 @@ void RenderOTW::DrawDownConnector(int r, int c, int LOD)
         if (LOD < TheMap.LastNearTexLOD())
         {
             TheTerrTextures.Select(&context, post->texID);
+            // #12: water = terrain at sea level (z ~ 0, ocean surface is exactly 0). The
+            // texture-set terrainType is mis-tagged over the ocean in this theater, so detect
+            // water by elevation instead. Rivers/mountain lakes (not at z=0) are not covered.
+            if (g_bUseD3D11 and g_bWaterShader and post->z > -2.0f and post->z < 2.0f)
+                context.RestoreState(STATE_WATER);
         }
         else
         {
@@ -484,6 +504,11 @@ void RenderOTW::DrawRightConnector(int r, int c, int LOD)
         if (LOD < TheMap.LastNearTexLOD())
         {
             TheTerrTextures.Select(&context, post->texID);
+            // #12: water = terrain at sea level (z ~ 0, ocean surface is exactly 0). The
+            // texture-set terrainType is mis-tagged over the ocean in this theater, so detect
+            // water by elevation instead. Rivers/mountain lakes (not at z=0) are not covered.
+            if (g_bUseD3D11 and g_bWaterShader and post->z > -2.0f and post->z < 2.0f)
+                context.RestoreState(STATE_WATER);
         }
         else
         {
@@ -638,6 +663,11 @@ void RenderOTW::DrawLeftConnector(int r, int c, int LOD)
         if (LOD < TheMap.LastNearTexLOD())
         {
             TheTerrTextures.Select(&context, post->texID);
+            // #12: water = terrain at sea level (z ~ 0, ocean surface is exactly 0). The
+            // texture-set terrainType is mis-tagged over the ocean in this theater, so detect
+            // water by elevation instead. Rivers/mountain lakes (not at z=0) are not covered.
+            if (g_bUseD3D11 and g_bWaterShader and post->z > -2.0f and post->z < 2.0f)
+                context.RestoreState(STATE_WATER);
         }
         else
         {

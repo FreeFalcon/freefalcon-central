@@ -25,8 +25,8 @@ DisplayOptionsClass::DisplayOptionsClass(void)
 
 void DisplayOptionsClass::Initialize(void)
 {
-    DispWidth = 1024;
-    DispHeight = 768;
+    DispWidth = 1920;	// 3D default -- Full HD (was 1024x768)
+    DispHeight = 1080;
     DispDepth = 32;  //Cobra - always use 32-bit depth
     DispVideoCard = 0;
     DispVideoDriver = 0;
@@ -39,6 +39,7 @@ void DisplayOptionsClass::Initialize(void)
     bFontTexelAlignment = TRUE;
     bScreenCoordinateBiasFix = true; //Wombat778 4-01-04
     bSpecularLighting = true;
+    bWindowed = false; // #33: default the 3D session to fullscreen
     m_texMode = TEX_MODE_DDS;
 
     FalconDisplay.SetSimMode(DispWidth, DispHeight, DispDepth);

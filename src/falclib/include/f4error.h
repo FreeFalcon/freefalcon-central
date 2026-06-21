@@ -51,7 +51,7 @@ extern int f4AssertsOn, f4HardCrashOn;
  exit(-1); \
  } \
  if (choice == IDRETRY) { \
- __asm int 3 \
+ /*__asm int 3*/ \
  } \
  } \
  } \

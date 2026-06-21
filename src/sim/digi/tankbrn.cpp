@@ -1277,11 +1277,9 @@ void TankerBrain::FollowThirsty(void)
         if (tankingPtr)
             tankingPtr->Release();
 
-#ifdef DEBUG
-        //tankingPtr = new SimObjectType( OBJ_TAG, self, curThirsty );
-#else
+        // #47 UAF ROOT: create UNCONDITIONALLY (in Debug the DEBUG branch was empty -> Release above +
+        // Reference below on a dangling tankingPtr).
         tankingPtr = new SimObjectType(curThirsty);
-#endif
         tankingPtr->Reference();
         dist = DistanceToFront(SimToGrid(self->YPos()), SimToGrid(self->XPos()));
 
@@ -1342,7 +1340,7 @@ void TankerBrain::FollowThirsty(void)
 
              If advancedirection is set true, then tanker was outside his max range envelope when
              called for refueling. In this case when switching from Trackpoint 0 to Trackpoint 1,
-             tanker would do a 180° turn - so just reverse the order from 0->1->2->3 to 0->3->2->1
+             tanker would do a 180ï¿½ turn - so just reverse the order from 0->1->2->3 to 0->3->2->1
             */
             dist = DistSqu(self->XPos(), self->YPos(), TrackPoints[currentTP].x, TrackPoints[currentTP].y);
 
@@ -1422,7 +1420,7 @@ void TankerBrain::FollowThirsty(void)
                     if (heading < 0.0F)
                         heading += PI * 2.0F;
 
-                    heading += PI; // add 180°
+                    heading += PI; // add 180ï¿½
 
                     if (heading > PI * 2.0F)
                         heading -= PI * 2.0F;
@@ -1811,9 +1809,9 @@ void TankerBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
                  TP[].z = Heading (no need to calculate this over and over again...)
 
                  TP[0] = Current location
-                 TP[1] = 90° 25 nm <- this is a 180° heading away from the FLOT
-                 TP[2] = 90° 60 nm <- parallel to the FLOT
-                 TP[3] = 90° 25 nm <- towards the FLOT
+                 TP[1] = 90ï¿½ 25 nm <- this is a 180ï¿½ heading away from the FLOT
+                 TP[2] = 90ï¿½ 60 nm <- parallel to the FLOT
+                 TP[3] = 90ï¿½ 25 nm <- towards the FLOT
 
                  boxside decides if we do a left or right box, according to heading to FLOT
 
@@ -1821,9 +1819,9 @@ void TankerBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
 
                  5.) if one of 3.) is true:
                  TP[0] = farther away/closer to the FLOT
-                 TP[1] = 90° 25 nm <- this is a 180° heading away from the FLOT
-                 TP[2] = 90° 60 nm <- parallel to the FLOT
-                 TP[3] = 90° 25 nm <- towards the FLOT
+                 TP[1] = 90ï¿½ 25 nm <- this is a 180ï¿½ heading away from the FLOT
+                 TP[2] = 90ï¿½ 60 nm <- parallel to the FLOT
+                 TP[3] = 90ï¿½ 25 nm <- towards the FLOT
 
                  boxside decides if we do a left or right box
 
@@ -1942,7 +1940,7 @@ void TankerBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
                     boxside = true;
                 }// this creates a track box to the right, which should be away from the FLOT, false = to the left
 
-                heading += PI; // turn now 180° away from the FLOT
+                heading += PI; // turn now 180ï¿½ away from the FLOT
 
                 if (heading > PI * 2.0F)
                 {
@@ -1960,7 +1958,7 @@ void TankerBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
                 TrackPoints[1].x = dx;
                 TrackPoints[1].y = dy;
 
-                // TrackPoint[2] add 90° heading
+                // TrackPoint[2] add 90ï¿½ heading
                 if (boxside)
                 {
                     heading -= PI / 2.0f;
@@ -1990,7 +1988,7 @@ void TankerBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
                 TrackPoints[2].x = dx;
                 TrackPoints[2].y = dy;
 
-                // TrackPoint[3] add another 90° heading
+                // TrackPoint[3] add another 90ï¿½ heading
                 if (boxside)
                 {
                     heading -= PI / 2.0f;
@@ -2088,7 +2086,7 @@ void TankerBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
                     heading += PI * 2;
                 }
 
-                heading += PI; // turn 180° away from the FLOT
+                heading += PI; // turn 180ï¿½ away from the FLOT
 
                 if (heading > PI * 2.0F)
                 {

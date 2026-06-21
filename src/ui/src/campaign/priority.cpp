@@ -19,7 +19,7 @@ extern C_Handler *gMainHandler;
 
 enum
 {
-    MAX_PAKS = 50,
+    MAX_PAKS = 256,
 };
 
 void CloseWindowCB(long, short, C_Base *);

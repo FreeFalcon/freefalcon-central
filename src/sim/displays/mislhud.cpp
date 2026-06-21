@@ -25,7 +25,10 @@
 #define SRM_REARAA_RETICLE_SIZE  0.13F
 
 #define HARM_RETICLE_SIZE  0.4F
-#define MRM_RETICLE_SIZE  0.6F
+// #45 ASEC per F-16C Blk50 specs: diameter 262 mr (bore/no-target), center 6deg below the gun cross
+// (MISSILE_RETICLE_OFFSET = RadToHudUnits(-6deg), already correct). Radius = MRToHudUnits(262/2) -- scaled
+// from halfAngle, not hardcoded. With R~7.5deg and center -6deg the gun cross (+6deg from center) falls INSIDE the circle.
+#define MRM_ASEC_DIAMETER_MR  262.0F
 #define MSL_OVERRIDE_SIZE  0.5F
 
 #define AIM120ASECX              45.0f * DTR
@@ -108,7 +111,7 @@ void HudClass::DrawDogfight()
             //else
             if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
             {
-                DrawMissileReticle(MRM_RETICLE_SIZE, FALSE, TRUE);
+                DrawMissileReticle(MRToHudUnits(MRM_ASEC_DIAMETER_MR * 0.5F), FALSE, TRUE); // ASEC 262 mr (bore)
                 DrawAim120Diamond();
             }
         }
@@ -286,7 +289,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
                     // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
                     // DrawMissileReticle(0.3F, FALSE, TRUE);
                     //else
-                    DrawMissileReticle(MRM_RETICLE_SIZE, FALSE, TRUE);
+                    DrawMissileReticle(MRToHudUnits(MRM_ASEC_DIAMETER_MR * 0.5F), FALSE, TRUE); // ASEC 262 mr (bore)
                     DrawAim120Diamond();
                 }
             }
@@ -440,7 +443,7 @@ void HudClass::DrawAirMissile(void)
                     // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
                     // DrawMissileReticle(0.3F, FALSE, TRUE);
                     //else
-                    DrawMissileReticle(MRM_RETICLE_SIZE, FALSE, TRUE);
+                    DrawMissileReticle(MRToHudUnits(MRM_ASEC_DIAMETER_MR * 0.5F), FALSE, TRUE); // ASEC 262 mr (bore)
                     DrawAim120Diamond();
                 }
             }
