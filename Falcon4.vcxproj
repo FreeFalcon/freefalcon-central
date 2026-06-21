@@ -29,9 +29,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v145</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -63,12 +63,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>.\Falcon4___Win32_Debug\</OutDir>
     <IntDir>.\Falcon4___Win32_Debug\</IntDir>
+    <TargetName>FFViper</TargetName>
     <IgnoreImportLibrary>false</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>./Falcon4___Win32_Release/\</OutDir>
+    <OutDir>.\Falcon4___Win32_Release</OutDir>
     <IntDir>./Falcon4___Win32_Release/\</IntDir>
+    <TargetName>FFViper</TargetName>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Remote|Win32'">
@@ -95,7 +97,7 @@
       <AssemblerListingLocation>.\Falcon4___Win32_Debug/</AssemblerListingLocation>
       <ObjectFileName>.\Falcon4___Win32_Debug/</ObjectFileName>
       <ProgramDataBaseFileName>.\Falcon4___Win32_Debug/</ProgramDataBaseFileName>
-      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformation>false</BrowseInformation>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -108,7 +110,7 @@
     <Link>
       <AdditionalOptions>/MACHINE:I386 /FORCE:MULTIPLE /SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>libCMTd.lib;libCPMTd.lib;libvcruntimed.lib;libucrtd.lib;atls.lib;delayimp.lib;src\Landh\Lib\st80w.lib;comsupp.lib;src\amd\lib\release\amd3d.lib;oldnames.lib;comctl32.lib;winmm.lib;vfw32.lib;wsock32.lib;dsound.lib;dxguid.lib;dinput8.lib;ddraw.lib;dbghelp.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib;version.lib;comsuppwd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)Falcon4.exe</OutputFile>
+      <OutputFile>$(OutDir)FFViper.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>C:\Falcon4\SP3\ExtLibs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
@@ -149,7 +151,7 @@
       <AssemblerListingLocation>.\</AssemblerListingLocation>
       <ObjectFileName>.\Falcon4___Win32_Release/</ObjectFileName>
       <ProgramDataBaseFileName>.\Falcon4___Win32_Release/</ProgramDataBaseFileName>
-      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformation>false</BrowseInformation>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -162,7 +164,7 @@
     <Link>
       <AdditionalOptions>/MACHINE:I386 /FIXED:NO /FORCE:MULTIPLE /SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>libCMT.lib;libCPMT.lib;libvcruntime.lib;libucrt.lib;atls.lib;delayimp.lib;src\Landh\Lib\st80w.lib;comsupp.lib;src\amd\lib\release\amd3d.lib;oldnames.lib;comctl32.lib;winmm.lib;vfw32.lib;wsock32.lib;dsound.lib;dxguid.lib;dinput8.lib;ddraw.lib;dbghelp.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib;version.lib;comsuppwd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)Falcon4.exe</OutputFile>
+      <OutputFile>$(OutDir)FFViper.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -202,7 +204,7 @@
       <AssemblerListingLocation>.\</AssemblerListingLocation>
       <ObjectFileName>.\Falcon4___Win32_Release/</ObjectFileName>
       <ProgramDataBaseFileName>.\Falcon4___Win32_Release/</ProgramDataBaseFileName>
-      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformation>false</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -213,8 +215,8 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalOptions>/MACHINE:I386 /FIXED:NO /FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libCMT.lib;libCPMT.lib;atls.lib;delayimp.lib;src\Landh\Lib\st80w.lib;d3dx.lib;comsupp.lib;src\amd\lib\release\amd3d.lib;oldnames.lib;comctl32.lib;winmm.lib;vfw32.lib;wsock32.lib;dsound.lib;dxguid.lib;dinput8.lib;ddraw.lib;dbghelp.lib;version.lib;extlibs\nvdxtlibmt.vc8.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/MACHINE:I386 /FIXED:NO /FORCE:MULTIPLE /SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>libCMT.lib;libCPMT.lib;libvcruntime.lib;libucrt.lib;atls.lib;delayimp.lib;src\Landh\Lib\st80w.lib;comsupp.lib;src\amd\lib\release\amd3d.lib;oldnames.lib;comctl32.lib;winmm.lib;vfw32.lib;wsock32.lib;dsound.lib;dxguid.lib;dinput8.lib;ddraw.lib;dbghelp.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)RedViper.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
