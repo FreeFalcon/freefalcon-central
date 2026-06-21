@@ -102,6 +102,15 @@ The entire fixed‑function D3D7 pipeline was replaced with a D3D11 backend.
 
 ---
 
-*Targeted but not yet shipped: water/surf shaders, volumetric clouds, canopy reflections/rain,
-ejection‑seat texture, radar‑lock reliability, throttle/RPM sync at mission start, and OpenXR/VR
-(the long‑term goal of the D3D11 work).*
+## 8. TODO
+
+* **More shaders** - replace water and clouds with shaders. Currently half-implemented but there 
+  are caveats and probably will need to replace whole process of using textures for water. Don't know
+  if it's really worth it anyway
+
+* **OpenXR** - Why I really took this porting process is to really learn how to implement OpenXR VR.
+  Will make it as experiment but well we'll see.
+
+* **64 Bit and maybe DX12** - same as first one - not sure if it's worth anything except as experiment
+  Keep in mind that BMS exist and it's so far ahead that FreeFalcon is not really worth it anymore. 
+  So this is just experiments platform for now. 
