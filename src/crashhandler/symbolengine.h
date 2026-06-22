@@ -465,10 +465,17 @@ public      :
                            OUT PDWORD              pdwDisplacement ,
                            OUT PIMAGEHLP_SYMBOL    Symbol)
     {
+#if defined(_M_X64)
+        // Artscout - 2026 (x64): DbgHelp maps this to the *64 API (DWORD64/PDWORD64); the
+        // 32-bit-typed wrapper is stubbed on x64 (symbol resolution deferred).
+        (void)dwAddr ; (void)pdwDisplacement ; (void)Symbol ;
+        return FALSE ;
+#else
         return (::SymGetSymFromAddr(m_hProcess       ,
                                     dwAddr           ,
                                     pdwDisplacement  ,
                                     Symbol)) ;
+#endif
     }
 
     BOOL SymGetSymFromName(IN  LPSTR            Name   ,
@@ -498,6 +505,12 @@ public      :
                             OUT PDWORD         pdwDisplacement ,
                             OUT PIMAGEHLP_LINE Line)
     {
+#if defined(_M_X64)
+        // Artscout - 2026 (x64): DbgHelp maps this to *64 (DWORD64/PIMAGEHLP_LINE64); the
+        // 32-bit-typed wrapper is stubbed on x64 (source-line resolution deferred).
+        (void)dwAddr ; (void)pdwDisplacement ; (void)Line ;
+        return FALSE ;
+#else
         // Holds the function pointer.
         PFNSYMGETLINEFROMADDR pfnSGLFA ;
 
@@ -553,6 +566,7 @@ public      :
 
         return (TRUE) ;
 #endif // DO_NOT_WORK_AROUND_SRCLINE_BUG
+#endif // _M_X64 (x64 stub)
     }
 
     BOOL SymGetLineFromName(IN     LPSTR          ModuleName      ,
@@ -666,9 +680,16 @@ public      :
                              CallbackFunction,
                              IN PVOID                UserContext)
     {
+#if defined(_M_X64)
+        // Artscout - 2026 (x64): DbgHelp maps this to *64 (PSYMBOL_REGISTERED_CALLBACK64/ULONG64);
+        // the 32-bit-typed wrapper is stubbed on x64.
+        (void)CallbackFunction ; (void)UserContext ;
+        return FALSE ;
+#else
         return (::SymRegisterCallback(m_hProcess         ,
                                       CallbackFunction   ,
                                       UserContext)) ;
+#endif
     }
 
 

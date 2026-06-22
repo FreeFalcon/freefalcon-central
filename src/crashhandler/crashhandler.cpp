@@ -432,14 +432,19 @@ LPCTSTR __stdcall GetFaultReason(EXCEPTION_POINTERS * pExPtrs)
         pSym->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL) ;
         pSym->MaxNameLength = SYM_BUFF_SIZE - sizeof(IMAGEHLP_SYMBOL);
 
-        DWORD dwDisp ;
+        DWORD dwDisp = 0 ;
 
+#if defined(_M_X64)
+        // Artscout - 2026 (x64): symbol lookup stubbed (DbgHelp 64-bit port deferred).
+        if (false)
+#else
         if (TRUE ==
             SymGetSymFromAddr((HANDLE)GetCurrentProcessId()     ,
                               (DWORD)pExPtrs->ExceptionRecord->
                               ExceptionAddress ,
                               &dwDisp                             ,
                               pSym))
+#endif
         {
             iCurr += wsprintf(g_szBuff + iCurr , _T(", ")) ;
 
@@ -595,6 +600,14 @@ GetFirstStackTraceString(DWORD                dwOpts  ,
     g_stFrame.AddrStack.Mode      = AddrModeFlat                ;
     g_stFrame.AddrFrame.Offset    = pExPtrs->ContextRecord->Ebp ;
     g_stFrame.AddrFrame.Mode      = AddrModeFlat                ;
+#elif defined(_M_X64)
+    // Artscout - 2026 (x64): x64 CONTEXT registers.
+    g_stFrame.AddrPC.Offset       = pExPtrs->ContextRecord->Rip ;
+    g_stFrame.AddrPC.Mode         = AddrModeFlat                ;
+    g_stFrame.AddrStack.Offset    = pExPtrs->ContextRecord->Rsp ;
+    g_stFrame.AddrStack.Mode      = AddrModeFlat                ;
+    g_stFrame.AddrFrame.Offset    = pExPtrs->ContextRecord->Rbp ;
+    g_stFrame.AddrFrame.Mode      = AddrModeFlat                ;
 #else
     g_stFrame.AddrPC.Offset       = (DWORD)pExPtrs->ContextRecord->Fir ;
     g_stFrame.AddrPC.Mode         = AddrModeFlat ;
@@ -628,11 +641,19 @@ BOOL __stdcall CH_ReadProcessMemory(HANDLE                      ,
                                     DWORD   nSize               ,
                                     LPDWORD lpNumberOfBytesRead)
 {
+#if defined(_M_X64)
+    // Artscout - 2026 (x64): ReadProcessMemory wants SIZE_T* for the byte count.
+    SIZE_T got = 0 ;
+    BOOL r = ReadProcessMemory(GetCurrentProcess() , lpBaseAddress , lpBuffer , nSize , &got) ;
+    if (lpNumberOfBytesRead) *lpNumberOfBytesRead = (DWORD)got ;
+    return r ;
+#else
     return (ReadProcessMemory(GetCurrentProcess() ,
                               lpBaseAddress         ,
                               lpBuffer              ,
                               nSize                 ,
                               lpNumberOfBytesRead)) ;
+#endif
 }
 
 // The internal function that does all the stack walking.
@@ -749,11 +770,16 @@ InternalGetStackTraceString(DWORD                dwOpts  ,
             pSym->MaxNameLength = SYM_BUFF_SIZE -
                                   sizeof(IMAGEHLP_SYMBOL) ;
 
+#if defined(_M_X64)
+            // Artscout - 2026 (x64): symbol lookup stubbed (DbgHelp 64-bit port deferred).
+            if (false)
+#else
             if (TRUE ==
                 SymGetSymFromAddr((HANDLE)GetCurrentProcessId() ,
                                   g_stFrame.AddrPC.Offset         ,
                                   &dwDisp                         ,
                                   pSym))
+#endif
             {
                 iCurr += wsprintf(g_szBuff + iCurr , _T(", ")) ;
 
@@ -942,6 +968,28 @@ LPCTSTR __stdcall GetRegisterString(EXCEPTION_POINTERS * pExPtrs)
 #ifdef _ALPHA_
     // Do the ALPHA ones if needed.
     ASSERT(FALSE) ;
+#elif defined(_M_X64)
+    // Artscout - 2026 (x64): dump the x64 integer registers.
+    wsprintf(g_szBuff ,
+             _T("RAX=%016llX RBX=%016llX RCX=%016llX RDX=%016llX\r\n"\
+                "RSI=%016llX RDI=%016llX RBP=%016llX RSP=%016llX\r\n"\
+                "RIP=%016llX FLG=%08X  CS=%04X DS=%04X SS=%04X ES=%04X FS=%04X GS=%04X") ,
+             pExPtrs->ContextRecord->Rax      ,
+             pExPtrs->ContextRecord->Rbx      ,
+             pExPtrs->ContextRecord->Rcx      ,
+             pExPtrs->ContextRecord->Rdx      ,
+             pExPtrs->ContextRecord->Rsi      ,
+             pExPtrs->ContextRecord->Rdi      ,
+             pExPtrs->ContextRecord->Rbp      ,
+             pExPtrs->ContextRecord->Rsp      ,
+             pExPtrs->ContextRecord->Rip      ,
+             pExPtrs->ContextRecord->EFlags   ,
+             pExPtrs->ContextRecord->SegCs    ,
+             pExPtrs->ContextRecord->SegDs    ,
+             pExPtrs->ContextRecord->SegSs    ,
+             pExPtrs->ContextRecord->SegEs    ,
+             pExPtrs->ContextRecord->SegFs    ,
+             pExPtrs->ContextRecord->SegGs) ;
 #else
     // This puts 48 bytes on the stack.  This could be a problem when
     //  the stack is blown.

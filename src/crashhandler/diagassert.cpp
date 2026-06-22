@@ -479,11 +479,23 @@ static void DoStackTrace(LPTSTR szString  ,
 #elif defined (_M_ALPHA)
         dwMachine                = IMAGE_FILE_MACHINE_ALPHA ;
         stFrame.AddrPC.Offset    = (unsigned long)stCtx.Fir ;
+#elif defined (_M_X64)
+        // Artscout - 2026 (x64): x64 stack frame for StackWalk64.
+        dwMachine                = IMAGE_FILE_MACHINE_AMD64 ;
+        stFrame.AddrPC.Offset    = stCtx.Rip    ;
+        stFrame.AddrPC.Mode      = AddrModeFlat ;
+        stFrame.AddrStack.Offset = stCtx.Rsp    ;
+        stFrame.AddrStack.Mode   = AddrModeFlat ;
+        stFrame.AddrFrame.Offset = stCtx.Rbp    ;
+        stFrame.AddrFrame.Mode   = AddrModeFlat ;
 #else
 #error ( "Unknown machine" )
 #endif
 
         // Loop for the first 512 stack elements.
+        // Artscout - 2026 (x64): StackWalk's GetModBase/FunctionTableAccess callbacks use the
+        // 32-bit DbgHelp signatures; the walk is stubbed on x64 (leaves vAddrs empty).
+#if defined(_M_IX86)
         for (DWORD i = 0 ; i < 512 ; i++)
         {
             if (FALSE == StackWalk(dwMachine              ,
@@ -509,6 +521,7 @@ static void DoStackTrace(LPTSTR szString  ,
                 }
             }
         }
+#endif
 
         // Now start converting the addresses.
         DWORD dwSizeLeft = dwSize ;
