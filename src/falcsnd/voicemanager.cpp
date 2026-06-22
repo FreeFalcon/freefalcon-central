@@ -33,6 +33,8 @@
 
 void *map_file(char *filename, long bytestomap = 0);
 
+bool g_bMkVoice = false; // Artscout - 2026: set by -mkvoice command line -> (re)generate falcon_pcm.tlk
+
 extern int noUIcomms;
 
 extern VU_TIME vuxGameTime;
@@ -143,11 +145,28 @@ BOOL VoiceManager::VMBegin(void)
 int VoiceManager::VoiceOpen(void)
 {
     char filename[MAX_PATH];
+    extern bool g_bVoicePcmMode; // Artscout - 2026: PCM voice bank in use (see lhsp.cpp)
+    extern bool g_bMkVoice;      // Artscout - 2026: -mkvoice command line -> (re)generate the PCM bank
 
+    // Artscout - 2026: if asked, transcode the ST80 falcon.tlk -> falcon_pcm.tlk now (one-time,
+    // needs ST80 -> x86 build), then fall through and open the freshly generated PCM bank.
+    if (g_bMkVoice)
+        TranscodeVoiceBank();
+
+    // Artscout - 2026: prefer the pre-transcoded PCM voice bank falcon_pcm.tlk (data = already
+    // decoded PCM, no ST80). Works on BOTH x86 and x64. Fall back to the ST80 falcon.tlk only if
+    // the PCM bank is absent (x86 decodes it; x64 stays silent -> subtitles). Generate the PCM
+    // bank once with the -mkvoice command-line flag on an x86 build (TlkFile::TranscodeToPcm).
+    sprintf(filename, "%s\\falcon_pcm.tlk", FalconSoundThrDirectory);
+
+    if (voiceMap.Open(filename) == TRUE)
+    {
+        g_bVoicePcmMode = true;
+        return TRUE;
+    }
+
+    g_bVoicePcmMode = false;
     sprintf(filename, "%s\\falcon.tlk", FalconSoundThrDirectory);
-#if 0
-    voiceMapPtr = (char *)map_file(filename);
-#endif
 
     if (voiceMap.Open(filename) not_eq TRUE)
         ShiError("Can't open falcon.tlk");
@@ -1825,3 +1844,171 @@ char *TlkFile::GetDataPtr(int tlkind)
 
     return tblock->data;
 }
+
+// ============================================================================
+// Artscout - 2026: ST80 -> PCM voice-bank transcoder (one-time, x86 + ST80).
+// Decodes every fragment of this (ST80) .tlk and writes falcon_pcm.tlk with the SAME index layout
+// but data = already-decoded PCM (compressedlen == filelen == PCM length). At runtime both x86 and
+// x64 play that PCM bank via the passthrough path in LHSP::ReadLHSPFile (g_bVoicePcmMode), so ST80
+// can be dropped from BOTH builds once the bank is generated. Format-agnostic: we store exactly the
+// bytes ReadLHSPFile already produces for playback, so sample rate / bit depth need not be known.
+// ============================================================================
+#if !defined(NO_ST80)
+#include <stdlib.h>
+#include "LHSP.h"
+
+bool TlkFile::TranscodeToPcm(const char *outPath)
+{
+    extern bool g_bVoicePcmMode;
+
+    if ( not IsReady())
+        return false;
+
+    // Derive fragment count + first block offset. The index is long[] starting at TLK_HEADER_INFO;
+    // its lowest positive entry points at the first block, which sits right after the index.
+    long firstOff = 0x7fffffff;
+    int  count = 0;
+
+    for (int i = 0; (long)(TLK_HEADER_INFO + (long)sizeof(long) * i) < firstOff; i++)
+    {
+        BYTE *p = GetData(TLK_HEADER_INFO + (long)sizeof(long) * i, sizeof(long));
+
+        if ( not p)
+            break;
+
+        long off = *(long *)p;
+
+        if (off > 0 and off < firstOff)
+            firstOff = off;
+
+        count = i + 1;
+    }
+
+    if (count <= 0)
+        return false;
+
+    long *index = (long *)calloc(count, sizeof(long));
+
+    if ( not index)
+        return false;
+
+    FILE *fp = fopen(outPath, "wb");
+
+    if ( not fp)
+    {
+        free(index);
+        return false;
+    }
+
+    // Force real ST80 decode even if a prior PCM bank already flipped g_bVoicePcmMode on.
+    bool savedMode = g_bVoicePcmMode;
+    g_bVoicePcmMode = false;
+
+    LHSP lh;
+    lh.InitializeLHSP();
+
+    unsigned char *outBuf = new unsigned char[MAX_OUTDECODE_SIZE];
+
+    long  header[3] = { (long)count, 0, 0 }; // 12-byte header (runtime only reads index from off 12)
+    fwrite(header, sizeof(header), 1, fp);
+
+    long indexPos = ftell(fp); // == TLK_HEADER_INFO (12)
+    fwrite(index, sizeof(long), count, fp); // placeholder; rewritten at the end
+
+    long pcmCap = MAX_OUTDECODE_SIZE * 4;
+    unsigned char *pcm = (unsigned char *)malloc(pcmCap);
+
+    for (int i = 0; i < count; i++)
+    {
+        BYTE *ip = GetData(Index2Data(i), sizeof(long));
+        long off = ip ? *(long *)ip : 0;
+
+        if (off <= 0)
+        {
+            index[i] = 0; // empty slot
+            continue;
+        }
+
+        COMPRESSION_DATA cd;
+        cd.bytesDecoded   = 0;
+        cd.bytesRead      = 0;
+        cd.fileLength     = (long)GetFileLength(i);
+        cd.compFileLength = (long)GetCompressedLength(i);
+        cd.dataPtr        = GetDataPtr(i);
+
+        if ( not cd.dataPtr or cd.compFileLength <= 0)
+        {
+            index[i] = 0;
+            continue;
+        }
+
+        long pcmLen = 0;
+
+        while (cd.bytesRead < cd.compFileLength)
+        {
+            long n = lh.ReadLHSPFile(&cd, &outBuf);
+
+            if (n <= 0)
+                break;
+
+            if (pcmLen + n > pcmCap)
+            {
+                while (pcmLen + n > pcmCap)
+                    pcmCap *= 2;
+
+                pcm = (unsigned char *)realloc(pcm, pcmCap);
+            }
+
+            memcpy(pcm + pcmLen, outBuf, n);
+            pcmLen += n;
+        }
+
+        if (pcmLen <= 0)
+        {
+            index[i] = 0;
+            continue;
+        }
+
+        index[i] = ftell(fp);
+        unsigned long len = (unsigned long)pcmLen;
+        fwrite(&len, sizeof(len), 1, fp); // filelen
+        fwrite(&len, sizeof(len), 1, fp); // compressedlen (== PCM length in the PCM bank)
+        fwrite(pcm, 1, pcmLen, fp);
+    }
+
+    // Rewrite the real index now that block offsets are known.
+    fseek(fp, indexPos, SEEK_SET);
+    fwrite(index, sizeof(long), count, fp);
+    fclose(fp);
+
+    free(pcm);
+    delete [] outBuf;
+    free(index);
+    lh.CleanupLHSP();
+    g_bVoicePcmMode = savedMode;
+    return true;
+}
+
+void TranscodeVoiceBank(void)
+{
+    extern char FalconSoundThrDirectory[];
+    char in[MAX_PATH], out[MAX_PATH];
+
+    sprintf(in,  "%s\\falcon.tlk",     FalconSoundThrDirectory);
+    sprintf(out, "%s\\falcon_pcm.tlk", FalconSoundThrDirectory);
+
+    TlkFile t;
+
+    if (t.Open(in) not_eq TRUE)
+    {
+        MonoPrint("mkvoice: cannot open %s\n", in);
+        return;
+    }
+
+    bool ok = t.TranscodeToPcm(out);
+    t.Close();
+    MonoPrint("mkvoice: %s -> %s : %s\n", in, out, ok ? "OK" : "FAIL");
+}
+#else
+void TranscodeVoiceBank(void) {} // ST80 unavailable (x64/NO_ST80) -> transcoder not built
+#endif

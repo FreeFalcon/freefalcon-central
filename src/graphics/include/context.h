@@ -641,8 +641,8 @@ extern  "C" {
 
         DWORD numVertices;
         int renderState;
-        GLint textureID0;
-        GLint textureID1;
+        DWORD_PTR textureID0; // Artscout - 2026 (x64): caches SRV pointer (currentTexture1/2)
+        DWORD_PTR textureID1;
         DWORD zBuffer;
 
     public:
@@ -690,8 +690,8 @@ extern  "C" {
 
         DWORD numVertices;
         int renderState;
-        GLint textureID0;
-        GLint textureID1;
+        DWORD_PTR textureID0; // Artscout - 2026 (x64): caches SRV pointer (currentTexture1/2)
+        DWORD_PTR textureID1;
         DWORD zBuffer;
 
         LPD3DMATRIX mW;
@@ -722,15 +722,23 @@ extern  "C" {
         void StartDraw(void);
         void EndDraw(void);
         void StartFrame(void);
+        // Artscout - 2026: bind this context's off-screen RTT WITHOUT clearing it (D3D11). For
+        // incremental renderers (GM radar beam sweep) that must accumulate across frames; the caller's
+        // own ClearDraw handles clearing when a new scene begins. No-op if the target is the screen.
+        void BindD3D11RttNoClear(void);
+        // Artscout - 2026: clear the currently-bound D3D11 RTT now (unconditionally, NOT gated to the
+        // RTT batch like ClearBuffers). The GM radar uses this to clear its PRIVATE off-screen buffer
+        // once at the start of each sweep -- otherwise the sweep accumulates to a full-field white.
+        void ClearBoundD3D11Rtt(void);
         void FinishFrame(void *lpFnPtr);
         void SetColorCorrection(DWORD color, float percent);
         void SetupMPRState(GLint flag = 0);
         void SelectForegroundColor(GLint color);
         void SelectBackgroundColor(GLint color);
-        void SelectTexture1(GLint texID);
-        void SelectTexture2(GLint texID);
-        void SetTexture1(GLint texID);
-        void SetTexture2(GLint texID);
+        void SelectTexture1(DWORD_PTR texID); // Artscout - 2026 (x64): pointer-sized texture handle/SRV
+        void SelectTexture2(DWORD_PTR texID);
+        void SetTexture1(DWORD_PTR texID);
+        void SetTexture2(DWORD_PTR texID);
         void RestoreState(GLint state);
         void ApplyStateBlock(GLint state);
         void UpdateSpecularFog(DWORD specular);
@@ -796,10 +804,12 @@ extern  "C" {
         GLint m_colBG_Raw;
         GLint currentState;
         GLint lastState;
-        GLint currentTexture1;
-        GLint currentTexture2;
-        GLint lastTexture1;
-        GLint lastTexture2;
+        // Artscout - 2026 (x64): these cache texture handles / SRV pointers, which are
+        // pointer-sized. GLint (32-bit) truncated them on x64 -> sign-extended garbage SRV.
+        DWORD_PTR currentTexture1;
+        DWORD_PTR currentTexture2;
+        DWORD_PTR lastTexture1;
+        DWORD_PTR lastTexture2;
         BOOL bZBuffering;
         BOOL NVGmode;
         BOOL TVmode;

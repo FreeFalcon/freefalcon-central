@@ -282,7 +282,7 @@ class ParticleTextureNode : public ANode
 {
 public:
     char TexName[32];
-    DWORD TexHandle;
+    DWORD_PTR TexHandle; // Artscout - 2026 (x64): pointer-sized
     CTextureItem *TexItem;
 };
 
@@ -527,7 +527,7 @@ public:
     // The Vertices
     ThreeDVertex v0, v1, v2, v3;
     // The textuer Handle
-    DWORD TexHandle;
+    DWORD_PTR TexHandle; // Artscout - 2026 (x64): pointer-sized
     // The Size random CX
     float SizeRandom;
     CTextureItem *TexItem;
@@ -1167,7 +1167,7 @@ bool SubEmitter::Run(RenderOTW *renderer, ParticleNode *owner)
 
 // COBRA - RED - This function choose the right frame for an animation and updates
 // caller animation parameters
-GLint ParticleAnimationNode::Run(int &Frame, float &TimeRest, float Elapsed, Tpoint &pos, float &alpha)
+DWORD_PTR ParticleAnimationNode::Run(int &Frame, float &TimeRest, float Elapsed, Tpoint &pos, float &alpha) // Artscout - 2026 (x64): pointer-sized handle
 {
     if ((Elapsed + TimeRest) >= Fps)  //
     {
@@ -1768,11 +1768,8 @@ void DrawableParticleSys::SetHeadVelocity(Tpoint *FPS)
 
 inline DWORD ROL(DWORD n)
 {
-    _asm
-    {
-        rol n, 1;
-    }
-    return n;
+    // Artscout - 2026 (x64): rotate-left intrinsic instead of x86 'rol' asm (builds on x86+x64).
+    return _rotl(n, 1);
 }
 
 void DrawableParticleSys::Draw(class RenderOTW *renderer, int LOD)
@@ -3999,7 +3996,7 @@ TRAIL_HANDLE DrawableParticleSys::PS_AddTrail(int ID, Tpoint *Pos, PS_PTR OWNER,
     Trail.SizeCx = SizeCx, Trail.AlphaCx = AlphaCx;
 
     ParticleTextureNode *pt = tpn.SideTexture;
-    DWORD SideTexHandle = pt->TexHandle;
+    DWORD_PTR SideTexHandle = pt->TexHandle;
     float Spare;
     TheDXEngine.DX2D_GetTextureUV(pt->TexItem, 0, Trail.su[0], Spare);
     TheDXEngine.DX2D_GetTextureUV(pt->TexItem, 1, Trail.su[1], Spare);
@@ -4399,7 +4396,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
     // Link here the Texture and get its U/V Coord
     // The BB Surfaces texture
     ParticleTextureNode *pt = TPN.Texture;
-    DWORD TexHandle = pt->TexHandle;
+    DWORD_PTR TexHandle = pt->TexHandle;
     float su[4], sv[4];
     TheDXEngine.DX2D_GetTextureUV(pt->TexItem, 0, Quad[0].tu, Quad[0].tv);
     TheDXEngine.DX2D_GetTextureUV(pt->TexItem, 1, Quad[1].tu, Quad[1].tv);
@@ -4408,7 +4405,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
 
     // The SIDE Texture
     pt = TPN.SideTexture;
-    DWORD SideTexHandle = pt->TexHandle;
+    DWORD_PTR SideTexHandle = pt->TexHandle;
     TheDXEngine.DX2D_GetTextureUV(pt->TexItem, 0, su[0], sv[0]);
     TheDXEngine.DX2D_GetTextureUV(pt->TexItem, 1, su[1], sv[1]);
     TheDXEngine.DX2D_GetTextureUV(pt->TexItem, 2, su[2], sv[2]);

@@ -457,7 +457,7 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
             m_pUplink->PutGameMode("openplaying");
         }
     }
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         MonoPrint("handle_WinMain: Error 0x%X occured during JetNet initialization", e.Error());
     }
@@ -477,12 +477,23 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
     _controlfp(_RC_CHOP, MCW_RC);
 
     // Set the FPU to 24bit precision
-    _controlfp(_PC_24, MCW_PC);
+#if defined(_M_IX86)
+    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+#endif
 #endif
 
     hInst = h_instance;
 
     ParseCommandLine(command_line);
+
+    // Artscout - 2026: "-mkvoice" -> one-time transcode of the ST80 falcon.tlk into falcon_pcm.tlk
+    // (handled in VoiceManager::VoiceOpen, needs an x86 build with ST80). After the bank exists both
+    // x86 and x64 play voice from it with no ST80 dependency.
+    {
+        extern bool g_bMkVoice;
+        if (command_line and (strstr(command_line, "-mkvoice") or strstr(command_line, "-MKVOICE")))
+            g_bMkVoice = true;
+    }
 
     ReadFalcon4Config();
 
@@ -869,7 +880,7 @@ void ParseCommandLine(LPSTR cmdLine)
 
     size = sizeof(FalconDataDirectory);
     retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY,
-                          0, KEY_QUERY_VALUE, &theKey);
+                          0, KEY_QUERY_VALUE | KEY_WOW64_32KEY, &theKey);
 
     size = sizeof(ComIPGetHostIDIndex);
     retval = RegQueryValueEx(theKey, "HostIDX", 0, &type, (LPBYTE)&value, &size);
@@ -1138,7 +1149,7 @@ void ParseCommandLine(LPSTR cmdLine)
 
     size = sizeof(FalconDataDirectory);
     retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY,
-                          0, KEY_QUERY_VALUE, &theKey);
+                          0, KEY_QUERY_VALUE | KEY_WOW64_32KEY, &theKey);
     retval = RegQueryValueEx(theKey, "baseDir", 0, &type, (LPBYTE)&FalconDataDirectory, &size);
 
     if (retval not_eq ERROR_SUCCESS)
@@ -1283,6 +1294,12 @@ void SystemLevelInit()
     extern char g_strRadioWorldCol[0x40]; // Retro 27Dec2003
     extern char g_strRadioTowerCol[0x40]; // Retro 27Dec2003
     extern char g_strRadioStandardCol[0x40]; // Retro 27Dec2003
+
+    // Artscout - 2026: force radio chatter subtitles ON. The ST80 voice codec is disabled on x64
+    // (no audio chatter), so subtitles are currently the only way to follow campaign radio comms
+    // while debugging. The radio messages are still generated; subtitles just render their text.
+    // TODO: make this a config toggle / replace ST80 with TTS, then drop this force.
+    PlayerOptions.SetSubtitles(true);
 
     if (PlayerOptions.getSubtitles())
     {
@@ -1446,7 +1463,9 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
     _controlfp(_RC_CHOP, MCW_RC);
 
     // Set the FPU to 24bit precision
-    _controlfp(_PC_24, MCW_PC);
+#if defined(_M_IX86)
+    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+#endif
 #endif
 
     switch (message)
@@ -1467,6 +1486,17 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             // until then UI is only thing that can handle surface lost
         case WM_ACTIVATEAPP:
         case WM_ACTIVATE:
+            // Artscout - 2026: on regaining focus (Alt-Tab back) explicitly re-Acquire every
+            // DirectInput device. Foreground/exclusive devices are auto-unacquired by DirectInput on
+            // focus loss; relying only on the lazy per-read re-acquire left the keyboard and
+            // controllers intermittently dead after Alt-Tab. LOWORD(wParam) != 0 means "becoming
+            // active" for both WM_ACTIVATE (WA_ACTIVE/WA_CLICKACTIVE) and WM_ACTIVATEAPP (TRUE).
+            if (LOWORD(wParam) != 0)
+            {
+                extern void ReacquireAllInputDevices(void);
+                ReacquireAllInputDevices();
+            }
+
             if (doUI and FalconDisplay.displayFullScreen)
             {
                 RECT rect;

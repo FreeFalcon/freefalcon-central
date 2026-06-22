@@ -1024,14 +1024,11 @@ void C_Handler::Fill(SCREEN *surface, COLORREF Color, UI95_RECT *dst)
 
         while (i < dst->bottom)
         {
-            __asm
             {
-                mov eax, color
-                mov ecx, len
-                mov edi, dest
-                add edi, start
-                rep stosd
-            };
+                // Artscout - 2026 (x64): rep stosd -> fill 'len' DWORDs with color (builds on x86+x64).
+                DWORD *d = (DWORD *)((BYTE *)dest + start);
+                for (long k = 0; k < len; k++) d[k] = color;
+            }
 
             i++;
             start += surface->width * sizeof(DWORD);
@@ -1053,14 +1050,11 @@ void C_Handler::Fill(SCREEN *surface, COLORREF Color, UI95_RECT *dst)
 
         while (i < dst->bottom)
         {
-            __asm
             {
-                mov AX, color
-                mov ECX, len
-                mov EDI, dest
-                add EDI, start
-                rep stosw
-            };
+                // Artscout - 2026 (x64): rep stosw -> fill 'len' WORDs with color (builds on x86+x64).
+                WORD *d = (WORD *)((BYTE *)dest + start);
+                for (long k = 0; k < len; k++) d[k] = color;
+            }
 
             i++;
             start += surface->width * sizeof(WORD);
@@ -1618,7 +1612,9 @@ unsigned int __stdcall C_Handler::ControlLoop(void *myself)
     _controlfp(_RC_CHOP, MCW_RC);
 
     // Set the FPU to 24bit precision
-    _controlfp(_PC_24, MCW_PC);
+#if defined(_M_IX86)
+    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+#endif
 #endif
     ((C_Handler *)myself)->DoControlLoop();
     _endthreadex(0);
@@ -1632,7 +1628,9 @@ unsigned int __stdcall C_Handler::TimerLoop(void *myself)
     _controlfp(_RC_CHOP, MCW_RC);
 
     // Set the FPU to 24bit precision
-    _controlfp(_PC_24, MCW_PC);
+#if defined(_M_IX86)
+    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+#endif
 #endif
     ((C_Handler *)myself)->PostTimerMessage();
     _endthreadex(0);
@@ -1646,7 +1644,9 @@ unsigned int __stdcall C_Handler::OutputLoop(void *myself)
     _controlfp(_RC_CHOP, MCW_RC);
 
     // Set the FPU to 24bit precision
-    _controlfp(_PC_24, MCW_PC);
+#if defined(_M_IX86)
+    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+#endif
 #endif
     ((C_Handler *)myself)->DoOutputLoop();
     _endthreadex(0);

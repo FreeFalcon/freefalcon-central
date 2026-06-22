@@ -11,6 +11,7 @@
 #include "TOD.h"
 #include "Image.h"
 #include "FarTex.h"
+#include "ddsdiskhdr.h" // Artscout - 2026 (x64): correct on-disk DDS header read
 #include "dxtlib.h"
 #include "Falclib/Include/IsBad.h"
 #include "FalcLib/include/playerop.h"
@@ -158,7 +159,11 @@ BOOL FarTexDB::Setup(DXContext *hrc, const char* path)
 
         if ( not fp) return TRUE;
 
+#if defined(_M_IX86)
         fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
+#else
+        { DDSDiskHeader _h; fread(&_h, 1, DDS_DISK_HEADER_SIZE, fp); DDSDiskToDesc(_h, ddsd); } // Artscout - 2026 (x64): on-disk DDS header
+#endif
         ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE)
 
         linearSize = ddsd.dwLinearSize;
@@ -527,7 +532,7 @@ void FarTexDB::Load(DWORD offset, bool forceNoDDS)
         ShiAssert(texArray[offset].bits);
 
         // Read the image data
-        if ( not fartexDDSFile.ReadDataAt(sizeof(DDSURFACEDESC2) + (offset * linearSize), texArray[offset].bits, linearSize))
+        if ( not fartexDDSFile.ReadDataAt(DDS_DISK_HEADER_SIZE + (offset * linearSize), texArray[offset].bits, linearSize))
         {
             char string[80];
             char message[120];
@@ -581,7 +586,7 @@ void FarTexDB::Activate(DWORD offset)
 
     if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
     {
-        texArray[offset].handle = (UInt)new TextureHandle;
+        texArray[offset].handle = (DWORD_PTR)new TextureHandle; // Artscout - 2026 (x64): pointer-sized
         ShiAssert(texArray[offset].handle);
 
         DWORD info = MPR_TI_DDS;
@@ -593,7 +598,7 @@ void FarTexDB::Activate(DWORD offset)
     }
     else
     {
-        texArray[offset].handle = (UInt)new TextureHandle;
+        texArray[offset].handle = (DWORD_PTR)new TextureHandle; // Artscout - 2026 (x64): pointer-sized
         ShiAssert(texArray[offset].handle);
         palHandle->AttachToTexture((TextureHandle *)texArray[offset].handle);
 
@@ -746,7 +751,11 @@ void FarTexDB::FlushHandles()
 
         if ( not fp) return;
 
+#if defined(_M_IX86)
         fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
+#else
+        { DDSDiskHeader _h; fread(&_h, 1, DDS_DISK_HEADER_SIZE, fp); DDSDiskToDesc(_h, ddsd); } // Artscout - 2026 (x64): on-disk DDS header
+#endif
         ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE)
 
         linearSize = ddsd.dwLinearSize;
@@ -797,7 +806,11 @@ bool FarTexDB::SyncDDSTextures(bool bForce)
         sprintf(szDDSName, "%s\\%d.dds", texturePath, i);
         fpDDS = fopen(szDDSName, "rb");
         fread(&dwMagic, 1, sizeof(DWORD), fpDDS);
+#if defined(_M_IX86)
         fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fpDDS);
+#else
+        { DDSDiskHeader _h; fread(&_h, 1, DDS_DISK_HEADER_SIZE, fpDDS); DDSDiskToDesc(_h, ddsd); } // Artscout - 2026 (x64): on-disk DDS header
+#endif
 
         pBuf = new BYTE[ddsd.dwLinearSize];
         fread(pBuf, 1, ddsd.dwLinearSize, fpDDS);

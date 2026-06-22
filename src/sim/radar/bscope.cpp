@@ -698,7 +698,7 @@ void RadarDopplerClass::DrawAzElTicks(void)
     }
     else
     {
-        //our scope has 120°, not only 60°
+        //our scope has 120ï¿½, not only 60ï¿½
         posStep = (DisplayAreaViewRight - DisplayAreaViewLeft) / 12.0F;
         curPos = 0;
         display->Line(curPos, DisplayAreaViewBottom - 0.15F,
@@ -2713,8 +2713,17 @@ int RadarDopplerClass::IsUnderCursor(SimObjectType* rdrObj, float heading)
             yPos = tgty + dy;
         }
 
-        if (xPos > cursorX - 0.02F and xPos < cursorX + 0.02F  and 
-            yPos > cursorY - 0.04F and yPos < cursorY + 0.04F)
+        // Artscout - 2026: #38 acquisition gate was Â±0.02 X / Â±0.04 Y, but the ACQ cursor is DRAWN
+        // as brackets of half-width CursorSize (DrawACQCursor: 0.06 realistic / 0.03 arcade). So a
+        // target sitting visibly between the cursor brackets often fell OUTSIDE the much tighter lock
+        // gate -> "cursor is on the target but it won't lock, have to nudge it" (and it felt random,
+        // because it depended on where inside the brackets the blip happened to be). Match the gate to
+        // the visible cursor size so anything bracketed by the cursor locks.
+        extern bool g_bRealisticAvionics;
+        const float gateX = g_bRealisticAvionics ? 0.06F : 0.03F;
+        const float gateY = g_bRealisticAvionics ? 0.06F : 0.04F;
+
+        if (fabs(xPos - cursorX) < gateX and fabs(yPos - cursorY) < gateY)
             retval = TRUE;
     }
 

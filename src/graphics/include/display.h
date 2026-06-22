@@ -244,6 +244,18 @@ public:
     static bool CleanupRttTarget();
     void StartRtt(Render3D* r3d_);
     void FinishRtt();
+    // Artscout - 2026: re-bind the shared RTT atlas as the active D3D11 target WITHOUT the StartRtt
+    // bookkeeping (no save/clear/rect reset). The GM radar's beam sub-render does EndDraw->BindBackBuffer
+    // mid-batch, which unbinds the atlas; its 2D composite then leaked to the back buffer (GM drawn big
+    // on screen, absent from the atlas). Call this to restore the atlas before the composite.
+    void ReBindRttTarget();
+    // Artscout - 2026: confine the D3D11 viewport to THIS display's atlas sub-zone (tLeft..tRight, the
+    // same rect DrawRttQuad samples). A sensor scene's 3D OBJECTS (VS_Object, centred clip-NDC) otherwise
+    // render at the FULL-atlas centre regardless of the display zone -> they leak into whatever other
+    // display's zone covers the centre (TGP/Maverick target appearing on HUD/DED/RWR). Call before the
+    // object flush; restore the full viewport afterwards (ReBindRttTarget). The terrain (screen-path,
+    // full-atlas coords) is drawn earlier with the full viewport and is unaffected.
+    void ConfineObjectViewportToZone();
     void SetRttCanvas(Tpoint* ul_, Tpoint* ur_, Tpoint* ll_, char blendMode_, float alpha_);
     void SetRttRect(int tLeft_, int tTop_, int tRight_, int tBottom_,  bool rt_ = true);
     void AdjustRttViewport();

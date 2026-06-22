@@ -30,7 +30,7 @@ int HighResolutionHackFlag = FALSE; // Used in WinMain.CPP
 extern bool g_bForceDXMultiThreadedCoopLevel;
 extern char g_CardDetails[]; // JB 010215
 
-#define INT3 _asm {int 3}
+#define INT3 __debugbreak()   // Artscout - 2026 (x64): int 3 intrinsic, builds on x86+x64
 
 // Cobra - Hack to get VC6 to link
 #if _MSC_VER < 1300
@@ -62,7 +62,7 @@ void DeviceManager::Setup(int languageNum)
         ready = TRUE;
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         MonoPrint("DeviceManager::Setup - Error 0x%X\n", e.Error());
     }
@@ -349,7 +349,7 @@ DXContext *DeviceManager::CreateContext(int driverNum, int devNum, int resNum, B
         return pCtx;
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         MonoPrint("DeviceManager::OpenDevice - Error 0x%X\n", e.Error());
         return NULL;
@@ -435,7 +435,7 @@ void DeviceManager::DDDriverInfo::EnumD3DDrivers()
         pDD7->GetCaps(&m_caps, NULL);
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         MonoPrint("DeviceManager::DDDriverInfo::EnumD3DDrivers - Error 0x%X\n", e.Error());
     }
@@ -811,7 +811,7 @@ bool DXContext::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFulls
         return true;
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         MonoPrint("DXContext::DD_Init - Error 0x%X\n", e.Error());
         return false;

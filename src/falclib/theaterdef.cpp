@@ -432,7 +432,7 @@ void TheaterList::SetPathName(char *dest, char *src, char *reldir)
 void TheaterList::SetCurrentTheater(TheaterDef *td)
 {
     HKEY theKey;
-    RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS, &theKey);
+    RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS | KEY_WOW64_32KEY, &theKey);
 
     RegSetValueEx(theKey, "curTheater", 0, REG_SZ, (LPBYTE)td->m_name, strlen(td->m_name));
     RegCloseKey(theKey);
@@ -445,7 +445,7 @@ TheaterDef * TheaterList::GetCurrentTheater()
     DWORD size, type;
 
 
-    RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS, &theKey);
+    RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS | KEY_WOW64_32KEY, &theKey);
 
     size = sizeof(TheaterName);
 

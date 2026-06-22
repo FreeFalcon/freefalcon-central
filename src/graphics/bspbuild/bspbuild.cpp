@@ -222,7 +222,9 @@ int main(int argc, char *argv[])
     int lastid = 0;
 
     // Set the FPU to 24 bit precision
-    _controlfp(_PC_24,   MCW_PC);
+#if defined(_M_IX86)
+    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+#endif
     _controlfp(_RC_CHOP, MCW_RC);
 #ifdef USE_SH_POOLS
     glMemPool = MemPoolInit(0);

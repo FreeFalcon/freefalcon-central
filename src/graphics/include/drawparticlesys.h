@@ -138,7 +138,7 @@ struct timedFloat
 /******************************/
 struct TextureLink
 {
-    DWORD TexHandle;
+    DWORD_PTR TexHandle; // Artscout - 2026 (x64): pointer-sized
     CTextureItem *TexItem;
 };
 
@@ -235,7 +235,7 @@ typedef struct
     int ColorStage;
     int LightStage;
     // The textuer Handle
-    DWORD TexHandle;
+    DWORD_PTR TexHandle; // Artscout - 2026 (x64): pointer-sized
     // The Size random CX
     //CTextureItem *TexItem;
     // the Quad UV vertices
@@ -560,7 +560,7 @@ public:
     void *Sequence; // pointer to the Frame List pointers in memory
     int Flags;
 
-    GLint Run(int &Frame, float &TimeRest, float Elapsed, Tpoint &pos, float &alpha);
+    DWORD_PTR Run(int &Frame, float &TimeRest, float Elapsed, Tpoint &pos, float &alpha); // Artscout - 2026 (x64): pointer-sized handle
 
 };
 

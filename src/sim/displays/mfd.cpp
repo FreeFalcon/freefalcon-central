@@ -712,6 +712,21 @@ void ClearFlightDataOsbLabels()
 }
 
 
+// Artscout - 2026: composite THIS MFD's atlas zone onto ITS 3D panel. The display object behind an MFD
+// can be SHARED between both MFDs -- WpnMfdDrawable::GetDisplay() and SmsDrawable::GetDisplay() both
+// return the single mavDisplay->GetDisplay() when a Maverick is loaded. Exec sets the display's RTT
+// rect/canvas, but the LAST MFD Exec'd wins, so the OTHER MFD's composite (vcock called
+// GetDisplay()->DrawRttQuad() directly) used the wrong zone/panel -> the WPN MFD was BLACK whenever the
+// SMS page also showed the Maverick. Re-apply THIS MFD's rect/canvas right before the composite.
+void MFDClass::DrawRttComposite(void)
+{
+    if (not drawable or not drawable->GetDisplay()) return;
+    VirtualDisplay* d = drawable->GetDisplay();
+    d->SetRttCanvas(&cUL, &cUR, &cLL, cBlend, cAlpha);
+    d->SetRttRect(tLeft, tTop, tRight, tBottom);
+    d->DrawRttQuad();
+}
+
 void MFDClass::Exec(int clearFrame, int virtualCockpit)
 {
     float vpLeft, vpTop, vpRight, vpBottom;

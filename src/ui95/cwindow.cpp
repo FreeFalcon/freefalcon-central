@@ -2036,26 +2036,19 @@ void C_Window::Fill(SCREEN *surface, WORD Color, UI95_RECT *rect)
     else
     {
         //WORD
+        // Artscout - 2026 (x64): rep stosw rect-fill rewritten in C (builds on x86+x64).
+        WORD c = Color;
+        WORD *dptr = dest + startpos;
 
-        __asm
+        while (h--)
         {
-            mov ecx, h
-            mov edi, dest
-            add edi, startpos
-            add edi, startpos
-        };
-        Loop1:
-        __asm
-        {
-            push ecx
-            mov ecx, w
-            mov ax, Color
-            rep stosw
-            add edi, addpos
-            add edi, addpos
-            pop ecx
-            loop Loop1
-        };
+            i = w;
+
+            while (i--)
+                *dptr++ = c;
+
+            dptr += addpos;
+        }
     }
 }
 

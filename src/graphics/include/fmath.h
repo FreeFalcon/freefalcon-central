@@ -9,8 +9,13 @@
 #ifndef _FMATH_H_
 #define _FMATH_H_
 
+// Artscout - 2026 (x64): the x87 inline asm below is x86-only. On x64 use the standard
+// <math.h> functions (the compiler emits SSE scalar ops); identical results, builds on both.
+#include <math.h>
+
 inline float Sin(float a)
 {
+#if defined(_M_IX86)
     _asm
     {
         fld a;
@@ -19,10 +24,14 @@ inline float Sin(float a)
     }
 
     return a;
+#else
+    return sinf(a);
+#endif
 }
 
 inline float Cos(float a)
 {
+#if defined(_M_IX86)
     _asm
     {
         fld a;
@@ -31,10 +40,14 @@ inline float Cos(float a)
     }
 
     return a;
+#else
+    return cosf(a);
+#endif
 }
 
 inline float FabsF(float f)
 {
+#if defined(_M_IX86)
     _asm
     {
         fld f;
@@ -43,10 +56,14 @@ inline float FabsF(float f)
     }
 
     return f;
+#else
+    return fabsf(f);
+#endif
 }
 
 inline float SqrtF(float f)
 {
+#if defined(_M_IX86)
     _asm
     {
         fld f;
@@ -55,22 +72,31 @@ inline float SqrtF(float f)
     }
 
     return f;
+#else
+    return sqrtf(f);
+#endif
 }
 
 inline float Tan(const float a)
 {
+#if defined(_M_IX86)
+    float r = a;
     _asm
     {
-        fld a;
+        fld r;
         fptan;
-        fstp a;
+        fstp r;
     }
 
-    return a;
+    return r;
+#else
+    return tanf(a);
+#endif
 }
 
 inline float Atan(const float o, float a)
 {
+#if defined(_M_IX86)
     _asm
     {
         fld o;
@@ -80,6 +106,9 @@ inline float Atan(const float o, float a)
     }
 
     return a;
+#else
+    return atan2f(o, a);
+#endif
 }
 /*
 inline void SinCos(const float a, float *s, float *c)

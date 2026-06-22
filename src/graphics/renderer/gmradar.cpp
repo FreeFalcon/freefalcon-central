@@ -88,6 +88,12 @@ void RenderGMRadar::StartDraw(void)
 {
     // DX - YELLOW BUG FIX - RED
     Render2D::StartDraw();
+
+    // Artscout - 2026: D3D11 -- bind the GM radar's own off-screen RTT (m_pRenderTarget) so the
+    // sweep renders into it (the MFD panel samples that RTT's SRV at composite, gmcomposit.cpp:724),
+    // instead of leaking onto the screen/back buffer. No clear: the sweep accumulates across frames
+    // (StartScene/ClearDraw clears when a new scene begins). No-op on the screen buffer / under D3D7.
+    context.BindD3D11RttNoClear();
 }
 
 
@@ -104,6 +110,11 @@ void RenderGMRadar::StartScene(Tpoint *from, Tpoint *at, float upHdg)
 
     // Clear the display
     ClearDraw();
+    // Artscout - 2026: under D3D11 ClearDraw()->ClearBuffers() is gated to the RTT batch and no-ops for
+    // the GM's private off-screen buffer, so each sweep accumulated green to a full-field white. Clear the
+    // bound buffer explicitly here, once per sweep. Beam-op accumulation within the sweep is unaffected
+    // (those use BindD3D11RttNoClear). The snapshot taken at the reversal still holds the completed sweep.
+    context.ClearBoundD3D11Rtt();
 
     // Store our COA in units of level posts at the current LOD
     boxCenterRow = WORLD_TO_LEVEL_POST(at->x, LOD);
@@ -774,38 +785,29 @@ void RenderGMRadar::DrawGMsquare(GroundMapVertex *v0, GroundMapVertex *v1, Groun
     ShiAssert(v2);
     ShiAssert(v3);
 
+    // Artscout - 2026: build full TwoDVertex for BOTH paths (was: clipped used vert[] w/o alpha+q;
+    // unclipped passed raw GroundMapVertex). GroundMapVertex has NO u/v/q fields, but DrawPrimitive
+    // reads ->q to compute rhw (=1/w). Passing it directly read q out of bounds -> garbage rhw; D3D7
+    // (XYZRHW) tolerated it, but the D3D11 screen VS recovers w from rhw and projected the verts
+    // off-screen -> the GM ground map was entirely black. Set q=0 -> rhw=1 (2D, no perspective),
+    // alpha=1 (was uninitialized). This is the GM-ground-black D3D11-port regression.
+    GroundMapVertex *src[4] = { v0, v1, v2, v3 };
+
+    for (int i = 0; i < 4; i++)
+    {
+        vert[i].x = src[i]->x;
+        vert[i].y = src[i]->y;
+        vert[i].clipFlag = src[i]->clipFlag;
+        vert[i].r = vert[i].b = 0.0f;
+        vert[i].g = src[i]->g;
+        vert[i].a = 1.0f;
+        vert[i].u = vert[i].v = 0.0f;
+        vert[i].q = 0.0f;            // 2D screen square -> rhw = 1 (no perspective)
+        vertPointers[i] = &vert[i];
+    }
+
     if (v0->clipFlag bitor v1->clipFlag bitor v2->clipFlag bitor v3->clipFlag)
-    {
-
-        // Convert the structure format
-        vert[0].x = v0->x, vert[0].y = v0->y, vert[0].clipFlag = v0->clipFlag, vert[0].g = v0->g, vert[0].r = vert[0].b = 0.0f;
-        vert[1].x = v1->x, vert[1].y = v1->y, vert[1].clipFlag = v1->clipFlag, vert[1].g = v1->g, vert[1].r = vert[1].b = 0.0f;
-        vert[2].x = v2->x, vert[2].y = v2->y, vert[2].clipFlag = v2->clipFlag, vert[2].g = v2->g, vert[2].r = vert[2].b = 0.0f;
-        vert[3].x = v3->x, vert[3].y = v3->y, vert[3].clipFlag = v3->clipFlag, vert[3].g = v3->g, vert[3].r = vert[3].b = 0.0f;
-
-        // Setup the pointers
-        vertPointers[0] = &vert[0];
-        vertPointers[1] = &vert[1];
-        vertPointers[2] = &vert[2];
-        vertPointers[3] = &vert[3];
-
         ClipAndDraw2DFan(vertPointers, 4);
-
-    }
     else
-    {
-
-        // OW
-#if 0
-        context.Primitive(MPR_PRM_TRIFAN, MPR_VI_COLOR, 4, sizeof(MPRVtxClr_t));
-
-        // MPRVtxClr_t
-        context.StorePrimitiveVertexData(v0);
-        context.StorePrimitiveVertexData(v1);
-        context.StorePrimitiveVertexData(v2);
-        context.StorePrimitiveVertexData(v3);
-#else
-        context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR, 4, (MPRVtxTexClr_t **) &v0);
-#endif
-    }
+        context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR, 4, (MPRVtxTexClr_t **) vertPointers);
 }

@@ -704,7 +704,7 @@ C_ServerItem *MakeServerItem(C_TreeList *pTree, IGame *p)
             return pServerItem;
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         MonoPrint("MakeServerItem - _com_error 0x%X", e.Error());
     }
@@ -797,7 +797,7 @@ static void Update()
         }
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         MonoPrint("Update - _com_error 0x%X", e.Error());
     }
@@ -870,7 +870,7 @@ static void UpdateDisplay()
         m_pListServers->Parent_->RefreshClient(m_pListServers->GetClient());
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         MonoPrint("UpdateDisplay - _com_error 0x%X", e.Error());
     }
@@ -1339,7 +1339,7 @@ void CGNetUpdater::Update()
         m_pMasterServer->Update();
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         MonoPrint("CGNetUpdater::UpdateGame - _com_error 0x%X", e.Error());
     }
@@ -1375,7 +1375,7 @@ void CGNetUpdater::UpdateGame(IGame *p, bool bSuccess)
         UpdateServerStatus();
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         MonoPrint("CGNetUpdater::Refresh - _com_error 0x%X", e.Error());
     }
@@ -1432,7 +1432,7 @@ STDMETHODIMP CGNetUpdater::ServerListReceived(int nServers)
         return S_OK;
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         return e.Error();
     }

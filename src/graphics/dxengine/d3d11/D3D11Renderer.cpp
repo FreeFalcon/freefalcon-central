@@ -450,7 +450,18 @@ void D3D11Renderer::SetState(int legacyState)
 	// overwrite the bit. Apply it once (on the glyph-batch flush) and reset, so text color comes
 	// from the vertex (not colored glyph x color = black).
 	unsigned nf = d.flags;
-	if (m_texColorDiffuse) { nf |= (1u << 8); m_texColorDiffuse = false; }
+	// Artscout - 2026: FF_TEXCOLORDIFFUSE is sticky (set by TexColorDiffuse() for the next glyph batch).
+	// Apply it ONLY to the dedicated text states. Otherwise it leaks onto the next textured draw that
+	// happens to flush while it is set -- notably the GM radar GROUND composite (STATE_TEXTURE): with
+	// FF_TEXCOLORDIFFUSE the shader skips `c *= t0` and takes color from the (white) vertex, so the green
+	// ground texture is ignored -> the panel fills WHITE. Consume the flag regardless so it can never
+	// carry past one SetState.
+	if (m_texColorDiffuse)
+	{
+		if (legacyState == STATE_TEXTURE_TEXT || legacyState == STATE_CHROMA_TEXTURE_GOURAUD2)
+			nf |= (1u << 8);
+		m_texColorDiffuse = false;
+	}
 	// No real texture in slot 0 -> clear FF_TEXTURE0. Otherwise texture+chroma states (GOURAUD2:
 	// HUD lines via ForceAlpha) sample an empty gTex0=(0,0,0,0), chroma cuts out black -> ALL HUD
 	// symbology vanishes. D3D7: an unbound stage = white. Here = vertex color.

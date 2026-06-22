@@ -143,7 +143,11 @@ extern bool g_b3DClickableCursorChange; //Wombat778 10-15-2003
 extern int g_n3DHeadPanRange; //Wombat778 2-21-2004
 extern int g_n3DHeadTiltRange; //Wombat778 2-21-2004
 
-#define PAN_LIMIT 150.0F
+// Artscout - 2026: head pan limit (3D cockpit free-look yaw). Was 150 deg -> you could not look
+// straight back, and at the limit the view "snapped over the shoulder". Raised to 180 so the head
+// turns the full hemisphere both ways (look directly aft) -- effectively no limit, which is what VR
+// needs anyway (and the snap-over no longer triggers in normal use).
+#define PAN_LIMIT 180.0F
 extern void* gSharedMemPtr;
 
 using namespace std;
@@ -3013,8 +3017,19 @@ void OTWDriverClass::VCock_Exec(void)
 
             // infinite projection - Hud Offset - Hud is offsetted same value as Head
             // This makes Hud to be always aligned with observer center
-            float XOffset = 12.0f * headPan.y / (pt[1].y - pt[0].y) * tanf(DTR * 60.0f);
-            float YOffset = 12.0f * headPan.z / (pt[0].z - pt[2].z) * tanf(DTR * 60.0f);
+            // Artscout - 2026: gated + tunable (FFViper.cfg HudCollimate / HudCollimateScale). The
+            // collimation only shifts with 6DOF head TRANSLATION (TrackIR/VR/bobbing); with no head
+            // movement the offset is 0 and the HUD sits on the glass (correct -- no parallax). Scale
+            // exaggerates the shift to see/verify the effect; HudCollimate 0 disables it for compare.
+            extern bool  g_bHudCollimate;
+            extern float g_fHudCollimateScale;
+            float XOffset = 0.0f, YOffset = 0.0f;
+
+            if (g_bHudCollimate)
+            {
+                XOffset = g_fHudCollimateScale * 12.0f * headPan.y / (pt[1].y - pt[0].y) * tanf(DTR * 60.0f);
+                YOffset = g_fHudCollimateScale * 12.0f * headPan.z / (pt[0].z - pt[2].z) * tanf(DTR * 60.0f);
+            }
 
             vHUDrenderer->AdjustOriginInViewport(XOffset, YOffset);
 
@@ -3288,9 +3303,12 @@ void OTWDriverClass::VCock_Exec(void)
 
         if (g_b3dMFDLeft)
         {
+            // Artscout - 2026: composite via MFDClass so THIS MFD's atlas zone/3D-panel canvas are
+            // re-applied first (the display may be SHARED via mavDisplay between both MFDs -> the other
+            // MFD otherwise composited the wrong zone = WPN black when SMS also showed the Maverick).
             if (MfdDisplay[0]->GetDrawable() and MfdDisplay[0]->GetDrawable()->GetDisplay())
             {
-                MfdDisplay[0]->GetDrawable()->GetDisplay()->DrawRttQuad();
+                MfdDisplay[0]->DrawRttComposite();
             }
         }
 
@@ -3298,7 +3316,7 @@ void OTWDriverClass::VCock_Exec(void)
         {
             if (MfdDisplay[1]->GetDrawable() and MfdDisplay[1]->GetDrawable()->GetDisplay())
             {
-                MfdDisplay[1]->GetDrawable()->GetDisplay()->DrawRttQuad();
+                MfdDisplay[1]->DrawRttComposite();
             }
         }
 

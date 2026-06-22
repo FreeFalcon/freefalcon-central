@@ -139,6 +139,9 @@ public:
     void BindD3D11RenderTarget(bool clear);
     // SRV for sampling the RTT as a panel texture (NULL if not RTT/not created).
     ID3D11ShaderResourceView* GetD3D11SRV() const { return m_pD3D11SRV; }
+    // Artscout - 2026: GPU-copy this off-screen RTT's texture into another ID3D11Texture2D (same
+    // size/format). Used by the GM radar to SNAPSHOT a completed sweep into a persistent panel texture.
+    void CopyD3D11RTTo(void* destTex2D);
     // Artscout - 2026: menu 3D-viewer (#34). Read a rect out of this off-screen RTT and convert
     // it into a 565 CPU buffer (the screen UI surface), so a 3D model preview becomes part of the
     // normal 2D blit instead of going through the present-mode chroma path (which blacks it out).

@@ -12,6 +12,7 @@
 #include "TOD.h"
 #include "Image.h"
 #include "TerrTex.h"
+#include "ddsdiskhdr.h" // Artscout - 2026 (x64): correct on-disk DDS header read
 #include "dxtlib.h"
 #include "Falclib/Include/IsBad.h"
 #include "FalcLib/include/dispopts.h"
@@ -931,7 +932,7 @@ void TextureDB::Activate(SetEntry* pSet, TileEntry* pTile, int res)
             StoreMPRPalette(pSet);
         }
 
-        pTile->handle[res] = (UInt)new TextureHandle;
+        pTile->handle[res] = (DWORD_PTR)new TextureHandle; // Artscout - 2026 (x64): pointer-sized
         ShiAssert(pTile->handle[res]);
 
         // Attach the palette
@@ -985,7 +986,7 @@ void TextureDB::Activate(SetEntry* pSet, TileEntry* pTile, int res)
 
 
         // Day texture
-        pTile->handle[res] = (UInt)new TextureHandle;
+        pTile->handle[res] = (DWORD_PTR)new TextureHandle; // Artscout - 2026 (x64): pointer-sized
         ShiAssert(pTile->handle[res]);
 
         ((TextureHandle *)pTile->handle[res])->Create(
@@ -996,7 +997,7 @@ void TextureDB::Activate(SetEntry* pSet, TileEntry* pTile, int res)
         );
 
         // Night texture
-        pTile->handleN[res] = (UInt)new TextureHandle;
+        pTile->handleN[res] = (DWORD_PTR)new TextureHandle; // Artscout - 2026 (x64): pointer-sized
         ShiAssert(pTile->handleN[res]);
 
         ((TextureHandle *)pTile->handleN[res])->Create(
@@ -1452,7 +1453,11 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     ShiAssert(dwMagic == MAKEFOURCC('D', 'D', 'S', ' '));
 
     // Read first compressed mipmap
+#if defined(_M_IX86)
     fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
+#else
+    { DDSDiskHeader _h; fread(&_h, 1, DDS_DISK_HEADER_SIZE, fp); DDSDiskToDesc(_h, ddsd); } // Artscout - 2026 (x64): on-disk DDS header
+#endif
 
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
@@ -1551,7 +1556,11 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     fread(&dwMagic, 1, sizeof(DWORD), fp);
     ShiAssert(dwMagic == MAKEFOURCC('D', 'D', 'S', ' '));
 
+#if defined(_M_IX86)
     fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
+#else
+    { DDSDiskHeader _h; fread(&_h, 1, DDS_DISK_HEADER_SIZE, fp); DDSDiskToDesc(_h, ddsd); } // Artscout - 2026 (x64): on-disk DDS header
+#endif
 
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)

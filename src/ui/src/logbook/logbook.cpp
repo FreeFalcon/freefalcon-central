@@ -197,7 +197,7 @@ int LogBookData::Load(void)
     else
     {
         retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY,
-                              0, KEY_READ, &theKey);
+                              0, KEY_READ | KEY_WOW64_32KEY, &theKey);
         size = _NAME_LEN_;
         retval = RegQueryValueEx(theKey, "PilotName", 0, &type, (LPBYTE)Pilot.Name, &size);
         size = _CALLSIGN_LEN_;
@@ -474,7 +474,7 @@ int LogBookData::SaveData(void)
     long retval;
 
     retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY,
-                          0, KEY_ALL_ACCESS, &theKey);
+                          0, KEY_ALL_ACCESS | KEY_WOW64_32KEY, &theKey);
     size = _NAME_LEN_;
 
     if (retval == ERROR_SUCCESS)

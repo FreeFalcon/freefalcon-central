@@ -63,9 +63,9 @@ public:
     void FreeTexture();
     void FreePalette();
     void RestoreAll();
-    DWORD TexHandle()
+    DWORD_PTR TexHandle() // Artscout - 2026 (x64): pointer-sized; (DWORD) truncated the handle
     {
-        return (DWORD) texHandle;
+        return (DWORD_PTR) texHandle;
     };
     bool DumpImageToFile(char*, int palID = 0);
 

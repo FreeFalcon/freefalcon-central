@@ -161,6 +161,11 @@ void OnSimKeyboardInput(void);
 void OnSimMouseInput(HWND);
 void ProcessJoyButtonAndPOVHat(void);
 void AcquireDeviceInput(int, BOOL);
+// Artscout - 2026: re-Acquire every active DirectInput device (keyboard/mouse/joysticks). Call on
+// WM_ACTIVATE when the app regains focus after Alt-Tab -- foreground devices are auto-unacquired on
+// focus loss and must be explicitly re-acquired, else input stays dead until a lazy per-read
+// re-acquire happens to succeed (intermittent "controls/keyboard lost after Alt-Tab").
+void ReacquireAllInputDevices(void);
 BOOL CheckDeviceAcquisition(int DeviceIndex);
 BOOL CreateSimCursors(void);
 void CleanupSimCursors(void);

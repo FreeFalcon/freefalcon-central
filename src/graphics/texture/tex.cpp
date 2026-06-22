@@ -854,7 +854,7 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
         return true;
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         ReportTextureLoadError(e.Error());
         return false;
@@ -1552,7 +1552,7 @@ bool TextureHandle::Reload()
         return true;
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         // Unlock if still locked
         if (ddsd.lpSurface) m_pDDS->Unlock(NULL);
@@ -1639,7 +1639,7 @@ void TextureHandle::Clear()
         }
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         // Unlock if still locked
         if (ddsd.lpSurface)

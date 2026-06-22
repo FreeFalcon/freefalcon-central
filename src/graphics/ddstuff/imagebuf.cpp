@@ -513,7 +513,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
         return TRUE;
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         MonoPrint("ImageBuffer::Setup - Error 0x%X\n", e.Error());
         return FALSE;
@@ -557,7 +557,7 @@ void ImageBuffer::AttachSurfaces(DisplayDevice *pDev, IDirectDrawSurface7 *pDDSF
         m_bReady = TRUE;
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         MonoPrint("ImageBuffer::AttachSurfaces - Error 0x%X\n", e.Error());
     }
@@ -1173,6 +1173,17 @@ void ImageBuffer::BlitD3D11RTTTo565(unsigned short* dst, int dstStridePix, int d
     }
 
     ctx->Unmap(m_pD3D11Staging, 0);
+}
+
+// Artscout - 2026: GPU-copy this RTT's texture into another texture (same size/format). Used by the GM
+// radar to snapshot a completed sweep into a persistent panel texture (CopyResource = no CPU readback).
+void ImageBuffer::CopyD3D11RTTo(void* destTex2D)
+{
+    extern bool g_bUseD3D11;
+    if (!g_bUseD3D11 || !g_pD3D11Backend || !destTex2D || !m_pD3D11RTTex) return;
+    ID3D11DeviceContext* ctx = g_pD3D11Backend->GetContext();
+    if (!ctx) return;
+    ctx->CopyResource((ID3D11Resource*)destTex2D, (ID3D11Resource*)m_pD3D11RTTex);
 }
 
 void ImageBuffer::PresentD3D11()

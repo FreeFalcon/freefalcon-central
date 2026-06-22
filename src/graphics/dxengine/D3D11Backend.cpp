@@ -69,6 +69,20 @@ bool D3D11Backend::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFu
 	MonoPrint("D3D11Backend::Init(0x%X, %d, %d, %d, %d)\n",
 	          (unsigned)hWnd, nWidth, nHeight, nDepth, bFullscreen);
 
+	// Artscout - 2026: defense-in-depth against garbage dimensions reaching swapchain/depth/MSAA
+	// creation (uninitialized DispWidth -> 0xCCCC = 52428 -> CreateTexture2D INVALIDDIMENSIONS +
+	// swapchain "no buffers available" -> dead device on 3D entry). D3D11 caps textures at 16384.
+	// Clamp to a sane size + log so the device still comes up instead of cascading failures.
+	if (nWidth < 1 || nWidth > 16384 || nHeight < 1 || nHeight > 16384)
+	{
+		char buf[160];
+		sprintf(buf, "[D3D11] Init: invalid size %dx%d -> clamping to 1024x768\n", nWidth, nHeight);
+		OutputDebugStringA(buf);
+		MonoPrint(buf);
+		nWidth  = (m_nWidth  >= 1 && m_nWidth  <= 16384) ? m_nWidth  : 1024;
+		nHeight = (m_nHeight >= 1 && m_nHeight <= 16384) ? m_nHeight : 768;
+	}
+
 	// Artscout - 2026: Init may be called again on a mode change (entering 3D).
 	// Do NOT recreate the device -- otherwise the renderer/VB-manager/staging hold the old
 	// device while the context becomes new => D3D11 ValidateSameDevice crash.

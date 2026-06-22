@@ -352,10 +352,17 @@ void LantirnDrawable::DrawTerrain()
     //JAM 24Nov03
     //  display->FinishFrame();
     //((RenderIR*)display)->DrawScene(&cameraPos, &OTWDriver.cameraRot);
+
     ((RenderIR*)display)->DrawScene(&cameraPos, &viewRotation);
 
     //JAM 12Dec03 - ZBUFFERING OFF
-    if (DisplayOptions.bZBuffering)
+    // Artscout - 2026: D3D11 -- always flush the queued sensor objects HERE, while the MFD RTT is
+    // still bound (same fix as the TGP, see laserpod.cpp). With bZBuffering off (the default for
+    // these sensor displays) the objects otherwise stay in TheDXEngine's global buffer and get
+    // flushed later by the MAIN world pass against the back buffer -> they appear mid-screen near the
+    // HUD instead of inside the MFD. The terrain already lands in the MFD via the context screen-path.
+    extern bool g_bUseD3D11;
+    if (DisplayOptions.bZBuffering or g_bUseD3D11)
         ((RenderIR*)display)->context.FlushPolyLists();
 
     // ((RenderIR*)display)->PostSceneCloudOcclusion();

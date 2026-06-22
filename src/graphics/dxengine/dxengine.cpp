@@ -177,15 +177,16 @@ VOID CDXEngine::SelectTexture(GLint texID)
 {
     // eventually select other textures for NVG/TV
 
-    // get the Handle of the Texture from the Texture Bank
-    texID = (texID not_eq -1) ? TheTextureBank.GetHandle(texID) : (GLint)ZeroTex;
+    // Artscout - 2026 (x64): texID is a small bank index, but the handle/SRV it resolves to are
+    // pointer-sized. Use a DWORD_PTR local so the pointer isn't truncated (GLint dropped the high 32 bits).
+    DWORD_PTR h = (texID not_eq -1) ? TheTextureBank.GetHandle(texID) : (DWORD_PTR)ZeroTex;
 
-    if (texID) texID = (GLint)((TextureHandle *)texID)->m_pDDS;
+    if (h) h = (DWORD_PTR)((TextureHandle *)h)->m_pDDS;
 
     if (g_bUseD3D11)	// PHASE 4: m_pDDS holds the D3D11 SRV (Phase 3); while NULL -> no texture
     {
         if (g_pD3D11Renderer)
-            g_pD3D11Renderer->SetTexture(0, (struct ID3D11ShaderResourceView *)texID);
+            g_pD3D11Renderer->SetTexture(0, (struct ID3D11ShaderResourceView *)h);
         return;
     }
     // #34 dead D3D7 SetTexture stages removed (D3D11 returns above)

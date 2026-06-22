@@ -706,7 +706,7 @@ void SimBaseClass::SetFiring(int flag)
 
 void SimBaseClass::SetCampaignObject(CampBaseClass *ent)
 {
-    if ((int)ent > MAX_IA_CAMP_UNIT)
+    if ((DWORD_PTR)ent > MAX_IA_CAMP_UNIT)
     {
         campaignObject.reset(ent);
     }
@@ -717,7 +717,7 @@ int SimBaseClass::SaveSize(void)
     int size = FalconEntity::SaveSize() +
                sizeof(SimBaseSpecialData);  // Special Data for each frame
 
-    if ((int)campaignObject > MAX_IA_CAMP_UNIT)
+    if ((DWORD_PTR)campaignObject > MAX_IA_CAMP_UNIT)
         size += sizeof(VU_ID);
     else
         size += sizeof(int);
@@ -736,7 +736,7 @@ int SimBaseClass::Save(VU_BYTE **stream)
     *stream += sizeof(SimBaseSpecialData);
     VU_ID camp_object;
 
-    if ((int)campaignObject > MAX_IA_CAMP_UNIT)
+    if ((DWORD_PTR)campaignObject > MAX_IA_CAMP_UNIT)
     {
         flag = 1;
         memcpy(*stream, &flag, sizeof(char));
@@ -769,7 +769,7 @@ int SimBaseClass::Save(FILE *file)
 
     fwrite(SpecialData(), sizeof(SimBaseSpecialData), 1, file);
 
-    if ((int)campaignObject > MAX_IA_CAMP_UNIT)
+    if ((DWORD_PTR)campaignObject > MAX_IA_CAMP_UNIT)
     {
         flag = 1;
         camp_object = campaignObject->Id();

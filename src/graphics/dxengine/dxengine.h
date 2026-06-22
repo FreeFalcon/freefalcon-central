@@ -326,7 +326,7 @@ public:
     float GetDetailLevel(D3DVECTOR *WorldPos, float MaxRange);
     void SetupTexturesOnDevice(void);
     void LoadTexture(char *FileName);
-    DWORD GetTextureHandle(char *TexName);
+    DWORD_PTR GetTextureHandle(char *TexName); // Artscout - 2026 (x64): pointer-sized
     CTextureItem *DX2D_GetTextureItem(char *TexName);
     void DX2D_GetTextureCoords(CTextureItem *Ti, CDrawBaseItem *Item);
     void CleanUpTexturesOnDevice(void);
@@ -384,11 +384,11 @@ public:
     };
     void DX2D_Reset(void);
     void DX2D_InitLists(void);
-    void DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Quad, float Radius, DWORD TexHandle);
-    void DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Tri, float Radius, DWORD TexHandle);
-    void DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD TexHandle);
-    void DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD TexHandle);
-    void DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Poly, float Radius, DWORD Vertices, DWORD TexHandle);
+    void DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Quad, float Radius, DWORD_PTR TexHandle);
+    void DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Tri, float Radius, DWORD_PTR TexHandle);
+    void DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD_PTR TexHandle);
+    void DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD_PTR TexHandle);
+    void DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Poly, float Radius, DWORD Vertices, DWORD_PTR TexHandle);
     void DX2D_SetDrawOrder(DWORD *Order);
     void DX2D_SetupSquareCx(float y, float z);
     // void DX2D_TransformBB(D3DXVECTOR3 *Pos, D3DDYNVERTEX *Coord, D3DDYNVERTEX *Dest, DWORD Nr=1);

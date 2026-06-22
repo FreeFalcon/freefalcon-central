@@ -36,6 +36,22 @@ void AcquireDeviceInput(int DeviceIndex, BOOL Flag)
     }
 }
 
+//*********************************************************************
+// void ReacquireAllInputDevices()
+// Artscout - 2026: re-Acquire every active DirectInput device. Called on WM_ACTIVATE when the app
+// regains focus (Alt-Tab back). Foreground/exclusive devices are auto-unacquired by DirectInput on
+// focus loss; without an explicit re-Acquire the keyboard and controllers stay dead until a lazy
+// per-read re-acquire happens to succeed -> the intermittent "input lost after Alt-Tab" symptom.
+//*********************************************************************
+void ReacquireAllInputDevices(void)
+{
+    for (int i = 0; i < SIM_NUMDEVICES; i++)
+    {
+        if (gpDIDevice[i])
+            gpDeviceAcquired[i] = SUCCEEDED(gpDIDevice[i]->Acquire());
+    }
+}
+
 //********************************************************
 // BOOL CheckDeviceAcquisition()
 // Checks the current acquisition status of the mouse.

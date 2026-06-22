@@ -105,6 +105,16 @@ void RenderGMComposite::Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*,
     tgtDrawCB = tgtDrawCallback;
     tgtDrawCBparam = tgtDrawParam;
 
+    // Artscout - 2026: under D3D11 the only viable GM path is render-to-texture. The bRender2Texture==FALSE
+    // branch below is the legacy DDraw "heart of darkness" blit workaround (NULL targetSurface() under
+    // D3D11 -> black ground + SetBeam NULL deref). Force it here too so the consumer is correct regardless
+    // of how the option was loaded/toggled.
+    {
+        extern bool g_bUseD3D11;
+        if (g_bUseD3D11)
+            DisplayOptions.bRender2Texture = TRUE;
+    }
+
     if (DisplayOptions.bRender2Texture)
     {
         // Set up our private rendering target image
@@ -148,17 +158,27 @@ void RenderGMComposite::Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*,
     paletteHandle = new PaletteHandle(context.m_pCtxDX->m_pDD, 32, 256);
     ShiAssert(paletteHandle);
 
+    // Artscout - 2026: under D3D11 give the L/R panel textures FLAG_RENDERTARGET so each gets its OWN
+    // D3D11 texture (m_pD3D11Tex) + SRV (m_pDDS) -- a real, persistent snapshot target. NewImage then
+    // CopyResource's the completed off-screen sweep into it (instead of the old DDraw Blt / the broken
+    // borrowed-live-SRV hack). This is what makes the ground map PERSIST between sweeps instead of
+    // resetting to black when the live buffer is cleared.
+    DWORD gmTexFlags = TextureHandle::FLAG_HINT_DYNAMIC bitor TextureHandle::FLAG_MATCHPRIMARY bitor
+                       TextureHandle::FLAG_NOTMANAGED;
+    {
+        extern bool g_bUseD3D11;
+        if (g_bUseD3D11) gmTexFlags or_eq TextureHandle::FLAG_RENDERTARGET;
+    }
+
     lTexHandle = new TextureHandle;
     ShiAssert(lTexHandle);
     lTexHandle->Create("GM Radar Left", 0, 0,
-                       GM_TEXTURE_SIZE, GM_TEXTURE_SIZE, TextureHandle::FLAG_HINT_DYNAMIC bitor TextureHandle::FLAG_MATCHPRIMARY |
-                       TextureHandle::FLAG_NOTMANAGED);
+                       GM_TEXTURE_SIZE, GM_TEXTURE_SIZE, gmTexFlags);
 
     rTexHandle = new TextureHandle;
     ShiAssert(rTexHandle);
     rTexHandle->Create("GM Radar Right", 0, 0,
-                       GM_TEXTURE_SIZE, GM_TEXTURE_SIZE, TextureHandle::FLAG_HINT_DYNAMIC bitor TextureHandle::FLAG_MATCHPRIMARY |
-                       TextureHandle::FLAG_NOTMANAGED);
+                       GM_TEXTURE_SIZE, GM_TEXTURE_SIZE, gmTexFlags);
 
     // Noise texture is twice as wide as the other textures to allow for random u (avoids time consuming re-generation)
     nTexHandle = new TextureHandle;
@@ -204,6 +224,10 @@ void RenderGMComposite::Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*,
 
 void RenderGMComposite::Cleanup(void)
 {
+    // Artscout - 2026: under D3D11 the L/R panel handles now OWN their D3D11 texture + SRV (created via
+    // FLAG_RENDERTARGET; NewImage CopyResource's the sweep into them). ~TextureHandle releases them
+    // normally -- no borrowed-alias detach needed (that was for the old live-SRV hack, now removed).
+
     if (paletteHandle)
     {
         delete paletteHandle;
@@ -345,6 +369,10 @@ void RenderGMComposite::DrawComposite(Tpoint *center, float platformHdg)
     ShiAssert(rTexHandle);
     ShiAssert(lTexHandle);
 
+    // Artscout - 2026: each half-texture holds its OWN persistent snapshot (NewImage CopyResource'd the
+    // completed sweep into targetHandle->m_pD3D11Tex; m_pDDS is its own SRV). No live-buffer borrow, so
+    // the map survives the per-sweep clear.
+
     if ( not DisplayOptions.bRender2Texture)
     {
         radar.context.UnlockViewport();
@@ -360,6 +388,15 @@ void RenderGMComposite::DrawComposite(Tpoint *center, float platformHdg)
     dy = rOriginY - Py;
     sinRot = (float)sin(rAngle);
     cosRot = (float)cos(rAngle);
+
+    // Artscout - 2026: the composite fan is texture-only, but the D3D11 FFEmu PS always modulates by
+    // vertex color (c *= i.Color). These static verts only get x/y/u/v set below -> color stays 0 ->
+    // BLACK ground map. Force white (the shader's "1,1,1,1 if unused" contract). Set once: x/y/u/v are
+    // rewritten per half but the color persists, and clipped verts inherit it via Intersect().
+    v0.r = v0.g = v0.b = v0.a = 1.0f;
+    v1.r = v1.g = v1.b = v1.a = 1.0f;
+    v2.r = v2.g = v2.b = v2.a = 1.0f;
+    v3.r = v3.g = v3.b = v3.a = 1.0f;
 
     // Set up a normalized quad for the right patch in X north, Y east
     // We're translating and rotating to account for drift since the texture
@@ -413,7 +450,7 @@ void RenderGMComposite::DrawComposite(Tpoint *center, float platformHdg)
         }
 
         context.RestoreState(STATE_TEXTURE);
-        context.SelectTexture1((UInt) rTexHandle);
+        context.SelectTexture1((DWORD_PTR) rTexHandle); // Artscout - 2026 (x64): pointer-sized
         ClipAndDraw2DFan(vertArray, num);
     }
 
@@ -479,7 +516,7 @@ void RenderGMComposite::DrawComposite(Tpoint *center, float platformHdg)
         }
 
         context.RestoreState(STATE_TEXTURE);
-        context.SelectTexture1((UInt) lTexHandle);
+        context.SelectTexture1((DWORD_PTR) lTexHandle); // Artscout - 2026 (x64): pointer-sized
         ClipAndDraw2DFan(vertArray, num);
     }
 
@@ -624,6 +661,7 @@ bool RenderGMComposite::BackgroundGeneration(Tpoint *from, Tpoint *at, float pla
 void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRight, bool Shaped)
 {
     TextureHandle *targetHandle;
+    extern bool g_bUseD3D11;
     ShiAssert(lTexHandle);
     ShiAssert(rTexHandle);
 
@@ -653,6 +691,12 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
         radar.context.SetViewportAbs(0, 0, m_pRenderTarget->targetXres(), m_pRenderTarget->targetYres());
     }
 
+    // Artscout - 2026: skip the additive noise overlay under D3D11. Its per-call additive blend override
+    // (SetState DST_BLEND=ONE) is not honored by the D3D11 fixed state bundle, so the noise was alpha-
+    // blended as a flat grey quad over the WHOLE buffer -> washed the green returns to grey/white (the
+    // "white noise" symptom; the log showed center=(23,23,23) full-coverage). Cosmetic only.
+    if (!g_bUseD3D11)
+    {
     float Alpha = 0.3f;
 
     if (Shaped) Alpha = 0.7f;
@@ -696,11 +740,12 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
     radar.context.RestoreState(STATE_ALPHA_TEXTURE); //JAM 18Oct03
     radar.context.SetState(MPR_STA_DST_BLEND_FUNCTION, MPR_BF_ONE);
     //MI TEST
-    radar.context.SelectTexture1((GLint) nTexHandle);
+    radar.context.SelectTexture1((DWORD_PTR) nTexHandle); // Artscout - 2026 (x64): pointer-sized
     radar.context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
     // radar.context.InvalidateState();
 
     radar.EndDraw();
+    } // Artscout - 2026: end !g_bUseD3D11 noise-overlay guard
 
     static RECT rcBlit = { 0, 0, GM_TEXTURE_SIZE, GM_TEXTURE_SIZE };
 
@@ -713,16 +758,15 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
 
     // Now blit the final viewport image to the texture
     ImageBuffer *pSrcBuffer = DisplayOptions.bRender2Texture ? m_pRenderTarget : m_pRenderBuffer;
-    extern bool g_bUseD3D11;
     if (g_bUseD3D11)
     {
-        // PHASE 5 (RTT): instead of DDraw Blt -- bind the panel texture's SRV to
-        // the buffer's RTT texture (content already drawn into it under D3D11). targetSurface
-        // is NULL under D3D11, Blt would crash.
-        if (targetHandle && pSrcBuffer)
-        {
-            targetHandle->m_pDDS = (IDirectDrawSurface7 *)pSrcBuffer->GetD3D11SRV();
-        }
+        // Artscout - 2026: SNAPSHOT the completed sweep into the panel texture's OWN D3D11 texture
+        // (FLAG_RENDERTARGET gave it m_pD3D11Tex + its own SRV in m_pDDS). CopyResource = GPU copy, no
+        // CPU readback. This makes the half persist after the live off-screen buffer is cleared for the
+        // next sweep -> the ground map no longer resets to black. (The old borrowed-live-SRV hack showed
+        // the buffer being cleared = black; that is reverted.) m_pDDS stays the handle's own SRV.
+        if (targetHandle && targetHandle->m_pD3D11Tex && pSrcBuffer)
+            pSrcBuffer->CopyD3D11RTTo(targetHandle->m_pD3D11Tex);
     }
     else
     {
@@ -745,6 +789,15 @@ static inline void Intersect(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *c, floa
     c->y = v1->y + t * (v2->y - v1->y);
     c->u = v1->u + t * (v2->u - v1->u);
     c->v = v1->v + t * (v2->v - v1->v);
+    // Artscout - 2026: also interpolate vertex color. The D3D11 FFEmu pixel shader ALWAYS modulates by
+    // vertex color (c *= i.Color) -- with color left uninitialized (0) the textured composite fan draws
+    // BLACK. D3D7's STATE_TEXTURE was SELECTARG1 (texture only, diffuse ignored), so this never mattered
+    // there. Clip-generated verts must carry the (white) color of their endpoints or they punch black
+    // holes into the GM ground map.
+    c->r = v1->r + t * (v2->r - v1->r);
+    c->g = v1->g + t * (v2->g - v1->g);
+    c->b = v1->b + t * (v2->b - v1->b);
+    c->a = v1->a + t * (v2->a - v1->a);
 }
 
 
@@ -862,7 +915,7 @@ void RenderGMComposite::DebugDrawLeftTexture(Render2D *renderer)
 
 
     renderer->context.RestoreState(STATE_TEXTURE);
-    renderer->context.SelectTexture1((UInt) lTexHandle);
+    renderer->context.SelectTexture1((DWORD_PTR) lTexHandle); // Artscout - 2026 (x64): pointer-sized
 
     v0.x = 1.0f;
     v0.y = 1.0f;

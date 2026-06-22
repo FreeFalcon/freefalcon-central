@@ -8,17 +8,22 @@
 #include "matrix.h"
 
 // OW
+// Artscout - 2026 (x64): AMD 3DNow! headers carry x86 inline asm; only the x86 build uses the
+// 3DNow matrix path. On x64 the generic C path is the only one (3DNow doesn't exist there).
+#if defined(_M_IX86)
 #include "amd/inc/amatrix.h"
 #include "amd/inc/atrans.h"
+#endif
 
 void MatrixMult_Generic(const Trotation* S1, const Trotation* S2, Trotation* T);
-void MatrixMult_3DNow(const Trotation* S1, const Trotation* S2, Trotation* T);
-
 void MatrixMult_Generic(const Trotation* M, const float k, Trotation* T);
-void MatrixMult_3DNow(const Trotation* M, const float k, Trotation* T);
-
 void MatrixMultTranspose_Generic(const Trotation* M, const Tpoint *P, Tpoint *Tgt);
+
+#if defined(_M_IX86)
+void MatrixMult_3DNow(const Trotation* S1, const Trotation* S2, Trotation* T);
+void MatrixMult_3DNow(const Trotation* M, const float k, Trotation* T);
 void MatrixMultTranspose_3DNow(const Trotation* M, const Tpoint *P, Tpoint *Tgt);
+#endif
 
 void (*pMatrixMult1)(const Trotation* Mat1, const Trotation* Mat2, Trotation* Transform) = MatrixMult_Generic;
 void (*pMatrixMult2)(const Trotation* Mat1, const float k, Trotation* Transform) = MatrixMult_Generic;
@@ -144,8 +149,9 @@ void MatrixMultTranspose_Generic(const Trotation* M, const Tpoint *P, Tpoint *Tg
     Tgt->z = M->M13 * P->x + M->M23 * P->y + M->M33 * P->z;
 }
 
-// 3DNow Versions
+// 3DNow Versions (x86 only)
 ////////////////////////////////
+#if defined(_M_IX86)
 
 /***************************************************************************\
  Multiply the two provided matricies and store the result in the target
@@ -172,6 +178,8 @@ void MatrixMultTranspose_3DNow(const Trotation* M, const Tpoint *P, Tpoint *Tgt)
     //_trans_v1x3((float *) Tgt, (float *) M, (float *) P);
 }
 
+#endif // _M_IX86 (3DNow)
+
 // Support Stuff
 ////////////////////////////////
 
@@ -189,9 +197,16 @@ void SetMatrixCPUMode(int nMode) // 0 - Generic (default), 1- 3DNow, 2- ISSE
 
         case 1:
         {
+#if defined(_M_IX86)
             pMatrixMult1 = MatrixMult_3DNow;
             pMatrixMult2 = MatrixMult_3DNow;
             pMatrixMultTranspose = MatrixMultTranspose_3DNow;
+#else
+            // Artscout - 2026 (x64): no 3DNow; fall back to the generic C path.
+            pMatrixMult1 = MatrixMult_Generic;
+            pMatrixMult2 = MatrixMult_Generic;
+            pMatrixMultTranspose = MatrixMultTranspose_Generic;
+#endif
             break;
         }
 

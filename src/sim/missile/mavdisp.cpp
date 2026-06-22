@@ -178,6 +178,17 @@ void MaverickDisplayClass::DrawDisplay(void)
             DrawTerrain();
 
         display->StartDraw();
+
+        // Artscout - 2026: display->EndDraw() above did ContextMPR::EndDraw -> BindBackBuffer, which
+        // UNBINDS the shared RTT atlas; display->StartDraw() only InvalidateState's (does NOT rebind).
+        // Without this the rest of the WPN/MAV page -- crosshair lines AND the OSB button labels (same
+        // display context) -- renders to the back buffer instead of the atlas -> the whole Maverick page
+        // is BLACK (confirmed: page is fine with no Maverick loaded = no EndDraw/StartDraw dance). Re-bind
+        // the atlas, exactly like the GM radar beam sub-render fix.
+        {
+            extern bool g_bUseD3D11;
+            if (g_bUseD3D11) display->ReBindRttTarget();
+        }
     }
 
     if ((g_bGreyMFD) and ( not bNVGmode))
@@ -467,14 +478,26 @@ void MaverickDisplayClass::DrawTerrain(void)
     // funtions are all virtualized if necessary...  Since I
     // don't want to test this, I'll leave it for now...
 
-    // RV - RED - ZBuffer Enabled
-    ((RenderTV*)display)->context.SetZBuffering(TRUE);
+    // Artscout - 2026: do NOT enable Z-buffering here (the original "RV - RED - ZBuffer Enabled"
+    // SetZBuffering(TRUE)). The RTT atlas has no depth buffer so it does nothing useful, AND it routed
+    // the terrain (context-path) into the deferred z-sorted poly list, mixing it with the objects in
+    // FlushPolyLists -> the per-object zone-viewport below would then mis-map the terrain. The sensor
+    // displays default to bZBuffering=FALSE (same as TGP): terrain flushes immediately (full viewport),
+    // FlushPolyLists carries ONLY the queued objects.
+    extern bool g_bUseD3D11;
     /* if (displayType == AGM65_IR)
      {*/
     ((RenderIR*)display)->StartDraw();
+    // Re-bind the shared RTT atlas (the preceding display->EndDraw() unbound it; StartDraw doesn't rebind)
+    // so the Maverick seeker scene lands in the renderTexture (MFD), not the back buffer. Same as GM/TGP.
+    if (g_bUseD3D11) ((VirtualDisplay*)display)->ReBindRttTarget();
     ((RenderIR*)display)->DrawScene(&cameraPos, &viewRotation);
 
+    // Confine the object flush to the Maverick MFD zone (objects use centred clip-NDC and otherwise
+    // project to the full-atlas centre, leaking onto other displays). Restore the full viewport after.
+    if (g_bUseD3D11) ((VirtualDisplay*)display)->ConfineObjectViewportToZone();
     ((RenderIR*)display)->context.FlushPolyLists();
+    if (g_bUseD3D11) ((VirtualDisplay*)display)->ReBindRttTarget();
     ((RenderIR*)display)->PostSceneCloudOcclusion();
     ((RenderIR*)display)->EndDraw();
     /* }

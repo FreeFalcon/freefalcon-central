@@ -1143,6 +1143,19 @@ void BuildVideoCardList(C_ListBox *lbox)
     C_ListBox *VidCardList = (C_ListBox *)lbox->Parent_->FindControl(SET_VIDEO_DRIVER);
     Driver = VidCardList->GetTextID() - 1;
 
+    // Artscout - 2026: D3D11 -- one synthetic device (the DDraw device enum is bypassed) so the combo
+    // populates and Card resolves to 0; resolutions come from g_d3d11Modes (driver/card-independent).
+    extern bool g_bUseD3D11;
+    if (g_bUseD3D11)
+    {
+        value = lbox->GetTextID();
+        lbox->RemoveAllItems();
+        lbox->AddItem(1, C_TYPE_ITEM, "Direct3D 11 Device");
+        lbox->SetValue(value ? value : 1);
+        lbox->Refresh();
+        return;
+    }
+
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(Driver);
 
     if ( not pDI) return;
@@ -1184,6 +1197,18 @@ void BuildVideoDriverList(C_ListBox *lbox)
 
     lbox->RemoveAllItems();
 
+    // Artscout - 2026: under D3D11 the DDraw driver enum is bypassed (devmgr empty) -> the combo stayed
+    // blank and the resolution list (keyed off the driver index) never built. Show one synthetic
+    // adapter (index -> id 1 -> Driver 0) so the UI populates; the actual modes come from g_d3d11Modes.
+    extern bool g_bUseD3D11;
+    if (g_bUseD3D11)
+    {
+        lbox->AddItem(1, C_TYPE_ITEM, "Direct3D 11");
+        lbox->SetValue(1);
+        lbox->Refresh();
+        return;
+    }
+
     while (buf = FalconDisplay.devmgr.GetDriverName(i))
     {
         if (FalconDisplay.devmgr.GetDeviceName(i, 0))
@@ -1218,13 +1243,20 @@ void BuildResolutionList(C_ListBox *lbox)
     value = lbox->GetTextID();
     lbox->RemoveAllItems();
 
+    // Artscout - 2026: under D3D11 the DDraw driver/device enumeration is bypassed (DevMgr), so
+    // GetDriver/GetDevice return NULL -> the old early-returns left the resolution list empty (only the
+    // default 640x480) and the adapter/driver combos blank. The D3D11 mode list comes from GetMode's
+    // curated g_d3d11Modes table (driver/card-independent), so DON'T bail under D3D11 -- pDI/pD3DDI are
+    // only used by the DDraw depth filter in the !g_bUseD3D11 branch below.
+    extern bool g_bUseD3D11;
+
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(Driver);
 
-    if ( not pDI) return;
+    if ( not pDI and not g_bUseD3D11) return;
 
-    DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI = pDI->GetDevice(Card);
+    DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI = pDI ? pDI->GetDevice(Card) : NULL;
 
-    if ( not pD3DDI) return;
+    if ( not pD3DDI and not g_bUseD3D11) return;
 
     // OW
 #if 1

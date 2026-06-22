@@ -276,6 +276,17 @@ bool g_bWaterShader = false; // #12: DEFERRED -- water shimmer in the screen pat
 // the per-tile texture grid and the near/far LOD seam (see water-shader memory). Off by
 // default; the STATE_WATER/FF_WATER infrastructure is parked for a proper future pass
 // (continuous world coords + unified near/far). Enable with FFViper.cfg "WaterShader 1".
+// Artscout - 2026: #44 view-dependent canopy glass reflection. The palID==2 cockpit "reflection"
+// was a flat painted overlay (constant alpha) that looked stuck to the glass. ON: modulate its alpha
+// by the facet's grazing angle to the eye so the glint shifts with the view/head (VR). OFF
+// ("CanopyReflect 0"): the original flat reflection. On by default.
+bool g_bCanopyReflect = true;
+// Artscout - 2026: HUD collimation control. The "infinite projection" offset (vcock.cpp) shifts the
+// HUD symbology by the head position so it stays world-aligned (collimated) under 6DOF head movement
+// (TrackIR/VR/bobbing). g_bHudCollimate gates it; g_fHudCollimateScale tunes the strength (1.0 = the
+// original formula). Larger scale exaggerates the parallax shift -- useful to see/verify the effect.
+bool  g_bHudCollimate = true;
+float g_fHudCollimateScale = 1.0f;
 bool g_bAllHaveIFF = false; // Cobra - Give all a/c IFF interrogator
 bool g_bAnimPilotHead = true; // Cobra - Animate the pilot's head
 float g_fPilotActInterval = 0.5f; // Cobra - Pilot animation act interval (minutes)
@@ -986,6 +997,8 @@ static ConfigOption<bool> BoolOpts[] =
     { "HearThunder", &g_bHearThunder}, // Cobra - Play thunder.wav
     { "HighSFX", &g_bHighSFX}, // Cobra - Switch internal PS effects levels
     { "WaterShader", &g_bWaterShader}, // #12: animated water tiles (D3D11)
+    { "CanopyReflect", &g_bCanopyReflect}, // #44: view-dependent canopy glass reflection
+    { "HudCollimate", &g_bHudCollimate}, // HUD collimation (infinite-projection head offset)
     { "AllHaveIFF", &g_bAllHaveIFF}, // Cobra - Give all a/c IFF interrogator
     { "UseRC135", &g_bUseRC135}, // Cobra = FRB - Use the RC-135 for ELINT (radar) ID'ing
     { "FFDBC", &g_bFFDBC},
@@ -1125,6 +1138,7 @@ static ConfigOption<float> FloatOpts[] =
     { "CloudMinHeight", &g_fCloudMinHeight}, // JPO
     { "RadarScale", &g_fRadarScale}, // JPO
     { "CursorSpeed", &g_fCursorSpeed}, // JPO
+    { "HudCollimateScale", &g_fHudCollimateScale}, // Artscout - 2026: tune HUD collimation strength (1.0 = original)
     { "MinCloudWeather",  &g_fMinCloudWeather}, //JPO
     { "CloudThicknessFactor", &g_fCloudThicknessFactor}, //JPO
     { "DragDilutionFactor", &g_fDragDilutionFactor},

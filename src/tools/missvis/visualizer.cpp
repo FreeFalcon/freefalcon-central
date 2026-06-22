@@ -230,7 +230,9 @@ int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdsho
     */
 #if defined(_MSC_VER)
     // Set the FPU to 24 bit precision
-    _controlfp(_PC_24,   MCW_PC);
+#if defined(_M_IX86)
+    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+#endif
     _controlfp(_RC_CHOP, MCW_RC);
 #endif
 

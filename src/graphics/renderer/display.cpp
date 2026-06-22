@@ -188,7 +188,7 @@ float VirtualDisplay::viewportYtoPixel(float y)
 
 int VirtualDisplay::HasRttTarget()
 {
-    return (int)renderTexture;
+    return renderTexture != 0; // Artscout - 2026 (x64): bool test, not (int) pointer truncation
 }
 
 
@@ -1535,6 +1535,44 @@ void VirtualDisplay::FinishRtt()
     SetViewport(oldLeft, oldTop, oldRight, oldBottom); // restore viewport
 }
 
+void VirtualDisplay::ReBindRttTarget()
+{
+    // Artscout - 2026: restore the shared RTT atlas as the active D3D11 target after a sub-render
+    // (GM radar beam) unbound it via EndDraw->BindBackBuffer. Mirrors StartRtt's bind, WITHOUT the
+    // save/clear/rect bookkeeping (the outer StartRtt/FinishRtt batch still owns that). No clear:
+    // the atlas already holds the other displays' content for this frame.
+    if (not g_bUseD3D11 or not renderTexture) return;
+
+    context.m_pRenderTarget = renderTexture->m_pDDS;
+
+    if (g_pD3D11Backend and renderTexture->m_pD3D11RTV)
+    {
+        if (g_pD3D11Backend->RttMsaaActive())
+            g_pD3D11Backend->BindRttMsaaRTV(renderTexture->m_nActualWidth, renderTexture->m_nActualHeight, false, /*unbindSRV*/ true);
+        else
+            g_pD3D11Backend->BindRenderTargetView(renderTexture->m_pD3D11RTV,
+                renderTexture->m_nActualWidth, renderTexture->m_nActualHeight, false, /*unbindSRV*/ true);
+
+        if (g_pD3D11Renderer)
+            g_pD3D11Renderer->SetViewportSize(renderTexture->m_nActualWidth, renderTexture->m_nActualHeight);
+
+        context.InvalidateState();
+        if (g_pD3D11Renderer) g_pD3D11Renderer->SetTexture(0, NULL);
+    }
+}
+
+void VirtualDisplay::ConfineObjectViewportToZone()
+{
+    // Artscout - 2026: set the D3D11 viewport to THIS display's atlas sub-zone (tLeft..tRight -- the very
+    // rect DrawRttQuad samples) so a sensor scene's 3D OBJECTS land in the MFD zone, not the full-atlas
+    // centre (where they leaked onto every display sharing the atlas: TGP/Maverick target on HUD/DED/RWR).
+    // VS_Object uses centred clip-NDC -> the viewport rect alone places it. The 2D screen-path terrain was
+    // already drawn with the full viewport (full-atlas coords + tLeft offset) and is unaffected. In D3D7
+    // the device viewport was the sub-zone, so objects went there; this restores that behaviour.
+    if (not g_bUseD3D11 or not g_pD3D11Backend or not renderTexture) return;
+    g_pD3D11Backend->SetViewportRect(tLeft, tTop, tRight - tLeft, tBottom - tTop);
+}
+
 void VirtualDisplay::AdjustRttViewport()
 {
     context.m_pRenderTarget = renderTexture->m_pDDS;
@@ -1588,7 +1626,7 @@ void VirtualDisplay::DrawRttQuad()
     if (g_bUseD3D11 && rttBlendMode == STATE_CHROMA_TEXTURE_GOURAUD2)
         compositeState = STATE_RTT_SOFT;
     r3d->context.RestoreState(compositeState);
-    r3d->context.SelectTexture1((DWORD)renderTexture);
+    r3d->context.SelectTexture1((DWORD_PTR)renderTexture); // Artscout - 2026 (x64): pointer-sized
 
     // #7 panel SSAA -- OFF (on request, checking if it's redundant). The MSAA atlas stays.
     // if (g_bUseD3D11 && g_pD3D11Renderer) g_pD3D11Renderer->SetForcePerSample(true);

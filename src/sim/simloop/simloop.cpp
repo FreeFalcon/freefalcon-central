@@ -135,7 +135,9 @@ static unsigned int __stdcall StartingGraphicsWrapper(void)
     _controlfp(_RC_CHOP, MCW_RC);
 
     // Set the FPU to 24bit precision
-    _controlfp(_PC_24, MCW_PC);
+#if defined(_M_IX86)
+    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+#endif
 #endif
 
     int Result = 0;
@@ -313,7 +315,9 @@ void SimulationLoopControl::Loop(void)
 
 #if defined(_MSC_VER)
     _controlfp(_RC_CHOP, MCW_RC); // Set the FPU to Truncate
-    _controlfp(_PC_24, MCW_PC); // Set the FPU to 24 bit precision
+#if defined(_M_IX86)
+    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+#endif
 #else
 #error Pay special attention to rounding mode and precision effects on floating point ops
 #endif

@@ -13,6 +13,11 @@ public:
     enum { FLIR_ON = 0x1, AVAILABLE = 0x2, CONH = 0x4, };
 private:
     VirtualDisplay*      display; // The renderer we are to draw upon
+    // Artscout - 2026: under D3D11 the FLIR/TGP 3D scene must render into an off-screen RTT (not the
+    // backbuffer, which leaks the sensor image onto the screen). m_pRTT is that target; m_pMfdImage
+    // is the MFD's 2D surface we read the scene back into (Munitions 3D-viewer pattern).
+    class ImageBuffer*   m_pRTT;
+    class ImageBuffer*   m_pMfdImage;
 public:
     void GetCameraPos(Tpoint *pos);
     bool IsEnabled()

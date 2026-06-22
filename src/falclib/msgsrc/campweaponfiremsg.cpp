@@ -1250,12 +1250,10 @@ FireMissileAtSim(CampEntity shooter, SimBaseClass *simTarg, short weapId)
     theMissile->SetDelta(shooter->XDelta(), shooter->YDelta(), shooter->ZDelta());
 
     // create a target object
-#ifdef DEBUG
-    //tmpTargetPtr = new SimObjectType( OBJ_TAG, theMissile, simTarg );
-    tmpTargetPtr = NULL;
-#else
+    // Artscout - 2026: the old #ifdef DEBUG stub set tmpTargetPtr = NULL and then called
+    // ->Reference() on it -> NULL deref (mutex at offset 8). DEBUG is defined in this build, so
+    // that dead stub crashed campaign combat (BattalionClass::DoCombat). Always create the target.
     tmpTargetPtr = new SimObjectType(simTarg);
-#endif
     tmpTargetPtr->Reference();
 
     // Assign a shooter slot (always flight lead)

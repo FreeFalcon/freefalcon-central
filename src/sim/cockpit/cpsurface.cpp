@@ -179,7 +179,7 @@ void CPSurface::CreateLit(void)
             }
         }
 
-        catch (_com_error e)
+        catch (const _com_error &e)
         {
             MonoPrint("CPSurface::CreateLit - Error 0x%X (%s)\n", e.Error(), e.ErrorMessage());
             DiscardLit();
@@ -341,7 +341,7 @@ void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect, 
                     OTWDriver.renderer->context.RestoreState(STATE_TEXTURE_NOFILTER);
             }
 
-            OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
+            OTWDriver.renderer->context.SelectTexture1((DWORD_PTR) pTex);
 
             // Render it (finally)
             OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
@@ -430,7 +430,7 @@ void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect, 
                     // COBRA - RED - Pit Vibrations
                     OTWDriver.pCockpitManager->AddTurbulence(pVtx);
 
-                    OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
+                    OTWDriver.renderer->context.SelectTexture1((DWORD_PTR) pTex);
 
                     // Render it (finally)
                     OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));

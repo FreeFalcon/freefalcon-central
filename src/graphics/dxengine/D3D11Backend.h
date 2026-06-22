@@ -60,6 +60,10 @@ public:
 	// clear only Z (for the 3D scene).
 	void BindBackBuffer(bool bClearDepth = false);
 
+	// Artscout - 2026: TEMP RTT diagnostic -- print the currently-bound OM render target and which
+	// known target it is (MSAA-3D/back buffer/off-screen RTT). Used to locate where the TGP/GM-radar
+	// sensor objects actually land. Remove once the RTT sensor path is fixed.
+
 	// PHASE 5: clear ONLY depth/stencil (leave color) -- so the 3D cockpit
 	// (object path) draws OVER the already-rendered world/sky (screen path).
 	void ClearDepth();

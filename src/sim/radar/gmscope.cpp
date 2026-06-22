@@ -1485,6 +1485,13 @@ void RadarDopplerClass::GMDisplay(void)
             // OW - restore render target and start new scene
             ((RenderGMComposite*)display)->StartDraw();
 
+            // Artscout - 2026: the radar beam sub-render (SetBeam above) does EndDraw->BindBackBuffer,
+            // which unbinds the cockpit RTT atlas. StartDraw only invalidates state in D3D11 (does NOT
+            // re-bind the atlas), so the GM 2D composite below leaked to the back buffer (GM drawn big
+            // on the screen, missing from the atlas -- confirmed in RenderDoc). Re-bind the atlas so
+            // DrawComposite lands in the MFD.
+            ((RenderGMComposite*)display)->ReBindRttTarget();
+
             // COBRA - RED - Started a New Frame, assert again view port
             display->SetViewport(vpLeft, vpTop, vpRight, vpBottom);
             display->SetViewportRelative(DisplayAreaViewLeft, DisplayAreaViewTop, DisplayAreaViewRight, DisplayAreaViewBottom);

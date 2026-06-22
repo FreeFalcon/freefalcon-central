@@ -358,7 +358,7 @@ OTWDriverClass::OTWDriverClass(void)
     bVCockZBuffering = FALSE;
 
     // Create Shared Memory object for data output
-    gSharedMemHandle = CreateFileMapping((HANDLE)0xFFFFFFFF, NULL, PAGE_READWRITE,
+    gSharedMemHandle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, // Artscout - 2026 (x64): INVALID_HANDLE_VALUE is (HANDLE)-1, not 0xFFFFFFFF (which on x64 = 0x00000000FFFFFFFF, a bogus file handle -> mapping fails -> NULL ptr -> crash)
                                          0, sizeof(FlightData), "FalconSharedMemoryArea");
 
     if (gSharedMemHandle)
@@ -372,7 +372,7 @@ OTWDriverClass::OTWDriverClass(void)
     }
 
     // Create Shared Memory object for other output
-    gIntellivibeShared = CreateFileMapping((HANDLE)0xFFFFFFFF, NULL, PAGE_READWRITE,
+    gIntellivibeShared = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, // Artscout - 2026 (x64): INVALID_HANDLE_VALUE is (HANDLE)-1, not 0xFFFFFFFF (which on x64 = 0x00000000FFFFFFFF, a bogus file handle -> mapping fails -> NULL ptr -> crash)
                                            0, sizeof(IntellivibeData), "FalconIntellivibeSharedMemoryArea");
 
     if (gIntellivibeShared)

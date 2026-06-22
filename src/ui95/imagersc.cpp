@@ -1,5 +1,6 @@
 #include <cISO646>
 #include <windows.h>
+#include <string.h>   // Artscout - 2026 (x64): memcpy (replaced rep movs asm)
 #include "chandler.h"
 
 // IMAGE_RSC routines...
@@ -49,8 +50,7 @@ void IMAGE_RSC::Blit8BitFast(WORD *dest)
     sptr = (unsigned char *)(Owner->Data_ + Header->imageoffset);
     dptr = dest;
     count = Header->w * Header->h;
-#if 0
-
+#if !defined(_M_IX86)   // Artscout - 2026 (x64): use the C path; x86 uses the asm in #else
     while (count--)
         *dptr++ = Palette[*sptr++];
 
@@ -409,19 +409,12 @@ void IMAGE_RSC::Blit16BitFast(WORD *dest)
     sptr = (WORD *)(Owner->Data_ + Header->imageoffset);
     dptr = dest;
     count = Header->w * Header->h;
-#if 0
-
+#if !defined(_M_IX86)   // Artscout - 2026 (x64): use the C path; x86 uses the asm in #else
     while (count--)
         *dptr++ = *sptr++;
 
 #else
-    __asm
-    {
-        mov ECX, count
-        mov ESI, sptr
-        mov EDI, dptr
-        rep movsw
-    };
+    memcpy((void*)dptr, (void*)sptr, (size_t)(count) * sizeof(WORD));   // Artscout - 2026 (x64): was rep movsw
 #endif
 }
 
@@ -435,8 +428,7 @@ void IMAGE_RSC::Blit16BitTransparentFast(WORD *dest)
     sptr = (WORD *)(Owner->Data_ + Header->imageoffset);
     dptr = dest;
     count = Header->w * Header->h;
-#if 0
-
+#if !defined(_M_IX86)   // Artscout - 2026 (x64): use the C path; x86 uses the asm in #else
     while (count--)
     {
         if (*sptr xor Owner->ColorKey_)
@@ -491,8 +483,7 @@ void IMAGE_RSC::Blit16Bit(long doffset, long dwidth, WORD *dest)
     dptr = dest + doffset;
 
     dadd = dwidth - Header->w;
-#if 0
-
+#if !defined(_M_IX86)   // Artscout - 2026 (x64): use the C path; x86 uses the asm in #else
     while (sptr < srcsize)
     {
         i = Header->w;
@@ -699,8 +690,7 @@ void IMAGE_RSC::Blit16BitTransparent(long doffset, long dwidth, WORD *dest)
     dptr = dest + doffset;
 
     dadd = dwidth - Header->w;
-#if 0
-
+#if !defined(_M_IX86)   // Artscout - 2026 (x64): use the C path; x86 uses the asm in #else
     while (sptr < srcsize)
     {
         i = Header->w;
@@ -782,8 +772,7 @@ void IMAGE_RSC::Blit16BitPart(long soffset, long scopy, long ssize, long doffset
     while (sptr < srcsize)
     {
         i = scopy;
-#if 0
-
+#if !defined(_M_IX86)   // Artscout - 2026 (x64): use the C path; x86 uses the asm in #else
         while (i--)
             *dptr++ = *sptr++;
 
@@ -2060,13 +2049,7 @@ void IMAGE_RSC::ScaleUp8(SCREEN *surface, long *Rows, long *Cols, long dx, long 
         {
             if (Rows[i] == rval)
             {
-                __asm
-                {
-                    mov ECX, count
-                    mov ESI, cpyline2
-                    mov EDI, dline
-                    rep movsd
-                };
+                memcpy((void*)dline, (void*)cpyline2, (size_t)(count) * sizeof(DWORD));   // Artscout - 2026 (x64): was rep movsd
             }
             else if (Rows[i] not_eq Rows[i + 1])
             {
@@ -2081,13 +2064,7 @@ void IMAGE_RSC::ScaleUp8(SCREEN *surface, long *Rows, long *Cols, long dx, long 
                     cpyline2[count++] = RGB565toRGB8(Palette[sline[Cols[j + 1]]]);
 
                 rval = Rows[i];
-                __asm
-                {
-                    mov ECX, count
-                    mov ESI, cpyline2
-                    mov EDI, dline
-                    rep movsd
-                };
+                memcpy((void*)dline, (void*)cpyline2, (size_t)(count) * sizeof(DWORD));   // Artscout - 2026 (x64): was rep movsd
             }
 
             dline += surface->width * 2;
@@ -2097,13 +2074,7 @@ void IMAGE_RSC::ScaleUp8(SCREEN *surface, long *Rows, long *Cols, long dx, long 
             //16bits
             if (Rows[i] == rval)
             {
-                __asm
-                {
-                    mov ECX, count
-                    mov ESI, cpyline
-                    mov EDI, dline
-                    rep movsw
-                };
+                memcpy((void*)dline, (void*)cpyline, (size_t)(count) * sizeof(WORD));   // Artscout - 2026 (x64): was rep movsw
                 // memcpy(&dline[first],cpyline,count*sizeof(WORD));
             }
             else if (Rows[i] not_eq Rows[i + 1])
@@ -2119,13 +2090,7 @@ void IMAGE_RSC::ScaleUp8(SCREEN *surface, long *Rows, long *Cols, long dx, long 
                     cpyline[count++] = Palette[sline[Cols[j + 1]]];
 
                 rval = Rows[i];
-                __asm
-                {
-                    mov ECX, count
-                    mov ESI, cpyline
-                    mov EDI, dline
-                    rep movsw
-                };
+                memcpy((void*)dline, (void*)cpyline, (size_t)(count) * sizeof(WORD));   // Artscout - 2026 (x64): was rep movsw
                 // memcpy(&dline[first],cpyline,count*sizeof(WORD));
             }
 
@@ -2167,13 +2132,7 @@ void IMAGE_RSC::ScaleUp8Overlay(SCREEN *surface, long *Rows, long *Cols, long dx
         {
             if (Rows[i] == rval)
             {
-                __asm
-                {
-                    mov ECX, count
-                    mov ESI, cpyline2
-                    mov EDI, dline
-                    rep movsd
-                };
+                memcpy((void*)dline, (void*)cpyline2, (size_t)(count) * sizeof(DWORD));   // Artscout - 2026 (x64): was rep movsd
             }
             else if (Rows[i] not_eq Rows[i + 1])
             {
@@ -2194,13 +2153,7 @@ void IMAGE_RSC::ScaleUp8Overlay(SCREEN *surface, long *Rows, long *Cols, long dx
                 }
 
                 rval = Rows[i];
-                __asm
-                {
-                    mov ECX, count
-                    mov ESI, cpyline2
-                    mov EDI, dline
-                    rep movsd
-                };
+                memcpy((void*)dline, (void*)cpyline2, (size_t)(count) * sizeof(DWORD));   // Artscout - 2026 (x64): was rep movsd
 
             }
 
@@ -2211,13 +2164,7 @@ void IMAGE_RSC::ScaleUp8Overlay(SCREEN *surface, long *Rows, long *Cols, long dx
             //16bits
             if (Rows[i] == rval)
             {
-                __asm
-                {
-                    mov ECX, count
-                    mov ESI, cpyline
-                    mov EDI, dline
-                    rep movsw
-                };
+                memcpy((void*)dline, (void*)cpyline, (size_t)(count) * sizeof(WORD));   // Artscout - 2026 (x64): was rep movsw
                 // memcpy(&dline[first],cpyline,count*sizeof(WORD));
             }
             else if (Rows[i] not_eq Rows[i + 1])
@@ -2239,13 +2186,7 @@ void IMAGE_RSC::ScaleUp8Overlay(SCREEN *surface, long *Rows, long *Cols, long dx
                 }
 
                 rval = Rows[i];
-                __asm
-                {
-                    mov ECX, count
-                    mov ESI, cpyline
-                    mov EDI, dline
-                    rep movsw
-                };
+                memcpy((void*)dline, (void*)cpyline, (size_t)(count) * sizeof(WORD));   // Artscout - 2026 (x64): was rep movsw
                 // memcpy(&dline[first],cpyline,count*sizeof(WORD));
             }
 

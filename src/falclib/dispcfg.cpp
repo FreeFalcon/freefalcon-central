@@ -330,6 +330,14 @@ void FalconDisplayConfiguration::LeaveMode(void)
 
 void FalconDisplayConfiguration::SetSimMode(int newwidth, int newheight, int newdepth)
 {
+    // Artscout - 2026: guard against uninitialized/garbage dimensions. DispWidth/DispHeight can be
+    // unset (e.g. an old/short options.pop leaves the field uninitialized -> 0xCCCC = 52428 in debug);
+    // that propagated into width[Sim] -> a 52428x52428 swapchain/depth/MSAA on 3D entry (CreateTexture2D
+    // INVALIDDIMENSIONS + "no buffers available" -> broken device). Reject out-of-range values and keep
+    // the current (constructor default 1920x1080) Sim mode so the device inits at a sane size.
+    if (newwidth < 1 or newwidth > 16384 or newheight < 1 or newheight > 16384)
+        return;
+
     width[Sim] = newwidth;
     height[Sim] = newheight;
     depth[Sim] = newdepth;

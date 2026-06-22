@@ -37,7 +37,7 @@ extern bool g_bUseD3D11;
 extern bool g_bSlowButSafe;
 extern float g_fMipLodBias;
 
-#define INT3 _asm {int 3}
+#define INT3 __debugbreak()   // Artscout - 2026 (x64): int 3 intrinsic, builds on x86+x64
 
 #ifdef _DEBUG
 
@@ -214,7 +214,7 @@ BOOL ContextMPR::Setup(ImageBuffer *pIB, DXContext *c)
         // #34 D3D7 device/state setup removed (D3D11 returns TRUE above).
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         MonoPrint("ContextMPR::Setup - Error 0x%X\n", e.Error());
     }
@@ -370,6 +370,27 @@ void ContextMPR::StartFrame(void)
     }
 
     InvalidateState();
+}
+
+
+void ContextMPR::BindD3D11RttNoClear(void)
+{
+    // Artscout - 2026: bind this context's off-screen RTT but do NOT clear it. Used by the GM radar,
+    // which renders its sweep incrementally across frames into m_pRenderTarget; clearing every
+    // StartDraw would wipe the accumulated image (StartScene/ClearDraw clears when a scene restarts).
+    // Without this the radar sweep leaks onto the screen (no RTT bound -> draws to the back buffer).
+    if (g_bUseD3D11 && m_pIB && not m_pIB->IsScreenBuffer())
+        m_pIB->BindD3D11RenderTarget(false);
+}
+
+void ContextMPR::ClearBoundD3D11Rtt(void)
+{
+    // Artscout - 2026: clear the currently-bound off-screen RTV NOW. ClearBuffers() is gated to the RTT
+    // batch (g_rttBatchActive) and no-ops for the GM radar's private buffer, so the sweep never cleared
+    // and accumulated green to a full-field white. The GM calls this once per sweep (StartScene), after
+    // StartDraw has bound its buffer; the per-beam-op accumulation within the sweep is unaffected.
+    if (g_bUseD3D11 && m_pIB && not m_pIB->IsScreenBuffer() && g_pD3D11Backend)
+        g_pD3D11Backend->ClearCurrentRTV(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void ContextMPR::FinishFrame(void *lpFnPtr)
@@ -557,7 +578,7 @@ void ContextMPR::CleanupMPRState(GLint flag)
         ClearStateTable(i);
 }
 
-void ContextMPR::SetTexture1(GLint texID)
+void ContextMPR::SetTexture1(DWORD_PTR texID) // Artscout - 2026 (x64): pointer-sized handle/SRV
 {
     if (texID not_eq lastTexture1)
     {
@@ -578,7 +599,7 @@ void ContextMPR::SetTexture1(GLint texID)
     }
 }
 
-void ContextMPR::SetTexture2(GLint texID)
+void ContextMPR::SetTexture2(DWORD_PTR texID) // Artscout - 2026 (x64): pointer-sized handle/SRV
 {
     if (texID not_eq lastTexture2)
     {
@@ -596,14 +617,14 @@ void ContextMPR::SetTexture2(GLint texID)
     }
 }
 
-void ContextMPR::SelectTexture1(GLint texID)
+void ContextMPR::SelectTexture1(DWORD_PTR texID) // Artscout - 2026 (x64): pointer-sized handle/SRV
 {
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::ApplyTexture1(0x%X)\n", texID);
 #endif
 
     if (texID)
-        texID = (GLint)((TextureHandle *)texID)->m_pDDS;
+        texID = (DWORD_PTR)((TextureHandle *)texID)->m_pDDS; // Artscout - 2026 (x64): no pointer truncation
 
     if (texID not_eq currentTexture1)
     {
@@ -646,14 +667,14 @@ void ContextMPR::SelectTexture1(GLint texID)
     currentTexture2 = -1;
 }
 
-void ContextMPR::SelectTexture2(GLint texID)
+void ContextMPR::SelectTexture2(DWORD_PTR texID) // Artscout - 2026 (x64): pointer-sized handle/SRV
 {
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::ApplyTexture2(0x%X)\n", texID);
 #endif
 
     if (texID)
-        texID = (GLint)((TextureHandle *)texID)->m_pDDS;
+        texID = (DWORD_PTR)((TextureHandle *)texID)->m_pDDS; // Artscout - 2026 (x64): no pointer truncation
 
     if (texID not_eq currentTexture2)
     {
@@ -869,7 +890,7 @@ void ContextMPR::TextOut(short x, short y, DWORD col, LPSTR str)
         }
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
     }
 }
@@ -1290,6 +1311,35 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
         sVertex = sPolygon->pVertexList;
     }
 
+    // Artscout - 2026: #44 view-dependent canopy reflection. palID==2 is the static painted glass
+    // "reflection" overlay (was a flat 0x26 alpha -> looked stuck to the glass and rode the canopy
+    // when it opened). Modulate its alpha by the facet's grazing angle to the eye so the glint shifts
+    // with the view/head (VR) and reads as a real reflection. poly->A,B,C is the facet normal and
+    // TheStateStack.ObjSpaceEye the eye, BOTH in the same object space (the BSP back-face cull uses
+    // exactly these, bspnodes.cpp). cos^2 form avoids sqrt/fabs (FastMath sqrt-macro). Grazing
+    // (normal ~perpendicular to the eye direction) -> brighter; head-on -> dimmer. Toggle CanopyReflect.
+    extern bool g_bCanopyReflect;
+    DWORD reflAlpha = 0x26000000; // legacy flat alpha (used only when palID==2)
+    if (palID == 2 and g_bCanopyReflect)
+    {
+        float ex = TheStateStack.ObjSpaceEye.x;
+        float ey = TheStateStack.ObjSpaceEye.y;
+        float ez = TheStateStack.ObjSpaceEye.z;
+        float nn = poly->A * poly->A + poly->B * poly->B + poly->C * poly->C;
+        float ee = ex * ex + ey * ey + ez * ez;
+        float ne = poly->A * ex + poly->B * ey + poly->C * ez;
+        float denom = nn * ee;
+
+        if (denom > 1e-6f)
+        {
+            float cos2  = (ne * ne) / denom;   // cos^2(normal, eye direction), 0..1
+            float graze = 1.0f - cos2;         // 0 head-on .. 1 grazing
+            int   ai    = (int)((0.06f + 0.30f * graze) * 255.0f + 0.5f); // ~0x10 .. ~0x5C
+            if (ai < 0) ai = 0; else if (ai > 255) ai = 255;
+            reflAlpha = (DWORD)ai << 24;
+        }
+    }
+
     // Iterate for each vertex
     if ( not bZBuffering)
     {
@@ -1397,8 +1447,9 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 if (palID == 3)
                     pVtx->color = TheColorBank.TODcolor;
                 // Set the light level with "special cockpit reflection alpha"
+                // Artscout - 2026: #44 alpha is now view-dependent (reflAlpha), keep TOD RGB.
                 else if (palID == 2)
-                    pVtx->color = TheColorBank.TODcolor bitand 0x26FFFFFF;
+                    pVtx->color = (TheColorBank.TODcolor bitand 0x00FFFFFF) bitor reflAlpha;
             }
 
             if (opFlag bitand PRIM_COLOP_TEXTURE)
@@ -1505,8 +1556,9 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 if (palID == 3)
                     sVertex->color = TheColorBank.TODcolor;
                 // Set the light level with "special cockpit reflection alpha"
+                // Artscout - 2026: #44 alpha is now view-dependent (reflAlpha), keep TOD RGB.
                 else if (palID == 2)
-                    sVertex->color = TheColorBank.TODcolor bitand 0x26FFFFFF;
+                    sVertex->color = (TheColorBank.TODcolor bitand 0x00FFFFFF) bitor reflAlpha;
             }
 
             if (opFlag bitand PRIM_COLOP_TEXTURE)
@@ -2564,7 +2616,12 @@ void ContextMPR::Stats::StartBatch()
 
 void ContextMPR::Stats::Primitive(DWORD dwType, DWORD dwNumVtx)
 {
-    arrPrimitives[dwType - 1]++;
+    // Artscout - 2026 (x64): bounds-guard. dwType is m_nCurPrimType, which is 0 until
+    // BeginPrimitive sets it (1..6). On the text path (ScreenText) it can still be 0, so
+    // dwType-1 underflows to 0xFFFFFFFF -> arrPrimitives[~16GB]. On x86 the index wrapped
+    // mod 2^32 to base-4 (silent neighbour corruption); on x64 there is no wrap -> fault.
+    if (dwType >= 1 and dwType <= 6)
+        arrPrimitives[dwType - 1]++;
     dwTotalPrimitives++;
     dwCurPrimCountPerSecond++;
     dwCurVtxCountPerSecond += dwNumVtx;

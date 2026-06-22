@@ -180,7 +180,7 @@ void CPDigits::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered digi
                 else
                     OTWDriver.renderer->context.RestoreState(STATE_TEXTURE_NOFILTER);
 
-                OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
+                OTWDriver.renderer->context.SelectTexture1((DWORD_PTR) pTex);
                 OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
             }
         }
@@ -262,7 +262,7 @@ void CPDigits::CreateLit(void)
             }
 
         }
-        catch (_com_error e)
+        catch (const _com_error &e)
         {
             MonoPrint("CPDigits::CreateLit - Error 0x%X (%s)\n", e.Error(), e.ErrorMessage());
             DiscardLit();

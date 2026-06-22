@@ -15,6 +15,7 @@
 #include <cISO646>
 #include "image.h"
 #include <ddraw.h> //JAM 22Sep03
+#include "ddsdiskhdr.h" // Artscout - 2026 (x64): correct on-disk DDS header read
 
 
 //___________________________________________________________________________
@@ -212,7 +213,17 @@ GLint ReadDDS(CImageFileMemory *fi)
 
     if (dwMagic not_eq MAKEFOURCC('D', 'D', 'S', ' ')) return BAD_FORMAT;
 
+#if defined(_M_IX86)
     if ( not fi->glReadMem(&ddsd, sizeof(DDSURFACEDESC2))) return BAD_FORMAT;
+#else
+    // Artscout - 2026 (x64): read the fixed 124-byte on-disk DDS header, not the
+    // larger x64 DDSURFACEDESC2 (whose lpSurface pointer shifts ddpfPixelFormat).
+    {
+        DDSDiskHeader _h;
+        if ( not fi->glReadMem(&_h, DDS_DISK_HEADER_SIZE)) return BAD_FORMAT;
+        DDSDiskToDesc(_h, ddsd);
+    }
+#endif
 
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)

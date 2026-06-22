@@ -101,14 +101,13 @@ long throttleInactiveValue = 0;
 bool throttleInactive = false;
 void SetThrottleInActive()
 {
-    if (IO.AnalogIsUsed(AXIS_THROTTLE) == false)
-        return;
-
-    ReadThrottle();
-
-    throttleInactiveValue = IO.GetAxisValue(AXIS_THROTTLE);
-    IO.analog[AXIS_THROTTLE].engrValue = 0.0F;
-    throttleInactive = true;
+    // Artscout - 2026: the legacy "throttle inactive until you wiggle it" gate (throttleInactive +
+    // the <5000 deadband check in the per-frame read) intermittently left the throttle stuck at 0 on
+    // 3D entry -- you had to jiggle the RUD to taxi. Disable it so the engine reads the REAL physical
+    // throttle position immediately. (Cold/RAMP starts still keep the engine off via
+    // AirframeClass::EngineOff/ThrottleCheck -- that is a separate, legitimate gate.)
+    throttleInactive = false;
+    throttleInactiveValue = 0;
 }
 
 void resetStaticPOVButtonStates() // Retro 24Aug2004

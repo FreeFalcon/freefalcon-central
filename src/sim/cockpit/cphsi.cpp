@@ -827,7 +827,7 @@ void RenderHSIPoly(tagRECT *srcrect, tagRECT *destrect, GLint alpha, TextureHand
     }
 
     OTWDriver.renderer->context.RestoreState(alpha);
-    OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
+    OTWDriver.renderer->context.SelectTexture1((DWORD_PTR) pTex);
     OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 90, pVtx, sizeof(pVtx[0]));
 }
 
@@ -1305,7 +1305,7 @@ void CPHsiView::CreateLit(void)
                 m_arrTex.push_back(pTex);
             }
         }
-        catch (_com_error e)
+        catch (const _com_error &e)
         {
             MonoPrint("CPHsi::CreateHsiView - Error 0x%X (%s)\n", e.Error(), e.ErrorMessage());
             DiscardLit();

@@ -338,6 +338,7 @@ inline DWORD XMM_ARGB(XMMColor *Source)
 {
 #undef or
 	DWORD r;
+#if defined(_M_IX86)
 	_asm
 	{
 		push eax
@@ -363,6 +364,16 @@ inline DWORD XMM_ARGB(XMMColor *Source)
 			pop eax
 	}
 	return r;
+#else
+	// Artscout - 2026 (x64): same packing as the asm -- floats at byte offsets 0,4,8,16,
+	// rounded to int (fistp = round-to-nearest = lrintf), packed MSB->LSB.
+	const char *base = (const char *)Source;
+	r  = (DWORD)lrintf(*(const float *)(base + 0));
+	r  = (r << 8) | (DWORD)lrintf(*(const float *)(base + 4));
+	r  = (r << 8) | (DWORD)lrintf(*(const float *)(base + 8));
+	r  = (r << 8) | (DWORD)lrintf(*(const float *)(base + 16));
+	return r;
+#endif
 #define or ||
 }
 

@@ -21,7 +21,7 @@
 #define LOCK_RING_MAX_SIZE     0.5F
 #define LOCK_RING_MIN_SIZE     0.25F
 #define LOCK_RING_TICK_SIZE    0.075F
-//MI we only got 150°
+//MI we only got 150ï¿½
 //#define LGB_GIMBAL_MAX         (160.0F * DTR)
 #define LGB_GIMBAL_MAX         (150.0F * DTR)
 extern bool g_bRealisticAvionics;
@@ -138,6 +138,15 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
             }
 
             display->StartDraw();
+
+            // Artscout - 2026: display->EndDraw() above unbound the shared RTT atlas (BindBackBuffer) and
+            // display->StartDraw() does NOT rebind it. Re-bind so the TGP symbology drawn below (crosshair/
+            // FOV/box + OSB labels) lands in the atlas instead of leaking to the back buffer. Same fix as
+            // the GM radar / Maverick sub-render.
+            {
+                extern bool g_bUseD3D11;
+                if (g_bUseD3D11) display->ReBindRttTarget();
+            }
         }
 
         // Reset color after terrain
@@ -389,12 +398,23 @@ void LaserPodClass::DrawTerrain(void)
     viewRotation.M23 = -cospsi * sinphi + sinpsi * sintha * cosphi;
     viewRotation.M33 = costha * cosphi;
 
+    extern bool g_bUseD3D11;
+
     ((RenderTV*)display)->StartDraw();
+    // Artscout - 2026: the preceding display->EndDraw() unbound the shared RTT atlas; StartDraw does not
+    // rebind it. Re-bind here so the 3D sensor scene + queued objects land in the renderTexture (MFD),
+    // not on the back buffer (the "object drawn mid-screen near the HUD" leak). Same fix as GM/Maverick.
+    if (g_bUseD3D11) ((VirtualDisplay*)display)->ReBindRttTarget();
     ((RenderTV*)display)->DrawScene(&cameraPos, &viewRotation);
 
-    //JAM 12Dec03 - ZBUFFERING OFF
-    if (DisplayOptions.bZBuffering)
+    // Artscout - 2026: confine the object flush to the TGP MFD zone. The objects (VS_Object, centred NDC)
+    // otherwise project to the FULL-atlas centre and leak onto every display sharing the atlas (target
+    // appearing on HUD/DED/RWR/other MFD). Set the zone viewport, flush, then restore the full viewport.
+    // (Terrain already lands in the MFD via the context screen-path with the tLeft offset.)
+    if (g_bUseD3D11) ((VirtualDisplay*)display)->ConfineObjectViewportToZone();
+    if (DisplayOptions.bZBuffering or g_bUseD3D11)
         ((RenderTV*)display)->context.FlushPolyLists();
+    if (g_bUseD3D11) ((VirtualDisplay*)display)->ReBindRttTarget();
 
     //   ((RenderTV*)display)->PostSceneCloudOcclusion();
     ((RenderTV*)display)->EndDraw();

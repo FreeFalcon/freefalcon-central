@@ -2,6 +2,7 @@
 #include <float.h>
 #include "lantirn.h"
 #include "Graphics/Include/renderir.h"
+#include "Graphics/Include/imagebuf.h" // Artscout - 2026: off-screen RTT for FLIR/TGP scene
 #include "Graphics/Include/RViewPnt.h"
 #include "otwdrive.h"
 #include "simdrive.h"
@@ -21,6 +22,8 @@ LantirnClass *theLantirn;
 LantirnClass::LantirnClass()  : DrawableClass()
 {
     display = NULL;
+    m_pRTT = NULL;       // Artscout - 2026: off-screen RTT for the FLIR/TGP scene (D3D11)
+    m_pMfdImage = NULL;  // Artscout - 2026: MFD 2D surface we read the scene back into
     m_flags = AVAILABLE;
     m_tfr_alt = 1000;
     m_tfr_ride = TFR_SOFT;
@@ -63,19 +66,53 @@ LantirnClass::LantirnClass()  : DrawableClass()
 LantirnClass::~LantirnClass()
 {
     DisplayExit();
+
+    // Artscout - 2026: free the off-screen FLIR/TGP RTT.
+    if (m_pRTT)
+    {
+        m_pRTT->Cleanup();
+        delete m_pRTT;
+        m_pRTT = NULL;
+    }
 }
 
 void LantirnClass::DisplayInit(ImageBuffer* image)
 {
     RenderIR *irrend = (RenderIR *) privateDisplay;
+    extern bool g_bUseD3D11;
 
-    if (irrend and irrend->GetImageBuffer() == image)
+    // Already set up for this MFD surface?
+    if (irrend and m_pMfdImage == image)
         return;
 
     DisplayExit();
+
+    if (m_pRTT)
+    {
+        m_pRTT->Cleanup();
+        delete m_pRTT;
+        m_pRTT = NULL;
+    }
+
     irrend = new RenderIR;
     privateDisplay = irrend;
-    irrend->Setup(image, OTWDriver.GetViewpoint());
+    m_pMfdImage = image;
+
+    // Artscout - 2026: under D3D11 render the FLIR/TGP 3D scene into an OFF-SCREEN RTT, not the
+    // screen backbuffer (RenderOTW path would otherwise leak the sensor image onto the display).
+    // The scene is read back into the MFD's 2D surface in DrawTerrain (Munitions 3D-viewer pattern).
+    ImageBuffer *target = image;
+
+    if (g_bUseD3D11 and image)
+    {
+        int rw = image->targetXres();
+        int rh = image->targetYres();
+        m_pRTT = new ImageBuffer;
+        m_pRTT->Setup(image->GetDisplayDevice(), rw, rh, SystemMem, None);
+        target = m_pRTT;
+    }
+
+    irrend->Setup(target, OTWDriver.GetViewpoint());
     irrend->SetColor(0xffffffff);
     irrend->SetFOV(10.0F * DTR);
 }
@@ -95,7 +132,37 @@ void LantirnClass::DrawTerrain()
     Tpoint cameraPos;
     GetCameraPos(&cameraPos);
 
-    ((RenderIR*)display)->StartDraw();
+    // Artscout - 2026: THIS class is the HUD navigation FLIR (cockpit.cpp:78 -> theLantirn->Display),
+    // NOT the MFD TGP (that is LaserPodClass/laserpod.cpp). It is SUPPOSED to render onto the HUD
+    // viewport on screen (cockpit.cpp sets SetViewport(hudViewportBounds) before this). My earlier RTT
+    // redirect mistook that intended HUD render for a "leak" and read the off-screen RTT back into the
+    // FULL HUD image (0,0,w,h, ignoring the HUD viewport) -> the FLIR scene/target appeared as a grey
+    // blob next to the HUD. Render directly to the HUD viewport like the original (no RTT here).
+    extern bool g_bUseD3D11;
+    bool useRtt = false;
+    RenderIR *pRender = useRtt ? (RenderIR *)privateDisplay : (RenderIR *)display;
+
+    if ( not pRender)
+        return;
+
+    if (useRtt)
+    {
+        // Artscout - 2026: the off-screen renderer (irrend) must use the SAME viewport+FOV as the
+        // cockpit MFD renderer, otherwise the object-path projection (DrawScene uses the renderer's
+        // current viewport) is wrong -> objects land off-place while the terrain (screen-path) looks
+        // OK. Copy them from the cockpit display, then bind the off-screen RTT.
+        if (display)
+        {
+            float vl, vt, vr, vb;
+            ((RenderIR *)display)->GetViewport(&vl, &vt, &vr, &vb);
+            pRender->SetViewport(vl, vt, vr, vb);
+            pRender->SetFOV(((RenderIR *)display)->GetFOV());
+        }
+
+        pRender->context.StartFrame(); // bind + clear the off-screen RTT
+    }
+
+    pRender->StartDraw();
 #if 0
     display->SetColor(0x03000000);
     display->Tri(-1.0F, -1.0F, -1.0F, 1.0F, 1.0F, 1.0F);
@@ -130,14 +197,38 @@ void LantirnClass::DrawTerrain()
     cameraPos.y = p.x * r->M21 + p.y * r->M22 + p.z * r->M23;
     cameraPos.z = p.x * r->M31 + p.y * r->M32 + p.z * r->M33;
 
-    ((RenderIR*)display)->DrawScene(&cameraPos, &viewRotation);
+    pRender->DrawScene(&cameraPos, &viewRotation);
 
     //JAM 12Dec03 - ZBUFFERING OFF
-    if (DisplayOptions.bZBuffering)
-        ((RenderIR*)display)->context.FlushPolyLists();
+    // Artscout - 2026: in RTT mode ALWAYS flush the queued objects here, inside the off-screen RTT
+    // bracket. Otherwise (bZBuffering off) the FLIR/TGP objects stay in TheDXEngine's global buffers
+    // and get flushed later by the MAIN render against the back buffer -> objects appear mid-screen
+    // instead of in the MFD. Flushing here both draws them into m_pRTT and empties the buffers.
+    if (DisplayOptions.bZBuffering or useRtt)
+        pRender->context.FlushPolyLists();
 
-    //    ((RenderIR*)display)->PostSceneCloudOcclusion();
-    ((RenderIR*)display)->EndDraw();
+    //    pRender->PostSceneCloudOcclusion();
+    pRender->EndDraw();
+
+    // Artscout - 2026: pull the FLIR/TGP scene out of the off-screen RTT into the MFD's 2D surface,
+    // then restore the back buffer. (Munitions 3D-viewer readback pattern, BlitD3D11RTTTo565.)
+    if (useRtt)
+    {
+        pRender->context.FinishFrame(NULL); // restores the back buffer as the active target
+
+        if (m_pMfdImage and m_pRTT)
+        {
+            unsigned short *dst = (unsigned short *)m_pMfdImage->Lock();
+
+            if (dst)
+            {
+                int w = m_pMfdImage->targetXres();
+                int h = m_pMfdImage->targetYres();
+                m_pRTT->BlitD3D11RTTTo565(dst, w, h, 0, 0, w, h);
+                m_pMfdImage->Unlock();
+            }
+        }
+    }
 }
 
 void LantirnClass::SetFOV(float fov)

@@ -155,7 +155,7 @@ void CDXEngine::LoadTexture(char *FileName)
 
 
 
-DWORD CDXEngine::GetTextureHandle(char *TexName)
+DWORD_PTR CDXEngine::GetTextureHandle(char *TexName) // Artscout - 2026 (x64): pointer-sized
 {
 
     // look for an item owning such a name
@@ -515,7 +515,7 @@ inline bool CDXEngine::CheckBufferSpace(DWORD VbIndex, DWORD Size)
 
 // This function add a Quad to the vertex buffers and sorting list...
 // WARNING  Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
-void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Quad, float Radius, DWORD TexHandle)
+void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Quad, float Radius, DWORD_PTR TexHandle)
 {
     // #27 D3D11: accumulate in the CPU VbPtr (DX2D_Init), draw in DX2D_Flush2DObjects via DrawDynamic2D.
     _MM_ALIGN16 XMMVector V[4];
@@ -660,7 +660,7 @@ void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
 
 // This function add a Quad to the vertex buffers and sorting list...
 // WARNING  Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
-void CDXEngine::DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Tri, float Radius, DWORD TexHandle)
+void CDXEngine::DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Tri, float Radius, DWORD_PTR TexHandle)
 {
     // #27 D3D11: accumulate in the CPU VbPtr, draw via DrawDynamic2D in DX2D_Flush2DObjects.
     _MM_ALIGN16 XMMVector V[4];
@@ -751,7 +751,7 @@ void CDXEngine::DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVE
 
 // This function add a 2 vertex element to the vertex buffers and sorting list...
 // WARNING  Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
-void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD TexHandle)
+void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD_PTR TexHandle)
 {
     // #27 D3D11: accumulate in the CPU VbPtr, draw via DrawDynamic2D in DX2D_Flush2DObjects.
     _MM_ALIGN16 XMMVector V[2];
@@ -874,7 +874,7 @@ void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVER
 
 // This function add a SINGLE VERTEX element to the vertex buffers and sorting list...
 // WARNING  Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
-void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD TexHandle)
+void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD_PTR TexHandle)
 {
     // #27 D3D11: accumulate in the CPU VbPtr, draw via DrawDynamic2D in DX2D_Flush2DObjects.
     _MM_ALIGN16 XMMVector V;
@@ -988,7 +988,7 @@ void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDY
 
 
 
-void CDXEngine::DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Poly, float Radius, DWORD Vertices, DWORD TexHandle)
+void CDXEngine::DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Poly, float Radius, DWORD Vertices, DWORD_PTR TexHandle)
 {
     // #27 D3D11: accumulate in the CPU VbPtr, draw via DrawDynamic2D in DX2D_Flush2DObjects.
     _MM_ALIGN16 XMMVector V;
@@ -1142,7 +1142,7 @@ DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
     // Setup the starting VB
     DWORD Vb = (DWORD)Draws2D[Start].Vb;
 #endif
-    DWORD Tex = Draws2D[Start].TexHandle;
+    DWORD_PTR Tex = Draws2D[Start].TexHandle; // Artscout - 2026 (x64): pointer-sized
 
     // Setup for lines
     if (Draws2D[Start].Flags bitand POLY_LINE) LineMode = true;
@@ -1504,7 +1504,7 @@ void CDXEngine::DX2D_SetViewMode(void)
 // Sorting and Flushing all the 2D objects
 void CDXEngine::DX2D_Flush2DObjects(void)
 {
-    DWORD LastTexHandle = -1;
+    DWORD_PTR LastTexHandle = -1; // Artscout - 2026 (x64): pointer-sized
 
     // Track of the drawing mode
     bool Mode_2D = false, Mode_3D = false;
@@ -1541,6 +1541,14 @@ void CDXEngine::DX2D_Flush2DObjects(void)
     do
     {
         Layer = DrawOrder[l++];
+
+        // Artscout - 2026 (x64): skip invalid layers BEFORE indexing Layers[]. DX2D_Reset leaves
+        // DrawOrder filled with LAYER_NODRAW (0xFFFFFFFF); if a flush runs with items before any
+        // DX2D_SetDrawOrder (e.g. the menu Munitions 3D viewer, no world render), Layer==0xFFFFFFFF.
+        // The old code indexed Layers[0xFFFFFFFF] at line below and only checked NODRAW afterwards:
+        // on x86 the index wrapped mod 2^32 into mapped static memory (harmless); on x64 it faults.
+        if (Layer >= MAX_2D_LAYERS) continue; // covers LAYER_NODRAW and any garbage index
+
         // get the Layer Entry point in the list
         DrawStart = Layers[Layer].Start;
 #ifdef DEBUG_2D_ENGINE
@@ -1747,14 +1755,11 @@ float CDXEngine::GetDetailLevel(D3DVECTOR *WorldPos, float MaxRange)
 {
     _MM_ALIGN16 XMMVector CPos;
     // make it in camera space
-    _asm
-    {
-        mov edx, DWORD PTR WorldPos // Get th World position
-        movups xmm0, XMMWORD PTR [edx] // into XMM0
-        subps xmm0, XMMCamera // subtract it
-        mulps xmm0, xmm0; // square of all parameters
-        movaps CPos, xmm0; // stores
-    }
+    // Artscout - 2026 (x64): SSE asm rewritten with intrinsics (x86+x64; rest of file uses .Xmm).
+    // Load x,y,z safely (no 16-byte OOB read past the 12-byte D3DVECTOR).
+    __m128 wp = _mm_set_ps(0.0f, WorldPos->z, WorldPos->y, WorldPos->x);
+    CPos.Xmm = _mm_sub_ps(wp, XMMCamera.Xmm);   // subtract camera
+    CPos.Xmm = _mm_mul_ps(CPos.Xmm, CPos.Xmm);  // square all components
 
     return  sqrtf(CPos.d3d.x + CPos.d3d.y + CPos.d3d.z) / MaxRange * m_LODBiasCx;
 }

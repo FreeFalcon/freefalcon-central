@@ -112,7 +112,7 @@ MEM_POOL gCockMemPool;
  exit(-1); \
  } \
  if (choice == IDRETRY) { \
- __asm int 3 \
+ __debugbreak(); \
  } \
 }
 #else

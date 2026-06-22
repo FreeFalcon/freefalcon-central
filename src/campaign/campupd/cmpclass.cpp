@@ -60,6 +60,26 @@
 // The one and only CampaignClass instance:
 CampaignClass TheCampaign;
 
+// Artscout - 2026 (x64): fixed on-disk layout for uieventnode in campaign saves.
+// uieventnode embeds two pointers (eventText, next): 4 bytes on x86, 8 on x64.
+// The save stream stores the x86 layout (20 bytes), so on x64 a raw memcpy of
+// sizeof(uieventnode) (32 bytes) over-reads/over-writes and desyncs the stream
+// (InvalidBufferException). DiskUIEventNode is the fixed 20-byte x86 layout used
+// for serialization; the pointer slots are placeholders (eventText/next are
+// runtime-only and re-assigned on load). sizeof(DiskUIEventNode) == 20 on both
+// platforms, so it is also the correct on-disk size for the size pre-pass.
+#pragma pack(push, 4)
+struct DiskUIEventNode
+{
+    short        x, y;
+    CampaignTime time;
+    uchar        flags;
+    Team         team;
+    unsigned int eventText; // x86 pointer slot on disk (ignored at runtime)
+    unsigned int next;      // x86 pointer slot on disk (ignored at runtime)
+};
+#pragma pack(pop)
+
 
 enum
 {
@@ -1220,7 +1240,7 @@ long CampaignClass::SaveSize(void)
 
     while (event)
     {
-        size += sizeof(uieventnode);
+        size += sizeof(DiskUIEventNode); // Artscout - 2026 (x64): fixed on-disk size
         size += sizeof(short);
         size += sizeof(_TCHAR) * _tcslen(event->eventText);
         event = event->next;
@@ -1231,7 +1251,7 @@ long CampaignClass::SaveSize(void)
 
     while (event)
     {
-        size += sizeof(uieventnode);
+        size += sizeof(DiskUIEventNode); // Artscout - 2026 (x64): fixed on-disk size
         size += sizeof(short);
         size += sizeof(_TCHAR) * _tcslen(event->eventText);
         event = event->next;
@@ -1389,7 +1409,18 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
     for (i = 0; i < entries; i++)
     {
         event = new CampUIEventElement();
+#if defined(_M_IX86)
         memcpychk(event, &buffer, sizeof(uieventnode), &newRem);
+#else
+        // Artscout - 2026 (x64): read the fixed x86 on-disk node; copy real fields
+        // (eventText/next are re-assigned just below, so the disk pointer slots are ignored).
+        {
+            DiskUIEventNode _dn;
+            memcpychk(&_dn, &buffer, sizeof(DiskUIEventNode), &newRem);
+            event->x = _dn.x; event->y = _dn.y; event->time = _dn.time;
+            event->flags = _dn.flags; event->team = _dn.team;
+        }
+#endif
         memcpychk(&size, &buffer, sizeof(short), &newRem);
         event->eventText = new _TCHAR[size + 1];
         memcpychk(event->eventText, &buffer, sizeof(_TCHAR)*size, &newRem);
@@ -1413,7 +1444,18 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
     for (i = 0; i < entries; i++)
     {
         event = new CampUIEventElement();
+#if defined(_M_IX86)
         memcpychk(event, &buffer, sizeof(uieventnode), &newRem);
+#else
+        // Artscout - 2026 (x64): read the fixed x86 on-disk node; copy real fields
+        // (eventText/next are re-assigned just below, so the disk pointer slots are ignored).
+        {
+            DiskUIEventNode _dn;
+            memcpychk(&_dn, &buffer, sizeof(DiskUIEventNode), &newRem);
+            event->x = _dn.x; event->y = _dn.y; event->time = _dn.time;
+            event->flags = _dn.flags; event->team = _dn.team;
+        }
+#endif
         memcpychk(&size, &buffer, sizeof(short), &newRem);
         event->eventText = new _TCHAR[size + 1];
         memcpychk(event->eventText, &buffer, sizeof(_TCHAR)*size, &newRem);
@@ -1672,8 +1714,21 @@ int CampaignClass::Encode(VU_BYTE **stream)
 
     while (event)
     {
+#if defined(_M_IX86)
         memcpy(buffer, event, sizeof(uieventnode));
         buffer += sizeof(uieventnode);
+#else
+        // Artscout - 2026 (x64): write the fixed x86 on-disk node (pointer slots zeroed,
+        // ignored on load) so x64 saves stay byte-compatible with the x86 layout.
+        {
+            DiskUIEventNode _dn;
+            memset(&_dn, 0, sizeof(_dn));
+            _dn.x = event->x; _dn.y = event->y; _dn.time = event->time;
+            _dn.flags = event->flags; _dn.team = event->team;
+            memcpy(buffer, &_dn, sizeof(DiskUIEventNode));
+            buffer += sizeof(DiskUIEventNode);
+        }
+#endif
         size = _tcslen(event->eventText);
         memcpy(buffer, &size, sizeof(short));
         buffer += sizeof(short);
@@ -1698,8 +1753,21 @@ int CampaignClass::Encode(VU_BYTE **stream)
 
     while (event)
     {
+#if defined(_M_IX86)
         memcpy(buffer, event, sizeof(uieventnode));
         buffer += sizeof(uieventnode);
+#else
+        // Artscout - 2026 (x64): write the fixed x86 on-disk node (pointer slots zeroed,
+        // ignored on load) so x64 saves stay byte-compatible with the x86 layout.
+        {
+            DiskUIEventNode _dn;
+            memset(&_dn, 0, sizeof(_dn));
+            _dn.x = event->x; _dn.y = event->y; _dn.time = event->time;
+            _dn.flags = event->flags; _dn.team = event->team;
+            memcpy(buffer, &_dn, sizeof(DiskUIEventNode));
+            buffer += sizeof(DiskUIEventNode);
+        }
+#endif
         size = _tcslen(event->eventText);
         memcpy(buffer, &size, sizeof(short));
         buffer += sizeof(short);

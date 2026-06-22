@@ -1087,11 +1087,15 @@ void BombClass::SetTarget(SimObjectType* newTarget)
     {
         ShiAssert(newTarget->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
 
+        // Artscout - 2026: the assignment was commented out (the Copy() variants below), leaving
+        // targetPtr == NULL (cleared just above) when ->Reference() ran -> NULL deref (mutex @ +8).
+        // Store the target and ref it (balanced by the Release() on the old target above).
         //#ifdef DEBUG
         // targetPtr = newTarget->Copy(OBJ_TAG, this);
         //#else
         // targetPtr = newTarget->Copy();
         //#endif
+        targetPtr = newTarget;
         targetPtr->Reference();
     }
 }
