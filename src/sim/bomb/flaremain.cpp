@@ -53,6 +53,12 @@ void FlareClass::CleanupData()
 void FlareClass::InitLocalData()
 {
     bombType = Flare;
+    // Artscout - 2026: FlareClass declares its OWN drawPointer (flare.h:65, DrawableBSP*) shadowing
+    // SimBaseClass::drawPointer; BombClass's ctor only zeroes the base, so this member was SmartHeap pool
+    // garbage (0xFFFFFFFF) at Wake. The FRB guard below catches only 0xbaadf00d, not 0xFFFFFFFF -> the guarded
+    // RemoveObject deref'd garbage -> CTD (why flare removal was commented out). Zero it so every ctor starts
+    // NULL and removal is safe. Same shadowing root as ChaffClass; NOT the F4IsBad >4GB bug.
+    drawPointer = NULL;
 }
 
 void FlareClass::InitData()
@@ -277,7 +283,9 @@ void FlareClass::InitTrail(void)
 
     if (drawPointer)
     {
-        //OTWDriver.RemoveObject(drawPointer, TRUE); // FRB - causes CTD
+        // Artscout - 2026: re-enabled. The old CTD was drawPointer = uninitialized pool garbage (0xFFFFFFFF)
+        // at Wake; now zeroed in InitLocalData() so this guard only passes on a real drawable -> safe to remove.
+        OTWDriver.RemoveObject(drawPointer, TRUE);
         drawPointer = NULL;
     }
 

@@ -24,6 +24,7 @@
 #include "ClassTbl.h"
 #include "CmpClass.h"
 #include "dDraw.h"
+#include "Graphics/DXEngine/OpenXRBackend.h" // VR (OpenXR) -- clean teardown on exit
 #include "dialog.h" // Campaign tool includes
 #include "DispCfg.h"
 #include "DispOpts.h"
@@ -486,15 +487,6 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
 
     ParseCommandLine(command_line);
 
-    // Artscout - 2026: "-mkvoice" -> one-time transcode of the ST80 falcon.tlk into falcon_pcm.tlk
-    // (handled in VoiceManager::VoiceOpen, needs an x86 build with ST80). After the bank exists both
-    // x86 and x64 play voice from it with no ST80 dependency.
-    {
-        extern bool g_bMkVoice;
-        if (command_line and (strstr(command_line, "-mkvoice") or strstr(command_line, "-MKVOICE")))
-            g_bMkVoice = true;
-    }
-
     ReadFalcon4Config();
 
     realWeather = new WeatherClass();
@@ -545,6 +537,19 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
 
     DisplayOptions.LoadOptions("display");
 
+    // Artscout - 2026: push the persisted graphics options (UI source of truth) into the engine globals.
+    // Runs AFTER ReadFalcon4Config() (winmain ~490), so the Graphics/Advanced page settings win over the
+    // legacy FFViper.cfg "set g_bUseOpenXR/..." dev overrides. VR is now toggled by the Advanced checkbox.
+    {
+        extern bool g_bUseOpenXR, g_bUseQuadViews, g_bMsaaEnable;
+        extern int  g_nMsaaSamples, g_nVrResolutionScale;
+        g_bUseOpenXR        = DisplayOptions.bUseOpenXR;
+        g_bUseQuadViews     = DisplayOptions.bUseQuadViews;
+        g_bMsaaEnable       = DisplayOptions.bMsaaEnable;
+        g_nMsaaSamples      = DisplayOptions.nMsaaSamples;
+        g_nVrResolutionScale = DisplayOptions.nVrResolutionScale;
+    }
+
     FalconDisplay.Setup(gLangIDNum);
 
     mainAppWnd = FalconDisplay.appWin;
@@ -564,9 +569,44 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
         return FALSE;
 
 	MSG  msg;
-	while (GetMessage(&msg, NULL, 0, 0) not_eq 0)
+    if (g_bUseOpenXR)
     {
-        DispatchMessage(&msg);
+        // VR: the headset needs a continuous stream of submitted frames, but the 2D
+        // UI only repaints on change. So run a non-blocking loop that dispatches any
+        // pending messages and otherwise pumps one OpenXR frame. OpenXR_PumpFrame()
+        // blocks on xrWaitFrame (paces to the headset), so this is not a busy spin
+        // while the session runs; before it runs we yield briefly.
+        for (;;)
+        {
+            while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+            {
+                if (msg.message == WM_QUIT) goto xr_quit;
+                DispatchMessage(&msg);
+            }
+            // OpenXR_PumpFrame() polls XR events (starts the session), submits a frame
+            // when running (xrWaitFrame paces it), and returns false until then -- in
+            // which case we yield to avoid a busy spin.
+            if (!OpenXR_PumpFrame())
+                Sleep(2);
+        }
+        xr_quit:;
+    }
+    else
+    {
+        while (GetMessage(&msg, NULL, 0, 0) not_eq 0)
+        {
+            DispatchMessage(&msg);
+        }
+    }
+
+    // VR: tear down OpenXR (session/swap-chains/instance) FIRST, while the D3D11
+    // device is still alive. The runtime's compositor thread (e.g. PiOpenXR) holds
+    // device resources and faults (UAF in PiOpenXR -> d3d11.dll, read 0xFFFF...) if
+    // the device is destroyed under it during process teardown.
+    if (g_pOpenXRBackend)
+    {
+        delete g_pOpenXRBackend;   // ~OpenXRBackend -> Shutdown(): xrDestroySession/Instance
+        g_pOpenXRBackend = NULL;
     }
 
     SystemLevelExit();
@@ -1495,6 +1535,28 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             {
                 extern void ReacquireAllInputDevices(void);
                 ReacquireAllInputDevices();
+            }
+
+            // Artscout - 2026: in WINDOWED mode confine the cursor to the window so it can't slide off onto
+            // the desktop / a 2nd monitor while flying; release it on focus loss (so Alt-Tab works). Windows
+            // also auto-releases the clip when the window loses activation, but we clear it explicitly too.
+            {
+                extern bool g_bClipCursorWindowed;
+                if (g_bClipCursorWindowed and LOWORD(wParam) != 0 and not FalconDisplay.displayFullScreen
+                    and FalconDisplay.appWin)
+                {
+                    RECT rc;
+                    if (GetClientRect(FalconDisplay.appWin, &rc))
+                    {
+                        POINT tl = { rc.left, rc.top }, br = { rc.right, rc.bottom };
+                        ClientToScreen(FalconDisplay.appWin, &tl);
+                        ClientToScreen(FalconDisplay.appWin, &br);
+                        RECT screenRc = { tl.x, tl.y, br.x, br.y };
+                        ClipCursor(&screenRc);
+                    }
+                }
+                else if (LOWORD(wParam) == 0)
+                    ClipCursor(NULL);   // becoming inactive -> free the cursor
             }
 
             if (doUI and FalconDisplay.displayFullScreen)

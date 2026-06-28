@@ -9,6 +9,7 @@
 
 #include "Graphics/DXEngine/DXTools.h"
 #include "Graphics/DXEngine/DXDefines.h"
+#include <windows.h>	// GetTickCount / DWORD for the tracer staleness cull below
 #include "Graphics/DXEngine/DXEngine.h"
 #include "Graphics/DXEngine/DXVBManager.h"
 
@@ -234,10 +235,17 @@ void DrawableTracer::Draw(class RenderOTW *renderer, int)
     renderer->context.RestoreState(STATE_ALPHA_GOURAUD);
     // renderer->context.SelectTexture( TracerTrailTexture.TexHandle() );
     // renderer->context.RestoreState( STATE_ALPHA_TEXTURE_GOURAUD_TRANSPARENCY_PERSPECTIVE );
-    v0.a = v1.a = alpha;
+    // Artscout - 2026 (VR): scale the tracer's core brightness in the headset only (flat path keeps alpha as-is)
+    // -> one consistent MIDDLE brightness between the bright glow-quad and the dim normalized look.
+    float aTrc = alpha;
+    {
+        extern bool g_bVrFrameActive; extern float g_fVrTracerBright;
+        if (g_bVrFrameActive) aTrc *= g_fVrTracerBright;
+    }
+    v0.a = v1.a = aTrc;
     v3.a = v2.a = 0.0f;
     v4.a = v5.a = 0.0f;
-    v1.a = alpha * 0.2f;
+    v1.a = aTrc * 0.2f;
     /* }
      else
      {
@@ -326,6 +334,46 @@ void DrawableTracer::Draw(class RenderOTW *renderer, int)
     v4.q = 1.0f;
     v5.q = 1.0f;
 
+    // Artscout - 2026 (#60 VR giant tracers): hold the tracer's ON-SCREEN thickness inside a [min..max] band in VR.
+    // The tracer width is a world-space quad whose side corners (v2/v3 near, v4/v5 far) are perspective-divided
+    // by their camera-space depth. A muzzle/near-passing tracer sits a few metres from the eye, so that depth is
+    // tiny and 1/z inflates the corner away from the centreline -> a fat orange wedge ("the source rises above
+    // the cockpit"); the MAX cap kills that. Once the pose settles the same quad projects only a couple of px
+    // wide and the tracer reads as too faint; the MIN floor pulls those back up so near and settled tracers keep
+    // a consistent, visible thickness. Done in screen space so it is independent of the foveated per-eye pixel
+    // density. Strictly VR (g_bVrFrameActive) -> the flat path is byte-for-byte untouched.
+    // Pull each side corner toward / away from its centreline vertex (v0 for the near pair, v1 for the far pair).
+    {
+        extern bool g_bVrFrameActive;
+        if (g_bVrFrameActive)
+        {
+            const float kTracerMinScreenW = 6.0f;    // tunable: min on-screen tracer thickness (px) - visibility floor
+            const float kTracerMaxScreenW = 10.0f;   // tunable: max on-screen tracer thickness (px) - giant cap
+            const float halfMin = kTracerMinScreenW * 0.5f;
+            const float halfMax = kTracerMaxScreenW * 0.5f;
+            // clamp |C - M| (screen x/y) into [halfMin, halfMax]; skip the push-out if the corner is degenerate
+            #define TW_CLAMP_CORNER(C, M)                                              \
+                {                                                                      \
+                    float _dx = (C).x - (M).x, _dy = (C).y - (M).y;                    \
+                    float _d2 = _dx * _dx + _dy * _dy;                                 \
+                    float _s = 0.0f;                                                   \
+                    if (_d2 > halfMax * halfMax)        _s = halfMax / (float)sqrt(_d2); \
+                    else if (_d2 < halfMin * halfMin && _d2 > 1.0e-4f)                 \
+                                                        _s = halfMin / (float)sqrt(_d2); \
+                    if (_s != 0.0f)                                                    \
+                    {                                                                  \
+                        (C).x = (M).x + _dx * _s;                                      \
+                        (C).y = (M).y + _dy * _s;                                      \
+                    }                                                                  \
+                }
+            TW_CLAMP_CORNER(v2, v0);
+            TW_CLAMP_CORNER(v3, v0);
+            TW_CLAMP_CORNER(v4, v1);
+            TW_CLAMP_CORNER(v5, v1);
+            #undef TW_CLAMP_CORNER
+        }
+    }
+
     // Draw the polygon
     renderer->DrawSquare(&v1, &v5, &v2, &v0, CULL_ALLOW_ALL);
     renderer->DrawSquare(&v1, &v4, &v3, &v0, CULL_ALLOW_ALL);
@@ -410,8 +458,17 @@ BOOL DrawableTracer::ConstructWidth(RenderOTW *renderer,
     renderer->TransformCameraCentricPoint(&left,  xformLeft);
     renderer->TransformCameraCentricPoint(&right, xformRight);
 
-    if (fabs(xformLeft->x - xformRight->x) * fabs(xformLeft->y - xformRight->y) < 0.7f and alpha == 1.0f)
-        return FALSE;
+    // Artscout - 2026 (#60 VR): bail to the faint point/line path only on the flat path. In VR this subpixel
+    // test flips globally when the foveated per-eye scale settles (projected width crosses 0.7 px^2), so a whole
+    // burst of bright glow-quad tracers suddenly drops to thin point/line tracers ("the bright yellow ones
+    // vanish, only the normalized remain"). Keep the quad in VR -- the [min..max] screen-width clamp in Draw()
+    // then holds every tracer at a consistent, visible thickness instead of letting it collapse subpixel.
+    {
+        extern bool g_bVrFrameActive;
+        if (not g_bVrFrameActive and
+            fabs(xformLeft->x - xformRight->x) * fabs(xformLeft->y - xformRight->y) < 0.7f and alpha == 1.0f)
+            return FALSE;
+    }
 
     // get location on line where we apply width
     wloc.x = start->x + dx * 0.95f;

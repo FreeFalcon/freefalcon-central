@@ -61,7 +61,9 @@ public:
     {
         ShiAssert(id < ParentObject->nSwitches);
 
-        if (id < ParentObject->nSwitches) SwitchValues[id] = value;
+        // Artscout - 2026: NULL-guard the switch array (nSwitches can be > 0 while SwitchValues is
+        // NULL -- object built without its switch array). See DrawableBSP::SetSwitchMask.
+        if (SwitchValues != NULL && id < ParentObject->nSwitches) SwitchValues[id] = value;
     };
     void SetDOFrotation(int id, float r)
     {

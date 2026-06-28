@@ -1616,6 +1616,41 @@ void VirtualDisplay::ResetRttViewport()
 
 
 
+// Artscout - 2026 (VR #61): RTT-quad world-frame transform. When g_bVrRttWorldCam is on, the RTT
+// display panel is drawn in the SAME 3D frame as the BSP cockpit (world = ownshipRot * (canvas /
+// RTT_POSITION_SCALING), camera = headOrigin) instead of the legacy Pan=headPan*10.35 trick space, so
+// its per-eye stereo DEPTH matches the physical panel (symbology sits ON the panel, not in front).
+// g_rttWorldRot/Scale are set by the sim each frame (VCock_Exec). Identity/no-op when the flag is off.
+// Artscout - 2026 (HUD 3D glass / collimation): g_rttWorldOfs adds a WORLD translation after the rotation.
+// For the panel displays (MFD/DED/RWR) it stays {0,0,0} -> the panel is fixed in the cockpit world (it has
+// parallax, like a decal on glass). For the COLLIMATED HUD the sim sets g_rttWorldOfs = headOrigin (the eye):
+// the canvas corner then maps to  eye + ownshipRot*(canvas*scale), and TransformPoint subtracts the camera
+// position (also headOrigin), so the eye offset CANCELS and the projected direction is purely the boresight-
+// relative canvas direction -- independent of eye position AND scale. That is exactly optical collimation:
+// the symbology sits at infinity (no per-eye convergence, no shift with head translation) and stays conformal
+// with the outside world (ownshipRot). STATE_RTT_SOFT has depthTest off, so it composites on top of terrain.
+Trotation g_rttWorldRot;
+float     g_rttWorldScale = 1.0f;
+Tpoint    g_rttWorldOfs = { 0.0f, 0.0f, 0.0f };
+// Artscout - 2026 (VR #61 RWR): forward push of the RTT canvas (in canvas X = the panel depth) BEFORE the
+// world map, so a panel whose 3Dckpit.dat depth doesn't match its BSP can be nudged onto it. Set per-panel.
+float     g_rttCanvasFwd = 0.0f;
+// Artscout - 2026 (VR HUD 3D glass): when set, DrawRttQuad composites with STATE_RTT_SOFT_DEPTH (Z-test on)
+// so the collimated HUD is clipped to the combiner aperture by the cockpit structure. Set by VCock_Exec
+// for the HUD only; cleared for the panels.
+bool      g_bRttHudClip = false;
+static void RttWorldXform(Tpoint* os)
+{
+    extern bool g_bVrRttWorldCam, g_bHud3DGlass;
+    if (!g_bVrRttWorldCam && !g_bHud3DGlass) return;   // g_bHud3DGlass implies the world-frame RTT path
+    // Artscout - 2026 (VR #61 RWR): push the canvas forward (X = panel depth) before the world map so a panel
+    // can be nudged onto its BSP scope. g_rttCanvasFwd is 0 except around the RWR composite (set by VCock_Exec).
+    const float x = (os->x + g_rttCanvasFwd) * g_rttWorldScale, y = os->y * g_rttWorldScale, z = os->z * g_rttWorldScale;
+    os->x = g_rttWorldRot.M11 * x + g_rttWorldRot.M12 * y + g_rttWorldRot.M13 * z + g_rttWorldOfs.x;
+    os->y = g_rttWorldRot.M21 * x + g_rttWorldRot.M22 * y + g_rttWorldRot.M23 * z + g_rttWorldOfs.y;
+    os->z = g_rttWorldRot.M31 * x + g_rttWorldRot.M32 * y + g_rttWorldRot.M33 * z + g_rttWorldOfs.z;
+}
+
 void VirtualDisplay::DrawRttQuad()
 {
     // #7 ADDITIVE EMISSIVE composite: replace the displays' chroma overlay (GOURAUD2) with
@@ -1628,6 +1663,13 @@ void VirtualDisplay::DrawRttQuad()
     r3d->context.RestoreState(compositeState);
     r3d->context.SelectTexture1((DWORD_PTR)renderTexture); // Artscout - 2026 (x64): pointer-sized
 
+    // Artscout - 2026 (VR HUD 3D glass): clip the collimated HUD to the combiner aperture via STENCIL --
+    // the glass plate (drawn just before, DrawGlassPlate) wrote the aperture bit, so the symbology draws
+    // only where that bit is set. Armed AFTER RestoreState so it isn't clobbered; cleared after the draw.
+    extern bool g_bRttHudClip;
+    const bool hudClip = g_bUseD3D11 && g_bRttHudClip && g_pD3D11Renderer;
+    if (hudClip) g_pD3D11Renderer->SetHudStencil(D3D11Renderer::HUD_STENCIL_TEST);
+
     // #7 panel SSAA -- OFF (on request, checking if it's redundant). The MSAA atlas stays.
     // if (g_bUseD3D11 && g_pD3D11Renderer) g_pD3D11Renderer->SetForcePerSample(true);
 
@@ -1637,21 +1679,25 @@ void VirtualDisplay::DrawRttQuad()
     os.x = canUL.x;
     os.y = canUL.y;
     os.z = canUL.z;
+    RttWorldXform(&os);
     r3d->TransformPoint(&os, &v0);
 
     os.x = canUR.x;
     os.y = canUR.y;
     os.z = canUR.z;
+    RttWorldXform(&os);
     r3d->TransformPoint(&os, &v1);
 
     os.x =  canLL.x;
     os.y =  canUR.y;
     os.z =  canLL.z;
+    RttWorldXform(&os);
     r3d->TransformPoint(&os, &v2);
 
     os.x = canLL.x;
     os.y = canLL.y;
     os.z = canLL.z;
+    RttWorldXform(&os);
     r3d->TransformPoint(&os, &v3);
 
     // UV as in the D3D7 reference (NO V-flip): v0/v1 top=tTop, v2/v3 bottom=tBottom.
@@ -1685,6 +1731,75 @@ void VirtualDisplay::DrawRttQuad()
         r3d->context.FlushPending();	// the same context that draws the quad (else per-sample won't apply)
         g_pD3D11Renderer->SetForcePerSample(false);
     }
+    if (hudClip) g_pD3D11Renderer->SetHudStencil(D3D11Renderer::HUD_STENCIL_OFF);   // done clipping the HUD
+}
+
+// Artscout - 2026 (VR HUD 3D glass): faint tinted glass plate over the combiner canvas. Drawn as an
+// ELLIPSE (oval) inscribed in the canvas rectangle -- the real F-16 combiner glass is rounded, a hard
+// rectangle reads wrong. Uses the SAME canvas transform as DrawRttQuad (RttWorldXform -> fixed in the
+// cockpit world, with parallax = the PHYSICAL glass, NOT collimated), flat vertex-color alpha
+// (STATE_ALPHA_GOURAUD: no texture, BLEND_ALPHA, depth off). Triangle fan: centre + ring of segments.
+void VirtualDisplay::DrawGlassPlate(float r, float g, float b, float a)
+{
+    r3d->context.RestoreState(STATE_ALPHA_GOURAUD);
+
+    // Artscout - 2026 (VR HUD 3D glass): when the aperture clip is armed, the glass plate also writes the
+    // stencil aperture bit (MARK) so DrawRttQuad clips the symbology to this shape. The tint can be ~0
+    // (invisible) and still mark -- the stencil op is independent of the alpha blend.
+    extern bool g_bRttHudClip;
+    const bool hudMark = g_bUseD3D11 && g_bRttHudClip && g_pD3D11Renderer;
+    if (hudMark) g_pD3D11Renderer->SetHudStencil(D3D11Renderer::HUD_STENCIL_MARK);
+
+    // Canvas is a rectangle in body frame: X = forward (const), Y = horizontal, Z = vertical.
+    extern float g_fHud3DGlassSize;                      // grow the plate/aperture toward the real glass edges
+    const float cX  = canUL.x;                          // forward depth of the glass
+    const float cY  = (canUL.y + canUR.y) * 0.5f;       // centre (horizontal)
+    const float cZ  = (canUL.z + canLL.z) * 0.5f;       // centre (vertical)
+    const float hY  = (canUR.y - canUL.y) * 0.5f * g_fHud3DGlassSize;   // half-width  (signed ok)
+    const float hZ  = (canLL.z - canUL.z) * 0.5f * g_fHud3DGlassSize;   // half-height
+
+    const int   SEG = 32;
+    const float twoPi = 6.2831853f;   // NB: TWO_PI is a macro in the Falcon math headers -- don't shadow it
+
+    // Rim brighter than the centre: real combiner glass reads as a faint pane with a brighter EDGE
+    // (internal edge reflection / the frame). centreA low, rim = full a -> a soft-edged glass with a
+    // visible rim instead of a flat slab.
+    const float centreA = a * 0.20f;
+    auto setVert = [&](ThreeDVertex* v, float yy, float zz, float aa)
+    {
+        Tpoint os; os.x = cX; os.y = yy; os.z = zz;
+        RttWorldXform(&os);
+        r3d->TransformPoint(&os, v);
+        v->q = v->csZ * Q_SCALE;
+        v->r = r; v->g = g; v->b = b; v->a = aa;
+    };
+
+    // SQUIRCLE (rounded rectangle), not a pinched ellipse: fills the whole glass with rounded corners,
+    // closer to the real combiner. Superellipse exponent 4 -> px = sign(cos)*sqrt|cos|, py likewise.
+    auto squircle = [](float t, float& px, float& py)
+    {
+        const float ca = cosf(t), sa = sinf(t);
+        px = (ca >= 0.0f ? 1.0f : -1.0f) * sqrtf(fabsf(ca));
+        py = (sa >= 0.0f ? 1.0f : -1.0f) * sqrtf(fabsf(sa));
+    };
+
+    ThreeDVertex centre, prev, cur;
+    float px, py;
+    setVert(&centre, cY, cZ, centreA);
+    squircle(0.0f, px, py); setVert(&prev, cY + px * hY, cZ + py * hZ, a);   // rim
+    for (int i = 1; i <= SEG; ++i)
+    {
+        squircle(twoPi * (float)i / (float)SEG, px, py);
+        setVert(&cur, cY + px * hY, cZ + py * hZ, a);
+        r3d->DrawTriangle(&centre, &prev, &cur, CULL_ALLOW_ALL, false);
+        prev = cur;
+    }
+
+    if (g_bUseD3D11 && g_pD3D11Renderer)
+        r3d->context.FlushPending();
+    // Stencil bit is now in the buffer; switch back to OFF so anything between here and the symbology
+    // (DrawRttQuad, which re-arms TEST) composites normally. The marked bit persists in the buffer.
+    if (hudMark) g_pD3D11Renderer->SetHudStencil(D3D11Renderer::HUD_STENCIL_OFF);
 }
 
 // DIAG (RTT): draw the WHOLE renderTexture into a fixed screen rectangle (no chroma/3D/

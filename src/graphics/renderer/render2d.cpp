@@ -613,7 +613,9 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
     // Left Arrow
     if (boxed == 0x4)
     {
-        float x0 = xLeft - 5.0F;
+        // Artscout - 2026: arrow tip depth proportional to the box height (was a flat -5 px) -> clear '<'.
+        float bh = pFontSet->fontData[pFontSet->fontNum][32].pixelHeight * fS;
+        float x0 = (xLeft - 2.0F) - bh * 0.55F;
         float y0 = yTop + (pFontSet->fontData[pFontSet->fontNum][32].pixelHeight * fS / 2);
         float x1 = xLeft - 2.0f;
         float y1 = yTop;
@@ -636,7 +638,10 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
     // Right Arrow
     if (boxed == 0x8)
     {
-        float x0 = float(x + 4);
+        // Artscout - 2026: arrow tip depth proportional to the box height (was a flat +4 px -> looked like a
+        // straight edge at HUD scale). ~0.55x height gives a clear '>' like the real F-16 / BMS airspeed box.
+        float bh = pFontSet->fontData[pFontSet->fontNum][32].pixelHeight * fS;
+        float x0 = float(x + 1) + bh * 0.55F;
         float y0 = yTop + (pFontSet->fontData[pFontSet->fontNum][32].pixelHeight * fS / 2);
         float x1 = xLeft - 2.0f;
         float y1 = yTop;

@@ -1,0 +1,880 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<controls version="2">
+  <functions>
+    <function name="OTWTrackExternal" label="View-Tracking" category=""/>
+    <function name="OTWTrackTargetToWeapon" label="View-Weapon's target" category=""/>
+    <function name="OTWToggleScoreDisplay" label="Sim-Show score" category=""/>
+    <function name="OTWToggleSidebar" label="View-Toggle SA bar" category=""/>
+    <function name="SimRadarAAModeStep" label="Radar-A to A" category=""/>
+    <function name="SimRadarAGModeStep" label="Radar-A to G" category=""/>
+    <function name="SimRadarGainUp" label="Radar-gain increase" category=""/>
+    <function name="SimRadarGainDown" label="Radar-gain decrease" category=""/>
+    <function name="SimRadarStandby" label="Radar-standby" category=""/>
+    <function name="SimRadarRangeStepUp" label="Radar-range increase" category=""/>
+    <function name="SimRadarRangeStepDown" label="Radar-range decrease" category=""/>
+    <function name="SimRadarNextTarget" label="Radar-lock next target" category=""/>
+    <function name="SimRadarPrevTarget" label="Radar-lock previous target" category=""/>
+    <function name="SimRadarBarScanChange" label="Radar-bar scan" category=""/>
+    <function name="SimRadarAzimuthScanChange" label="Radar-submodes/azimuth" category=""/>
+    <function name="SimRadarFOVStep" label="Radar-GM FOV" category=""/>
+    <function name="SimMaverickFOVStep" label="Radar-Maverick FOV" category=""/>
+    <function name="SimSOIFOVStep" label="Radar-SOI FOV" category=""/>
+    <function name="SimRadarFreeze" label="Radar-GM picture freeze" category=""/>
+    <function name="SimRadarSnowplow" label="Radar-GM snowplow" category=""/>
+    <function name="SimRadarCursorZero" label="Radar-cursors reset" category=""/>
+    <function name="SimACMBoresight" label="Radar-ACM boresight" category=""/>
+    <function name="SimDesignate" label="Radar-Designate target" category=""/>
+    <function name="SimACMVertical" label="Radar-ACM vertical" category=""/>
+    <function name="SimDropTrack" label="Radar-return to search" category=""/>
+    <function name="SimACMSlew" label="Radar-ACM slewable" category=""/>
+    <function name="SimACM30x20" label="Radar-ACM 30x20" category=""/>
+    <function name="SimRadarElevationDown" label="Radar-antenna tilt down" category=""/>
+    <function name="SimRadarElevationUp" label="Radar-antenna tilt up" category=""/>
+    <function name="SimRWRSetPriority" label="RWR-Priority" category=""/>
+    <function name="SimRWRSetTargetSep" label="RWR-Target Separate" category=""/>
+    <function name="SimRWRSetUnknowns" label="RWR-Unknown" category=""/>
+    <function name="SimRWRSetNaval" label="RWR-Naval" category=""/>
+    <function name="SimRWRSetGroundPriority" label="RWR-Low" category=""/>
+    <function name="SimRWRSetSearch" label="RWR-Search" category=""/>
+    <function name="SimRWRHandoff" label="RWR-Handoff" category=""/>
+    <function name="SimNextWaypoint" label="Ckpit-Steerpoint next" category=""/>
+    <function name="SimPrevWaypoint" label="Ckpit-Steerpoint previous" category=""/>
+    <function name="SimTogglePaused" label="Sim-Pause" category=""/>
+    <function name="SimPickle" label="Wpn-Pickle" category=""/>
+    <function name="SimTrigger" label="Wpn-Fire gun" category=""/>
+    <function name="SimMissileStep" label="Wpn-Missile Hardpoints cycle" category=""/>
+    <function name="SimCursorUp" label="Radar-cursor up" category=""/>
+    <function name="SimCursorDown" label="Radar-cursor down" category=""/>
+    <function name="SimCursorLeft" label="Radar-cursor left" category=""/>
+    <function name="SimCursorRight" label="Radar-cursor right" category=""/>
+    <function name="SimToggleAutopilot" label="Ckpit-Autopilot" category=""/>
+    <function name="SimStepSMSLeft" label="SimStepSMSLeft" category=""/>
+    <function name="SimStepSMSRight" label="Radio-Check in with FAC" category=""/>
+    <function name="SimSelectSRMOverride" label="Ckpit-Dogfight override mode" category=""/>
+    <function name="SimSelectMRMOverride" label="Ckpit-MRM override mode" category=""/>
+    <function name="SimDeselectOverride" label="Ckpit-MRM/DF override cancel" category=""/>
+    <function name="SimToggleMissileCage" label="Wpn-Sidewinder-Cage/Uncage" category=""/>
+    <function name="SimToggleMissileSpotScan" label="Wpn-Sidewinder Spot/Scan" category=""/>
+    <function name="SimToggleMissileBoreSlave" label="Wpn-Missile Bore/Slave" category=""/>
+    <function name="SimToggleMissileTDBPUncage" label="Wpn-Missile TD/BP" category=""/>
+    <function name="SimDropChaff" label="Ckpit-Drop chaff" category=""/>
+    <function name="SimDropFlare" label="Ckpit-Drop flare" category=""/>
+    <function name="SimHSDRangeStepUp" label="Radar-HSD range increase" category=""/>
+    <function name="SimHSDRangeStepDown" label="Radar-HSD range decrease" category=""/>
+    <function name="SimToggleInvincible" label="Sim-invincibility" category=""/>
+    <function name="SimFCCSubModeStep" label="Ckpit-FCC submodes" category=""/>
+    <function name="SimEndFlight" label="Sim-Exit" category=""/>
+    <function name="SimNextAAWeapon" label="Wpn-A to A cycle hardpoints" category=""/>
+    <function name="SimNextAGWeapon" label="Wpn-A to G cycle hardpoints" category=""/>
+    <function name="SimNextNavMode" label="SimNextNavMode" category=""/>
+    <function name="SimEject" label="Ckpit-Eject" category=""/>
+    <function name="AFBrakesOut" label="Ckpit-Air brakes open" category=""/>
+    <function name="AFBrakesIn" label="Ckpit-Air brakes close" category=""/>
+    <function name="AFBrakesToggle" label="Ckpit-Air brakes toggle" category=""/>
+    <function name="AFGearToggle" label="Ckpit-Landing gear" category=""/>
+    <function name="AFGearUp" label="AFGearUp" category=""/>
+    <function name="AFGearDown" label="AFGearDown" category=""/>
+    <function name="AFElevatorUp" label="Ctrls-Nose up" category=""/>
+    <function name="AFElevatorDown" label="Ctrls-Nose down" category=""/>
+    <function name="AFAileronLeft" label="Ctrls-Roll left" category=""/>
+    <function name="AFAileronRight" label="Ctrls-Roll right" category=""/>
+    <function name="AFThrottleUp" label="Ctrls-Throttle forward" category=""/>
+    <function name="AFThrottleDown" label="Ctrls-Throttle back" category=""/>
+    <function name="AFRudderRight" label="Ctrls-Rudder right" category=""/>
+    <function name="AFRudderLeft" label="Ctrls-Rudder left" category=""/>
+    <function name="AFCoarseThrottleUp" label="Ctrls-Step throttle up" category=""/>
+    <function name="AFCoarseThrottleDown" label="Ctrls-Step throttle down" category=""/>
+    <function name="AFABOn" label="Ctrls-Min Afterburner" category=""/>
+    <function name="AFIdle" label="Ctrls-Throttle Idle" category=""/>
+    <function name="OTWTimeOfDayStep" label="OTWTimeOfDayStep" category=""/>
+    <function name="OTWStepNextAC" label="View-aircraft next" category=""/>
+    <function name="OTWStepPrevAC" label="View-aircraft previous" category=""/>
+    <function name="OTWStepNextPadlock" label="View-Padlock next" category=""/>
+    <function name="OTWStepPrevPadlock" label="View-Padlock previous" category=""/>
+    <function name="OTWStepNextPadlockAA" label="View-Padlock next AA" category=""/>
+    <function name="OTWStepPrevPadlockAA" label="View-Padlock prev AA" category=""/>
+    <function name="OTWStepNextPadlockAG" label="View-Padlock next AG" category=""/>
+    <function name="OTWStepPrevPadlockAG" label="View-Padlock prev AG" category=""/>
+    <function name="OTWToggleNames" label="Sim-labels near" category=""/>
+    <function name="OTWToggleCampNames" label="Sim-labels far" category=""/>
+    <function name="OTWSelectF3PadlockMode" label="View-Padlock" category=""/>
+    <function name="OTWSelectF3PadlockModeAA" label="View-Padlock Mode=AA" category=""/>
+    <function name="OTWSelectF3PadlockModeAG" label="View-Padlock Mode=AG" category=""/>
+    <function name="OTWSelectEFOVPadlockMode" label="View-Extended FOV" category=""/>
+    <function name="OTWSelectEFOVPadlockModeAA" label="View-Padlock EFOV Mode=AA" category=""/>
+    <function name="OTWSelectEFOVPadlockModeAG" label="View-Padlock EFOV Mode=AG" category=""/>
+    <function name="OTWRadioMenuStep" label="Radio-next menu" category="Communications"/>
+    <function name="OTWRadioMenuStepBack" label="Radio-previous menu" category="Communications"/>
+    <function name="OTWStepMFD1" label="MFD 1" category=""/>
+    <function name="OTWStepMFD2" label="MFD 2" category=""/>
+    <function name="OTWStepMFD3" label="MFD 3" category=""/>
+    <function name="OTWStepMFD4" label="MFD 4" category=""/>
+    <function name="OTWToggleScales" label="HUD-declutter" category=""/>
+    <function name="OTWToggleActionCamera" label="View-Action Camera" category=""/>
+    <function name="OTWTogglePitchLadder" label="HUD-FPM" category=""/>
+    <function name="SimPitchLadderOff" label="SimPitchLadderOff" category=""/>
+    <function name="SimPitchLadderFPM" label="SimPitchLadderFPM" category=""/>
+    <function name="SimPitchLadderATTFPM" label="SimPitchLadderATTFPM" category=""/>
+    <function name="OTWStepHeadingScale" label="HUD-heading scales" category=""/>
+    <function name="OTWSelectHUDMode" label="View-HUD Only" category=""/>
+    <function name="OTWToggleGLOC" label="Sim-Blackout/Redout" category=""/>
+    <function name="OTWSelectChaseMode" label="View-Chase" category=""/>
+    <function name="OTWSelectOrbitMode" label="View-Orbit" category=""/>
+    <function name="OTWSelectAirFriendlyMode" label="View-Friendly" category=""/>
+    <function name="OTWSelectGroundFriendlyMode" label="View-Friendly ground unit" category=""/>
+    <function name="OTWSelectAirEnemyMode" label="View-Enemy aircraft" category=""/>
+    <function name="OTWSelectGroundEnemyMode" label="View-Enemy vehicle" category=""/>
+    <function name="OTWSelectTargetMode" label="View-Target" category=""/>
+    <function name="OTWSelectWeaponMode" label="View-Weapon" category=""/>
+    <function name="OTWSelectSatelliteMode" label="View-Satellite Camera" category=""/>
+    <function name="OTWSelectFlybyMode" label="View-Flyby" category=""/>
+    <function name="OTWSelectIncomingMode" label="View-Incoming" category=""/>
+    <function name="OTWSelect2DCockpitMode" label="View-2D Cockpit" category=""/>
+    <function name="OTWSelect3DCockpitMode" label="View-Virtual cockpit" category=""/>
+    <function name="OTWToggleBilinearFilter" label="Sim-Bilinear filtering" category=""/>
+    <function name="OTWToggleShading" label="Sim-Terrain shading" category=""/>
+    <function name="OTWToggleHaze" label="Sim-Haze" category=""/>
+    <function name="OTWToggleLocationDisplay" label="Sim-World Location" category=""/>
+    <function name="OTWToggleAeroDisplay" label="Sim-Aerodynamic Debug" category=""/>
+    <function name="OTWToggleFlapDisplay" label="Flap Display Toggle" category=""/>
+    <function name="OTWToggleEngineDisplay" label="Toggle Engine Display" category=""/>
+    <function name="OTWScaleDown" label="Sim-object scale down" category=""/>
+    <function name="OTWScaleUp" label="Sim-object scale up" category=""/>
+    <function name="OTWSetObjDetail" label="Set object density" category=""/>
+    <function name="OTWObjDetailDown" label="OTWObjDetailDown" category=""/>
+    <function name="OTWObjDetailUp" label="OTWObjDetailUp" category=""/>
+    <function name="OTWToggleClouds" label="Sim-clouds" category=""/>
+    <function name="OTWStepHudContrastDn" label="OTWStepHudContrastDn" category=""/>
+    <function name="OTWStepHudContrastUp" label="OTWStepHudContrastUp" category=""/>
+    <function name="OTWToggleEyeFly" label="Sim-Testing function" category=""/>
+    <function name="OTWEnterPosition" label="Sim-Move to coordinates" category=""/>
+    <function name="OTWToggleFrameRate" label="Sim-Display frame rate" category=""/>
+    <function name="OTWToggleAutoScale" label="Sim-vehicle auto-scaling" category=""/>
+    <function name="OTWSetScale" label="Sim-BSS=1" category=""/>
+    <function name="OTWViewLeft" label="View-rotate left" category=""/>
+    <function name="OTWViewRight" label="View-rotate right" category=""/>
+    <function name="OTWViewUp" label="View-rotate up" category=""/>
+    <function name="OTWViewDown" label="View-rotate down" category=""/>
+    <function name="OTWViewReset" label="View-Reset" category=""/>
+    <function name="OTWViewUpRight" label="OTWViewUpRight" category=""/>
+    <function name="OTWViewUpLeft" label="OTWViewUpLeft" category=""/>
+    <function name="OTWViewDownRight" label="OTWViewDownRight" category=""/>
+    <function name="OTWViewDownLeft" label="OTWViewDownLeft" category=""/>
+    <function name="OTWViewZoomIn" label="View-Zoom in" category=""/>
+    <function name="OTWViewZoomOut" label="View-Zoom out" category=""/>
+    <function name="OTWSwapMFDS" label="OTWSwapMFDS" category=""/>
+    <function name="OTWGlanceForward" label="View-glance forward" category=""/>
+    <function name="OTWCheckSix" label="View-glance backward" category=""/>
+    <function name="OTWStateStep" label="Sim-cycle object states" category=""/>
+    <function name="CommandsSetKeyCombo" label="Key Combination" category="Communications"/>
+    <function name="KevinsFistOfGod" label="Sim-Fist of God" category=""/>
+    <function name="SuperCruise" label="SuperCruise" category=""/>
+    <function name="OTW1200View" label="OTW1200View" category=""/>
+    <function name="OTW1200DView" label="OTW1200DView" category=""/>
+    <function name="OTW1200HUDView" label="View-cockpit HUD" category=""/>
+    <function name="OTW1200LView" label="View-cockpit lower left" category=""/>
+    <function name="OTW1000View" label="View-cockpit 10:00" category=""/>
+    <function name="OTW200View" label="View-cockpit 2:00" category=""/>
+    <function name="OTW900View" label="View-cockpit 9:00" category=""/>
+    <function name="OTW300View" label="View-cockpit 3:00" category=""/>
+    <function name="OTW800View" label="View-cockpit 8:00" category=""/>
+    <function name="OTW400View" label="View-cockpit 4:00" category=""/>
+    <function name="OTW1200RView" label="View-cockpit lower right" category=""/>
+    <function name="RadioMessageSend" label="Radio-send message" category="Communications"/>
+    <function name="SimToggleChatMode" label="SimToggleChatMode" category=""/>
+    <function name="SimMotionFreeze" label="Sim-Freeze" category=""/>
+    <function name="ScreenShot" label="Sim-Screen shot" category=""/>
+    <function name="PrettyScreenShot" label="PrettyScreenShot" category=""/>
+    <function name="FOVToggle" label="View-look closer" category=""/>
+    <function name="FOVDecrease" label="FOVDecrease" category=""/>
+    <function name="FOVIncrease" label="FOVIncrease" category=""/>
+    <function name="FOVDefault" label="FOVDefault" category=""/>
+    <function name="SimAVTRToggle" label="Ckpit-AVTR" category=""/>
+    <function name="SimSelectiveJettison" label="SimSelectiveJettison" category=""/>
+    <function name="SimEmergencyJettison" label="Ckpit-jettison all" category=""/>
+    <function name="SimWheelBrakes" label="Ckpit-Wheel brakes" category=""/>
+    <function name="SimECMOn" label="Ckpit-ECM" category=""/>
+    <function name="SimECMStandby" label="SimECMStandby" category=""/>
+    <function name="SimECMConsent" label="SimECMConsent" category=""/>
+    <function name="SimCMSUp" label="CMS Forward" category=""/>
+    <function name="SimCMSDown" label="CMS Aft" category=""/>
+    <function name="SimCMSLeft" label="CMS Left" category=""/>
+    <function name="SimCMSRight" label="CMS Right" category=""/>
+    <function name="SimCMSPress" label="CMS Press" category=""/>
+    <function name="SimRadarElevationCenter" label="Radar-antenna center" category=""/>
+    <function name="SimHsiCourseInc" label="HSI-course increment" category=""/>
+    <function name="SimHsiCourseDec" label="HSI-course decrement" category=""/>
+    <function name="SimHsiHeadingInc" label="HSI-heading increment" category=""/>
+    <function name="SimHsiHeadingDec" label="HSI-heading decrement" category=""/>
+    <function name="SimHsiCrsIncBy1" label="SimHsiCrsIncBy1" category=""/>
+    <function name="SimHsiCrsDecBy1" label="SimHsiCrsDecBy1" category=""/>
+    <function name="SimHsiHdgIncBy1" label="SimHsiHdgIncBy1" category=""/>
+    <function name="SimHsiHdgDecBy1" label="SimHsiHdgDecBy1" category=""/>
+    <function name="SimMPOToggle" label="Ckpit-Manual pitch override" category=""/>
+    <function name="SimMPO" label="SimMPO" category=""/>
+    <function name="SimSilenceHorn" label="Ckpit-Betty gear horn" category=""/>
+    <function name="SimStepHSIMode" label="HSI-modes toggle" category=""/>
+    <function name="SimHSIIlsTcn" label="SimHSIIlsTcn" category=""/>
+    <function name="SimHSITcn" label="SimHSITcn" category=""/>
+    <function name="SimHSINav" label="SimHSINav" category=""/>
+    <function name="SimHSIIlsNav" label="SimHSIIlsNav" category=""/>
+    <function name="SimCBEOSB_1L" label="LMFD OSB-1" category=""/>
+    <function name="SimCBEOSB_2L" label="LMFD OSB-2" category=""/>
+    <function name="SimCBEOSB_3L" label="LMFD OSB-3" category=""/>
+    <function name="SimCBEOSB_4L" label="LMFD OSB-4" category=""/>
+    <function name="SimCBEOSB_5L" label="LMFD OSB-5" category=""/>
+    <function name="SimCBEOSB_6L" label="LMFD OSB-6" category=""/>
+    <function name="SimCBEOSB_7L" label="LMFD OSB-7" category=""/>
+    <function name="SimCBEOSB_8L" label="LMFD OSB-8" category=""/>
+    <function name="SimCBEOSB_9L" label="LMFD OSB-9" category=""/>
+    <function name="SimCBEOSB_10L" label="LMFD OSB-10" category=""/>
+    <function name="SimCBEOSB_11L" label="LMFD OSB-11" category=""/>
+    <function name="SimCBEOSB_12L" label="LMFD OSB-12" category=""/>
+    <function name="SimCBEOSB_13L" label="LMFD OSB-13" category=""/>
+    <function name="SimCBEOSB_14L" label="LMFD OSB-14" category=""/>
+    <function name="SimCBEOSB_15L" label="LMFD OSB-15" category=""/>
+    <function name="SimCBEOSB_16L" label="LMFD OSB-16" category=""/>
+    <function name="SimCBEOSB_17L" label="LMFD OSB-17" category=""/>
+    <function name="SimCBEOSB_18L" label="LMFD OSB-18" category=""/>
+    <function name="SimCBEOSB_19L" label="LMFD OSB-19" category=""/>
+    <function name="SimCBEOSB_20L" label="LMFD OSB-20" category=""/>
+    <function name="SimCBEOSB_1R" label="RMFD OSB-1" category=""/>
+    <function name="SimCBEOSB_2R" label="RMFD OSB-2" category=""/>
+    <function name="SimCBEOSB_3R" label="RMFD OSB-3" category=""/>
+    <function name="SimCBEOSB_4R" label="RMFD OSB-4" category=""/>
+    <function name="SimCBEOSB_5R" label="RMFD OSB-5" category=""/>
+    <function name="SimCBEOSB_6R" label="RMFD OSB-6" category=""/>
+    <function name="SimCBEOSB_7R" label="RMFD OSB-7" category=""/>
+    <function name="SimCBEOSB_8R" label="RMFD OSB-8" category=""/>
+    <function name="SimCBEOSB_9R" label="RMFD OSB-9" category=""/>
+    <function name="SimCBEOSB_10R" label="RMFD OSB-10" category=""/>
+    <function name="SimCBEOSB_11R" label="RMFD OSB-11" category=""/>
+    <function name="SimCBEOSB_12R" label="RMFD OSB-12" category=""/>
+    <function name="SimCBEOSB_13R" label="RMFD OSB-13" category=""/>
+    <function name="SimCBEOSB_14R" label="RMFD OSB-14" category=""/>
+    <function name="SimCBEOSB_15R" label="RMFD OSB-15" category=""/>
+    <function name="SimCBEOSB_16R" label="RMFD OSB-16" category=""/>
+    <function name="SimCBEOSB_17R" label="RMFD OSB-17" category=""/>
+    <function name="SimCBEOSB_18R" label="RMFD OSB-18" category=""/>
+    <function name="SimCBEOSB_19R" label="RMFD OSB-19" category=""/>
+    <function name="SimCBEOSB_20R" label="RMFD OSB-20" category=""/>
+    <function name="SimCBEOSB_GAINUP_L" label="LMFD-Brightness Up" category=""/>
+    <function name="SimCBEOSB_GAINUP_R" label="RMFD-Brightness Up" category=""/>
+    <function name="SimCBEOSB_GAINDOWN_L" label="LMFD-Brightness Down" category=""/>
+    <function name="SimCBEOSB_GAINDOWN_R" label="RMFD-Brightness Down" category=""/>
+    <function name="SimCBEOSB_1T" label="SimCBEOSB_1T" category=""/>
+    <function name="SimCBEOSB_2T" label="SimCBEOSB_2T" category=""/>
+    <function name="SimCBEOSB_3T" label="SimCBEOSB_3T" category=""/>
+    <function name="SimCBEOSB_4T" label="SimCBEOSB_4T" category=""/>
+    <function name="SimCBEOSB_5T" label="SimCBEOSB_5T" category=""/>
+    <function name="SimCBEOSB_6T" label="SimCBEOSB_6T" category=""/>
+    <function name="SimCBEOSB_7T" label="SimCBEOSB_7T" category=""/>
+    <function name="SimCBEOSB_8T" label="SimCBEOSB_8T" category=""/>
+    <function name="SimCBEOSB_9T" label="SimCBEOSB_9T" category=""/>
+    <function name="SimCBEOSB_10T" label="SimCBEOSB_10T" category=""/>
+    <function name="SimCBEOSB_11T" label="SimCBEOSB_11T" category=""/>
+    <function name="SimCBEOSB_12T" label="SimCBEOSB_12T" category=""/>
+    <function name="SimCBEOSB_13T" label="SimCBEOSB_13T" category=""/>
+    <function name="SimCBEOSB_14T" label="SimCBEOSB_14T" category=""/>
+    <function name="SimCBEOSB_15T" label="SimCBEOSB_15T" category=""/>
+    <function name="SimCBEOSB_16T" label="SimCBEOSB_16T" category=""/>
+    <function name="SimCBEOSB_17T" label="SimCBEOSB_17T" category=""/>
+    <function name="SimCBEOSB_18T" label="SimCBEOSB_18T" category=""/>
+    <function name="SimCBEOSB_19T" label="SimCBEOSB_19T" category=""/>
+    <function name="SimCBEOSB_20T" label="SimCBEOSB_20T" category=""/>
+    <function name="SimCBEOSB_1F" label="SimCBEOSB_1F" category=""/>
+    <function name="SimCBEOSB_2F" label="SimCBEOSB_2F" category=""/>
+    <function name="SimCBEOSB_3F" label="SimCBEOSB_3F" category=""/>
+    <function name="SimCBEOSB_4F" label="SimCBEOSB_4F" category=""/>
+    <function name="SimCBEOSB_5F" label="SimCBEOSB_5F" category=""/>
+    <function name="SimCBEOSB_6F" label="SimCBEOSB_6F" category=""/>
+    <function name="SimCBEOSB_7F" label="SimCBEOSB_7F" category=""/>
+    <function name="SimCBEOSB_8F" label="SimCBEOSB_8F" category=""/>
+    <function name="SimCBEOSB_9F" label="SimCBEOSB_9F" category=""/>
+    <function name="SimCBEOSB_10F" label="SimCBEOSB_10F" category=""/>
+    <function name="SimCBEOSB_11F" label="SimCBEOSB_11F" category=""/>
+    <function name="SimCBEOSB_12F" label="SimCBEOSB_12F" category=""/>
+    <function name="SimCBEOSB_13F" label="SimCBEOSB_13F" category=""/>
+    <function name="SimCBEOSB_14F" label="SimCBEOSB_14F" category=""/>
+    <function name="SimCBEOSB_15F" label="SimCBEOSB_15F" category=""/>
+    <function name="SimCBEOSB_16F" label="SimCBEOSB_16F" category=""/>
+    <function name="SimCBEOSB_17F" label="SimCBEOSB_17F" category=""/>
+    <function name="SimCBEOSB_18F" label="SimCBEOSB_18F" category=""/>
+    <function name="SimCBEOSB_19F" label="SimCBEOSB_19F" category=""/>
+    <function name="SimCBEOSB_20F" label="SimCBEOSB_20F" category=""/>
+    <function name="SimCBEOSB_GAINUP_T" label="SimCBEOSB_GAINUP_T" category=""/>
+    <function name="SimCBEOSB_GAINUP_F" label="SimCBEOSB_GAINUP_F" category=""/>
+    <function name="SimCBEOSB_GAINDOWN_T" label="SimCBEOSB_GAINDOWN_T" category=""/>
+    <function name="SimCBEOSB_GAINDOWN_F" label="SimCBEOSB_GAINDOWN_F" category=""/>
+    <function name="SimICPTILS" label="ICP 1-ILS" category=""/>
+    <function name="SimICPALOW" label="ICP 2-ALOW" category=""/>
+    <function name="SimICPFAck" label="Ckpit-F ACK" category=""/>
+    <function name="SimICPPrevious" label="ICP Previous" category=""/>
+    <function name="SimICPNext" label="ICP Next" category=""/>
+    <function name="SimICPLink" label="ICP DLNK" category=""/>
+    <function name="SimICPCrus" label="ICP 5-CRUS" category=""/>
+    <function name="SimICPStpt" label="ICP 4-STPT" category=""/>
+    <function name="SimICPMark" label="ICP 7-MARK" category=""/>
+    <function name="SimICPEnter" label="ICP Enter" category=""/>
+    <function name="SimICPCom1" label="ICP COM1" category=""/>
+    <function name="SimICPNav" label="ICP NAV" category=""/>
+    <function name="SimICPAA" label="ICP A-A" category=""/>
+    <function name="SimICPAG" label="ICP A-G" category=""/>
+    <function name="SimHUDScales" label="SimHUDScales" category=""/>
+    <function name="SimScalesVVVAH" label="SimScalesVVVAH" category=""/>
+    <function name="SimScalesVAH" label="SimScalesVAH" category=""/>
+    <function name="SimScalesOff" label="SimScalesOff" category=""/>
+    <function name="SimHUDFPM" label="SimHUDFPM" category=""/>
+    <function name="SimHUDDED" label="HUD-display DED" category=""/>
+    <function name="SimHUDDEDOff" label="SimHUDDEDOff" category=""/>
+    <function name="SimHUDDEDPFL" label="SimHUDDEDPFL" category=""/>
+    <function name="SimHUDDEDDED" label="SimHUDDEDDED" category=""/>
+    <function name="SimHUDVelocity" label="HUD-velocity cues" category=""/>
+    <function name="SimHUDVelocityCAS" label="SimHUDVelocityCAS" category=""/>
+    <function name="SimHUDVelocityTAS" label="SimHUDVelocityTAS" category=""/>
+    <function name="SimHUDVelocityGND" label="SimHUDVelocityGND" category=""/>
+    <function name="SimHUDRadar" label="HUD-altimeter type" category=""/>
+    <function name="SimHUDAltRadar" label="SimHUDAltRadar" category=""/>
+    <function name="SimHUDAltBaro" label="SimHUDAltBaro" category=""/>
+    <function name="SimHUDAltAuto" label="SimHUDAltAuto" category=""/>
+    <function name="OTWStepHudColor" label="HUD-color" category=""/>
+    <function name="SimHUDBrightness" label="HUD-brightness" category=""/>
+    <function name="SimHUDBrtDay" label="SimHUDBrtDay" category=""/>
+    <function name="SimHUDBrtAuto" label="SimHUDBrtAuto" category=""/>
+    <function name="SimHUDBrtNight" label="SimHUDBrtNight" category=""/>
+    <function name="SimHUDBrightnessUp" label="HUD Brightness Up" category=""/>
+    <function name="SimHUDBrightnessDown" label="HUD Brightness Down" category=""/>
+    <function name="SimCycleRadioChannel" label="Radio-channel cycle" category="Communications"/>
+    <function name="SimDecRadioChannel" label="SimDecRadioChannel" category="Communications"/>
+    <function name="SimToggleRadioVolume" label="SimToggleRadioVolume" category="Communications"/>
+    <function name="RadioTankerCommand" label="Radio-Tanker message" category="Communications"/>
+    <function name="RadioTowerCommand" label="Radio-ATC message" category="Communications"/>
+    <function name="RadioAWACSCommand" label="Radio-AWACS" category="Communications"/>
+    <function name="RadioWingCommand" label="Radio-Wingman command" category="Communications"/>
+    <function name="RadioElementCommand" label="Radio-Element command" category="Communications"/>
+    <function name="RadioFlightCommand" label="Radio-Flight command" category="Communications"/>
+    <function name="WingmanClearSix" label="WingmanClearSix" category="Communications"/>
+    <function name="ElementClearSix" label="ElementClearSix" category="Communications"/>
+    <function name="FlightClearSix" label="FlightClearSix" category="Communications"/>
+    <function name="WingmanCheckSix" label="WingmanCheckSix" category="Communications"/>
+    <function name="ElementCheckSix" label="ElementCheckSix" category="Communications"/>
+    <function name="FlightCheckSix" label="FlightCheckSix" category="Communications"/>
+    <function name="WingmanBreakLeft" label="WingmanBreakLeft" category="Communications"/>
+    <function name="ElementBreakLeft" label="ElementBreakLeft" category="Communications"/>
+    <function name="FlightBreakLeft" label="FlightBreakLeft" category="Communications"/>
+    <function name="WingmanBreakRight" label="WingmanBreakRight" category="Communications"/>
+    <function name="ElementBreakRight" label="ElementBreakRight" category="Communications"/>
+    <function name="FlightBreakRight" label="FlightBreakRight" category="Communications"/>
+    <function name="WingmanPince" label="WingmanPince" category="Communications"/>
+    <function name="ElementPince" label="ElementPince" category="Communications"/>
+    <function name="FlightPince" label="FlightPince" category="Communications"/>
+    <function name="WingmanPosthole" label="WingmanPosthole" category="Communications"/>
+    <function name="ElementPosthole" label="ElementPosthole" category="Communications"/>
+    <function name="FlightPosthole" label="FlightPosthole" category="Communications"/>
+    <function name="WingmanChainsaw" label="WingmanChainsaw" category="Communications"/>
+    <function name="ElementChainsaw" label="ElementChainsaw" category="Communications"/>
+    <function name="FlightChainsaw" label="FlightChainsaw" category="Communications"/>
+    <function name="WingmanFlex" label="WingmanFlex" category="Communications"/>
+    <function name="ElementFlex" label="ElementFlex" category="Communications"/>
+    <function name="FlightFlex" label="FlightFlex" category="Communications"/>
+    <function name="WingmanGoShooterMode" label="WingmanGoShooterMode" category="Communications"/>
+    <function name="ElementGoShooterMode" label="ElementGoShooterMode" category="Communications"/>
+    <function name="FlightGoShooterMode" label="FlightGoShooterMode" category="Communications"/>
+    <function name="WingmanGoCoverMode" label="WingmanGoCoverMode" category="Communications"/>
+    <function name="ElementGoCoverMode" label="ElementGoCoverMode" category="Communications"/>
+    <function name="FlightGoCoverMode" label="FlightGoCoverMode" category="Communications"/>
+    <function name="WingmanSearchGround" label="WingmanSearchGround" category="Communications"/>
+    <function name="ElementSearchGround" label="ElementSearchGround" category="Communications"/>
+    <function name="FlightSearchGround" label="FlightSearchGround" category="Communications"/>
+    <function name="WingmanSearchAir" label="WingmanSearchAir" category="Communications"/>
+    <function name="ElementSearchAir" label="ElementSearchAir" category="Communications"/>
+    <function name="FlightSearchAir" label="FlightSearchAir" category="Communications"/>
+    <function name="WingmanResumeNormal" label="WingmanResumeNormal" category="Communications"/>
+    <function name="ElementResumeNormal" label="ElementResumeNormal" category="Communications"/>
+    <function name="FlightResumeNormal" label="FlightResumeNormal" category="Communications"/>
+    <function name="WingmanRejoin" label="WingmanRejoin" category="Communications"/>
+    <function name="ElementRejoin" label="ElementRejoin" category="Communications"/>
+    <function name="FlightRejoin" label="FlightRejoin" category="Communications"/>
+    <function name="WingmanDesignateTarget" label="WingmanDesignateTarget" category="Communications"/>
+    <function name="ElementDesignateTarget" label="ElementDesignateTarget" category="Communications"/>
+    <function name="FlightDesignateTarget" label="FlightDesignateTarget" category="Communications"/>
+    <function name="WingmanDesignateGroup" label="WingmanDesignateGroup" category="Communications"/>
+    <function name="ElementDesignateGroup" label="ElementDesignateGroup" category="Communications"/>
+    <function name="FlightDesignateGroup" label="FlightDesignateGroup" category="Communications"/>
+    <function name="WingmanWeaponsHold" label="WingmanWeaponsHold" category="Communications"/>
+    <function name="ElementWeaponsHold" label="ElementWeaponsHold" category="Communications"/>
+    <function name="FlightWeaponsHold" label="FlightWeaponsHold" category="Communications"/>
+    <function name="WingmanWeaponsFree" label="WingmanWeaponsFree" category="Communications"/>
+    <function name="ElementWeaponsFree" label="ElementWeaponsFree" category="Communications"/>
+    <function name="FlightWeaponsFree" label="FlightWeaponsFree" category="Communications"/>
+    <function name="WingmanWedge" label="WingmanWedge" category="Communications"/>
+    <function name="ElementWedge" label="ElementWedge" category="Communications"/>
+    <function name="FlightWedge" label="FlightWedge" category="Communications"/>
+    <function name="WingmanTrail" label="WingmanTrail" category="Communications"/>
+    <function name="ElementTrail" label="ElementTrail" category="Communications"/>
+    <function name="FlightTrail" label="FlightTrail" category="Communications"/>
+    <function name="WingmanResCell" label="WingmanResCell" category="Communications"/>
+    <function name="ElementResCell" label="ElementResCell" category="Communications"/>
+    <function name="FlightResCell" label="FlightResCell" category="Communications"/>
+    <function name="WingmanBox" label="WingmanBox" category="Communications"/>
+    <function name="ElementBox" label="ElementBox" category="Communications"/>
+    <function name="FlightBox" label="FlightBox" category="Communications"/>
+    <function name="WingmanArrow" label="WingmanArrow" category="Communications"/>
+    <function name="ElementArrow" label="ElementArrow" category="Communications"/>
+    <function name="FlightArrow" label="FlightArrow" category="Communications"/>
+    <function name="WingmanKickout" label="WingmanKickout" category="Communications"/>
+    <function name="ElementKickout" label="ElementKickout" category="Communications"/>
+    <function name="FlightKickout" label="FlightKickout" category="Communications"/>
+    <function name="WingmanCloseup" label="WingmanCloseup" category="Communications"/>
+    <function name="ElementCloseup" label="ElementCloseup" category="Communications"/>
+    <function name="FlightCloseup" label="FlightCloseup" category="Communications"/>
+    <function name="WingmanToggleSide" label="WingmanToggleSide" category="Communications"/>
+    <function name="ElementToggleSide" label="ElementToggleSide" category="Communications"/>
+    <function name="FlightToggleSide" label="FlightToggleSide" category="Communications"/>
+    <function name="WingmanIncreaseRelAlt" label="WingmanIncreaseRelAlt" category="Communications"/>
+    <function name="ElementIncreaseRelAlt" label="ElementIncreaseRelAlt" category="Communications"/>
+    <function name="FlightIncreaseRelAlt" label="FlightIncreaseRelAlt" category="Communications"/>
+    <function name="WingmanDecreaseRelAlt" label="WingmanDecreaseRelAlt" category="Communications"/>
+    <function name="ElementDecreaseRelAlt" label="ElementDecreaseRelAlt" category="Communications"/>
+    <function name="FlightDecreaseRelAlt" label="FlightDecreaseRelAlt" category="Communications"/>
+    <function name="WingmanGiveBra" label="WingmanGiveBra" category="Communications"/>
+    <function name="ElementGiveBra" label="ElementGiveBra" category="Communications"/>
+    <function name="FlightGiveBra" label="FlightGiveBra" category="Communications"/>
+    <function name="WingmanGiveStatus" label="WingmanGiveStatus" category="Communications"/>
+    <function name="ElementGiveStatus" label="ElementGiveStatus" category="Communications"/>
+    <function name="FlightGiveStatus" label="FlightGiveStatus" category="Communications"/>
+    <function name="WingmanGiveDamageReport" label="WingmanGiveDamageReport" category="Communications"/>
+    <function name="ElementGiveDamageReport" label="ElementGiveDamageReport" category="Communications"/>
+    <function name="FlightGiveDamageReport" label="FlightGiveDamageReport" category="Communications"/>
+    <function name="WingmanGiveFuelState" label="WingmanGiveFuelState" category="Communications"/>
+    <function name="ElementGiveFuelState" label="ElementGiveFuelState" category="Communications"/>
+    <function name="FlightGiveFuelState" label="FlightGiveFuelState" category="Communications"/>
+    <function name="WingmanGiveWeaponsCheck" label="WingmanGiveWeaponsCheck" category="Communications"/>
+    <function name="ElementGiveWeaponsCheck" label="ElementGiveWeaponsCheck" category="Communications"/>
+    <function name="FlightGiveWeaponsCheck" label="FlightGiveWeaponsCheck" category="Communications"/>
+    <function name="WingmanRTB" label="WingmanRTB" category="Communications"/>
+    <function name="ElementRTB" label="ElementRTB" category="Communications"/>
+    <function name="FlightRTB" label="FlightRTB" category="Communications"/>
+    <function name="SimSpeedyGonzalesUp" label="SimSpeedyGonzalesUp" category=""/>
+    <function name="SimSpeedyGonzalesDown" label="SimSpeedyGonzalesDown" category=""/>
+    <function name="ATCRequestClearance" label="ATCRequestClearance" category=""/>
+    <function name="ATCRequestEmergencyClearance" label="ATCRequestEmergencyClearance" category=""/>
+    <function name="ATCRequestTakeoff" label="ATCRequestTakeoff" category=""/>
+    <function name="ATCRequestTaxi" label="ATCRequestTaxi" category=""/>
+    <function name="ATCTaxiing" label="ATCTaxiing" category=""/>
+    <function name="ATCReadyToGo" label="ATCReadyToGo" category=""/>
+    <function name="ATCRotate" label="ATCRotate" category=""/>
+    <function name="ATCGearUp" label="ATCGearUp" category=""/>
+    <function name="ATCGearDown" label="ATCGearDown" category=""/>
+    <function name="ATCBrake" label="ATCBrake" category=""/>
+    <function name="ATCAbortApproach" label="ATCAbortApproach" category=""/>
+    <function name="FACCheckIn" label="FACCheckIn" category=""/>
+    <function name="FACWilco" label="FACWilco" category=""/>
+    <function name="FACUnable" label="FACUnable" category=""/>
+    <function name="FACReady" label="FACReady" category=""/>
+    <function name="FACIn" label="FACIn" category=""/>
+    <function name="FACOut" label="FACOut" category=""/>
+    <function name="FACRequestMark" label="FACRequestMark" category=""/>
+    <function name="FACRequestTarget" label="FACRequestTarget" category=""/>
+    <function name="FACRequestBDA" label="FACRequestBDA" category=""/>
+    <function name="FACRequestLocation" label="FACRequestLocation" category=""/>
+    <function name="FACRequestTACAN" label="FACRequestTACAN" category=""/>
+    <function name="TankerRequestFuel" label="TankerRequestFuel" category="Communications"/>
+    <function name="TankerReadyForGas" label="TankerReadyForGas" category="Communications"/>
+    <function name="TankerDoneRefueling" label="TankerDoneRefueling" category="Communications"/>
+    <function name="TankerBreakaway" label="TankerBreakaway" category="Communications"/>
+    <function name="AWACSRequestPicture" label="AWACSRequestPicture" category="Communications"/>
+    <function name="AWACSRequestTanker" label="AWACSRequestTanker" category="Communications"/>
+    <function name="AWACSWilco" label="AWACSWilco" category="Communications"/>
+    <function name="AWACSUnable" label="AWACSUnable" category="Communications"/>
+    <function name="AWACSRequestHelp" label="AWACSRequestHelp" category="Communications"/>
+    <function name="AWACSRequestRelief" label="AWACSRequestRelief" category="Communications"/>
+    <function name="TimeAccelerate" label="Sim-2x time compression" category=""/>
+    <function name="TimeAccelerateMaxToggle" label="Sim-4X time acceleration" category=""/>
+    <function name="TimeAccelerateInc" label="Sim-Time Accel Inc" category=""/>
+    <function name="TimeAccelerateDec" label="Sim-Time Accel Dec" category=""/>
+    <function name="SimFuelDump" label="Ckpit-Dump Fuel" category=""/>
+    <function name="SimCycleDebugLabels" label="SimCycleDebugLabels" category=""/>
+    <function name="AFABFull" label="Ctrls-Full afterburner" category=""/>
+    <function name="BombRippleIncrement" label="Wpn-bomb ripple inc" category=""/>
+    <function name="BombIntervalIncrement" label="Wpn-bomb interval inc" category=""/>
+    <function name="BombRippleDecrement" label="Wpn-bomb ripple dec" category=""/>
+    <function name="BombIntervalDecrement" label="Wpn-bomb interval dec" category=""/>
+    <function name="BombPairRelease" label="Wpn-release bombs in pairs" category=""/>
+    <function name="BombSGLRelease" label="Wpn-release bombs singly" category=""/>
+    <function name="BombBurstIncrement" label="Wpn-CBU burst altitude inc" category=""/>
+    <function name="BombBurstDecrement" label="Wpn-CBU burst altitude dec" category=""/>
+    <function name="BreakToggle" label="BreakToggle" category=""/>
+    <function name="SimICPCom2" label="ICP COM2" category=""/>
+    <function name="SimToggleDropPattern" label="Ckpit-Chaff/Flare auto/manual" category=""/>
+    <function name="KneeboardTogglePage" label="Ckpit-kneeboard page" category=""/>
+    <function name="ToggleNVGMode" label="Ckpit-NVG" category=""/>
+    <function name="ToggleSmoke" label="Sim-Smoke toggle" category=""/>
+    <function name="WingmanSpread" label="WingmanSpread" category="Communications"/>
+    <function name="ElementSpread" label="ElementSpread" category="Communications"/>
+    <function name="FlightSpread" label="FlightSpread" category="Communications"/>
+    <function name="WingmanStack" label="WingmanStack" category="Communications"/>
+    <function name="ElementStack" label="ElementStack" category="Communications"/>
+    <function name="FlightStack" label="FlightStack" category="Communications"/>
+    <function name="WingmanLadder" label="WingmanLadder" category="Communications"/>
+    <function name="ElementLadder" label="ElementLadder" category="Communications"/>
+    <function name="FlightLadder" label="FlightLadder" category="Communications"/>
+    <function name="WingmanFluid" label="WingmanFluid" category="Communications"/>
+    <function name="ElementFluid" label="ElementFluid" category="Communications"/>
+    <function name="FlightFluid" label="FlightFluid" category="Communications"/>
+    <function name="SimOpenChatBox" label="Sim-Chat" category=""/>
+    <function name="ExtinguishMasterCaution" label="Ckpit-Betty Master Caution" category=""/>
+    <function name="SoundOff" label="Sim-Sound off" category=""/>
+    <function name="SimToggleExtLights" label="Ckpit-Aircraft lights" category=""/>
+    <function name="IncreaseAlow" label="Ckpit-ALOW altitude inc" category=""/>
+    <function name="DecreaseAlow" label="Ckpit-ALOW altitude dec" category=""/>
+    <function name="SaveCockpitDefaults" label="Sim-cockpit setup save" category=""/>
+    <function name="LoadCockpitDefaults" label="Sim-cockpit setup load" category=""/>
+    <function name="SimStepMasterArm" label="Ckpit-Master Arm cycle" category=""/>
+    <function name="SimArmMasterArm" label="Ckpit-Master Arm on" category=""/>
+    <function name="SimSafeMasterArm" label="Ckpit-Master Arm safe" category=""/>
+    <function name="SimSimMasterArm" label="Ckpit-Master Arm sim" category=""/>
+    <function name="SimSetBubbleSize" label="SimSetBubbleSize" category=""/>
+    <function name="SimHookToggle" label="Ckpit-Hook" category=""/>
+    <function name="SimHookUp" label="SimHookUp" category=""/>
+    <function name="SimHookDown" label="SimHookDown" category=""/>
+    <function name="SimThrottleIdleDetent" label="Ctrls-Throttle Idle Detent" category=""/>
+    <function name="SimJfsStart" label="Ckpit-JFS switch" category=""/>
+    <function name="SimEpuToggle" label="Ckpit-EPU step" category=""/>
+    <function name="SimEpuOff" label="SimEpuOff" category=""/>
+    <function name="SimEpuAuto" label="SimEpuAuto" category=""/>
+    <function name="SimEpuOn" label="SimEpuOn" category=""/>
+    <function name="AFRudderTrimLeft" label="Trim-Rudder Left" category=""/>
+    <function name="AFRudderTrimRight" label="Trim-Rudder Right" category=""/>
+    <function name="AFAileronTrimLeft" label="Trim-Aileron Left" category=""/>
+    <function name="AFAileronTrimRight" label="Trim-Aileron Right" category=""/>
+    <function name="AFElevatorTrimUp" label="Trim-Elevator Up" category=""/>
+    <function name="AFElevatorTrimDown" label="Trim-Elevator Down" category=""/>
+    <function name="AFResetTrim" label="Trim-Reset" category=""/>
+    <function name="AFAlternateGear" label="Ckpit-Alternate Landing Gear" category=""/>
+    <function name="AFAlternateGearReset" label="Ckpit-Reset Alt Gear Extension" category=""/>
+    <function name="SimFLIRToggle" label="HUD-display FLIR" category=""/>
+    <function name="SimToggleTFR" label="Ckpit-Terrain Following Radar" category=""/>
+    <function name="SimMainPowerInc" label="Ckpit-Power Main Inc" category=""/>
+    <function name="SimMainPowerDec" label="Ckpit-Power Main Dec" category=""/>
+    <function name="SimMainPowerOff" label="SimMainPowerOff" category=""/>
+    <function name="SimMainPowerBatt" label="SimMainPowerBatt" category=""/>
+    <function name="SimMainPowerMain" label="SimMainPowerMain" category=""/>
+    <function name="AFFullFlap" label="Flaps-Set to Full" category=""/>
+    <function name="AFNoFlap" label="Flaps-Set to Null" category=""/>
+    <function name="AFIncFlap" label="Flaps-Increase" category=""/>
+    <function name="AFDecFlap" label="Flaps-Decrease" category=""/>
+    <function name="AFFullLEF" label="Flaps-Set LEF to Full" category=""/>
+    <function name="AFNoLEF" label="Flaps-Set LEF to Null" category=""/>
+    <function name="AFIncLEF" label="Flaps-Increase LEF" category=""/>
+    <function name="AFDecLEF" label="Flaps-Decrease LEF" category=""/>
+    <function name="AFDragChute" label="Ckpit-Deploy Drag Chute" category=""/>
+    <function name="AFCanopyToggle" label="Ckpit-Open/Close canopy" category=""/>
+    <function name="Sim3DCkptHelpOnOff" label="Sim3DCkptHelpOnOff" category=""/>
+    <function name="SimICPIFF" label="ICP IFF" category=""/>
+    <function name="SimICPLIST" label="ICP LIST" category=""/>
+    <function name="SimICPTHREE" label="ICP 3" category=""/>
+    <function name="SimICPSIX" label="ICP 6-TIME" category=""/>
+    <function name="SimICPEIGHT" label="ICP 8-FIX" category=""/>
+    <function name="SimICPNINE" label="ICP 9-A-CAL" category=""/>
+    <function name="SimICPZERO" label="ICP 0-M-SEL" category=""/>
+    <function name="SimICPResetDED" label="ICP DCS-Return" category=""/>
+    <function name="SimICPDEDUP" label="ICP DCS-Up" category=""/>
+    <function name="SimICPDEDDOWN" label="ICP DCS-Down" category=""/>
+    <function name="SimICPDEDSEQ" label="ICP DCS-Seq" category=""/>
+    <function name="SimICPCLEAR" label="ICP Reset" category=""/>
+    <function name="SimRALTSTDBY" label="Ckpit-Radar Altimeter STDBY" category=""/>
+    <function name="SimRALTON" label="Ckpit-Radar Altimeter ON" category=""/>
+    <function name="SimRALTOFF" label="Ckpit-Radar Altimeter OFF" category=""/>
+    <function name="SimLandingLightToggle" label="Ckpit-Landing light" category=""/>
+    <function name="SimLandingLightOn" label="SimLandingLightOn" category=""/>
+    <function name="SimLandingLightOff" label="SimLandingLightOff" category=""/>
+    <function name="SimParkingBrakeToggle" label="Ckpit-Parking brake" category=""/>
+    <function name="SimParkingBrakeOn" label="SimParkingBrakeOn" category=""/>
+    <function name="SimParkingBrakeOff" label="SimParkingBrakeOff" category=""/>
+    <function name="SimLaserArmToggle" label="Ckpit-Laser Arm" category=""/>
+    <function name="SimLaserArmOn" label="SimLaserArmOn" category=""/>
+    <function name="SimLaserArmOff" label="SimLaserArmOff" category=""/>
+    <function name="SimFuelDoorToggle" label="Ckpit-Fuel Door" category=""/>
+    <function name="SimFuelDoorOpen" label="SimFuelDoorOpen" category=""/>
+    <function name="SimFuelDoorClose" label="SimFuelDoorClose" category=""/>
+    <function name="SimRightAPSwitch" label="Ckpit-AP Switch Right" category=""/>
+    <function name="SimLeftAPSwitch" label="Ckpit-AP Switch Left" category=""/>
+    <function name="SimLeftAPUp" label="SimLeftAPUp" category=""/>
+    <function name="SimLeftAPMid" label="SimLeftAPMid" category=""/>
+    <function name="SimLeftAPDown" label="SimLeftAPDown" category=""/>
+    <function name="SimRightAPUp" label="SimRightAPUp" category=""/>
+    <function name="SimRightAPMid" label="SimRightAPMid" category=""/>
+    <function name="SimRightAPDown" label="SimRightAPDown" category=""/>
+    <function name="SimAPOverride" label="Ckpit-AP Override" category=""/>
+    <function name="SimWarnReset" label="HUD-Warning reset" category=""/>
+    <function name="SimReticleSwitch" label="Wpn-MAN Reticle" category=""/>
+    <function name="SimReticlePri" label="SimReticlePri" category=""/>
+    <function name="SimReticleStby" label="SimReticleStby" category=""/>
+    <function name="SimReticleOff" label="SimReticleOff" category=""/>
+    <function name="SimTMSUp" label="TMS Up" category=""/>
+    <function name="SimTMSLeft" label="TMS Left" category=""/>
+    <function name="SimTMSDown" label="TMS Down" category=""/>
+    <function name="SimTMSRight" label="TMS Right" category=""/>
+    <function name="SimSeatArm" label="Ckpit-SeatArm" category=""/>
+    <function name="SimSeatOn" label="SimSeatOn" category=""/>
+    <function name="SimSeatOff" label="SimSeatOff" category=""/>
+    <function name="SimEWSRWRPower" label="EWS-RWR Power" category=""/>
+    <function name="SimEWSRWROn" label="SimEWSRWROn" category=""/>
+    <function name="SimEWSRWROff" label="SimEWSRWROff" category=""/>
+    <function name="SimEWSJammerPower" label="EWS-Jammer Power" category=""/>
+    <function name="SimEWSJammerOn" label="SimEWSJammerOn" category=""/>
+    <function name="SimEWSJammerOff" label="SimEWSJammerOff" category=""/>
+    <function name="SimEWSChaffPower" label="EWS-Chaff Power" category=""/>
+    <function name="SimEWSChaffOn" label="SimEWSChaffOn" category=""/>
+    <function name="SimEWSChaffOff" label="SimEWSChaffOff" category=""/>
+    <function name="SimEWSFlarePower" label="EWS-Flare Power" category=""/>
+    <function name="SimEWSFlareOn" label="SimEWSFlareOn" category=""/>
+    <function name="SimEWSFlareOff" label="SimEWSFlareOff" category=""/>
+    <function name="SimEWSPGMInc" label="EWS-PGM Inc" category=""/>
+    <function name="SimEWSPGMDec" label="EWS-PGM Dec" category=""/>
+    <function name="SimEWSModeOff" label="SimEWSModeOff" category=""/>
+    <function name="SimEWSModeStby" label="SimEWSModeStby" category=""/>
+    <function name="SimEWSModeMan" label="SimEWSModeMan" category=""/>
+    <function name="SimEWSModeSemi" label="SimEWSModeSemi" category=""/>
+    <function name="SimEWSModeAuto" label="SimEWSModeAuto" category=""/>
+    <function name="SimEWSProgInc" label="EWS-Program Inc" category=""/>
+    <function name="SimEWSProgDec" label="EWS-Program Dec" category=""/>
+    <function name="SimEWSProgOne" label="SimEWSProgOne" category=""/>
+    <function name="SimEWSProgTwo" label="SimEWSProgTwo" category=""/>
+    <function name="SimEWSProgThree" label="SimEWSProgThree" category=""/>
+    <function name="SimEWSProgFour" label="SimEWSProgFour" category=""/>
+    <function name="SimInhibitVMS" label="Ckpit-VMS Inhibit" category=""/>
+    <function name="SimVMSOn" label="SimVMSOn" category=""/>
+    <function name="SimVMSOff" label="SimVMSOff" category=""/>
+    <function name="SimRFSwitch" label="Radar-RF Inhibit" category=""/>
+    <function name="SimRFNorm" label="SimRFNorm" category=""/>
+    <function name="SimRFQuiet" label="SimRFQuiet" category=""/>
+    <function name="SimRFSilent" label="SimRFSilent" category=""/>
+    <function name="SimDropProgrammed" label="SimDropProgrammed" category=""/>
+    <function name="SimPinkySwitch" label="Pinky Switch" category=""/>
+    <function name="SimGndJettEnable" label="Ckpit-Ground Jett enable" category=""/>
+    <function name="SimGndJettOn" label="SimGndJettOn" category=""/>
+    <function name="SimGndJettOff" label="SimGndJettOff" category=""/>
+    <function name="SimExtlPower" label="Lights-Extl Power" category=""/>
+    <function name="SimExtlMasterNorm" label="SimExtlMasterNorm" category=""/>
+    <function name="SimExtlMasterOff" label="SimExtlMasterOff" category=""/>
+    <function name="SimExtlAntiColl" label="Lights-Extl Anti Coll" category=""/>
+    <function name="SimAntiCollOn" label="SimAntiCollOn" category=""/>
+    <function name="SimAntiCollOff" label="SimAntiCollOff" category=""/>
+    <function name="SimExtlSteady" label="Lights-Extl Steady" category=""/>
+    <function name="SimLightsSteady" label="SimLightsSteady" category=""/>
+    <function name="SimLightsFlash" label="SimLightsFlash" category=""/>
+    <function name="SimExtlWing" label="Lights-Extl Wing" category=""/>
+    <function name="SimWingLightBrt" label="SimWingLightBrt" category=""/>
+    <function name="SimWingLightOff" label="SimWingLightOff" category=""/>
+    <function name="SimDMSUp" label="DMS Up" category=""/>
+    <function name="SimDMSLeft" label="DMS Left" category=""/>
+    <function name="SimDMSDown" label="DMS Down" category=""/>
+    <function name="SimDMSRight" label="DMS Right" category=""/>
+    <function name="SimAVTRSwitch" label="Ckpit-AVTR Switch" category=""/>
+    <function name="SimAVTRSwitchOff" label="SimAVTRSwitchOff" category=""/>
+    <function name="SimAVTRSwitchAuto" label="SimAVTRSwitchAuto" category=""/>
+    <function name="SimAVTRSwitchOn" label="SimAVTRSwitchOn" category=""/>
+    <function name="SimAutoAVTR" label="SimAutoAVTR" category=""/>
+    <function name="SimIFFPower" label="IFF-Scan Power On/Off" category=""/>
+    <function name="SimIFFIn" label="SimIFFIn" category=""/>
+    <function name="SimINSInc" label="Ckpit-INS Inc" category=""/>
+    <function name="SimINSDec" label="Ckpit-INS Dec" category=""/>
+    <function name="SimINSOff" label="SimINSOff" category=""/>
+    <function name="SimINSNorm" label="SimINSNorm" category=""/>
+    <function name="SimINSNav" label="SimINSNav" category=""/>
+    <function name="SimINSInFlt" label="SimINSInFlt" category=""/>
+    <function name="SimLEFLockSwitch" label="Flaps-Lock LEFs" category=""/>
+    <function name="SimLEFLock" label="SimLEFLock" category=""/>
+    <function name="SimLEFAuto" label="SimLEFAuto" category=""/>
+    <function name="SimDigitalBUP" label="SimDigitalBUP" category=""/>
+    <function name="SimAltFlaps" label="SimAltFlaps" category=""/>
+    <function name="SimAltFlapsNorm" label="SimAltFlapsNorm" category=""/>
+    <function name="SimAltFlapsExtend" label="SimAltFlapsExtend" category=""/>
+    <function name="SimManualFlyup" label="SimManualFlyup" category=""/>
+    <function name="SimFLCSReset" label="SimFLCSReset" category=""/>
+    <function name="SimFLTBIT" label="SimFLTBIT" category=""/>
+    <function name="SimOBOGSBit" label="SimOBOGSBit" category=""/>
+    <function name="SimMalIndLights" label="Lights-Test" category=""/>
+    <function name="SimProbeHeat" label="SimProbeHeat" category=""/>
+    <function name="SimEPUGEN" label="SimEPUGEN" category=""/>
+    <function name="SimTestSwitch" label="SimTestSwitch" category=""/>
+    <function name="SimOverHeat" label="SimOverHeat" category=""/>
+    <function name="SimTrimAPDisc" label="Trim-AP Disc" category=""/>
+    <function name="SimTrimAPDISC" label="SimTrimAPDISC" category=""/>
+    <function name="SimTrimAPNORM" label="SimTrimAPNORM" category=""/>
+    <function name="SimMaxPower" label="SimMaxPower" category=""/>
+    <function name="SimABReset" label="SimABReset" category=""/>
+    <function name="SimTrimNoseUp" label="Trim-Manual nose up" category=""/>
+    <function name="SimTrimNoseDown" label="Trim-Manual nose down" category=""/>
+    <function name="SimTrimYawLeft" label="Trim-Manual yaw Left" category=""/>
+    <function name="SimTrimYawRight" label="Trim-Manual yaw right" category=""/>
+    <function name="SimTrimRollLeft" label="Trim-Manual roll left" category=""/>
+    <function name="SimTrimRollRight" label="Trim-Manual roll right" category=""/>
+    <function name="SimStepMissileVolumeUp" label="Sound-Missile Volume up" category=""/>
+    <function name="SimStepMissileVolumeDown" label="Sound-Missile Volume Down" category=""/>
+    <function name="SimStepThreatVolumeUp" label="Sound-Threat Volume up" category=""/>
+    <function name="SimStepThreatVolumeDown" label="Sound-Threat Volume Down" category=""/>
+    <function name="SimTriggerFirstDetent" label="HOTAS-First Trigger Detent" category=""/>
+    <function name="SimTriggerSecondDetent" label="HOTAS-Second Trigger Detent" category=""/>
+    <function name="SimRetUp" label="HUD-ManBomBRet Up" category=""/>
+    <function name="SimRetDn" label="HUD-ManBombRet Down" category=""/>
+    <function name="SimCursorEnable" label="HOTAS-Cursor enable" category=""/>
+    <function name="SimStepComm1VolumeUp" label="Comm1 Volume up" category="Communications"/>
+    <function name="SimStepComm1VolumeDown" label="Comm1 Volume Down" category="Communications"/>
+    <function name="SimStepComm2VolumeUp" label="Comm2 Volume up" category="Communications"/>
+    <function name="SimStepComm2VolumeDown" label="Comm2 Volume Down" category="Communications"/>
+    <function name="SimSwitchTextureOnOff" label="SimSwitchTextureOnOff" category=""/>
+    <function name="SimSymWheelUp" label="SimSymWheelUp" category=""/>
+    <function name="SimSymWheelDn" label="SimSymWheelDn" category=""/>
+    <function name="SimRandomError" label="SimRandomError" category=""/>
+    <function name="SimToggleCockpit" label="View-cockpit Wide/Normal" category=""/>
+    <function name="SimToggleGhostMFDs" label="View-cockpit Ghost MFD Zoom" category=""/>
+    <function name="SimRangeKnobUp" label="Radar-Range Knob Up" category=""/>
+    <function name="SimRangeKnobDown" label="Radar-Range Knob Down" category=""/>
+    <function name="AWACSRequestCarrier" label="AWACSRequestCarrier" category="Communications"/>
+    <function name="WingmanDropStores" label="WingmanDropStores" category="Communications"/>
+    <function name="ElementDropStores" label="ElementDropStores" category="Communications"/>
+    <function name="FlightDropStores" label="FlightDropStores" category="Communications"/>
+    <function name="WingmanVic" label="WingmanVic" category="Communications"/>
+    <function name="ElementVic" label="ElementVic" category="Communications"/>
+    <function name="FlightVic" label="FlightVic" category="Communications"/>
+    <function name="WingmanFinger4" label="WingmanFinger4" category="Communications"/>
+    <function name="ElementFinger4" label="ElementFinger4" category="Communications"/>
+    <function name="FlightFinger4" label="FlightFinger4" category="Communications"/>
+    <function name="WingmanEchelon" label="WingmanEchelon" category="Communications"/>
+    <function name="ElementEchelon" label="ElementEchelon" category="Communications"/>
+    <function name="FlightEchelon" label="FlightEchelon" category="Communications"/>
+    <function name="WingmanForm1" label="WingmanForm1" category="Communications"/>
+    <function name="ElementForm1" label="ElementForm1" category="Communications"/>
+    <function name="FlightForm1" label="FlightForm1" category="Communications"/>
+    <function name="WingmanForm2" label="WingmanForm2" category="Communications"/>
+    <function name="ElementForm2" label="ElementForm2" category="Communications"/>
+    <function name="FlightForm2" label="FlightForm2" category="Communications"/>
+    <function name="WingmanForm3" label="WingmanForm3" category="Communications"/>
+    <function name="ElementForm3" label="ElementForm3" category="Communications"/>
+    <function name="FlightForm3" label="FlightForm3" category="Communications"/>
+    <function name="WingmanForm4" label="WingmanForm4" category="Communications"/>
+    <function name="ElementForm4" label="ElementForm4" category="Communications"/>
+    <function name="FlightForm4" label="FlightForm4" category="Communications"/>
+    <function name="SimSMSPower" label="Ckpit-Power SMS" category=""/>
+    <function name="SimSMSOn" label="SimSMSOn" category=""/>
+    <function name="SimSMSOff" label="SimSMSOff" category=""/>
+    <function name="SimFCCPower" label="Ckpit-Power FCC" category=""/>
+    <function name="SimFCCOn" label="SimFCCOn" category=""/>
+    <function name="SimFCCOff" label="SimFCCOff" category=""/>
+    <function name="SimMFDPower" label="Ckpit-Power MFD" category=""/>
+    <function name="SimMFDOn" label="SimMFDOn" category=""/>
+    <function name="SimMFDOff" label="SimMFDOff" category=""/>
+    <function name="SimUFCPower" label="Ckpit-Power UFC" category=""/>
+    <function name="SimUFCOn" label="SimUFCOn" category=""/>
+    <function name="SimUFCOff" label="SimUFCOff" category=""/>
+    <function name="SimGPSPower" label="Ckpit-Power GPS" category=""/>
+    <function name="SimGPSOn" label="SimGPSOn" category=""/>
+    <function name="SimGPSOff" label="SimGPSOff" category=""/>
+    <function name="SimDLPower" label="Ckpit-Power Datalink" category=""/>
+    <function name="SimDLOn" label="SimDLOn" category=""/>
+    <function name="SimDLOff" label="SimDLOff" category=""/>
+    <function name="SimMAPPower" label="Ckpit-Power MAP" category=""/>
+    <function name="SimMAPOn" label="SimMAPOn" category=""/>
+    <function name="SimMAPOff" label="SimMAPOff" category=""/>
+    <function name="SimLeftHptPower" label="Ckpit-Power Left Hpt" category=""/>
+    <function name="SimLeftHptOn" label="SimLeftHptOn" category=""/>
+    <function name="SimLeftHptOff" label="SimLeftHptOff" category=""/>
+    <function name="SimRightHptPower" label="Ckpit-Power Right Hpt" category=""/>
+    <function name="SimRightHptOn" label="SimRightHptOn" category=""/>
+    <function name="SimRightHptOff" label="SimRightHptOff" category=""/>
+    <function name="SimTISLPower" label="Ckpit-Power TISL" category=""/>
+    <function name="SimFCRPower" label="Ckpit-Power FCR" category=""/>
+    <function name="SimFCROn" label="SimFCROn" category=""/>
+    <function name="SimFCROff" label="SimFCROff" category=""/>
+    <function name="SimHUDPower" label="Ckpit-Power HUD" category=""/>
+    <function name="SimHUDOn" label="SimHUDOn" category=""/>
+    <function name="SimHUDOff" label="SimHUDOff" category=""/>
+    <function name="SimToggleRealisticAvionics" label="SimToggleRealisticAvionics" category=""/>
+    <function name="SimIncFuelSwitch" label="Ckpit-Fuel Switch Inc" category=""/>
+    <function name="SimDecFuelSwitch" label="Ckpit-Fuel Switch Dec" category=""/>
+    <function name="SimFuelSwitchTest" label="SimFuelSwitchTest" category=""/>
+    <function name="SimFuelSwitchNorm" label="SimFuelSwitchNorm" category=""/>
+    <function name="SimFuelSwitchResv" label="SimFuelSwitchResv" category=""/>
+    <function name="SimFuelSwitchWingInt" label="SimFuelSwitchWingInt" category=""/>
+    <function name="SimFuelSwitchWingExt" label="SimFuelSwitchWingExt" category=""/>
+    <function name="SimFuelSwitchCenterExt" label="SimFuelSwitchCenterExt" category=""/>
+    <function name="SimIncFuelPump" label="Ckpit-Fuel Pump Switch Inc" category=""/>
+    <function name="SimDecFuelPump" label="Ckpit-Fuel Pump Switch Dec" category=""/>
+    <function name="SimFuelPumpOff" label="SimFuelPumpOff" category=""/>
+    <function name="SimFuelPumpNorm" label="SimFuelPumpNorm" category=""/>
+    <function name="SimFuelPumpAft" label="SimFuelPumpAft" category=""/>
+    <function name="SimFuelPumpFwd" label="SimFuelPumpFwd" category=""/>
+    <function name="SimToggleMasterFuel" label="Ckpit-Fuel Master Switch" category=""/>
+    <function name="SimMasterFuelOn" label="SimMasterFuelOn" category=""/>
+    <function name="SimMasterFuelOff" label="SimMasterFuelOff" category=""/>
+    <function name="SimExtFuelTrans" label="SimExtFuelTrans" category=""/>
+    <function name="SimFuelTransNorm" label="SimFuelTransNorm" category=""/>
+    <function name="SimFuelTransWing" label="SimFuelTransWing" category=""/>
+    <function name="SimIncAirSource" label="Ckpit-Air Source Inc" category=""/>
+    <function name="SimDecAirSource" label="Ckpit-Air Source Dec" category=""/>
+    <function name="SimAirSourceOff" label="SimAirSourceOff" category=""/>
+    <function name="SimAirSourceNorm" label="SimAirSourceNorm" category=""/>
+    <function name="SimAirSourceDump" label="SimAirSourceDump" category=""/>
+    <function name="SimAirSourceRam" label="SimAirSourceRam" category=""/>
+    <function name="SimDecLeftAuxComDigit" label="SimDecLeftAuxComDigit" category=""/>
+    <function name="SimDecCenterAuxComDigit" label="SimDecCenterAuxComDigit" category=""/>
+    <function name="SimDecRightAuxComDigit" label="SimDecRightAuxComDigit" category=""/>
+    <function name="SimInteriorLight" label="Ckpit-Flood lights" category=""/>
+    <function name="SimInstrumentLight" label="Ckpit-Instrument lights" category=""/>
+    <function name="SimSpotLight" label="SimSpotLight" category=""/>
+    <function name="SimRwrPower" label="SimRwrPower" category=""/>
+    <function name="Profiler_CursorDown" label="Profiler_CursorDown" category=""/>
+    <function name="Profiler_CursorUp" label="Profiler_CursorUp" category=""/>
+    <function name="Profiler_Parent" label="Profiler_Parent" category=""/>
+    <function name="Profiler_Select" label="Profiler_Select" category=""/>
+    <function name="Profiler_Hier" label="Profiler_Hier" category=""/>
+    <function name="Profiler_Self" label="Profiler_Self" category=""/>
+    <function name="ToggleProfilerDisplay" label="ToggleProfilerDisplay" category=""/>
+    <function name="ToggleProfiler" label="ToggleProfiler" category=""/>
+    <function name="ToggleSubTitles" label="ToggleSubTitles" category=""/>
+    <function name="ToggleInfoBar" label="ToggleInfoBar" category=""/>
+    <function name="ToggleDisplacementCam" label="ToggleDisplacementCam" category=""/>
+    <function name="WinAmpNextTrack" label="WinAmpNextTrack" category=""/>
+    <function name="WinAmpPreviousTrack" label="WinAmpPreviousTrack" category=""/>
+    <function name="WinAmpStopPlayback" label="WinAmpStopPlayback" category=""/>
+    <function name="WinAmpStartPlayback" label="WinAmpStartPlayback" category=""/>
+    <function name="WinAmpTogglePlayback" label="WinAmpTogglePlayback" category=""/>
+    <function name="WinAmpVolumeUp" label="WinAmpVolumeUp" category=""/>
+    <function name="WinAmpVolumeDown" label="WinAmpVolumeDown" category=""/>
+    <function name="CycleEngine" label="Cycle Engine" category=""/>
+    <function name="selectLeftEngine" label="selectLeftEngine" category=""/>
+    <function name="selectRightEngine" label="selectRightEngine" category=""/>
+    <function name="selectBothEngines" label="selectBothEngines" category=""/>
+    <function name="ToggleTIR" label="ToggleTIR" category=""/>
+    <function name="ToggleClickablePitMode" label="ToggleClickablePitMode" category=""/>
+    <function name="SimToggleRearView" label="SimToggleRearView" category=""/>
+    <function name="SimToggleAltView" label="SimToggleAltView" category=""/>
+    <function name="ToggleVtune" label="ToggleVtune" category=""/>
+    <function name="SimCycleLeftAuxComDigit" label="Ckpit-Aux Comm Lft digit" category=""/>
+    <function name="SimCycleCenterAuxComDigit" label="Ckpit-Aux Comm Ctr digit" category=""/>
+    <function name="SimCycleRightAuxComDigit" label="Ckpit-Aux Comm Rt digit" category=""/>
+    <function name="SimCycleBandAuxComDigit" label="Ckpit-Aux Comm Band X/Y" category=""/>
+    <function name="SimToggleAuxComMaster" label="Ckpit-Aux Comm UFC/Backup" category=""/>
+    <function name="SimAuxComBackup" label="SimAuxComBackup" category=""/>
+    <function name="SimAuxComUFC" label="SimAuxComUFC" category=""/>
+    <function name="SimToggleAuxComAATR" label="Ckpit-Aux Comm AA/TR" category=""/>
+    <function name="SimTACANTR" label="SimTACANTR" category=""/>
+    <function name="SimTACANAATR" label="SimTACANAATR" category=""/>
+    <function name="SimToggleUHFMaster" label="Ckpit-UHF Normal/Backup" category=""/>
+    <function name="SimTransmitCom1" label="Voice-Transmit Com1" category=""/>
+    <function name="SimTransmitCom2" label="Voice-Transmit Com2" category=""/>
+    <function name="SimDriftCO" label="ICP Drift C/O" category=""/>
+    <function name="SimDriftCOOn" label="SimDriftCOOn" category=""/>
+    <function name="SimDriftCOOff" label="SimDriftCOOff" category=""/>
+    <function name="SimCATSwitch" label="Ckpit-CAT I/III" category=""/>
+    <function name="SimCATI" label="SimCATI" category=""/>
+    <function name="SimCATIII" label="SimCATIII" category=""/>
+    <function name="SimRegen" label="SimRegen" category=""/>
+    <function name="SimReverseThrusterOn" label="SimReverseThrusterOn" category=""/>
+    <function name="SimReverseThrusterOff" label="SimReverseThrusterOff" category=""/>
+    <function name="SimReverseThrusterToggle" label="SimReverseThrusterToggle" category=""/>
+  </functions>
+</controls>

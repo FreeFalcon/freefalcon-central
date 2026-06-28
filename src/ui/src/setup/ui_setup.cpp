@@ -151,6 +151,8 @@ void BuildingDetailCB(long ID, short hittype, C_Base *control);
 void ObjectDetailCB(long ID, short hittype, C_Base *control);
 void VehicleSizeCB(long ID, short hittype, C_Base *control);
 void TerrainDetailCB(long ID, short hittype, C_Base *control);
+void MsaaSamplesCB(long ID, short hittype, C_Base *control);   // Artscout - 2026: MSAA samples live readout
+void VrResScaleSliderCB(long ID, short hittype, C_Base *control); // Artscout - 2026: OpenXR res-scale live readout
 //void TextureDistanceCB(long ID,short hittype,C_Base *control);
 void VideoCardCB(long ID, short hittype, C_Base *control);
 void VideoDriverCB(long ID, short hittype, C_Base *control);
@@ -981,6 +983,33 @@ void STPSetupControls(void)
         }
     }
 
+    // Artscout - 2026: MSAA (Graphics page) <- DisplayOptions. Checkbox + samples slider (STEPS 7 -> 1..8).
+    button = (C_Button *)win->FindControl(MSAA_ENABLE);
+
+    if (button)
+    {
+        button->SetState(DisplayOptions.bMsaaEnable ? C_STATE_1 : C_STATE_0);
+        button->Refresh();
+    }
+
+    slider = (C_Slider *)win->FindControl(MSAA_SAMPLES);
+
+    if (slider not_eq NULL)
+    {
+        int s = DisplayOptions.nMsaaSamples;
+        if (s < 1) s = 1;
+        if (s > 8) s = 8;
+        slider->SetSliderPos(FloatToInt32((float)(slider->GetSliderMax() - slider->GetSliderMin()) * (s - 1) / 7.0F));
+        ebox = (C_EditBox *)win->FindControl(MSAA_SAMPLES_READOUT);
+
+        if (ebox)
+        {
+            ebox->SetInteger(s);
+            ebox->Refresh();
+            slider->SetUserNumber(0, MSAA_SAMPLES_READOUT);
+        }
+    }
+
     /* slider=(C_Slider *)win->FindControl(TEXTURE_DISTANCE);
      if(slider not_eq NULL)
      {
@@ -1710,6 +1739,29 @@ static void SaveValues(void)
         PlayerOptions.ObjMagnification = static_cast<float>(FloatToInt32((float)slider->GetSliderPos() / (float)(slider->GetSliderMax() - slider->GetSliderMin()) * 4.0F + 1.0F));
     }
 
+    // Artscout - 2026: MSAA (Graphics page) -> DisplayOptions. Checkbox = on/off; slider STEPS 7 spans 1..8 samples.
+    button = (C_Button *)win->FindControl(MSAA_ENABLE);
+
+    if (button) DisplayOptions.bMsaaEnable = button->GetState() == C_STATE_1;
+
+    slider = (C_Slider *)win->FindControl(MSAA_SAMPLES);
+
+    if (slider not_eq NULL)
+    {
+        int span = slider->GetSliderMax() - slider->GetSliderMin();
+
+        if (span > 0)   // round to nearest step (0..7) -> samples 1..8 (truncation lost a step otherwise)
+        {
+            int step = FloatToInt32((float)slider->GetSliderPos() / (float)span * 7.0F + 0.5F);
+            if (step < 0) step = 0;
+            if (step > 7) step = 7;
+            DisplayOptions.nMsaaSamples = 1 + step;
+        }
+
+        if (DisplayOptions.nMsaaSamples < 1) DisplayOptions.nMsaaSamples = 1;
+        if (DisplayOptions.nMsaaSamples > 8) DisplayOptions.nMsaaSamples = 8;
+    }
+
     /* slider=(C_Slider *)win->FindControl(TEXTURE_DISTANCE);
      if(slider not_eq NULL)
      {
@@ -1779,9 +1831,35 @@ static void SaveValues(void)
 
     if (button) DisplayOptions.bAnisotropicFiltering = button->GetState() == C_STATE_1;
 
-    button = (C_Button *)win->FindControl(SETUP_ADVANCED_RENDER_2DCOCKPIT);
+    // Artscout - 2026: "Rendered 2D Cockpit" removed from the Advanced page (D3D11 always forces it TRUE in
+    // dispopts.cpp). Its row now hosts the VR controls. bRender2DCockpit keeps its forced value, untouched here.
 
-    if (button) DisplayOptions.bRender2DCockpit = button->GetState() == C_STATE_1;
+    // Artscout - 2026: VR (Advanced page) -> DisplayOptions. OpenXR on/off + foveated QuadViews + per-eye res scale.
+    button = (C_Button *)win->FindControl(SETUP_ADVANCED_OPENXR);
+
+    if (button) DisplayOptions.bUseOpenXR = button->GetState() == C_STATE_1;
+
+    button = (C_Button *)win->FindControl(SETUP_ADVANCED_QUADVIEWS);
+
+    if (button) DisplayOptions.bUseQuadViews = button->GetState() == C_STATE_1;
+
+    slider = (C_Slider *)win->FindControl(SETUP_ADVANCED_VR_RESSCALE);
+
+    if (slider not_eq NULL)
+    {
+        int span = slider->GetSliderMax() - slider->GetSliderMin();
+
+        if (span > 0)   // round to nearest step (0..5) -> 50,60,70,80,90,100 (stops of 10)
+        {
+            int step = FloatToInt32((float)slider->GetSliderPos() / (float)span * 5.0F + 0.5F);
+            if (step < 0) step = 0;
+            if (step > 5) step = 5;
+            DisplayOptions.nVrResolutionScale = 50 + step * 10;
+        }
+
+        if (DisplayOptions.nVrResolutionScale < 50)  DisplayOptions.nVrResolutionScale = 50;
+        if (DisplayOptions.nVrResolutionScale > 100) DisplayOptions.nVrResolutionScale = 100;
+    }
 
     button = (C_Button *)win->FindControl(SETUP_ADVANCED_SCREEN_COORD_BIAS_FIX);
 
@@ -1816,6 +1894,17 @@ static void SaveValues(void)
     //  DisplayOptions.m_texMode = TEX_MODE_DDS;
     //========================================
 
+    // Artscout - 2026: mirror the just-edited graphics options into the engine globals so Apply takes
+    // effect on the NEXT 3D entry without a restart (backend MSAA / OpenXR read these at device/session init).
+    {
+        extern bool g_bUseOpenXR, g_bUseQuadViews, g_bMsaaEnable;
+        extern int  g_nMsaaSamples, g_nVrResolutionScale;
+        g_bUseOpenXR         = DisplayOptions.bUseOpenXR;
+        g_bUseQuadViews      = DisplayOptions.bUseQuadViews;
+        g_bMsaaEnable        = DisplayOptions.bMsaaEnable;
+        g_nMsaaSamples       = DisplayOptions.nMsaaSamples;
+        g_nVrResolutionScale = DisplayOptions.nVrResolutionScale;
+    }
 
     PlayerOptions.SaveOptions();
     DisplayOptions.SaveOptions();
@@ -2499,6 +2588,13 @@ static void HookupSetupControls(long ID)
         slider->SetCallback(VehicleSizeCB);
     }
 
+    slider = (C_Slider *)win->FindControl(MSAA_SAMPLES);   // Artscout - 2026: MSAA samples live readout
+
+    if (slider not_eq NULL)
+    {
+        slider->SetCallback(MsaaSamplesCB);
+    }
+
     slider = (C_Slider *)win->FindControl(TERRAIN_DETAIL);
 
     if (slider not_eq NULL)
@@ -2523,6 +2619,29 @@ static void HookupSetupControls(long ID)
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
     if ( not win) return;
+
+    // Artscout - 2026: OpenXR Resolution Scale slider lives on the advanced window. Hook it HERE (reliable, runs
+    // once at setup load) rather than in SetAdvanced(), which can bail early on the device-manager checks before
+    // reaching the VR block -> the live readout never got its callback. Mirrors the MSAA slider on SETUP_WIN.
+    slider = (C_Slider *)win->FindControl(SETUP_ADVANCED_VR_RESSCALE);
+
+    if (slider not_eq NULL)
+    {
+        int scl = DisplayOptions.nVrResolutionScale;
+        if (scl < 50)  scl = 50;
+        if (scl > 100) scl = 100;
+        slider->SetSliderPos(FloatToInt32((float)(slider->GetSliderMax() - slider->GetSliderMin()) * (scl - 50) / 50.0F));
+        slider->SetUserNumber(0, SETUP_ADVANCED_VR_RESSCALE_READOUT);
+        slider->SetCallback(VrResScaleSliderCB);
+
+        C_EditBox *reb = (C_EditBox *)win->FindControl(SETUP_ADVANCED_VR_RESSCALE_READOUT);
+
+        if (reb)
+        {
+            reb->SetInteger(scl);
+            reb->Refresh();
+        }
+    }
 
     // disable parent notification for close and cancel button
     button = (C_Button *)win->FindControl(AAPPLY);

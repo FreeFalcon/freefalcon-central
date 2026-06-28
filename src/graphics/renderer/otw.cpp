@@ -879,7 +879,16 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
     GetViewport(&prevLeft, &prevTop, &prevRight, &prevBottom);
 
     // Reduce the viewport size to save on overdraw costs if there's a tunnel in effect
-    if (tunnelSolidWidth > 0.0f)
+    // Artscout - 2026 (VR): this overdraw optimization narrows the FOV and shrinks the viewport, which is fine
+    // on the flat path (the periphery is blacked out by the tunnel ring anyway). But VR has a FIXED per-eye
+    // projection -- shrinking it renders the scene into a small central square and leaves the rest showing the
+    // sky-blue eye clear ("blue squares per view"). In VR keep the full per-eye frame; DrawTunnelBorder still
+    // darkens the periphery from the edges inward.
+    // Gate on g_bVrFrameActive (presenting stereo this frame), not g_bUseOpenXR (enabled in options):
+    // the per-eye-projection reasoning below only applies when actually rendering to the HMD; with the
+    // headset off we render flat and the tunnel-solid fill must behave as on the normal flat path.
+    extern bool g_bVrFrameActive;
+    if (tunnelSolidWidth > 0.0f and not g_bVrFrameActive)
     {
         float visible = (1.0f - tunnelSolidWidth) * big;
 
@@ -1142,8 +1151,12 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
     {
         viewpoint->ObjectsAboveRoof()->DrawBeyond(0.0f, 0, this);
 
-        // Restore the FOV if it was changed by the tunnel code
-        if (tunnelSolidWidth > 0.0f)
+        // Restore the FOV if it was changed by the tunnel code.
+        // Artscout - 2026 (#60 VR tunnel/GLOC): in VR the shrink above is skipped (g_bVrFrameActive), so the
+        // FOV/viewport were never narrowed -- there is nothing to restore. prevFOV/prevViewport are the SYMMETRIC
+        // GetFOV()/GetViewport(); calling SetFOV/SetViewport here would OVERWRITE the per-eye OFF-AXIS frustum set
+        // by SetVRFrustum, mis-projecting the focus view (strong cant) -> the cockpit doubles/sticks under G. Skip in VR.
+        if (tunnelSolidWidth > 0.0f and not g_bVrFrameActive)
         {
             SetFOV(prevFOV);
             SetViewport(prevLeft, prevTop, prevRight, prevBottom);
@@ -1212,8 +1225,12 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
     // compile unconditionally. Call it always. (The loader's USE_NEW_PS #else branches stay as in #23.)
     DrawableParticleSys::PS_Exec(this);
 
-    // Restore the FOV if it was changed by the tunnel code
-    if (tunnelSolidWidth > 0.0f)
+    // Restore the FOV if it was changed by the tunnel code.
+    // Artscout - 2026 (#60 VR tunnel/GLOC): see the skyRoof branch above. In VR the tunnel viewport-shrink is
+    // skipped, so prevFOV/prevViewport (symmetric) must NOT be re-applied -- doing so clobbers the per-eye
+    // off-axis frustum (SetVRFrustum) for everything drawn after the world (cockpit/instruments), which in the
+    // strongly-canted FOCUS view shifts the cockpit and makes the gaze inset double / look "stuck" under G. Skip in VR.
+    if (tunnelSolidWidth > 0.0f and not g_bVrFrameActive)
     {
         SetFOV(prevFOV);
         SetViewport(prevLeft, prevTop, prevRight, prevBottom);

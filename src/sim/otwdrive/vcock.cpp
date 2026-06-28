@@ -1,4 +1,6 @@
 #include "Graphics/Include/canvas3d.h"
+#include "Graphics/DXEngine/OpenXRBackend.h"   // VR: HMD head-tracking (independent of TrackIR)
+#include "Graphics/DXEngine/D3D11Backend.h"     // Artscout - 2026 (VR): eye size for click hit-test scaling
 #include "Graphics/Include/drawbsp.h"
 #include "Graphics/Include/renderow.h"
 #include "Graphics/Include/texbank.h"   // PHASE 5: TheTextureBank.WaitUpdates() for synchronous loading of cockpit textures
@@ -790,6 +792,26 @@ bool OTWDriverClass::VCock_SetRttCanvas(char** plinePtr, Render2D** canvaspp, in
 
     if (tBottom > 1)
         tBottom = (int)(resScale * (float)tBottom);
+
+    // Artscout - 2026 (HUD): optionally widen the HUD glass FOV by scaling the canvas quad around its
+    // own center. Our stock HUD glass is narrow (~7.8deg half) -> true-angular symbology (262mr ASEC)
+    // overflows and the tapes cram inward. Scaling the canvas widens the FOV consistently: the HUD
+    // half-angle (derived from this canvas) grows, so the existing symbology lands at correct F-16
+    // angles while the FPM/pitch-ladder stay world-aligned. HUD only (dev 1). g_fHudCanvasScale=1=stock.
+    extern float g_fHudCanvasScale;
+    if (dev == 1 && g_fHudCanvasScale != 1.0f)
+    {
+        // FOV(horizontal) = half-width(Y) / distance(X); FOV(vertical) = half-height(Z) / distance(X).
+        // So scale ONLY the Y/Z extents around the glass center, keep X (distance) -> the half-angle
+        // grows cleanly by the factor. (Scaling X too would move the glass instead of widening the FOV.)
+        Tpoint lr; lr.y = ur.y + (ll.y - ul.y); lr.z = ur.z + (ll.z - ul.z);
+        const float cy = (ul.y + ur.y + ll.y + lr.y) * 0.25f;
+        const float cz = (ul.z + ur.z + ll.z + lr.z) * 0.25f;
+        const float s = g_fHudCanvasScale;
+        ul.y = cy + (ul.y - cy) * s; ul.z = cz + (ul.z - cz) * s;
+        ur.y = cy + (ur.y - cy) * s; ur.z = cz + (ur.z - cz) * s;
+        ll.y = cy + (ll.y - cy) * s; ll.z = cz + (ll.z - cz) * s;
+    }
 
     *canvaspp = canvas = new Render2D;
     canvas->Setup(renderer->GetImageBuffer());
@@ -1588,6 +1610,78 @@ void OTWDriverClass::VCock_HeadCalc(void)
         headOrigin.z += Ho.z;
     }
 
+    // VR head-tracking (independent of TrackIR / mUseHeadTracking): override the head look
+    // angles from the HMD orientation. Runs every 3D frame here, just before the pit draw
+    // (VCock_DrawThePit) builds the head matrix from eyePan/eyeTilt/eyeHeadRoll.
+    {
+        // Gate on g_bVrFrameActive (presenting stereo this frame), not g_bUseOpenXR (enabled in options):
+        // with the headset OFF the flat view must keep mouse/TrackIR head control, not stale HMD angles.
+        extern bool g_bVrFrameActive;
+        float vy, vp, vr;
+        if (g_bVrFrameActive && g_pOpenXRBackend &&
+            g_pOpenXRBackend->GetHeadYawPitchRoll(&vy, &vp, &vr))
+        {
+            eyePan = vy;
+            eyeTilt = vp;
+            eyeHeadRoll = vr;
+            // The active 3D-pit head path (VCock_DrawThePit dynamic-head branch) reads roll
+            // from BobbingRollRate (not eyeHeadRoll) and ADDS BobbingPan/Tilt to the look.
+            // Drive roll through it and zero the bob so the HMD is the sole head motion.
+            BobbingRollRate = vr;
+            BobbingPan = 0.0f;
+            BobbingTilt = 0.0f;
+
+            // Build the head matrix DIRECTLY from the HMD orientation basis (gimbal-free) instead of
+            // BuildHeadMatrix(yaw,pitch,roll): the latter derives 'right' from (0,0,1) x forward, which
+            // divides by zero at pitch +-90 (look straight down at your feet) and wanders near the
+            // poles -> the old "can't look below / angles jump" limit. Load [at|right|up] as the head
+            // matrix columns, then derive the world camera (cameraRot = ownshipRot*headMatrix) so the
+            // cockpit (drawn with headMatrix) and the world stay locked together this frame.
+            // Artscout - 2026 (VR quad-views): in quad mode the FOCUS views (2,3) are GAZE-tracked --
+            // their pose looks where the eyes look, not straight ahead. Render each view from ITS OWN
+            // orientation (GetEyeBasis) so it matches the submitted view pose; otherwise the focus inset
+            // doubles and the cockpit/displays follow the gaze. Stereo (flag off) keeps the shared head
+            // basis (proven), since both eyes share the head orientation there.
+            int xeye = g_pOpenXRBackend->CurrentEye();
+            float hAt[3], hRt[3], hUp[3];
+            // All views share the HEAD orientation (the runtime returns the same pose orientation for
+            // periphery and focus -- the gaze/cant is in the off-center FOV, handled by the off-axis
+            // projection, not by rotating the pose). So build the head matrix from the head basis.
+            bool gotBasis = g_pOpenXRBackend->GetHeadBasis(hAt, hRt, hUp);
+            if (gotBasis)
+            {
+                headMatrix.M11 = hAt[0]; headMatrix.M21 = hAt[1]; headMatrix.M31 = hAt[2];
+                headMatrix.M12 = hRt[0]; headMatrix.M22 = hRt[1]; headMatrix.M32 = hRt[2];
+                headMatrix.M13 = hUp[0]; headMatrix.M23 = hUp[1]; headMatrix.M33 = hUp[2];
+            }
+            else
+                BuildHeadMatrix(FALSE, YAW_PITCH, eyePan, eyeTilt, eyeHeadRoll);
+            MatrixMult(&ownshipRot, &headMatrix, &cameraRot);
+
+            // 6DOF head position (lean in/out/sideways) + per-eye IPD, accumulated in the aircraft
+            // BODY frame, then mirrored into WORLD via ownshipRot -- EXACTLY the engine's headPan /
+            // headOrigin convention (see the turbulence block below: headPan += body, headOrigin +=
+            // ownshipRot*body). headPan feeds the RTT cockpit displays (VCock_Exec: Pan = headPan *
+            // RTT_POSITION_SCALING), headOrigin feeds the cockpit/world eyepoint. Putting the offset
+            // ONLY in headOrigin (previous attempt) left the HUD/MFD/DED/RWR drifting with the gaze
+            // and without per-eye parallax. Body frame (not head-relative) = absolute HMD tracking.
+            // Artscout - 2026 (VR): split head-translation from the per-eye IPD. The RTT cockpit
+            // displays read Pan = headPan * RTT_POSITION_SCALING(10.35), so ANY IPD left in headPan is
+            // amplified ~10x and the HUD/MFD/DED/RWR diverge per eye (left eye->left, right->right --
+            // the long-standing "RWR depth" bug). The natural per-eye parallax for those fixed-distance
+            // panels already comes from the camera eyepoint (headOrigin gets the IPD). So: head lean ->
+            // headPan + headOrigin (displays follow lean); IPD -> headOrigin ONLY (camera parallax, no
+            // 10x display divergence).
+            Tpoint posHead; posHead.x = posHead.y = posHead.z = 0.0f;   // head translation (lean)
+            float hpf, hpr, hpd;
+            if (g_pOpenXRBackend->GetHeadPosFeet(&hpf, &hpr, &hpd)) { posHead.x += hpf; posHead.y += hpr; posHead.z += hpd; }
+            Tpoint posCam = posHead;                                    // camera also gets the IPD
+            if (xeye >= 0) posCam.y += g_pOpenXRBackend->GetEyeLateralOffsetFeet(xeye);  // IPD on body right axis
+            headPan.x += posHead.x; headPan.y += posHead.y; headPan.z += posHead.z;       // displays: lean only
+            Tpoint posW; MatrixMult(&OTWDriver.ownshipRot, &posCam, &posW);
+            headOrigin.x += posW.x; headOrigin.y += posW.y; headOrigin.z += posW.z;        // camera: lean + IPD
+        }
+    }
 }
 
 
@@ -1650,6 +1744,27 @@ float CXX = 1.0f, CXY = 1.0f;
 #define RTT_POSITION_SCALING 10.35f
 // SCALING FOR OFFSETTING THE 3D BUTTONS IN THE PIT
 #define B3D_POSITION_SCALING 569.0f
+
+// Artscout - 2026 (VR): magnetic 3D-cursor anchor. The clickable-cockpit hit-test below finds the
+// nearest 3D button to the pointer; we store that button's camera-centric position so the per-eye
+// overlay (otwloop) can project it into BOTH eyes and draw the cursor AT the switch with correct
+// stereo depth -- a flat 2D cursor at one screen position sits at infinity and visually doubles, and
+// can't be aimed accurately. The cockpit coordinate scale is unknown (B3D_POSITION_SCALING=569, not
+// feet), so we anchor to a KNOWN button position instead of unprojecting the mouse at a guessed depth.
+// This same primitive (ray -> nearest button -> 3D point) will drive Touch-controller aiming later,
+// fed by the controller aim pose instead of the mouse ray.
+Tpoint g_vrCursorAnchor = { 0.0f, 0.0f, 0.0f };
+bool   g_vrCursorAnchorValid = false;
+// Artscout - 2026 (VR mouse): true when the anchor is SNAPPED to a real button (exact depth) vs a FREE
+// cursor at a guessed panel depth. The free cursor is only safe in the full-FOV periphery views; in the
+// zoomed gaze/focus views its depth-guess stereo error is magnified (jumps, eye mismatch), so otwloop
+// draws the free cursor in periphery only and the snapped cursor (correct depth) in all views.
+bool   g_vrCursorAnchorSnapped = false;
+// Artscout - 2026 (VR mouse): index of the button the cursor is magnetically snapped to (the GREEN one).
+// On click we fire THIS button directly instead of re-projecting in the click loop -- the click happens
+// while the mouse is still, a frame or two after the last hover, by which time the gaze/camera has moved
+// and a fresh projection lands elsewhere (ey way off). Firing the snapped button = clicking what you see.
+int    g_vrCursorAnchorButton = -1;
 
 void OTWDriverClass::VCock_Exec(void)
 {
@@ -2953,7 +3068,36 @@ void OTWDriverClass::VCock_Exec(void)
     Pan.z *= RTT_POSITION_SCALING;
     Pan.y *= RTT_POSITION_SCALING;
     Pan.x *= RTT_POSITION_SCALING;
-    renderer->SetCamera(&Pan, &headMatrix);
+    // Artscout - 2026 (VR): per-eye IPD so the RTT display panels CONVERGE at their depth instead of
+    // diverging per eye. headPan carries only head lean (IPD was split out to headOrigin for the world
+    // camera); the displays render from Pan, so inject the IPD here on the body-right axis (Pan.y).
+    // Sign/magnitude tunable (g_fVrDisplayIpd) -- verify with the desktop mirror.
+    {
+        extern float g_fVrDisplayIpd; extern bool g_bVrFrameActive;
+        int dxeye = (g_bVrFrameActive and g_pOpenXRBackend) ? g_pOpenXRBackend->CurrentEye() : -1;
+        if (dxeye >= 0)
+            Pan.y += g_pOpenXRBackend->GetEyeLateralOffsetFeet(dxeye) * g_fVrDisplayIpd;
+    }
+    // Artscout - 2026 (VR #61): world-frame RTT panels. Draw the RTT quads with the SAME camera as the
+    // BSP cockpit (headOrigin) and let DrawRttQuad map the canvas into the real cockpit world
+    // (ownshipRot * canvas/RTT_POSITION_SCALING) -> the panel's stereo DEPTH matches the physical
+    // panel (no "symbology in front" + no g_fVrDisplayIpd hack). Legacy Pan path stays when off.
+    // Artscout - 2026 (HUD 3D glass): the collimated HUD REQUIRES the world-frame camera (headOrigin), so
+    // g_bHud3DGlass implies the world-cam path -- no separate g_bVrRttWorldCam needed. (World-cam is also
+    // the #61 depth fix for the panels, so this is strictly better.)
+    extern bool g_bVrRttWorldCam, g_bHud3DGlass;
+    const bool rttWorldCam = g_bVrRttWorldCam or g_bHud3DGlass;
+    if (rttWorldCam)
+    {
+        extern Trotation g_rttWorldRot; extern float g_rttWorldScale;
+        g_rttWorldRot   = OTWDriver.ownshipRot;
+        g_rttWorldScale = 1.0f / RTT_POSITION_SCALING;
+        // World camera (cameraRot = ownshipRot*headMatrix) because the canvas is mapped into WORLD
+        // (ownshipRot*canvas). Using headMatrix (body) here rotated the panels off by the heading.
+        renderer->SetCamera(&headOrigin, &cameraRot);
+    }
+    else
+        renderer->SetCamera(&Pan, &headMatrix);
 
 
     // ASSO: BEGIN
@@ -3023,9 +3167,17 @@ void OTWDriverClass::VCock_Exec(void)
             // exaggerates the shift to see/verify the effect; HudCollimate 0 disables it for compare.
             extern bool  g_bHudCollimate;
             extern float g_fHudCollimateScale;
+            extern bool  g_bHud3DGlass, g_bVrRttWorldCam;
             float XOffset = 0.0f, YOffset = 0.0f;
 
-            if (g_bHudCollimate)
+            // Artscout - 2026: the fake 2D collimation (origin shift) is REPLACED by true optical
+            // collimation when the 3D glass is ACTIVE (VR + world-frame RTT camera): the HUD quad is then
+            // composited at infinity along the boresight (g_rttWorldOfs=headOrigin at the composite below),
+            // so leave the 2D offset at 0 to avoid double-compensation. In the flat path the 3D glass is
+            // never active, so the original fake collimation keeps working there.
+            const bool hudGlassActive = g_bHud3DGlass
+                and g_pD3D11Backend and g_pD3D11Backend->XrEyeActive();
+            if (g_bHudCollimate and not hudGlassActive)
             {
                 XOffset = g_fHudCollimateScale * 12.0f * headPan.y / (pt[1].y - pt[0].y) * tanf(DTR * 60.0f);
                 YOffset = g_fHudCollimateScale * 12.0f * headPan.z / (pt[0].z - pt[2].z) * tanf(DTR * 60.0f);
@@ -3289,11 +3441,60 @@ void OTWDriverClass::VCock_Exec(void)
 
         // renderer->StartDraw();
 
+        // Artscout - 2026 (VR HUD 3D glass): composite the HUD at OPTICAL INFINITY along the boresight.
+        // Setting g_rttWorldOfs = headOrigin makes the eye offset cancel in DrawRttQuad's projection (the
+        // world-frame camera is also at headOrigin), so the symbology collimates: no per-eye convergence,
+        // stable under head translation, conformal with the world. Only the HUD gets the offset; the
+        // panel displays (RWR/DED/PFL) keep g_rttWorldOfs=0 so they stay fixed on their cockpit panels.
+        extern bool g_bHud3DGlass;
+        const bool hudGlass = g_bHud3DGlass
+            and g_pD3D11Backend and g_pD3D11Backend->XrEyeActive();
+        if (hudGlass)
+        {
+            // Arm the aperture stencil clip BEFORE the glass plate: the plate (drawn at the PHYSICAL glass
+            // position, g_rttWorldOfs still 0 -> fixed in the cockpit, with parallax) writes the stencil
+            // aperture bit, and DrawRttQuad clips the collimated symbology to it.
+            extern bool g_bRttHudClip, g_bHud3DGlassClip;
+            g_bRttHudClip = g_bHud3DGlassClip;
+
+            // Glass plate (faint Fresnel green tint + the stencil mark). Drawn even when the tint is ~0 if
+            // the clip is on, because the symbology then needs the stencil mark (alpha 0 still writes it).
+            extern float g_fHud3DGlassTint, g_fHud3DGlassFresnel;
+            if (vHUDrenderer and (g_fHud3DGlassTint > 0.001f or g_bRttHudClip))
+            {
+                // Fresnel: the glass shows MORE at grazing view angles. headMatrix.M11 = cos(angle between
+                // the head look and the boresight/glass normal) -- 1 head-on, <1 when looking from above/
+                // the side. Boost the tint alpha as it falls off so the pane "lights up" edge-on like glass.
+                float c = headMatrix.M11; if (c < 0.0f) c = 0.0f; if (c > 1.0f) c = 1.0f;
+                float ga = g_fHud3DGlassTint * (1.0f + g_fHud3DGlassFresnel * (1.0f - c) * (1.0f - c));
+                if (ga > 0.9f) ga = 0.9f;
+                vHUDrenderer->DrawGlassPlate(0.30f, 0.55f, 0.40f, ga);   // subtle green tint, Fresnel-boosted
+            }
+
+            extern Tpoint g_rttWorldOfs;
+            g_rttWorldOfs = headOrigin;   // collimate the symbology (eye offset cancels in projection)
+        }
+
         if (vHUDrenderer)
             vHUDrenderer->DrawRttQuad();
 
+        if (hudGlass)
+        {
+            extern Tpoint g_rttWorldOfs;
+            g_rttWorldOfs.x = g_rttWorldOfs.y = g_rttWorldOfs.z = 0.0f;   // panels stay fixed on the cockpit
+            extern bool g_bRttHudClip;
+            g_bRttHudClip = false;                                        // panels composite without Z-test
+        }
+
         if (vRWRrenderer)
+        {
+            // Artscout - 2026 (VR #61 RWR): nudge the RWR symbology canvas onto the BSP scope (its 3Dckpit.dat
+            // depth floats it in front). Only around the RWR quad; reset so other panels are unaffected.
+            extern float g_rttCanvasFwd, g_fVrRwrFwd;
+            g_rttCanvasFwd = g_fVrRwrFwd;
             vRWRrenderer->DrawRttQuad();
+            g_rttCanvasFwd = 0.0f;
+        }
 
         if (vDEDrenderer)
             vDEDrenderer->DrawRttQuad();
@@ -3360,12 +3561,101 @@ void OTWDriverClass::VCock_Exec(void)
     //So, here it is.  It is a hack, but it works.  If you don't like, then YOU fix it;-)
 
     ThreeDVertex t1;
-    gSelectedCursor = 9; //Wombat778 10-11-2003 set the cursor to the default green cursor
+
+    // Artscout - 2026: THREE explicit mouse-pick modes -- FLAT (stock F4 desktop), XR stereo, XR quad.
+    // FLAT is the pristine reference hit-test: no VR projection, no IPD parallax, no detect bias, no cursor
+    // magnet, the stock radius, and NO per-view gating (it runs on every call). The XR branches engage ONLY
+    // when we are actually presenting stereo THIS frame (g_bVrFrameActive) AND an XR eye target is bound --
+    // so with VR enabled in the options but the headset OFF, the pick is byte-for-byte the flat path.
+    //   xrView0  : limit hover/snap/click to the periphery pass (view 0) where the visible cursor lives.
+    //              In FLAT it is always true (no views); in stereo CurrentEye()<=0; in quad it selects the
+    //              periphery. xrQuad/xrStereo are split out so the quad focus-projection can be tuned alone.
+    extern bool g_bVrFrameActive;
+    const bool xrPick   = g_bVrFrameActive and g_pD3D11Backend and g_pD3D11Backend->XrEyeActive()
+                          and g_pD3D11Backend->XrEyeW() > 0 and g_pOpenXRBackend != NULL;
+    // Artscout - 2026 (#58/#60): branch off the ACTUAL session view config (IsQuadViews), not the
+    // g_bUseQuadViews option -- the session is created once and not recreated on an in-game toggle, so the
+    // option can disagree with reality until restart. Reality keeps the mouse calibration matched to the render.
+    const bool sessionQuad = xrPick and g_pOpenXRBackend->IsQuadViews();
+    const bool xrQuad   = sessionQuad;
+    const bool xrStereo = xrPick and not sessionQuad;
+    const bool xrView0  = (not xrPick) or (g_pOpenXRBackend->CurrentEye() <= 0);
+    (void)xrQuad;
+
+    // Artscout - 2026 (#58 VR mouse): pick the clickable-cockpit calibration set for the active VR mode.
+    // Quad-views was tuned against the focus view's narrow gaze FOV; plain stereo projects through the full
+    // eye FOV, so it needs its own residual-bias / snap-radius / IPD scale. xrStereo -> *Stereo variants
+    // (default == quad values), else the quad set. Flat path never reads these (xrPick false).
+    extern float g_fVrCursorMagnet, g_fVrDetectBiasX, g_fVrDetectBiasY, g_fVrCursorIpd;
+    extern float g_fVrCursorMagnetStereo, g_fVrDetectBiasXStereo, g_fVrDetectBiasYStereo, g_fVrCursorIpdStereo;
+    const float vrMagnet  = xrStereo ? g_fVrCursorMagnetStereo : g_fVrCursorMagnet;
+    const float vrBiasX   = xrStereo ? g_fVrDetectBiasXStereo  : g_fVrDetectBiasX;
+    const float vrBiasY   = xrStereo ? g_fVrDetectBiasYStereo  : g_fVrDetectBiasY;
+    const float vrCursIpd = xrStereo ? g_fVrCursorIpdStereo    : g_fVrCursorIpd;
+
+    // Artscout - 2026 (VR mouse): per-eye IPD parallax in BUTTON units (body-right axis). Added to each
+    // button's Pos.y below, exactly like headPan, so TransformCameraCentricPoint (which drops the camera
+    // position) still gets the left-eye lateral shift. After the perspective divide this becomes a depth-
+    // dependent screen correction -- the reason a constant DetectBias couldn't fit ICP and the MFD at once.
+    float vrIpdButtonY = 0.0f;
+    if (xrPick and g_pOpenXRBackend->CurrentEye() <= 0)
+    {
+        vrIpdButtonY = g_pOpenXRBackend->GetEyeLateralOffsetFeet(0) * B3D_POSITION_SCALING * vrCursIpd;
+    }
+    // Artscout - 2026 (VR): reset the cursor color ONLY in view 0 (where the hover/green test runs).
+    // VCock_Exec runs once per view; resetting it every pass let the LAST pass (view 3, hover gated off)
+    // leave it at the default GREEN -> cursor always green even pointing at the sky. View 0 owns the color.
+    if (xrView0)
+        gSelectedCursor = 9; //Wombat778 10-11-2003 set the cursor to the default green cursor
+
+    // Artscout - 2026 (VR mouse): project the buttons with the EXACT projection the 3D cockpit BSP is
+    // drawn with -- SetVRFrustum(view 0 angles) + SetCamera(headOrigin, headMatrix) (see the per-eye loop
+    // in otwloop and VCock_DrawThePit). Earlier this used SetFOV(cfr-cfl), which derives the VERTICAL FOV
+    // from the horizontal FOV and the screen aspect ratio. The XR eye is near-square (e.g. 1914x1890),
+    // not the flat 16:9, so SetFOV's vertical scale was wrong and the projected buttons drifted vertically
+    // -- the error growing toward the screen edges (the cursor had to sit well ABOVE a button to hit it).
+    // SetVRFrustum reproduces the EXACT projection the cockpit BSP is rendered with: independent H/V FOV
+    // (2/(tanR-tanL), 2/(tanU-tanD)) AND the left-eye stereo off-axis (asymmetric frustum). The off-axis is
+    // REQUIRED: ground truth ([VRICP]) showed the left-eye horizontal off-axis shifts the cockpit ~330px,
+    // and the buttons must get the same shift to line up with the visible cockpit/cursor. NOTE: the projected
+    // ThreeDVertex comes out in DISPLAY pixel space here (the renderer's xRes/yRes is DispWidth/DispHeight
+    // during VCock_Exec, NOT the eye), so the hit-test below compares t1.x/y to gxPos/gyPos DIRECTLY -- no
+    // eye->display rescale (an earlier *dw/ew double-scaled the buttons ~1.337x and spread them out).
+    if (xrPick and g_pOpenXRBackend->CurrentEye() <= 0)
+    {
+        float cfl, cfr, cfu, cfd;
+        if (g_pOpenXRBackend->GetEyeFovAngles(0, &cfl, &cfr, &cfu, &cfd))
+        {
+            // Artscout - 2026 (VR): keep the HORIZONTAL off-axis (real cfl/cfr -- ground truth showed the
+            // left-eye stereo cant shifts the cockpit ~330px sideways), but SYMMETRIZE the vertical (offY=0):
+            // [VRICP] showed the cockpit's vertical is ~symmetric, so a symmetric vertical matches best while
+            // preserving the true VFOV (height tanU-tanD unchanged: angU'=-angD'=atan((tanU-tanD)/2)).
+            float vh = (float)atan((tan(cfu) - tan(cfd)) * 0.5f);
+            renderer->SetVRFrustum(cfl, cfr, vh, -vh);
+        }
+        renderer->SetCamera(&headOrigin, &headMatrix);
+    }
+    else if (not xrPick)
+    {
+        // Artscout - 2026 (FLAT mouse): the RTT display DrawRttQuads above (HUD world-cam #61, MFD atlas)
+        // leave the renderer's camera/projection in DISPLAY-CANVAS space. Re-assert the cockpit perspective
+        // (GetFOV -- the SAME value the hit-test radius below uses) + the head orientation so the buttons
+        // project into the SAME DispWidth screen space as gxPos/gyPos. The stock F4 path drew the dials
+        // INLINE with the cockpit camera, so it never needed this; our RTT-atlas display path disturbs the
+        // camera, so without this restore the buttons projected to garbage and the hover/click never matched
+        // (cursor stayed yellow, never turned green on a switch). This is the FLAT mirror of the VR branch.
+        renderer->SetFOV(GetFOV());
+        renderer->SetCamera(&headOrigin, &headMatrix);
+    }
 
     if ((vuxRealTime - gTimeLastMouseMove < SI_MOUSE_TIME_DELTA) and not InExitMenu()) //Wombat778 10-15-2003 added so mouse cursor would disappear after a few seconds standing still. Also dont want two cursors when exit menu is up
     {
         //Wombat778 10-15-2003 Added the following so that mouse cursor could be drawn in green if over a button, red otherwise
-        if (g_b3DClickableCursorChange)
+        // Artscout - 2026 (VR): run the hover (green) hit-test ONLY in view 0 (periphery). VCock_Exec runs
+        // once per view (4x in quad), and the focus passes (2/3) project buttons with the zoomed gaze
+        // camera but compare to the periphery mouse gxPos -> garbage, and the LAST pass (view 3) would
+        // overwrite view 0's correct green with a miss. Gate to view 0, like the magnetic anchor below.
+        if (g_b3DClickableCursorChange and xrView0)
         {
             gSelectedCursor = 0;
 
@@ -3375,10 +3665,22 @@ void OTWDriverClass::VCock_Exec(void)
                 Pos.x += headPan.x * B3D_POSITION_SCALING;
                 Pos.y += headPan.y * B3D_POSITION_SCALING;
                 Pos.z += headPan.z * B3D_POSITION_SCALING;
+                Pos.y += vrIpdButtonY;   // Artscout - 2026 (VR): left-eye IPD parallax (depth-correct detect)
 
                 renderer->TransformCameraCentricPoint(&Pos, &t1);
+                if (t1.csZ >= 0.0f) continue;   // Artscout - 2026 (VR): skip buttons behind the camera
 
-                if (sqrt(((gxPos - t1.x) * (gxPos - t1.x)) + ((gyPos - t1.y) * (gyPos - t1.y)))  < (float)(DisplayOptions.DispWidth / 1600.0f) * (Button3DList.buttons[i].dist / (1.5f * (float)GetFOV()))) //Wombat778 10-15-2003 changes changex with gxPos
+                // Artscout - 2026 (VR): t1 is ALREADY in DISPLAY pixel space (renderer xRes/yRes == DispWidth
+                // /DispHeight during VCock_Exec), the same space as gxPos/gyPos and the drawn cursor -- so
+                // compare directly, no eye->display rescale (a former *dw/ew double-scaled the buttons).
+                float hoverTd = (float)(DisplayOptions.DispWidth / 1600.0f) * (Button3DList.buttons[i].dist / (1.5f * (float)GetFOV()));
+                if (xrPick)
+                {
+                    t1.x += vrBiasX; t1.y += vrBiasY;   // VR only: zero the small IPD/off-axis residual (mode-specific)
+                    hoverTd *= vrMagnet;   // headset can't aim to the tight stock radius
+                }
+
+                if (sqrt(((gxPos - t1.x) * (gxPos - t1.x)) + ((gyPos - t1.y) * (gyPos - t1.y)))  < hoverTd) //Wombat778 10-15-2003 changes changex with gxPos
                 {
                     gSelectedCursor = 9;
                     break;
@@ -3389,10 +3691,76 @@ void OTWDriverClass::VCock_Exec(void)
         //Wombat778 12-16-2003 moved to vcock.cpp
         //ClipAndDrawCursor(OTWDriver.pCockpitManager->GetCockpitWidth(), OTWDriver.pCockpitManager->GetCockpitHeight());//Wombat778 10-10-2003  Draw the Mouse cursor if 3d clickable cockpit enabled
 
+        // Artscout - 2026 (VR): capture the nearest 3D button as the magnetic cursor anchor (left-eye
+        // pass only -- view 0). Uses the SAME criterion as the click loop below (nearest within the per-
+        // button hit radius, in DispWidth space), so the cursor snaps onto exactly the button that would
+        // be clicked. otwloop projects g_vrCursorAnchor into each eye for a stereo-correct 3D cursor.
+        if (xrPick and g_pOpenXRBackend->CurrentEye() <= 0)
+        {
+            g_vrCursorAnchorValid = false;
+            g_vrCursorAnchorButton = -1;
+            bool  snapped = false;
+            float bestD = 1.0e30f;
+            float nearDist = 1.0e30f, freeDepth = 0.0f;   // depth of the button nearest the mouse (for the free cursor)
+            for (i = 0 ; i < Button3DList.numbuttons ; i++)
+            {
+                Tpoint Pos = Button3DList.buttons[i].loc;
+                Pos.x += headPan.x * B3D_POSITION_SCALING;
+                Pos.y += headPan.y * B3D_POSITION_SCALING;
+                Pos.z += headPan.z * B3D_POSITION_SCALING;
+                Pos.y += vrIpdButtonY;   // Artscout - 2026 (VR): left-eye IPD parallax (depth-correct detect)
+
+                ThreeDVertex tp;
+                renderer->TransformCameraCentricPoint(&Pos, &tp);
+                if (tp.csZ >= 0.0f) continue;   // Artscout - 2026 (VR): skip buttons behind the camera (1/z flip -> false far snap)
+                // Artscout - 2026 (VR): tp is already in DISPLAY pixel space (xRes/yRes == DispWidth during
+                // VCock_Exec), the same space as gxPos/gyPos -- compare directly, no eye->display rescale.
+                // g_fVrDetectBias* zeroes the small residual (IPD parallax / off-axis fold mismatch).
+                float ex = tp.x + vrBiasX;
+                float ey = tp.y + vrBiasY;
+                float d  = (gxPos - ex) * (gxPos - ex) + (gyPos - ey) * (gyPos - ey);
+                float td = (float)(DisplayOptions.DispWidth / 1600.0f) * (Button3DList.buttons[i].dist / (1.5f * (float)GetFOV())) * vrMagnet;
+                if (d < nearDist) { nearDist = d; freeDepth = sqrtf(Pos.x * Pos.x + Pos.y * Pos.y + Pos.z * Pos.z); }
+                if (d < td * td and d < bestD)
+                {
+                    bestD = d;
+                    g_vrCursorAnchor = Pos;
+                    g_vrCursorAnchorValid = true;
+                    g_vrCursorAnchorButton = i;   // remember WHICH button -> click it directly
+                    snapped = true;
+                }
+            }
+            // Artscout - 2026 (VR mouse): FREE cursor. If the mouse is not over a clickable button, place
+            // the cursor on the mouse ray at the nearest panel's depth so a 3D cursor is ALWAYS drawn --
+            // including inside the focus/gaze view (where a flat DispWidth cursor lands wrong and the
+            // periphery cursor is hidden under the focus overlay). UnTransformPoint gives the world-space
+            // ray for the mouse pixel; scaling it by the panel depth makes the cursor track the mouse and
+            // project correctly in every view (same pose, per-view FOV/off-axis). This is the closed loop
+            // the user needs to aim: see the cursor move -> bring it onto a switch -> it snaps green.
+            if (not snapped)
+            {
+                Tpoint pix, ray;
+                pix.x = (float)gxPos;   // DISPLAY pixel space (renderer xRes == DispWidth here), no eye rescale
+                pix.y = (float)gyPos;
+                pix.z = 0.0f;
+                renderer->UnTransformPoint(&pix, &ray);   // normalized world-space ray from the camera
+                if (freeDepth <= 1.0f) freeDepth = 100.0f;
+                g_vrCursorAnchor.x = ray.x * freeDepth;
+                g_vrCursorAnchor.y = ray.y * freeDepth;
+                g_vrCursorAnchor.z = ray.z * freeDepth;
+                g_vrCursorAnchorValid = true;   // always draw a 3D cursor in VR (free or snapped)
+            }
+            g_vrCursorAnchorSnapped = snapped;
+        }
+
     }
 
 
-    if (Button3DList.clicked) //Wombat778 10-11-2003 check if the mouse button has been clicked while in the 3d cockpit
+    // Artscout - 2026 (VR): process the click ONLY in view 0 (periphery), like the hover/anchor. VCock_Exec
+    // runs once per view; if a focus pass (2/3, zoomed gaze camera) consumed the click, buttons projected
+    // to wild vertical coords (ey far off-screen) -> no match / wrong button. Gating to view 0 makes the
+    // click use the same periphery camera as the visible cursor and the hover/snap test.
+    if (Button3DList.clicked and xrView0) //Wombat778 10-11-2003 check if the mouse button has been clicked while in the 3d cockpit (xrView0: FLAT always, VR periphery only)
     {
         float closestdistance = 9999; //set these variables to a high value so that we know when it is uninitialized (there is a button 0)
         float tempdistance = 9999;
@@ -3407,24 +3775,43 @@ void OTWDriverClass::VCock_Exec(void)
                 Pos.x += headPan.x * B3D_POSITION_SCALING;
                 Pos.y += headPan.y * B3D_POSITION_SCALING;
                 Pos.z += headPan.z * B3D_POSITION_SCALING;
+                Pos.y += vrIpdButtonY;   // Artscout - 2026 (VR): left-eye IPD parallax (depth-correct detect)
 
                 renderer->TransformCameraCentricPoint(&Pos, &t1);
+
+                if (t1.csZ >= 0.0f) continue;   // Artscout - 2026 (VR): skip buttons BEHIND the camera --
+                                                // their 1/z flips the projection to wild coords and false-
+                                                // matches near gxPos (the "snap flies off far" bug).
+
+                // Artscout - 2026 (VR): t1 is already in DISPLAY pixel space (xRes/yRes == DispWidth during
+                // VCock_Exec), the same space as gxPos/gyPos -- compare directly, no eye->display rescale.
+                // g_fVrDetectBias* zeroes the small residual (IPD parallax / off-axis fold mismatch).
+                bool vrHit = xrPick;
+                if (vrHit) { t1.x += vrBiasX; t1.y += vrBiasY; }
+
                 tempdistance = sqrt(((gxPos - t1.x) * (gxPos - t1.x)) + ((gyPos - t1.y) * (gyPos - t1.y)));
 
                 //Normalize the distance so it is affected by the FOV and by the resolution
                 //Todo: add something about the SA bar.  Currently, the dist increases too much when it is active
                 float td = ((float) DisplayOptions.DispWidth / 1600.0f) * (Button3DList.buttons[i].dist / (1.5f * (float)GetFOV()));
+                if (vrHit) td *= vrMagnet;   // Artscout - 2026 (VR): match the enlarged hover/anchor snap radius (mode-specific)
 
                 if (tempdistance < td)
                     if (tempdistance < closestdistance) //if the cursor is near more than 1 button, find the closest one
                     {
                         closestdistance = tempdistance;
                         closestbutton = i;
-                        tempdistance = 9999;
-
                     }
             }
         }
+
+        // Artscout - 2026 (VR mouse): prefer the magnetically-snapped (GREEN) button. That is the button
+        // the cursor is visibly sitting on; re-projecting here lands elsewhere because the click fires a
+        // frame or two after the last hover (gaze/camera moved). Fire what the user sees.
+        if (g_pOpenXRBackend and g_vrCursorAnchorSnapped and g_vrCursorAnchorButton >= 0
+            and g_vrCursorAnchorButton < Button3DList.numbuttons
+            and Button3DList.buttons[g_vrCursorAnchorButton].mousebutton == Button3DList.clicked)
+            closestbutton = g_vrCursorAnchorButton;
 
         if (closestbutton not_eq 9999)
             if (Button3DList.buttons[closestbutton].function)

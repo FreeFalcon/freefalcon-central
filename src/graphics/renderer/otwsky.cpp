@@ -89,6 +89,24 @@ BOOL RenderOTW::GetRoofMode()
 /***************************************************************************\
     Draw the sky  ( Assumes square pixels )
 \***************************************************************************/
+// Artscout - 2026 (VR off-axis): shift the sky horizon-line positions to meet the off-axis-projected
+// terrain & sky geometry. The bands are placed in screen pixels from tan(Pitch())*scale (a SYMMETRIC
+// projection assumption); the geometry is shifted by the off-axis (T-fold), so without this the per-eye
+// clear shows through as a coloured stripe at the horizon. Apply ONLY the component of the off-axis
+// screen shift (oaX,oaY) PERPENDICULAR to the horizon line (along (sR,cR)). The sky is uniform ALONG
+// the horizon, so the along-horizon component is pointless AND harmful: a large horizontal shift (gaze
+// to the side -> big oaX) would slide the finite-width haze quad off the focus view, leaving a flat
+// clear-sky block + seam (seen in 7.png). For a level horizon this reduces to a pure vertical shift.
+static void ShiftHorizonOffAxis(HorizonRecord* h, float oaX, float oaY, float sR, float cR)
+{
+    const float perp = oaX * sR + oaY * cR;   // component perpendicular to the horizon line
+    if (perp == 0.0f) return;
+    const float dx = perp * sR, dy = perp * cR;
+    h->vx   += dx; h->vy   += dy;
+    h->vxUp += dx; h->vyUp += dy;
+    h->vxDn += dx; h->vyDn += dy;
+}
+
 BOOL RenderOTW::DrawSky(void)
 {
     // Update the sky color based on our current attitude and position
@@ -210,6 +228,16 @@ void RenderOTW::DrawSkyNoRoof(void)
     horizon.vxDn = pixelDistance * sR;
     horizon.vyDn = pixelDistance * cR;
 
+    // Artscout - 2026 (horizon): extend the filler band DOWN past the terrain end so the near/far
+    // (fartiles) terrain seam shows GROUND HAZE through the gap (the sky is drawn behind the terrain),
+    // instead of a black contour stripe. Terrain draws on top where it exists, so over-extending the
+    // (behind-terrain) filler is safe -- it only shows in the gaps.
+    extern float g_fHorizonFillerExtend;
+    horizon.vxDn += (horizon.vxDn - horizon.vx) * g_fHorizonFillerExtend;
+    horizon.vyDn += (horizon.vyDn - horizon.vy) * g_fHorizonFillerExtend;
+
+    ShiftHorizonOffAxis(&horizon, -m_vrOffAxisX * scaleX, -m_vrOffAxisY * scaleY, sR, cR);
+
     // Do sunrise/sunset horizon calculations
     ComputeHorizonEffect(&horizon);
 
@@ -328,6 +356,16 @@ void RenderOTW::DrawSkyBelow(void)
     pixelDistance = scaleX * (float)percentHalfXscale;
     horizon.vxDn = pixelDistance * sR;
     horizon.vyDn = pixelDistance * cR;
+
+    // Artscout - 2026 (horizon): extend the filler band DOWN past the terrain end so the near/far
+    // (fartiles) terrain seam shows GROUND HAZE through the gap (the sky is drawn behind the terrain),
+    // instead of a black contour stripe. Terrain draws on top where it exists, so over-extending the
+    // (behind-terrain) filler is safe -- it only shows in the gaps.
+    extern float g_fHorizonFillerExtend;
+    horizon.vxDn += (horizon.vxDn - horizon.vx) * g_fHorizonFillerExtend;
+    horizon.vyDn += (horizon.vyDn - horizon.vy) * g_fHorizonFillerExtend;
+
+    ShiftHorizonOffAxis(&horizon, -m_vrOffAxisX * scaleX, -m_vrOffAxisY * scaleY, sR, cR);
 
 
     // Clear that part of the screen which will not be covered by sky or terrain
@@ -547,6 +585,16 @@ void RenderOTW::DrawSkyAbove(void)
     pixelDistance = scaleX * (float)percentHalfXscale;
     horizon.vxDn = pixelDistance * sR;
     horizon.vyDn = pixelDistance * cR;
+
+    // Artscout - 2026 (horizon): extend the filler band DOWN past the terrain end so the near/far
+    // (fartiles) terrain seam shows GROUND HAZE through the gap (the sky is drawn behind the terrain),
+    // instead of a black contour stripe. Terrain draws on top where it exists, so over-extending the
+    // (behind-terrain) filler is safe -- it only shows in the gaps.
+    extern float g_fHorizonFillerExtend;
+    horizon.vxDn += (horizon.vxDn - horizon.vx) * g_fHorizonFillerExtend;
+    horizon.vyDn += (horizon.vyDn - horizon.vy) * g_fHorizonFillerExtend;
+
+    ShiftHorizonOffAxis(&horizon, -m_vrOffAxisX * scaleX, -m_vrOffAxisY * scaleY, sR, cR);
 
 
     if (drawClear)
@@ -1832,6 +1880,11 @@ void RenderOTW::AdjustSkyColor(void)
     }
 
     TheTimeOfDay.SetCurrentSkyColor(&sky_color);
+
+    // Artscout - 2026 (VR): feed the current sky colour to the per-eye clear (D3D11Backend) so any
+    // residual off-axis sky-band gap blends with the sky rather than a fixed colour.
+    { extern float g_vrClearColor[3];
+      g_vrClearColor[0] = sky_color.r; g_vrClearColor[1] = sky_color.g; g_vrClearColor[2] = sky_color.b; }
 }
 
 

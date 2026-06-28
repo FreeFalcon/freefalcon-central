@@ -10,6 +10,132 @@
 // PHASE 1 D3D7->D3D11: when true DXContext::Init brings up D3D11Backend instead of DDraw7/D3D7.
 bool g_bUseD3D11 = true;
 
+// VR: when true (and g_bUseD3D11) DXContext::Init also brings up OpenXRBackend over the
+// D3D11 device. Default OFF -- the flat desktop path is the normal mode and stays available.
+// Artscout - 2026: temporarily forced ON to bring up / test the OpenXR milestone-1 path.
+bool g_bUseOpenXR = true;
+
+// Artscout - 2026: "VR is actually presenting stereo to the HMD THIS frame" -- distinct from
+// g_bUseOpenXR ("VR enabled in the options"). When VR is enabled in options but the headset is OFF
+// (or the runtime says skip), BeginStereoFrame() returns < 1 and we render the FLAT desktop path; in
+// that case this flag is FALSE. Set once per frame in the otwloop render (from xrN >= 1). All per-frame
+// VR RENDERING branches (menu reposition, mouse-pick projection, ...) must gate on THIS, not on
+// g_bUseOpenXR -- otherwise they corrupt the flat path whenever the headset is simply turned off.
+bool g_bVrFrameActive = false;
+
+// Artscout - 2026 (VR): when true AND the runtime exposes XR_VARJO_QUAD_VIEWS, bring the session up
+// with the 4-view quad config (foveated: wide periphery + narrow focus per eye). EXPERIMENTAL --
+// the engine renders each view with a symmetric projection + IPD offset (fine for stereo / fixed
+// foveation), but gaze-tracked off-center focus views need asymmetric projection wiring first. Keep
+// OFF by default so the proven 2-view stereo path stays the norm. Enable with FFViper.cfg "UseQuadViews 1".
+bool g_bUseQuadViews = false;
+
+// Artscout - 2026: graphics options driven by the Graphics/Advanced setup pages (persisted in
+// DisplayOptions XML, synced into these engine globals at startup in winmain after LoadOptions, and on
+// Apply). The engine reads these globals at the point of use; DisplayOptions is the UI source of truth.
+bool g_bMsaaEnable = true;         // 3D-scene + RTT multisample AA on/off
+int  g_nMsaaSamples = 4;           // requested MSAA sample count 1..8 (backend snaps to a supported level)
+int  g_nVrResolutionScale = 100;   // per-eye OpenXR swapchain resolution scale, percent 50..100
+
+// Artscout - 2026 (#59 VR menu): head-locked in-3D comms/exit menu quad geometry (meters). The menu is drawn
+// into a backend RGBA8 texture and composited as an XrCompositionLayerQuad in VIEW space -> always in front of
+// the head, independent of quad-views/gaze (fixes "menu shows up in the periphery away from where you look").
+// Distance forward (-Z) and panel height; width = height * aspect. Tune in-headset via FFViper.cfg.
+float g_fVrMenuDist = 1.8f;
+float g_fVrMenuHeight = 1.4f;
+
+// Artscout - 2026 (VR): per-eye IPD applied to the RTT display camera (HUD/MFD/DED/RWR panels) so they
+// CONVERGE at the panel depth instead of diverging per eye. The world camera gets IPD via headOrigin;
+// the displays use Pan = headPan*RTT_POSITION_SCALING (no IPD), so add it here. Units = display-space
+// per foot (RTT_POSITION_SCALING=10.35); sign/magnitude headset-tunable via FFViper.cfg "VrDisplayIpd".
+float g_fVrDisplayIpd = 10.65f;   // Artscout - 2026: RTT display IPD; headset-tuned (was 10.35 = RTT_POSITION_SCALING)
+                                  // (symbology sits ON the panel depth). Tune in-headset if needed (10.0-10.65).
+
+// Artscout - 2026 (VR #61): draw the RTT display quads in the REAL cockpit-world frame (same transform
+// as the BSP panels: world = ownshipRot * (canvas / RTT_POSITION_SCALING), camera = headOrigin) instead
+// of the legacy Pan=headPan*10.35 "trick space". The trick space coincides on-screen in mono but is a
+// different 3D space, so the per-eye stereo depth differs -> symbology floats in front of the panel and
+// no single g_fVrDisplayIpd fixes both convergence AND depth. EXPERIMENTAL; FFViper.cfg "VrRttWorldCam 1".
+bool g_bVrRttWorldCam = false;
+
+// Artscout - 2026 (horizon): how far DOWN to extend the sky filler band past the terrain end (multiple
+// of the filler height), to cover the near/far (fartiles) terrain seam with ground haze instead of a
+// black gap. Bigger = covers more of the distant terrain with haze. FFViper.cfg "HorizonFillerExtend".
+float g_fHorizonFillerExtend = 8.0f;   // Artscout - 2026: tuned (was 4.0); NOTE affects flat sky too (otwsky.cpp), not VR-only
+
+// Artscout - 2026 (VR mouse): magnetic snap-radius multiplier for the 3D clickable cockpit in VR. The
+// stock per-button hit radius (~6-24 px in DispWidth space) is far too tight to aim by hand through the
+// headset, so the cursor never snaps/turns green and clicks miss. Multiplies td in the hover/anchor/
+// click hit-tests (VR only; flat path untouched). FFViper.cfg "VrCursorMagnet". Tune up if snap is weak.
+float g_fVrCursorMagnet = 1.0f;   // Artscout - 2026: headset-confirmed (was 6); stereo uses g_fVrCursorMagnetStereo
+
+// Artscout - 2026 (VR mouse): per-axis sign/scale for undoing the view's off-axis when un-projecting the
+// mouse ray (UnTransformPoint), so the focus cursor lines up with the periphery cursor. Separate X/Y
+// because the viewport Y-flip / Flip permutation can invert the vertical sign independently of the
+// horizontal. 0 = ignore that axis' off-axis; dial each until aligned. FFViper.cfg "VrCursorOffAxisX/Y".
+float g_fVrCursorOffAxisX = -1.0f;
+float g_fVrCursorOffAxisY = -1.0f;
+
+// Artscout - 2026 (VR mouse): constant DISPLAY-pixel bias added to the projected button position in the
+// clickable-cockpit hit-test. The big sideways shift (left-eye stereo off-axis ~330px) is handled by
+// SetVRFrustum; this zeroes the small residual (~40px) -- the left-eye IPD camera-position parallax that
+// TransformCameraCentricPoint drops, or a tiny CPU-fold/GPU off-axis mismatch. Dial X until the cursor
+// snaps the button it visually sits on (positive = shift detection right). FFViper.cfg "VrDetectBiasX/Y".
+float g_fVrDetectBiasX = 0.0f;
+float g_fVrDetectBiasY = 0.0f;
+
+// Artscout - 2026 (VR mouse): scale for the per-eye IPD parallax added to the projected button position.
+// The left-eye camera is physically shifted sideways by half the IPD; the cockpit renders with that
+// parallax but TransformCameraCentricPoint drops the camera position, so the buttons miss it. Because the
+// miss is a 3D lateral offset divided by the button's depth, it is DIRECTION-dependent (drifts as the head
+// turns) -- a constant DetectBias can't fix near and far panels at once (ICP wanted +100px while the MFD
+// overshot). This adds the real IPD offset (feet*B3D scaling) so the correction scales with depth. 1.0 =
+// geometric (+1). Confirmed in-headset: with DetectBias=0 the +1 IPD term lines ICP and the MFD up at the
+// same time (the earlier "+1 slides right" was a leftover DetectBias=100 in the cfg, not the sign). Flip
+// only if a future runtime reports the lateral offset with the opposite body-right sign. FFViper.cfg "VrCursorIpd".
+float g_fVrCursorIpd = 1.0f;
+
+// Artscout - 2026 (#58 VR mouse): SEPARATE clickable-cockpit calibration for PLAIN STEREO (no quad-views).
+// The quad-views constants above were tuned against the FOCUS view's narrow gaze FOV; plain stereo projects
+// the cockpit through the full ~100deg eye FOV, so the projected-button residual + snap radius differ and the
+// cursor misses. These *Stereo variants are used only when g_bUseQuadViews is OFF (xrStereo). Defaults equal
+// the quad values -- dial them in plain stereo without disturbing the quad calibration. FFViper.cfg
+// "VrCursorMagnetStereo" / "VrDetectBiasXStereo" / "VrDetectBiasYStereo" / "VrCursorIpdStereo".
+float g_fVrCursorMagnetStereo = 1.0f;   // Artscout - 2026 (#58): stereo's full FOV packs buttons denser than quad's zoom focus -> ~1, not quad's 6
+float g_fVrDetectBiasXStereo  = -245.0f;   // Artscout - 2026 (#58): tuned in-headset for plain stereo (detect was ~2/3 MFD right of the button)
+float g_fVrDetectBiasYStereo  = 0.0f;
+float g_fVrCursorIpdStereo    = 1.0f;
+
+// Artscout - 2026 (HUD): display-scale for the bore/override 262mr ASEC circle. Our 3D HUD glass FOV
+// is small (~7.8deg half), so the true-angular 262mr ASEC (R~0.96 units) nearly fills the HUD and
+// overlaps the (inward-compressed) airspeed/altitude tapes (~0.64). Scale the DISPLAYED circle to sit
+// inside the tapes -- consistent with the compressed symbology. 1.0 = true size. FFViper.cfg "AsecScale".
+// 1.0 = TRUE 262mr angular size (R~0.9). The circle SITS OUTSIDE the airspeed/altitude tapes -- correct,
+// like the real F-16 / BMS ASEC bore reticle (the tapes are meant to be inside the circle). Live: set
+// AsecScale (only shrink if a specific HUD FOV needs it). The reference's fixed 0.6 reticle was too small.
+float g_fAsecScale = 0.85f;   // Artscout - 2026: headset-tuned (was 1.0); NOTE affects flat HUD too (mislhud.cpp), not VR-only
+
+// Artscout - 2026 (HUD): scale the 3D HUD glass canvas (combiner) around its center -> widens the HUD
+// FOV. Our glass is small (~7.8deg half) so true-angular symbology (262mr ASEC) overflows and the
+// tapes cram inward. Widening makes the existing symbology fall into correct F-16 angles AND keeps the
+// FPM/pitch-ladder world-aligned (the HUD half-angle is derived from this canvas). 1.0 = stock glass.
+// Tune via FFViper.cfg "HudCanvasScale" using the desktop mirror; if symbology spills past the combiner
+// frame, the frame (cockpit model) is the limit. ~1.3-1.6 ≈ a 20-25deg F-16 HUD.
+float g_fHudCanvasScale = 0.9f;   // Artscout - 2026: headset-confirmed -- with the stencil aperture clip (Hud3DGlassClip)
+                                  // the HUD no longer needs shrinking to fit, so 0.9 (true-ish FOV) + AsecScale 1.0 are kept
+                                  // and the clip handles the frame. Tune live: set HudCanvasScale / set AsecScale.
+
+// Artscout - 2026 (VR mirror): copy the rendered eye(s) onto the desktop window so RenderDoc (which
+// hooks the desktop Present, not the OpenXR compositor) can capture what the headset shows. Periphery
+// (view 0) -> left half, focus (view 2) -> right half. FFViper.cfg "set g_bXrMirror 0/1".
+bool g_bXrMirror = true;
+
+// Artscout - 2026 (VR quad-views): sign/scale for the off-axis (asymmetric) per-view frustum
+// (Render3D::SetVRFrustum). 1.0 = on, -1.0 = flip that axis, 0.0 = disable. Headset-confirmed:
+// X=+1 (periphery composites), Y=-1 (else the focus ground inverts vertically). Tunable via FFViper.cfg.
+float g_fQuadOffAxisX = 1.0f;
+float g_fQuadOffAxisY = -1.0f;
+
 template<class T>
 class ConfigOption
 {
@@ -287,6 +413,56 @@ bool g_bCanopyReflect = true;
 // original formula). Larger scale exaggerates the parallax shift -- useful to see/verify the effect.
 bool  g_bHudCollimate = true;
 float g_fHudCollimateScale = 1.0f;
+
+// Artscout - 2026 (VR HUD 3D glass): TRUE optical collimation of the HUD symbology. Instead of the flat
+// "infinite projection" 2D origin shift (g_bHudCollimate, a fake parallax on the glass plane), this maps
+// the HUD RTT canvas into the world OFFSET BY THE EYE so the eye position cancels in projection: the
+// symbology sits at infinity along the aircraft boresight -- no per-eye convergence, stable under head
+// translation, conformal with the outside world (FPM/pitch ladder overlay the real horizon). Self-
+// contained: enabling it implies the world-frame RTT camera (the #61 depth path), so g_bVrRttWorldCam is
+// NOT required. VR only (per-eye); flat path untouched. Default OFF. FFViper.cfg "Hud3DGlass". The fake
+// 2D collimation is auto-disabled for the HUD when this is on.
+bool g_bHud3DGlass = true;   // Artscout - 2026: headset-confirmed default ON (VR-only, flat path untouched)
+// Artscout - 2026 (VR HUD 3D glass): tint of the physical combiner glass plate drawn over the HUD canvas
+// (a faint green semi-transparent quad, so the glass reads as glass). Alpha = visibility; 0 disables the
+// plate (symbology only). FFViper.cfg "Hud3DGlassTint" (alpha). Subtle by default. RGB fixed greenish.
+float g_fHud3DGlassTint = 0.10f;
+// Artscout - 2026 (VR HUD 3D glass): Fresnel -- how much MORE the glass shows at grazing view angles
+// (looking at the combiner from above/the side) vs head-on. 0 = flat (constant tint); higher = stronger
+// edge-on reflection, like real glass. FFViper.cfg "Hud3DGlassFresnel".
+float g_fHud3DGlassFresnel = 2.5f;
+// Artscout - 2026 (VR HUD 3D glass): size of the glass plate (and the stencil aperture) relative to the
+// HUD canvas. 1.0 = exactly the symbology canvas; >1 grows it toward the real combiner edges. Both the
+// tint AND the clip aperture scale (so growing it never clips useful symbology). FFViper.cfg "Hud3DGlassSize".
+float g_fHud3DGlassSize = 1.15f;
+// Artscout - 2026 (VR HUD 3D glass): clip the collimated HUD to the combiner aperture (depthTest -- the
+// cockpit structure nearer than the glass occludes the symbology, so it no longer shows "everywhere").
+// Default ON; set 0 if depth z-fighting looks worse than the bleed. FFViper.cfg "Hud3DGlassClip".
+bool g_bHud3DGlassClip = true;
+
+// Artscout - 2026: in WINDOWED mode, confine the mouse cursor to the game window (ClipCursor) so it can't
+// slide out onto the desktop / a second monitor while flying. Released automatically on focus loss (Alt-
+// Tab). Default ON. FFViper.cfg "ClipCursorWindowed".
+bool g_bClipCursorWindowed = true;
+
+// Artscout - 2026 (VR #61 RWR): forward push (in the x10.35 RTT-canvas space) of the RWR symbology canvas
+// so it sits ON the physical RWR scope instead of floating in front of it. The 3Dckpit.dat RWR canvas
+// depth doesn't match the BSP scope; positive values move the symbology deeper (away from the eye). Tune
+// in the headset, then bake the right value here. FFViper.cfg "VrRwrFwd".
+float g_fVrRwrFwd = 1.4f; // Artscout - 2026 (VR): baked -- RWR symbology sits on the scope at 1.4
+// Artscout - 2026 (VR): cannon tracer streak-length multiplier (of velocity*frameTime). The flat path uses
+// the long #31 "DCS-style" streak (g_fTracerStreak 2.5); in VR's wide FOV + stereo depth that long streak
+// reads as a giant laser beam, so VR uses a much shorter streak. FFViper.cfg "TracerStreak" / "VrTracerStreak".
+float g_fTracerStreak = 2.5f;
+float g_fVrTracerStreak = 1.0f;   // Artscout - 2026 (VR): middle streak length (between the short 0.5 and the long flat 2.5)
+// Artscout - 2026 (VR): cannon tracer brightness multiplier in the headset only (flat path untouched). Tracers
+// were either the bright glow-quad or, once foveation settled, a dim point/line; this holds them at a single
+// MIDDLE brightness. FFViper.cfg "VrTracerBright" (0..1).
+float g_fVrTracerBright = 0.6f;
+// Artscout - 2026 (VR): radio/comms (AWACS/Tower) + exit menu are centered on screen and scaled by this factor
+// in the headset so they sit in one consistent place instead of the data-driven flat-screen corner. <1 shrinks.
+// FFViper.cfg "VrMenuScale". Flat path is unaffected.
+float g_fVrMenuScale = 0.7f;
 bool g_bAllHaveIFF = false; // Cobra - Give all a/c IFF interrogator
 bool g_bAnimPilotHead = true; // Cobra - Animate the pilot's head
 float g_fPilotActInterval = 0.5f; // Cobra - Pilot animation act interval (minutes)
@@ -999,12 +1175,18 @@ static ConfigOption<bool> BoolOpts[] =
     { "WaterShader", &g_bWaterShader}, // #12: animated water tiles (D3D11)
     { "CanopyReflect", &g_bCanopyReflect}, // #44: view-dependent canopy glass reflection
     { "HudCollimate", &g_bHudCollimate}, // HUD collimation (infinite-projection head offset)
+    { "Hud3DGlass", &g_bHud3DGlass}, // Artscout - 2026 (VR): true optical collimation of HUD symbology (sits at infinity)
+    { "Hud3DGlassClip", &g_bHud3DGlassClip}, // Artscout - 2026 (VR): clip collimated HUD to the combiner aperture (depth)
+    { "ClipCursorWindowed", &g_bClipCursorWindowed}, // Artscout - 2026: confine the cursor to the window in windowed mode
     { "AllHaveIFF", &g_bAllHaveIFF}, // Cobra - Give all a/c IFF interrogator
     { "UseRC135", &g_bUseRC135}, // Cobra = FRB - Use the RC-135 for ELINT (radar) ID'ing
     { "FFDBC", &g_bFFDBC},
     { "ExtViewOnGround", &g_bExtViewOnGround },// RAS -5Dec04- allow ext view on ground
     { "UnlimitedAmmo", &g_bUnlimitedAmmo }, //Cobra
     { "AnimPilotHead", &g_bAnimPilotHead}, // Cobra - Animate the pilot's head
+    { "UseQuadViews", &g_bUseQuadViews}, // Artscout - 2026 (VR): 4-view quad (foveated) config -- experimental
+    { "XrMirror", &g_bXrMirror}, // Artscout - 2026 (VR): mirror rendered eye(s) to the desktop window (RenderDoc/screenshots)
+    { "VrRttWorldCam", &g_bVrRttWorldCam}, // Artscout - 2026 (VR #61): RTT display quads in real cockpit-world frame (depth)
     { NULL, NULL }
 };
 
@@ -1139,6 +1321,32 @@ static ConfigOption<float> FloatOpts[] =
     { "RadarScale", &g_fRadarScale}, // JPO
     { "CursorSpeed", &g_fCursorSpeed}, // JPO
     { "HudCollimateScale", &g_fHudCollimateScale}, // Artscout - 2026: tune HUD collimation strength (1.0 = original)
+    { "Hud3DGlassTint", &g_fHud3DGlassTint}, // Artscout - 2026 (VR): combiner glass plate tint alpha (0 = none)
+    { "Hud3DGlassFresnel", &g_fHud3DGlassFresnel}, // Artscout - 2026 (VR): grazing-angle glass visibility boost
+    { "VrRwrFwd", &g_fVrRwrFwd}, // Artscout - 2026 (VR): forward push of the RWR symbology canvas onto the scope
+    { "TracerStreak", &g_fTracerStreak}, // Artscout - 2026: flat-path cannon tracer streak length (velocity*frameTime mult)
+    { "VrTracerStreak", &g_fVrTracerStreak}, // Artscout - 2026 (VR): shorter tracer streak in headset (avoids giant-laser look)
+    { "VrTracerBright", &g_fVrTracerBright}, // Artscout - 2026 (VR): tracer brightness multiplier in headset (0..1)
+    { "VrMenuScale", &g_fVrMenuScale}, // Artscout - 2026 (VR): center + scale the radio/comms/exit menu in the headset
+    { "VrMenuDist", &g_fVrMenuDist},   // Artscout - 2026 (#59 VR menu): head-locked menu quad distance forward (m)
+    { "VrMenuHeight", &g_fVrMenuHeight}, // Artscout - 2026 (#59 VR menu): head-locked menu quad panel height (m)
+    { "Hud3DGlassSize", &g_fHud3DGlassSize}, // Artscout - 2026 (VR): glass plate / aperture size vs the HUD canvas
+    { "QuadOffAxisX", &g_fQuadOffAxisX}, // Artscout - 2026 (VR quad-views): off-axis H sign/scale (1=on, -1=flip, 0=off)
+    { "QuadOffAxisY", &g_fQuadOffAxisY}, // Artscout - 2026 (VR quad-views): off-axis V sign/scale
+    { "VrDisplayIpd", &g_fVrDisplayIpd}, // Artscout - 2026 (VR): IPD for RTT display convergence (tune sign/mag)
+    { "AsecScale", &g_fAsecScale}, // Artscout - 2026 (HUD): bore 262mr ASEC display scale (fit small HUD, no tape overlap)
+    { "HudCanvasScale", &g_fHudCanvasScale}, // Artscout - 2026 (HUD): widen HUD glass FOV (fixes layout properly)
+    { "HorizonFillerExtend", &g_fHorizonFillerExtend}, // Artscout - 2026 (horizon): extend sky filler down over fartiles seam
+    { "VrCursorMagnet", &g_fVrCursorMagnet}, // Artscout - 2026 (VR mouse): magnetic snap-radius multiplier for clickable cockpit
+    { "VrCursorOffAxisX", &g_fVrCursorOffAxisX}, // Artscout - 2026 (VR mouse): horizontal off-axis undo for focus cursor alignment
+    { "VrCursorOffAxisY", &g_fVrCursorOffAxisY}, // Artscout - 2026 (VR mouse): vertical off-axis undo for focus cursor alignment
+    { "VrDetectBiasX", &g_fVrDetectBiasX}, // Artscout - 2026 (VR mouse): horizontal display-pixel bias for clickable-cockpit detection
+    { "VrDetectBiasY", &g_fVrDetectBiasY}, // Artscout - 2026 (VR mouse): vertical display-pixel bias for clickable-cockpit detection
+    { "VrCursorIpd", &g_fVrCursorIpd}, // Artscout - 2026 (VR mouse): per-eye IPD parallax scale for depth-correct clickable detection
+    { "VrCursorMagnetStereo", &g_fVrCursorMagnetStereo}, // Artscout - 2026 (#58): plain-stereo (non-quad) snap radius
+    { "VrDetectBiasXStereo", &g_fVrDetectBiasXStereo}, // Artscout - 2026 (#58): plain-stereo (non-quad) horizontal detect bias
+    { "VrDetectBiasYStereo", &g_fVrDetectBiasYStereo}, // Artscout - 2026 (#58): plain-stereo (non-quad) vertical detect bias
+    { "VrCursorIpdStereo", &g_fVrCursorIpdStereo}, // Artscout - 2026 (#58): plain-stereo (non-quad) IPD parallax scale
     { "MinCloudWeather",  &g_fMinCloudWeather}, //JPO
     { "CloudThicknessFactor", &g_fCloudThicknessFactor}, //JPO
     { "DragDilutionFactor", &g_fDragDilutionFactor},

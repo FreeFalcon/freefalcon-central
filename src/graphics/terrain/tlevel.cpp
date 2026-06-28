@@ -79,15 +79,30 @@ void TLevel::Setup(int level, int width, int height, const char *mapPath)
     if (offsetFile >= 0)
     {
 
-        // Read the file offsets into the post pointer array
-        bytes = read(offsetFile, blocks, sizeof(TBlock*)*blocks_wide * blocks_high);
+        // Artscout - 2026 (x64): the .o file stores 32-bit (4-byte) block offsets, but tBlockAddress
+        // is a union with a pointer -> 8 bytes on x64. The old bulk read sized by sizeof(TBlock*)
+        // read twice the file on x64 and failed. Read the 32-bit offsets through a temp buffer and
+        // expand them into the union's .offset (the low bits; .ptr cleared so the high bits are 0).
+        unsigned blkCount = blocks_wide * blocks_high;
+        DWORD *tmpOff = new DWORD[blkCount];
 
-        if (bytes not_eq sizeof(TBlock*)*blocks_wide * blocks_high)
+        bytes = read(offsetFile, tmpOff, (unsigned)(sizeof(DWORD) * blkCount));
+
+        if (bytes not_eq (DWORD)(sizeof(DWORD) * blkCount))
         {
             char message[120];
             sprintf(message, "%s:  Couldn't read block offset data", strerror(errno));
+            delete[] tmpOff;
             ShiError(message);
         }
+
+        for (unsigned bi = 0; bi < blkCount; bi++)
+        {
+            blocks[bi].ptr = NULL;             // zero all bytes (8 on x64)
+            blocks[bi].offset = tmpOff[bi];    // low 32 bits = on-disk offset
+        }
+
+        delete[] tmpOff;
 
         close(offsetFile);
 
@@ -522,13 +537,21 @@ void TLevel::SetBlockPtr(UINT r, UINT c, TBlock *block)
         block = blocks[ r * blocks_wide + c ].ptr;
 
         // Durring debugging, make sure don't already have an offset
-        ShiAssert( not ((DWORD)block bitand 0x00000001));
+        ShiAssert( not ((DWORD_PTR)block bitand 0x00000001));
+
+        // Artscout - 2026 (x64 fix): tBlockAddress is a UNION { TBlock* ptr; DWORD offset; }. On 32-bit both
+        // members were 4 bytes and FULLY overlapped, so writing .offset overwrote the whole pointer. On x64
+        // ptr is 8 bytes but offset is 4, so writing only .offset leaves the HIGH 4 bytes of the pointer stale.
+        // The `offset = NULL` branch then yields ptr = 0x<staleHigh>00000000 with bit0 == 0, which GetBlockPtr()
+        // mistakes for a live block -> returns a bogus 0x1_00000000-style pointer -> CTD in TBlock::Reference
+        // during terrain streaming. Zero the full 8-byte ptr FIRST (matching Setup()'s "zero all bytes" init),
+        // then stamp the low 32 bits with the on-disk offset.
+        blocks[ r * blocks_wide + c ].ptr = NULL;
 
         // Put the file offset back into the block pointer array
         if ( not F4IsBadReadPtr(block, sizeof(TBlock))) // JB 010408 CTD
             blocks[ r * blocks_wide + c ].offset = block->fileOffset;
-        else
-            blocks[ r * blocks_wide + c ].offset = NULL; // JB 010408 hmm... see what happens with this.
+        // else: leave the slot fully NULL (empty); GetBlockPtr returns NULL for it.
     }
 }
 

@@ -13,6 +13,8 @@
 #include "Device.h"
 #include "ImageBuf.h"
 #include "Graphics/DXEngine/D3D11Backend.h"	// PHASE 1: D3D11 backend
+#include "Graphics/DXEngine/OpenXRBackend.h"	// VR (OpenXR)
+#include "../../sim/INCLUDE/ivibedata.h"	// VR: g_intellivibeData.In3D (menu vs sim)
 #include "Graphics/DXEngine/d3d11/D3D11Renderer.h"	// PHASE 5: composite the 2D UI over 3D
 #include <d3d11.h>	// PHASE 5 (RTT): off-screen render target
 #include "FalcLib/include/debuggr.h"
@@ -1208,7 +1210,19 @@ void ImageBuffer::PresentD3D11()
             memset(m_pSysMem, 0, (size_t)width * height * 2);
         }
         else if (!g_bD3D11GPUDraw)
+        {
             g_pD3D11Backend->BlitBitmap565(m_pSysMem, width, height);
+            // VR: this is the real (menu) 2D present path (runs on the ui95 OutputLoop
+            // thread). Cache the UI surface so the XR pump can show it as a quad panel.
+            extern bool g_bUseOpenXR;
+            if (g_bUseOpenXR)
+            {
+                // Artscout - 2026 (VR menu): COPY the surface into a lock-protected stable buffer (m_pSysMem
+                // is valid on THIS thread now) so the pump never reads a freed/resized ImageBuffer.
+                extern void OpenXR_CacheMenuSurface(const void* src565, int w, int h);
+                OpenXR_CacheMenuSurface(m_pSysMem, width, height);
+            }
+        }
     }
     g_pD3D11Backend->Present(true);
     g_bD3D11GPUDraw = false;
@@ -1224,11 +1238,24 @@ void ImageBuffer::SwapBuffers(bool bDontFlip)
     {
         if (m_bIsScreenBuffer && g_pD3D11Backend)
         {
+            // Artscout - 2026 (VR mirror): in a VR 3D frame the scene was rendered into the XR eye
+            // images (NOT the MSAA backbuffer target), and RenderFrame already copied the eye(s) onto
+            // the back buffer for the desktop mirror. Resolving the (stale) MSAA target and compositing
+            // the (stale splash) UI surface here would ERASE that mirror -> skip both in VR. The headset
+            // gets its frame from xrEndFrame regardless; this only controls the desktop window.
+            // NOTE: gate on g_bUseOpenXR, NOT g_bVrFrameActive. This present runs on the ui95 OutputLoop
+            // thread, while g_bVrFrameActive is written on the render thread inside otwloop -- reading it here
+            // is a cross-thread race: a stale 'false' flips vrMirror off, runs an extra Resolve/Composite in
+            // the middle of a live XR frame, and desyncs the OpenXR frame loop (xrBeginFrame -> CALL_ORDER_
+            // INVALID -> _com_error flood -> black screen). g_bUseOpenXR is stable, so VR stays consistent.
+            extern bool g_bUseOpenXR, g_bXrMirror;
+            const bool vrMirror = g_bUseOpenXR && g_bXrMirror && g_bD3D11GPUDraw;
+
             // PHASE 5: GPU frame (3D) -> composite UI over 3D; 2D (menu) -> blit.
             // #7 MSAA: 3D frame -> resolve the multisample target into the backbuffer before UI/present (no-op without MSAA).
-            if (g_bD3D11GPUDraw)
+            if (g_bD3D11GPUDraw && !vrMirror)
                 g_pD3D11Backend->ResolveMsaaToBackBuffer();
-            if (m_pSysMem)
+            if (m_pSysMem && !vrMirror)
             {
                 if (g_bD3D11GPUDraw && g_pD3D11Renderer && g_pD3D11Renderer->IsValid())
                 {
@@ -1236,10 +1263,24 @@ void ImageBuffer::SwapBuffers(bool bDontFlip)
                     memset(m_pSysMem, 0, (size_t)width * height * 2);
                 }
                 else if (!g_bD3D11GPUDraw)
+                {
                     g_pD3D11Backend->BlitBitmap565(m_pSysMem, width, height);
+                    // VR: this 2D path also carries the 3D-load splash (OTWImage 2D blit).
+                    // Cache it so the XR pump shows the splash on the panel instead of black.
+                    extern bool g_bUseOpenXR;
+                    if (g_bUseOpenXR)
+                    {
+                        extern void OpenXR_CacheMenuSurface(const void* src565, int w, int h);
+                        OpenXR_CacheMenuSurface(m_pSysMem, width, height);   // copy under lock (no UAF)
+                    }
+                }
             }
             g_pD3D11Backend->Present(true);
             g_bD3D11GPUDraw = false;
+            // VR: in the 3D world the headset frame is driven by the per-eye STEREO loop in
+            // OTWDriverClass::RenderFrame (the scene is rendered once per eye into the XR eye
+            // images there). Menus are driven by the main-loop pump (OpenXR_PumpFrame). So
+            // SwapBuffers no longer drives XR for the 3D path.
         }
         return;
     }

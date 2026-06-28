@@ -1,4 +1,6 @@
 #include "stdhdr.h"
+#include "Graphics/DXEngine/OpenXRBackend.h"   // VR: HMD head-tracking + per-eye stereo
+#include "Graphics/DXEngine/D3D11Backend.h"    // VR: per-eye render-target redirect
 #include "Graphics/Include/TOD.h"
 #include "Graphics/Include/renderow.h"
 #include "Graphics/Include/RViewPnt.h"
@@ -161,6 +163,10 @@ extern bool g_bShowFlaps;
 void CallInputFunction(unsigned long val, int state);
 
 extern int ShowFrameRate;
+// Artscout - 2026 (VR): the FPS text is built before the per-eye loop and drawn into the desktop back
+// buffer (not the eye), so it is invisible in the headset. Cache it here and re-draw it INTO the eye in
+// the per-eye overlay block (g_bUseOpenXR).
+char g_fpsVrStr[40] = "";
 extern SimBaseClass* eyeFlyTgt;
 extern int gTotSfx;
 extern int numObjsProcessed;
@@ -1401,6 +1407,7 @@ void OTWDriverClass::DisplayFrontText(void)
             lTestFlag1 = 0;
             // FPS here
             sprintf(tmpStr, "FPS %5d", lastfps * g_nNewFPSCounter);
+            strncpy(g_fpsVrStr, tmpStr, sizeof(g_fpsVrStr) - 1);   // Artscout - 2026: cache for the VR eye
             VirtualDisplay::SetFont(2);
             renderer->TextLeft(-0.95F,  0.95F, tmpStr, 2);
             lTestFlag1 = tmp;
@@ -1413,6 +1420,7 @@ void OTWDriverClass::DisplayFrontText(void)
 
             lTestFlag1 = 0;
             sprintf(tmpStr, "FPS %5.1f", 1.0F / (float)(frameTime) * 1000.0F);
+            strncpy(g_fpsVrStr, tmpStr, sizeof(g_fpsVrStr) - 1);   // Artscout - 2026: cache for the VR eye
             VirtualDisplay::SetFont(2);
             renderer->TextLeft(-0.95F,  0.95F, tmpStr, 2);
             lTestFlag1 = tmp;
@@ -2347,6 +2355,93 @@ void OTWDriverClass::RenderFrame()
         renderer->context.SetZBuffering(TRUE);
     }
 
+    // ===== VR per-eye stereo: render the 3D scene once per eye into the XR eye images. =====
+    // BeginStereoFrame returns -1 (no XR -> render mono once), 0 (frame begun, render nothing),
+    // or N eyes. The whole core-render block below runs once per pass; the eye target + camera
+    // are set per eye. EndStereoFrame submits the projection layer.
+    extern bool g_bUseOpenXR;
+    int xrN = -1;
+    if (g_bUseOpenXR and g_pOpenXRBackend and g_intellivibeData.In3D)
+        xrN = g_pOpenXRBackend->BeginStereoFrame();
+    // Artscout - 2026: TEMP DIAG -- M1-style clear of both eyes (no engine render between them) to
+    // isolate "2 swapchains don't compose" from "engine render between eyes breaks the 2nd eye".
+    // Set true to run the clear-only test; false for the real per-eye scene render.
+    static const bool g_bXrDiagClearOnly = false;
+    // Artscout - 2026: TEMP DIAG -- keep the per-eye loop STRUCTURE (BeginEye/SetXrEyeTarget/StartFrame
+    // via the engine context) but skip the engine scene render, solid-filling each eye instead. If
+    // both eyes then show their color -> the loop structure is fine and the engine render between eyes
+    // is what blacks out the 2nd eye. If the 2nd eye is still black -> the structure itself breaks it.
+    static const bool g_bXrDiagSkipScene = false;
+    if (xrN >= 1 and g_bXrDiagClearOnly)
+    {
+        g_pOpenXRBackend->DiagClearEyesAndEnd();
+        return;   // skip the engine render + normal EndStereoFrame this frame
+    }
+    const int xrPasses = (xrN >= 1) ? xrN : 1;
+    // Artscout - 2026: publish the per-frame "VR actually presenting stereo" flag. xrN >= 1 means
+    // BeginStereoFrame began a real HMD frame; xrN < 1 (headset off / no runtime / shouldRender==false)
+    // means we fall through to the FLAT desktop render. Per-frame VR rendering branches (popmenu reposition,
+    // vcock mouse-pick projection) gate on this -- NOT on g_bUseOpenXR, which stays true with the headset off.
+    extern bool g_bVrFrameActive;
+    g_bVrFrameActive = (xrN >= 1);
+    const int xrSavedResX = (xrN >= 1) ? renderer->VR_GetResX() : 0;   // restore after the loop
+    const int xrSavedResY = (xrN >= 1) ? renderer->VR_GetResY() : 0;
+    for (int xrEye = 0; xrEye < xrPasses; ++xrEye)
+    {
+        bool xrEyeOk = false;
+        if (xrN >= 1)
+        {
+            void* eyeRtv = NULL; int eyeW = 0, eyeH = 0;
+            if (g_pOpenXRBackend->BeginEye(xrEye, &eyeRtv, &eyeW, &eyeH))
+            {
+                xrEyeOk = true;
+                g_pD3D11Backend->SetXrEyeTarget(eyeRtv, eyeW, eyeH);
+                g_pOpenXRBackend->SetCurrentEye(xrEye);
+                // Render this eye at its full OpenXR resolution: set the engine's render
+                // res/aspect to the eye, recompute scale (SetViewport) + projection (SetFOV),
+                // and submit the matching engine fov so the compositor maps it undistorted.
+                renderer->VR_SetRes(eyeW, eyeH);
+                renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
+                // Render this eye with the HEADSET's actual horizontal FOV (not the engine default),
+                // and submit the SAME projection so the rendered image matches the compositor's
+                // projection -> images fuse (no double vision) and the world fills the lenses.
+                float fl, fr, fu, fd;
+                float hf;
+                bool haveFov = g_pOpenXRBackend->GetEyeFovAngles(xrEye, &fl, &fr, &fu, &fd);
+                if (haveFov)
+                    hf = fr - fl;                       // total horizontal fov from the runtime
+                else
+                    hf = renderer->GetFOV();
+                // Artscout - 2026 (#58/#60): branch off the ACTUAL session view config, not the g_bUseQuadViews
+                // option. The session is created once; toggling the option in-game does NOT recreate it, so the
+                // flag can disagree with reality (4-view session but flag now false) -> the focus views would be
+                // projected with a symmetric FOV and the cockpit garbles. IsQuadViews() = what the session really is.
+                const bool sessionQuad = g_pOpenXRBackend && g_pOpenXRBackend->IsQuadViews();
+                if (sessionQuad and haveFov)
+                {
+                    // Quad-views: render each view with its TRUE off-axis (asymmetric) frustum matching
+                    // the runtime's per-view fov, and submit the RAW per-view fov (no SetSubmitFov ->
+                    // EndEye uses views[eye].fov) so the foveated compositor's blend regions line up.
+                    renderer->SetVRFrustum(fl, fr, fu, fd);
+                }
+                else
+                {
+                    renderer->SetFOV(hf);
+                    // vertical fov the engine actually renders = derived from hf + eye aspect; submit that.
+                    float vf = (eyeW > 0) ? 2.0f * (float)atan(tan(hf * 0.5f) * (double)eyeH / (double)eyeW) : hf;
+                    g_pOpenXRBackend->SetSubmitFov(hf, vf);
+                }
+            }
+            { extern bool g_bD3D11GPUDraw; g_bD3D11GPUDraw = false; }   // reset per-eye GPU-draw flag
+        }
+
+    // Artscout - 2026: TEMP DIAG -- skip the engine render AND StartFrame; raw-clear the eye RTV only
+    // (closest to the working clear-only path: no OMSetRenderTargets / depth-bind / StartFrame clear).
+    if (xrN >= 1 and g_bXrDiagSkipScene)
+    {
+        g_pD3D11Backend->DebugFillXrEye(xrEye == 0 ? 0.8f : 0.0f, xrEye == 1 ? 0.8f : 0.0f, 0.0f);
+    }
+    else {
     // Actually draw the scene
     renderer->context.StartFrame();
     renderer->StartDraw();
@@ -2459,6 +2554,13 @@ void OTWDriverClass::RenderFrame()
     //START_PROFILE("RENDER DRAWSCENE");
     renderer->DrawScene((struct Tpoint *) &headOrigin, (struct Trotation *) &cameraRot);
     //STOP_PROFILE("RENDER DRAWSCENE");
+
+    // Artscout - 2026 (VR quad-views): do NOT clear off-axis here. The RTT display PANELS (HUD/MFD/DED/
+    // RWR) are placed via VirtualDisplay::DrawRttQuad -> r3d->TransformPoint, i.e. the CPU terrain path
+    // (T matrix), NOT matProj. They need the SAME off-axis fold as the terrain, or they project to the
+    // symmetric center while each eye's off-center fov expects them shifted -> the panels diverge per
+    // eye. Keep off-axis armed through the instrument pass; the post-loop SetFOV (and next eye's
+    // SetVRFrustum) reset it. (The RTT symbology itself draws in its own RTT viewport -- off-axis-safe.)
 
     VirtualDisplay::SetFont(oldFont);
 
@@ -2728,15 +2830,251 @@ void OTWDriverClass::RenderFrame()
     {
         renderer->EndDraw();
     }
+    } // Artscout - 2026: end TEMP DIAG g_bXrDiagSkipScene else-block (engine render)
+
+        // ===== VR per-eye stereo: finish this eye / close the loop =====
+        if (xrN >= 1)
+        {
+            // Artscout - 2026 (VR): draw the 2D overlays + mouse cursor INTO the eye(s). The flat path
+            // draws all of these AFTER the eye loop, to the (uncomposited) back buffer -> invisible in
+            // the headset. We split them:
+            //  * MENU / TEXT / EXIT-MENU -> LEFT eye (view 0) only, 2D. A flat quad at the same screen
+            //    position in both eyes sits at infinity and visually doubles when the eyes converge on
+            //    the near cockpit; one eye is the standard VR fix for 2D overlays. gScreenSize is set to
+            //    DispWidth/DispHeight (overlays are authored in that pixel space; the screen-VS maps
+            //    pixel->NDC by gScreenSize; NDC is resolution-independent so they fill the full eye).
+            //  * MOUSE CURSOR -> a true 3D point projected per-eye (stereo), so it sits AT the switch and
+            //    can be aimed. The magnetic anchor (g_vrCursorAnchor, captured in VCock_Exec = the nearest
+            //    clickable button) is in cockpit camera-centric space; projecting it with each eye's
+            //    camera gives the right per-eye disparity. When no button is under the pointer (no anchor)
+            //    or in the exit menu, fall back to the flat 2D cursor in the left eye.
+            // Depth: clear the eye Z first (flat path draws overlays after ClearBuffers(ZBUFFER)) so the
+            // near cockpit does not depth-occlude them. Duplicate flat-path draws are skipped in VR.
+            {
+                extern int gSelectedCursor, gxPos, gyPos;
+                extern Tpoint g_vrCursorAnchor; extern bool g_vrCursorAnchorValid;
+                const int ew = g_pD3D11Backend->XrEyeW(), eh = g_pD3D11Backend->XrEyeH();
+                const bool exitMenu = InExitMenu();
+                const bool showCur = exitMenu or
+                    (gSimInputEnabled and SimDriver.GetPlayerAircraft() and
+                     (vuxRealTime - gTimeLastCursorUpdate < SI_MOUSE_TIME_DELTA) and
+                     gSelectedCursor >= 0 and
+                     (GetOTWDisplayMode() == Mode2DCockpit or GetOTWDisplayMode() == Mode3DCockpit or
+                      GetOTWDisplayMode() == ModePadlockF3 or GetOTWDisplayMode() == ModePadlockEFOV) and
+                     otwPlatform.get() == SimDriver.GetPlayerAircraft());
+
+                if (ew > 0 and eh > 0 and DisplayOptions.DispWidth > 0)
+                {
+                    // ---- MENU / TEXT / EXIT-MENU: BOTH periphery eyes, 2D in DispWidth space ----
+                    // Artscout - 2026 (VR): these used to draw into the LEFT eye only -- monocular, so the radio
+                    // comms menu (AWACS/Tower) and exit menu flickered / vanished depending on eye dominance
+                    // ("перекрывается взглядом"). Draw them into BOTH periphery views (0,1) so they are stable and
+                    // sit consistently in one place. Same screen position in both eyes -> the panel sits at optical
+                    // infinity (fine for reading far text; no near-cockpit convergence is expected while in a menu).
+                    // Focus views (2,3 in quad) are skipped -- their narrow FOV would crop a full-screen overlay.
+                    // Artscout - 2026 (#59): the comms (AWACS/Tower) + exit menu now go to a HEAD-LOCKED quad
+                    // layer -- drawn ONCE into an off-screen RTT on the first eye, then composited in VIEW space
+                    // (always in front of the head) by SubmitInSceneMenuQuad/EndStereoFrame. They used to draw into
+                    // the periphery eyes (0,1) so in quad-views they appeared off to the side, away from the gaze.
+                    if (xrEye == 0 and g_pOpenXRBackend)
+                    {
+                        // Artscout - 2026 (#59): gate on MouseMenuActive too -- it is set TRUE immediately by
+                        // SetExitMenu(TRUE), whereas InExitMenu()/exitMenuOn only flips TRUE *inside* DrawExitMenu
+                        // (via ChangeExitMenu). Gating purely on InExitMenu() was a chicken-and-egg: the block was
+                        // skipped, so DrawExitMenu never ran, so exitMenuOn never became TRUE -> the exit dialog
+                        // only appeared when a comms menu (IsActive) happened to open the block for it.
+                        extern bool MouseMenuActive;
+                        const bool menuUp = (pMenuManager and pMenuManager->IsActive()) or exitMenu or MouseMenuActive;
+                        if (menuUp)
+                        {
+                            const int mw = DisplayOptions.DispWidth, mh = DisplayOptions.DispHeight;
+                            g_pD3D11Backend->EnsureMenuRtt(mw, mh);
+                            void* mrtv = g_pD3D11Backend->MenuRttRtv();
+                            if (mrtv)
+                            {
+                                // Bind the menu RTT WITH depth (transparent + depth clear): the comms menu is 2D
+                                // but the exit menu (DrawExitMenu) renders endDialogObject -- a 3D BSP -- so it
+                                // needs a depth buffer to z-test correctly (else it never shows / draws scrambled).
+                                g_pD3D11Backend->BindMenuRtt(true);
+                                g_pD3D11Backend->SetGScreenSize(mw, mh);
+                                if (pMenuManager) pMenuManager->DisplayDraw();
+                                DrawExitMenu();
+                                g_pOpenXRBackend->SubmitInSceneMenuQuad(g_pD3D11Backend->MenuRttTex(), mw, mh);
+                                g_pD3D11Backend->SetGScreenSize(ew, eh);
+                            }
+                        }
+                    }
+
+                    // ---- SUBTITLES + FPS: per-eye periphery (these are NOT the comms/exit menu) ----
+                    if (xrEye == 0 or xrEye == 1)
+                    {
+                        g_pD3D11Backend->BindBackBuffer(false);                // bind eye RTV (no clear of color)
+                        OTWDriver.renderer->context.ClearBuffers(MPR_CI_ZBUFFER);
+                        g_pD3D11Backend->SetGScreenSize(DisplayOptions.DispWidth, DisplayOptions.DispHeight);
+                        DisplayFrontText();
+                        // Artscout - 2026 (VR): draw the cached FPS string INTO the eye (top-left) so the
+                        // framerate counter is visible in the headset, not just on the desktop mirror. Left eye only.
+                        if (xrEye == 0 and ShowFrameRate and g_fpsVrStr[0])
+                        {
+                            OTWDriver.renderer->SetColor(0xfff0f0f0);
+                            VirtualDisplay::SetFont(2);
+                            OTWDriver.renderer->TextLeft(-0.95F, 0.95F, g_fpsVrStr, 2);
+                        }
+                        g_pD3D11Backend->SetGScreenSize(ew, eh);
+                    }
+
+                    // ---- MOUSE CURSOR ----
+                    if (showCur)
+                    {
+                        const bool cursor3D = (not exitMenu) and g_vrCursorAnchorValid;
+                        // VR cursor -- LEFT EYE ONLY (view 0 periphery + view 2 focus); monocular, so no
+                        // cross-eye disparity. ALWAYS the free cursor (follows the mouse); the green/red
+                        // color (gSelectedCursor) signals the magnetic snap, and the CLICK fires the snapped
+                        // button directly (vcock) -- so we do NOT jump the cursor onto a re-projected anchor
+                        // (that drifted between frames). Periphery = mouse pixel; focus = the SAME mouse
+                        // angle mapped into the focus window (gaze-tracked fov) so it stays glued to the
+                        // cockpit. No renderer camera is used here (pixel + fov math only), so nothing to re-arm.
+                        if (cursor3D and (xrEye == 0 or xrEye == 2))
+                        {
+                            ThreeDVertex r; bool doDraw = false;
+                            if (xrEye == 0)   // left periphery: cursor sits exactly at the mouse pixel
+                            {
+                                r.x = (float)gxPos * (float)ew / (float)DisplayOptions.DispWidth;
+                                r.y = (float)gyPos * (float)eh / (float)DisplayOptions.DispHeight;
+                                doDraw = true;
+                            }
+                            else if (xrEye == 2)   // left focus: map the periphery cursor pixel -> focus pixel
+                            {
+                                // Direct 2D FOV mapping (no ray / depth / cameraRot): the periphery cursor is
+                                // at angle A; place the focus cursor at the SAME angle A within the focus
+                                // window. Both views share the eye position, so a tan-space angle maps
+                                // exactly, and the focus fov angles already encode the gaze -> the cursor is
+                                // glued to the cockpit. pixel<->tan(angle) is linear per view.
+                                float pfl, pfr, pfu, pfd, ffl, ffr, ffu, ffd;
+                                if (g_pOpenXRBackend and
+                                    g_pOpenXRBackend->GetEyeFovAngles(0, &pfl, &pfr, &pfu, &pfd) and
+                                    g_pOpenXRBackend->GetEyeFovAngles(2, &ffl, &ffr, &ffu, &ffd))
+                                {
+                                    const float periphPx = (float)gxPos * (float)ew / (float)DisplayOptions.DispWidth;
+                                    const float periphPy = (float)gyPos * (float)eh / (float)DisplayOptions.DispHeight;
+                                    const float tpl = tanf(pfl), tpr = tanf(pfr), tpu = tanf(pfu), tpd = tanf(pfd);
+                                    const float tfl = tanf(ffl), tfr = tanf(ffr), tfu = tanf(ffu), tfd = tanf(ffd);
+                                    // periphery pixel -> tan(angle); pixel x:0..ew spans tpl..tpr, y:0..eh spans tpu..tpd
+                                    const float tax = tpl + (periphPx / (float)ew) * (tpr - tpl);
+                                    const float tay = tpu + (periphPy / (float)eh) * (tpd - tpu);
+                                    // tan(angle) -> focus pixel
+                                    if (fabsf(tfr - tfl) > 1e-6f and fabsf(tfd - tfu) > 1e-6f)
+                                    {
+                                        r.x = (float)ew * (tax - tfl) / (tfr - tfl);
+                                        r.y = (float)eh * (tay - tfu) / (tfd - tfu);
+                                        doDraw = true;
+                                    }
+                                }
+                            }
+
+                            if (doDraw)
+                            {
+                                // Scale the cursor bitmap in the focus view (view 2) by the focus/periphery
+                                // zoom (more px/degree there) so it is not tiny; periphery (view 0) = 1.0.
+                                extern float g_vrCursorDrawScale;
+                                g_vrCursorDrawScale = 1.0f;
+                                if (xrEye == 2 and g_pOpenXRBackend)
+                                {
+                                    float pfl, pfr, pfu, pfd, ffl, ffr, ffu, ffd;
+                                    if (g_pOpenXRBackend->GetEyeFovAngles(0, &pfl, &pfr, &pfu, &pfd) and
+                                        g_pOpenXRBackend->GetEyeFovAngles(2, &ffl, &ffr, &ffu, &ffd))
+                                    {
+                                        float pf = pfr - pfl, ff = ffr - ffl;
+                                        if (ff > 0.001f) g_vrCursorDrawScale = pf / ff;
+                                    }
+                                }
+                                g_pD3D11Backend->BindBackBuffer(false);
+                                if (xrEye != 0) OTWDriver.renderer->context.ClearBuffers(MPR_CI_ZBUFFER);
+                                g_pD3D11Backend->SetGScreenSize(ew, eh);
+                                const int sx = gxPos, sy = gyPos;
+                                gxPos = (int)r.x; gyPos = (int)r.y;
+                                ClipAndDrawCursor(ew, eh);
+                                gxPos = sx; gyPos = sy;
+                                g_vrCursorDrawScale = 1.0f;
+                            }
+                        }
+                        else if (xrEye == 0)
+                        {
+                            // 2D fallback / exit-menu cursor: left eye periphery (view 0) only, DispWidth
+                            // space. NOTE: this flat cursor can ONLY be drawn in a full-FOV view -- the
+                            // focus views (2/3) are a zoomed, gaze-tracked sub-region, so a DispWidth-space
+                            // cursor there lands at the wrong place and jumps with the gaze. In the focus
+                            // region the cursor is shown via the 3D magnetic anchor path above (angularly
+                            // correct), which is why aiming relies on hovering a clickable button.
+                            g_pD3D11Backend->BindBackBuffer(false);
+                            g_pD3D11Backend->SetGScreenSize(DisplayOptions.DispWidth, DisplayOptions.DispHeight);
+                            const int sc = gSelectedCursor;
+                            if (exitMenu) gSelectedCursor = 1;
+                            ClipAndDrawCursor(DisplayOptions.DispWidth, DisplayOptions.DispHeight);
+                            gSelectedCursor = sc;
+                            g_pD3D11Backend->SetGScreenSize(ew, eh);
+                        }
+                    }
+                }
+            }
+
+            // Artscout - 2026 (VR mirror): copy this eye onto the desktop back buffer so RenderDoc /
+            // screenshots can see it (RenderDoc hooks the desktop Present, not the OpenXR compositor).
+            // periphery (view 0) -> left half, focus (view 2) -> right half; stereo right eye (1) -> right.
+            { extern bool g_bXrMirror;
+              if (g_bXrMirror)
+              {
+                  const int mw = g_pD3D11Backend->Width() / 2, mh = g_pD3D11Backend->Height();
+                  if (xrEye == 0)                       g_pD3D11Backend->MirrorEyeToBackBuffer(0, 0, mw, mh);
+                  else if (xrEye == 2)                  g_pD3D11Backend->MirrorEyeToBackBuffer(mw, 0, mw, mh);
+                  else if (xrEye == 1 && xrPasses == 2) g_pD3D11Backend->MirrorEyeToBackBuffer(mw, 0, mw, mh);
+              }
+            }
+
+            // Artscout - 2026: ROOT FIX for the 2nd-eye-black. The eye image is bound as the render
+            // target via OMSetRenderTargets (StartFrame/BindBackBuffer, and re-bound by each display
+            // EndDraw). It is NEVER unbound, so the LAST eye is still bound when xrEndFrame composites
+            // -> the runtime can't read an app-bound render target -> that eye is black. (The earlier
+            // eye gets unbound as a side effect of the next eye's OMSetRenderTargets, so it composites
+            // fine.) Unbind the eye image (bind the back buffer instead) BEFORE releasing it.
+            g_pD3D11Backend->ClearXrEyeTarget();          // m_bXrEyeActive=false -> next bind != eye
+            g_pD3D11Backend->BindBackBuffer(false);       // unbind the eye image from the context
+            g_pD3D11Backend->FlushContext();              // submit the unbind + eye draws before release
+            g_pOpenXRBackend->SetCurrentEye(-1);
+            if (xrEyeOk)   // only release what we acquired
+                g_pOpenXRBackend->EndEye(xrEye);
+        }
+    } // end per-eye render loop
+    if (xrN >= 1)
+    {
+        // Restore the engine render res/aspect for the desktop / 2D path after the eye loop.
+        renderer->VR_SetRes(xrSavedResX, xrSavedResY);
+        renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
+        renderer->SetFOV(renderer->GetFOV());
+    }
+    if (g_pOpenXRBackend and g_pOpenXRBackend->StereoActive())
+    {
+        // Artscout - 2026: release both eye images now (deferred from EndEye) -- both eyes have
+        // rendered, so the runtime composites both. Releasing per-eye made the 2nd eye black.
+        g_pOpenXRBackend->ReleaseEyes();
+        g_pOpenXRBackend->EndStereoFrame();
+    }
 
     //STOP_PROFILE("RENDER 2DPIT");
 
 
+    // Artscout - 2026 (VR): in stereo these overlays were already drawn into each eye (above). The
+    // back buffer here is uncomposited (desktop mirror only), so skip the duplicate flat-path draws
+    // to avoid double-advancing their per-frame state (e.g. DisplayFrontText's screenshot machine).
+    const bool xrStereoEyes = (xrN >= 1);
+
     // COBRA - RED - FOR NO-DEPTH MENUS, CLEAR THE ZBUFFER
-    renderer->context.ClearBuffers(MPR_CI_ZBUFFER);
+    if (not xrStereoEyes)
+        renderer->context.ClearBuffers(MPR_CI_ZBUFFER);
 
     // Draw wingman, tanker, awacs menus
-    pMenuManager->DisplayDraw();
+    if (not xrStereoEyes)
+        pMenuManager->DisplayDraw();
 
 
     //STOP_PROFILE("RENDER FRAME");
@@ -2745,7 +3083,8 @@ void OTWDriverClass::RenderFrame()
 
     //STOP_PROFILE("OTWRENDER");
     //STOP_PROFILE("OTW Loop");
-    DisplayFrontText();
+    if (not xrStereoEyes)
+        DisplayFrontText();
     /*MAIN_PROFILE("OTW Loop");*/
     //START_PROFILE("OTWRENDER");
 
@@ -2776,7 +3115,8 @@ void OTWDriverClass::RenderFrame()
     }
 
     // Show the exit menu if needed
-    DrawExitMenu();
+    if (not xrStereoEyes)
+        DrawExitMenu();
 
     if (takeScreenShot)
     {
@@ -2790,8 +3130,10 @@ void OTWDriverClass::RenderFrame()
 
     // Finish and swap the buffers
     // Force cursors if in exit menu
+    // Artscout - 2026 (VR): in stereo the cursor was already drawn into each eye (above); the flat
+    // back-buffer cursor here would only show on the desktop mirror, so skip it.
 
-    if (InExitMenu())
+    if (InExitMenu() and not xrStereoEyes)
     {
         int tmp = gSelectedCursor;
         gSelectedCursor = 1;
@@ -2803,8 +3145,9 @@ void OTWDriverClass::RenderFrame()
     // Wombat778 1-23-04 Changed from gTimeLastMouseMove to gTimeLastCursorUpdate because
     // gTimeLastMouseMove reports ALL changes in mouse movement, not just cursor updates.
     else if (
-        gSimInputEnabled and 
-        SimDriver.GetPlayerAircraft() and 
+        not xrStereoEyes and
+        gSimInputEnabled and
+        SimDriver.GetPlayerAircraft() and
         vuxRealTime - /*gTimeLastMouseMove*/gTimeLastCursorUpdate < SI_MOUSE_TIME_DELTA
     )
     {
@@ -2814,7 +3157,7 @@ void OTWDriverClass::RenderFrame()
              GetOTWDisplayMode() == Mode3DCockpit or
              GetOTWDisplayMode() == ModePadlockF3 or
              GetOTWDisplayMode() == ModePadlockEFOV
-            ) and 
+            ) and
             (gSelectedCursor >= 0) and (otwPlatform.get() == SimDriver.GetPlayerAircraft())
         )
         {

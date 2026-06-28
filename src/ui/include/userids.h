@@ -2145,6 +2145,15 @@ enum
     SETUP_ADVANCED_BANK_VAL = 70345,
     SETUP_ADVANCED_ENABLE_TOUCHBUDDY = 70346,
 
+    // Artscout - 2026: new Graphics/Advanced graphics options (MSAA + OpenXR VR). Mirror of USERIDS.ID.
+    MSAA_ENABLE = 70347,
+    MSAA_SAMPLES = 70348,
+    MSAA_SAMPLES_READOUT = 70349,
+    SETUP_ADVANCED_OPENXR = 70350,
+    SETUP_ADVANCED_QUADVIEWS = 70351,
+    SETUP_ADVANCED_VR_RESSCALE = 70352,
+    SETUP_ADVANCED_VR_RESSCALE_READOUT = 70353,
+
     // #24: axis-selection dropdowns for pitch/roll (previously set via the controller dropdown)
     SETUP_ADVANCED_PITCH_AXIS = 70417,
     SETUP_ADVANCED_BANK_AXIS = 70418,

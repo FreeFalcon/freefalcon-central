@@ -4848,6 +4848,36 @@ BOOL SaveKeyMapList(char *filename)
         button = (C_Button *)win->FindControl(KEYCODES + count);
     }
 
+    // #71: PRESERVE multi-bind-per-function. The DCS-style table shows ONE editable row per function,
+    // so functions that carry SEVERAL keyboard binds -- the radio comms-menu stepper (OTWRadioMenuStep/
+    // StepBack) has chord variants Q->Q with m1=0 AND m1=1 for the menu-active key combo -- would lose
+    // every bind except the one displayed, and the AWACS/Tower menu stopped paging (repeat-Q closed it).
+    // These chord/system binds are flagged editable==-2 (non-editable). Re-append every editable==-2 bind
+    // from the active profile that a UI row did not already produce, so saving never collapses them.
+    {
+        static CxKbBind oldKb[1200];
+        int oldN = ControlsXml_ReadKeyboard(oldKb, 1200);
+
+        for (int oi = 0; oi < oldN and nkb < 1200; oi++)
+        {
+            if (oldKb[oi].editable != -2)
+                continue;   // user-editable binds are authoritative from the UI rows above
+
+            bool dup = false;
+
+            for (int j = 0; j < nkb; j++)
+                if (strcmp(kbArr[j].func, oldKb[oi].func) == 0 and kbArr[j].k2 == oldKb[oi].k2 and
+                    kbArr[j].m2 == oldKb[oi].m2 and kbArr[j].k1 == oldKb[oi].k1 and kbArr[j].m1 == oldKb[oi].m1)
+                {
+                    dup = true;
+                    break;
+                }
+
+            if (not dup)
+                kbArr[nkb++] = oldKb[oi];
+        }
+    }
+
     ControlsXml_WriteKeyboard(kbArr, nkb);
 
     // --- device buttons: from buttonTable, one <GUID>.xml file per device ---

@@ -13,16 +13,12 @@
 #include "Image.h"
 #include "TerrTex.h"
 #include "ddsdiskhdr.h" // Artscout - 2026 (x64): correct on-disk DDS header read
-#include "dxtlib.h"
+#include "Graphics/DXEngine/d3d11/D3D11TextureManager.h" // Artscout - 2026: NVTT 3 DDS export
 #include "Falclib/Include/IsBad.h"
 #include "FalcLib/include/dispopts.h"
 #include "FalcLib/include/f4thread.h"
 
 extern bool g_bEnableStaticTerrainTextures;
-extern int fileout;
-extern void ConvertToNormalMap(int kerneltype, int colorcnv, int alpha, float scale, int minz, bool wrap, bool bInvertX, bool bInvertY, int w, int h, int bits, void * data);
-extern void ReadDTXnFile(unsigned long count, void * buffer);
-extern void WriteDTXnFile(unsigned long count, void *buffer);
 
 #include "FalcLib/include/PlayerOp.h"
 
@@ -1632,23 +1628,9 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
 
 bool TextureDB::SaveDDS_DXTn(const char *szFileName, BYTE* pDst, int dimensions)
 {
-    CompressionOptions options;
-
-#if _MSC_VER >= 1300
-
-    fileout = _open(szFileName, O_WRONLY bitor O_BINARY bitor O_CREAT, S_IWRITE);
-
-    options.MipMapType = dNoMipMaps;
-    options.bBinaryAlpha = false;
-    options.TextureFormat = dDXT1;
-
-    //nvDXTcompress((BYTE *)pDst,dimensions,dimensions,dimensions*4,&options,4,0);
-
-    _close(fileout);
-
-#endif
-
-    return true;
+    // Terrain tiles carry no alpha/chroma -> plain DXT1/BC1. Compress the BGRA
+    // source to a .dds via modern NVTT 3 (x64).
+    return D3D11TextureManager::SaveBCnDDS(szFileName, 0, pDst, dimensions, dimensions);
 }
 
 

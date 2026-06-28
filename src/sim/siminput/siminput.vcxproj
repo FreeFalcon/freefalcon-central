@@ -222,7 +222,7 @@
       <StringPooling>true</StringPooling>
       <ExceptionHandling>Sync</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <StructMemberAlignment>4Bytes</StructMemberAlignment>
+      <StructMemberAlignment>Default</StructMemberAlignment><!-- Artscout-2026: x64 must match simlib/exe natural 8-byte alignment; /Zp4 here mis-strided AxisSetup[] -> Release-only startup crash -->
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Release\Sim\SimInput/SimInput.pch</PrecompiledHeaderOutputFile>
@@ -289,7 +289,7 @@
       <StringPooling>true</StringPooling>
       <ExceptionHandling>Sync</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <StructMemberAlignment>4Bytes</StructMemberAlignment>
+      <StructMemberAlignment>Default</StructMemberAlignment><!-- Artscout-2026: x64 must match simlib/exe natural 8-byte alignment; /Zp4 here mis-strided AxisSetup[] -> Release-only startup crash -->
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Release\Sim\SimInput/SimInput.pch</PrecompiledHeaderOutputFile>

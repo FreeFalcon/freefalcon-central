@@ -285,6 +285,33 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
         }
     }
 
+    // Artscout - 2026 (VR): show the splash in the headset during the 3D LOAD. The splash renders via the GPU
+    // 2D path (g_bD3D11GPUDraw=true), so ImageBuffer::SwapBuffers takes the Composite branch, NOT the 565-cache
+    // branch -> the headset got nothing and the load felt like a hang. In3D is still FALSE during the splash
+    // (set later, simloop.cpp:948), so the main-thread XR pump owns the frame and presents g_pXrMenuSurface565
+    // on the head-locked panel. Convert this frame to 565 and feed that cache (lock-protected copy -> no race,
+    // no XR driving from this thread -> no CALL_ORDER). The panel holds the last frame between splash updates.
+    {
+        extern bool g_bUseOpenXR;
+        extern void OpenXR_CacheMenuSurface(const void* src565, int w, int h);
+        if (g_bUseOpenXR)
+        {
+            unsigned short* px565 = (unsigned short*)malloc((size_t)originalWidth * originalHeight * 2);
+            if (px565)
+            {
+                const int n = originalWidth * originalHeight;
+                for (int p = 0; p < n; ++p)
+                {
+                    unsigned long c = WorkBuffer[p];
+                    unsigned r = (c >> 16) & 0xFF, g = (c >> 8) & 0xFF, b = c & 0xFF;
+                    px565[p] = (unsigned short)(((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3));
+                }
+                OpenXR_CacheMenuSurface(px565, originalWidth, originalHeight);
+                free(px565);
+            }
+        }
+    }
+
     // Go, render it requesting a Fit To Screen
     renderer->Render2DBitmap(0, 0, 0, 0, originalWidth, originalHeight, originalWidth, WorkBuffer, true);
     renderer->EndDraw();

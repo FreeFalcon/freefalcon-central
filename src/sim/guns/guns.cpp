@@ -1016,9 +1016,14 @@ int GunClass::Exec(
             muzzleEnd[i].y = dmx[0][1] * initBulletVelocity + dmx[1][1] * ystagger + dmx[2][1] * zstagger;
             muzzleEnd[i].z = dmx[0][2] * initBulletVelocity + dmx[1][2] * ystagger + dmx[2][2] * zstagger;
 
-            muzzleEnd[i].x = muzzleLoc[i].x + muzzleEnd[i].x * SimLibMajorFrameTime * xsize;
-            muzzleEnd[i].y = muzzleLoc[i].y + muzzleEnd[i].y * SimLibMajorFrameTime * xsize;
-            muzzleEnd[i].z = muzzleLoc[i].z + muzzleEnd[i].z * SimLibMajorFrameTime * xsize;
+            // Artscout - 2026: muzzle tracer (the short flash at the barrel) is the SECOND tracer rendering
+            // alongside the flying-bullet streaks. Its length was velocity*SimLibMajorFrameTime*xsize -> it grew
+            // with frame time too, so at low FPS (load / MRM<->DF master-mode switches) it bloated like the flying
+            // streaks. Use a FIXED nominal frame time so this streak is FPS-independent (matches tracers.cpp).
+            const float kMuzzleNominalFrameTime = 0.0166f;   // ~60 FPS reference
+            muzzleEnd[i].x = muzzleLoc[i].x + muzzleEnd[i].x * kMuzzleNominalFrameTime * xsize;
+            muzzleEnd[i].y = muzzleLoc[i].y + muzzleEnd[i].y * kMuzzleNominalFrameTime * xsize;
+            muzzleEnd[i].z = muzzleLoc[i].z + muzzleEnd[i].z * kMuzzleNominalFrameTime * xsize;
         }
     }
 

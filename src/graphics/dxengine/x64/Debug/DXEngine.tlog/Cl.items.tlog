@@ -1,0 +1,11 @@
+G:\Devel\freefalcon\src\graphics\dxengine\D3D11Backend.cpp;G:\Devel\freefalcon\src\graphics\dxengine\x64\Debug\D3D11Backend.obj
+G:\Devel\freefalcon\src\graphics\dxengine\OpenXRBackend.cpp;G:\Devel\freefalcon\src\graphics\dxengine\x64\Debug\OpenXRBackend.obj
+G:\Devel\freefalcon\src\graphics\dxengine\D3D11\D3D11GeometryBuffer.cpp;G:\Devel\freefalcon\src\graphics\dxengine\x64\Debug\D3D11GeometryBuffer.obj
+G:\Devel\freefalcon\src\graphics\dxengine\D3D11\D3D11Renderer.cpp;G:\Devel\freefalcon\src\graphics\dxengine\x64\Debug\D3D11Renderer.obj
+G:\Devel\freefalcon\src\graphics\dxengine\D3D11\D3D11TextureManager.cpp;G:\Devel\freefalcon\src\graphics\dxengine\x64\Debug\D3D11TextureManager.obj
+G:\Devel\freefalcon\src\graphics\dxengine\D3D11\FFStateMap.cpp;G:\Devel\freefalcon\src\graphics\dxengine\x64\Debug\FFStateMap.obj
+G:\Devel\freefalcon\src\graphics\dxengine\DX2DEngine.cpp;G:\Devel\freefalcon\src\graphics\dxengine\x64\Debug\DX2DEngine.obj
+G:\Devel\freefalcon\src\graphics\dxengine\DXEngine.cpp;G:\Devel\freefalcon\src\graphics\dxengine\x64\Debug\DXEngine.obj
+G:\Devel\freefalcon\src\graphics\dxengine\DXLightEngine.cpp;G:\Devel\freefalcon\src\graphics\dxengine\x64\Debug\DXLightEngine.obj
+G:\Devel\freefalcon\src\graphics\dxengine\DXTools.cpp;G:\Devel\freefalcon\src\graphics\dxengine\x64\Debug\DXTools.obj
+G:\Devel\freefalcon\src\graphics\dxengine\DXVbManager.cpp;G:\Devel\freefalcon\src\graphics\dxengine\x64\Debug\DXVbManager.obj

@@ -216,6 +216,11 @@ void Render3D::SetFOV(float horizontal_fov, float NearZ)
     const float minHalfFOV = (PI / 180.0f) / 4;
     // JB 010120
 
+    // Artscout - 2026 (VR): a normal SetFOV is symmetric -- clear any off-axis the VR quad-views path
+    // armed, so the flat/stereo/RTT-display projection is never skewed.
+    m_vrOffAxisX = 0.0f; m_vrOffAxisY = 0.0f; m_vrOffAxisActive = false;
+    m_vrOffAxisPitch = 0.0f; m_vrOffAxisYaw = 0.0f;
+
     // Set the field of view
     horizontal_half_angle = horizontal_fov / 2.0f;
 
@@ -267,6 +272,19 @@ void Render3D::SetFOV(float horizontal_fov, float NearZ)
         matProj.m01 *= oneOVERtanHFOV;
         matProj.m02 *= oneOVERtanHFOV;
 
+        // Artscout - 2026 (VR quad-views): off-axis (asymmetric frustum) shift. The shader is
+        // row-vector (o.Pos = mul(viewPos, gProj)), clipW = vz, so a depth-proportional shift of the
+        // horizontal/vertical clip output is m20 (vz->clipX) / m21 (vz->clipY). For a symmetric view
+        // m_vrOffAxis* == 0 (no change). Applied BEFORE the Flip permutation. m20=-offX matches
+        // D3DXMatrixPerspectiveOffCenterLH's (l+r)/(l-r). Sign-tunable via g_fQuadOffAxis* in case the
+        // post-Flip vertical/handedness needs flipping.
+        matProj.m20 += -m_vrOffAxisX;
+        // Vertical uses +offY (not -offY): the Flip below has m21=-1 (body-down -> clip-up negation),
+        // so the matProj vertical off-axis is sign-inverted relative to the terrain T-fold (which is a
+        // direct CPU shift, no Flip). +offY here makes the cockpit/objects vertical off-axis MATCH the
+        // terrain (otherwise the focus view's cockpit is vertically opposite -> angle mismatch + double).
+        matProj.m21 += m_vrOffAxisY;
+
         // PHASE 5 (D3D11): Falcon body-frame (X=forward,Y=right,Z=down) -- RIGHT-handed,
         // D3D clip is LEFT-handed; the RH->LH conversion MUST contain a reflection (det=-1).
         // It was m02=-1 (det=+1, NO reflection): clip_z=-vx -> objects ahead went behind the
@@ -283,6 +301,91 @@ void Render3D::SetFOV(float horizontal_fov, float NearZ)
 
         TheDXEngine.SetProjection(&matProj);
     }
+}
+
+
+// Artscout - 2026 (VR quad-views): set an OFF-AXIS frustum from the OpenXR per-view fov half-angles
+// (radians; angL<0, angR>0, angD<0, angU>0). For a symmetric view this reduces EXACTLY to SetFOV.
+// Builds the proper frustum width (oneOVERtan = 2/(tanR-tanL)) and the off-axis NDC center offset
+// (offX = (tanR+tanL)/(tanR-tanL)); the object matProj gets the m20/m21 shift here, and SetCamera
+// folds the same offset into T for the CPU-projected terrain/world points. The compositor must be
+// told the SAME raw per-view fov (OpenXRBackend submits views[eye].fov when not given a SetSubmitFov).
+void Render3D::SetVRFrustum(float angL, float angR, float angU, float angD, float NearZ)
+{
+    extern float g_fQuadOffAxisX, g_fQuadOffAxisY;   // cfg sign/scale knobs (default 1.0)
+
+    const float tanL = (float)tan(angL), tanR = (float)tan(angR);
+    const float tanU = (float)tan(angU), tanD = (float)tan(angD);
+    const float w = tanR - tanL, h = tanU - tanD;
+    if (w <= 1e-6f || h <= 1e-6f) { SetFOV(angR - angL, NearZ); return; }  // degenerate -> symmetric
+
+    // Half-angles (LOD/detail use these); proper-frustum inverse-tangents (width/height).
+    horizontal_half_angle = (angR - angL) * 0.5f;
+    vertical_half_angle   = (angU - angD) * 0.5f;
+    // diagonal_half_angle drives the TERRAIN sector cull (RenderOTW::ComputeBounds uses Pitch()/Yaw()
+    // +/- diagonal_half_angle around the HEAD-forward direction). For an OFF-CENTER (gaze) focus view
+    // the visible terrain is off to the side, so a head-centered cull of just the half-extents drops
+    // the gaze-side sectors -> the "staircase" of missing fartiles when looking sideways. Inflate the
+    // cull half-angle by the off-center magnitude so the cull cone reaches the gaze region. The per-poly
+    // clip (oneOVERtanHFOV, below) stays narrow/off-center, so only the focus region is actually drawn
+    // (the extra culled-in terrain is clipped out) -- correctness restored at a modest cull cost.
+    const float cTanX = (tanR + tanL) * 0.5f;   // off-center tangent (0 if symmetric)
+    const float cTanY = (tanU + tanD) * 0.5f;
+    const float offCenterAng = (float)atan(sqrt(cTanX * cTanX + cTanY * cTanY));
+    diagonal_half_angle = (float)atan(sqrt((w * 0.5f) * (w * 0.5f) + (h * 0.5f) * (h * 0.5f))) + offCenterAng;
+    oneOVERtanHFOV = 2.0f / w;
+    oneOVERtanVFOV = 2.0f / h;
+
+    // Off-axis NDC center offset (0 for a symmetric view). Sign/scale tunable via cfg.
+    m_vrOffAxisX = ((tanR + tanL) / w) * g_fQuadOffAxisX;
+    m_vrOffAxisY = ((tanU + tanD) / h) * g_fQuadOffAxisY;
+    m_vrOffAxisActive = true;
+    // Off-axis gaze ANGLES (for the sky's effective Pitch/Yaw). Same sign as the off-axis offsets so
+    // the sky bands shift with the focus consistently with the terrain.
+    m_vrOffAxisPitch = (float)atan(cTanY) * g_fQuadOffAxisY;
+    m_vrOffAxisYaw   = (float)atan(cTanX) * g_fQuadOffAxisX;
+
+    SetObjectDetail(detailScaler);
+    TheStateStack.SetCameraProperties(oneOVERtanHFOV, oneOVERtanVFOV, scaleX, scaleY, shiftX, shiftY);
+
+    if (g_bUse_DX_Engine)
+    {
+        D3DXMATRIX matProj;
+        D3DXMatrixPerspectiveFov(&matProj, PI / 2, (float)(xRes / yRes), NearZ, context.ZFAR);
+
+        matProj.m10 *= oneOVERtanVFOV;
+        matProj.m11 *= oneOVERtanVFOV;
+        matProj.m12 *= oneOVERtanVFOV;
+
+        matProj.m00 *= oneOVERtanHFOV;
+        matProj.m01 *= oneOVERtanHFOV;
+        matProj.m02 *= oneOVERtanHFOV;
+
+        // off-axis shift (see SetFOV)
+        matProj.m20 += -m_vrOffAxisX;
+        // Vertical uses +offY (not -offY): the Flip below has m21=-1 (body-down -> clip-up negation),
+        // so the matProj vertical off-axis is sign-inverted relative to the terrain T-fold (which is a
+        // direct CPU shift, no Flip). +offY here makes the cockpit/objects vertical off-axis MATCH the
+        // terrain (otherwise the focus view's cockpit is vertically opposite -> angle mismatch + double).
+        matProj.m21 += m_vrOffAxisY;
+
+        D3DXMATRIX Flip;
+        ZeroMemory(&Flip, sizeof(Flip));
+        Flip.m02 = 1.0f;
+        Flip.m21 = -1.0f;
+        Flip.m10 = 1.0f;
+        Flip.m33 = 1.0f;
+        D3DXMatrixMultiply(&matProj, &Flip, &matProj);
+
+        TheDXEngine.SetProjection(&matProj);
+    }
+}
+
+// Artscout - 2026 (VR quad-views): disarm off-axis (after the world/cockpit render, before the RTT
+// instrument displays which must stay symmetric). Leaves matProj as-is; the next SetFOV rebuilds it.
+void Render3D::ClearVROffAxis(void)
+{
+    m_vrOffAxisX = 0.0f; m_vrOffAxisY = 0.0f; m_vrOffAxisActive = false;
 }
 
 
@@ -333,6 +436,16 @@ void Render3D::SetCamera(const Tpoint* pos, const Trotation* rot)
     T.M31 = cameraRot.M31 * oneOVERtanVFOV;
     T.M32 = cameraRot.M32 * oneOVERtanVFOV;
     T.M33 = cameraRot.M33 * oneOVERtanVFOV;
+
+    // Artscout - 2026 (VR quad-views): fold the off-axis offset into the terrain/world transform T.
+    // The CPU projection is ndc = (rowK . p) / (row1 . p); shifting ndc by -off == subtracting
+    // off*(row1 . p) from the numerator, i.e. rowK -= off * row1. Row 2 = horizontal (M2x), row 3 =
+    // vertical (M3x). Same offset that went into matProj, so terrain and objects stay consistent.
+    if (m_vrOffAxisActive)
+    {
+        T.M21 -= m_vrOffAxisX * T.M11; T.M22 -= m_vrOffAxisX * T.M12; T.M23 -= m_vrOffAxisX * T.M13;
+        T.M31 -= m_vrOffAxisY * T.M11; T.M32 -= m_vrOffAxisY * T.M12; T.M33 -= m_vrOffAxisY * T.M13;
+    }
 
     // Compute the vector from the camera to the origin rotated into camera space
     move.x = - cameraPos.x * T.M11 - cameraPos.y * T.M12 - cameraPos.z * T.M13;
@@ -643,6 +756,15 @@ void Render3D::UnTransformPoint(Tpoint* p, Tpoint* result)
     scratch_x = (p->x - shiftX) / scaleX;
     scratch_y = (p->y - shiftY) / scaleY;
     scratch_z = 1.0f;
+
+    // Artscout - 2026 (VR off-axis): undo the asymmetric-frustum NDC shift so this is the TRUE inverse of
+    // TransformCameraCentricPoint (forward T fold subtracts offX/offY from NDC). Sign/scale is HEADSET-
+    // tunable via g_fVrCursorOffAxisK because the viewport Y flip / Flip permutation can invert it; dial
+    // it until the focus cursor lines up with the periphery cursor (0 = ignore off-axis, +-1 = full undo).
+    // Zero (no-op) for the flat/symmetric path (m_vrOffAxis* == 0).
+    extern float g_fVrCursorOffAxisX, g_fVrCursorOffAxisY;
+    scratch_x += g_fVrCursorOffAxisX * m_vrOffAxisX;
+    scratch_y += g_fVrCursorOffAxisY * m_vrOffAxisY;
 
     // Assume the distance from the viewer is 1.0 -- we'll normalize later
     // This means we don't have to undo the perspective divide

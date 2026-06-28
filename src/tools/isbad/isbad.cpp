@@ -19,7 +19,38 @@ static inline bool PtrLooksBad(const void* lp)
 {
 	uintptr_t a = (uintptr_t)lp;
 	if (a < 0x10000)     return true;   // NULL / null page
-	if (a >= 0xFFFF0000) return true;   // top 64KB of the address space
+
+	// Artscout - 2026 (#60 x64 ROOT): the old upper guard "a >= 0xFFFF0000" meant "top 64KB of a 32-bit
+	// address space". In a 64-bit build 0xFFFF0000 is merely ~4GB, and VALID heap pointers routinely live
+	// ABOVE 4GB. So this rejected EVERY pointer >= ~4GB as "bad" -> under VR (the heap grows past 4GB from
+	// the eye buffers / MSAA / quad-views) all high-address drawables were flagged bad by the ~456 F4IsBad*
+	// guards -> DrawBeyond/RemoveObject skipped valid objects -> ALL world objects vanished and the list
+	// corrupted (exit-crash). Flat/windowed stays under 4GB -> never tripped, which is why it was VR-only.
+	// Fix: on x64 the top-64KB guard is the top of the 64-bit space; reject only that + the debug-fill
+	// poison markers (both full-width and the low-dword 32-bit form that can land in a 64-bit field).
+#if defined(_WIN64) || defined(_M_X64) || defined(_M_AMD64)
+	if (a >= 0xFFFFFFFFFFFF0000ull) return true;   // genuine top 64KB of the 64-bit address space
+
+	switch (a)
+	{
+	case 0xCCCCCCCCCCCCCCCCull:   // uninitialized stack (/RTC)
+	case 0xCDCDCDCDCDCDCDCDull:   // uninitialized heap (debug new)
+	case 0xDDDDDDDDDDDDDDDDull:   // freed heap (debug delete)
+	case 0xFDFDFDFDFDFDFDFDull:   // "no man's land" guard
+	case 0xFEEEFEEEFEEEFEEEull:   // freed LocalAlloc/HeapFree
+		return true;
+	}
+	if ((a >> 32) == 0)           // a 32-bit fill sitting in the low dword (e.g. 0x00000000DDDDDDDD)
+	{
+		switch ((unsigned int)a)
+		{
+		case 0xCCCCCCCC: case 0xCDCDCDCD: case 0xDDDDDDDD:
+		case 0xFDFDFDFD: case 0xFEEEFEEE: case 0xBAADF00D: case 0xABABABAB:
+			return true;
+		}
+	}
+#else
+	if (a >= 0xFFFF0000) return true;   // x86: genuine top 64KB
 
 	switch (a)
 	{
@@ -32,6 +63,7 @@ static inline bool PtrLooksBad(const void* lp)
 	case 0xABABABAB:   // HeapAlloc guard
 		return true;
 	}
+#endif
 	return false;
 }
 

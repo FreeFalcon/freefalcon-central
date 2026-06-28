@@ -621,6 +621,29 @@ void MenuManager::DisplayDraw(void)
         OTWDriver.renderer->context.ClearBuffers(MPR_CI_ZBUFFER);
         OTWDriver.renderer->StartDraw();
 
+        // Artscout - 2026 (VR): center the radio/comms (AWACS/Tower) + exit menu on screen and scale it by
+        // g_fVrMenuScale so it sits in one consistent, comfortable place in the headset instead of the
+        // data-driven flat-screen position. Locals (NOT the members) -> no compounding across frames; the flat
+        // path keeps the original mDestRect / mLeft..mBottom unchanged.
+        // GATE on g_bVrFrameActive ("presenting stereo this frame"), NOT g_bUseOpenXR ("VR enabled in options"):
+        // with VR enabled in options but the headset OFF we render flat, and this reposition+viewport-remap
+        // must NOT run -- otherwise the menu is mispositioned and the NDC viewport remap below corrupts the
+        // flat path (and the cockpit cursor hit-test that follows).
+        extern bool g_bVrFrameActive; extern float g_fVrMenuScale;
+        float drL = (float)mDestRect.left,  drT = (float)mDestRect.top;
+        float drR = (float)mDestRect.right, drB = (float)mDestRect.bottom;
+        float vpL = mLeft, vpT = mTop, vpR = mRight, vpB = mBottom;
+        if (g_bVrFrameActive)
+        {
+            float cx = (float)DisplayOptions.DispWidth  * 0.5F;
+            float cy = (float)DisplayOptions.DispHeight * 0.5F;
+            float hw = ((float)mDestRect.right  - (float)mDestRect.left) * 0.5F * g_fVrMenuScale;
+            float hh = ((float)mDestRect.bottom - (float)mDestRect.top)  * 0.5F * g_fVrMenuScale;
+            drL = cx - hw; drR = cx + hw; drT = cy - hh; drB = cy + hh;
+            vpL = (drL - cx) / cx;  vpR = (drR - cx) / cx;
+            vpT = -(drT - cy) / cy; vpB = -(drB - cy) / cy;
+        }
+
         // ASSO: disable the radio comms menu border //Cobra 10/31/04 TJL
         if ( not g_bDisableCommsBorder)
         {
@@ -628,27 +651,27 @@ void MenuManager::DisplayDraw(void)
 
             OTWDriver.renderer->SetColor(0x997B5200); // 60% alpha blue
             OTWDriver.renderer->context.RestoreState(STATE_ALPHA_SOLID);
-            OTWDriver.renderer->Render2DTri((float)mDestRect.left, (float)mDestRect.top,
-                                            (float)mDestRect.right - 1.0F, (float)mDestRect.top,
-                                            (float)mDestRect.right - 1.0F, (float)mDestRect.bottom);
-            OTWDriver.renderer->Render2DTri((float)mDestRect.left, (float)mDestRect.top,
-                                            (float)mDestRect.left, (float)mDestRect.bottom,
-                                            (float)mDestRect.right - 1.0F, (float)mDestRect.bottom);
+            OTWDriver.renderer->Render2DTri(drL, drT,
+                                            drR - 1.0F, drT,
+                                            drR - 1.0F, drB);
+            OTWDriver.renderer->Render2DTri(drL, drT,
+                                            drL, drB,
+                                            drR - 1.0F, drB);
 
             OTWDriver.renderer->SetColor(0xFF000000); // black
 
-            OTWDriver.renderer->Render2DLine((float)mDestRect.left, (float)mDestRect.top,
-                                             (float)mDestRect.right - 1.0F, (float)mDestRect.top);
-            OTWDriver.renderer->Render2DLine((float)mDestRect.right - 1.0F, (float)mDestRect.top,
-                                             (float)mDestRect.right - 1.0F, (float)mDestRect.bottom);
-            OTWDriver.renderer->Render2DLine((float)mDestRect.right - 1.0F, (float)mDestRect.bottom,
-                                             (float)mDestRect.left, (float)mDestRect.bottom);
-            OTWDriver.renderer->Render2DLine((float)mDestRect.left, (float)mDestRect.bottom,
-                                             (float)mDestRect.left, (float)mDestRect.top);
+            OTWDriver.renderer->Render2DLine(drL, drT,
+                                             drR - 1.0F, drT);
+            OTWDriver.renderer->Render2DLine(drR - 1.0F, drT,
+                                             drR - 1.0F, drB);
+            OTWDriver.renderer->Render2DLine(drR - 1.0F, drB,
+                                             drL, drB);
+            OTWDriver.renderer->Render2DLine(drL, drB,
+                                             drL, drT);
         }
 
 
-        OTWDriver.renderer->SetViewport(mLeft, mTop, mRight, mBottom);
+        OTWDriver.renderer->SetViewport(vpL, vpT, vpR, vpB);
 
         // set the color and print the text for the menu
         OTWDriver.renderer->SetColor(mpMenus[mCurMenu].mDrawColor);

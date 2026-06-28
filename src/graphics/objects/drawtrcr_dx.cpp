@@ -90,6 +90,17 @@ void DXDrawableTracer::Draw(class RenderOTW *renderer, int)
     // Get the Detail level of the drawable
     DetailLevel = TheDXEngine.GetDetailLevel((D3DVECTOR*)&position, TRACER_VISIBLE_DISTANCE) / radius;
 
+    // Artscout - 2026: raw camera distance, independent of GetDetailLevel's m_LODBiasCx. The LOD bias is
+    // derived from the render resolution/FOV (1/(detailScaler*RadiansPerPixel*scaleX*oneOVERtanHFOV)) and is
+    // not yet settled in the first frames of a mission / each VR per-eye pass -> DetailLevel comes out tiny for
+    // EVERY tracer, so they all fall into the thick 5-line "fan" path below and look like crooked stars for the
+    // first few bursts, then "suddenly" normalize. Gate the fan on true world distance so far tracers always
+    // draw a clean line regardless of the warming-up bias.
+    float cdx = position.x - renderer->X();
+    float cdy = position.y - renderer->Y();
+    float cdz = position.z - renderer->Z();
+    float camDist = sqrtf(cdx * cdx + cdy * cdy + cdz * cdz);
+
     // Too much far to draw it...
     if (DetailLevel > 1.0f)
     {
@@ -126,6 +137,15 @@ void DXDrawableTracer::Draw(class RenderOTW *renderer, int)
     {
         TheDXEngine.Draw3DLine((D3DVECTOR*)&position, (D3DVECTOR*)&tailEnd, lineColor, LineEndColor, EMISSIVE);
         //STOP_PROFILE("Tracers Time");
+        return;
+    }
+
+    // Artscout - 2026: the 5-line "fan" below is only meaningful for genuinely close tracers. If the tracer is
+    // actually far (DetailLevel only looks small because the LOD bias has not settled yet), draw a clean line
+    // instead -- this kills the "all tracers are crooked stars for the first few bursts" warmup artifact.
+    if (camDist > 1500.0f)
+    {
+        TheDXEngine.Draw3DLine((D3DVECTOR*)&position, (D3DVECTOR*)&tailEnd, lineColor, LineEndColor, EMISSIVE);
         return;
     }
 

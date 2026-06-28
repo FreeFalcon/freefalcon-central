@@ -8,7 +8,6 @@
 #include "stdafx.h"
 #include "Image.h"
 #include "Tex.h"
-#include "dxtlib.h"
 #include "PalBank.h"
 #include "Graphics/DXEngine/d3d11/D3D11TextureManager.h"	// PHASE 3
 #include "Graphics/DXEngine/D3D11Backend.h"	// PHASE 5 (RTT)
@@ -25,10 +24,6 @@ static DXContext *rc = NULL;
 
 extern bool g_bEnableNonPersistentTextures;
 extern bool g_bShowMipUsage;
-extern int fileout;
-extern void ConvertToNormalMap(int kerneltype, int colorcnv, int alpha, float scale, int minz, bool wrap, bool bInvertX, bool bInvertY, int w, int h, int bits, void * data);
-extern void ReadDTXnFile(unsigned long count, void * buffer);
-extern void WriteDTXnFile(unsigned long count, void *buffer);
 
 #define ARGB_TEXEL_SIZE 4
 #define ARGB_TEXEL_BITS 32
@@ -2019,9 +2014,8 @@ static HRESULT WINAPI MipLoadCallback(LPDIRECTDRAWSURFACE7 lpDDSurface, LPDDSURF
 
 bool Texture::SaveDDS_DXTn(const char *szFileName, BYTE* pDst, int dimensions, DWORD flags)
 {
-    FILE *fp;
-
-    fp = fopen(szFileName, "rb");
+    // Do not overwrite an existing .dds (matches the legacy behaviour).
+    FILE *fp = fopen(szFileName, "rb");
 
     if (fp)
     {
@@ -2029,29 +2023,10 @@ bool Texture::SaveDDS_DXTn(const char *szFileName, BYTE* pDst, int dimensions, D
         return false;
     }
 
-    CompressionOptions options;
-
-#if _MSC_VER >= 1300
-
-    fileout = _open(szFileName, O_WRONLY bitor O_BINARY bitor O_CREAT, S_IWRITE);
-
-    options.MipMapType = dNoMipMaps;
-    options.bBinaryAlpha = false;
-
-    if (flags bitand MPR_TI_ALPHA)
-        options.TextureFormat = dDXT3;
-    else if (flags bitand MPR_TI_CHROMAKEY)
-        options.TextureFormat = dDXT1a;
-    else
-        options.TextureFormat = dDXT1;
-
-    //nvDXTcompress((BYTE *)pDst,dimensions,dimensions,dimensions*4,&options,4,0);
-
-    _close(fileout);
-
-#endif
-
-    return true;
+    // Compress the BGRA source to a DXT .dds via modern NVTT 3 (x64). The block
+    // format (DXT1 / DXT1a / DXT3) is derived from the MPR_TI_* flags inside
+    // SaveBCnDDS, exactly as the old nvDXTcompress path did.
+    return D3D11TextureManager::SaveBCnDDS(szFileName, flags, pDst, dimensions, dimensions);
 }
 
 bool Texture::DumpImageToFile(char *szFile, int palID)

@@ -18,6 +18,9 @@
     <ClCompile Include="D3D11Backend.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OpenXRBackend.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="D3D11\D3D11GeometryBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -50,6 +53,9 @@
     <ClInclude Include="D3D11Backend.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OpenXRBackend.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="D3D11\D3D11GeometryBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -80,5 +86,8 @@
     <ClInclude Include="DXVbManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

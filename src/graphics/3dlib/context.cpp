@@ -348,7 +348,13 @@ void ContextMPR::EndDraw(void)
     {
         g_pD3D11Backend->BindBackBuffer(false);
         if (g_pD3D11Renderer)
-            g_pD3D11Renderer->SetViewportSize(g_pD3D11Backend->Width(), g_pD3D11Backend->Height());
+        {
+            // Artscout - 2026 (VR): restore gScreenSize to the EYE size in a per-eye pass (see StartFrame).
+            if (g_pD3D11Backend->XrEyeActive())
+                g_pD3D11Renderer->SetViewportSize(g_pD3D11Backend->XrEyeW(), g_pD3D11Backend->XrEyeH());
+            else
+                g_pD3D11Renderer->SetViewportSize(g_pD3D11Backend->Width(), g_pD3D11Backend->Height());
+        }
     }
 }
 
@@ -366,7 +372,16 @@ void ContextMPR::StartFrame(void)
     {
         g_pD3D11Backend->BindBackBuffer(true);
         if (g_pD3D11Renderer)
-            g_pD3D11Renderer->SetViewportSize(g_pD3D11Backend->Width(), g_pD3D11Backend->Height());
+        {
+            // Artscout - 2026 (VR): gScreenSize (cbViewport) drives VS_Screen's pixel->NDC for the
+            // CPU-projected terrain. In a per-eye pass the terrain is projected to EYE-sized pixels
+            // (VR_SetRes -> scaleX/scaleY), so gScreenSize must be the EYE size, not the back buffer
+            // -- otherwise the ground is mis-scaled/rotated/flies off (objects use matProj, unaffected).
+            if (g_pD3D11Backend->XrEyeActive())
+                g_pD3D11Renderer->SetViewportSize(g_pD3D11Backend->XrEyeW(), g_pD3D11Backend->XrEyeH());
+            else
+                g_pD3D11Renderer->SetViewportSize(g_pD3D11Backend->Width(), g_pD3D11Backend->Height());
+        }
     }
 
     InvalidateState();
@@ -1195,7 +1210,11 @@ inline void SPolygon::CalcPolyZ(float Avg)
 {
     curPoly = (SPolygon *)Alloc(sizeof(SPolygon) + numVertices * sizeof(TLVERTEX));
     curPoly->numVertices = numVertices;
-    curPoly->pVertexList = (TLVERTEX *)(DWORD(curPoly) + sizeof(SPolygon));
+    // Artscout - 2026 (x64): was `(TLVERTEX*)(DWORD(curPoly) + sizeof(SPolygon))` -- DWORD() truncated the
+    // 64-bit curPoly to 32 bits, so pVertexList pointed at the LOW 32 bits of the pointer (e.g. 0x00FEE040)
+    // -> the vertex fill in DrawPrimitive wrote into unmapped low memory -> CTD during terrain draw. Use
+    // proper byte-pointer arithmetic so the full 64-bit address is preserved.
+    curPoly->pVertexList = (TLVERTEX *)((char *)curPoly + sizeof(SPolygon));
 }
 
 inline void ContextMPR::AddPolygon(SPolygon *&polyList, SPolygon *&curPoly)

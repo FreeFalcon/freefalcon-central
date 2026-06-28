@@ -31,6 +31,9 @@
 #define MRM_ASEC_DIAMETER_MR  262.0F
 #define MSL_OVERRIDE_SIZE  0.5F
 
+// Artscout - 2026 (HUD): display-scale for the bore 262mr ASEC (small HUD glass; see f4config.cpp).
+extern float g_fAsecScale;
+
 #define AIM120ASECX              45.0f * DTR
 
 #define HARM_FOV_BOX_WIDTH       0.435f
@@ -111,7 +114,7 @@ void HudClass::DrawDogfight()
             //else
             if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
             {
-                DrawMissileReticle(MRToHudUnits(MRM_ASEC_DIAMETER_MR * 0.5F), FALSE, TRUE); // ASEC 262 mr (bore)
+                DrawMissileReticle(MRToHudUnits(MRM_ASEC_DIAMETER_MR * 0.5F) * g_fAsecScale, FALSE, TRUE); // ASEC 262 mr (bore) -- scaled to fit small HUD (Artscout - 2026)
                 DrawAim120Diamond();
             }
         }
@@ -289,7 +292,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
                     // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
                     // DrawMissileReticle(0.3F, FALSE, TRUE);
                     //else
-                    DrawMissileReticle(MRToHudUnits(MRM_ASEC_DIAMETER_MR * 0.5F), FALSE, TRUE); // ASEC 262 mr (bore)
+                    DrawMissileReticle(MRToHudUnits(MRM_ASEC_DIAMETER_MR * 0.5F) * g_fAsecScale, FALSE, TRUE); // ASEC 262 mr (bore) -- scaled to fit small HUD (Artscout - 2026)
                     DrawAim120Diamond();
                 }
             }
@@ -443,7 +446,7 @@ void HudClass::DrawAirMissile(void)
                     // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
                     // DrawMissileReticle(0.3F, FALSE, TRUE);
                     //else
-                    DrawMissileReticle(MRToHudUnits(MRM_ASEC_DIAMETER_MR * 0.5F), FALSE, TRUE); // ASEC 262 mr (bore)
+                    DrawMissileReticle(MRToHudUnits(MRM_ASEC_DIAMETER_MR * 0.5F) * g_fAsecScale, FALSE, TRUE); // ASEC 262 mr (bore) -- scaled to fit small HUD (Artscout - 2026)
                     DrawAim120Diamond();
                 }
             }

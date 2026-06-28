@@ -1337,6 +1337,64 @@ void DisableEnableResolutions(C_ListBox*)
 {
 }
 
+// Artscout - 2026: live readout for the OpenXR Resolution Scale slider. The ui95 slider fires its callback
+// (C_TYPE_MOUSEMOVE) on every drag step; the stock graphics sliders had NO callback, so their linked readout
+// (SetUserNumber(0,id)) never actually updated -- nobody consumes that link. Wire it explicitly: recompute the
+// percent (50..100, STEPS 5 -> step 10) from the slider position and push it into the readout editbox.
+void VrResScaleSliderCB(long, short, C_Base *control)
+{
+    C_Slider *slider = (C_Slider *)control;
+    long roId = slider->GetUserNumber(0);
+
+    if ( not roId or not control->Parent_) return;
+
+    C_EditBox *ebox = (C_EditBox *)control->Parent_->FindControl(roId);
+
+    if ( not ebox) return;
+
+    // Artscout - 2026: map via the STEP INDEX (0..5), not the raw pixel ratio. The slider snaps to span/5
+    // pixel stops (integer division), and FloatToInt32 truncates -> a direct pos->percent gave 50/59/69/79/89/100.
+    // Rounding to the nearest step first, then percent = 50 + step*10, lands exactly on 50/60/70/80/90/100.
+    int span = slider->GetSliderMax() - slider->GetSliderMin();
+    int step = (span > 0) ? FloatToInt32((float)slider->GetSliderPos() / (float)span * 5.0F + 0.5F) : 0;
+
+    if (step < 0) step = 0;
+    if (step > 5) step = 5;
+
+    int val = 50 + step * 10;   // 50,60,70,80,90,100
+
+    ebox->SetInteger(val);
+    ebox->Refresh();
+}
+
+// Artscout - 2026: live readout for the MSAA Samples slider (Graphics page), same pattern as VehicleSizeCB:
+// fires on drag (C_TYPE_MOUSEMOVE), maps the slider pos (STEPS 7) to 1..8 samples and pushes it into the
+// linked readout editbox (slider's UserNumber[0] = MSAA_SAMPLES_READOUT, set in SetupGraphicsControls).
+void MsaaSamplesCB(long, short hittype, C_Base *control)
+{
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
+        return;
+
+    C_Slider *slider = (C_Slider *)control;
+    // Artscout - 2026: round to the nearest STEP INDEX (0..7) first -- the pixel stops (span/7, integer) and
+    // FloatToInt32's truncation otherwise lose a step (e.g. requested 2 read back as 1). samples = 1 + step.
+    int span = slider->GetSliderMax() - slider->GetSliderMin();
+    int step = (span > 0) ? FloatToInt32((float)slider->GetSliderPos() / (float)span * 7.0F + 0.5F) : 0;
+
+    if (step < 0) step = 0;
+    if (step > 7) step = 7;
+
+    int samples = 1 + step;   // 1..8
+
+    C_EditBox *ebox = (C_EditBox *)control->Parent_->FindControl(slider->GetUserNumber(0));
+
+    if (ebox)
+    {
+        ebox->SetInteger(samples);
+        ebox->Refresh();
+    }
+}
+
 void SetAdvanced()
 {
     C_Window *win;
@@ -1347,23 +1405,20 @@ void SetAdvanced()
 
     if (win == NULL) return;
 
+    // Artscout - 2026: the device-info lookup is needed ONLY for the Render-To-Texture SupportsSRT() check
+    // below. Under D3D11 the legacy DDraw device manager enumerates nothing, so GetDriver/GetDevice return
+    // NULL -- and the original hard `if (not pDI) return;` bailed out HERE, before populating ANY of the
+    // advanced checkboxes from DisplayOptions. Result: every advanced toggle (anisotropic, mipmapping,
+    // windowed, OpenXR, QuadViews...) showed unchecked on reopen regardless of the saved XML -> looked like
+    // "settings don't save". Make it soft: pDI may stay NULL; only the SRT button enable is gated on it.
+    DeviceManager::DDDriverInfo *pDI = NULL;
     lbox = (C_ListBox *)win->FindControl(SET_VIDEO_DRIVER);
 
-    if ( not lbox) return;
-
-    int nDriver = lbox->GetTextID() - 1;
-    lbox = (C_ListBox *)win->FindControl(SET_VIDEO_CARD);
-
-    if ( not lbox) return;
-
-    int nDevice = lbox->GetTextID() - 1;
-    DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(nDriver);
-
-    if ( not pDI) return;
-
-    DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI = pDI->GetDevice(nDevice);
-
-    if ( not pD3DDI) return;
+    if (lbox)
+    {
+        int nDriver = lbox->GetTextID() - 1;
+        pDI = FalconDisplay.devmgr.GetDriver(nDriver);
+    }
 
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
@@ -1387,9 +1442,40 @@ void SetAdvanced()
 
     if (button) button->SetState(DisplayOptions.bLinearMipFiltering ? C_STATE_1 : C_STATE_0);
 
-    button = (C_Button *) win->FindControl(SETUP_ADVANCED_RENDER_2DCOCKPIT);
+    // Artscout - 2026: VR controls (Advanced page) <- DisplayOptions. These replaced the removed
+    // "Rendered 2D Cockpit" checkbox (forced TRUE under D3D11 anyway). OpenXR + QuadViews + res-scale slider.
+    {
+        C_Slider  *slider;
+        C_EditBox *ebox;
 
-    if (button) button->SetState(DisplayOptions.bRender2DCockpit ? C_STATE_1 : C_STATE_0);
+        button = (C_Button *) win->FindControl(SETUP_ADVANCED_OPENXR);
+
+        if (button) button->SetState(DisplayOptions.bUseOpenXR ? C_STATE_1 : C_STATE_0);
+
+        button = (C_Button *) win->FindControl(SETUP_ADVANCED_QUADVIEWS);
+
+        if (button) button->SetState(DisplayOptions.bUseQuadViews ? C_STATE_1 : C_STATE_0);
+
+        slider = (C_Slider *) win->FindControl(SETUP_ADVANCED_VR_RESSCALE);
+
+        if (slider not_eq NULL)
+        {
+            int scl = DisplayOptions.nVrResolutionScale;
+            if (scl < 50)  scl = 50;
+            if (scl > 100) scl = 100;
+            slider->SetSliderPos(FloatToInt32((float)(slider->GetSliderMax() - slider->GetSliderMin()) * (scl - 50) / 50.0F));
+            ebox = (C_EditBox *) win->FindControl(SETUP_ADVANCED_VR_RESSCALE_READOUT);
+
+            if (ebox)
+            {
+                ebox->SetInteger(scl);
+                ebox->Refresh();
+                slider->SetUserNumber(0, SETUP_ADVANCED_VR_RESSCALE_READOUT);
+            }
+
+            slider->SetCallback(VrResScaleSliderCB);   // Artscout - 2026: live readout on drag
+        }
+    }
 
     button = (C_Button *) win->FindControl(SETUP_ADVANCED_SCREEN_COORD_BIAS_FIX);
 
@@ -1408,7 +1494,9 @@ void SetAdvanced()
 
     if (button)
     {
-        if (pDI->SupportsSRT()) button->SetFlagBitOn(C_BIT_ENABLED);
+        // Artscout - 2026: pDI may be NULL under D3D11 (no DDraw enumeration). Treat unknown as "supported"
+        // so the button stays usable -- D3D11 always renders to texture anyway (forced in dispopts.cpp).
+        if ( not pDI or pDI->SupportsSRT()) button->SetFlagBitOn(C_BIT_ENABLED);
         else
         {
             button->SetFlagBitOff(C_BIT_ENABLED);

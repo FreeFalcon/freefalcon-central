@@ -168,6 +168,12 @@ public:
     float GetXOffset(void);
     float GetYOffset(void);
 
+    // VR: temporarily render at a per-eye resolution. Caller follows with SetViewport()
+    // (recomputes scaleX/scaleY) and SetFOV() (recomputes the projection), then restores.
+    void VR_SetRes(int w, int h) { xRes = w; yRes = h; txRes = w; tyRes = h; }
+    int  VR_GetResX(void) const { return xRes; }
+    int  VR_GetResY(void) const { return yRes; }
+
     enum
     {
         DISPLAY_GENERAL = 0,
@@ -261,6 +267,10 @@ public:
     void AdjustRttViewport();
     void ResetRttViewport();
     void DrawRttQuad();
+    // Artscout - 2026 (VR HUD 3D glass): draw a flat tinted semi-transparent quad over the RTT canvas
+    // (the physical combiner-glass rectangle) so the glass plate reads as glass. Uses the SAME canvas
+    // transform as DrawRttQuad (fixed in the cockpit world, NOT collimated), alpha-blended, no texture.
+    void DrawGlassPlate(float r, float g, float b, float a);
     void DrawRttDebugOverlay();	// debug helper: draw the raw renderTexture into a screen corner
     int HasRttTarget();
     void GetRttCanvas(Tpoint* Canvas);

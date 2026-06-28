@@ -916,6 +916,24 @@ void SimulationLoopControl::StartLoop(void)
             // Go ahead and start rendering frames
             InitializeStatistics();
 #endif
+
+            // Artscout - 2026 (#65 perf): drain the async asset loader before handing control to the player.
+            // The original pre-load wait (commented out above) was removed during bring-up, so the initial
+            // scene -- terrain blocks, object LODs and their textures already QUEUED during theater/camera
+            // setup -- streamed in during the first ~5-10s of flight on the loader thread, spiking CPU and
+            // stuttering. Drain it here while the splash is still up (the VR pump keeps the panel alive during
+            // the Sleep). BOUNDED (~10s cap) so a stalled/never-empty loader can never hang entry (cf. #41,
+            // whose root was an UNbounded wait). Gated on wait_for_loaded (FALSE only with -noloader).
+            if (wait_for_loaded)
+            {
+                int loadGuard = 0;
+                while (not TheLoader.LoaderQueueEmpty() and loadGuard < 200)   // 200 * 50ms = 10s ceiling
+                {
+                    Sleep(50);
+                    loadGuard++;
+                }
+            }
+
             // stop and cleanup splash screen
             OTWDriver.CleanupSplashScreen();
 

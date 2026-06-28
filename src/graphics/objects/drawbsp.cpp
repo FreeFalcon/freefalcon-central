@@ -306,6 +306,13 @@ void DrawableBSP::SetSwitchMask(int switchNumber, UInt32 mask)
     // THIS SHOULD BE REMOVED IN THE LATE BETA AND SHIPPING VERSIONS
     if (switchNumber >= instance.ParentObject->nSwitches)  return;
 
+    // Artscout - 2026: NULL-guard the switch array itself. nSwitches can be > 0 while SwitchValues is
+    // still NULL (object built without its DOF/switch array, or partially torn down). Writing
+    // SwitchValues[switchNumber] then faults at 0x0 -- seen as a CTD from UpdateOneLitObject after
+    // clicking a 3D-cockpit switch (the click toggles object lights -> the lit-object update writes a
+    // switch mask). Companion to the #47 ParentObject UAF guard above.
+    if (instance.SwitchValues == NULL) return;
+
     ShiAssert(switchNumber < instance.ParentObject->nSwitches);
 
     if (switchNumber < instance.ParentObject->nSwitches)
@@ -321,6 +328,9 @@ UInt32 DrawableBSP::GetSwitchMask(int switchNumber)
     // THIS IS A HACK TO TOLERATE OBJECTS WHICH DON'T YET HAVE DOFS
     // THIS SHOULD BE REMOVED IN THE LATE BETA AND SHIPPING VERSIONS
     if (switchNumber >= instance.ParentObject->nSwitches)  return 0;
+
+    // Artscout - 2026: NULL-guard the switch array (see SetSwitchMask).
+    if (instance.SwitchValues == NULL) return 0;
 
     ShiAssert(switchNumber < instance.ParentObject->nSwitches);
 
@@ -578,7 +588,12 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
     // check for inhibit
     if (inhibitDraw)
     {
-        SetInhibitFlag(FALSE);
+        // Artscout - 2026 (VR): do NOT auto-clear the inhibit here. This was a one-shot reset assuming
+        // a single Draw per frame; the VR per-eye loop draws the scene TWICE, so the first eye cleared
+        // the flag and the SECOND eye then DREW the ownship -> a phantom external aircraft (static HUD/
+        // nose/wings) doubled in one eye. The flag is re-set every frame by the owner (UpdateVehicle-
+        // Drawables for the ownship, aircraft lite-pool, etc.), so persisting it across both eyes is
+        // correct for the flat path too.
         return;
     }
 

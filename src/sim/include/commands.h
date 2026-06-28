@@ -489,6 +489,7 @@ void OTWViewZoomIn(unsigned long val, int state, void *);
 void OTWViewZoomOut(unsigned long val, int state, void *);
 void OTWSwapMFDS(unsigned long val, int state, void *);
 void OTWGlanceForward(unsigned long val, int state, void *);
+void SimRecenterVR(unsigned long val, int state, void *);   // Artscout - 2026 (#67): VR recenter (reset view)
 void OTWCheckSix(unsigned long val, int state, void *);
 void OTWStateStep(unsigned long val, int state, void *);
 void CommandsSetKeyCombo(unsigned long val, int state, void *);

@@ -62,6 +62,13 @@ public:
     // Set the camera parameters we're to use for rendering
     void SetObjectDetail(float scaler);
     void SetFOV(float horizontal_fov, float NearZ = 0.2f);
+    // Artscout - 2026 (VR quad-views): set an OFF-AXIS (asymmetric) frustum directly from the OpenXR
+    // per-view fov half-angles (radians, signed: L<0,R>0,D<0,U>0). For a symmetric view this reduces
+    // EXACTLY to SetFOV (offX=offY=0), so it is safe to use for all VR views. Bakes the off-axis shift
+    // into matProj (objects/cockpit) and arms it for SetCamera to fold into T (terrain/world points);
+    // the submitted projection layer must carry the SAME raw per-view fov (see OpenXRBackend::EndEye).
+    void SetVRFrustum(float angL, float angR, float angU, float angD, float NearZ = 0.2f);
+    void ClearVROffAxis(void);   // Artscout - 2026 (VR): disarm off-axis before RTT instrument displays
     void SetFar(float distance);
     void SetCamera(const Tpoint* pos, const Trotation* rot);
 
@@ -139,6 +146,18 @@ protected:
 
     float oneOVERtanHFOV;
     float oneOVERtanVFOV;
+
+    // Artscout - 2026 (VR quad-views): off-axis NDC center offset for an asymmetric frustum (0 = a
+    // normal symmetric view). m_vrOffAxisActive arms SetCamera to fold the offset into T; SetFOV
+    // clears it so the flat/stereo path is untouched.
+    float m_vrOffAxisX;
+    float m_vrOffAxisY;
+    bool  m_vrOffAxisActive;
+    // Artscout - 2026 (VR quad): off-axis gaze angles (radians) -- the sky (RenderOTW::DrawSky) shifts
+    // its effective Pitch()/Yaw() by these so the haze/clear bands follow the focus view (else looking
+    // up shows the dark upper-sky/clear color where the gradient should be). 0 for a symmetric view.
+    float m_vrOffAxisPitch;
+    float m_vrOffAxisYaw;
 
     float yaw;
     float pitch;

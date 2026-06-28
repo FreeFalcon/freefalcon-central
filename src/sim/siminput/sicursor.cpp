@@ -269,6 +269,11 @@ void CleanupSimCursors()
 }
 
 
+// Artscout - 2026 (VR): cursor draw-size multiplier. In the foveated focus view the eye has ~2-3x more
+// pixels per degree, so the fixed-pixel cursor looks tiny; otwloop sets this to the focus/periphery zoom
+// before drawing the focus cursor and back to 1.0 otherwise. 1.0 = unchanged (flat/periphery path).
+float g_vrCursorDrawScale = 1.0f;
+
 void ClipAndDrawCursor(int displayWidth, int displayHeight)
 {
 
@@ -280,15 +285,21 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
         return;
     }
 
+    const float cs = g_vrCursorDrawScale;
+    const int curW = (int)(gpSimCursors[gSelectedCursor].Width  * cs);
+    const int curH = (int)(gpSimCursors[gSelectedCursor].Height * cs);
+    const int curHX = (int)(gpSimCursors[gSelectedCursor].xHotspot * cs);
+    const int curHY = (int)(gpSimCursors[gSelectedCursor].yHotspot * cs);
+
     CursorSrc.top = 0;
     CursorSrc.left = 0;
     CursorSrc.bottom = gpSimCursors[gSelectedCursor].Height;
     CursorSrc.right = gpSimCursors[gSelectedCursor].Width;
 
-    CursorDest.top = gyPos - gpSimCursors[gSelectedCursor].yHotspot;
-    CursorDest.left = gxPos - gpSimCursors[gSelectedCursor].xHotspot;
-    CursorDest.bottom = CursorDest.top + gpSimCursors[gSelectedCursor].Height;
-    CursorDest.right = CursorDest.left + gpSimCursors[gSelectedCursor].Width;
+    CursorDest.top = gyPos - curHY;
+    CursorDest.left = gxPos - curHX;
+    CursorDest.bottom = CursorDest.top + curH;
+    CursorDest.right = CursorDest.left + curW;
 
     gyLast = gyPos;
     gxLast = gxPos;

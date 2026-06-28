@@ -180,6 +180,7 @@ static struct UserFunctionListEntry UserFunctionList[] =
     USER_FUNCTION(OTWViewZoomOut)
     USER_FUNCTION(OTWSwapMFDS)
     USER_FUNCTION(OTWGlanceForward)
+    USER_FUNCTION(SimRecenterVR)   // Artscout - 2026 (#67): VR recenter (reset view -> forward + eye height)
     USER_FUNCTION(OTWCheckSix)
     USER_FUNCTION(OTWStateStep)
     USER_FUNCTION(CommandsSetKeyCombo)

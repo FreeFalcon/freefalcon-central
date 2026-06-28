@@ -1,0 +1,344 @@
+[MAKEFONT]
+[ID] ZURICH_12
+[lfHeight] -12
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] PROOF_QUALITY
+[lfWeight] 300
+[lfFaceName] "Zurich BdXCn BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] ZURICH_14
+[lfHeight] -14
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] PROOF_QUALITY
+[lfWeight] 300
+[lfFaceName] "Zurich BdXCn BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] HAETTEN_16
+[lfHeight] -16
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] PROOF_QUALITY
+[lfWeight] 300
+[lfFaceName] "Haettenschweiler"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] HAETTEN_18
+[lfHeight] -18
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] PROOF_QUALITY
+[lfWeight] 300
+[lfFaceName] "Haettenschweiler"
+[ADDFONT]
+
+
+[MAKEFONT]
+[ID] ZURICH_16
+[lfHeight] -16
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] PROOF_QUALITY
+[lfWeight] 300
+[lfFaceName] "Zurich BdXCn BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] ZURICH_18
+[lfHeight] -18
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] PROOF_QUALITY
+[lfWeight] 300
+[lfFaceName] "Zurich BdXCn BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] ZURICH_24
+[lfHeight] -24
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] PROOF_QUALITY
+[lfWeight] 300
+[lfFaceName] "Zurich BdXCn BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] OCR_A_24
+[lfHeight] -22
+[lfCharSet] 2
+[lfWeight] 400
+[lfOutPrecision] 3
+[lfQuality] 1
+[lfPitchAndFamily] 49
+[lfFaceName] "OCR-A BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] OCR_A_18
+[lfHeight] -18
+[lfCharSet] 2
+[lfWeight] 400
+[lfOutPrecision] 3
+[lfQuality] 1
+[lfPitchAndFamily] 49
+[lfFaceName] "OCR-A BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] OCR_A_16
+[lfHeight] -16
+[lfCharSet] 2
+[lfWeight] 400
+[lfOutPrecision] 3
+[lfQuality] 1
+[lfPitchAndFamily] 49
+[lfFaceName] "OCR-A BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] OCR_A_14
+[lfHeight] -12
+[lfWeight] 400
+[lfCharSet] 2
+[lfOutPrecision] 3
+[lfQuality] 1
+[lfPitchAndFamily] 49
+[lfFaceName] "OCR-A BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] OCR_EXT_20
+[lfHeight] -20
+[lfWeight] 400
+[lfCharSet] 2
+[lfOutPrecision] 3
+[lfQuality] 1
+[lfPitchAndFamily] 49
+[lfFaceName] "OCR-A BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] OCR_EXT_16
+[lfHeight] -16
+[lfWeight] 400
+[lfCharSet] 2
+[lfOutPrecision] 3
+[lfQuality] 1
+[lfPitchAndFamily] 49
+[lfFaceName] "OCR-A BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] OCR_EXT_14
+[lfHeight] -14
+[lfWeight] 400
+[lfCharSet] 2
+[lfOutPrecision] 3
+[lfQuality] 1
+[lfPitchAndFamily] 49
+[lfFaceName] "OCR-A BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] OCR_EXT_12
+[lfHeight] -12
+[lfWeight] 400
+[lfCharSet] 2
+[lfOutPrecision] 3
+[lfQuality] 1
+[lfPitchAndFamily] 49
+[lfFaceName] "OCR-A BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] OCR_EXT_10
+[lfHeight] -10
+[lfWeight] 400
+[lfCharSet] 2
+[lfOutPrecision] 3
+[lfQuality] 1
+[lfPitchAndFamily] 49
+[lfFaceName] "OCR-A BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] OCR_EXT_8
+[lfHeight] -8
+[lfWeight] 400
+[lfCharSet] 2
+[lfOutPrecision] 3
+[lfQuality] 1
+[lfPitchAndFamily] 49
+[lfFaceName] "OCR-A BT"
+[ADDFONT]
+
+
+[MAKEFONT]
+[ID] OCR_EXT_24
+[lfHeight] -24
+[lfWeight] 900
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] DRAFT_QUALITY
+[lfFaceName] "OCR A Extended"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] OCR_EXT_16_BOLD
+[lfHeight] -16
+[lfWeight] 900
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] DRAFT_QUALITY
+[lfFaceName] "OCR A Extended"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] BANK_GOTHIC_24
+[lfHeight] -24
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] DRAFT_QUALITY
+[lfFaceName] "BankGothic Md BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] BANK_GOTHIC_16
+[lfHeight] -16
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] DRAFT_QUALITY
+[lfFaceName] "BankGothic Md BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] BANK_GOTHIC_14
+[lfHeight] -14
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] DRAFT_QUALITY
+[lfFaceName] "BankGothic Md BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] BANK_GOTHIC_20
+[lfHeight] -20
+[lfCharSet] ANSI_CHARSET
+[lfWeight] 500
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] DRAFT_QUALITY
+[lfFaceName] "BankGothic Md BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] COPPER_PLATE_18
+[lfHeight] -18
+[lfWeight] 900
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] DRAFT_QUALITY
+[lfFaceName] "Copperplate"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] COPPER_PLATE_24
+[lfHeight] -24
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] DRAFT_QUALITY
+[lfFaceName] "Copperplate"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] BANK_GOTHIC_26
+[lfHeight] -26
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] DRAFT_QUALITY
+[lfFaceName] "BankGothic Md BT"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] COPPER_PLATE_28
+[lfHeight] -28
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] DRAFT_QUALITY
+[lfFaceName] "Copperplate"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] ARIAL_12
+[lfHeight] -12
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] DRAFT_QUALITY
+[lfFaceName] "Arial"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] ARIAL_NARROW_12
+[lfHeight] -12
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] DRAFT_QUALITY
+[lfFaceName] "Arial Narrow"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] ARIAL_NARROW_14
+[lfHeight] -14
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] DRAFT_QUALITY
+[lfFaceName] "Arial Narrow"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] ARIAL_NARROW_14_BOLD
+[lfHeight] -14
+[lfWeight] FW_BOLD
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] DRAFT_QUALITY
+[lfFaceName] "Arial Narrow"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] ARIAL_NARROW_16
+[lfHeight] -16
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] DRAFT_QUALITY
+[lfFaceName] "Arial Narrow"
+[ADDFONT]
+
+[MAKEFONT]
+[ID] BGV_16
+[lfHeight] -16
+[lfCharSet] ANSI_CHARSET
+[lfOutPrecision] OUT_TT_PRECIS
+[lfQuality] DRAFT_QUALITY
+[lfFaceName] "BankGothic Md BT"
+[lfEscapement] 900
+[lfOrientation] 900
+[ADDFONT]
+
+[MAKEFONT]
+[ID] OCR_12_UNDERLINE
+[lfHeight] -12
+[lfWeight] 400
+[lfUnderline] 1
+[lfCharSet] 2
+[lfOutPrecision] 3
+[lfQuality] 1
+[lfPitchAndFamily] 49
+[lfFaceName] "OCR-A BT"
+[ADDFONT]

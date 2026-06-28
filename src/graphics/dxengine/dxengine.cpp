@@ -17,6 +17,8 @@
 #include "../../include/ComSup.h"
 #include "d3d11/D3D11Renderer.h"	// PHASE 4: D3D11 object path
 #include "D3D11Backend.h"
+#include "OpenXRBackend.h"   // temp VR stereo diag
+#include <stdio.h>
 extern bool g_bUseD3D11;
 
 // #34: world matrix -> the shader cbObject (D3D11). The dead D3D7 m_pD3DD->SetTransform else-branch
@@ -1792,6 +1794,7 @@ void CDXEngine::FlushBuffers(void)
 {
     float FogStart = 0.0;
     D3DErroCount = 3;
+
 
 
 #ifndef DEBUG_ENGINE

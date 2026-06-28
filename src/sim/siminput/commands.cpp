@@ -52,6 +52,7 @@
 
 #include "SimIO.h" // Retro 3Jan2004
 #include "Drawbsp.h"// Retro 8May2004
+#include "Graphics/DXEngine/OpenXRBackend.h" // Artscout - 2026 (#67): VR recenter command
 
 #define RESCALE(in,inmin,inmax,outmin,outmax) ( ((float)(in) - (inmin)) * ((outmax) - (outmin)) / ((inmax) - (inmin)) + (outmin))
 
@@ -3375,6 +3376,15 @@ void OTWGlanceForward(unsigned long, int, void*)
 {
     if ((SimDriver.GetPlayerAircraft()) and (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)))
         OTWDriver.GlanceForward();
+}
+
+// Artscout - 2026 (#67): VR recenter -- reset the headset so "forward" + eye height become where you are
+// looking now (fixes the view drifting / ending up staring at the ground). No-op outside OpenXR. Bind
+// SimRecenterVR to your existing "reset view" key; the reference-space rebuild runs on the render thread.
+void SimRecenterVR(unsigned long state, int, void*)
+{
+    if ((state bitand KEY_DOWN) and g_bUseOpenXR and g_pOpenXRBackend)
+        g_pOpenXRBackend->Recenter();
 }
 
 void OTWCheckSix(unsigned long, int, void*)

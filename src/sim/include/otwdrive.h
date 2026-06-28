@@ -506,6 +506,11 @@ public:
     {
         eyePan = pan, eyeTilt = tilt;
     };
+    // VR: set head look incl. roll, from the HMD orientation (head-tracking).
+    void SetCameraPanTiltRoll(float pan, float tilt, float roll)
+    {
+        eyePan = pan, eyeTilt = tilt, eyeHeadRoll = roll;
+    };
     void GetCameraPanTilt(float *pan, float *tilt)
     {
         *pan = eyePan, *tilt = eyeTilt;
