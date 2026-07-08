@@ -329,6 +329,7 @@
     <ClCompile Include="RenderTV.cpp" />
     <ClCompile Include="RenderWire.cpp" />
     <ClCompile Include="Rviewpnt.cpp" />
+    <ClCompile Include="TerrainGpu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\canvas3d.h" />
@@ -341,6 +342,7 @@
     <ClInclude Include="..\Include\RenderIR.h" />
     <ClInclude Include="..\Include\RenderNVG.h" />
     <ClInclude Include="..\include\renderow.h" />
+    <ClInclude Include="TerrainGpu.h" />
     <ClInclude Include="..\Include\RenderTV.h" />
     <ClInclude Include="..\Include\RenderWire.h" />
     <ClInclude Include="..\include\rviewpnt.h" />

@@ -115,9 +115,40 @@ public:
 	// only sets a flag, the actual space rebuild happens on the render thread in BeginStereoFrame.
 	bool Recenter();
 
+	// Artscout - 2026 (VR controllers): per-hand input snapshot for the current frame. Poses are in OpenXR
+	// space (right-handed, +Y up, metres) -- the caller converts to the Falcon body frame like the head pose.
+	struct ControllerState
+	{
+		bool  aimValid;   float aimPos[3];  float aimQuat[4];   // laser origin + orientation (pointer ray)
+		bool  gripValid;  float gripPos[3]; float gripQuat[4];  // hand grip (for the controller model)
+		float trigger;    bool  triggerDown;                    // click
+		float squeeze;    bool  squeezeDown;                    // grip button (active-hand switch)
+		float thumbX, thumbY;                                   // switches (Y) / knobs (X)
+		bool  buttonA, buttonB;                                 // zoom / recenter
+	};
+	int  GetActiveHand() const;                                 // 0=left, 1=right (default right)
+	bool GetControllerState(int hand, ControllerState* out) const;
+	bool ControllerActive() const;                              // active hand present + aim valid (else fall back to mouse)
+
+	// Aim ray in the Falcon BODY frame (feet; x=fwd, y=right, z=down -- same axis map as GetHeadPosFeet).
+	// origin = controller position (appSpace) mapped to body feet; dir = aim forward (unit). False if no valid pose.
+	bool GetControllerAimBody(int hand, float origin[3], float dir[3]) const;
+	bool GetControllerGripBody(int hand, float origin[3]) const;   // grip position (body feet, rel. head) for a marker
+	bool GetControllerGripBasis(int hand, float fwd[3], float right[3], float up[3]) const;  // grip orientation (body, unit) for a mesh
+	bool GetInteractionProfile(int hand, char* out, int cap) const;   // current profile path -> pick controller mesh (Index/Touch)
+
+	// Artscout - 2026 (VR hands): XR_EXT_hand_tracking skeleton. HandJointsValid = the runtime returned a live
+	// 26-joint hand for THIS hand this frame (else the caller uses the wireframe). GetHandJointsBody fills the
+	// 26 joints in the Falcon BODY frame (feet, rel. head; same axis map as GetControllerGripBody); validOut[j]
+	// flags per-joint validity. out/validOut must hold XR_HAND_JOINT_COUNT_EXT (26) entries.
+	bool HandJointsValid(int hand) const;
+	bool GetHandJointsBody(int hand, float out[][3], bool validOut[]) const;
+
 private:
 	void PollEvents();                       // drive the session state machine
 	bool EnsureUiSwapchain(int w, int h);    // (re)create the menu quad swapchain
+	bool CreateInputActions();               // Artscout - 2026 (VR controllers): action set + bindings + spaces + attach
+	void SyncControllers();                  // Artscout - 2026 (VR controllers): per-frame xrSyncActions + pose/state read
 
 	struct Impl;
 	Impl* m_impl;

@@ -24,6 +24,10 @@ static void XrDbg(const char* fmt, ...)
 	va_end(a);
 	buf[sizeof(buf) - 1] = 0;
 	OutputDebugStringA(buf);
+	// Artscout - 2026: also append to a file in the game cwd so OpenXR init/hand-tracking diagnostics are
+	// visible WITHOUT a debugger (OutputDebugString needs DebugView). Same pattern as the vrray_diag dumps.
+	FILE* f = fopen("openxr_diag.txt", "a");
+	if (f) { fputs(buf, f); fclose(f); }
 }
 
 // OpenXR with the D3D11 graphics binding (must be defined before the platform header).
@@ -119,7 +123,10 @@ struct OpenXRBackend::Impl
 	XrInstance   instance;
 	XrSystemId   systemId;
 	XrSession    session;
-	XrSpace      appSpace;     // LOCAL reference space (app world origin)
+	XrSpace      appSpace;     // LOCAL reference space (app world origin, recentered)
+	XrSpace      localRef;     // Artscout - 2026 (#67): PRISTINE LOCAL space, never recentered -- the fixed
+	                           // measurement reference for recenter (so each recenter is absolute, not relative
+	                           // to the already-shifted appSpace, which made the 2nd press toggle back).
 	XrSpace      viewSpace;    // VIEW reference space (head), for the camera feed
 
 	XrSessionState sessionState;
@@ -178,9 +185,42 @@ struct OpenXRBackend::Impl
 	// Artscout - 2026 (#67): recenter requested (any thread); applied by the render thread in BeginStereoFrame.
 	bool                  recenterPending;
 
+	// Artscout - 2026 (VR controllers, Phase 1): action-based input. Actions are declared once and bound per
+	// interaction profile (touch/index/wmr/simple) -- the runtime maps them to whatever controller is present,
+	// so we never enumerate per-vendor buttons. aim/grip are TRACKING POSES (not the squeeze button).
+	XrActionSet  actionSet;
+	// aim/grip = tracking POSES (not buttons). squeeze = the grip BUTTON, used ONLY to pick the active hand
+	// (whoever squeezes owns the ray); no grab mechanic. trigger = click, thumb = switches/knobs, a/b = zoom/recenter.
+	XrAction     aimAction, gripAction, squeezeAction, triggerAction, thumbAction, aBtnAction, bBtnAction;
+	XrPath       handPath[2];              // 0 = /user/hand/left, 1 = /user/hand/right
+	XrSpace      aimSpace[2], gripSpace[2];
+	bool         inputReady;
+	int          activeHand;               // 0=left, 1=right; default right, switched by whoever squeezes grip
+	struct HandInput
+	{
+		bool    aimValid;  XrPosef aimPose;   // laser origin/direction (angled like a pointer)
+		bool    gripValid; XrPosef gripPose;  // where the hand holds it (for the controller model, Phase 4)
+		float   trigger;   bool    triggerDown;
+		float   squeeze;   bool    squeezeDown;   // grip button -> active-hand switch (rising edge)
+		float   thumbX, thumbY;
+		bool    aBtn, bBtn;
+	} hand[2];
+
+	// Artscout - 2026 (VR hands): XR_EXT_hand_tracking. Index/knuckles synthesise a hand skeleton from the
+	// controller's capacitive finger sensors (no camera module needed) -- the runtime returns 26 joint poses
+	// per hand. Located every frame; if the runtime reports them not-active we fall back to the wireframe
+	// controller. Extension entry points are resolved via xrGetInstanceProcAddr after the instance is created.
+	bool                        handTrackingEnabled;      // ext enabled on the instance
+	PFN_xrCreateHandTrackerEXT  pfnCreateHandTracker;
+	PFN_xrDestroyHandTrackerEXT pfnDestroyHandTracker;
+	PFN_xrLocateHandJointsEXT   pfnLocateHandJoints;
+	XrHandTrackerEXT            handTracker[2];
+	bool                        handJointsValid[2];
+	XrHandJointLocationEXT      handJoints[2][XR_HAND_JOINT_COUNT_EXT];
+
 	Impl()
 		: instance(XR_NULL_HANDLE), systemId(XR_NULL_SYSTEM_ID), session(XR_NULL_HANDLE),
-		  appSpace(XR_NULL_HANDLE), viewSpace(XR_NULL_HANDLE),
+		  appSpace(XR_NULL_HANDLE), localRef(XR_NULL_HANDLE), viewSpace(XR_NULL_HANDLE),
 		  sessionState(XR_SESSION_STATE_UNKNOWN), sessionRunning(false),
 		  viewConfigType(XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO),
 		  swapchainFormat(0),
@@ -189,11 +229,21 @@ struct OpenXRBackend::Impl
 		  nearZ(1.0f), farZ(80000.0f), haveHeadPose(false),
 		  lastYaw(0.0f), lastPitch(0.0f), lastRoll(0.0f), haveHeadAngles(false),
 		  inStereoFrame(false), currentEye(-1), haveSubmitFov(false),
-		  menuQuadPending(false), recenterPending(false)
+		  menuQuadPending(false), recenterPending(false),
+		  actionSet(XR_NULL_HANDLE), aimAction(XR_NULL_HANDLE), gripAction(XR_NULL_HANDLE),
+		  squeezeAction(XR_NULL_HANDLE), triggerAction(XR_NULL_HANDLE), thumbAction(XR_NULL_HANDLE),
+		  aBtnAction(XR_NULL_HANDLE), bBtnAction(XR_NULL_HANDLE), inputReady(false), activeHand(1),
+		  handTrackingEnabled(false), pfnCreateHandTracker(NULL), pfnDestroyHandTracker(NULL),
+		  pfnLocateHandJoints(NULL)
 	{
 		lastHeadPose.orientation.x = lastHeadPose.orientation.y = lastHeadPose.orientation.z = 0.0f;
 		lastHeadPose.orientation.w = 1.0f;
 		lastHeadPose.position.x = lastHeadPose.position.y = lastHeadPose.position.z = 0.0f;
+		handPath[0] = handPath[1] = XR_NULL_PATH;
+		aimSpace[0] = aimSpace[1] = gripSpace[0] = gripSpace[1] = XR_NULL_HANDLE;
+		handTracker[0] = handTracker[1] = XR_NULL_HANDLE;
+		handJointsValid[0] = handJointsValid[1] = false;
+		memset(hand, 0, sizeof(hand));
 	}
 };
 
@@ -283,6 +333,223 @@ static void XrQuatToYawPitchRoll(const XrQuaternionf& q, float& yaw, float& pitc
 }
 
 //=============================================================================
+// Artscout - 2026 (VR controllers, Phase 1): action-based input.
+// Actions are semantic (aim/grip pose, squeeze, trigger, thumbstick, A, B); we suggest bindings for each
+// interaction profile and the runtime maps them to the connected controller. No per-vendor enumeration.
+//=============================================================================
+static XrPath XrStr2Path(XrInstance inst, const char* s)
+{
+	XrPath path = XR_NULL_PATH;
+	xrStringToPath(inst, s, &path);
+	return path;
+}
+
+// Suggest one profile's bindings from parallel {action, path-string} arrays. Non-fatal per profile
+// (a runtime may reject a profile it doesn't know; other profiles still apply).
+static void SuggestProfile(XrInstance inst, const char* profile,
+                           const XrAction* acts, const char* const* paths, int count)
+{
+	std::vector<XrActionSuggestedBinding> binds;
+	for (int i = 0; i < count; ++i)
+	{
+		XrPath bp = XrStr2Path(inst, paths[i]);
+		if (bp == XR_NULL_PATH || acts[i] == XR_NULL_HANDLE) continue;
+		XrActionSuggestedBinding b; b.action = acts[i]; b.binding = bp;
+		binds.push_back(b);
+	}
+	if (binds.empty()) return;
+	XrInteractionProfileSuggestedBinding sb = { XR_TYPE_INTERACTION_PROFILE_SUGGESTED_BINDING };
+	sb.interactionProfile = XrStr2Path(inst, profile);
+	sb.countSuggestedBindings = (uint32_t)binds.size();
+	sb.suggestedBindings = binds.data();
+	xrSuggestInteractionProfileBindings(inst, &sb);
+}
+
+bool OpenXRBackend::CreateInputActions()
+{
+	Impl* p = m_impl;
+	p->inputReady = false;
+	p->handPath[0] = XrStr2Path(p->instance, "/user/hand/left");
+	p->handPath[1] = XrStr2Path(p->instance, "/user/hand/right");
+
+	XrActionSetCreateInfo asci = { XR_TYPE_ACTION_SET_CREATE_INFO };
+	strcpy(asci.actionSetName, "gameplay");
+	strcpy(asci.localizedActionSetName, "Gameplay");
+	asci.priority = 0;
+	if (XR_FAILED(xrCreateActionSet(p->instance, &asci, &p->actionSet))) return false;
+
+	struct ADef { XrAction* a; const char* name; const char* loc; XrActionType type; };
+	ADef defs[] = {
+		{ &p->aimAction,     "aim_pose",  "Aim Pose",    XR_ACTION_TYPE_POSE_INPUT     },
+		{ &p->gripAction,    "grip_pose", "Grip Pose",   XR_ACTION_TYPE_POSE_INPUT     },
+		{ &p->squeezeAction, "squeeze",   "Grip Button", XR_ACTION_TYPE_FLOAT_INPUT    },
+		{ &p->triggerAction, "trigger",   "Trigger",     XR_ACTION_TYPE_FLOAT_INPUT    },
+		{ &p->thumbAction,   "thumb",     "Thumbstick",  XR_ACTION_TYPE_VECTOR2F_INPUT },
+		{ &p->aBtnAction,    "btn_a",     "Button A",    XR_ACTION_TYPE_BOOLEAN_INPUT  },
+		{ &p->bBtnAction,    "btn_b",     "Button B",    XR_ACTION_TYPE_BOOLEAN_INPUT  },
+	};
+	for (int i = 0; i < (int)(sizeof(defs) / sizeof(defs[0])); ++i)
+	{
+		XrActionCreateInfo aci = { XR_TYPE_ACTION_CREATE_INFO };
+		strcpy(aci.actionName, defs[i].name);
+		strcpy(aci.localizedActionName, defs[i].loc);
+		aci.actionType         = defs[i].type;
+		aci.countSubactionPaths = 2;
+		aci.subactionPaths      = p->handPath;
+		if (XR_FAILED(xrCreateAction(p->actionSet, &aci, defs[i].a))) return false;
+	}
+
+	// Full-feature profiles share the same action order (aim,grip,squeeze,trigger,thumb,A,B x L/R).
+	const XrAction A14[] = {
+		p->aimAction, p->aimAction, p->gripAction, p->gripAction,
+		p->squeezeAction, p->squeezeAction, p->triggerAction, p->triggerAction,
+		p->thumbAction, p->thumbAction, p->aBtnAction, p->aBtnAction, p->bBtnAction, p->bBtnAction };
+
+	// Oculus Touch (Quest/Rift): A/B on the right hand, X/Y on the left.
+	const char* const touch[] = {
+		"/user/hand/left/input/aim/pose",       "/user/hand/right/input/aim/pose",
+		"/user/hand/left/input/grip/pose",      "/user/hand/right/input/grip/pose",
+		"/user/hand/left/input/squeeze/value",  "/user/hand/right/input/squeeze/value",
+		"/user/hand/left/input/trigger/value",  "/user/hand/right/input/trigger/value",
+		"/user/hand/left/input/thumbstick",     "/user/hand/right/input/thumbstick",
+		"/user/hand/left/input/x/click",        "/user/hand/right/input/a/click",
+		"/user/hand/left/input/y/click",        "/user/hand/right/input/b/click" };
+	SuggestProfile(p->instance, "/interaction_profiles/oculus/touch_controller", A14, touch, 14);
+
+	// Valve Index: a/b on both hands, analog squeeze force.
+	const char* const index[] = {
+		"/user/hand/left/input/aim/pose",       "/user/hand/right/input/aim/pose",
+		"/user/hand/left/input/grip/pose",      "/user/hand/right/input/grip/pose",
+		"/user/hand/left/input/squeeze/force",  "/user/hand/right/input/squeeze/force",
+		"/user/hand/left/input/trigger/value",  "/user/hand/right/input/trigger/value",
+		"/user/hand/left/input/thumbstick",     "/user/hand/right/input/thumbstick",
+		"/user/hand/left/input/a/click",        "/user/hand/right/input/a/click",
+		"/user/hand/left/input/b/click",        "/user/hand/right/input/b/click" };
+	SuggestProfile(p->instance, "/interaction_profiles/valve/index_controller", A14, index, 14);
+
+	// Microsoft WMR motion controller: no A/B face buttons -> A=menu, B=trackpad click; squeeze is a click.
+	const char* const wmr[] = {
+		"/user/hand/left/input/aim/pose",       "/user/hand/right/input/aim/pose",
+		"/user/hand/left/input/grip/pose",      "/user/hand/right/input/grip/pose",
+		"/user/hand/left/input/squeeze/click",  "/user/hand/right/input/squeeze/click",
+		"/user/hand/left/input/trigger/value",  "/user/hand/right/input/trigger/value",
+		"/user/hand/left/input/thumbstick",     "/user/hand/right/input/thumbstick",
+		"/user/hand/left/input/menu/click",     "/user/hand/right/input/menu/click",
+		"/user/hand/left/input/trackpad/click", "/user/hand/right/input/trackpad/click" };
+	SuggestProfile(p->instance, "/interaction_profiles/microsoft/motion_controller", A14, wmr, 14);
+
+	// Khronos simple controller (fallback): only select + menu, no thumbstick/squeeze.
+	const XrAction A8[] = {
+		p->aimAction, p->aimAction, p->gripAction, p->gripAction,
+		p->triggerAction, p->triggerAction, p->aBtnAction, p->aBtnAction };
+	const char* const simple[] = {
+		"/user/hand/left/input/aim/pose",     "/user/hand/right/input/aim/pose",
+		"/user/hand/left/input/grip/pose",    "/user/hand/right/input/grip/pose",
+		"/user/hand/left/input/select/click", "/user/hand/right/input/select/click",
+		"/user/hand/left/input/menu/click",   "/user/hand/right/input/menu/click" };
+	SuggestProfile(p->instance, "/interaction_profiles/khr/simple_controller", A8, simple, 8);
+
+	// Action spaces (aim + grip per hand) -- need the session.
+	for (int h = 0; h < 2; ++h)
+	{
+		XrActionSpaceCreateInfo sci = { XR_TYPE_ACTION_SPACE_CREATE_INFO };
+		sci.poseInActionSpace.orientation.w = 1.0f;
+		sci.subactionPath = p->handPath[h];
+		sci.action = p->aimAction;  xrCreateActionSpace(p->session, &sci, &p->aimSpace[h]);
+		sci.action = p->gripAction; xrCreateActionSpace(p->session, &sci, &p->gripSpace[h]);
+	}
+
+	XrSessionActionSetsAttachInfo ai = { XR_TYPE_SESSION_ACTION_SETS_ATTACH_INFO };
+	ai.countActionSets = 1;
+	ai.actionSets      = &p->actionSet;
+	if (XR_FAILED(xrAttachSessionActionSets(p->session, &ai))) return false;
+
+	p->inputReady = true;
+	return true;
+}
+
+// Per-frame: sync actions, locate aim/grip poses, read states. Called from BeginStereoFrame after xrBeginFrame.
+void OpenXRBackend::SyncControllers()
+{
+	Impl* p = m_impl;
+	if (!p->inputReady || p->session == XR_NULL_HANDLE) return;
+	XrActiveActionSet aas; aas.actionSet = p->actionSet; aas.subactionPath = XR_NULL_PATH;
+	XrActionsSyncInfo si = { XR_TYPE_ACTIONS_SYNC_INFO };
+	si.countActiveActionSets = 1;
+	si.activeActionSets      = &aas;
+	if (XR_FAILED(xrSyncActions(p->session, &si))) return;   // e.g. session not focused yet
+
+	const XrTime t = p->stereoFrameState.predictedDisplayTime;
+	for (int h = 0; h < 2; ++h)
+	{
+		OpenXRBackend::Impl::HandInput& hi = p->hand[h];
+
+		XrSpaceLocation loc = { XR_TYPE_SPACE_LOCATION };
+		hi.aimValid = (p->aimSpace[h] != XR_NULL_HANDLE
+		    && XR_SUCCEEDED(xrLocateSpace(p->aimSpace[h], p->appSpace, t, &loc))
+		    && (loc.locationFlags & XR_SPACE_LOCATION_POSITION_VALID_BIT)
+		    && (loc.locationFlags & XR_SPACE_LOCATION_ORIENTATION_VALID_BIT));
+		if (hi.aimValid) hi.aimPose = loc.pose;
+
+		XrSpaceLocation gloc = { XR_TYPE_SPACE_LOCATION };
+		hi.gripValid = (p->gripSpace[h] != XR_NULL_HANDLE
+		    && XR_SUCCEEDED(xrLocateSpace(p->gripSpace[h], p->appSpace, t, &gloc))
+		    && (gloc.locationFlags & XR_SPACE_LOCATION_POSITION_VALID_BIT)
+		    && (gloc.locationFlags & XR_SPACE_LOCATION_ORIENTATION_VALID_BIT));
+		if (hi.gripValid) hi.gripPose = gloc.pose;
+
+		XrActionStateGetInfo gi = { XR_TYPE_ACTION_STATE_GET_INFO };
+		gi.subactionPath = p->handPath[h];
+
+		XrActionStateFloat sf = { XR_TYPE_ACTION_STATE_FLOAT };
+		gi.action = p->triggerAction;
+		hi.trigger = (XR_SUCCEEDED(xrGetActionStateFloat(p->session, &gi, &sf)) && sf.isActive) ? sf.currentState : 0.0f;
+		hi.triggerDown = hi.trigger > 0.6f;
+
+		gi.action = p->squeezeAction;
+		float sq = (XR_SUCCEEDED(xrGetActionStateFloat(p->session, &gi, &sf)) && sf.isActive) ? sf.currentState : 0.0f;
+		bool sqDown = sq > 0.6f;
+		if (sqDown && !hi.squeezeDown) p->activeHand = h;   // rising edge -> this hand owns the ray
+		hi.squeeze = sq; hi.squeezeDown = sqDown;
+
+		XrActionStateVector2f sv = { XR_TYPE_ACTION_STATE_VECTOR2F };
+		gi.action = p->thumbAction;
+		if (XR_SUCCEEDED(xrGetActionStateVector2f(p->session, &gi, &sv)) && sv.isActive) { hi.thumbX = sv.currentState.x; hi.thumbY = sv.currentState.y; }
+		else { hi.thumbX = hi.thumbY = 0.0f; }
+
+		XrActionStateBoolean sb = { XR_TYPE_ACTION_STATE_BOOLEAN };
+		gi.action = p->aBtnAction;
+		hi.aBtn = (XR_SUCCEEDED(xrGetActionStateBoolean(p->session, &gi, &sb)) && sb.isActive) ? (sb.currentState != XR_FALSE) : false;
+		gi.action = p->bBtnAction;
+		hi.bBtn = (XR_SUCCEEDED(xrGetActionStateBoolean(p->session, &gi, &sb)) && sb.isActive) ? (sb.currentState != XR_FALSE) : false;
+	}
+
+	// Artscout - 2026 (VR hands): locate the 26 hand joints for each hand in the app (LOCAL) space, this
+	// frame's predicted time. handJointsValid[h] gates the skeleton render; when false the caller falls back
+	// to the wireframe controller. Index/knuckles feed this from the grip's capacitive finger sensors.
+	if (p->handTrackingEnabled && p->pfnLocateHandJoints)
+	{
+		for (int h = 0; h < 2; ++h)
+		{
+			p->handJointsValid[h] = false;
+			if (p->handTracker[h] == XR_NULL_HANDLE) continue;
+			XrHandJointsLocateInfoEXT li = { XR_TYPE_HAND_JOINTS_LOCATE_INFO_EXT };
+			li.baseSpace = p->appSpace;
+			li.time      = t;
+			XrHandJointLocationsEXT locs = { XR_TYPE_HAND_JOINT_LOCATIONS_EXT };
+			locs.jointCount     = XR_HAND_JOINT_COUNT_EXT;
+			locs.jointLocations = p->handJoints[h];
+			XrResult lr = p->pfnLocateHandJoints(p->handTracker[h], &li, &locs);
+			if (XR_SUCCEEDED(lr) && locs.isActive)
+				p->handJointsValid[h] = true;
+			// TEMP DIAG: once every ~2s per hand, report why hands may be falling back to the wireframe.
+			{ static int s_hn[2] = {0,0}; if ((s_hn[h]++ % 180) == 0)
+				XrDbg("OpenXR: locateHandJoints hand %d -> result=%d isActive=%d valid=%d\n", h, (int)lr, (int)locs.isActive, (int)p->handJointsValid[h]); }
+		}
+	}
+}
+
+//=============================================================================
 // Construction
 //=============================================================================
 OpenXRBackend::OpenXRBackend() : m_impl(new Impl()) {}
@@ -330,14 +597,28 @@ bool OpenXRBackend::Init(ID3D11Device* device)
 	for (uint32_t i = 0; i < extCount; ++i) { exts[i].type = XR_TYPE_EXTENSION_PROPERTIES; exts[i].next = NULL; }
 	xrEnumerateInstanceExtensionProperties(NULL, extCount, &extCount, exts.empty() ? NULL : exts.data());
 
-	bool haveD3D11 = false, haveQuadViews = false, haveEyeGaze = false;
+	bool haveD3D11 = false, haveQuadViews = false, haveEyeGaze = false, haveHandTracking = false;
+	bool haveCtrlModelMSFT = false, haveRenderModelEXT = false, haveInteractionRenderModelEXT = false;
 	for (uint32_t i = 0; i < extCount; ++i)
 	{
 		const char* n = exts[i].extensionName;
 		if (strcmp(n, XR_KHR_D3D11_ENABLE_EXTENSION_NAME) == 0)              haveD3D11 = true;
 		else if (strcmp(n, XR_VARJO_QUAD_VIEWS_EXTENSION_NAME) == 0)         haveQuadViews = true;
 		else if (strcmp(n, XR_EXT_EYE_GAZE_INTERACTION_EXTENSION_NAME) == 0) haveEyeGaze = true;
+		else if (strcmp(n, XR_EXT_HAND_TRACKING_EXTENSION_NAME) == 0)        haveHandTracking = true;  // real hands
+		// Artscout - 2026 (VR controllers): probe for runtime-provided controller glTF model extensions. String
+		// literals (not SDK macros) so it builds on older openxr headers. Any of these lets us fetch the REAL
+		// controller mesh (glTF); EXT_render_model is the cross-vendor successor SteamVR/Valve is likelier to
+		// expose than the MSFT one. interaction_render_model pairs models with our action-based bindings.
+		else if (strcmp(n, "XR_MSFT_controller_model") == 0)                 haveCtrlModelMSFT = true;
+		else if (strcmp(n, "XR_EXT_render_model") == 0)                      haveRenderModelEXT = true;
+		else if (strcmp(n, "XR_EXT_interaction_render_model") == 0)          haveInteractionRenderModelEXT = true;
 	}
+	// Dump every advertised extension once so we can see exactly what THIS runtime (SteamVR/PVR/WMR) offers.
+	XrDbg("OpenXR: %u instance extensions advertised by the runtime:\n", extCount);
+	for (uint32_t i = 0; i < extCount; ++i) XrDbg("OpenXR:   ext[%u] = %s\n", i, exts[i].extensionName);
+	XrDbg("OpenXR: controller-model extensions:  MSFT_controller_model=%d  EXT_render_model=%d  EXT_interaction_render_model=%d\n",
+	      (int)haveCtrlModelMSFT, (int)haveRenderModelEXT, (int)haveInteractionRenderModelEXT);
 	if (!haveD3D11)
 	{
 		XrDbg("OpenXR: runtime lacks %s -- VR unavailable\n", XR_KHR_D3D11_ENABLE_EXTENSION_NAME);
@@ -352,17 +633,46 @@ bool OpenXRBackend::Init(ID3D11Device* device)
 	enabledExts.push_back(XR_KHR_D3D11_ENABLE_EXTENSION_NAME);
 	if (haveQuadViews) enabledExts.push_back(XR_VARJO_QUAD_VIEWS_EXTENSION_NAME);
 	if (haveEyeGaze)   enabledExts.push_back(XR_EXT_EYE_GAZE_INTERACTION_EXTENSION_NAME);
-	XrDbg("OpenXR: ext quadViews=%d eyeGaze=%d\n", (int)haveQuadViews, (int)haveEyeGaze);
+	// Artscout - 2026 (VR controllers): also ENABLE the controller render-model extension(s) so we can call
+	// their functions later (loading the real controller glTF). Enumeration above only reports SUPPORT; using
+	// the functions requires the extension to be in enabledExtensionNames here. Guarded by availability, and
+	// with a fallback retry below -- if enabling them makes xrCreateInstance fail (unmet dependency on some
+	// runtime), we drop them and retry so VR still comes up on the wireframe. The count split lets us peel
+	// them back off precisely.
+	const size_t coreExtCount = enabledExts.size();
+	if (haveHandTracking)              enabledExts.push_back(XR_EXT_HAND_TRACKING_EXTENSION_NAME);
+	if (haveRenderModelEXT)            enabledExts.push_back("XR_EXT_render_model");
+	if (haveInteractionRenderModelEXT) enabledExts.push_back("XR_EXT_interaction_render_model");
+	if (haveCtrlModelMSFT)             enabledExts.push_back("XR_MSFT_controller_model");
+	XrDbg("OpenXR: ext quadViews=%d eyeGaze=%d | enabling handTracking=%d renderModelEXT=%d interactionRenderModelEXT=%d ctrlModelMSFT=%d\n",
+	      (int)haveQuadViews, (int)haveEyeGaze, (int)haveHandTracking, (int)haveRenderModelEXT, (int)haveInteractionRenderModelEXT, (int)haveCtrlModelMSFT);
 
 	XrInstanceCreateInfo ici = { XR_TYPE_INSTANCE_CREATE_INFO };
-	ici.enabledExtensionCount = (uint32_t)enabledExts.size();
-	ici.enabledExtensionNames = enabledExts.data();
 	strcpy(ici.applicationInfo.applicationName, "FreeFalcon");
 	ici.applicationInfo.applicationVersion = 1;
 	strcpy(ici.applicationInfo.engineName, "FFViper");
 	ici.applicationInfo.engineVersion = 1;
 	ici.applicationInfo.apiVersion = XR_CURRENT_API_VERSION;
-	XR_BAIL(xrCreateInstance(&ici, &p->instance), "xrCreateInstance");
+	ici.enabledExtensionCount = (uint32_t)enabledExts.size();
+	ici.enabledExtensionNames = enabledExts.data();
+	XrResult icr = xrCreateInstance(&ici, &p->instance);
+	if (XR_FAILED(icr) && enabledExts.size() > coreExtCount)
+	{
+		// Retry without the optional render-model extensions so a missing dependency can't kill VR.
+		XrDbg("OpenXR: xrCreateInstance failed (XrResult %d) WITH render-model exts; retrying without them\n", (int)icr);
+		enabledExts.resize(coreExtCount);
+		ici.enabledExtensionCount = (uint32_t)enabledExts.size();
+		ici.enabledExtensionNames = enabledExts.data();
+		icr = xrCreateInstance(&ici, &p->instance);
+	}
+	if (XR_FAILED(icr))
+	{
+		XrDbg("OpenXR: xrCreateInstance failed (XrResult %d)\n", (int)icr);
+		return false;
+	}
+	// Hand tracking is usable only if it survived on the instance (the fallback retry peels ALL optional
+	// exts off together, so if it fired, hand tracking is gone too). Entry points are resolved after this.
+	p->handTrackingEnabled = haveHandTracking && (enabledExts.size() > coreExtCount);
 
 	// --- 3. System (HMD) -----------------------------------------------------
 	XrSystemGetInfo sgi = { XR_TYPE_SYSTEM_GET_INFO };
@@ -443,8 +753,51 @@ bool OpenXRBackend::Init(ID3D11Device* device)
 	rsci.poseInReferenceSpace.orientation.w = 1.0f;
 	rsci.referenceSpaceType = XR_REFERENCE_SPACE_TYPE_LOCAL;
 	XR_BAIL(xrCreateReferenceSpace(p->session, &rsci, &p->appSpace), "xrCreateReferenceSpace(LOCAL)");
+	// Artscout - 2026 (#67): a second, identity LOCAL space kept PRISTINE as the recenter measurement frame.
+	XR_BAIL(xrCreateReferenceSpace(p->session, &rsci, &p->localRef), "xrCreateReferenceSpace(LOCAL ref)");
 	rsci.referenceSpaceType = XR_REFERENCE_SPACE_TYPE_VIEW;
 	XR_BAIL(xrCreateReferenceSpace(p->session, &rsci, &p->viewSpace), "xrCreateReferenceSpace(VIEW)");
+
+	// Artscout - 2026 (VR controllers, Phase 1): action-based input. Non-fatal -- VR still runs without it
+	// (the cockpit falls back to the VR mouse when no controller is tracked).
+	if (!CreateInputActions())
+		XrDbg("OpenXR: controller input unavailable (continuing without controllers)\n");
+
+	// Artscout - 2026 (VR hands): resolve the hand-tracking entry points and create a tracker per hand.
+	// Non-fatal: any failure just leaves handTrackingEnabled effectively off and the wireframe is used.
+	XrDbg("OpenXR: handTrackingEnabled(instance)=%d\n", (int)p->handTrackingEnabled);
+	if (p->handTrackingEnabled)
+	{
+		// Authoritative check: the runtime may ADVERTISE the extension yet report the SYSTEM can't do hand
+		// tracking (common when there's no camera and the controller driver doesn't synthesize a skeleton).
+		XrSystemHandTrackingPropertiesEXT htp = { XR_TYPE_SYSTEM_HAND_TRACKING_PROPERTIES_EXT };
+		XrSystemProperties sp = { XR_TYPE_SYSTEM_PROPERTIES };
+		sp.next = &htp;
+		XrResult spr = xrGetSystemProperties(p->instance, p->systemId, &sp);
+		XrDbg("OpenXR: system supportsHandTracking=%d (xrGetSystemProperties %d)\n", (int)htp.supportsHandTracking, (int)spr);
+
+		xrGetInstanceProcAddr(p->instance, "xrCreateHandTrackerEXT",  (PFN_xrVoidFunction*)&p->pfnCreateHandTracker);
+		xrGetInstanceProcAddr(p->instance, "xrDestroyHandTrackerEXT", (PFN_xrVoidFunction*)&p->pfnDestroyHandTracker);
+		xrGetInstanceProcAddr(p->instance, "xrLocateHandJointsEXT",   (PFN_xrVoidFunction*)&p->pfnLocateHandJoints);
+		XrDbg("OpenXR: hand PFNs create=%p locate=%p\n", (void*)p->pfnCreateHandTracker, (void*)p->pfnLocateHandJoints);
+		if (p->pfnCreateHandTracker && p->pfnLocateHandJoints)
+		{
+			for (int h = 0; h < 2; ++h)
+			{
+				XrHandTrackerCreateInfoEXT hci = { XR_TYPE_HAND_TRACKER_CREATE_INFO_EXT };
+				hci.hand = (h == 0) ? XR_HAND_LEFT_EXT : XR_HAND_RIGHT_EXT;
+				hci.handJointSet = XR_HAND_JOINT_SET_DEFAULT_EXT;
+				XrResult hr = p->pfnCreateHandTracker(p->session, &hci, &p->handTracker[h]);
+				if (XR_FAILED(hr)) { p->handTracker[h] = XR_NULL_HANDLE; XrDbg("OpenXR: xrCreateHandTrackerEXT(hand %d) failed (%d)\n", h, (int)hr); }
+			}
+			XrDbg("OpenXR: hand tracking initialised (L=%d R=%d)\n", (int)(p->handTracker[0] != XR_NULL_HANDLE), (int)(p->handTracker[1] != XR_NULL_HANDLE));
+		}
+		else
+		{
+			p->handTrackingEnabled = false;
+			XrDbg("OpenXR: hand-tracking entry points missing -- disabled\n");
+		}
+	}
 
 	// --- 7. Per-eye view configuration ---------------------------------------
 	uint32_t viewCount = 0;
@@ -1008,7 +1361,12 @@ int OpenXRBackend::BeginStereoFrame()
 	{
 		p->recenterPending = false;
 		XrSpaceLocation rloc = { XR_TYPE_SPACE_LOCATION };
-		if (XR_SUCCEEDED(xrLocateSpace(p->viewSpace, p->appSpace, p->stereoFrameState.predictedDisplayTime, &rloc)) &&
+		// Locate the head in the PRISTINE LOCAL frame (localRef), NOT the current appSpace. The new space is
+		// built as LOCAL + off, so off must be the head pose in LOCAL. Measuring against the already-recentered
+		// appSpace made off ~0 on the 2nd press -> newSpace ~= LOCAL -> the view snapped back to the un-recentered
+		// origin (the "second press undoes it" toggle). With localRef every press is an absolute recenter
+		// (height + depth + yaw) to wherever the head currently is.
+		if (XR_SUCCEEDED(xrLocateSpace(p->viewSpace, p->localRef, p->stereoFrameState.predictedDisplayTime, &rloc)) &&
 		    (rloc.locationFlags & XR_SPACE_LOCATION_POSITION_VALID_BIT) &&
 		    (rloc.locationFlags & XR_SPACE_LOCATION_ORIENTATION_VALID_BIT))
 		{
@@ -1031,6 +1389,9 @@ int OpenXRBackend::BeginStereoFrame()
 			}
 		}
 	}
+
+	// Artscout - 2026 (VR controllers, Phase 1): sync controller input for this frame (poses + buttons).
+	SyncControllers();
 
 	if (!p->stereoFrameState.shouldRender) return 0;
 
@@ -1305,6 +1666,145 @@ bool OpenXRBackend::GetHeadYawPitchRoll(float* yaw, float* pitch, float* roll) c
 	return true;
 }
 
+//----------------------------------------------------------------------------
+// Artscout - 2026 (VR controllers, Phase 1): expose the latest per-hand input snapshot.
+//----------------------------------------------------------------------------
+int OpenXRBackend::GetActiveHand() const { return m_impl ? m_impl->activeHand : 1; }
+
+bool OpenXRBackend::GetControllerState(int hand, ControllerState* out) const
+{
+	if (!m_impl || !out || hand < 0 || hand > 1) return false;
+	const Impl::HandInput& hi = m_impl->hand[hand];
+	out->aimValid = hi.aimValid;
+	out->aimPos[0] = hi.aimPose.position.x; out->aimPos[1] = hi.aimPose.position.y; out->aimPos[2] = hi.aimPose.position.z;
+	out->aimQuat[0] = hi.aimPose.orientation.x; out->aimQuat[1] = hi.aimPose.orientation.y;
+	out->aimQuat[2] = hi.aimPose.orientation.z; out->aimQuat[3] = hi.aimPose.orientation.w;
+	out->gripValid = hi.gripValid;
+	out->gripPos[0] = hi.gripPose.position.x; out->gripPos[1] = hi.gripPose.position.y; out->gripPos[2] = hi.gripPose.position.z;
+	out->gripQuat[0] = hi.gripPose.orientation.x; out->gripQuat[1] = hi.gripPose.orientation.y;
+	out->gripQuat[2] = hi.gripPose.orientation.z; out->gripQuat[3] = hi.gripPose.orientation.w;
+	out->trigger = hi.trigger; out->triggerDown = hi.triggerDown;
+	out->squeeze = hi.squeeze; out->squeezeDown = hi.squeezeDown;
+	out->thumbX = hi.thumbX;   out->thumbY = hi.thumbY;
+	out->buttonA = hi.aBtn;    out->buttonB = hi.bBtn;
+	return true;
+}
+
+bool OpenXRBackend::ControllerActive() const
+{
+	return m_impl && m_impl->inputReady && m_impl->hand[m_impl->activeHand].aimValid;
+}
+
+bool OpenXRBackend::GetControllerAimBody(int hand, float origin[3], float dir[3]) const
+{
+	if (!m_impl || hand < 0 || hand > 1) return false;
+	const Impl::HandInput& hi = m_impl->hand[hand];
+	if (!hi.aimValid) return false;
+	const float M2FT = 3.28084f;
+	const XrVector3f&    pos = hi.aimPose.position;
+	const XrQuaternionf& q   = hi.aimPose.orientation;
+	// TransformCameraCentricPoint (the cockpit projection) wants a vector FROM THE CAMERA (head) to the
+	// point -- so the ray origin must be the controller RELATIVE TO THE HEAD, not absolute in appSpace.
+	// Subtract the head position (same appSpace), then map OpenXR (RH,+Y up) -> Falcon body (x=fwd=-z,
+	// y=right=+x, z=down=-y), in feet.
+	const XrVector3f& hp = m_impl->lastHeadPose.position;
+	float rx = pos.x - hp.x, ry = pos.y - hp.y, rz = pos.z - hp.z;
+	// Empirically matched to the cockpit BUTTON frame (loc): a front-console button is (x<0, y>0, z<0),
+	// while the naive GetHeadPosFeet map gave the ray (x>0, y>0, z>0). y matches; x & z are inverted (a
+	// 180deg turn about the vertical). So x=+(-z_xr->flip)=+rz, y=+rx, z=+ry (feet).
+	origin[0] = rz * M2FT; origin[1] = rx * M2FT; origin[2] = ry * M2FT;
+	// Forward = rotate the quaternion by (0,0,-1) [OpenXR forward], i.e. -(third column of R):
+	float fx = -2.0f * (q.x * q.z + q.w * q.y);
+	float fy = -2.0f * (q.y * q.z - q.w * q.x);
+	float fz = -(1.0f - 2.0f * (q.x * q.x + q.y * q.y));
+	// Same (flipped x/z) body axis map for the direction (no metre scale; normalize).
+	float bx = fz, by = fx, bz = fy;
+	float len = sqrtf(bx * bx + by * by + bz * bz);
+	if (len < 1e-6f) return false;
+	dir[0] = bx / len; dir[1] = by / len; dir[2] = bz / len;
+	return true;
+}
+
+// Grip pose position (where the hand holds the controller) in the Falcon BODY frame, relative to the head
+// -- same flipped axis map as GetControllerAimBody. For drawing a controller marker. False if no grip pose.
+bool OpenXRBackend::GetControllerGripBody(int hand, float origin[3]) const
+{
+	if (!m_impl || hand < 0 || hand > 1) return false;
+	const Impl::HandInput& hi = m_impl->hand[hand];
+	if (!hi.gripValid) return false;
+	const float M2FT = 3.28084f;
+	const XrVector3f& pos = hi.gripPose.position;
+	const XrVector3f& hp  = m_impl->lastHeadPose.position;
+	float rx = pos.x - hp.x, ry = pos.y - hp.y, rz = pos.z - hp.z;
+	origin[0] = rz * M2FT; origin[1] = rx * M2FT; origin[2] = ry * M2FT;
+	return true;
+}
+
+// Artscout - 2026 (VR controller model): the runtime's CURRENT interaction profile path for a hand
+// (e.g. "/interaction_profiles/valve/index_controller"), so the caller can pick which controller mesh to
+// draw (Index vs Touch/other). Empty string if unknown. Uses xrGetCurrentInteractionProfile + xrPathToString.
+bool OpenXRBackend::GetInteractionProfile(int hand, char* out, int cap) const
+{
+	if (!m_impl || !out || cap < 1 || hand < 0 || hand > 1) return false;
+	out[0] = 0;
+	if (m_impl->session == XR_NULL_HANDLE || m_impl->handPath[hand] == XR_NULL_PATH) return false;
+	XrInteractionProfileState ips = { XR_TYPE_INTERACTION_PROFILE_STATE };
+	if (XR_FAILED(xrGetCurrentInteractionProfile(m_impl->session, m_impl->handPath[hand], &ips))) return false;
+	if (ips.interactionProfile == XR_NULL_PATH) return false;
+	uint32_t len = 0;
+	if (XR_FAILED(xrPathToString(m_impl->instance, ips.interactionProfile, (uint32_t)cap, &len, out))) { out[0] = 0; return false; }
+	return out[0] != 0;
+}
+
+// Artscout - 2026 (VR controller model): grip ORIENTATION as a body-frame basis (fwd/right/up, unit) so a
+// mesh can be oriented like the real controller. Same axis map as GetControllerAimBody's direction
+// (body = (z,x,y) of the OpenXR vector). The caller applies the same VrRayFlipH/V it uses for the ray.
+bool OpenXRBackend::GetControllerGripBasis(int hand, float fwd[3], float right[3], float up[3]) const
+{
+	if (!m_impl || hand < 0 || hand > 1) return false;
+	const Impl::HandInput& hi = m_impl->hand[hand];
+	if (!hi.gripValid) return false;
+	const XrQuaternionf& q = hi.gripPose.orientation;
+	// Column vectors of the rotation matrix in OpenXR axes.
+	float rx[3] = { 1.0f - 2.0f*(q.y*q.y + q.z*q.z), 2.0f*(q.x*q.y + q.w*q.z),       2.0f*(q.x*q.z - q.w*q.y) };       // R*(1,0,0) = right
+	float uy[3] = { 2.0f*(q.x*q.y - q.w*q.z),       1.0f - 2.0f*(q.x*q.x + q.z*q.z), 2.0f*(q.y*q.z + q.w*q.x) };       // R*(0,1,0) = up
+	float fz[3] = { -2.0f*(q.x*q.z + q.w*q.y),      -2.0f*(q.y*q.z - q.w*q.x),      -(1.0f - 2.0f*(q.x*q.x + q.y*q.y)) }; // R*(0,0,-1) = forward
+	// Map OpenXR (vx,vy,vz) -> Falcon body (vz, vx, vy), same as GetControllerAimBody.
+	fwd[0]   = fz[2]; fwd[1]   = fz[0]; fwd[2]   = fz[1];
+	right[0] = rx[2]; right[1] = rx[0]; right[2] = rx[1];
+	up[0]    = uy[2]; up[1]    = uy[0]; up[2]    = uy[1];
+	return true;
+}
+
+// Artscout - 2026 (VR hands): true if the runtime returned a valid hand skeleton for THIS hand this frame.
+// The caller (vcock) draws the skeleton when true, else falls back to the wireframe controller.
+bool OpenXRBackend::HandJointsValid(int hand) const
+{
+	return m_impl && hand >= 0 && hand < 2 && m_impl->handTrackingEnabled && m_impl->handJointsValid[hand];
+}
+
+// Artscout - 2026 (VR hands): the 26 hand joints in the Falcon BODY frame (feet, relative to the head) --
+// the SAME axis map as GetControllerGripBody (x=fwd=+z_xr, y=right=+x_xr, z=down=+y_xr). out must hold
+// XR_HAND_JOINT_COUNT_EXT (26) xyz triples. Only joints with a valid position are written; validOut[j]
+// flags which. Returns false if no valid skeleton this frame.
+bool OpenXRBackend::GetHandJointsBody(int hand, float out[][3], bool validOut[]) const
+{
+	if (!HandJointsValid(hand)) return false;
+	const float M2FT = 3.28084f;
+	const XrVector3f& hp = m_impl->lastHeadPose.position;
+	const XrHandJointLocationEXT* j = m_impl->handJoints[hand];
+	for (int i = 0; i < XR_HAND_JOINT_COUNT_EXT; ++i)
+	{
+		bool ok = (j[i].locationFlags & XR_SPACE_LOCATION_POSITION_VALID_BIT) != 0;
+		validOut[i] = ok;
+		if (!ok) { out[i][0] = out[i][1] = out[i][2] = 0.0f; continue; }
+		const XrVector3f& pos = j[i].pose.position;
+		float rx = pos.x - hp.x, ry = pos.y - hp.y, rz = pos.z - hp.z;
+		out[i][0] = rz * M2FT; out[i][1] = rx * M2FT; out[i][2] = ry * M2FT;
+	}
+	return true;
+}
+
 // Artscout - 2026 (#67 VR recenter): rebuild the app reference space so the user's CURRENT head pose
 // (yaw + position) becomes the origin -- fixes the view drifting off (and "flying into the ground" when
 // the runtime recenters under us). Standard seated recenter: locate the head in the current appSpace, take
@@ -1413,8 +1913,23 @@ void OpenXRBackend::Shutdown()
 	p->uiImages.clear();
 	if (p->uiSwapchain != XR_NULL_HANDLE) { xrDestroySwapchain(p->uiSwapchain); p->uiSwapchain = XR_NULL_HANDLE; }
 
+	// Artscout - 2026 (VR hands): destroy the hand trackers.
+	if (p->pfnDestroyHandTracker)
+		for (int h = 0; h < 2; ++h)
+			if (p->handTracker[h] != XR_NULL_HANDLE) { p->pfnDestroyHandTracker(p->handTracker[h]); p->handTracker[h] = XR_NULL_HANDLE; }
+
+	// Artscout - 2026 (VR controllers): tear down input action spaces + set.
+	for (int h = 0; h < 2; ++h)
+	{
+		if (p->aimSpace[h]  != XR_NULL_HANDLE) { xrDestroySpace(p->aimSpace[h]);  p->aimSpace[h]  = XR_NULL_HANDLE; }
+		if (p->gripSpace[h] != XR_NULL_HANDLE) { xrDestroySpace(p->gripSpace[h]); p->gripSpace[h] = XR_NULL_HANDLE; }
+	}
+	if (p->actionSet != XR_NULL_HANDLE) { xrDestroyActionSet(p->actionSet); p->actionSet = XR_NULL_HANDLE; }
+	p->inputReady = false;
+
 	if (p->viewSpace != XR_NULL_HANDLE) { xrDestroySpace(p->viewSpace); p->viewSpace = XR_NULL_HANDLE; }
 	if (p->appSpace  != XR_NULL_HANDLE) { xrDestroySpace(p->appSpace);  p->appSpace  = XR_NULL_HANDLE; }
+	if (p->localRef  != XR_NULL_HANDLE) { xrDestroySpace(p->localRef);  p->localRef  = XR_NULL_HANDLE; }
 	if (p->session   != XR_NULL_HANDLE) { xrDestroySession(p->session); p->session   = XR_NULL_HANDLE; }
 	if (p->instance  != XR_NULL_HANDLE) { xrDestroyInstance(p->instance); p->instance = XR_NULL_HANDLE; }
 
