@@ -7,6 +7,7 @@
 #include <d3d11.h>
 #include <dxgi.h>
 #include <stdio.h>   // _snprintf (temp VR diag)
+#include <vector>
 #include "OpenXRBackend.h"   // Artscout - 2026: temp VR stereo diag (per-eye clear color)
 #include "d3d11/D3D11Renderer.h"   // Artscout - 2026 (VR): g_pD3D11Renderer->SetViewportSize for overlays
 
@@ -14,6 +15,30 @@
 extern "C" void MonoPrint(char *fmt, ...);
 
 #pragma comment(lib, "d3d11.lib")
+
+// Artscout - 2026 (VR controller model): build a TLVERTEX list from the CPU-projected screen verts and hand it
+// to the renderer's direct colour-triangle path (into the current eye RTV, depth-off overlay).
+void D3D11Backend::DrawVrModelTris(const VrTriVtx* verts, int nVerts, void* srv, int opaque, int cull)
+{
+	if (!g_pD3D11Renderer || !verts || nVerts < 3) return;
+	static std::vector<D3D11_TLVERTEX> tl;
+	tl.resize((size_t)nVerts);
+	for (int i = 0; i < nVerts; ++i)
+	{
+		tl[i].sx = verts[i].x; tl[i].sy = verts[i].y; tl[i].sz = 0.0f; tl[i].rhw = 1.0f;
+		tl[i].color = verts[i].color; tl[i].specular = 0;
+		tl[i].tu0 = verts[i].u; tl[i].tv0 = verts[i].v; tl[i].tu1 = verts[i].u; tl[i].tv1 = verts[i].v;
+	}
+	g_pD3D11Renderer->DrawColorTrisScreen(tl.data(), nVerts, (ID3D11ShaderResourceView*)srv, opaque, cull);
+}
+
+// Artscout - 2026 (VR controller model v2): decode an image file into an SRV (WIC via the renderer). void* so
+// vcock (which doesn't include d3d11 headers) can cache it.
+void* D3D11Backend::LoadModelTexture(const char* path)
+{
+	if (!g_pD3D11Renderer) return 0;
+	return (void*)g_pD3D11Renderer->LoadTextureFile(path);
+}
 #pragma comment(lib, "dxgi.lib")
 
 D3D11Backend* g_pD3D11Backend = NULL;

@@ -38,6 +38,14 @@ public:
 	D3D11Backend();
 	~D3D11Backend();
 
+	// Artscout - 2026 (VR controller model): draw a screen-space colour triangle list (a CPU-projected mesh)
+	// straight into the current VR eye RTV as a depth-off overlay -- bypasses the legacy poly-list/2D-immediate
+	// paths that never reached the eye for our mesh. Each 3 consecutive verts = one triangle. x/y = display px
+	// (same space Render2DLine uses), color = D3DCOLOR ARGB (alpha 0xFF = opaque). Forwards to the D3D renderer.
+	struct VrTriVtx { float x, y; unsigned color; float u, v; };
+	void DrawVrModelTris(const VrTriVtx* verts, int nVerts, void* srv = 0, int opaque = 0, int cull = 0);   // srv = ID3D11ShaderResourceView* (textured) or NULL; opaque/cull = VR model look
+	void* LoadModelTexture(const char* path);   // decode image -> SRV (void*); NULL on failure
+
 	// Creates the device + swap chain bound to hWnd. Returns false (and logs
 	// via MonoPrint) on any failure so the caller can fall back to D3D7.
 	// bFullscreen currently creates a windowed swap chain sized to nWidth x

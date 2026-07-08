@@ -1752,6 +1752,7 @@ void VirtualDisplay::DrawGlassPlate(float r, float g, float b, float a)
 
     // Canvas is a rectangle in body frame: X = forward (const), Y = horizontal, Z = vertical.
     extern float g_fHud3DGlassSize;                      // grow the plate/aperture toward the real glass edges
+    extern float g_fHud3DGlassTop;                       // #76 scale the TOP half only (pull the top edge down)
     const float cX  = canUL.x;                          // forward depth of the glass
     const float cY  = (canUL.y + canUR.y) * 0.5f;       // centre (horizontal)
     const float cZ  = (canUL.z + canLL.z) * 0.5f;       // centre (vertical)
@@ -1786,11 +1787,11 @@ void VirtualDisplay::DrawGlassPlate(float r, float g, float b, float a)
     ThreeDVertex centre, prev, cur;
     float px, py;
     setVert(&centre, cY, cZ, centreA);
-    squircle(0.0f, px, py); setVert(&prev, cY + px * hY, cZ + py * hZ, a);   // rim
+    squircle(0.0f, px, py); setVert(&prev, cY + px * hY, cZ + (py < 0.0f ? py * g_fHud3DGlassTop : py) * hZ, a);   // rim
     for (int i = 1; i <= SEG; ++i)
     {
         squircle(twoPi * (float)i / (float)SEG, px, py);
-        setVert(&cur, cY + px * hY, cZ + py * hZ, a);
+        setVert(&cur, cY + px * hY, cZ + (py < 0.0f ? py * g_fHud3DGlassTop : py) * hZ, a);
         r3d->DrawTriangle(&centre, &prev, &cur, CULL_ALLOW_ALL, false);
         prev = cur;
     }

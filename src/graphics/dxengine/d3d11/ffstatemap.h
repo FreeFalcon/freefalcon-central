@@ -32,6 +32,9 @@ enum FFFlags
 	FF_TEXCOLORDIFFUSE = 1u << 8,	// HUD/DED text (color=vertex, texture=mask)
 	FF_RTTSOFT     = 1u << 9,		// #7 AA-RTT: soft composite of the atlas (alpha=brightness)
 	FF_WATER       = 1u << 10,		// #12: animated water tile (shimmer + tint)
+	// bits 11 (FF_EMISSIVE) and 12 (FF_AFTERBURNER) are set via renderer methods, not this map.
+	FF_COCKPIT     = 1u << 13,		// Artscout - 2026: #72 cockpit-fidelity pass (specular + reduced
+									// ambient flood + mild contrast). Sticky, set by SetCockpitPass().
 };
 
 // Coarse buckets the ~38 states collapse into. Each names a small set of D3D11

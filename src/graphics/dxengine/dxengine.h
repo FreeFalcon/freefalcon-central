@@ -129,6 +129,12 @@ public:
     {
         World = *Settings;
     }
+    // Artscout - 2026: #78 GPU terrain reads the SAME object-path camera (world-space view/proj/pos) so the
+    // ground lines up with objects and the cockpit. These statics are set per eye by SetCamera/SetProjection
+    // BEFORE the scene is drawn, so they are valid when the terrain hook runs in RenderOTW::DrawScene.
+    static const D3DXMATRIX& GetObjProjection() { return Projection; }
+    static const D3DXMATRIX& GetObjView()       { return CameraView; }
+    static const D3DVECTOR&  GetObjCameraPos()  { return CameraPos; }
     void SetViewport(DWORD l, DWORD t, DWORD r, DWORD b);
     void SetFogLevel(float FogLevel);
     void SetBlipIntensity(float Intensity)
@@ -190,6 +196,13 @@ public:
     void SetPitMode(bool Mode)
     {
         m_PitMode = Mode;
+        // Artscout - 2026: #72 drive the cockpit-fidelity shader pass off the SAME pit/world discriminator
+        // the engine uses at DRAW time. The pit is QUEUED (VCock_DrawThePit) then FLUSHED later via the VB
+        // manager's PitList, which calls SetPitMode(true) per pit object as it dispenses them (dxvbmanager
+        // .cpp:819) and SetPitMode(false) for world objects (:830). So this is the exact window the pit
+        // surfaces actually reach BeginObjectPass/DrawSurface -> FF_COCKPIT is now live during the flush.
+        extern void FF_SetCockpitPass(bool on);
+        FF_SetCockpitPass(Mode);
     }
     bool GetPitMode(void)
     {

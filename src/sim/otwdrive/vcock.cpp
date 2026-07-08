@@ -1726,9 +1726,12 @@ void OTWDriverClass::VCock_DrawThePit(void)
     renderer->SetCamera(&headOrigin, &headMatrix);
     oldState = renderer->GetObjectTextureState();
     renderer->SetObjectTextureState(TRUE);
+    // Artscout - 2026: #72 the cockpit-fidelity pass (FF_COCKPIT) is NOT toggled here: the pit is only
+    // QUEUED at this point and flushed later (otwloop FlushPolyLists), by when a flag set here is already
+    // stale. It is driven instead from CDXEngine::SetPitMode, which the VB manager calls at FLUSH time
+    // per pit object (dxvbmanager.cpp:819) -> the flag is live exactly when the pit surfaces draw.
     vrCockpit->Draw(renderer);
     renderer->SetObjectTextureState(oldState);
-
 }
 
 
@@ -1765,6 +1768,278 @@ bool   g_vrCursorAnchorSnapped = false;
 // while the mouse is still, a frame or two after the last hover, by which time the gaze/camera has moved
 // and a fresh projection lands elsewhere (ey way off). Firing the snapped button = clicking what you see.
 int    g_vrCursorAnchorButton = -1;
+
+// Artscout - 2026: multi-position rotary switch groups. Each F-16 selector (MASTER ARM, MAIN PWR, RF, INS,
+// the HUD display-mode wafers, etc.) is authored in 3dbuttons.dat as one setter function per position, each at
+// its own tiny loc. With a VR laser / mouse this is fiddly. We collapse every group to ONE hotspot (its centroid)
+// and CYCLE through the positions: LMB / thumbstick-up = next, RMB / thumbstick-down = prev. Position order is the
+// physical rotary order below. Names must match 3dbuttons.dat exactly; unresolved names are skipped. Runtime cfg
+// "VrSwitchGroups" (g_bVrSwitchGroups) turns the whole thing off (each position stays its own spot). Defined here
+// (above VCock_Exec) so both the click handler and Button3D_Init can see the table.
+struct VrSwitchGroupDef { const char* name; const char* funcs[6]; int count; };
+static const VrSwitchGroupDef s_switchGroupDefs[] =
+{
+    { "MasterArm",   { "SimSafeMasterArm", "SimArmMasterArm", "SimSimMasterArm" }, 3 },
+    { "RF",          { "SimRFNorm", "SimRFQuiet", "SimRFSilent" }, 3 },
+    { "HSIMode",     { "SimHSIIlsTcn", "SimHSITcn", "SimHSINav", "SimHSIIlsNav" }, 4 },
+    { "FuelSel",     { "SimFuelSwitchTest", "SimFuelSwitchNorm", "SimFuelSwitchResv", "SimFuelSwitchWingInt", "SimFuelSwitchWingExt", "SimFuelSwitchCenterExt" }, 6 },
+    { "RightAP",     { "SimRightAPUp", "SimRightAPMid", "SimRightAPDown" }, 3 },
+    { "LeftAP",      { "SimLeftAPUp", "SimLeftAPMid", "SimLeftAPDown" }, 3 },
+    { "EWSMode",     { "SimEWSModeOff", "SimEWSModeStby", "SimEWSModeMan", "SimEWSModeSemi", "SimEWSModeAuto" }, 5 },
+    { "EWSProg",     { "SimEWSProgOne", "SimEWSProgTwo", "SimEWSProgThree", "SimEWSProgFour" }, 4 },
+    { "AVTR",        { "SimAVTRSwitchOff", "SimAVTRSwitchAuto", "SimAVTRSwitchOn" }, 3 },
+    { "MainPower",   { "SimMainPowerOff", "SimMainPowerBatt", "SimMainPowerMain" }, 3 },
+    { "Epu",         { "SimEpuOff", "SimEpuAuto", "SimEpuOn" }, 3 },
+    { "FuelPump",    { "SimFuelPumpOff", "SimFuelPumpNorm", "SimFuelPumpAft", "SimFuelPumpFwd" }, 4 },
+    { "RALT",        { "SimRALTOFF", "SimRALTSTDBY", "SimRALTON" }, 3 },
+    { "Scales",      { "SimScalesOff", "SimScalesVAH", "SimScalesVVVAH" }, 3 },
+    { "PitchLadder", { "SimPitchLadderOff", "SimPitchLadderFPM", "SimPitchLadderATTFPM" }, 3 },
+    { "HUDDED",      { "SimHUDDEDOff", "SimHUDDEDPFL", "SimHUDDEDDED" }, 3 },
+    { "Reticle",     { "SimReticleOff", "SimReticleStby", "SimReticlePri" }, 3 },
+    { "HUDVel",      { "SimHUDVelocityCAS", "SimHUDVelocityTAS", "SimHUDVelocityGND" }, 3 },
+    { "HUDAlt",      { "SimHUDAltRadar", "SimHUDAltBaro", "SimHUDAltAuto" }, 3 },
+    { "HUDBrt",      { "SimHUDBrtDay", "SimHUDBrtAuto", "SimHUDBrtNight" }, 3 },
+    { "AirSource",   { "SimAirSourceOff", "SimAirSourceNorm", "SimAirSourceDump", "SimAirSourceRam" }, 4 },
+    { "INS",         { "SimINSOff", "SimINSNorm", "SimINSNav", "SimINSInFlt" }, 4 },
+};
+static const int s_numSwitchGroups = (int)(sizeof(s_switchGroupDefs) / sizeof(s_switchGroupDefs[0]));
+int  g_vrSwitchGroupCur[64];              // current position index per group (state; cycled on click)
+static int  s_switchGroupMember[64][6];   // Button3DList index of each resolved position (-1 = missing)
+
+// Artscout - 2026 (VR controllers): laser-ray state. g_vrRayOrigin -> g_vrCursorAnchor is the green line
+// (drawn per-eye next to the cursor). g_vrCtrlRayActive tells the mouse hover/anchor blocks to stand down
+// this frame (the controller drives the pick). g_bVrZoomActive = A-button toggle (zoom behaviour TBD).
+Tpoint g_vrRayOrigin = { 0.0f, 0.0f, 0.0f };
+Tpoint g_vrRayDir    = { 0.0f, 0.0f, 1.0f };   // aim direction (body, unit) -- forward axis of the controller model
+Tpoint g_vrGripPoint = { 0.0f, 0.0f, 0.0f };   // controller grip position (marker), body button-units
+bool   g_vrGripValid = false;
+bool   g_vrRayActive = false;
+// Artscout - 2026 (VR controllers): the ACTUAL selected-button center (headPan-adjusted, button units),
+// captured in the view-0 pick. When a button is under the ray we draw a RING at THIS point (the switch that
+// will be clicked) instead of a cross at the ray's free endpoint -- so the highlight sits on the real switch
+// (kills the "beam-end vs detected-button" mismatch), and shows a CROSS at the free endpoint otherwise.
+Tpoint g_vrHitPoint = { 0.0f, 0.0f, 0.0f };
+bool   g_vrHitValid = false;
+bool   g_vrCtrlRayActive = false;
+bool   g_bVrZoomActive = false;
+
+// ===================== VR controller MODEL (v1: shaded solid OBJ, no texture) =====================
+// Artscout - 2026: draw the real controller mesh (SteamVR/Oculus render models, bundled as OBJ under
+// art\ckptart\controllers\) oriented by the grip pose, as the middle tier of the "hands -> model ->
+// wireframe" chain. v1 = flat-shaded solid (STATE_GOURAUD, geometry face normals) so we skip texture
+// (DDS) loading; v2 will add the diffuse texture. Rendered per-eye via DrawTriangle (depth-tested).
+#include <vector>
+#include <string.h>
+struct VrTri { float p[3][3]; float n[3]; float uv[3][2]; };   // 3 verts (local) + face normal + UVs
+struct VrModelCache { bool tried; bool ok; char key[64]; char tex[128]; bool srvTried; void* srv; std::vector<VrTri> tris; };
+static VrModelCache s_vrModel[2];                      // per hand (L/R meshes differ)
+
+// Parse an OBJ's .mtl for the map_Kd diffuse texture BASENAME (into out). Empty if none. (v2 textures.)
+static void VrParseMtlTex(const char* mtlName, char* out, int cap)
+{
+    out[0] = 0;
+    char path[256]; sprintf(path, "%scontrollers\\%s", COCKPIT_DIR, mtlName);
+    FILE* f = fopen(path, "r"); if (!f) return;
+    char line[512];
+    while (fgets(line, sizeof(line), f))
+    {
+        char tok[256];
+        if (sscanf(line, " map_Kd %255s", tok) == 1)
+        {
+            char* b = tok; for (char* p = tok; *p; ++p) if (*p == '/' or *p == '\\') b = p + 1;   // strip path
+            strncpy(out, b, cap - 1); out[cap - 1] = 0;
+            break;
+        }
+    }
+    fclose(f);
+}
+
+// Load + cache the OBJ (once). Parses v/vt/f (quads fan-triangulated) with per-vertex UV, the mtllib's map_Kd
+// diffuse texture, and a per-face geometry normal (shading). Positions/UVs are model-local.
+static bool VrLoadCtrlObj(VrModelCache* m, const char* baseName)
+{
+    if (m->tried and strcmp(m->key, baseName) == 0) return m->ok;   // already resolved this model
+    m->tried = true; m->ok = false; m->tris.clear(); m->tex[0] = 0; m->srvTried = false; m->srv = 0;
+    strncpy(m->key, baseName, sizeof(m->key) - 1); m->key[sizeof(m->key) - 1] = 0;
+
+    char path[256];
+    sprintf(path, "%scontrollers\\%s.obj", COCKPIT_DIR, baseName);
+    FILE* f = fopen(path, "r");
+    if (!f)
+    {
+        char db[300]; sprintf(db, "VR ctrl model: cannot open %s\n", path);
+        OutputDebugStringA(db); FILE* d = fopen("vrmodel_diag.txt", "a"); if (d) { fputs(db, d); fclose(d); }
+        return false;
+    }
+
+    std::vector<float> vp;   // positions x,y,z
+    std::vector<float> vt;   // texcoords u,v
+    char line[512];
+    while (fgets(line, sizeof(line), f))
+    {
+        if (line[0] == 'v' and line[1] == ' ')
+        {
+            float x, y, z;
+            if (sscanf(line + 2, "%f %f %f", &x, &y, &z) == 3) { vp.push_back(x); vp.push_back(y); vp.push_back(z); }
+        }
+        else if (line[0] == 'v' and line[1] == 't')
+        {
+            float u = 0.0f, v = 0.0f;
+            if (sscanf(line + 3, "%f %f", &u, &v) >= 1) { vt.push_back(u); vt.push_back(v); }
+        }
+        else if (strncmp(line, "mtllib", 6) == 0)
+        {
+            char mn[128]; if (sscanf(line + 6, " %127s", mn) == 1) VrParseMtlTex(mn, m->tex, sizeof(m->tex));
+        }
+        else if (line[0] == 'f' and line[1] == ' ')
+        {
+            int pidx[16], tidx[16], cnt = 0;
+            char* tok = strtok(line + 2, " \t\r\n");
+            while (tok and cnt < 16)
+            {
+                int pi = 0, ti = 0;
+                if (sscanf(tok, "%d/%d", &pi, &ti) >= 1 and pi != 0) { pidx[cnt] = pi; tidx[cnt] = ti; cnt++; }
+                tok = strtok(NULL, " \t\r\n");
+            }
+            int nv = (int)(vp.size() / 3);
+            int nt = (int)(vt.size() / 2);
+            for (int i = 1; i + 1 < cnt; ++i)               // fan-triangulate the face
+            {
+                const int fa[3] = { 0, i, i + 1 };
+                VrTri tr; bool bad = false;
+                for (int k = 0; k < 3; ++k)
+                {
+                    int a = pidx[fa[k]]; a = (a > 0) ? a - 1 : nv + a;
+                    if (a < 0 or a >= nv) { bad = true; break; }
+                    tr.p[k][0] = vp[a*3]; tr.p[k][1] = vp[a*3+1]; tr.p[k][2] = vp[a*3+2];
+                    int t = tidx[fa[k]]; t = (t > 0) ? t - 1 : (t < 0 ? nt + t : -1);
+                    if (t >= 0 and t < nt) { tr.uv[k][0] = vt[t*2]; tr.uv[k][1] = 1.0f - vt[t*2+1]; }   // OBJ V -> D3D V (flip)
+                    else { tr.uv[k][0] = 0.0f; tr.uv[k][1] = 0.0f; }
+                }
+                if (bad) continue;
+                float ux = tr.p[1][0]-tr.p[0][0], uy = tr.p[1][1]-tr.p[0][1], uz = tr.p[1][2]-tr.p[0][2];
+                float wx = tr.p[2][0]-tr.p[0][0], wy = tr.p[2][1]-tr.p[0][1], wz = tr.p[2][2]-tr.p[0][2];
+                tr.n[0] = uy*wz - uz*wy; tr.n[1] = uz*wx - ux*wz; tr.n[2] = ux*wy - uy*wx;
+                float ln = sqrtf(tr.n[0]*tr.n[0] + tr.n[1]*tr.n[1] + tr.n[2]*tr.n[2]);
+                if (ln > 1e-9f) { tr.n[0]/=ln; tr.n[1]/=ln; tr.n[2]/=ln; }
+                m->tris.push_back(tr);
+            }
+        }
+    }
+    fclose(f);
+    m->ok = !m->tris.empty();
+    {
+        char db[220]; sprintf(db, "VR ctrl model %s: %d tris, tex='%s', ok=%d\n", baseName, (int)m->tris.size(), m->tex, (int)m->ok);
+        OutputDebugStringA(db); FILE* d = fopen("vrmodel_diag.txt", "a"); if (d) { fputs(db, d); fclose(d); }
+    }
+    return m->ok;
+}
+
+// Artscout - 2026 (VR controller model): draw the controller mesh into the cockpit polygon list. Called from
+// VCock_DrawThePit (per eye), BEFORE otwloop's FlushPolyLists, so DrawTriangle's queued polys flush with the
+// pit -- the proven, batched, depth-tested solid path (in VCock_Exec the list was already flushed -> nothing
+// drew). Grip pose/basis fetched fresh (VCock_Exec's pick hasn't run yet). Index/Oculus by interaction profile.
+void OTWDriverClass::VCock_DrawControllerModel(void)
+{
+    extern bool  g_bVrControllerModel, g_bVrRayFlipH, g_bVrRayFlipV;
+    extern float g_fVrModelScale, g_fVrRayIpd;
+    if (not g_bVrControllerModel or g_pOpenXRBackend == NULL or not g_pOpenXRBackend->ControllerActive()) return;
+
+    extern bool  g_bVrUseHands, g_bVrModelOpaque;
+    extern float g_fVrModelCull;
+    const float sc = B3D_POSITION_SCALING;
+
+    int curEye = g_pOpenXRBackend->CurrentEye(); if (curEye < 0) curEye = 0;
+    float ipdY = g_pOpenXRBackend->GetEyeLateralOffsetFeet(curEye) * sc * g_fVrRayIpd;
+    const float M2B = 3.28084f * sc * g_fVrModelScale;          // metres -> button units
+    float Lx = 0.3f, Ly = -0.5f, Lz = -0.8f; float Ll = sqrtf(Lx*Lx + Ly*Ly + Lz*Lz); Lx/=Ll; Ly/=Ll; Lz/=Ll;
+
+    // Runtime mesh orientation (VrModelYaw/Pitch/Roll, deg): rotate the model in its OWN frame so any asset
+    // (controller/hands) aligns to the grip pose without a rebuild. R = Ry(yaw)*Rx(pitch)*Rz(roll), applied
+    // to every local vertex + normal below.
+    extern float g_fVrModelYaw, g_fVrModelPitch, g_fVrModelRoll;
+    float cy = (float)cos(g_fVrModelYaw*DTR),  sy = (float)sin(g_fVrModelYaw*DTR);
+    float cp = (float)cos(g_fVrModelPitch*DTR), sp = (float)sin(g_fVrModelPitch*DTR);
+    float cr = (float)cos(g_fVrModelRoll*DTR),  sr = (float)sin(g_fVrModelRoll*DTR);
+    float R00 = cy*cr + sy*sp*sr, R01 = -cy*sr + sy*sp*cr, R02 = sy*cp;
+    float R10 = cp*sr,            R11 = cp*cr,             R12 = -sp;
+    float R20 = -sy*cr + cy*sp*sr, R21 = sy*sr + cy*sp*cr, R22 = cy*cp;
+
+    // Draw BOTH hands, each with its OWN mesh (left->*_left, right->*_right) at its OWN grip pose. The ray/
+    // cursor is NOT tied to the model -- it stays on the active hand (GetActiveHand, switched by grip squeeze)
+    // in the pick block. A hand whose controller isn't tracked this frame is simply skipped.
+    static std::vector<D3D11Backend::VrTriVtx> sv;
+    for (int hnd = 0; hnd < 2; ++hnd)   // 0 = left, 1 = right
+    {
+        float go[3], bf[3], br[3], bu[3];
+        if (not g_pOpenXRBackend->GetControllerGripBody(hnd, go))  continue;   // this hand not tracked
+        if (not g_pOpenXRBackend->GetControllerGripBasis(hnd, bf, br, bu)) continue;
+        if (g_bVrRayFlipH) { go[1] = -go[1]; bf[1] = -bf[1]; br[1] = -br[1]; bu[1] = -bu[1]; }
+        if (g_bVrRayFlipV) { go[2] = -go[2]; bf[2] = -bf[2]; br[2] = -br[2]; bu[2] = -bu[2]; }
+        Tpoint gp; gp.x = go[0] * sc; gp.y = go[1] * sc; gp.z = go[2] * sc;
+
+        const char* base;
+        if (g_bVrUseHands)                       // hand/glove meshes (art\ckptart\controllers\glove_left/right.obj)
+            base = (hnd == 0) ? "glove_left" : "glove_right";
+        else
+        {
+            char prof[128] = "";
+            g_pOpenXRBackend->GetInteractionProfile(hnd, prof, sizeof(prof));
+            bool isIndex = (prof[0] == 0) or (strstr(prof, "index") != NULL) or (strstr(prof, "knuckles") != NULL);
+            base = (hnd == 0)
+                ? (isIndex ? "valve_controller_knu_1_0_left"  : "oculus_cv1_controller_left")
+                : (isIndex ? "valve_controller_knu_1_0_right" : "oculus_cv1_controller_right");
+        }
+        if (not VrLoadCtrlObj(&s_vrModel[hnd], base) or s_vrModel[hnd].tris.empty()) continue;
+
+        // Build a screen-space TRIANGLE LIST (CPU-projected, flat-shaded) and hand it to the D3D11 renderer's
+        // direct colour-tri path -- straight into the current eye RTV, depth-off overlay. This bypasses the legacy
+        // poly-list / 2D-immediate paths that never reached the eye for our mesh.
+        sv.clear();
+        const VrTri* T = &s_vrModel[hnd].tris[0];
+        const int    nT = (int)s_vrModel[hnd].tris.size();
+        for (int ti = 0; ti < nT; ++ti)
+        {
+            const VrTri& tr = T[ti];
+            ThreeDVertex vv[3]; bool ok = true;
+            for (int k = 0; k < 3; ++k)
+            {
+                float lx = tr.p[k][0], ly = tr.p[k][1], lz = tr.p[k][2];
+                float mx = R00*lx + R01*ly + R02*lz, my = R10*lx + R11*ly + R12*lz, mz = R20*lx + R21*ly + R22*lz;
+                Tpoint wp;
+                wp.x = gp.x + (br[0]*mx + bu[0]*my + bf[0]*mz) * M2B;
+                wp.y = gp.y + (br[1]*mx + bu[1]*my + bf[1]*mz) * M2B + ipdY;
+                wp.z = gp.z + (br[2]*mx + bu[2]*my + bf[2]*mz) * M2B;
+                renderer->TransformCameraCentricPoint(&wp, &vv[k]);
+                if (vv[k].csZ >= -1.0f) ok = false;   // behind the eye
+            }
+            if (not ok) continue;
+            float nmx = R00*tr.n[0] + R01*tr.n[1] + R02*tr.n[2];
+            float nmy = R10*tr.n[0] + R11*tr.n[1] + R12*tr.n[2];
+            float nmz = R20*tr.n[0] + R21*tr.n[1] + R22*tr.n[2];
+            float nwx = br[0]*nmx + bu[0]*nmy + bf[0]*nmz;
+            float nwy = br[1]*nmx + bu[1]*nmy + bf[1]*nmz;
+            float nwz = br[2]*nmx + bu[2]*nmy + bf[2]*nmz;
+            float d = nwx*Lx + nwy*Ly + nwz*Lz; if (d < 0) d = -d;
+            float sh = 0.55f + 0.45f*d; if (sh > 1.0f) sh = 1.0f;   // brighter floor so the textured hands aren't too dark
+            unsigned rr = (unsigned)(0.62f*sh*255.0f), gg = (unsigned)(0.64f*sh*255.0f), bb = (unsigned)(0.68f*sh*255.0f);
+            unsigned col = 0xFF000000u | (rr << 16) | (gg << 8) | bb;   // ARGB, opaque
+            D3D11Backend::VrTriVtx t0 = { vv[0].x, vv[0].y, col, tr.uv[0][0], tr.uv[0][1] };
+            D3D11Backend::VrTriVtx t1 = { vv[1].x, vv[1].y, col, tr.uv[1][0], tr.uv[1][1] };
+            D3D11Backend::VrTriVtx t2 = { vv[2].x, vv[2].y, col, tr.uv[2][0], tr.uv[2][1] };
+            sv.push_back(t0); sv.push_back(t1); sv.push_back(t2);
+        }
+        // Lazy-load the diffuse texture (once) from the OBJ's mtllib map_Kd; NULL -> flat vertex-colour (v1 look).
+        VrModelCache* mc = &s_vrModel[hnd];
+        if (not mc->srvTried)
+        {
+            mc->srvTried = true;
+            if (mc->tex[0] and g_pD3D11Backend) { char tp[256]; sprintf(tp, "%scontrollers\\%s", COCKPIT_DIR, mc->tex); mc->srv = g_pD3D11Backend->LoadModelTexture(tp); }
+        }
+        if (g_pD3D11Backend and not sv.empty())
+            g_pD3D11Backend->DrawVrModelTris(&sv[0], (int)sv.size(), mc->srv, g_bVrModelOpaque ? 1 : 0, (int)g_fVrModelCull);
+    }
+}
 
 void OTWDriverClass::VCock_Exec(void)
 {
@@ -3648,6 +3923,417 @@ void OTWDriverClass::VCock_Exec(void)
         renderer->SetCamera(&headOrigin, &headMatrix);
     }
 
+    // Artscout - 2026 (VR controllers): laser-pointer pick. When a controller is tracked, the ACTIVE hand's
+    // aim ray picks the nearest 3D clickable button and drives the SAME cursor/click machinery as the VR
+    // mouse (g_vrCursorAnchor / g_vrCursorAnchorButton / g_vrCursorAnchorSnapped + Button3DList.clicked).
+    // Trigger = primary (left) click; thumbstick up/right = left (increment), down/left = right (decrement);
+    // A = zoom toggle, B = recenter. Falls back to the mouse when no controller (g_vrCtrlRayActive stays
+    // false, the mouse hover/anchor blocks below run as before). View 0 only, like the mouse.
+    g_vrCtrlRayActive = false;
+    if (xrView0) { g_vrRayActive = false; g_vrGripValid = false; g_vrHitValid = false; }   // reset once/frame (view 0); persists for other eyes
+    {
+        extern bool  g_bVrControllers, g_bVrRayFlipH, g_bVrRayFlipV;
+        extern float g_fVrRayRadius, g_fVrRayReach, g_fVrThumbThresh, g_fVrKnobRepeatMs, g_fVrRayOriginOfs;
+        if (xrPick and xrView0 and g_bVrControllers and g_pOpenXRBackend->ControllerActive())
+        {
+            int   hnd = g_pOpenXRBackend->GetActiveHand();
+            float ao[3], ad[3];
+            if (g_pOpenXRBackend->GetControllerAimBody(hnd, ao, ad))
+            {
+                g_vrCtrlRayActive = true;
+                // In-headset axis calibration: flip the ray's right (H) / up-down (V) axis if inverted.
+                if (g_bVrRayFlipH) { ao[1] = -ao[1]; ad[1] = -ad[1]; }
+                if (g_bVrRayFlipV) { ao[2] = -ao[2]; ad[2] = -ad[2]; }
+                const float sc = B3D_POSITION_SCALING;
+                Tpoint rD; rD.x = ad[0]; rD.y = ad[1]; rD.z = ad[2];               // unit dir (body button axes)
+                // Fine-align the ray to the hand model's FINGER: build a right/up frame off the aim dir, tilt
+                // the direction (VrRayPitch/Yaw), and shift the origin sideways (VrRayOriginUp/Right) + forward
+                // (VrRayOriginOfs) so the beam leaves the fingertip instead of the wrist. All runtime cfg knobs.
+                extern float g_fVrRayPitch, g_fVrRayYaw, g_fVrRayOriginUp, g_fVrRayOriginRight;
+                // Roll-AWARE frame: use the grip ORIENTATION (right/up), which rotates WITH the hand, so the
+                // origin offset + tilt stay on the finger when you roll your wrist. (A world-up-derived frame
+                // ignored roll -> the beam slid off the finger when the palm turned.) Fallback = world-up frame.
+                Tpoint rRt, rUp;
+                float gbf[3], gbr[3], gbu[3];
+                if (g_pOpenXRBackend->GetControllerGripBasis(hnd, gbf, gbr, gbu))
+                {
+                    if (g_bVrRayFlipH) { gbr[1] = -gbr[1]; gbu[1] = -gbu[1]; }
+                    if (g_bVrRayFlipV) { gbr[2] = -gbr[2]; gbu[2] = -gbu[2]; }
+                    rRt.x = gbr[0]; rRt.y = gbr[1]; rRt.z = gbr[2];
+                    rUp.x = gbu[0]; rUp.y = gbu[1]; rUp.z = gbu[2];
+                }
+                else
+                {
+                    Tpoint wU = { 0.0f, 0.0f, -1.0f };
+                    rRt.x = rD.y*wU.z - rD.z*wU.y; rRt.y = rD.z*wU.x - rD.x*wU.z; rRt.z = rD.x*wU.y - rD.y*wU.x;
+                    float rl = sqrtf(rRt.x*rRt.x + rRt.y*rRt.y + rRt.z*rRt.z);
+                    if (rl < 1e-3f) { rRt.x = 0.0f; rRt.y = 1.0f; rRt.z = 0.0f; rl = 1.0f; }
+                    rRt.x/=rl; rRt.y/=rl; rRt.z/=rl;
+                    rUp.x = rRt.y*rD.z - rRt.z*rD.y; rUp.y = rRt.z*rD.x - rRt.x*rD.z; rUp.z = rRt.x*rD.y - rRt.y*rD.x;
+                }
+                float yw = g_fVrRayYaw*(float)DTR, pt = g_fVrRayPitch*(float)DTR;
+                Tpoint rd1 = { rD.x*cosf(yw)+rRt.x*sinf(yw), rD.y*cosf(yw)+rRt.y*sinf(yw), rD.z*cosf(yw)+rRt.z*sinf(yw) };   // yaw about up
+                Tpoint rd2 = { rd1.x*cosf(pt)+rUp.x*sinf(pt), rd1.y*cosf(pt)+rUp.y*sinf(pt), rd1.z*cosf(pt)+rUp.z*sinf(pt) }; // pitch about right
+                float dl = sqrtf(rd2.x*rd2.x + rd2.y*rd2.y + rd2.z*rd2.z); if (dl > 1e-6f) { rd2.x/=dl; rd2.y/=dl; rd2.z/=dl; }
+                rD = rd2;
+                Tpoint rO;                                                          // ray origin (button units)
+                rO.x = ao[0]*sc + rD.x*g_fVrRayOriginOfs + rRt.x*g_fVrRayOriginRight + rUp.x*g_fVrRayOriginUp;
+                rO.y = ao[1]*sc + rD.y*g_fVrRayOriginOfs + rRt.y*g_fVrRayOriginRight + rUp.y*g_fVrRayOriginUp;
+                rO.z = ao[2]*sc + rD.z*g_fVrRayOriginOfs + rRt.z*g_fVrRayOriginRight + rUp.z*g_fVrRayOriginUp;
+                g_vrRayOrigin = rO; g_vrRayDir = rD; g_vrRayActive = true;
+                // Controller marker position (grip pose), same frame/flips as the ray.
+                float go[3];
+                if (g_pOpenXRBackend->GetControllerGripBody(hnd, go))
+                {
+                    if (g_bVrRayFlipH) go[1] = -go[1];
+                    if (g_bVrRayFlipV) go[2] = -go[2];
+                    g_vrGripPoint.x = go[0] * sc; g_vrGripPoint.y = go[1] * sc; g_vrGripPoint.z = go[2] * sc;
+                    g_vrGripValid = true;
+                }
+
+                // Read inputs first so the single pick loop can also resolve the fire-button (left/right variant).
+                OpenXRBackend::ControllerState cs; cs.triggerDown = false;
+                int fireMb = 0;   // 1 = left (increment/press), 2 = right (decrement)
+                if (g_pOpenXRBackend->GetControllerState(hnd, &cs))
+                {
+                    static bool s_prevTrig = false, s_prevA = false, s_prevB = false;
+                    static int  s_thumbDir = 0, s_holdFrames = 0;
+                    if (cs.triggerDown and not s_prevTrig) fireMb = 1;
+                    s_prevTrig = cs.triggerDown;
+
+                    int dir = 0;
+                    if (fabs(cs.thumbY) >= fabs(cs.thumbX)) { if (cs.thumbY > g_fVrThumbThresh) dir = 1; else if (cs.thumbY < -g_fVrThumbThresh) dir = -1; }
+                    else                                    { if (cs.thumbX > g_fVrThumbThresh) dir = 1; else if (cs.thumbX < -g_fVrThumbThresh) dir = -1; }
+                    int repFrames = (int)(g_fVrKnobRepeatMs * 0.09f); if (repFrames < 1) repFrames = 1;  // ms->frames @~90fps
+                    if (dir != 0)
+                    {
+                        bool rep = false;
+                        if (dir != s_thumbDir) { rep = true; s_holdFrames = 0; }
+                        else if (++s_holdFrames >= repFrames) { rep = true; s_holdFrames = 0; }
+                        if (rep and fireMb == 0) fireMb = (dir > 0) ? 1 : 2;
+                    }
+                    s_thumbDir = dir;
+
+                    if (cs.buttonB and not s_prevB) g_pOpenXRBackend->Recenter();
+                    s_prevB = cs.buttonB;
+                    if (cs.buttonA and not s_prevA) g_bVrZoomActive = not g_bVrZoomActive;  // zoom application TBD
+                    s_prevA = cs.buttonA;
+                }
+
+                // Pick the button the ray points MOST DIRECTLY at (smallest ANGULAR deviation perp/t), not the
+                // nearest one along the ray. With the hand close to a dense panel, a nearest-t + absolute-radius
+                // test lets many switches qualify and picks whichever is closest to the HAND -> "aims by hand
+                // position, no precision". Angular selection makes it a true laser pointer: rotate the wrist and
+                // the selected switch changes by DIRECTION, range-independent. The absolute radius gate stays as
+                // a coarse "the ray passes within the switch's (scaled) hotspot" filter. bestFire = same, matched
+                // to the fire mousebutton (2-way toggle left/right variant on one loc).
+                int    bestAny = -1;  float bestAnyAng = 1.0e30f; float bestAnyT = 0.0f; Tpoint anyPos = { 0, 0, 0 };
+                int    bestFire = -1; float bestFireAng = 1.0e30f; float bestFireT = 0.0f; Tpoint firePos = { 0, 0, 0 };
+                for (i = 0; i < Button3DList.numbuttons; i++)
+                {
+                    Tpoint P = Button3DList.buttons[i].loc;
+                    P.x += headPan.x * sc; P.y += headPan.y * sc; P.z += headPan.z * sc;
+                    float wx = P.x - rO.x, wy = P.y - rO.y, wz = P.z - rO.z;
+                    float t  = wx * rD.x + wy * rD.y + wz * rD.z;
+                    if (t <= 1.0f) continue;                       // behind / on top of the controller
+                    float qx = wx - t * rD.x, qy = wy - t * rD.y, qz = wz - t * rD.z;
+                    float perp = sqrtf(qx * qx + qy * qy + qz * qz);
+                    if (perp >= Button3DList.buttons[i].dist * g_fVrRayRadius) continue;
+                    float ang = perp / t;                          // ~tan(angle off the ray) -> how directly aimed
+                    if (ang < bestAnyAng) { bestAnyAng = ang; bestAnyT = t; bestAny = i; anyPos = P; }
+                    if (fireMb and Button3DList.buttons[i].mousebutton == fireMb and ang < bestFireAng) { bestFireAng = ang; bestFireT = t; bestFire = i; firePos = P; }
+                }
+
+                // NO snapping (it only got in the way): the cursor stays ON THE BEAM -- at the hit depth when a
+                // button is under it, else a fixed reach -- so it shows exactly where you point. Click uses bestAny.
+                float anchorT = (bestAny >= 0) ? bestAnyT : g_fVrRayReach;
+                g_vrCursorAnchor.x = rO.x + rD.x * anchorT;
+                g_vrCursorAnchor.y = rO.y + rD.y * anchorT;
+                g_vrCursorAnchor.z = rO.z + rD.z * anchorT;
+                g_vrCursorAnchorValid   = true;
+                g_vrCursorAnchorButton  = bestAny;
+                g_vrCursorAnchorSnapped = (bestAny >= 0);
+                if (bestAny >= 0)
+                {
+                    gSelectedCursor = 9;                          // green: a button is under the beam
+                    g_vrHitPoint = anyPos;                        // the real switch center (headPan-adjusted) -> ring it
+                    g_vrHitValid = true;
+                }
+
+                // Fire the matching-mousebutton button under the ray; the click loop below executes the snapped
+                // button. Only the click target changes -- the visible cursor stays on the beam.
+                if (fireMb and bestFire >= 0)
+                {
+                    g_vrCursorAnchorButton  = bestFire;
+                    g_vrCursorAnchorSnapped = true;
+                    Button3DList.clicked    = fireMb;
+                }
+
+                // Visible cursor + laser line. Project the 3D anchor to the DISPLAY pixel (SetVRFrustum is set
+                // for view 0 above) and steer the shared mouse cursor there -- otwloop maps gxPos/gyPos into
+                // each eye, reusing the #58 VR cursor (both eyes). Keep the cursor alive (no mouse motion in
+                // VR). Then draw the GREEN ray line (view 0) from the controller to the cursor.
+                // Beam + cross + controller marker are drawn PER-EYE (stereo) in the block after this one --
+                // here (view 0) we only computed the pick. gTimeLastMouseMove kept fresh so any 2D fallback
+                // cursor does not time out mid-aim.
+                gTimeLastMouseMove = vuxRealTime;
+            }
+        }
+    }
+
+    // Artscout - 2026 (VR controllers): PER-EYE stereo render of the beam + endpoint cross + controller
+    // marker, as real 3D points projected with THIS eye's OWN camera. VCock_Exec runs once per view, so
+    // the block runs for EVERY eye and reproduces the EXACT projection the cockpit BSP was drawn with in
+    // that eye (otwloop's per-eye setup: SetFOV for stereo / SetVRFrustum for quad + SetCamera(headOrigin))
+    // PLUS this eye's IPD lateral offset in button units. Because TransformCameraCentricPoint drops the
+    // camera POSITION, the IPD (which the BSP gets from the view matrix) is re-injected on the point here.
+    // Drawing in BOTH eyes with the correct per-eye disparity lets the cross fuse binocularly AT the switch
+    // -- a view-0-only (mono) cross floats at the wrong depth (rivalry), which is why it read as "off".
+    // The pick (anchor / origin / grip) is computed once in view 0 above and reused for every eye pass.
+    if (g_vrRayActive and g_vrCursorAnchorValid and xrPick and g_pOpenXRBackend)
+    {
+        // Re-assert THIS eye's projection + camera. Between VCock_DrawThePit (which set the per-eye camera)
+        // and here, DrawScene and the RTT display quads disturb the renderer camera, and the view-0 setup
+        // above only ran for view 0 -- so the non-left eye would otherwise project with a stale camera and
+        // the cross would double. Mirror otwloop's BSP setup EXACTLY so the cross lands on the BSP button.
+        int curEye = g_pOpenXRBackend->CurrentEye(); if (curEye < 0) curEye = 0;
+        float efl, efr, efu, efd;
+        if (g_pOpenXRBackend->GetEyeFovAngles(curEye, &efl, &efr, &efu, &efd))
+        {
+            // Match the projection the BSP cockpit was actually drawn with THIS eye -- exactly.
+            // STEREO: the BSP uses SetFOV(efr-efl) -> a SYMMETRIC frustum (NO horizontal off-axis); the eye
+            // separation comes entirely from the camera position (headOrigin IPD). Adding the eye's real
+            // asymmetric off-axis here (an earlier SetVRFrustum(efl,efr,..) attempt) DOUBLED the horizontal
+            // disparity -> the whole beam/cursor split in two. So keep it symmetric. The ONE thing SetFOV got
+            // wrong for us: it derives the VERTICAL fov from the current xRes/yRes aspect, which during
+            // VCock_Exec is DispWidth/DispHeight (~16:9), NOT the near-square eye (eyeW/eyeH) the BSP was drawn
+            // into -> the cross diverged vertically (0 at centre, ~1 MFD at the bottom row). Reproduce SetFOV
+            // but with the EYE aspect: symmetric H half-angle (efr-efl)/2, symmetric V half = atan(tan(H)*eh/ew).
+            // QUAD: the BSP genuinely uses the off-axis per-view frustum (otwloop SetVRFrustum), so pass it through.
+            if (sessionQuad)
+                renderer->SetVRFrustum(efl, efr, efu, efd);
+            else
+            {
+                float hh = (efr - efl) * 0.5f;
+                int   ew = g_pD3D11Backend->XrEyeW(), eh = g_pD3D11Backend->XrEyeH();
+                float vhalf = (ew > 0) ? (float)atan(tan(hh) * (double)eh / (double)ew) : hh;
+                renderer->SetVRFrustum(-hh, hh, vhalf, -vhalf);   // symmetric like SetFOV, but EYE aspect
+            }
+        }
+        renderer->SetCamera(&headOrigin, &headMatrix);
+
+        // Artscout - 2026 (VR controller model): draw the mesh NOW -- this eye's camera is set and the cockpit
+        // was already flushed (before VCock_Exec), so the mesh overlays on top. Immediate D3D11 path (DrawTL)
+        // into the current eye RTV; the beam/cross below then draw over the mesh.
+        VCock_DrawControllerModel();
+
+        // This eye's IPD parallax in button units (body-right axis), the piece TransformCameraCentricPoint
+        // drops -> the beam/cross stereo disparity. Scaled by VrRayIpd (its OWN knob, independent of the
+        // mouse cursor's VrCursorIpd): raise/lower until the ring sits AT the switch depth; <0 flips the eye
+        // sign, 0 = mono/flat. The other eye's GetEyeLateralOffsetFeet flips sign -> the stereo separation.
+        extern float g_fVrRayIpd;
+        float ipdY = g_pOpenXRBackend->GetEyeLateralOffsetFeet(curEye) * B3D_POSITION_SCALING * g_fVrRayIpd;
+
+        // Endpoint: ALWAYS the point ON THE BEAM (rO + rD*t) -- no snapping to the button centre. The
+        // hand-placed clickable hotspots are often offset from the visible switch art, so jumping the cursor
+        // onto them reads as "stuck / off" ("прилипание"); keeping it on the beam shows exactly where the
+        // controller points. g_vrCursorAnchor already sits at the hit depth when over a button (bestAnyT),
+        // else at the free reach. g_vrHitValid only picks the glyph (ring = a clickable is under the beam).
+        Tpoint aE = g_vrCursorAnchor; aE.y += ipdY;
+        Tpoint oE = g_vrRayOrigin;    oE.y += ipdY;
+        ThreeDVertex tA, tO;
+        renderer->TransformCameraCentricPoint(&aE, &tA);
+        if (tA.csZ < -30.0f)
+        {
+            // Colour signals state (0x00BBGGRR): GREEN when the ray is on a clickable switch (ring), ORANGE when
+            // aiming at nothing clickable (cross). Beam takes the same colour so the whole pointer reads at a glance.
+            renderer->SetColor(g_vrHitValid ? 0x0000FF00 : 0x0000A5FF);
+            renderer->TransformCameraCentricPoint(&oE, &tO);
+            if (tO.csZ < -30.0f)
+                renderer->Render2DLine(tO.x, tO.y, tA.x, tA.y);   // the beam
+            if (g_vrHitValid)
+            {
+                // RING at the beam end -> "a clickable switch is under the ray" (glyph only, on beam). 1.5x size.
+                const float rr = 7.5f;
+                const int   segs = 12;
+                float pX = tA.x + rr, pY = tA.y;   // s = 0
+                for (int s = 1; s <= segs; ++s)
+                {
+                    float a  = (float)s * (2.0f * PI / (float)segs);
+                    float nX = tA.x + rr * (float)cos(a);
+                    float nY = tA.y + rr * (float)sin(a);
+                    renderer->Render2DLine(pX, pY, nX, nY);
+                    pX = nX; pY = nY;
+                }
+            }
+            else
+            {
+                const float cx = 7.5f;            // free-aim cross (pointing at nothing clickable), 1.5x size
+                renderer->Render2DLine(tA.x - cx, tA.y, tA.x + cx, tA.y);
+                renderer->Render2DLine(tA.x, tA.y - cx, tA.x, tA.y + cx);
+            }
+            // Artscout - 2026 (VR hands): PRIORITY chain per user -- real hands (XR_EXT_hand_tracking) if the
+            // runtime provides them, else the wireframe controller (EXT_render_model glTF is a future slot).
+            // Draw the 26-joint skeleton for every tracked hand (Index feeds it from the grip finger sensors),
+            // mapped to body units + this eye's IPD exactly like the grip marker. Only the ACTIVE hand falls
+            // back to the wireframe when its skeleton is absent, so you always see the pointer.
+            const int VR_HAND_JOINTS = 26;
+            static const int handBones[24][2] = {
+                {1,2},{1,6},{1,11},{1,16},{1,21},            // wrist -> finger metacarpals
+                {2,3},{3,4},{4,5},                            // thumb
+                {6,7},{7,8},{8,9},{9,10},                     // index
+                {11,12},{12,13},{13,14},{14,15},             // middle
+                {16,17},{17,18},{18,19},{19,20},             // ring
+                {21,22},{22,23},{23,24},{24,25}              // little
+            };
+            extern bool g_bVrRayFlipH, g_bVrRayFlipV;
+            const int   activeHnd = g_pOpenXRBackend->GetActiveHand();
+            bool drewActiveHand = false;
+            for (int hnd2 = 0; hnd2 < 2; ++hnd2)
+            {
+                float jb[26][3]; bool jv[26];
+                if (!g_pOpenXRBackend->GetHandJointsBody(hnd2, jb, jv)) continue;   // hand not tracked this frame
+                ThreeDVertex jp[26]; bool jok[26];
+                for (int i = 0; i < VR_HAND_JOINTS; ++i)
+                {
+                    if (!jv[i]) { jok[i] = false; continue; }
+                    float by = jb[i][1], bz = jb[i][2];
+                    if (g_bVrRayFlipH) by = -by;         // same axis flips as the ray/grip
+                    if (g_bVrRayFlipV) bz = -bz;
+                    Tpoint pj;
+                    pj.x = jb[i][0] * B3D_POSITION_SCALING;
+                    pj.y = by * B3D_POSITION_SCALING + ipdY;
+                    pj.z = bz * B3D_POSITION_SCALING;
+                    renderer->TransformCameraCentricPoint(&pj, &jp[i]);
+                    jok[i] = (jp[i].csZ < -30.0f);
+                }
+                for (int b = 0; b < 24; ++b)
+                {
+                    int a0 = handBones[b][0], a1 = handBones[b][1];
+                    if (jok[a0] and jok[a1]) renderer->Render2DLine(jp[a0].x, jp[a0].y, jp[a1].x, jp[a1].y);
+                }
+                if (hnd2 == activeHnd) drewActiveHand = true;
+            }
+
+            // Artscout - 2026 (VR controller model): middle tier of hands -> MODEL -> wireframe. When hands
+            // aren't drawn, try the real controller mesh oriented by the grip pose (Index vs Oculus by the
+            // runtime's interaction profile). v1 = flat-shaded solid. Falls through to the wireframe if the
+            // model is off / not loaded / grip pose missing.
+            extern bool g_bVrControllerModel;
+            bool drewModel = false;
+            if (false)   // Artscout - 2026: controller MODEL now drawn solid in VCock_DrawThePit (poly-list); this Render2DTri overlay path retired
+            {
+                char prof[128] = "";
+                g_pOpenXRBackend->GetInteractionProfile(activeHnd, prof, sizeof(prof));
+                bool isIndex = (prof[0] == 0) or (strstr(prof, "index") != NULL) or (strstr(prof, "knuckles") != NULL);
+                const char* base = (activeHnd == 0)
+                    ? (isIndex ? "valve_controller_knu_1_0_left"  : "oculus_cv1_controller_left")
+                    : (isIndex ? "valve_controller_knu_1_0_right" : "oculus_cv1_controller_right");
+                float bf[3], br[3], bu[3];
+                if (VrLoadCtrlObj(&s_vrModel[activeHnd], base) and g_pOpenXRBackend->GetControllerGripBasis(activeHnd, bf, br, bu))
+                {
+                    if (g_bVrRayFlipH) { bf[1] = -bf[1]; br[1] = -br[1]; bu[1] = -bu[1]; }   // match the ray/grip flips
+                    if (g_bVrRayFlipV) { bf[2] = -bf[2]; br[2] = -br[2]; bu[2] = -bu[2]; }
+                    extern float g_fVrModelScale;
+                    const float M2B = 3.28084f * B3D_POSITION_SCALING * g_fVrModelScale;    // metres -> button units
+                    float Lx = 0.3f, Ly = -0.5f, Lz = -0.8f; float Ll = sqrtf(Lx*Lx + Ly*Ly + Lz*Lz); Lx/=Ll; Ly/=Ll; Lz/=Ll;
+                    // STATE_ALPHA_GOURAUD = untextured vertex-colour with DEPTH OFF (like the canopy glass plate).
+                    // The mesh rasterised fine under STATE_GOURAUD (drawn=8926, csZ<0) but was hidden by the
+                    // cockpit depth -- the hand sits behind the near panels. Drawing depth-off makes it an overlay
+                    // (visible like the beam). v1.1 will add backface culling so the solid reads correctly.
+                    renderer->context.RestoreState(STATE_ALPHA_GOURAUD);
+                    const VrTri* T = &s_vrModel[activeHnd].tris[0];
+                    const int   nT = (int)s_vrModel[activeHnd].tris.size();
+                    int nDrawn = 0; float s0x = 0, s0y = 0, s0z = 0;   // DIAG: how many tris drew + a sample projection
+                    for (int ti = 0; ti < nT; ++ti)
+                    {
+                        const VrTri& tr = T[ti];
+                        ThreeDVertex vv[3]; bool infront = true;
+                        for (int k = 0; k < 3; ++k)
+                        {
+                            float mx = tr.p[k][0], my = tr.p[k][1], mz = tr.p[k][2];
+                            Tpoint wp;
+                            wp.x = g_vrGripPoint.x + (br[0]*mx + bu[0]*my + bf[0]*mz) * M2B;
+                            wp.y = g_vrGripPoint.y + (br[1]*mx + bu[1]*my + bf[1]*mz) * M2B + ipdY;
+                            wp.z = g_vrGripPoint.z + (br[2]*mx + bu[2]*my + bf[2]*mz) * M2B;
+                            renderer->TransformCameraCentricPoint(&wp, &vv[k]);
+                            if (vv[k].csZ >= -1.0f) infront = false;   // behind the eye -> skip tri
+                        }
+                        if (!infront) continue;
+                        float nwx = br[0]*tr.n[0] + bu[0]*tr.n[1] + bf[0]*tr.n[2];
+                        float nwy = br[1]*tr.n[0] + bu[1]*tr.n[1] + bf[1]*tr.n[2];
+                        float nwz = br[2]*tr.n[0] + bu[2]*tr.n[1] + bf[2]*tr.n[2];
+                        float d = nwx*Lx + nwy*Ly + nwz*Lz; if (d < 0) d = -d;   // two-sided lambert
+                        float sh = 0.35f + 0.65f*d; if (sh > 1.0f) sh = 1.0f;
+                        // Fill via Render2DTri -- the SAME proven 2D-immediate path as the beam's Render2DLine
+                        // (DrawTriangle queues into the poly-list batch that never flushes in this context).
+                        // Flat per-tri grey shade, depth-off overlay. Skip clipped/off-screen tris (the UInt16
+                        // cast in Render2DTri would wrap a negative/huge coord into a stray triangle).
+                        if (vv[0].clipFlag or vv[1].clipFlag or vv[2].clipFlag) continue;
+                        if (nDrawn == 0) { s0x = vv[0].x; s0y = vv[0].y; s0z = vv[0].csZ; }
+                        int sv = (int)(sh * 255.0f); if (sv < 40) sv = 40; if (sv > 255) sv = 255;
+                        // OPAQUE grey: alpha byte MUST be 0xFF -- under STATE_ALPHA_GOURAUD (alpha blend) an
+                        // alpha of 0 makes the fill fully transparent (why the mesh was invisible while the
+                        // now-fixed sun billboard, with its own opaque colour, showed). 0xAABBGGRR.
+                        renderer->SetColor(0xFF000000u | ((DWORD)sv << 16) | ((DWORD)sv << 8) | (DWORD)sv);
+                        renderer->Render2DTri(vv[0].x, vv[0].y, vv[1].x, vv[1].y, vv[2].x, vv[2].y);   // float args; self-clips off-screen
+                        ++nDrawn;
+                    }
+                    { static int s_md = 0; if ((s_md++ % 90) == 0) {
+                        char db[320]; sprintf(db, "VRMODEL grip=%.0f,%.0f,%.0f F=%.2f,%.2f,%.2f nT=%d drawn=%d M2B=%.0f ipdY=%.0f sampleXY=%.0f,%.0f csZ=%.1f\n",
+                            g_vrGripPoint.x, g_vrGripPoint.y, g_vrGripPoint.z, bf[0], bf[1], bf[2], nT, nDrawn, M2B, ipdY, s0x, s0y, s0z);
+                        OutputDebugStringA(db); FILE* d = fopen("vrmodel_diag.txt", "a"); if (d) { fputs(db, d); fclose(d); } } }
+                    renderer->SetColor(0x0000FF00);   // restore green for any later line draws
+                    drewModel = true;
+                }
+            }
+
+            (void)drewModel;
+            if (!drewActiveHand and not g_bVrControllerModel and g_vrGripValid)   // wireframe fallback only when the mesh MODEL is OFF
+            {
+                // Orthonormal basis from the CALIBRATED aim direction -> the model points exactly where the ray
+                // does, so no separate axis calibration is needed. up = body-up (-z) orthogonalised to forward;
+                // right = forward x up. Roll about the aim axis is not tracked (purely cosmetic). This replaces
+                // the flat square placeholder with a hand-oriented controller so you can see where you point.
+                Tpoint f = g_vrRayDir;
+                float fl2 = sqrtf(f.x * f.x + f.y * f.y + f.z * f.z);
+                if (fl2 > 1e-4f) { f.x /= fl2; f.y /= fl2; f.z /= fl2; }
+                Tpoint wu = { 0.0f, 0.0f, -1.0f };                          // body up = -z (z is down)
+                Tpoint r = { f.y * wu.z - f.z * wu.y, f.z * wu.x - f.x * wu.z, f.x * wu.y - f.y * wu.x };
+                float rl = sqrtf(r.x * r.x + r.y * r.y + r.z * r.z);
+                if (rl < 1e-3f) { r.x = 0.0f; r.y = 1.0f; r.z = 0.0f; rl = 1.0f; }   // aim near vertical
+                r.x /= rl; r.y /= rl; r.z /= rl;
+                Tpoint u = { r.y * f.z - r.z * f.y, r.z * f.x - r.x * f.z, r.x * f.y - r.y * f.x };
+                // Body box: barrel a bit ahead of the grip, handle extending back into the hand (button units).
+                const float FR = 40.0f, BK = -180.0f, HW = 26.0f, HH = 20.0f;
+                const float slong[2] = { FR, BK }, swide[2] = { HW, -HW }, shigh[2] = { HH, -HH };
+                ThreeDVertex cv[8]; bool cok[8]; int ci = 0;
+                for (int a = 0; a < 2; ++a) for (int b = 0; b < 2; ++b) for (int c = 0; c < 2; ++c)
+                {
+                    Tpoint p;
+                    p.x = g_vrGripPoint.x + f.x * slong[a] + r.x * swide[b] + u.x * shigh[c];
+                    p.y = g_vrGripPoint.y + f.y * slong[a] + r.y * swide[b] + u.y * shigh[c] + ipdY;
+                    p.z = g_vrGripPoint.z + f.z * slong[a] + r.z * swide[b] + u.z * shigh[c];
+                    renderer->TransformCameraCentricPoint(&p, &cv[ci]);
+                    cok[ci] = (cv[ci].csZ < -30.0f);
+                    ci++;
+                }
+                // corner index = a*4 + b*2 + c (a: front/back, b: +/-width, c: +/-height)
+                static const int edges[12][2] = {
+                    {0,1},{1,3},{3,2},{2,0},   // front face
+                    {4,5},{5,7},{7,6},{6,4},   // back face
+                    {0,4},{1,5},{2,6},{3,7}    // connectors
+                };
+                for (int e = 0; e < 12; ++e)
+                {
+                    int i0 = edges[e][0], i1 = edges[e][1];
+                    if (cok[i0] and cok[i1])
+                        renderer->Render2DLine(cv[i0].x, cv[i0].y, cv[i1].x, cv[i1].y);
+                }
+            }
+        }
+    }
+
     if ((vuxRealTime - gTimeLastMouseMove < SI_MOUSE_TIME_DELTA) and not InExitMenu()) //Wombat778 10-15-2003 added so mouse cursor would disappear after a few seconds standing still. Also dont want two cursors when exit menu is up
     {
         //Wombat778 10-15-2003 Added the following so that mouse cursor could be drawn in green if over a button, red otherwise
@@ -3655,7 +4341,7 @@ void OTWDriverClass::VCock_Exec(void)
         // once per view (4x in quad), and the focus passes (2/3) project buttons with the zoomed gaze
         // camera but compare to the periphery mouse gxPos -> garbage, and the LAST pass (view 3) would
         // overwrite view 0's correct green with a miss. Gate to view 0, like the magnetic anchor below.
-        if (g_b3DClickableCursorChange and xrView0)
+        if (g_b3DClickableCursorChange and xrView0 and not g_vrCtrlRayActive)   // Artscout - 2026: controller ray owns the pick when active
         {
             gSelectedCursor = 0;
 
@@ -3695,7 +4381,7 @@ void OTWDriverClass::VCock_Exec(void)
         // pass only -- view 0). Uses the SAME criterion as the click loop below (nearest within the per-
         // button hit radius, in DispWidth space), so the cursor snaps onto exactly the button that would
         // be clicked. otwloop projects g_vrCursorAnchor into each eye for a stereo-correct 3D cursor.
-        if (xrPick and g_pOpenXRBackend->CurrentEye() <= 0)
+        if (xrPick and g_pOpenXRBackend->CurrentEye() <= 0 and not g_vrCtrlRayActive)   // Artscout - 2026: skip when the controller ray drives the anchor
         {
             g_vrCursorAnchorValid = false;
             g_vrCursorAnchorButton = -1;
@@ -3813,18 +4499,37 @@ void OTWDriverClass::VCock_Exec(void)
             and Button3DList.buttons[g_vrCursorAnchorButton].mousebutton == Button3DList.clicked)
             closestbutton = g_vrCursorAnchorButton;
 
+        // Artscout - 2026: if the hit button belongs to a multi-position rotary group, don't fire it directly --
+        // advance the group's current position (LMB / thumb-up = next, RMB / thumb-down = prev, skipping any
+        // unresolved slots) and fire THAT position's setter. Keeps the tracked index in sync with the sim (every
+        // change goes through here), so the switch steps one detent per click from a single hotspot.
+        int firebutton = closestbutton;
         if (closestbutton not_eq 9999)
-            if (Button3DList.buttons[closestbutton].function)
+        {
+            int grp = Button3DList.buttons[closestbutton].groupId;
+            if (grp >= 0 and grp < s_numSwitchGroups)
+            {
+                int dir = (Button3DList.clicked == 2) ? -1 : 1;
+                int cnt = s_switchGroupDefs[grp].count;
+                int nxt = g_vrSwitchGroupCur[grp];
+                for (int step = 0; step < cnt; step++) { nxt = (nxt + dir + cnt) % cnt; if (s_switchGroupMember[grp][nxt] >= 0) break; }
+                g_vrSwitchGroupCur[grp] = nxt;
+                if (s_switchGroupMember[grp][nxt] >= 0) firebutton = s_switchGroupMember[grp][nxt];
+            }
+        }
+
+        if (firebutton not_eq 9999)
+            if (Button3DList.buttons[firebutton].function)
             {
                 //Wombat778 03-06-04 Send the buttonid of the function, which should stop a ctd in not-realistic avionics
-                if (Button3DList.buttons[closestbutton].buttonId < 0)
+                if (Button3DList.buttons[firebutton].buttonId < 0)
                     //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
-                    CallFunc(Button3DList.buttons[closestbutton].function, 1, KEY_DOWN, NULL);
+                    CallFunc(Button3DList.buttons[firebutton].function, 1, KEY_DOWN, NULL);
                 else
                     //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
-                    CallFunc(Button3DList.buttons[closestbutton].function, 1, KEY_DOWN, OTWDriver.pCockpitManager->GetButtonPointer(Button3DList.buttons[closestbutton].buttonId));
+                    CallFunc(Button3DList.buttons[firebutton].function, 1, KEY_DOWN, OTWDriver.pCockpitManager->GetButtonPointer(Button3DList.buttons[firebutton].buttonId));
 
-                F4SoundFXSetDist(Button3DList.buttons[closestbutton].sound, FALSE, 0.0f, 1.0f);
+                F4SoundFXSetDist(Button3DList.buttons[firebutton].sound, FALSE, 0.0f, 1.0f);
             }
 
         Button3DList.clicked = 0;
@@ -4076,6 +4781,53 @@ OTWDriverClass::VCock_Cleanup(void)
     VirtualDisplay::CleanupRttTarget();
 }
 
+// Resolve the group table against the freshly-loaded button list: tag members, collapse their loc to the group
+// centroid, and give the hotspot both a left (next) and right (prev) member so either mouse button / thumb dir
+// enters the cycler. Called once after Button3D_Init parses the file.
+static void BuildSwitchGroups(Button3DListType* L)
+{
+    for (int g = 0; g < s_numSwitchGroups; g++)
+    {
+        g_vrSwitchGroupCur[g] = 0;
+        const VrSwitchGroupDef& D = s_switchGroupDefs[g];
+        int   found = 0;
+        float cx = 0.0f, cy = 0.0f, cz = 0.0f;
+        for (int p = 0; p < D.count; p++)
+        {
+            s_switchGroupMember[g][p] = -1;
+            InputFunctionType f = FindFunctionFromString((char*)D.funcs[p]);
+            if (not f) continue;
+            for (int b = 0; b < L->numbuttons; b++)
+            {
+                if (L->buttons[b].function == f and L->buttons[b].groupId < 0)
+                {
+                    s_switchGroupMember[g][p] = b;
+                    L->buttons[b].groupId  = g;
+                    L->buttons[b].groupPos = p;
+                    cx += L->buttons[b].loc.x; cy += L->buttons[b].loc.y; cz += L->buttons[b].loc.z;
+                    found++;
+                    break;
+                }
+            }
+        }
+        if (found >= 2)
+        {
+            cx /= found; cy /= found; cz /= found;
+            for (int p = 0; p < D.count; p++)
+            {
+                int b = s_switchGroupMember[g][p];
+                if (b < 0) continue;
+                L->buttons[b].loc.x = cx; L->buttons[b].loc.y = cy; L->buttons[b].loc.z = cz;   // one shared hotspot
+                L->buttons[b].mousebutton = (p == 1) ? 2 : 1;   // >=1 left + >=1 right member so both dirs pick here
+            }
+        }
+        else
+        {
+            for (int p = 0; p < D.count; p++) { int b = s_switchGroupMember[g][p]; if (b >= 0) L->buttons[b].groupId = -1; }
+        }
+    }
+}
+
 //Wombat778 10-10-2003 Load 3d buttons
 
 bool
@@ -4180,6 +4932,8 @@ OTWDriverClass::Button3D_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR
                 tempfunc = FindFunctionFromString(tempfunction);
                 //Wombat778 03-06-04 Find and store the buttonid of the function, which should stop a ctd in not-realistic avionics.
                 Button3DList.buttons[Button3DList.numbuttons].function = tempfunc;
+                Button3DList.buttons[Button3DList.numbuttons].groupId  = -1;   // Artscout - 2026: assigned by BuildSwitchGroups
+                Button3DList.buttons[Button3DList.numbuttons].groupPos = 0;
 
                 if (tempfunc)
                     Button3DList.buttons[Button3DList.numbuttons].buttonId = UserFunctionTable.GetButtonId(tempfunc); //GetButtonId is a terribly slow function because it has to traverse a hash table.
@@ -4189,6 +4943,11 @@ OTWDriverClass::Button3D_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR
         }
 
         fclose(Button3DDataFile);
+
+        // Artscout - 2026: collapse multi-position rotaries to one cyclable hotspot (unless disabled via cfg).
+        extern bool g_bVrSwitchGroups;
+        if (g_bVrSwitchGroups) BuildSwitchGroups(&Button3DList);
+
         return true;
     }
 

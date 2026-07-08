@@ -205,6 +205,8 @@ typedef struct
     int sound;
     int mousebutton; //Wombat778 11-7-2003
     int buttonId; //Wombat778 03-06-04
+    int groupId;   // Artscout - 2026: multi-position rotary group (-1 = none); members collapse to one hotspot
+    int groupPos;  // Artscout - 2026: position index within the rotary group (rotary order)
 } Button3D;
 
 #define MAX_3D_BUTTONS 1000
@@ -972,6 +974,7 @@ private:
     void VCock_RunNormalMotion(float);
     void VCock_CheckStopStates(float);
     void VCock_DrawThePit(void);
+    void VCock_DrawControllerModel(void);   // Artscout - 2026 (VR): controller mesh into the pit poly-list
     void VCock_HeadCalc(void);
     void VCock_Exec(void);
     void VCock_Cleanup(void);

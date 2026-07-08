@@ -1149,6 +1149,39 @@ void TextureDB::Select(ContextMPR *localContext, TextureID texID)
     }
 }
 
+// Artscout - 2026: #78 return the day D3D11 SRV for a tile (activating it if needed). Mirrors Select but
+// returns the SRV instead of binding through a ContextMPR -- used by the GPU terrain path (TerrainGpu.cpp).
+void *TextureDB::GetTileSRV(TextureID texID)
+{
+    if ( not IsReady()) return 0;
+    int set  = ExtractSet(texID);
+    int tile = ExtractTile(texID);
+    int res  = ExtractRes(texID);
+    if ( not (set >= 0 and set < numSets and tile >= 0 and tile < TextureSets[set].numTiles)) return 0;
+
+    SetEntry  *pSet  = &TextureSets[set];
+    TileEntry *pTile = &pSet->tiles[tile];
+
+    // Try the res the texID asks for first, then ANY other res that is loaded. The game keeps only the
+    // H/M/L mip appropriate for a tile's current distance, so the exact res in the texID may not be resident
+    // for the wider area the GPU terrain draws -> without this the tile would fall back to flat color (and
+    // flicker as the resident res changes frame to frame). #78.
+    if (res < 0 or res >= TEX_LEVELS) res = 0;
+    if (pTile->handle[res] == NULL and pTile->bits[res])
+        Activate(pSet, pTile, res);
+    if (pTile->handle[res])
+        return (void *)((TextureHandle *)pTile->handle[res])->m_pDDS;
+
+    for (int r = 0; r < TEX_LEVELS; ++r)
+    {
+        if (pTile->handle[r] == NULL and pTile->bits[r])
+            Activate(pSet, pTile, r);
+        if (pTile->handle[r])
+            return (void *)((TextureHandle *)pTile->handle[r])->m_pDDS;
+    }
+    return 0;
+}
+
 void TextureDB::RestoreAll()
 {
     ShiAssert(IsReady());

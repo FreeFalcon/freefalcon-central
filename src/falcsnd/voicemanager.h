@@ -202,14 +202,10 @@ public:
     unsigned long GetFileLength(int tlkind);
     unsigned long GetCompressedLength(int tlkind);
     char *GetDataPtr(int tlkind);
-
-    // Artscout - 2026: one-time offline transcode of this (ST80) .tlk into a PCM .tlk with the
-    // same index layout but already-decoded PCM data. Needs ST80 -> x86 only. See voicemanager.cpp.
-    bool TranscodeToPcm(const char *outPath);
+    // Artscout - 2026: ST80 -> PCM transcode moved to the standalone x86 tool src/tools/st80conv.
+    // Runtime keeps only PCM playback (g_bVoicePcmMode passthrough in lhsp.cpp) + ST80 live fallback.
 };
 
-// Artscout - 2026: open falcon.tlk and write falcon_pcm.tlk next to it (one-time, x86 + ST80).
-void TranscodeVoiceBank(void);
 #define NEWVOICE
 
 class VoiceManager

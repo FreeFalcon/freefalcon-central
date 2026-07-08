@@ -95,6 +95,15 @@ public:
 	// Handles the TRIFAN case (no native D3D11 topology) via index emulation.
 	void DrawTL(int primType, const D3D11_TLVERTEX* verts, int count);
 
+	// Artscout - 2026 (VR controller model): draw a colour/textured screen-space TRIANGLELIST straight into the
+	// currently-bound RTV (the VR eye) as a depth-off overlay. Bypasses the ContextMPR poly-list / 2D-immediate
+	// paths, which never reached the eye for our custom mesh. verts = pre-projected screen px + ARGB colour + uv.
+	// tex != NULL -> textured (modulated by vertex colour = lighting); NULL -> pure vertex colour.
+	void DrawColorTrisScreen(const D3D11_TLVERTEX* verts, int count, struct ID3D11ShaderResourceView* tex = 0, int opaque = 0, int cull = 0);
+
+	// Artscout - 2026 (VR controller model v2): decode an image file (PNG/JPG) into an SRV via WIC. Caller owns it.
+	struct ID3D11ShaderResourceView* LoadTextureFile(const char* path);
+
 	// Indexed screen-path draw. The legacy context.cpp converts multi-fan/
 	// multi-linestrip batches to an index buffer (TRIANGLELIST/LINELIST).
 	// primType here is the *list* type (4=TRIANGLES, 2=LINES).
@@ -139,6 +148,12 @@ public:
 	// (bright glowing flame) and back to alpha-blend for the surrounding translucent surfaces.
 	void SetObjectAdditiveBlend(bool on);
 
+	// Artscout - 2026: #72 cockpit-fidelity pass. While on, the object shader applies a cockpit-ONLY
+	// look (subtle Blinn-Phong specular + reduced ambient flood so the sun gradient reads + mild
+	// contrast) via FF_COCKPIT (bit 13). STICKY: SetState re-ORs the bit on every per-surface flush,
+	// so it covers the whole vrCockpit->Draw. World geometry and the flat/desktop path are untouched.
+	void SetCockpitPass(bool on);
+
 	// Artscout - 2026: D3D7 TexColorDiffuse: text color from the vertex, the font texture is only a mask.
 	void SetTexColorDiffuse(bool on);
 
@@ -167,6 +182,18 @@ public:
 	// Non-indexed object draw (POINTLIST surfaces).
 	void DrawObjectStrip(int primType, struct ID3D11Buffer* vb, int stride,
 	                     int startVertex, int vertexCount);
+
+	// Artscout - 2026: #78 GPU terrain. BeginTerrainPass sets the world-space object program (VS_Object)
+	// with world=identity, OPAQUE blend, depth test+WRITE (real ground depth), and Phase-1 flags
+	// (FF_VERTEXCOLOR only -- flat color, no lighting/texture yet). Caller sets SetProj/SetView/SetCameraPos
+	// first. DrawTerrainMesh uploads a chunk of object-layout vertices (40-byte {pos,normal,color,spec,uv})
+	// into the shared dynamic VB and draws an indexed TRIANGLELIST. Reused per terrain chunk.
+	void BeginTerrainPass();
+	void DrawTerrainMesh(const void* verts, int vcount, const unsigned short* indices, int icount);
+	// Artscout - 2026: #78 bind the per-LOD terrain rasterizer (level 0 = finest, drawn first). Coarser
+	// levels carry a larger depth-bias away from the camera so the finer LOD wins the seam overlap.
+	void SetTerrainRasterForLod(int level);
+	void RebuildTerrainRasters();   // Artscout - 2026: #78 (re)create per-LOD terrain rasters with cfg depth bias
 
 	// --- Dynamic 2D-in-3D (DX2D: particles/tracers/blips) ---------------------
 	// Artscout - 2026: These primitives are billboards/polygons in WORLD space (D3DDYNVERTEX:
@@ -230,6 +257,12 @@ private:
 	int                      m_hudStencil = 0;       // HUD_STENCIL_OFF/MARK/TEST override for SetState
 	ID3D11RasterizerState*   m_pRaster;
 	ID3D11RasterizerState*   m_pRasterObj;	// Artscout - 2026: #16: depth-bias -> objects over terrain (equiv. D3D7 ZBIAS)
+	// Artscout - 2026: #78 per-LOD terrain rasterizers -- each coarser LOD is pushed farther by depth-bias
+	// so the FINER LOD wins the one-quad seam overlap (no z-fight/flicker). Index = draw order (0 = finest).
+	enum { TERRAIN_LOD_RASTERS = 12 };
+	ID3D11RasterizerState*   m_pRasterTerrain[TERRAIN_LOD_RASTERS];
+	ID3D11RasterizerState*   m_pRasterCullBack;   // Artscout - 2026: single-sided (back cull) for VR hand/controller mesh
+	ID3D11RasterizerState*   m_pRasterCullFront;  // Artscout - 2026: single-sided (front cull) -- flip if inside-out
 	ID3D11SamplerState*      m_pSamp[4];      // [filter][addr]
 
 	// Shadow copies of cbView (view+proj uploaded together) and cbRender.
@@ -245,6 +278,7 @@ private:
 	unsigned long m_chromaKey;
 	float         m_chromaTol;
 	bool          m_texColorDiffuse;	// Artscout - 2026: D3D7 TexColorDiffuse: text color from the vertex (sticky)
+	bool          m_cockpitPass;		// Artscout - 2026: #72 cockpit-fidelity pass active (sticky, FF_COCKPIT)
 	bool          m_hasTex0;			// Artscout - 2026: texture actually bound in slot 0 (else clear FF_TEXTURE0)
 	bool          m_renderCBDirty;
 	int           m_screenW = 0, m_screenH = 0;	// Artscout - 2026: current gScreenSize (DIAG/RTT)

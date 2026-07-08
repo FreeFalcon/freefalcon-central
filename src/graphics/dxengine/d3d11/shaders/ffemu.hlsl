@@ -62,6 +62,13 @@ cbuffer cbObject : register(b2)
 #define FF_AFTERBURNER  (1u << 12)  // #49: afterburner cone (COMP_AB/COMP_AB2). Recolor to a warm
                                     // white-hot-core -> orange gradient (reference real_af.png),
                                     // independent of the model's vertex colors. Implies FF_EMISSIVE.
+#define FF_COCKPIT      (1u << 13)  // Artscout - 2026: #72 cockpit-fidelity pass (set by SetCockpitPass).
+                                    // The flat per-vertex cockpit looked "cartoonish" (ambient floods
+                                    // every face equally -> no gradient, no crevice shade, no glints).
+                                    // For cockpit surfaces only: dampen the ambient FLOOR so the sun
+                                    // N.L gradient reads, add a subtle default specular (head-move
+                                    // glints on knobs/glass in VR), and a mild contrast in the PS.
+                                    // World geometry / flat path never set this bit -> untouched.
 
 cbuffer cbRender : register(b3)
 {
@@ -214,7 +221,17 @@ VSOut VS_Object(VSInObject i)
         // near white (specular/fog encoding), and as emissive it blew the panels
         // white. In D3D7 this is a subtle specular, not self-illumination.
         float3 N = normalize(mul(i.Normal, (float3x3)gWorld));
-        float3 lit = gAmbient.rgb;
+
+        // #72 cockpit: the flat "cartoonish" look came from ambient lighting EVERY face to near-full
+        // brightness (no crevice shade, no gradient). Dampen the ambient FLOOR and boost the sun term
+        // for cockpit surfaces so the N.L gradient reads -- shadowed faces go darker, lit faces stay
+        // bright -> depth. World geometry keeps 1.0/1.0 (unchanged). Tune freely (runtime shader).
+        // #72 user feedback: cutting ambient made the (already dark) F-16 pit too dark -- uniform
+        // darkening muddies it (true crevice depth needs SSAO). So DON'T cut ambient (1.0); build depth
+        // ONLY by brightening the sun-lit faces (a gradient by adding light, never removing it).
+        float  ambScale = 1.0f;
+        float  sunScale = (gFlags & FF_COCKPIT) ? 1.25f : 1.0f;
+        float3 lit = gAmbient.rgb * ambScale;
         [loop] for (uint l = 0; l < gNumLights; ++l)
         {
             GpuLight L = gLights[l];
@@ -231,22 +248,35 @@ VSOut VS_Object(VSInObject i)
                 // nearby, not the whole world. Otherwise every flash would light the entire scene.
                 atten = saturate(1.0f - dist / max(L.Params.x, 1.0f));
             }
-            lit += L.Color.rgb * max(dot(N, Ldir), 0.0f) * atten;
+            // #72 boost only the directional (sun) term for the cockpit -- point lights (muzzle
+            // flashes/explosions) keep their own intensity so a flash doesn't over-blow the pit.
+            float lScale = (L.Params.y < 0.5f) ? sunScale : 1.0f;
+            lit += L.Color.rgb * max(dot(N, Ldir), 0.0f) * atten * lScale;
         }
         col.rgb *= saturate(lit);
 
         // Specular (Blinn-Phong, per-vertex) from the MAIN source (light 0 = sun/NVG).
         // gSpecular.rgb = highlight color (from the surface material), gSpecular.w = power.
         // Added in the PS ON TOP of the texture (like D3D7 SPECULAR), hence in o.Spec, not col.
-        if (gSpecular.w > 0.0f && gNumLights > 0)
+        // #72 cockpit: most pit surfaces carry NO material specular (SpecularIndex=0) -> matte/dead.
+        // Give them a subtle default highlight so knobs/glass glint as the head moves (VR). Per-vertex
+        // (soft/blocky on flat panels) but adds life; the model's own specular still wins when present.
+        float  specPow = gSpecular.w;
+        float3 specCol = gSpecular.rgb;
+        if ((gFlags & FF_COCKPIT) && specPow <= 0.0f)
+        {
+            specPow = 20.0f;                       // #72 default cockpit gloss (tune freely)
+            specCol = float3(0.10f, 0.10f, 0.10f); // #72 dim grey highlight (tune freely)
+        }
+        if (specPow > 0.0f && gNumLights > 0)
         {
             float3 V  = normalize(gCameraPos.xyz - worldPos.xyz);
             GpuLight L0 = gLights[0];
             float3 Ls = (L0.Params.y < 0.5f) ? -normalize(L0.Direction.xyz)
                                              : normalize(L0.Position.xyz - worldPos.xyz);
             float3 H  = normalize(Ls + V);
-            float  s  = pow(max(dot(N, H), 0.0f), gSpecular.w);
-            o.Spec = gSpecular.rgb * L0.Color.rgb * s;
+            float  s  = pow(max(dot(N, H), 0.0f), specPow);
+            o.Spec = specCol * L0.Color.rgb * s;
         }
     }
 
@@ -372,6 +402,16 @@ float4 PS_Main(VSOut i) : SV_Target
 
     if (gFlags & FF_FOG)
         c.rgb = lerp(gFogColor.rgb, c.rgb, i.FogF);
+
+    // #72 cockpit: NON-darkening pop. A mid-pivot contrast darkened the (already dark) pit -> user found
+    // it too dark. Instead do a gentle overall BRIGHTEN with a soft highlight clip (saturate) for a touch
+    // of top-end pop. Depth comes from the sun gradient + specular glints, not from crushing shadows
+    // (real crevice depth = SSAO, a separate step). kCockpitBright: 1.0 neutral, >1 brighter. Tune freely.
+    if (gFlags & FF_COCKPIT)
+    {
+        const float kCockpitBright = 1.08f;
+        c.rgb = saturate(c.rgb * kCockpitBright);
+    }
 
     return c;
 }

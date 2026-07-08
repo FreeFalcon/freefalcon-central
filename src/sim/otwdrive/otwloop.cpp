@@ -2853,6 +2853,9 @@ void OTWDriverClass::RenderFrame()
             {
                 extern int gSelectedCursor, gxPos, gyPos;
                 extern Tpoint g_vrCursorAnchor; extern bool g_vrCursorAnchorValid;
+                // Artscout - 2026 (VR controllers): when the laser ray owns the frame, vcock draws its own
+                // per-eye 3D cross at the aim point -- suppress this mono mouse cursor so they don't double.
+                extern bool g_vrRayActive;
                 const int ew = g_pD3D11Backend->XrEyeW(), eh = g_pD3D11Backend->XrEyeH();
                 const bool exitMenu = InExitMenu();
                 const bool showCur = exitMenu or
@@ -2926,7 +2929,7 @@ void OTWDriverClass::RenderFrame()
                     // ---- MOUSE CURSOR ----
                     if (showCur)
                     {
-                        const bool cursor3D = (not exitMenu) and g_vrCursorAnchorValid;
+                        const bool cursor3D = (not exitMenu) and g_vrCursorAnchorValid and not g_vrRayActive;
                         // VR cursor -- LEFT EYE ONLY (view 0 periphery + view 2 focus); monocular, so no
                         // cross-eye disparity. ALWAYS the free cursor (follows the mouse); the green/red
                         // color (gSelectedCursor) signals the magnetic snap, and the CLICK fires the snapped

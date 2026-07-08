@@ -303,7 +303,11 @@ void Render2D::Render2DTri(float x1, float y1, float x2, float y2, float x3, flo
     // context.RestoreState( STATE_ALPHA_SOLID );
     if (ForceAlpha) context.RestoreState(STATE_CHROMA_TEXTURE_GOURAUD2); // COBRA - RED - Alpha Option
 
-    context.DrawPrimitive(MPR_PRM_TRIANGLES, 0, 3, verts, sizeof(verts[0]));
+    // Artscout - 2026: was MPR_PRM_TRIANGLES -- but the D3D11 2D-immediate index generator (context.cpp
+    // DrawPrimitive) only emits indices for TRIANGLEFAN / LINESTRIP, NOT TRIANGLELIST, so a TRIANGLES call
+    // produced ZERO indices and drew nothing (the filled tri was invisible while Render2DLine worked). A
+    // 3-vertex TRIFAN is the identical triangle and DOES get indices -> it actually renders.
+    context.DrawPrimitive(MPR_PRM_TRIFAN, 0, 3, verts, sizeof(verts[0]));
 }
 
 

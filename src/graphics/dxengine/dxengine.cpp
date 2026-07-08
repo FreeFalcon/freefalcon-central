@@ -1754,7 +1754,6 @@ void CDXEngine::DrawSolidSurfaces(void)
 
     // #34 D3D11: cull/zwrite come from BeginObjectPass (dead D3D7 state setup removed).
 
-
     while (PopSurface(&m_SolidStack, &State))
     {
         if (State not_eq AppliedState) DX_SET_WORLD(State);

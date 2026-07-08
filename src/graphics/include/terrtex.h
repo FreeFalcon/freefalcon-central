@@ -112,6 +112,11 @@ public:
     void Release(TextureID texID);
     void Select(ContextMPR *localContext, TextureID texID);
 
+    // Artscout - 2026: #78 return the DAY D3D11 SRV for a tile texID (activating it if needed) so the GPU
+    // terrain path can bind ground tiles itself -- it draws its own meshes, not via Select/ContextMPR.
+    // Returns NULL if not loadable (caller falls back to flat color).
+    void *GetTileSRV(TextureID texID);
+
     // Misc functions
     void RestoreAll();
     bool SyncDDSTextures(bool bForce = false);

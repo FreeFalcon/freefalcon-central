@@ -56,6 +56,9 @@ public:
     void Request(TextureID texID);
     void Release(TextureID texID);
     void Select(ContextMPR *localContext, TextureID texID);
+    // Artscout - 2026: #78 return the D3D11 SRV for a far tile texID (activating if needed) for the GPU
+    // terrain path. NULL if not loadable (caller falls back to flat color).
+    void *GetTileSRV(TextureID texID);
     void RestoreAll();
     void FlushHandles();
     bool SyncDDSTextures(bool bForce = false);

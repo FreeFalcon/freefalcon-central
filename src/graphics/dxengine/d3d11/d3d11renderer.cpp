@@ -8,8 +8,10 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <string>
+#include <wincodec.h>   // Artscout - 2026 (VR controller model v2): WIC PNG->texture decode
 
 #pragma comment(lib, "d3dcompiler.lib")
+#pragma comment(lib, "windowscodecs.lib")
 
 extern "C" void MonoPrint(char *fmt, ...);
 
@@ -64,6 +66,7 @@ D3D11Renderer::D3D11Renderer()
 	m_specular[0] = m_specular[1] = m_specular[2] = m_specular[3] = 0.0f;	// no specular
 	m_camPos[0] = m_camPos[1] = m_camPos[2] = m_camPos[3] = 0.0f;
 	m_texColorDiffuse = false;
+	m_cockpitPass = false;	// Artscout - 2026: #72
 	m_hasTex0 = false;
 	m_renderCBDirty = true;
 }
@@ -238,21 +241,37 @@ bool D3D11Renderer::CreateStateObjects()
 	// meaningless). Dedicated bit 0x40 + masks so the cockpit-mask stencil bits are untouched.
 	{
 		D3D11_DEPTH_STENCIL_DESC hd; ZeroMemory(&hd, sizeof(hd));
+		// Artscout - 2026: #76 the collimated HUD must be occluded ONLY by cockpit structure (the ICP when
+		// the head looks down), NOT by the outside world -- a real HUD overlays the world. Depth can't do
+		// that (the HUD is at infinity; everything real is nearer), and #78 GPU terrain writes real world
+		// depth so a depth test would wrongly hide the HUD behind terrain. Solution = a PIT-STENCIL bit:
+		// the cockpit BSP already stencil-masks its area (SetStencil), so we reserve bit 0x40 = "cockpit"
+		// (set by the pit, NOT by the world/terrain). The glass plate marks the aperture in bit 0x80, and
+		// the HUD symbology draws where (stencil & 0xC0) == 0x80 -> aperture set AND cockpit NOT in front.
+		// Depth stays OFF (the RTT/screen path has no per-vertex depth).
 		hd.DepthEnable    = FALSE;
 		hd.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 		hd.DepthFunc      = D3D11_COMPARISON_ALWAYS;
 		hd.StencilEnable  = TRUE;
+		// MARK: the glass plate (tint + aperture) draws + writes the aperture bit 0x80 ONLY where the
+		// cockpit bit 0x40 is NOT set. ref=0x80 -> (ref & ReadMask 0x40) = 0, so EQUAL passes where
+		// (stencil & 0x40) == 0 (outside the pit); PassOp=REPLACE then writes 0x80 (WriteMask 0x80). Where
+		// the cockpit is in front (0x40 set) the stencil FAILS -> the tint pixel is discarded AND 0x80 is
+		// not marked, so the symbology won't draw there either. This keeps BOTH the tint and the symbology
+		// off the ICP without a depth test.
 		hd.StencilReadMask  = 0x40;
-		hd.StencilWriteMask = 0x40;
-		hd.FrontFace.StencilFunc        = D3D11_COMPARISON_ALWAYS;   // MARK: always pass, replace bit
+		hd.StencilWriteMask = 0x80;
+		hd.FrontFace.StencilFunc        = D3D11_COMPARISON_EQUAL;
 		hd.FrontFace.StencilPassOp      = D3D11_STENCIL_OP_REPLACE;
 		hd.FrontFace.StencilFailOp      = D3D11_STENCIL_OP_KEEP;
 		hd.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
 		hd.BackFace = hd.FrontFace;
 		m_pDev->CreateDepthStencilState(&hd, &m_pDSHudMark);
 
-		hd.StencilWriteMask = 0x00;                                 // TEST: don't modify stencil
-		hd.FrontFace.StencilFunc   = D3D11_COMPARISON_EQUAL;        // draw where (ref & 0x40) == (stencil & 0x40)
+		// TEST: draw where (stencil & 0xC0) == 0x80 -- aperture (0x80) set AND cockpit (0x40) NOT set.
+		hd.StencilReadMask  = 0xC0;
+		hd.StencilWriteMask = 0x00;
+		hd.FrontFace.StencilFunc   = D3D11_COMPARISON_EQUAL;
 		hd.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 		hd.BackFace = hd.FrontFace;
 		m_pDev->CreateDepthStencilState(&hd, &m_pDSHudTest);
@@ -282,6 +301,20 @@ bool D3D11Renderer::CreateStateObjects()
 		rd.SlopeScaledDepthBias = -2.0f;
 		rd.DepthBiasClamp       = 0.0f;
 		m_pDev->CreateRasterizerState(&rd, &m_pRasterObj);
+
+		// #78 per-LOD terrain rasterizers: level 0 = finest (no bias, drawn first); each coarser level is
+		// pushed AWAY from the camera (larger POSITIVE bias) so in the one-quad overlap between adjacent
+		// LODs the finer LOD wins -> no z-fight/flicker at the seam. Objects still win over all terrain
+		// (their bias is toward the camera). Slope-scaled term targets the near-horizontal terrain.
+		for (int lv = 0; lv < TERRAIN_LOD_RASTERS; ++lv) m_pRasterTerrain[lv] = NULL;
+		RebuildTerrainRasters();   // #78: base depth bias from cfg (GpuTerrainSlopeBias/DepthBias) + per-LOD seam bias
+
+		// Artscout - 2026: single-sided rasterizers for the VR hand/controller overlay. Unlike the legacy
+		// inconsistently-wound geometry, the loaded OBJ is consistently wound, so we can cull one side and draw
+		// the mesh OPAQUE without back faces painting over front. Both windings created; cfg VrModelCull picks.
+		rd.DepthBias = 0; rd.SlopeScaledDepthBias = 0.0f; rd.DepthBiasClamp = 0.0f;
+		rd.CullMode = D3D11_CULL_BACK;  m_pRasterCullBack = NULL;  m_pDev->CreateRasterizerState(&rd, &m_pRasterCullBack);
+		rd.CullMode = D3D11_CULL_FRONT; m_pRasterCullFront = NULL; m_pDev->CreateRasterizerState(&rd, &m_pRasterCullFront);
 	}
 
 	// ---- samplers [filter][addr] ----
@@ -493,6 +526,11 @@ void D3D11Renderer::SetState(int legacyState)
 	// symbology vanishes. D3D7: an unbound stage = white. Here = vertex color.
 	if (!m_hasTex0) nf &= ~1u;
 
+	// Artscout - 2026: #72 cockpit-fidelity pass -- STICKY. SetState rebuilds nf from the state map
+	// every per-surface flush, so re-OR FF_COCKPIT here to keep it set for the whole vrCockpit->Draw.
+	// Cleared only by SetCockpitPass(false) after the pit is drawn -> world/flat draws never see it.
+	if (m_cockpitPass) nf |= (1u << 13);
+
 	if (nf != m_flags) { m_flags = nf; m_renderCBDirty = true; }
 
 	const float blendFactor[4] = { 0, 0, 0, 0 };
@@ -500,9 +538,9 @@ void D3D11Renderer::SetState(int legacyState)
 	// Artscout - 2026 (VR HUD glass): keep the HUD stencil DSS through RestoreState while the clip is armed
 	// (else this would clobber it with the plain depth state). 0x40 = the aperture bit (see SetHudStencil).
 	if (m_hudStencil == HUD_STENCIL_MARK)
-		m_pCtx->OMSetDepthStencilState(m_pDSHudMark, 0x40);
+		m_pCtx->OMSetDepthStencilState(m_pDSHudMark, 0x80);   // #76 aperture bit 0x80
 	else if (m_hudStencil == HUD_STENCIL_TEST)
-		m_pCtx->OMSetDepthStencilState(m_pDSHudTest, 0x40);
+		m_pCtx->OMSetDepthStencilState(m_pDSHudTest, 0x80);   // #76 draw where (stencil & 0xC0) == 0x80
 	else
 		m_pCtx->OMSetDepthStencilState(m_pDepth[((d.depthWrite ? 1 : 0) << 1) | (d.depthTest ? 1 : 0)], 0);
 
@@ -562,6 +600,11 @@ void D3D11Renderer::BeginObjectPass()
 	// each object) once objects (#16) are live, against the reference. The distance axis in
 	// VS_Object is already fixed to clip.w (correct groundwork).
 	m_flags = (1u << 2) | (1u << 3) | (1u << 5);
+	// Artscout - 2026: #72 the object path (cockpit surfaces) draws via DrawSurface, which does NOT call
+	// SetState -- so the sticky FF_COCKPIT re-OR in SetState never fires here, and this line would wipe
+	// bit 13. Re-apply it in the object pass so the cockpit-fidelity shader path actually runs while
+	// SetCockpitPass(true) is active (VCock_DrawThePit). World objects: m_cockpitPass is false -> untouched.
+	if (m_cockpitPass) m_flags |= (1u << 13);
 	// PHASE 5: alpha-test threshold is LOW - discard only chroma (baked alpha=0), don't cut
 	// cockpit textures with partial alpha (specular-in-alpha etc. -> used to be "black").
 	m_alphaRef = 0.06f;
@@ -574,11 +617,12 @@ void D3D11Renderer::SetStencil(int mode, unsigned ref)
 	// mode: STENCIL_OFF=0, STENCIL_WRITE=2, STENCIL_CHECK=3 (see CDXEngine)
 	switch (mode)
 	{
-	case 2:	// WRITE - the pit writes ref
-		m_pCtx->OMSetDepthStencilState(m_pDSStencilWrite, ref & 0xFF);
+	case 2:	// WRITE - the pit writes ref. #76: reserve bit 0x40 = "cockpit" (the world/terrain never sets
+		// it) so the HUD can be occluded by cockpit only; the 6-bit incrementing ref lives in 0x3F.
+		m_pCtx->OMSetDepthStencilState(m_pDSStencilWrite, ((ref & 0x3F) | 0x40));
 		break;
-	case 3:	// CHECK - the world draws OUTSIDE the pit (ref > stencil)
-		m_pCtx->OMSetDepthStencilState(m_pDSStencilCheck, ref & 0xFF);
+	case 3:	// CHECK - the world draws OUTSIDE the pit (ref > stencil); same masked ref as WRITE.
+		m_pCtx->OMSetDepthStencilState(m_pDSStencilCheck, ((ref & 0x3F) | 0x40));
 		break;
 	default:	// OFF - normal depth test+write without stencil
 		m_pCtx->OMSetDepthStencilState(m_pDepth[(1 << 1) | 1], 0);
@@ -594,10 +638,12 @@ void D3D11Renderer::SetHudStencil(int mode)
 {
 	m_hudStencil = mode;
 	if (!m_pCtx) return;
+	// #76: MARK writes the aperture bit 0x80; TEST draws where (stencil & 0xC0) == 0x80 (aperture set,
+	// cockpit bit 0x40 NOT set) -> ref 0x80 for both.
 	if (mode == HUD_STENCIL_MARK)
-		m_pCtx->OMSetDepthStencilState(m_pDSHudMark, 0x40);
+		m_pCtx->OMSetDepthStencilState(m_pDSHudMark, 0x80);
 	else if (mode == HUD_STENCIL_TEST)
-		m_pCtx->OMSetDepthStencilState(m_pDSHudTest, 0x40);
+		m_pCtx->OMSetDepthStencilState(m_pDSHudTest, 0x80);
 	else
 		m_pCtx->OMSetDepthStencilState(m_pDepth[0], 0);   // OFF: no depth test/write (RTT composite default)
 }
@@ -621,6 +667,19 @@ void D3D11Renderer::SetAfterburner(bool on)
 	unsigned nf = on ? (m_flags | (1u << 12)) : (m_flags & ~(1u << 12));
 	if (nf != m_flags) { m_flags = nf; m_renderCBDirty = true; }
 }
+
+// Artscout - 2026: #72 FF_COCKPIT (bit 13) -- cockpit-fidelity pass. Sticky flag (SetState re-ORs it),
+// so it stays for the whole vrCockpit->Draw. Also apply to m_flags now so a surface that flushes
+// before the next SetState still carries the bit. Cleared with on=false after the pit is drawn.
+void D3D11Renderer::SetCockpitPass(bool on)
+{
+	m_cockpitPass = on;
+	unsigned nf = on ? (m_flags | (1u << 13)) : (m_flags & ~(1u << 13));
+	if (nf != m_flags) { m_flags = nf; m_renderCBDirty = true; }
+}
+
+// Free helper so vcock.cpp can toggle the cockpit pass without pulling in the whole D3D11 header.
+void FF_SetCockpitPass(bool on) { if (g_pD3D11Renderer) g_pD3D11Renderer->SetCockpitPass(on); }
 
 // D3D7 TexColorDiffuse (HUD/DED text): color from the vertex, the font texture is just a mask.
 // Sets a sticky flag; actually applied in SetState on the next FlushVB (glyph batch), then
@@ -783,6 +842,80 @@ void D3D11Renderer::DrawBitmap2D(int dX, int dY, int w, int h, int totalWidth, i
 	DrawTL(5, v, 4);	// TRISTRIP
 
 	srv->Release(); tex->Release();
+}
+
+// Artscout - 2026 (VR controller model v2): load an image file (PNG/JPG/…) into a shader resource view via WIC
+// (no external decoder needed; Windows-native). Caller owns the returned SRV (Release it). NULL on any failure.
+ID3D11ShaderResourceView* D3D11Renderer::LoadTextureFile(const char* path)
+{
+	if (!m_pDev || !path || !path[0]) return NULL;
+	wchar_t wpath[512];
+	if (MultiByteToWideChar(CP_ACP, 0, path, -1, wpath, 512) == 0) return NULL;
+
+	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);   // harmless if COM already up (RPC_E_CHANGED_MODE ignored)
+
+	IWICImagingFactory* fac = NULL;
+	// __uuidof (compiler-attached GUID) avoids needing IID_IWICImagingFactory from uuid.lib (LNK2001).
+	if (FAILED(CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER,
+	                            __uuidof(IWICImagingFactory), (void**)&fac)) || !fac)
+		return NULL;
+
+	ID3D11ShaderResourceView* srv = NULL;
+	IWICBitmapDecoder*      dec = NULL;
+	IWICBitmapFrameDecode*  frame = NULL;
+	IWICFormatConverter*    conv = NULL;
+	do {
+		if (FAILED(fac->CreateDecoderFromFilename(wpath, NULL, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &dec)) || !dec) break;
+		if (FAILED(dec->GetFrame(0, &frame)) || !frame) break;
+		if (FAILED(fac->CreateFormatConverter(&conv)) || !conv) break;
+		if (FAILED(conv->Initialize(frame, GUID_WICPixelFormat32bppRGBA, WICBitmapDitherTypeNone, NULL, 0.0, WICBitmapPaletteTypeCustom))) break;
+		UINT w = 0, h = 0; conv->GetSize(&w, &h);
+		if (!w || !h) break;
+		unsigned char* buf = new (std::nothrow) unsigned char[(size_t)w * h * 4];
+		if (!buf) break;
+		if (SUCCEEDED(conv->CopyPixels(NULL, w * 4, w * h * 4, buf)))
+		{
+			D3D11_TEXTURE2D_DESC td; ZeroMemory(&td, sizeof(td));
+			td.Width = w; td.Height = h; td.MipLevels = 1; td.ArraySize = 1;
+			td.Format = DXGI_FORMAT_R8G8B8A8_UNORM; td.SampleDesc.Count = 1;
+			td.Usage = D3D11_USAGE_IMMUTABLE; td.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+			D3D11_SUBRESOURCE_DATA srd; ZeroMemory(&srd, sizeof(srd));
+			srd.pSysMem = buf; srd.SysMemPitch = w * 4;
+			ID3D11Texture2D* tex = NULL;
+			if (SUCCEEDED(m_pDev->CreateTexture2D(&td, &srd, &tex)) && tex)
+			{
+				m_pDev->CreateShaderResourceView(tex, NULL, &srv);
+				tex->Release();
+			}
+		}
+		delete[] buf;
+	} while (0);
+	if (conv)  conv->Release();
+	if (frame) frame->Release();
+	if (dec)   dec->Release();
+	fac->Release();
+	MonoPrint("VR model tex: %s -> %s\n", path, srv ? "ok" : "FAILED");
+	return srv;
+}
+
+// Artscout - 2026 (VR controller model): colour/textured screen-space TRIANGLELIST straight into the current
+// RTV. If tex != NULL the mesh is textured (tu0/tv0 from the verts) modulated by the vertex colour (lighting);
+// else pure vertex colour. Depth-off overlay.
+void D3D11Renderer::DrawColorTrisScreen(const D3D11_TLVERTEX* verts, int count, ID3D11ShaderResourceView* tex, int opaque, int cull)
+{
+	if (!m_pCtx || !verts || count < 3) return;
+	BeginScreenPass();                                               // sets m_pRaster (CULL_NONE) by default
+	// Artscout - 2026: opaque + single-sided for the VR hand/controller mesh (solid, no see-through, no double
+	// faces). cull 1=back / 2=front (flip if inside-out); 0 keeps the legacy no-cull. depth still off (overlay).
+	if      (cull == 1 && m_pRasterCullBack)  m_pCtx->RSSetState(m_pRasterCullBack);
+	else if (cull == 2 && m_pRasterCullFront) m_pCtx->RSSetState(m_pRasterCullFront);
+	const float bf[4] = { 0, 0, 0, 0 };
+	m_pCtx->OMSetBlendState(m_pBlend[opaque ? BLEND_OPAQUE : BLEND_ALPHA], bf, 0xFFFFFFFF);   // solid vs vertex alpha
+	m_pCtx->OMSetDepthStencilState(m_pDepth[0], 0);                  // no depth write/test (overlay)
+	m_flags = tex ? 1u : 0u;                                          // FF_TEXTURE0 when textured, else vertex colour
+	m_renderCBDirty = true;
+	SetTexture(0, tex);                                              // sets/clears FF_TEXTURE0 for us
+	DrawTL(4, verts, count);                                          // 4 = TRIANGLELIST
 }
 
 // MPR_PKT_* (context.h): 1=POINTS 2=LINES 3=POLYLINE 4=TRIANGLES 5=TRISTRIP 6=TRIFAN
@@ -980,6 +1113,94 @@ namespace {
 	#pragma pack(pop)
 }
 
+// Artscout - 2026: #78 GPU terrain. Reuses the object pass (VS_Object, real gView/gProj, OPAQUE + depth
+// test+WRITE, samplers) but forces world=identity (posts are already world-space) and Phase-1 flags:
+// FF_VERTEXCOLOR only -> flat per-vertex color, no lighting/texture/alpha-test yet. Caller sets the object
+// camera (SetProj/SetView/SetCameraPos) first.
+// Artscout - 2026: #78 (re)create the per-LOD terrain rasterizers. Each level = a base depth bias (from cfg,
+// pushes terrain BACK so the coplanar airbase/runway platform wins the depth test at grazing angles) PLUS the
+// per-LOD seam bias (coarser LOD pushed further so the finer LOD wins the one-quad overlap). Slope-scaled term
+// only acts at grazing -> ~0 head-on / open terrain. Called at init and live when the cfg values change.
+void D3D11Renderer::RebuildTerrainRasters()
+{
+	if (!m_pDev) return;
+	extern float g_fGpuTerrainSlopeBias, g_fGpuTerrainDepthBias;
+	D3D11_RASTERIZER_DESC rd; ZeroMemory(&rd, sizeof(rd));
+	rd.FillMode          = D3D11_FILL_SOLID;
+	rd.CullMode          = D3D11_CULL_NONE;
+	rd.DepthClipEnable   = TRUE;
+	rd.MultisampleEnable = TRUE;
+	for (int lv = 0; lv < TERRAIN_LOD_RASTERS; ++lv)
+	{
+		rd.DepthBias            = (int)g_fGpuTerrainDepthBias + lv * 48;
+		rd.SlopeScaledDepthBias = g_fGpuTerrainSlopeBias + (float)lv * 2.0f;
+		rd.DepthBiasClamp       = 0.0f;
+		if (m_pRasterTerrain[lv]) { m_pRasterTerrain[lv]->Release(); m_pRasterTerrain[lv] = NULL; }
+		m_pDev->CreateRasterizerState(&rd, &m_pRasterTerrain[lv]);
+	}
+}
+
+void D3D11Renderer::BeginTerrainPass()
+{
+	if (!m_pCtx) return;
+	// Live-tune: rebuild the terrain rasterizers when the cfg depth-bias knobs change (no restart needed).
+	{
+		extern float g_fGpuTerrainSlopeBias, g_fGpuTerrainDepthBias;
+		static float s_lastSlope = -1.0e9f, s_lastConst = -1.0e9f;
+		if (g_fGpuTerrainSlopeBias != s_lastSlope || g_fGpuTerrainDepthBias != s_lastConst)
+		{
+			s_lastSlope = g_fGpuTerrainSlopeBias; s_lastConst = g_fGpuTerrainDepthBias;
+			RebuildTerrainRasters();
+		}
+	}
+	BeginObjectPass();                              // VS_Object + cbuffers + OPAQUE + depth write + samplers
+	// #78 terrain uses the NO-bias rasterizer. The object pass biases objects TOWARD the camera to sit "on
+	// top of terrain" (#16); if the terrain shared that bias, objects resting on the ground would be
+	// coplanar and z-fight/flicker. No-bias terrain lets the biased objects win cleanly.
+	m_pCtx->RSSetState(m_pRaster);
+	static const float I[16] = { 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
+	SetWorld(I);                                    // terrain posts carry absolute world coordinates
+	SetTexture(0, NULL);                            // Phase 1: untextured -> clears FF_TEXTURE0
+	m_flags = (1u << 2);                            // FF_VERTEXCOLOR only (flat color; no FF_LIGHTING/ALPHATEST/COCKPIT)
+	m_renderCBDirty = true;
+}
+
+// Upload a chunk of object-layout vertices (40 bytes: pos, normal, color, spec, uv) into the shared dynamic
+// VB and draw an indexed TRIANGLELIST. One call per terrain chunk (kept under 65535 indices for u16).
+void D3D11Renderer::DrawTerrainMesh(const void* verts, int vcount, const unsigned short* indices, int icount)
+{
+	if (!m_pCtx || !verts || vcount <= 0 || !indices || icount <= 0) return;
+	g_bD3D11GPUDraw = true;
+	const int stride = (int)sizeof(ObjV);           // == 40, matches D3D11VertexEx / the object input layout
+	if (!EnsureVB(vcount * stride)) return;
+	D3D11_MAPPED_SUBRESOURCE ms;
+	if (FAILED(m_pCtx->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &ms))) return;
+	memcpy(ms.pData, verts, (size_t)vcount * stride);
+	m_pCtx->Unmap(m_pVB, 0);
+	UINT off = 0, str = (UINT)stride;
+	m_pCtx->IASetVertexBuffers(0, 1, &m_pVB, &str, &off);
+	UpdateRenderCB();
+	if (!EnsureIB(icount)) return;
+	D3D11_MAPPED_SUBRESOURCE im;
+	if (FAILED(m_pCtx->Map(m_pIB, 0, D3D11_MAP_WRITE_DISCARD, 0, &im))) return;
+	memcpy(im.pData, indices, (size_t)icount * sizeof(unsigned short));
+	m_pCtx->Unmap(m_pIB, 0);
+	m_pCtx->IASetIndexBuffer(m_pIB, DXGI_FORMAT_R16_UINT, 0);
+	m_pCtx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_pCtx->DrawIndexed(icount, 0, 0);
+}
+
+// Artscout - 2026: #78 select the per-LOD terrain rasterizer (level 0 = finest). Called once per LOD in the
+// terrain draw so the finer LOD wins the seam overlap by its smaller depth-bias.
+void D3D11Renderer::SetTerrainRasterForLod(int level)
+{
+	if (!m_pCtx) return;
+	if (level < 0) level = 0;
+	if (level >= TERRAIN_LOD_RASTERS) level = TERRAIN_LOD_RASTERS - 1;
+	ID3D11RasterizerState* rs = m_pRasterTerrain[level] ? m_pRasterTerrain[level] : m_pRaster;
+	m_pCtx->RSSetState(rs);
+}
+
 void D3D11Renderer::BeginDynamic2D(bool additive)
 {
 	if (!m_pCtx) return;
@@ -1073,6 +1294,7 @@ void D3D11Renderer::Release()
 	for (int i = 0; i < 4; ++i) SafeRel(m_pDepth[i]);
 	SafeRel(m_pDSStencilWrite); SafeRel(m_pDSStencilCheck);
 	SafeRel(m_pRaster); SafeRel(m_pRasterObj);
+	for (int i = 0; i < TERRAIN_LOD_RASTERS; ++i) SafeRel(m_pRasterTerrain[i]);   // #78
 	for (int i = 0; i < 4; ++i) SafeRel(m_pSamp[i]);
 	ZeroMemory(this, sizeof(*this));
 }

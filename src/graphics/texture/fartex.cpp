@@ -717,6 +717,22 @@ void FarTexDB::Select(ContextMPR *localContext, TextureID texID)
     localContext->SelectTexture1(texArray[texID].handle);
 }
 
+// Artscout - 2026: #78 return the D3D11 SRV for a far tile (activating if needed). Mirrors Select but
+// returns the SRV instead of binding through a ContextMPR.
+void *FarTexDB::GetTileSRV(TextureID texID)
+{
+    if ( not IsReady()) return 0;
+    if (texID == INVALID_TEXID) return 0;
+    if ( not (texID >= 0 and texID < (DWORD)texCount)) return 0;
+    if (texArray[texID].handle == NULL)
+    {
+        if ( not texArray[texID].bits) return 0;
+        Activate(texID);
+    }
+    if ( not texArray[texID].handle) return 0;
+    return (void *)((TextureHandle *)texArray[texID].handle)->m_pDDS;
+}
+
 void FarTexDB::RestoreAll()
 {
     EnterCriticalSection(&cs_textureList);

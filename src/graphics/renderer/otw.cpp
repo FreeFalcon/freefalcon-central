@@ -1245,6 +1245,14 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
 {
     SpanListEntry* span;
 
+    // Artscout - 2026: #78 GPU world-space terrain. When enabled, draw the ground through the object path
+    // (VS_Object, real depth). The CPU screen-space terrain squares below are then SKIPPED, but the world
+    // objects (DrawBeyond, interleaved in the ring loop) STILL draw -- they now depth-sort against the GPU
+    // terrain's real depth buffer. Default OFF -> the CPU path is untouched.
+    extern bool g_bGpuTerrain;
+    extern void TerrainGpu_Render(RViewPoint*);
+    if (g_bGpuTerrain) TerrainGpu_Render(viewpoint);
+
 #ifdef TWO_D_MAP_AVAILABLE
 
     if (twoDmode)
@@ -1416,10 +1424,12 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
     for (span = spanList + 1; span < firstEmptySpan; span++)
     {
 
-        // Call the appropriate routine to draw the ring
+        // Call the appropriate routine to draw the ring.
+        // Artscout - 2026: #78 skip the CPU terrain squares when GPU terrain is on (drawn above), but KEEP
+        // the span advancement below so the object DrawBeyond distance bands stay correct.
         if (span->LOD == (span + 1)->LOD)
         {
-            DrawTerrainRing(span);
+            if (!g_bGpuTerrain) DrawTerrainRing(span);
         }
         else
         {
@@ -1427,12 +1437,12 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
             span++;
 
             // Use the first span at the new LOD to draw the connector ring
-            DrawConnectorRing(span);
+            if (!g_bGpuTerrain) DrawConnectorRing(span);
 
             span++;
 
             // Draw the gap filler
-            DrawGapFiller(span);
+            if (!g_bGpuTerrain) DrawGapFiller(span);
         }
 
 

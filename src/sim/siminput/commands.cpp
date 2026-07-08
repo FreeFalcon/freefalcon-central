@@ -3404,7 +3404,7 @@ void OTWStateStep(unsigned long, int state, void*)
 void CommandsSetKeyCombo(unsigned long val, int state, void*)
 {
     if (state bitand KEY_DOWN)
-    {
+    {   
         CommandsKeyCombo = val;
         CommandsKeyComboMod = state bitand MODS_MASK;
     }
