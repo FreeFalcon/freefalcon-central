@@ -2079,6 +2079,71 @@ void RefreshJoystickCB(long, short, C_Base *)
 
                     text->Refresh();
                 }
+
+                // Artscout - 2026 (#95): scroll the function list to the action bound to the just-pressed
+                // button. Rising-edge only (the outer if already filters held/stuck 3-pos switches), and not
+                // while the modal button-assign popup is up. Find the visible row whose FUNCTION_PTR matches
+                // the button's bound function and scroll the client area to it (replaces the removed
+                // FUNCTION_LIST text-display -- the "small window that showed the bound action").
+                extern bool g_baActive;
+                if (not g_baActive)
+                {
+                    InputFunctionType sfunc = UserFunctionTable.GetButtonFunction(i, NULL);
+                    C_Button *anchor = (C_Button *)win->FindControl(KEYCODES);
+                    C_Line   *vln    = (C_Line *)win->FindControl(VLINE);
+
+                    if (sfunc and anchor and vln)
+                    {
+                        C_Button *srow = NULL;
+
+                        for (int n = 0; n < NumDispKeys; ++n)
+                        {
+                            C_Button *rb = (C_Button *)win->FindControl(KEYCODES + n);
+
+                            if (rb and (InputFunctionType)rb->GetUserPtr(FUNCTION_PTR) == sfunc)
+                            {
+                                srow = rb;
+                                break;
+                            }
+                        }
+
+                        long rowH = vln->GetH();
+
+                        if (srow and rowH > 0)
+                        {
+                            long kc   = anchor->GetClient();
+                            int  count = srow->GetID() - KEYCODES;
+                            int  lead  = (count > 2) ? (count - 2) : 0;        // 2-row lead-in for context
+
+                            // Draw model (cwindow.cpp): a control's screen Y = control.Y + VY_, visible window
+                            // = [ClientArea.top, ClientArea.bottom]; SetVirtualY(y) sets VY_ = -y. So to put the
+                            // target row (at anchor->GetY() + rowH*count) at the client top: VY_ = ca.top -
+                            // (anchor->GetY() + rowH*lead) -> y = anchor->GetY() + rowH*lead - ca.top.
+                            UI95_RECT ca = win->GetClientArea(kc);
+                            long y = anchor->GetY() + rowH * lead - ca.top;
+
+                            win->SetVirtualY(y, kc);       // scroll the client to the target row
+                            win->ScanClientArea(kc);       // clamp to range + re-sync scrollbar visibility
+                            win->AdjustScrollbar(kc);      // move the slider to match
+
+                            // Artscout - 2026 (#95): highlight the target row's text -- rows colour their text
+                            // via SetFgColor(0,...) (SetButtonColor: green/white). Set it yellow here and
+                            // restore the previously highlighted row with SetButtonColor. Reversible; a list
+                            // rebuild recolours all rows to normal anyway.
+                            static int s_hiliteRow = -1;
+                            if (s_hiliteRow >= 0 and s_hiliteRow != count)
+                            {
+                                C_Button *prev = (C_Button *)win->FindControl(KEYCODES + s_hiliteRow);
+                                if (prev) SetButtonColor(prev);   // restore normal green/white
+                            }
+                            srow->SetFgColor(0, RGB(255, 255, 0));   // highlight: yellow text
+                            srow->Refresh();
+                            s_hiliteRow = count;
+
+                            win->RefreshClient(kc);        // redraw the list
+                        }
+                    }
+                }
             }
 
             // remember the button state for edge detection on the next frame

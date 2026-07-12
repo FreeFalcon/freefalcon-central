@@ -484,20 +484,29 @@ void MaverickDisplayClass::DrawTerrain(void)
     // FlushPolyLists -> the per-object zone-viewport below would then mis-map the terrain. The sensor
     // displays default to bZBuffering=FALSE (same as TGP): terrain flushes immediately (full viewport),
     // FlushPolyLists carries ONLY the queued objects.
-    extern bool g_bUseD3D11;
+    // #DX12 A5: the whole sensor 3D-scene block runs only under D3D11 or when the D3D12 sensor scene is enabled
+    // (g_bSensorSceneD3D12). Under D3D12 with it OFF (default) the open Maverick MFD page does NOT rebind the
+    // atlas / set a zone scissor / flush each frame -> stable (symbology only). See laserpod.cpp / #91.
+    extern bool g_bUseD3D11, g_bUseD3D12, g_bSensorSceneD3D12;
+    extern void FF_SetIRGrey(bool);
+    extern void FF_SetTerrainRadiusCap(int);
+    const bool doA5 = !g_bUseD3D12 || g_bSensorSceneD3D12;
     /* if (displayType == AGM65_IR)
      {*/
     ((RenderIR*)display)->StartDraw();
-    // Re-bind the shared RTT atlas (the preceding display->EndDraw() unbound it; StartDraw doesn't rebind)
-    // so the Maverick seeker scene lands in the renderTexture (MFD), not the back buffer. Same as GM/TGP.
-    if (g_bUseD3D11) ((VirtualDisplay*)display)->ReBindRttTarget();
-    ((RenderIR*)display)->DrawScene(&cameraPos, &viewRotation);
-
-    // Confine the object flush to the Maverick MFD zone (objects use centred clip-NDC and otherwise
-    // project to the full-atlas centre, leaking onto other displays). Restore the full viewport after.
-    if (g_bUseD3D11) ((VirtualDisplay*)display)->ConfineObjectViewportToZone();
-    ((RenderIR*)display)->context.FlushPolyLists();
-    if (g_bUseD3D11) ((VirtualDisplay*)display)->ReBindRttTarget();
+    if (doA5)
+    {
+        ((VirtualDisplay*)display)->ReBindRttTarget();
+        if (g_bUseD3D12) ((VirtualDisplay*)display)->ConfineObjectViewportToZone();
+        FF_SetIRGrey(true);
+        FF_SetTerrainRadiusCap(32);
+        ((RenderIR*)display)->DrawScene(&cameraPos, &viewRotation);
+        ((VirtualDisplay*)display)->ConfineObjectViewportToZone();
+        ((RenderIR*)display)->context.FlushPolyLists();
+        FF_SetIRGrey(false);
+        FF_SetTerrainRadiusCap(0);
+        ((VirtualDisplay*)display)->ReBindRttTarget();
+    }
     ((RenderIR*)display)->PostSceneCloudOcclusion();
     ((RenderIR*)display)->EndDraw();
     /* }

@@ -85,10 +85,10 @@ BOOL C_3dViewer::Init3d(float ViewAngle)
     // g_bD3D11GPUDraw and flips Present into chroma-composite mode, which blacks out the 2D menu.
     // We read the model back into the menu's 2D surface (see View3d) and keep a normal full blit.
     {
-        extern bool g_bUseD3D11;
+        extern bool g_bUseD3D11, g_bUseD3D12;   // #DX12 A5: the off-screen viewer RTT exists on both GPU paths
         ImageBuffer *target = gMainHandler->GetFront();
 
-        if (g_bUseD3D11)
+        if (g_bUseD3D11 || g_bUseD3D12)
         {
             int rw = gMainHandler->GetFront()->targetXres();
             int rh = gMainHandler->GetFront()->targetYres();
@@ -475,10 +475,10 @@ BOOL C_3dViewer::View3d(long ID)
             // surface (the viewport rect), then clear g_bD3D11GPUDraw so Present does a normal full
             // 2D blit (menu + embedded model) instead of the chroma path that blacks out the menu.
             {
-                extern bool g_bUseD3D11;
+                extern bool g_bUseD3D11, g_bUseD3D12;
                 extern bool g_bD3D11GPUDraw;
 
-                if (g_bUseD3D11 && m_pRTT)
+                if ((g_bUseD3D11 || g_bUseD3D12) && m_pRTT)
                 {
                     ImageBuffer *front = gMainHandler->GetFront();
                     unsigned short *dst = (unsigned short *)front->Lock();
@@ -492,7 +492,13 @@ BOOL C_3dViewer::View3d(long ID)
                         front->Unlock();
                     }
 
-                    g_bD3D11GPUDraw = false;
+                    // Artscout - 2026: #DX12 A5 -- under D3D11 (immediate) clear g_bD3D11GPUDraw so Present does a
+                    // full 2D blit of the menu (with the embedded model). Under D3D12 the viewer opened a real
+                    // command frame holding the model draws + the deferred readback COPY; a fresh BeginFrame would
+                    // RESET that list and discard the copy (readback never completes). So keep g_bD3D11GPUDraw set
+                    // -> PresentD3D11 composites the 2D menu (with the 1-frame-latent model) over the viewer's
+                    // frame and PRESENTS it, preserving the copy.
+                    if (g_bUseD3D11) g_bD3D11GPUDraw = false;
                 }
             }
 

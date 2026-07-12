@@ -618,8 +618,8 @@ void STPSetupControls(void)
         // The old FindDisplayMode searches m_arrModes (EMPTY in D3D11) -> -1 -> SetValue(0) -> overwrote
         // the selection with index 0 (640/800). Because of that Apply from ANY tab (sound etc.) reset
         // the resolution to 800x600 (SaveValues reads SET_RESOLUTION regardless of the active tab).
-        extern bool g_bUseD3D11;
-        if ( not g_bUseD3D11)
+        extern bool g_bUseD3D11, g_bUseD3D12;
+        if ( not (g_bUseD3D11 or g_bUseD3D12))
         {
             DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(DisplayOptions.DispVideoDriver);
 
@@ -1897,13 +1897,15 @@ static void SaveValues(void)
     // Artscout - 2026: mirror the just-edited graphics options into the engine globals so Apply takes
     // effect on the NEXT 3D entry without a restart (backend MSAA / OpenXR read these at device/session init).
     {
-        extern bool g_bUseOpenXR, g_bUseQuadViews, g_bMsaaEnable;
-        extern int  g_nMsaaSamples, g_nVrResolutionScale;
+        extern bool g_bUseOpenXR, g_bUseQuadViews, g_bMsaaEnable, g_bAnisoEnable;
+        extern int  g_nMsaaSamples, g_nVrResolutionScale, g_nAnisoSamples;
         g_bUseOpenXR         = DisplayOptions.bUseOpenXR;
         g_bUseQuadViews      = DisplayOptions.bUseQuadViews;
         g_bMsaaEnable        = DisplayOptions.bMsaaEnable;
         g_nMsaaSamples       = DisplayOptions.nMsaaSamples;
         g_nVrResolutionScale = DisplayOptions.nVrResolutionScale;
+        g_bAnisoEnable       = DisplayOptions.bAnisotropicFiltering;   // Artscout - 2026: aniso on/off + level -> samplers
+        g_nAnisoSamples      = DisplayOptions.nAnisotropicSamples;
     }
 
     PlayerOptions.SaveOptions();

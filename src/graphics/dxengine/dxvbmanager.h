@@ -1,7 +1,6 @@
 #pragma once
 
-#include <ddraw.h>
-#include <d3d.h>
+#include "d3d7compat.h"
 #include <d3dxcore.h>
 #include <d3dxmath.h>
 #include "../include/ObjectInstance.h"
@@ -114,6 +113,7 @@ typedef struct
     DWORD BootGap; // The Eventual 1st Gap to 1st VAT
     LPDIRECT3DVERTEXBUFFER7 Vb; // Assigned VB
     ID3D11Buffer *VbD3D11; // PHASE 4: D3D11 mirror of this VB
+    void *VbD3D12; // #DX12 п.4: D3D12 mirror (ID3D12Resource*)
 } VBufferListType;
 
 
@@ -129,6 +129,7 @@ typedef struct
 {
     LPDIRECT3DVERTEXBUFFER7 Vb; // Assigned VB address
     ID3D11Buffer *VbD3D11; // PHASE 4: D3D11 mirror
+    void *VbD3D12; // #DX12 п.4: D3D12 mirror (ID3D12Resource*)
     CVbVAT *pVAT; // The VB VAT assigned
     VBufferListType *pVbList; // Pointer to the VB List Item assigned
     DWORD NVertices; // Number Of Vertices composing the object

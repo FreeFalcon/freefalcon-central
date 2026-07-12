@@ -305,9 +305,6 @@
     <ClCompile Include="MsgSrc\TrackMsg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Twoddraw.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MsgSrc\UnitAssignmentMsg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

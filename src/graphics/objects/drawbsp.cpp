@@ -34,6 +34,7 @@ extern bool g_bLabelRadialFix;
 extern bool g_bLabelShowDistance;
 extern BOOL renderACMI;
 
+
 
 /***************************************************************************\
     Initialize a container for a BSP object to be drawn

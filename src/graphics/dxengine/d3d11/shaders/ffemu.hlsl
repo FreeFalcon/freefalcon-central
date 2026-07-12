@@ -56,6 +56,10 @@ cbuffer cbObject : register(b2)
 #define FF_TEXCOLORDIFFUSE (1u << 8) // D3D7 TexColorDiffuse: color=vertex, texture=mask (HUD/DED text)
 #define FF_RTTSOFT      (1u << 9)   // #7 AA-RTT: soft composite of the RTT atlas (alpha=brightness=MSAA coverage)
 #define FF_WATER        (1u << 10)  // #12: animated water tile (shimmer + tint over the base texture)
+#define FF_IRGREY       (1u << 14)  // #DX12 A5: sensor video (TGP=TV, Maverick/FLIR=IR) is monochrome grey.
+                                    // Desaturate the FINAL colour to luma for the whole sensor pass (set by
+                                    // SetIRGrey while IR/TV mode). Needed because the terrain's vertex colours
+                                    // are cached from the main full-colour view -> the CPU green-out never grays them.
 #define FF_EMISSIVE     (1u << 11)  // #49: self-illuminated surface (afterburner cone, nav/formation
                                     // lights) -- D3D7 SwEmissive. Skip scene-light darkening so it
                                     // glows at any time of day (dusk/night). Set per-surface in code.
@@ -353,21 +357,40 @@ float4 PS_Main(VSOut i) : SV_Target
     // so its luminance tracks the texture's own density. Keeps c.a for the soft translucent edge.
     if (gFlags & FF_AFTERBURNER)
     {
-        // Rendered ADDITIVE (Src=ONE,Dst=ONE): scale the color BY the texture brightness so dim
-        // texels add little (soft edges) and the dense core adds a lot -> saturates to white.
-        float b    = max(c.r, max(c.g, c.b));        // texture brightness (c = texture * white)
-        float3 cool = float3(1.0f, 0.30f, 0.06f);    // orange/red outer plume
-        float3 hot  = float3(1.0f, 0.95f, 0.80f);    // white-hot core near the nozzle
-        float3 tint = lerp(cool, hot, saturate(b * 1.4f));
+        // #49 v2: a LIVING plume. Rendered ADDITIVE (Src=ONE,Dst=ONE): scale color BY the texture
+        // brightness (dim texels add little -> soft edges; dense core saturates to white). On top of the
+        // static warm recolor we add TIME-animated turbulence + flicker so the flame licks/throbs instead
+        // of a frozen cone. Uses gWaterParams.x (scene animation time, sec). Runtime shader -- tune freely.
+        float tAB = gWaterParams.x;
 
-        // Day/night intensity: in daylight a real AB plume is nearly invisible (just nozzle flame +
-        // heat haze); the bright glowing plume is a dusk/night thing. Scale by scene darkness
-        // (gAmbient): subtle by day, bright at night. Tune the two endpoints freely (runtime shader).
+        // Flowing turbulence: sine layers scrolled along the plume UV -> ripples running down the flame.
+        // Orientation-agnostic (works whichever way the cone is UV-mapped) -> still reads as a live burner.
+        float2 uvAB = i.Uv0;
+        float turb = 0.5f
+                   + 0.30f * sin(uvAB.y * 15.0f - tAB * 11.0f + uvAB.x * 6.0f)
+                   + 0.16f * sin(uvAB.y * 29.0f - tAB * 19.0f - uvAB.x * 10.0f + 1.7f)
+                   + 0.08f * sin(uvAB.x * 22.0f + tAB * 7.0f);
+        turb = saturate(turb);
+
+        float b    = max(c.r, max(c.g, c.b));            // texture brightness (c = texture * white)
+        float bMod = b * lerp(0.60f, 1.30f, turb);       // turbulence ripples the body, keeps the core
+
+        float3 cool = float3(1.0f, 0.30f, 0.06f);        // orange/red outer plume
+        float3 hot  = float3(1.0f, 0.95f, 0.82f);        // white-hot core near the nozzle
+        float3 core = float3(0.70f, 0.82f, 1.00f);       // faint blue-white shock diamonds at the peak
+        float3 tint = lerp(cool, hot, saturate(bMod * 1.4f));
+        tint = lerp(tint, core, saturate((bMod - 0.85f) * 3.0f) * 0.45f);
+
+        // Day/night intensity: in daylight a real AB plume is nearly invisible (nozzle flame + heat haze);
+        // the bright glowing plume is a dusk/night thing. Scale by scene darkness (gAmbient).
         float amb     = saturate(max(gAmbient.r, max(gAmbient.g, gAmbient.b)));
         float night   = 1.0f - amb;                  // 0 = bright day .. 1 = night
-        float intensity = lerp(0.45f, 2.5f, night);  // day endpoint .. night endpoint
+        float intensity = lerp(0.45f, 2.6f, night);  // day endpoint .. night endpoint
 
-        c.rgb = tint * b * intensity;
+        // Fast overall flicker so the whole burner throbs; modulated by the turbulence for irregularity.
+        float flick = 0.85f + 0.15f * sin(tAB * 42.0f) * (0.6f + 0.4f * turb);
+
+        c.rgb = tint * bMod * intensity * flick;
     }
 
     if (gFlags & FF_ALPHATEST)
@@ -413,7 +436,98 @@ float4 PS_Main(VSOut i) : SV_Target
         c.rgb = saturate(c.rgb * kCockpitBright);
     }
 
+    // #DX12 A5: sensor (TGP/Maverick/FLIR) pass -> monochrome grey. Desaturate the composed colour to Rec.601
+    // luma. Applies to the whole 3D scene (terrain + objects) drawn while IR/TV mode is set; the MFD symbology
+    // is drawn afterwards with the flag cleared, so it keeps its own colour.
+    if (gFlags & FF_IRGREY)
+        c.rgb = dot(c.rgb, float3(0.299f, 0.587f, 0.114f)).xxx;
+
     return c;
+}
+
+//============================ GPU-instanced particles ========================
+// Artscout - 2026: #VFX Phase 1 -- GPU-instanced billboard particles. One
+// DrawIndexedInstanced(6, N) expands N camera-facing quads entirely on the GPU:
+// a shared unit-quad (slot 0) is rotated/scaled/placed per instance from the
+// per-instance stream (slot 1). Reuses cbView (gView/gProj/gCameraPos) and gTex0/
+// gSamp0 -- no new constant buffers. Additive OR alpha blend is chosen by the PSO,
+// so the pixel shader stays blend-agnostic (texture * instance colour).
+
+// Slot 0 (PER_VERTEX): the static unit quad corner + its cell uv.
+struct VSInParticleVtx
+{
+    float2 Corner : POSITION;    // quad corner in [-0.5,+0.5]
+    float2 Uv     : TEXCOORD0;   // cell uv in [0,1]
+};
+
+// Slot 1 (PER_INSTANCE): one record per particle (matches D3D12ParticleInstance).
+struct VSInParticleInst
+{
+    float3 Center : TEXCOORD1;   // world position of the particle centre
+    float2 Size   : TEXCOORD2;   // world width,height of the billboard
+    float  Rot    : TEXCOORD3;   // billboard-plane rotation (radians)
+    float4 Color  : COLOR0;      // rgba modulate (NOT premultiplied)
+    float4 UvRect : TEXCOORD4;   // xy = atlas uv offset, zw = atlas uv scale (flipbook cell)
+};
+
+struct VSOutParticle
+{
+    float4 Pos   : SV_Position;
+    float4 Color : COLOR0;
+    float2 Uv0   : TEXCOORD0;
+};
+
+VSOutParticle VS_Particle(VSInParticleVtx v, VSInParticleInst inst)
+{
+    VSOutParticle o;
+
+    // Artscout - 2026: #VFX SPHERICAL billboard facing the camera POSITION. The old basis (gView
+    // columns) baked in camera roll + the RH->LH Flip, so the quads sat in a FIXED plane -> flying
+    // past an explosion showed them edge-on as several stacked flat sheets (NOT camera-facing). The
+    // legacy DX2D path oriented billboards from a dedicated BB matrix (RotY(pitch)*RotZ(yaw), no roll)
+    // that is never uploaded to the shader. Rebuild an equivalent here from geometry only: inst.Center
+    // is camera-RELATIVE world, so -Center points at the eye; constrain 'up' to world up (NED = -Z),
+    // like the roll-free BB matrix. This always faces the viewer -> no more stacked-plate look.
+    float3 fwd   = normalize(-inst.Center);
+    float3 wup   = float3(0.0f, 0.0f, -1.0f);
+    float3 right = cross(wup, fwd);
+    float  rl    = length(right);
+    right = (rl > 1e-4f) ? (right / rl) : float3(1.0f, 0.0f, 0.0f);   // guard: gaze near-vertical
+    float3 up    = cross(fwd, right);
+
+    // Rotate the unit-quad corner in the billboard plane, then scale by the world size.
+    float s = sin(inst.Rot);
+    float c = cos(inst.Rot);
+    float2 rc  = float2(v.Corner.x * c - v.Corner.y * s,
+                        v.Corner.x * s + v.Corner.y * c);
+    float2 off = rc * inst.Size;
+
+    // Expand to a world-space, camera-facing position, then transform EXACTLY like VS_Object
+    // (row_major, vector-on-the-left): viewPos = worldPos * gView; clip = viewPos * gProj.
+    float3 worldPos = inst.Center + right * off.x + up * off.y;
+    float4 viewPos  = mul(float4(worldPos, 1.0f), gView);
+    o.Pos = mul(viewPos, gProj);
+
+    // Artscout - 2026: #VFX per-vertex VERTICAL GRADIENT -- DX7->D3D11 parity. The legacy DX2D
+    // particle quad shaded the TOP verts at full brightness (HiColor) and the BOTTOM at 0.68x
+    // (LoColor). That cheap fake self-shadow is what makes a CLOUD of overlapping smoke/fire sprites
+    // read as a billowing VOLUME instead of flat uniform discs -- the single thing the instanced path
+    // was missing vs the D3D11 (DX2D) render that looked volumetric in VR/QuadViews. Unit quad maps
+    // uv = corner + 0.5, so v.Uv.y = 1 at the top (world up) and 0 at the bottom. RGB only (alpha
+    // unchanged, exactly as HiColor/LoColor shared the same F_TO_UARGB alpha in the legacy quad).
+    // #VFX per-vertex vertical gradient (DX7->D3D11 parity): top ×1.0, bottom ×0.68 (HiColor/LoColor).
+    float grad = lerp(0.68f, 1.0f, v.Uv.y);
+    o.Color = float4(inst.Color.rgb * grad, inst.Color.a);
+    o.Uv0   = inst.UvRect.xy + v.Uv * inst.UvRect.zw;   // atlas / flipbook cell
+    return o;
+}
+
+float4 PS_Particle(VSOutParticle i) : SV_Target
+{
+    float4 t = gTex0.Sample(gSamp0, i.Uv0);
+    // #VFX Phase 3 TODO: soft-particle depth fade here -- needs a SAMPLEABLE scene-depth SRV
+    // (the D3D12 backend depth is DSV-only today). Then: t.a *= saturate((sceneZ - particleZ)/k).
+    return t * i.Color;
 }
 
 //============================ Per-sample SSAA (display panels) ================

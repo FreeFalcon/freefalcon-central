@@ -16,7 +16,7 @@
 #ifndef _DDSDISKHDR_H_
 #define _DDSDISKHDR_H_
 
-#include <ddraw.h>
+#include "d3d7compat.h"
 #include <string.h>
 
 #pragma pack(push, 1)

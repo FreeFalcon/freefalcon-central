@@ -17,8 +17,7 @@
 
 #include <vector>
 #include <string>
-#include <ddraw.h>
-#include <d3dtypes.h>
+#include "d3d7compat.h"
 #include "alloc.h"
 #include "../../mathlib/color.h"
 
@@ -293,6 +292,10 @@ extern  "C" {
 #define MPR_TI_1024 0x040000
 #define MPR_TI_2048 0x080000
 #define MPR_TI_INVALID 0x100000
+// Artscout - 2026: lift the legacy DX7 2048 texture cap. Bit 24+ is free; the modern D3D11/12
+// backends handle 4096/8192 fine. Used by Texture::LoadImage/CreateTexture (see tex.cpp).
+#define MPR_TI_4096 0x1000000
+#define MPR_TI_8192 0x2000000
 
     // ASSO
 #define MPR_TI_RGB16 0x200000

@@ -9,6 +9,7 @@
 #include "DXLightEngine.h"
 #include "d3d11/D3D11Renderer.h"	// #28: GpuLightCPU + SetLights (per-object dynamic light)
 extern bool g_bUseD3D11;	// PHASE 4: D3D7 lighting replaced by a shader cbuffer (SetLights)
+extern bool g_bUseGpu;		// #DX12 п.4: dynamic object lighting on the active renderer (D3D11 || D3D12)
 // #28: current-frame sun+ambient (filled in CDXEngine::FlushBuffers).
 extern D3D11Renderer::GpuLightCPU g_d3d11Sun;
 extern float g_d3d11Amb[4];
@@ -156,12 +157,12 @@ extern char TheLODNames[10000][32];
 // This function switch on the nearest lights to an object of a certain radius
 void CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
 {
-    if (g_bUseD3D11)
+    if (g_bUseGpu)
     {
         // #28 D3D11: the per-object light set = the sun (light 0) + the nearest active
         // point lamps (flashes/explosions) within their range of the object. Attenuation
         // is computed by the shader (Params.x=range). Then SetLights -> cbLights for this object.
-        if ( not g_pD3D11Renderer) return;
+        if ( not g_pRenderer) return;
         const int MAXL = 8;	// = MAX_LIGHTS in FFEmu.hlsl
         D3D11Renderer::GpuLightCPU lights[MAXL];
         int n = 0;
@@ -183,7 +184,7 @@ void CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
             g.Params[0] = (L.dvRange > 1.0f) ? L.dvRange : 1.0f;	// range (attenuation)
             g.Params[1] = 1.0f;	// point
         }
-        g_pD3D11Renderer->SetLights(g_d3d11Amb, n, lights);
+        g_pRenderer->SetLights(g_d3d11Amb, n, lights, sizeof(lights[0]));
         return;
     }
 }

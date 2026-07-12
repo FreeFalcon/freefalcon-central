@@ -12,7 +12,7 @@
 #include "PolyLib.h"
 #include "ColorBank.h"
 #include "BSPNodes.h"
-#include "d3d.h"
+#include "d3d7compat.h"
 #include "vmath.h"
 
 class ObjectInstance;

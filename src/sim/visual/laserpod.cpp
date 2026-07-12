@@ -398,23 +398,34 @@ void LaserPodClass::DrawTerrain(void)
     viewRotation.M23 = -cospsi * sinphi + sinpsi * sintha * cosphi;
     viewRotation.M33 = costha * cosphi;
 
-    extern bool g_bUseD3D11;
+    // #DX12 A5: these RTT corrections were D3D11-only; extend to D3D12 (the underlying ReBindRttTarget /
+    // ConfineObjectViewportToZone / FlushPolyLists are backend-neutral). Without them under D3D12 the sensor
+    // objects flush later against the full atlas -> full-COLOR (IR/TV mode already reset) + spill onto HUD +
+    // duplicate onto other MFD pages (SMS). The MFD renders in the render loop (in-frame), so no orphan frame.
+    extern bool g_bUseD3D11, g_bUseD3D12, g_bSensorSceneD3D12;
+    // #DX12 A5: run the sensor 3D-scene block (atlas rebind + zone confine + DrawScene + grey + object flush)
+    // ONLY under D3D11 or when the D3D12 sensor scene is explicitly enabled. Under D3D12 with it OFF (default)
+    // the whole A5 block is skipped so an open sensor MFD page does NOT re-bind the atlas / set a zone scissor /
+    // flush every frame (those side-effects destabilised the frame -> DEVICE_HUNG). Symbology-only, stable.
+    extern void FF_SetIRGrey(bool);
+    extern void FF_SetTerrainRadiusCap(int);
+    const bool doA5 = !g_bUseD3D12 || g_bSensorSceneD3D12;
 
     ((RenderTV*)display)->StartDraw();
-    // Artscout - 2026: the preceding display->EndDraw() unbound the shared RTT atlas; StartDraw does not
-    // rebind it. Re-bind here so the 3D sensor scene + queued objects land in the renderTexture (MFD),
-    // not on the back buffer (the "object drawn mid-screen near the HUD" leak). Same fix as GM/Maverick.
-    if (g_bUseD3D11) ((VirtualDisplay*)display)->ReBindRttTarget();
-    ((RenderTV*)display)->DrawScene(&cameraPos, &viewRotation);
-
-    // Artscout - 2026: confine the object flush to the TGP MFD zone. The objects (VS_Object, centred NDC)
-    // otherwise project to the FULL-atlas centre and leak onto every display sharing the atlas (target
-    // appearing on HUD/DED/RWR/other MFD). Set the zone viewport, flush, then restore the full viewport.
-    // (Terrain already lands in the MFD via the context screen-path with the tLeft offset.)
-    if (g_bUseD3D11) ((VirtualDisplay*)display)->ConfineObjectViewportToZone();
-    if (DisplayOptions.bZBuffering or g_bUseD3D11)
-        ((RenderTV*)display)->context.FlushPolyLists();
-    if (g_bUseD3D11) ((VirtualDisplay*)display)->ReBindRttTarget();
+    if (doA5)
+    {
+        ((VirtualDisplay*)display)->ReBindRttTarget();           // rebind the shared RTT atlas (StartDraw unbound it)
+        if (g_bUseD3D12) ((VirtualDisplay*)display)->ConfineObjectViewportToZone();  // zone the terrain BEFORE DrawScene
+        FF_SetIRGrey(true);                                      // grey the sensor scene (TV) -- luma in the PS
+        FF_SetTerrainRadiusCap(32);                              // #91: small GPU-terrain radius for the zoomed sensor
+        ((RenderTV*)display)->DrawScene(&cameraPos, &viewRotation);
+        ((VirtualDisplay*)display)->ConfineObjectViewportToZone();
+        if (DisplayOptions.bZBuffering or g_bUseD3D11 or g_bUseD3D12)
+            ((RenderTV*)display)->context.FlushPolyLists();
+        FF_SetIRGrey(false);                                     // end grey before the MFD symbology
+        FF_SetTerrainRadiusCap(0);                               // restore full radius for the main world view
+        ((VirtualDisplay*)display)->ReBindRttTarget();
+    }
 
     //   ((RenderTV*)display)->PostSceneCloudOcclusion();
     ((RenderTV*)display)->EndDraw();

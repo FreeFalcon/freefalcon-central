@@ -20,7 +20,20 @@ void OnSimKeyboardInput()
     static int CtrlCount = 0;
     static int AltCount = 0;
     int state;
-    char     buffer[256];
+
+    // Artscout - 2026 (#93): re-sync the modifier counts from the REAL OS key state at the START of every
+    // pass (before processing this pass's key events), so the FIRST key after an Alt-Tab (e.g. ESC) already
+    // sees the correct modifiers. On Alt-Tab OUT the app catches the Alt key-DOWN (held for the gesture) but
+    // the key-UP is lost while the exclusive DI keyboard is (re)acquiring -> the DI GetDeviceState stayed
+    // stuck-down and reported Alt as HELD forever -> ESC read as Alt+ESC. GetAsyncKeyState reflects the true
+    // OS state, so once Alt is physically up the count is 0 immediately -- and doing it at the TOP (not the
+    // end of the pass) fixes the "first ESC ignored, second works" one-frame lag.
+    ShiftCount = ((GetAsyncKeyState(VK_LSHIFT)   bitand 0x8000) ? 1 : 0)
+               + ((GetAsyncKeyState(VK_RSHIFT)   bitand 0x8000) ? 1 : 0);
+    CtrlCount  = ((GetAsyncKeyState(VK_LCONTROL) bitand 0x8000) ? 1 : 0)
+               + ((GetAsyncKeyState(VK_RCONTROL) bitand 0x8000) ? 1 : 0);
+    AltCount   = ((GetAsyncKeyState(VK_LMENU)    bitand 0x8000) ? 1 : 0)
+               + ((GetAsyncKeyState(VK_RMENU)    bitand 0x8000) ? 1 : 0);
 
     dwElements = DKEYBOARD_BUFFERSIZE;
     hResult = gpDIDevice[SIM_KEYBOARD]->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), ObjData, &dwElements, 0);
@@ -120,52 +133,17 @@ void OnSimKeyboardInput()
             }
         }
 
-        //after every pass we reset the counts to try to keep them sane
-        hResult = gpDIDevice[SIM_KEYBOARD]->GetDeviceState(sizeof(buffer), (LPVOID)&buffer);
-
-        if (hResult == DI_OK)
-        {
-            if (buffer[DIK_LSHIFT] bitand 0x80)
-            {
-                ShiftCount = 1;
-            }
-            else
-            {
-                ShiftCount = 0;
-            }
-
-            if (buffer[DIK_RSHIFT] bitand 0x80)
-            {
-                ShiftCount++;
-            }
-
-            if (buffer[DIK_LCONTROL] bitand 0x80)
-            {
-                CtrlCount = 1;
-            }
-            else
-            {
-                CtrlCount = 0;
-            }
-
-            if (buffer[DIK_RCONTROL] bitand 0x80)
-            {
-                CtrlCount++;
-            }
-
-            if (buffer[DIK_LMENU] bitand 0x80)
-            {
-                AltCount = 1;
-            }
-            else
-            {
-                AltCount = 0;
-            }
-
-            if (buffer[DIK_RMENU] bitand 0x80)
-            {
-                AltCount++;
-            }
-        }
+        // Artscout - 2026 (#93): re-sync the modifier counts every pass from the REAL OS key state
+        // (GetAsyncKeyState), NOT the DirectInput GetDeviceState. On Alt-Tab BACK the app catches the Alt
+        // key-DOWN (Alt is held as part of the gesture) but the key-UP on release is lost while the exclusive
+        // DI keyboard is (re)acquiring -> DI's GetDeviceState reported Alt as HELD forever -> ESC read as
+        // Alt+ESC until a real Alt-up (Alt+F4). GetAsyncKeyState reflects the true OS state, so the instant
+        // Alt is physically released the count self-corrects to 0 -- independent of the lost DI up-event.
+        ShiftCount = ((GetAsyncKeyState(VK_LSHIFT)   bitand 0x8000) ? 1 : 0)
+                   + ((GetAsyncKeyState(VK_RSHIFT)   bitand 0x8000) ? 1 : 0);
+        CtrlCount  = ((GetAsyncKeyState(VK_LCONTROL) bitand 0x8000) ? 1 : 0)
+                   + ((GetAsyncKeyState(VK_RCONTROL) bitand 0x8000) ? 1 : 0);
+        AltCount   = ((GetAsyncKeyState(VK_LMENU)    bitand 0x8000) ? 1 : 0)
+                   + ((GetAsyncKeyState(VK_RMENU)    bitand 0x8000) ? 1 : 0);
     }
 }

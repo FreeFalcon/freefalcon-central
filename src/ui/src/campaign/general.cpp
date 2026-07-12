@@ -8,7 +8,6 @@
 #include <cISO646>
 #include <windows.h>
 #include "f4version.h"
-#include <ddraw.h>
 #include "unit.h"
 #include "team.h"
 #include "CmpGlobl.h"

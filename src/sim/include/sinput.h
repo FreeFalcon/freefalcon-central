@@ -166,6 +166,7 @@ void AcquireDeviceInput(int, BOOL);
 // focus loss and must be explicitly re-acquired, else input stays dead until a lazy per-read
 // re-acquire happens to succeed (intermittent "controls/keyboard lost after Alt-Tab").
 void ReacquireAllInputDevices(void);
+void UnacquireAllInputDevices(void);           // Artscout - 2026 (#93): release all DI devices on focus loss
 BOOL CheckDeviceAcquisition(int DeviceIndex);
 BOOL CreateSimCursors(void);
 void CleanupSimCursors(void);

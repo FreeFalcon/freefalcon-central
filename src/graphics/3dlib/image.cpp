@@ -14,7 +14,7 @@
 
 #include <cISO646>
 #include "image.h"
-#include <ddraw.h> //JAM 22Sep03
+#include "d3d7compat.h"
 #include "ddsdiskhdr.h" // Artscout - 2026 (x64): correct on-disk DDS header read
 
 

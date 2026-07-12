@@ -52,7 +52,12 @@
           <Directory Id="dUiskin" Name="uiskin">
             <Directory Id="dFf4" Name="ff4" />
           </Directory>
-          <Directory Id="dCkptart" Name="ckptart" />
+          <Directory Id="dCkptart" Name="ckptart">
+            <Directory Id="dControllers" Name="controllers" />   <!-- Artscout - 2026: VR controller-hand textures -->
+          </Directory>
+        </Directory>
+        <Directory Id="dTerrdata" Name="terrdata">               <!-- Artscout - 2026: misc terrain textures -->
+          <Directory Id="dMiscTex" Name="misctex" />
         </Directory>
       </Directory>
     </StandardDirectory>
@@ -156,6 +161,11 @@
       <Component Directory="dCkptart">
         <File Source="res\art\ckptart\3Dckpit.dat" />
       </Component>
+
+      <!-- Artscout - 2026: whole-folder overlays (wildcard harvest). art\ckptart\controllers\ = VR controller
+           hand textures; terrdata\misctex\ = misc terrain textures. -->
+      <Files Directory="dControllers" Include="res\art\ckptart\controllers\*" />
+      <Files Directory="dMiscTex"     Include="res\terrdata\misctex\*" />
     </ComponentGroup>
   </Fragment>
 </Wix>

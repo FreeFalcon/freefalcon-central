@@ -52,6 +52,24 @@ void ReacquireAllInputDevices(void)
     }
 }
 
+//*********************************************************************
+// void UnacquireAllInputDevices()
+// Artscout - 2026 (#93): explicitly release every DirectInput device on focus LOSS (Alt-Tab out). The
+// exclusive/foreground devices are auto-unacquired by DI anyway, but doing it deliberately keeps the
+// acquired flags honest and frees the mouse/keyboard cleanly so the other app gets them immediately.
+//*********************************************************************
+void UnacquireAllInputDevices(void)
+{
+    for (int i = 0; i < SIM_NUMDEVICES; i++)
+    {
+        if (gpDIDevice[i])
+        {
+            gpDIDevice[i]->Unacquire();
+            gpDeviceAcquired[i] = FALSE;
+        }
+    }
+}
+
 //********************************************************
 // BOOL CheckDeviceAcquisition()
 // Checks the current acquisition status of the mouse.

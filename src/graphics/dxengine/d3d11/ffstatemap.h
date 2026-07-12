@@ -33,6 +33,7 @@ enum FFFlags
 	FF_RTTSOFT     = 1u << 9,		// #7 AA-RTT: soft composite of the atlas (alpha=brightness)
 	FF_WATER       = 1u << 10,		// #12: animated water tile (shimmer + tint)
 	// bits 11 (FF_EMISSIVE) and 12 (FF_AFTERBURNER) are set via renderer methods, not this map.
+	FF_IRGREY      = 1u << 14,		// #DX12 A5: sensor pass grey-out (TGP/TV, Maverick/FLIR/IR) -> luma in PS
 	FF_COCKPIT     = 1u << 13,		// Artscout - 2026: #72 cockpit-fidelity pass (specular + reduced
 									// ambient flood + mild contrast). Sticky, set by SetCockpitPass().
 };

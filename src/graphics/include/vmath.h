@@ -3,7 +3,7 @@
 #pragma once
 
 #include <math.h>
-#include <d3dtypes.h>
+#include "d3d7compat.h"
 #include "vTempl.h"
 
 

@@ -12,8 +12,7 @@
 
 #include <string>
 #include <vector>
-#include <ddraw.h>
-#include <d3d.h>
+#include "d3d7compat.h"
 
 class DeviceManager
 {
@@ -118,6 +117,13 @@ public:
     static HRESULT WINAPI EnumModesCallback(LPDDSURFACEDESC2 lpDDSurfaceDesc, LPVOID lpContext);
     bool GetMode(int driverNum, int devNum, int modeNum, UINT *pWidth, UINT *pHeight, UINT *pDepth);
     DXContext *CreateContext(int driverNum, int devNum, int resNum, BOOL fullScreen, HWND hWnd);
+
+    // Artscout - 2026 (#89): real GPU selector for the D3D11/D3D12 backends. Enumerates DXGI hardware
+    // adapters (cached). The settings UI populates the "video card" combo from these; the backends pick
+    // the chosen adapter (DispVideoCard index) at device-create time. Software/WARP adapters are skipped.
+    static int  GetDxgiAdapterCount();
+    static bool GetDxgiAdapterName(int index, char *buf, int bufLen);   // UTF-8 description; false if OOR
+    static struct IDXGIAdapter1 *GetDxgiAdapter(int index);            // AddRef'd (caller Releases); NULL if OOR/fail
 };
 
 #endif // _DEVMGR_H_

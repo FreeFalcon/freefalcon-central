@@ -112,11 +112,9 @@ BOOL RenderOTW::DrawSky(void)
     // Update the sky color based on our current attitude and position
     AdjustSkyColor();
 
-    // #48: the sky is drawn through the 2D screen-primitive path (default near-plane depth).
-    // With a single coherent depth buffer (objects occluded by terrain) a near sky would
-    // write depth 0 and occlude the cockpit. Push the sky background to the far plane so the
-    // pit and the world draw in front of it. Restored before returning.
-    context.m_2DPrimZ = 1.0f;
+    // #48: the sky is drawn through the 2D screen-primitive path. Push the sky background to the FAR plane so the
+    // pit and the world draw in front of it. reversed-Z: far = 0.0 (was 1.0 under standard Z). Restored before return.
+    context.m_2DPrimZ = 0.0f;
     BOOL needTerrain;
 
     if ( not skyRoof)
@@ -135,7 +133,7 @@ BOOL RenderOTW::DrawSky(void)
         needTerrain = TRUE; // Need to draw terrain
     }
 
-    context.m_2DPrimZ = 0.0f; // restore near plane for UI/HUD 2D primitives
+    context.m_2DPrimZ = 1.0f; // restore NEAR plane for UI/HUD 2D primitives (reversed-Z: near = 1.0)
     return needTerrain;
 }
 
@@ -1366,7 +1364,12 @@ void RenderOTW::DrawSun(void)
     {
         context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD);
         context.SelectTexture1(viewpoint->SunTexture.TexHandle());
-        DrawCelestialBody(&center, dist / 4.f, 1.f, 0.984375f, 0.9765625f, 0.87109375f);
+        // Artscout - 2026 (#79): full dist -- the old dist/4 blew the sun up to 4x (billboard angular size ~ 1/dist).
+        DrawCelestialBody(&center, dist, 1.f, 0.984375f, 0.9765625f, 0.87109375f);
+        // Artscout - 2026 (#79): flush the billboard NOW, while SunTexture is still bound to slot 0. DrawSquare
+        // batches into the VB; without this the sun verts flushed later (after the GPU terrain re-bound slot 0 via
+        // a direct SetTexture(0)) and sampled the terrain tile / white -> the "square with ground/white" in VR.
+        context.FlushPending();
     }
     else
     {
@@ -1374,6 +1377,7 @@ void RenderOTW::DrawSun(void)
         context.SelectTexture1(viewpoint->SunTexture.TexHandle());
         DrawCelestialBody(&center, dist, alpha);
         Draw2DSunGlowEffect(this, &center, dist, alpha);
+        context.FlushPending();   // #79: submit while SunTexture is bound (see above)
     }
 
     //JAM
@@ -1440,6 +1444,7 @@ void RenderOTW::DrawMoon(void)
     }
 
     DrawCelestialBody(&center, dist, moonblend);
+    context.FlushPending();   // Artscout - 2026 (#79): submit while MoonTexture is bound to slot 0 (see DrawSun)
 }
 
 

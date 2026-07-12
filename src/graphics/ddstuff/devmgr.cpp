@@ -15,10 +15,14 @@
 #include "polylib.h"
 #include "Graphics/DXEngine/DXEngine.h"
 #include "Graphics/DXEngine/D3D11Backend.h"	// PHASE 1
+#include "Graphics/DXEngine/D3D12Backend.h"	// Artscout - 2026: #DX12 Phase 1
+#include "Graphics/DXEngine/d3d12/D3D12Renderer.h"	// Artscout - 2026: #DX12 Phase 3
+#include "Graphics/DXEngine/d3d12/D3D12TextureManager.h"	// Artscout - 2026: #DX12 п.1
 #include "Graphics/DXEngine/d3d11/D3D11Renderer.h"	// PHASE 4
 #include "Graphics/DXEngine/d3d11/D3D11TextureManager.h"	// PHASE 3
 #include "Graphics/DXEngine/DXVBManager.h"	// PHASE 4: TheVbManager.Setup
 #include "Graphics/DXEngine/OpenXRBackend.h"	// VR (OpenXR)
+#include <dxgi.h>	// Artscout - 2026 (#89): DXGI adapter enumeration for the GPU selector
 extern bool g_bUseD3D11;
 extern bool g_bUseOpenXR;
 int g_d3d11ReqWidth=0;
@@ -46,9 +50,8 @@ void __cdecl std::_Xran()
 
 #endif
 
-typedef HRESULT(WINAPI *LPDIRECTDRAWCREATEEX)(GUID *lpGUID, LPVOID *lplpDD, REFIID iid, IUnknown *pUnkOuter);
-LPDIRECTDRAWENUMERATEEX pfnDirectDrawEnumerateEx = NULL;
-LPDIRECTDRAWCREATEEX pfnDirectDrawCreateEx = NULL;
+// Artscout - 2026: [DX7-PURGE] the DirectDraw create/enumerate function-pointer globals
+// (LPDIRECTDRAWENUMERATEEX/LPDIRECTDRAWCREATEEX) were unused after the DDraw enum removal.
 
 // Device GUIDs
 struct __declspec(uuid("D7B71CFA-4342-11CF-CE67-0120A6C2C935")) DEVGUID_3DFX_VOODOO2_a; // DX7 Beta Driver
@@ -162,12 +165,100 @@ static const D3D11ModeEntry g_d3d11Modes[] =
 };
 static const int g_nD3D11Modes = (int)(sizeof(g_d3d11Modes) / sizeof(g_d3d11Modes[0]));
 
+// Artscout - 2026 (#89): DXGI hardware-adapter enumeration for the GPU selector. HARDWARE adapters only
+// (DXGI_ADAPTER_FLAG_SOFTWARE skipped) so the "video card" combo index maps 1:1 to the backend's adapter
+// pick. Names cached on first call (adapters don't change during a session); GetDxgiAdapter re-enumerates
+// to hand the backend a live IDXGIAdapter1* at device-create time (same skip/order -> same index).
+#define DXGI_MAX_ADAPTERS 16
+static bool s_dxgiAdaptersInit = false;
+static int  s_dxgiAdapterCount = 0;
+static char s_dxgiAdapterNames[DXGI_MAX_ADAPTERS][256];
+
+static void EnsureDxgiAdapters()
+{
+    if (s_dxgiAdaptersInit) return;
+    s_dxgiAdaptersInit = true;
+    s_dxgiAdapterCount = 0;
+
+    IDXGIFactory1 *pFactory = NULL;
+    if (FAILED(CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void **)&pFactory)) or not pFactory)
+        return;
+
+    IDXGIAdapter1 *pAdapter = NULL;
+    for (UINT i = 0; s_dxgiAdapterCount < DXGI_MAX_ADAPTERS and
+                     pFactory->EnumAdapters1(i, &pAdapter) != DXGI_ERROR_NOT_FOUND; ++i)
+    {
+        DXGI_ADAPTER_DESC1 desc;
+        if (SUCCEEDED(pAdapter->GetDesc1(&desc)) and not (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE))
+        {
+            WideCharToMultiByte(CP_ACP, 0, desc.Description, -1,
+                                s_dxgiAdapterNames[s_dxgiAdapterCount], 256, NULL, NULL);
+            s_dxgiAdapterNames[s_dxgiAdapterCount][255] = 0;
+            s_dxgiAdapterCount++;
+        }
+        pAdapter->Release();
+        pAdapter = NULL;
+    }
+    pFactory->Release();
+}
+
+int DeviceManager::GetDxgiAdapterCount()
+{
+    EnsureDxgiAdapters();
+    return s_dxgiAdapterCount;
+}
+
+bool DeviceManager::GetDxgiAdapterName(int index, char *buf, int bufLen)
+{
+    EnsureDxgiAdapters();
+    if (not buf or bufLen <= 0 or index < 0 or index >= s_dxgiAdapterCount) return false;
+    strncpy(buf, s_dxgiAdapterNames[index], bufLen - 1);
+    buf[bufLen - 1] = 0;
+    return true;
+}
+
+// Artscout - 2026 (#89): the chosen adapter index (DisplayOptions.DispVideoCard), set by DXContext::Init
+// before the backend comes up. GetSelectedDxgiAdapter() is a free function so the backends can pull the
+// chosen IDXGIAdapter1* WITHOUT pulling in devmgr.h/dispopts.h (just forward-declare + extern the fn).
+int g_nDispVideoCard = 0;
+
+IDXGIAdapter1 *GetSelectedDxgiAdapter()
+{
+    return DeviceManager::GetDxgiAdapter(g_nDispVideoCard);
+}
+
+IDXGIAdapter1 *DeviceManager::GetDxgiAdapter(int index)
+{
+    if (index < 0) return NULL;
+
+    IDXGIFactory1 *pFactory = NULL;
+    if (FAILED(CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void **)&pFactory)) or not pFactory)
+        return NULL;
+
+    IDXGIAdapter1 *pAdapter = NULL;
+    int hw = 0;
+    for (UINT i = 0; pFactory->EnumAdapters1(i, &pAdapter) != DXGI_ERROR_NOT_FOUND; ++i)
+    {
+        DXGI_ADAPTER_DESC1 desc;
+        if (SUCCEEDED(pAdapter->GetDesc1(&desc)) and not (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE))
+        {
+            if (hw == index) { pFactory->Release(); return pAdapter; }   // keep the ref for the caller
+            hw++;
+        }
+        pAdapter->Release();
+        pAdapter = NULL;
+    }
+    pFactory->Release();
+    return NULL;
+}
+
 bool DeviceManager::GetMode(int driverNum, int devNum, int modeNum, UINT *pWidth, UINT *pHeight, UINT *pDepth)
 {
     static char buffer[80];
     int i = 0;
 
-    if (g_bUseD3D11)
+    // #DX12: the resolution table is API-neutral (GPU mode = D3D11 OR D3D12), not DDraw.
+    if (g_bUseD3D11 or g_bUseD3D12)
     {
         if (modeNum < 0 or modeNum >= g_nD3D11Modes) return false;
         *pWidth  = g_d3d11Modes[modeNum].w;
@@ -311,8 +402,9 @@ DXContext *DeviceManager::CreateContext(int driverNum, int devNum, int resNum, B
 {
     try
     {
-        // PHASE 1: bypassing the DDraw enum (crashes on modern Windows), Init() brings up D3D11Backend
-        if (g_bUseD3D11)
+        // PHASE 1: bypassing the DDraw enum (crashes on modern Windows), Init() brings up the GPU backend.
+        // #DX12: GPU mode = D3D11 OR D3D12 (DXContext::Init picks the backend by flag). Not DDraw.
+        if (g_bUseD3D11 or g_bUseD3D12)
         {
             DXContext *pCtx = new DXContext;
             if (pCtx == NULL) return NULL;
@@ -360,22 +452,11 @@ DXContext *DeviceManager::CreateContext(int driverNum, int devNum, int resNum, B
 
 void DeviceManager::EnumDDDrivers(DeviceManager *pThis)
 {
-    HINSTANCE h = LoadLibrary("ddraw.dll");
-
-    if ( not h) return;
-
+    // Artscout - 2026: [DX7-PURGE] the DirectDraw driver enumeration is gone. Under
+    // D3D11/D3D12 the backend is selected directly; this legacy driver list stays empty
+    // (GetMode() serves a curated resolution table, GetDriverName tolerates an empty list).
+    (void)pThis;
     m_arrDDDrivers.clear();
-
-    // Note that you must know which version of the function to retrieve (see the following text). For this example, we use the ANSI version.
-    LPDIRECTDRAWENUMERATEEX lpDDEnumEx;
-    lpDDEnumEx = (LPDIRECTDRAWENUMERATEEX) GetProcAddress(h, "DirectDrawEnumerateExA");
-
-    // If the function is there, call it to enumerate all display devices attached to the desktop, and any non-display DirectDraw devices.
-    if (lpDDEnumEx) lpDDEnumEx(EnumDDCallbackEx, pThis, DDENUM_ATTACHEDSECONDARYDEVICES |
-                                   DDENUM_NONDISPLAYDEVICES);
-    else DirectDrawEnumerate(EnumDDCallback, pThis);
-
-    FreeLibrary(h);
 }
 
 BOOL WINAPI DeviceManager::EnumDDCallback(GUID FAR *lpGUID, LPSTR lpDriverDescription,
@@ -414,33 +495,15 @@ DeviceManager::DDDriverInfo::DDDriverInfo(GUID guid, LPCTSTR Name, LPCTSTR Descr
 
 void DeviceManager::DDDriverInfo::EnumD3DDrivers()
 {
-    try
-    {
-        IDirectDrawPtr pDD;
-        IDirectDraw7Ptr pDD7;
-        IDirect3D7Ptr pD3D;
-
-        // Create DDRAW object
-        CheckHR(DirectDrawCreateEx(&m_guid, (void **) &pDD, IID_IDirectDraw7, NULL));
-
-        pD3D = pDD;
-        pDD7 = pDD;
-        pDD7->GetDeviceIdentifier(&devID, NULL);
-
-        m_arrD3DDevices.clear();
-        pD3D->EnumDevices(EnumD3DDriversCallback, this);
-
-        pDD7->EnumDisplayModes(NULL, NULL, this, EnumModesCallback);
-
-        ZeroMemory(&m_caps, sizeof(m_caps));
-        m_caps.dwSize = sizeof(m_caps);
-        pDD7->GetCaps(&m_caps, NULL);
-    }
-
-    catch (const _com_error &e)
-    {
-        MonoPrint("DeviceManager::DDDriverInfo::EnumD3DDrivers - Error 0x%X\n", e.Error());
-    }
+    // Artscout - 2026: [DX7-PURGE] the DirectDraw/Direct3D7 driver+mode enumeration
+    // (DirectDrawCreateEx / EnumDevices / EnumDisplayModes / GetCaps) is gone. Under
+    // D3D11/D3D12 the backend is selected directly; this legacy driver list stays empty
+    // (the graphics-settings UI already tolerates an empty D3D-device/mode list).
+    m_arrD3DDevices.clear();
+    m_arrModes.clear();
+    ZeroMemory(&m_caps, sizeof(m_caps));
+    m_caps.dwSize = sizeof(m_caps);
+    ZeroMemory(&devID, sizeof(devID));
 }
 
 HRESULT CALLBACK DeviceManager::DDDriverInfo::EnumD3DDriversCallback(LPSTR lpDeviceDescription,
@@ -500,7 +563,8 @@ LPDDSURFACEDESC2 DeviceManager::DDDriverInfo::GetDisplayMode(int n)
 
 bool DeviceManager::DDDriverInfo::CanRenderWindowed()
 {
-    return m_caps.dwCaps2 bitand DDCAPS2_CANRENDERWINDOWED ? true : false;
+    // Artscout - 2026: [DX7-PURGE] no DDraw caps -- the D3D11/D3D12 backend is always windowed-capable.
+    return true;
 }
 
 bool DeviceManager::DDDriverInfo::Is3dfx()
@@ -529,9 +593,7 @@ DeviceManager::DDDriverInfo::D3DDeviceInfo *DeviceManager::DDDriverInfo::GetDevi
 
 int DeviceManager::DDDriverInfo::FindRGBRenderer()
 {
-    for (int i = 0; i < (int) m_arrD3DDevices.size(); i++)
-        if (IsEqualGUID(m_arrD3DDevices[i].m_devDesc.deviceGUID, IID_IDirect3DRGBDevice)) return i;
-
+    // Artscout - 2026: [DX7-PURGE] no D3D7 RGB software renderer to find (device list is empty under GPU).
     return -1;
 }
 
@@ -547,24 +609,14 @@ DeviceManager::DDDriverInfo::D3DDeviceInfo::D3DDeviceInfo(D3DDEVICEDESC7 &devDes
 
 bool DeviceManager::DDDriverInfo::D3DDeviceInfo::IsHardware()
 {
-    if (IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRGBDevice) or IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRefDevice) or
-        IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DRampDevice) or IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DMMXDevice))
-        return false;
-    else if (IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DHALDevice))
-        return true;
-    else if (IsEqualIID(m_devDesc.deviceGUID, IID_IDirect3DTnLHalDevice))
-        return true;
-    else
-    {
-        ShiAssert(false); // check this
-        return true;
-    }
+    // Artscout - 2026: [DX7-PURGE] no D3D7 software/HAL device GUIDs -- the GPU backend is always hardware.
+    return true;
 }
 
 bool DeviceManager::DDDriverInfo::D3DDeviceInfo::CanFilterAnisotropic()
 {
-    bool bCanDoAnisotropic = (m_devDesc.dpcTriCaps.dwTextureFilterCaps bitand D3DPTFILTERCAPS_MAGFANISOTROPIC) and 
-                             (m_devDesc.dpcTriCaps.dwTextureFilterCaps bitand D3DPTFILTERCAPS_MINFANISOTROPIC);
+    // Artscout - 2026: [DX7-PURGE] no D3D7 caps for anisotropic filtering.
+    bool bCanDoAnisotropic = false;
     return bCanDoAnisotropic;
 }
 
@@ -611,41 +663,12 @@ void DXContext::Shutdown()
     // release DX Engine stuff
     TheDXEngine.Release();
 
-    if (m_pDD)
-        CheckHR(m_pDD->SetCooperativeLevel(m_hWnd, DDSCL_NORMAL));
-
-    if (m_pD3DD)
-    {
-        // free all textures
-        m_pD3DD->SetTexture(0, NULL);
-        m_pD3DD->SetTexture(1, NULL);
-        m_pD3DD->SetTexture(3, NULL);
-
-        // release
-        dwRefCnt = m_pD3DD->Release();
-        // ShiAssert(dwRefCnt == 0);
-        m_pD3DD = NULL;
-    }
-
-    if (m_pD3D)
-    {
-        dwRefCnt = m_pD3D->Release();
-        // ShiAssert(dwRefCnt == 0);
-        m_pD3D = NULL;
-    }
-
-    if (m_pDD)
-    {
-        if (m_bFullscreen)
-        {
-            m_pDD->RestoreDisplayMode();
-            m_pDD->FlipToGDISurface();
-        }
-
-        dwRefCnt = m_pDD->Release();
-        // ShiAssert(dwRefCnt == 0);
-        m_pDD = NULL;
-    }
+    // Artscout - 2026: [DX7-PURGE] no DirectDraw/Direct3D7 device to tear down
+    // (SetCooperativeLevel/SetTexture/RestoreDisplayMode/Release) -- opaque handles stay NULL.
+    (void)dwRefCnt;
+    m_pD3DD = NULL;
+    m_pD3D  = NULL;
+    m_pDD   = NULL;
 
     m_bFullscreen = false;
     m_hWnd = NULL;
@@ -680,12 +703,110 @@ bool DXContext::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFulls
         m_nHeight = nHeight;
         m_hWnd = hWnd;
 
+        // Artscout - 2026 (#89): publish the chosen GPU (video-card combo index) so the backend picks that
+        // DXGI adapter at device-create time instead of the default. -1/OOR -> default adapter.
+        g_nDispVideoCard = DisplayOptions.DispVideoCard;
+
+        // Artscout - 2026: #DX12 Phase 1 -- bring up D3D12Backend and return. On success we clear g_bUseD3D11
+        // so the (concrete) D3D11 render path stays OUT (it would call a NULL g_pD3D11Backend). Phase 1 renders
+        // nothing but the per-frame clear (device+swapchain+fence+present milestone). D3D11/D3D7 untouched when
+        // the flag is off. Ported passes (2D/object/terrain/RTT/OpenXR/view-instancing) come in later phases.
+        {
+            extern bool g_bUseD3D12;
+            if (g_bUseD3D12)
+            {
+                if (g_pD3D12Backend == NULL) g_pD3D12Backend = new D3D12Backend();
+                if (g_pD3D12Backend->Init(hWnd, nWidth, nHeight, nDepth, bFullscreen))
+                {
+                    g_bUseD3D11 = false;   // DX12 owns the frame; keep the D3D11-concrete render path out
+                    { extern bool g_bUseGpu; g_bUseGpu = true; }   // #DX12: GPU render mode (not dead DDraw7)
+                    g_pRenderBackend = g_pD3D12Backend;   // #DX12: active neutral backend
+
+                    // #DX12 Phase 3: bring up the D3D12 renderer (compiles FFEmu.hlsl -> DXBC + root sig + CBs).
+                    // Draw passes are still stubbed, so nothing 3D renders yet AND nothing calls it (render
+                    // sites are not migrated to g_pRenderer). Creating it here validates shader compilation.
+                    if (!g_pD3D12Renderer)
+                    {
+                        g_pD3D12Renderer = new D3D12Renderer();
+                        extern char FalconDataDirectory[];
+                        char shaderDir12[_MAX_PATH];
+                        sprintf(shaderDir12, "%s\\shaders\\", FalconDataDirectory);
+                        if (!g_pD3D12Renderer->Init(shaderDir12))
+                            MonoPrint("D3D12Renderer::Init FAILED (shader compile? dir=%s)\n", shaderDir12);
+                        else
+                            MonoPrint("D3D12Renderer: up (shaders=%s)\n", shaderDir12);
+                    }
+                    g_pRenderer = g_pD3D12Renderer;   // #DX12: active neutral renderer (D3D12; passes = later Phase 3)
+
+                    // #DX12 п.1: the texture manager (TextureHandle::Load creates D3D12 textures + staging SRVs).
+                    if (!g_pD3D12TextureManager)
+                    {
+                        g_pD3D12TextureManager = new D3D12TextureManager();
+                        if (!g_pD3D12TextureManager->Init())
+                            MonoPrint("D3D12TextureManager::Init FAILED\n");
+                        else
+                            MonoPrint("D3D12TextureManager: up\n");
+                    }
+
+                    // #DX12 п.5: bring up OpenXR bound to the D3D12 device/queue (Init pulls them from
+                    // g_pD3D12Backend internally, so the device arg is NULL). Best-effort -- failure keeps flat.
+                    if (g_bUseOpenXR && g_pOpenXRBackend == NULL)
+                    {
+                        g_pOpenXRBackend = new OpenXRBackend();
+                        if (g_pOpenXRBackend->Init(NULL))
+                            MonoPrint("OpenXR: D3D12 backend up\n");
+                        else
+                        {
+                            MonoPrint("OpenXR: D3D12 init failed -- VR disabled, flat path continues\n");
+                            delete g_pOpenXRBackend; g_pOpenXRBackend = NULL; g_bUseOpenXR = false;
+                        }
+                    }
+
+                    // Fill sane device caps (D3D7 GetCaps is not called) so anything that reads them
+                    // doesn't see zeros -- mirrors the D3D11 branch below.
+                    if (m_pD3DHWDeviceDesc)
+                    {
+                        ZeroMemory(m_pD3DHWDeviceDesc, sizeof(*m_pD3DHWDeviceDesc));
+                        m_pD3DHWDeviceDesc->dwMaxTextureWidth  = 16384;
+                        m_pD3DHWDeviceDesc->dwMaxTextureHeight = 16384;
+                        m_pD3DHWDeviceDesc->dwMaxAnisotropy    = 16;
+                        m_pD3DHWDeviceDesc->dwDevCaps          = 0xFFFFFFFF;
+                        m_pD3DHWDeviceDesc->dwTextureOpCaps    = 0xFFFFFFFF;
+                        m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps  = 0xFFFFFFFF;
+                        m_pD3DHWDeviceDesc->dpcTriCaps.dwDestBlendCaps = 0xFFFFFFFF;
+                        m_pD3DHWDeviceDesc->dpcTriCaps.dwSrcBlendCaps  = 0xFFFFFFFF;
+                        m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps    = 0xFFFFFFFF;
+                        m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps     = 0xFFFFFFFF;
+                        m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps   = 0xFFFFFFFF;
+                    }
+
+                    // #DX12: initialize the shared engine (materials, lighting, and the 2D/particle engine --
+                    // DX2D_Init mallocs Dyn2DVertexBuffer[].VbPtr). The D3D11 branch below calls this at :828;
+                    // the D3D12 branch returns before reaching it, so without this the particle trail path
+                    // (DX2D_AddSingle) wrote into a NULL VbPtr -> crash. API-agnostic (no D3D7/D3D11 device use).
+                    TheDXEngine.Setup();
+
+                    SetWindowLong(hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
+                    RECT rcW = { 0, 0, nWidth, nHeight };
+                    AdjustWindowRect(&rcW, WS_OVERLAPPEDWINDOW, FALSE);
+                    SetWindowPos(hWnd, NULL, 0, 0, rcW.right - rcW.left, rcW.bottom - rcW.top,
+                                 SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+                    MonoPrint("DXContext::Init - D3D12 backend up (Phase 1)\n");
+                    return true;
+                }
+                MonoPrint("DXContext::Init - D3D12 init failed, fallback D3D11\n");
+                delete g_pD3D12Backend; g_pD3D12Backend = NULL; g_bUseD3D12 = false;
+            }
+        }
+
         // PHASE 1: bring up D3D11Backend and return; DDraw/D3D7 below is bypassed
         if (g_bUseD3D11)
         {
             if (g_pD3D11Backend == NULL) g_pD3D11Backend = new D3D11Backend();
             if (g_pD3D11Backend->Init(hWnd, nWidth, nHeight, nDepth, bFullscreen))
             {
+                g_pRenderBackend = g_pD3D11Backend;   // #DX12: active neutral backend (D3D11)
+                { extern bool g_bUseGpu; g_bUseGpu = true; }   // #DX12: GPU render mode (not dead DDraw7)
                 // PHASE 4: under D3D11 the D3D7 GetCaps() is not called -- fill D3DDEVICEDESC7
                 // with sane caps, else dwMaxTextureWidth/Height=0 breaks creation
                 // of cockpit textures (empty m_arrTex -> crash), and CheckCaps fails features.
@@ -719,6 +840,7 @@ bool DXContext::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFulls
                     else
                         MonoPrint("D3D11Renderer: 3D renderer up (shaders: %s)\n", shaderDir);
                 }
+                g_pRenderer = g_pD3D11Renderer;   // #DX12: active neutral renderer (D3D11)
 
                 // PHASE 3: the texture manager (TextureHandle::Load creates D3D11 textures).
                 if (!g_pD3D11TextureManager)
@@ -773,58 +895,9 @@ bool DXContext::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFulls
             delete g_pD3D11Backend; g_pD3D11Backend = NULL; g_bUseD3D11 = false;
         }
 
-        // Create DDRAW object
-        CheckHR(DirectDrawCreateEx(&m_guidDD, (void **) &m_pDD, IID_IDirectDraw7, NULL));
-
-        m_pcapsDD->dwSize = sizeof(*m_pcapsDD);
-        CheckHR(m_pDD->GetCaps(m_pcapsDD, NULL));
-        CheckHR(m_pDD->GetDeviceIdentifier(m_pDevID, NULL));
-
-        sprintf(g_CardDetails, "DXContext::Init - DriverInfo - \"%s\" - \"%s\", Vendor: %d, Device: %d, SubSys: %d, Rev: %d, Product: %d, Version: %d, SubVersion: %d, Build: %d\n",
-                m_pDevID->szDriver, m_pDevID->szDescription,
-                m_pDevID->dwVendorId, m_pDevID->dwDeviceId, m_pDevID->dwSubSysId, m_pDevID->dwRevision,
-                HIWORD(m_pDevID->liDriverVersion.HighPart), LOWORD(m_pDevID->liDriverVersion.HighPart),
-                HIWORD(m_pDevID->liDriverVersion.LowPart), LOWORD(m_pDevID->liDriverVersion.LowPart)); // JB 010215
-        MonoPrint("%s", g_CardDetails);  // JB 010215
-
-        DWORD m_dwCoopFlags = NULL;
-        m_dwCoopFlags or_eq DDSCL_FPUPRESERVE; // OW FIXME: check if this can be eliminated by eliminating ALL controlfp calls in all files
-
-        if (g_bForceDXMultiThreadedCoopLevel) m_dwCoopFlags or_eq DDSCL_MULTITHREADED;
-
-        if (bFullscreen) m_dwCoopFlags or_eq DDSCL_EXCLUSIVE bitor DDSCL_FULLSCREEN bitor DDSCL_ALLOWREBOOT;
-        else m_dwCoopFlags or_eq DDSCL_NORMAL;
-
-        CheckHR(m_pDD->SetCooperativeLevel(m_hWnd, m_dwCoopFlags));
-
-        if (bFullscreen) CheckHR(m_pDD->SetDisplayMode(nWidth, nHeight, nDepth, 0, NULL));
-
-        /*
-         // Vendor specific workarounds
-         if(IsEqualGUID(m_pDevID->guidDeviceIdentifier, __uuidof(DEVGUID_3DFX_VOODOO2)) and not bFlip)
-         {
-         // The V2 (Beta 1.0 DX Driver) cannot render to offscreen plain surfaces only to flipping primary surfaces
-         m_guidD3D = IID_IDirect3DRGBDevice; // force software renderer
-         }
-        */
-
-        //JAM 25Oct03 - Let's avoid user error and disable these.
-        // if(IsEqualIID(m_guidD3D, IID_IDirect3DRGBDevice) or IsEqualIID(m_guidD3D, IID_IDirect3DRefDevice) or
-        // IsEqualIID(m_guidD3D, IID_IDirect3DRampDevice) or IsEqualIID(m_guidD3D, IID_IDirect3DMMXDevice))
-        // m_eDeviceCategory = D3DDeviceCategory_Software;
-        // if(IsEqualIID(m_guidD3D, IID_IDirect3DHALDevice))
-        m_eDeviceCategory = D3DDeviceCategory_Hardware;
-        // else if(IsEqualIID(m_guidD3D, IID_IDirect3DTnLHalDevice))
-        //FIXME: TnL
-        // m_eDeviceCategory = D3DDeviceCategory_Hardware_TNL;
-        // else
-        // {
-        // m_eDeviceCategory = D3DDeviceCategory_Software; // assume its software
-        // ShiAssert(false); // check this
-        // }
-        //JAM
-
-        return true;
+        // Artscout - 2026: [DX7-PURGE] no DirectDraw/Direct3D7 device fallback -- if the
+        // D3D11/D3D12 backend failed to init above there is nothing else to try.
+        return false;
     }
 
     catch (const _com_error &e)
@@ -846,23 +919,22 @@ bool DXContext::SetRenderTarget(IDirectDrawSurface7 *pRenderTarget)
 
 void DXContext::EnumZBufferFormats(void *parr)
 {
+    // Artscout - 2026: [DX7-PURGE] no DDraw Z-buffer format enumeration (depth is the backend's job).
     ((PIXELFMT_ARRAY *) parr)->clear();
-    m_pD3D->EnumZBufferFormats(m_guidD3D, EnumZBufferFormatsCallback, parr);
 }
 
 HRESULT CALLBACK DXContext::EnumZBufferFormatsCallback(LPDDPIXELFORMAT lpDDPixFmt, LPVOID lpContext)
 {
-    if (lpDDPixFmt->dwFlags bitand DDPF_ZBUFFER)
-    {
-        PIXELFMT_ARRAY *pThis = (PIXELFMT_ARRAY *)lpContext;
-        pThis->push_back(*lpDDPixFmt);
-    }
-
-    return D3DENUMRET_OK;
+    (void)lpDDPixFmt; (void)lpContext;   // [DX7-PURGE] unused
+    return 0;
 }
 
 void DXContext::AttachDepthBuffer(IDirectDrawSurface7 *p)
 {
+    // Artscout - 2026: [DX7-PURGE] DDraw depth-surface creation/attach removed (D3D11/D3D12 own depth).
+    (void)p;
+    return;
+#if 0
     //JAM 25Jul03
     //return;
 
@@ -916,182 +988,25 @@ void DXContext::AttachDepthBuffer(IDirectDrawSurface7 *p)
     }
 
     else MonoPrint("DXContext::AttachDepthBuffer() - Warning: No Z-Buffer formats \n");
+#endif
 }
 
 void DXContext::CheckCaps()
 {
-#ifdef _DEBUG
-    MonoPrint("-- DXContext - Start of Caps report\n");
-
-    if (m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_SEPARATETEXTUREMEMORIES)
-        MonoPrint(" Device has separate texture memories per stage. \n");
-
-    if (m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_TEXTURENONLOCALVIDMEM)
-        MonoPrint(" Device supports AGP texturing\n");
-
-    if ( not (m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_FLOATTLVERTEX))
-        MonoPrint(" Device does not accepts floating point for post-transform vertex data. \n");
-
-    if ( not (m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_TLVERTEXSYSTEMMEMORY))
-        MonoPrint(" Device does not accept TL VBs in system memory.\n");
-
-    if ( not (m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_TLVERTEXVIDEOMEMORY))
-        MonoPrint(" Device does not accept TL VBs in video memory.\n");
-
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps bitand D3DPRASTERCAPS_DITHER))
-        MonoPrint(" No dithering\n");
-
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps bitand D3DPRASTERCAPS_FOGRANGE))
-        MonoPrint(" No range based fog\n");
-
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps bitand D3DPRASTERCAPS_FOGVERTEX))
-        MonoPrint(" No vertex fog\n");
-
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps bitand D3DPRASTERCAPS_ZTEST))
-        MonoPrint(" No Z Test support\n");
-
-    if (m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps == D3DPCMPCAPS_ALWAYS or
-        m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps == D3DPCMPCAPS_NEVER)
-        MonoPrint(" No Alpha Test support\n");
-
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwSrcBlendCaps bitand D3DPBLENDCAPS_SRCALPHA))
-        MonoPrint(" SrcBlend SRCALPHA not supported\n");
-
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwDestBlendCaps bitand D3DPBLENDCAPS_INVSRCALPHA))
-        MonoPrint(" DestBlend INVSRCALPHA not supported\n");
-
-    if ( not (m_pcapsDD->dwCaps bitand DDCAPS_COLORKEY and 
-          m_pcapsDD->dwCKeyCaps bitand DDCKEYCAPS_DESTBLT and 
-          m_pD3DHWDeviceDesc->dwDevCaps bitand D3DDEVCAPS_DRAWPRIMTLVERTEX))
-        MonoPrint(" Insufficient color key support\n");
-
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps bitand D3DPSHADECAPS_ALPHAFLATBLEND))
-        MonoPrint(" No alpha blending with flat shading\n");
-
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps bitand D3DPSHADECAPS_COLORGOURAUDRGB))
-        MonoPrint(" No gouraud shading\n");
-
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps bitand D3DPSHADECAPS_SPECULARFLATRGB))
-        MonoPrint(" No specular flat shading\n");
-
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps bitand D3DPSHADECAPS_SPECULARGOURAUDRGB))
-        MonoPrint(" No specular gouraud shading\n");
-
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps bitand D3DPSHADECAPS_FOGGOURAUD))
-        MonoPrint(" No gouraud fog\n");
-
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_ALPHA))
-        MonoPrint(" No alpha textures\n");
-
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_ALPHAPALETTE))
-        MonoPrint(" No palettized alpha textures\n");
-
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_COLORKEYBLEND))
-        MonoPrint(" No color key blending support\n");
-
-    if (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_POW2)
-        MonoPrint(" Textures must be power of 2\n");
-
-    if (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_SQUAREONLY)
-        MonoPrint(" Textures must be square\n");
-
-    if ( not (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_TRANSPARENCY))
-        MonoPrint(" No texture transparency\n");
-
-    if ( not (m_pD3DHWDeviceDesc->dwTextureOpCaps bitand D3DTEXOPCAPS_BLENDDIFFUSEALPHA)) // required for MPR_TF_ALPHA
-        MonoPrint(" No D3DTOP_BLENDDIFFUSEALPHA (MPR_TF_ALPHA wont work ie. smoke trails)\n");
-
-    MonoPrint("-- DXContext - End of Caps report\n");
-#endif
+    // Artscout - 2026: [DX7-PURGE] D3D7 device-caps debug report removed (m_pD3DHWDeviceDesc is dead).
 }
 
 bool DXContext::ValidateD3DDevice()
 {
-#ifdef _DEBUG
-    DWORD dwPasses = 0;
-    HRESULT hr = m_pD3DD->ValidateDevice(&dwPasses);
-
-    if (FAILED(hr))
-    {
-        char *strError = "Unknown error";
-
-        switch (hr)
-        {
-            case DDERR_INVALIDOBJECT:
-                strError = "DDERR_INVALIDOBJECT";
-                break;
-
-            case DDERR_INVALIDPARAMS:
-                strError = "DDERR_INVALIDPARAMS";
-                break;
-
-            case D3DERR_CONFLICTINGTEXTUREFILTER:
-                strError = "D3DERR_CONFLICTINGTEXTUREFILTER";
-                break;
-
-            case D3DERR_CONFLICTINGTEXTUREPALETTE:
-                strError = "D3DERR_CONFLICTINGTEXTUREPALETTE";
-                break;
-
-            case D3DERR_TOOMANYOPERATIONS:
-                strError = "D3DERR_TOOMANYOPERATIONS";
-                break;
-
-            case D3DERR_UNSUPPORTEDALPHAARG:
-                strError = "D3DERR_UNSUPPORTEDALPHAARG";
-                break;
-
-            case D3DERR_UNSUPPORTEDALPHAOPERATION:
-                strError = "D3DERR_UNSUPPORTEDALPHAOPERATION";
-                break;
-
-            case D3DERR_UNSUPPORTEDCOLORARG:
-                strError = "D3DERR_UNSUPPORTEDCOLORARG";
-                break;
-
-            case D3DERR_UNSUPPORTEDCOLOROPERATION:
-                strError = "D3DERR_UNSUPPORTEDCOLOROPERATION";
-                break;
-
-            case D3DERR_UNSUPPORTEDFACTORVALUE:
-                strError = "D3DERR_UNSUPPORTEDFACTORVALUE";
-                break;
-
-            case D3DERR_UNSUPPORTEDTEXTUREFILTER:
-                strError = "D3DERR_UNSUPPORTEDTEXTUREFILTER";
-                break;
-
-            case D3DERR_WRONGTEXTUREFORMAT:
-                strError = "D3DERR_WRONGTEXTUREFORMAT";
-                break;
-        }
-
-        MonoPrint(">>> DXContext::ValidateD3DDevice: ValidateDevice failed with 0x%X (%s) - %d passes required\n",
-                  hr, strError, dwPasses);
-    }
-
-    return SUCCEEDED(hr);
-#else
+    // Artscout - 2026: [DX7-PURGE] D3D7 ValidateDevice removed (no D3D7 device under GPU).
     return true;
-#endif
 }
 
 DWORD DXContext::TestCooperativeLevel()
 {
-    if (g_bUseD3D11) return DD_OK;	// PHASE 1: no DDraw coop under D3D11
-    HRESULT hr = m_pDD->TestCooperativeLevel();
-
-    if (hr not_eq DD_OK)
-    {
-        do
-        {
-            Sleep(100);
-            hr = m_pDD->TestCooperativeLevel();
-        }
-        while (hr not_eq DD_OK);
-
-        return S_FALSE; // surface were lost
-    }
-
-    return DD_OK; // no change
+    // #DX12: GPU mode (D3D11 OR D3D12) has no DDraw device -> no cooperative-level check.
+    extern bool g_bUseD3D12;
+    if (g_bUseD3D11 or g_bUseD3D12) return DD_OK;	// no DDraw coop under a GPU backend
+    // Artscout - 2026: [DX7-PURGE] no DDraw TestCooperativeLevel under a GPU backend.
+    return DD_OK;
 }

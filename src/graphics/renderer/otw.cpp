@@ -862,14 +862,16 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
     // Terrain fog (D3D11): once per frame set the haze color and distance.
     // The shader fogs the screen pass by distance (1/rhw) -> distant terrain
     // dissolves into haze (removes the 'steps' / 'too close' effect).
-    if (g_bUseD3D11 and g_pD3D11Renderer)
+    // #DX12 A7: terrain haze on BOTH GPU backends (SetFog exists on D3D12Renderer). Was g_bUseD3D11-only.
+    extern bool g_bUseGpu;
+    if (g_bUseGpu and g_pRenderer)
     {
         Tcolor *fc = GetFogColor();
         unsigned long argb = 0xFF000000u
             | ((unsigned long)(fc->r * 255.0f) << 16)
             | ((unsigned long)(fc->g * 255.0f) << 8)
             | ((unsigned long)(fc->b * 255.0f));
-        g_pD3D11Renderer->SetFog(argb, haze_start, haze_start + haze_depth);
+        g_pRenderer->SetFog(argb, haze_start, haze_start + haze_depth);
     }
     // OK - Here it kills the lights from the Pit, as the Pit has is own call out of the DrawScene
     // Passed into the DX Engine, at the end of any data flush, as it's the end of a scene

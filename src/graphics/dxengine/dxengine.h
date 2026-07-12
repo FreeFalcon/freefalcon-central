@@ -6,8 +6,7 @@
 
 
 
-#include <ddraw.h>
-#include <d3d.h>
+#include "d3d7compat.h"
 #include <d3dxcore.h>
 #include <d3dxmath.h>
 #include "../include/TexBank.h"

@@ -1,6 +1,8 @@
 #include "Graphics/Include/canvas3d.h"
 #include "Graphics/DXEngine/OpenXRBackend.h"   // VR: HMD head-tracking (independent of TrackIR)
 #include "Graphics/DXEngine/D3D11Backend.h"     // Artscout - 2026 (VR): eye size for click hit-test scaling
+#include "Graphics/DXEngine/D3D12Backend.h"     // #DX12 A2: neutral eye size (SceneW/H) for the VR hit-test under D3D12
+#include "Graphics/DXEngine/d3d11/D3D11Renderer.h"  // #DX12 A3: neutral g_pRenderer (IRenderer) + full D3D11_TLVERTEX for the controller model
 #include "Graphics/Include/drawbsp.h"
 #include "Graphics/Include/renderow.h"
 #include "Graphics/Include/texbank.h"   // PHASE 5: TheTextureBank.WaitUpdates() for synchronous loading of cockpit textures
@@ -2034,10 +2036,25 @@ void OTWDriverClass::VCock_DrawControllerModel(void)
         if (not mc->srvTried)
         {
             mc->srvTried = true;
-            if (mc->tex[0] and g_pD3D11Backend) { char tp[256]; sprintf(tp, "%scontrollers\\%s", COCKPIT_DIR, mc->tex); mc->srv = g_pD3D11Backend->LoadModelTexture(tp); }
+            // #DX12 A3: load + draw the controller/hand model through the NEUTRAL renderer (both backends have
+            // LoadTextureFile/DrawColorTrisScreen). The old g_pD3D11Backend wrappers were NULL under D3D12 so the
+            // hands never drew. Convert VrTriVtx -> TLVERTEX inline (same as the old D3D11Backend::DrawVrModelTris).
+            extern IRenderer* g_pRenderer;
+            if (mc->tex[0] and g_pRenderer) { char tp[256]; sprintf(tp, "%scontrollers\\%s", COCKPIT_DIR, mc->tex); mc->srv = (void*)g_pRenderer->LoadTextureFile(tp); }
         }
-        if (g_pD3D11Backend and not sv.empty())
-            g_pD3D11Backend->DrawVrModelTris(&sv[0], (int)sv.size(), mc->srv, g_bVrModelOpaque ? 1 : 0, (int)g_fVrModelCull);
+        extern IRenderer* g_pRenderer;
+        if (g_pRenderer and not sv.empty())
+        {
+            static std::vector<D3D11_TLVERTEX> tl; tl.resize(sv.size());
+            for (size_t i = 0; i < sv.size(); ++i)
+            {
+                tl[i].sx = sv[i].x; tl[i].sy = sv[i].y; tl[i].sz = 0.0f; tl[i].rhw = 1.0f;
+                tl[i].color = sv[i].color; tl[i].specular = 0;
+                tl[i].tu0 = sv[i].u; tl[i].tv0 = sv[i].v; tl[i].tu1 = sv[i].u; tl[i].tv1 = sv[i].v;
+            }
+            g_pRenderer->DrawColorTrisScreen(tl.data(), (int)sv.size(), (ID3D11ShaderResourceView*)mc->srv,
+                                             g_bVrModelOpaque ? 1 : 0, (int)g_fVrModelCull);
+        }
     }
 }
 
@@ -3450,8 +3467,12 @@ void OTWDriverClass::VCock_Exec(void)
             // composited at infinity along the boresight (g_rttWorldOfs=headOrigin at the composite below),
             // so leave the 2D offset at 0 to avoid double-compensation. In the flat path the 3D glass is
             // never active, so the original fake collimation keeps working there.
-            const bool hudGlassActive = g_bHud3DGlass
-                and g_pD3D11Backend and g_pD3D11Backend->XrEyeActive();
+            // #DX12 A2: backend-neutral "in a VR eye pass" (was g_pD3D11Backend->XrEyeActive() = false under D3D12,
+            // so the fake-collimation fallback wrongly ran alongside the real glass collimation). CurrentEye()>=0
+            // works on both backends -- matches the hudGlass gate below.
+            extern bool g_bVrFrameActive;
+            const bool hudGlassActive = g_bHud3DGlass and g_bVrFrameActive
+                and g_pOpenXRBackend and g_pOpenXRBackend->CurrentEye() >= 0;
             if (g_bHudCollimate and not hudGlassActive)
             {
                 XOffset = g_fHudCollimateScale * 12.0f * headPan.y / (pt[1].y - pt[0].y) * tanf(DTR * 60.0f);
@@ -3714,6 +3735,29 @@ void OTWDriverClass::VCock_Exec(void)
         // renderer->FinishFrame();
         renderer->FinishRtt();
 
+        // Artscout - 2026 (VR panel-drift FIX -- ROOT). The RTT atlas render leaves the engine at the FLAT desktop
+        // resolution: imagebuf::FinishRtt restores gScreenSize/viewport from D3D12Backend::SceneW(), which falls
+        // back to m_nWidth = the 1920x1080 back buffer. So the RTT composite computed the panel quads at 1920x1080
+        // while the cockpit BSP was drawn at the EYE render size (OpenXR: focus 2756x2722, periphery 480x474) ->
+        // different viewport + pixel scale -> the panel symbology slid vs the BSP with head turn (the long-hunted
+        // quad-views panel drift; the mouse g_fVrDetectBiasX* knobs were likely band-aids for the same mismatch).
+        // Restore THIS eye's OpenXR render size for the composite: VR_SetRes + SetViewport fix the CPU projection
+        // scale (TransformPoint), SetViewportSize fixes gScreenSize (VS_Screen divisor) + the GPU viewport. NO
+        // SetCamera (T stays -- re-SetCamera here regressed to "RTT rides all over"). VR eye pass only.
+        extern bool g_bVrFrameActive;
+        if (g_pOpenXRBackend && g_bVrFrameActive)
+        {
+            int ew = g_pOpenXRBackend->CurEyeW(), eh = g_pOpenXRBackend->CurEyeH();
+            if (ew > 0 && eh > 0)
+            {
+                renderer->VR_SetRes(ew, eh);
+                renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
+                extern IRenderer* g_pRenderer;
+                if (g_pRenderer) g_pRenderer->SetViewportSize(ew, eh);
+            }
+        }
+
+
         // renderer->StartDraw();
 
         // Artscout - 2026 (VR HUD 3D glass): composite the HUD at OPTICAL INFINITY along the boresight.
@@ -3722,8 +3766,13 @@ void OTWDriverClass::VCock_Exec(void)
         // stable under head translation, conformal with the world. Only the HUD gets the offset; the
         // panel displays (RWR/DED/PFL) keep g_rttWorldOfs=0 so they stay fixed on their cockpit panels.
         extern bool g_bHud3DGlass;
-        const bool hudGlass = g_bHud3DGlass
-            and g_pD3D11Backend and g_pD3D11Backend->XrEyeActive();
+        // #DX12 A2: "in a VR eye pass" must be backend-NEUTRAL. It was gated on g_pD3D11Backend->XrEyeActive(),
+        // which is NULL/false under D3D12 -> the HUD collimation (g_rttWorldOfs=headOrigin below) never engaged,
+        // while the world-cam (rttWorldCam, set above regardless of backend) still mapped the canvas into the
+        // world -> mismatch -> the HUD flew off ("up in the sky"). CurrentEye()>=0 works on both backends.
+        extern bool g_bVrFrameActive;
+        const bool hudGlass = g_bHud3DGlass and g_bVrFrameActive
+            and g_pOpenXRBackend and g_pOpenXRBackend->CurrentEye() >= 0;
         if (hudGlass)
         {
             // Arm the aperture stencil clip BEFORE the glass plate: the plate (drawn at the PHYSICAL glass
@@ -3771,6 +3820,12 @@ void OTWDriverClass::VCock_Exec(void)
             g_rttCanvasFwd = 0.0f;
         }
 
+        // Artscout - 2026: DED/PFL/MFD composite. The old VrMfdFwd forward-push (compensating a "floats in
+        // front" parallax) is GONE -- that was the aspect-leak drift, fixed at its root in SetVRFrustum
+        // (GPU m00 = 2/w, matching the CPU); the panels now seat correctly with no push.
+        extern float g_rttCanvasFwd;
+        g_rttCanvasFwd = 0.0f;
+
         if (vDEDrenderer)
             vDEDrenderer->DrawRttQuad();
 
@@ -3795,9 +3850,10 @@ void OTWDriverClass::VCock_Exec(void)
                 MfdDisplay[1]->DrawRttComposite();
             }
         }
+        g_rttCanvasFwd = 0.0f;   // Artscout - 2026 (VR DX12 quad): reset the DED/PFL/MFD forward-push
 
-        // DIAG (RTT): raw atlas overlay -- DISABLED (diagnosis obtained: uneven height = texel-bleed
-        // of font rows, fixed by an inset). Enable if needed.
+        // DIAG (RTT): raw atlas overlay -- DISABLED again (diagnosis: the atlas HAS content, the display render
+        // works; the regression was the #615 drop, fixed by SetDepthTargetBound). Re-enable only to re-check.
         //renderer->DrawRttDebugOverlay();
     }
 
@@ -3846,8 +3902,10 @@ void OTWDriverClass::VCock_Exec(void)
     //              In FLAT it is always true (no views); in stereo CurrentEye()<=0; in quad it selects the
     //              periphery. xrQuad/xrStereo are split out so the quad focus-projection can be tuned alone.
     extern bool g_bVrFrameActive;
-    const bool xrPick   = g_bVrFrameActive and g_pD3D11Backend and g_pD3D11Backend->XrEyeActive()
-                          and g_pD3D11Backend->XrEyeW() > 0 and g_pOpenXRBackend != NULL;
+    // #DX12 A2: backend-neutral VR-pick gate. Was g_pD3D11Backend->XrEyeActive()/XrEyeW() (NULL/false under
+    // D3D12 -> the VR mouse hit-test fell back to the flat path in the headset). CurrentEye()>=0 = in a real
+    // stereo eye pass on either backend; the eye size is read neutrally below (SceneW/H under D3D12).
+    const bool xrPick   = g_bVrFrameActive and g_pOpenXRBackend and g_pOpenXRBackend->CurrentEye() >= 0;
     // Artscout - 2026 (#58/#60): branch off the ACTUAL session view config (IsQuadViews), not the
     // g_bUseQuadViews option -- the session is created once and not recreated on an in-game toggle, so the
     // option can disagree with reality until restart. Reality keeps the mouse calibration matched to the render.
@@ -3863,8 +3921,12 @@ void OTWDriverClass::VCock_Exec(void)
     // (default == quad values), else the quad set. Flat path never reads these (xrPick false).
     extern float g_fVrCursorMagnet, g_fVrDetectBiasX, g_fVrDetectBiasY, g_fVrCursorIpd;
     extern float g_fVrCursorMagnetStereo, g_fVrDetectBiasXStereo, g_fVrDetectBiasYStereo, g_fVrCursorIpdStereo;
+    // Artscout - 2026 (VR DX12): the D3D12 stereo eye maps the cursor ~65px differently from D3D11, so the
+    // horizontal detect bias that lines the hit-test up with the DRAWN cursor differs per backend (D3D11 -245,
+    // D3D12 -180, both tuned in-headset). Use the D3D12 variant on the D3D12 path; D3D11 keeps its value.
+    extern float g_fVrDetectBiasXStereoDx12; extern bool g_bUseD3D12;
     const float vrMagnet  = xrStereo ? g_fVrCursorMagnetStereo : g_fVrCursorMagnet;
-    const float vrBiasX   = xrStereo ? g_fVrDetectBiasXStereo  : g_fVrDetectBiasX;
+    const float vrBiasX   = xrStereo ? (g_bUseD3D12 ? g_fVrDetectBiasXStereoDx12 : g_fVrDetectBiasXStereo) : g_fVrDetectBiasX;
     const float vrBiasY   = xrStereo ? g_fVrDetectBiasYStereo  : g_fVrDetectBiasY;
     const float vrCursIpd = xrStereo ? g_fVrCursorIpdStereo    : g_fVrCursorIpd;
 
@@ -4079,6 +4141,75 @@ void OTWDriverClass::VCock_Exec(void)
                 gTimeLastMouseMove = vuxRealTime;
             }
         }
+
+        // Artscout - 2026 (#58 TRUE 3D MOUSE): when NO controller is active, the MOUSE drives the SAME 3D ray
+        // pick as the controller -- a ray from the EYE through the cursor's NDC direction. This is fully
+        // resolution-independent (NDC, not pixels), so it sidesteps the desktop-vs-eye-res mismatch that the old
+        // 2D projected-button pick (+ g_fVrDetectBias* band-aids) suffered. rO = eye origin (camera-centric frame,
+        // like g_vrCursorAnchor); rD = headBasis(at) + tanX*right + tanY*up, tanX/Y = the eye-frustum tangent at
+        // the cursor NDC. fireMb = the OS mouse click (Button3DList.clicked). Sets the SAME anchor state the
+        // controller does -> the per-eye cross/ring draw + the click override (4564) reuse it verbatim.
+        else if (xrPick and xrView0)
+        {
+            extern int gxPos, gyPos;
+            extern float g_fVrRayReach, g_fVrMouseRayX, g_fVrMouseRayY, g_fVrMouseRayRadius;
+            const float dw = (float)DisplayOptions.DispWidth, dh = (float)DisplayOptions.DispHeight;
+            if (dw > 0.0f and dh > 0.0f)
+            {
+                const float sc = B3D_POSITION_SCALING;
+                // Unproject the desktop cursor to a body ray via the renderer's OWN inverse (frame-correct: it
+                // uses cameraRot + the eye FOV that SetVRFrustum(view0)+SetCamera set above, exactly the transform
+                // the buttons are projected with). NDC = 2*px/DispSize-1 -> resolution-independent. (The earlier
+                // hand-built head-basis ray was in the wrong frame -> t<0, all buttons "behind" -> no hit.)
+                float ndcx = ((2.0f * (float)gxPos / dw) - 1.0f) * g_fVrMouseRayX;
+                float ndcy = ((2.0f * (float)gyPos / dh) - 1.0f) * g_fVrMouseRayY;
+                Tpoint rD; renderer->UnprojectNdc(ndcx, ndcy, &rD);
+                // DIAG confirmed: the Button3DList frame's forward is -x vs the unproject's +x (engine looks down
+                // -Z; UnTransformPoint's sz=+1 comes out reversed for our button compare). Negate so t>0.
+                rD.x = -rD.x; rD.y = -rD.y; rD.z = -rD.z;
+                Tpoint rO = { 0.0f, 0.0f, 0.0f };   // eye at origin (camera-centric frame)
+                int fireMb = Button3DList.clicked;  // OS mouse click (1=left, 2=right); 0 = hover only
+
+                int bestAny = -1; float bestAnyAng = 1.0e30f; float bestAnyT = 0.0f; Tpoint anyPos = { 0, 0, 0 };
+                int bestFire = -1; float bestFireAng = 1.0e30f;
+                // Also track the absolute nearest-perp button (ignoring the t/radius gate) -- its depth dPt seats
+                // the FREE cursor at the panel plane so it fuses (see the anchor depth below).
+                int   dPi = -1; float dPperp = 1.0e30f, dPt = 0.0f;
+                for (i = 0; i < Button3DList.numbuttons; i++)
+                {
+                    Tpoint P = Button3DList.buttons[i].loc;
+                    P.x += headPan.x * sc; P.y += headPan.y * sc; P.z += headPan.z * sc;
+                    float wx = P.x - rO.x, wy = P.y - rO.y, wz = P.z - rO.z;
+                    float t  = wx * rD.x + wy * rD.y + wz * rD.z;
+                    float qx = wx - t * rD.x, qy = wy - t * rD.y, qz = wz - t * rD.z;
+                    float perp = sqrtf(qx * qx + qy * qy + qz * qz);
+                    if (t > 1.0f and perp < dPperp) { dPperp = perp; dPi = i; dPt = t; }
+                    if (t <= 1.0f) continue;
+                    if (perp >= Button3DList.buttons[i].dist * g_fVrMouseRayRadius) continue;
+                    float ang = perp / t;
+                    if (ang < bestAnyAng) { bestAnyAng = ang; bestAnyT = t; bestAny = i; anyPos = P; }
+                    if (fireMb and Button3DList.buttons[i].mousebutton == fireMb and ang < bestFireAng) { bestFireAng = ang; bestFire = i; }
+                }
+
+                // Cursor depth along the ray: on a hit -> the button depth; free-aim -> the NEAREST button's
+                // depth (dPt) so the cursor sits at the panel the user looks at. A fixed g_fVrRayReach put the
+                // free cursor CLOSER than the panel -> the two eyes saw it at different positions (per-eye
+                // disparity for the wrong depth) so it "doubled" until it snapped onto a button. Reach is only
+                // the fallback when no button is anywhere near the ray.
+                float anchorT = (bestAny >= 0) ? bestAnyT : ((dPi >= 0 and dPt > 1.0f) ? dPt : g_fVrRayReach);
+                g_vrCursorAnchor.x = rO.x + rD.x * anchorT;
+                g_vrCursorAnchor.y = rO.y + rD.y * anchorT;
+                g_vrCursorAnchor.z = rO.z + rD.z * anchorT;
+                g_vrCursorAnchorValid   = true;
+                g_vrCursorAnchorButton  = bestAny;
+                g_vrCursorAnchorSnapped = (bestAny >= 0);
+                g_vrRayOrigin = rO; g_vrRayDir = rD; g_vrRayActive = true;
+                g_vrCtrlRayActive = true;   // stand down the old 2D VR pick (the 3D ray drives it now)
+                if (bestAny >= 0) { gSelectedCursor = 9; g_vrHitPoint = anyPos; g_vrHitValid = true; }
+                if (fireMb and bestFire >= 0) { g_vrCursorAnchorButton = bestFire; g_vrCursorAnchorSnapped = true; }
+                gTimeLastMouseMove = vuxRealTime;
+            }
+        }
     }
 
     // Artscout - 2026 (VR controllers): PER-EYE stereo render of the beam + endpoint cross + controller
@@ -4090,7 +4221,12 @@ void OTWDriverClass::VCock_Exec(void)
     // Drawing in BOTH eyes with the correct per-eye disparity lets the cross fuse binocularly AT the switch
     // -- a view-0-only (mono) cross floats at the wrong depth (rivalry), which is why it read as "off".
     // The pick (anchor / origin / grip) is computed once in view 0 above and reused for every eye pass.
-    if (g_vrRayActive and g_vrCursorAnchorValid and xrPick and g_pOpenXRBackend)
+    // Artscout - 2026 (#58 true 3D mouse): in QUAD-VIEWS draw the cursor ring/cross ONLY in the FOCUS views
+    // (curEye 2,3 -- the gaze-tracked high-res insets), NOT the periphery (0,1). Periphery is low-res (~480px)
+    // so the ring renders huge/ugly there, and drawing in BOTH focus+periphery for one eye makes it "double" at
+    // the seam. Stereo (2 views) is unaffected (not quad). The pick already ran in view 0; only the DRAW is gated.
+    if (g_vrRayActive and g_vrCursorAnchorValid and xrPick and g_pOpenXRBackend
+        and not (g_pOpenXRBackend->IsQuadViews() and g_pOpenXRBackend->CurrentEye() < 2))
     {
         // Re-assert THIS eye's projection + camera. Between VCock_DrawThePit (which set the per-eye camera)
         // and here, DrawScene and the RTT display quads disturb the renderer camera, and the view-0 setup
@@ -4115,7 +4251,12 @@ void OTWDriverClass::VCock_Exec(void)
             else
             {
                 float hh = (efr - efl) * 0.5f;
-                int   ew = g_pD3D11Backend->XrEyeW(), eh = g_pD3D11Backend->XrEyeH();
+                // #DX12 A2: neutral eye size -- under D3D12 the eye render size is the backend's scene target
+                // (SceneW/H, set per eye by BeginEyeFrame); under D3D11 it's XrEyeW/H. (g_pD3D11Backend is NULL
+                // under D3D12, so the old direct deref would crash now that xrPick engages here.)
+                extern bool g_bUseD3D12;
+                int   ew = g_bUseD3D12 ? g_pD3D12Backend->SceneW() : (g_pD3D11Backend ? g_pD3D11Backend->XrEyeW() : 0);
+                int   eh = g_bUseD3D12 ? g_pD3D12Backend->SceneH() : (g_pD3D11Backend ? g_pD3D11Backend->XrEyeH() : 0);
                 float vhalf = (ew > 0) ? (float)atan(tan(hh) * (double)eh / (double)ew) : hh;
                 renderer->SetVRFrustum(-hh, hh, vhalf, -vhalf);   // symmetric like SetFOV, but EYE aspect
             }

@@ -355,6 +355,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="D3D11Backend.cpp" />
+    <ClCompile Include="D3D12Backend.cpp" />
+    <ClCompile Include="d3d12\D3D12Renderer.cpp" />
+    <ClCompile Include="d3d12\D3D12TextureManager.cpp" />
     <ClCompile Include="OpenXRBackend.cpp" />
     <ClCompile Include="D3D11\D3D11GeometryBuffer.cpp" />
     <ClCompile Include="D3D11\D3D11Renderer.cpp" />
@@ -368,9 +371,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3D11Backend.h" />
+    <ClInclude Include="D3D12Backend.h" />
+    <ClInclude Include="d3d12\D3D12Renderer.h" />
+    <ClInclude Include="d3d12\D3D12TextureManager.h" />
+    <ClInclude Include="IRenderBackend.h" />
     <ClInclude Include="OpenXRBackend.h" />
     <ClInclude Include="D3D11\D3D11GeometryBuffer.h" />
     <ClInclude Include="D3D11\D3D11Renderer.h" />
+    <ClInclude Include="D3D11\IRenderer.h" />
     <ClInclude Include="D3D11\D3D11TextureManager.h" />
     <ClInclude Include="D3D11\FFStateMap.h" />
     <ClInclude Include="DX2DEngine.h" />

@@ -138,7 +138,13 @@ void LantirnClass::DrawTerrain()
     // redirect mistook that intended HUD render for a "leak" and read the off-screen RTT back into the
     // FULL HUD image (0,0,w,h, ignoring the HUD viewport) -> the FLIR scene/target appeared as a grey
     // blob next to the HUD. Render directly to the HUD viewport like the original (no RTT here).
-    extern bool g_bUseD3D11;
+    extern bool g_bUseD3D11, g_bUseD3D12, g_bSensorSceneD3D12;
+    // #DX12 A5: like laserpod/mavdisp/lantmfd, the sensor 3D-scene render runs only under D3D11 or when the
+    // D3D12 sensor scene is explicitly enabled. This HUD FLIR renders the forward world a SECOND time via
+    // DrawScene straight into the HUD viewport; under D3D12 it was NOT gated, so flying an AG pass at a target
+    // airfield fed the airbase feature (a composite BSP) through the object path -> a building draw hung the
+    // GPU (DEVICE_HUNG). Gate it off by default (FLIR shows no scene, same as the other sensors under D3D12).
+    const bool doA5 = !g_bUseD3D12 || g_bSensorSceneD3D12;
     bool useRtt = false;
     RenderIR *pRender = useRtt ? (RenderIR *)privateDisplay : (RenderIR *)display;
 
@@ -197,15 +203,18 @@ void LantirnClass::DrawTerrain()
     cameraPos.y = p.x * r->M21 + p.y * r->M22 + p.z * r->M23;
     cameraPos.z = p.x * r->M31 + p.y * r->M32 + p.z * r->M33;
 
-    pRender->DrawScene(&cameraPos, &viewRotation);
+    if (doA5)   // #DX12 A5: skip the sensor 3D-scene under D3D12 (default) -> no airfield-object hang
+    {
+        pRender->DrawScene(&cameraPos, &viewRotation);
 
-    //JAM 12Dec03 - ZBUFFERING OFF
-    // Artscout - 2026: in RTT mode ALWAYS flush the queued objects here, inside the off-screen RTT
-    // bracket. Otherwise (bZBuffering off) the FLIR/TGP objects stay in TheDXEngine's global buffers
-    // and get flushed later by the MAIN render against the back buffer -> objects appear mid-screen
-    // instead of in the MFD. Flushing here both draws them into m_pRTT and empties the buffers.
-    if (DisplayOptions.bZBuffering or useRtt)
-        pRender->context.FlushPolyLists();
+        //JAM 12Dec03 - ZBUFFERING OFF
+        // Artscout - 2026: in RTT mode ALWAYS flush the queued objects here, inside the off-screen RTT
+        // bracket. Otherwise (bZBuffering off) the FLIR/TGP objects stay in TheDXEngine's global buffers
+        // and get flushed later by the MAIN render against the back buffer -> objects appear mid-screen
+        // instead of in the MFD. Flushing here both draws them into m_pRTT and empties the buffers.
+        if (DisplayOptions.bZBuffering or useRtt)
+            pRender->context.FlushPolyLists();
+    }
 
     //    pRender->PostSceneCloudOcclusion();
     pRender->EndDraw();

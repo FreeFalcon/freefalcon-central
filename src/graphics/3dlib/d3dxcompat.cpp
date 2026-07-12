@@ -12,8 +12,7 @@
 //                                   try/catch) until the D3D11 2D path lands.
 //-----------------------------------------------------------------------------
 #include <windows.h>
-#include <ddraw.h>
-#include <d3d.h>
+#include "d3d7compat.h"
 #include "d3dxcore.h"
 
 //-----------------------------------------------------------------------------

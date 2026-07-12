@@ -18,6 +18,15 @@
     <ClCompile Include="D3D11Backend.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="D3D12Backend.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="d3d12\D3D12Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="d3d12\D3D12TextureManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="OpenXRBackend.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -51,6 +60,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3D11Backend.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12Backend.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="d3d12\D3D12Renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="d3d12\D3D12TextureManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OpenXRBackend.h">

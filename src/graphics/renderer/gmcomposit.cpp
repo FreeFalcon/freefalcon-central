@@ -166,8 +166,10 @@ void RenderGMComposite::Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*,
     DWORD gmTexFlags = TextureHandle::FLAG_HINT_DYNAMIC bitor TextureHandle::FLAG_MATCHPRIMARY bitor
                        TextureHandle::FLAG_NOTMANAGED;
     {
-        extern bool g_bUseD3D11;
-        if (g_bUseD3D11) gmTexFlags or_eq TextureHandle::FLAG_RENDERTARGET;
+        // #DX12 A5: both GPU backends need the panel as a real render-target texture (its own persistent
+        // RGBA8 texture) so the completed sweep can be CopyResource'd in (D3D11: m_pD3D11Tex; D3D12: m_pDDS).
+        extern bool g_bUseD3D11, g_bUseD3D12;
+        if (g_bUseD3D11 || g_bUseD3D12) gmTexFlags or_eq TextureHandle::FLAG_RENDERTARGET;
     }
 
     lTexHandle = new TextureHandle;
@@ -325,14 +327,7 @@ void RenderGMComposite::SetBeam(Tpoint *from, Tpoint *at, Tpoint *center, float 
     {
         // This whole blitting crap is slooow
 
-        // Save scene
-        HRESULT hr = m_pBackupBuffer->targetSurface()->Blt(&rcBlit, m_pRenderTarget->targetSurface(), &rcBlit, DDBLT_WAIT, NULL);
-        ShiAssert(SUCCEEDED(hr));
-
-        // restore image
-        hr = m_pRenderTarget->targetSurface()->Blt(&rcBlit, m_pRenderBuffer->targetSurface(), &rcBlit, DDBLT_WAIT, NULL);
-        ShiAssert(SUCCEEDED(hr));
-
+        // Artscout - 2026: [DX7-PURGE] DDraw surface->Blt save/restore removed (GPU renders to texture; bRender2Texture path).
         radar.context.SetViewportAbs(0, 0, GM_TEXTURE_SIZE, GM_TEXTURE_SIZE);
         radar.context.LockViewport();
     }
@@ -343,16 +338,7 @@ void RenderGMComposite::SetBeam(Tpoint *from, Tpoint *at, Tpoint *center, float 
 
     if ( not DisplayOptions.bRender2Texture)
     {
-        HRESULT hr;
-
-        // Save image
-        hr = m_pRenderBuffer->targetSurface()->Blt(&rcBlit, m_pRenderTarget->targetSurface(), &rcBlit, DDBLT_WAIT, NULL);
-        ShiAssert(SUCCEEDED(hr));
-
-        // restore scene
-        hr = m_pRenderTarget->targetSurface()->Blt(&rcBlit, m_pBackupBuffer->targetSurface(), &rcBlit, DDBLT_WAIT, NULL);
-        ShiAssert(SUCCEEDED(hr));
-
+        // Artscout - 2026: [DX7-PURGE] DDraw surface->Blt save/restore removed (GPU renders to texture).
         radar.context.UnlockViewport();
         radar.context.SetViewportAbs(0, 0, m_pRenderTarget->targetXres(), m_pRenderTarget->targetYres());
     }
@@ -661,7 +647,7 @@ bool RenderGMComposite::BackgroundGeneration(Tpoint *from, Tpoint *at, float pla
 void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRight, bool Shaped)
 {
     TextureHandle *targetHandle;
-    extern bool g_bUseD3D11;
+    extern bool g_bUseD3D11; extern bool g_bUseGpu;   // Artscout - 2026: #DX12 -- noise overlay skipped in BOTH GPU modes
     ShiAssert(lTexHandle);
     ShiAssert(rTexHandle);
 
@@ -695,7 +681,7 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
     // (SetState DST_BLEND=ONE) is not honored by the D3D11 fixed state bundle, so the noise was alpha-
     // blended as a flat grey quad over the WHOLE buffer -> washed the green returns to grey/white (the
     // "white noise" symptom; the log showed center=(23,23,23) full-coverage). Cosmetic only.
-    if (!g_bUseD3D11)
+    if (!g_bUseGpu)
     {
     float Alpha = 0.3f;
 
@@ -749,16 +735,20 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
 
     static RECT rcBlit = { 0, 0, GM_TEXTURE_SIZE, GM_TEXTURE_SIZE };
 
-    if ( not DisplayOptions.bRender2Texture)
-    {
-        // Save image
-        HRESULT hr = m_pRenderBuffer->targetSurface()->Blt(&rcBlit, m_pRenderTarget->targetSurface(), &rcBlit, DDBLT_WAIT, NULL);
-        ShiAssert(SUCCEEDED(hr));
-    }
+    // Artscout - 2026: [DX7-PURGE] DDraw surface->Blt "save image" removed (GPU renders to texture).
 
     // Now blit the final viewport image to the texture
     ImageBuffer *pSrcBuffer = DisplayOptions.bRender2Texture ? m_pRenderTarget : m_pRenderBuffer;
-    if (g_bUseD3D11)
+    extern bool g_bUseD3D12;
+    if (g_bUseD3D12)
+    {
+        // Artscout - 2026: #DX12 A5 -- snapshot the sweep into the panel handle's OWN D3D12 texture
+        // (m_pDDS is a D3D12Texture* under D3D12). GPU copy on the main list, recorded after the sweep
+        // draws so the half persists after the live off-screen buffer is cleared for the next sweep.
+        if (targetHandle && targetHandle->m_pDDS && pSrcBuffer)
+            pSrcBuffer->CopyD3D11RTTo(targetHandle->m_pDDS);
+    }
+    else if (g_bUseD3D11)
     {
         // Artscout - 2026: SNAPSHOT the completed sweep into the panel texture's OWN D3D11 texture
         // (FLAG_RENDERTARGET gave it m_pD3D11Tex + its own SRV in m_pDDS). CopyResource = GPU copy, no
@@ -768,11 +758,8 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
         if (targetHandle && targetHandle->m_pD3D11Tex && pSrcBuffer)
             pSrcBuffer->CopyD3D11RTTo(targetHandle->m_pD3D11Tex);
     }
-    else
-    {
-        HRESULT hr = targetHandle->m_pDDS->Blt(NULL, pSrcBuffer->targetSurface(), NULL, DDBLT_WAIT, NULL);
-        ShiAssert(SUCCEEDED(hr));
-    }
+    // Artscout - 2026: [DX7-PURGE] the legacy non-GPU DDraw surface->Blt snapshot is gone
+    // (only the D3D11/D3D12 CopyResource snapshot paths above remain).
 
     if ( not DisplayOptions.bRender2Texture)
     {

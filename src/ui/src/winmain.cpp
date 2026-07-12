@@ -23,7 +23,6 @@
 #include "CampStr.h"
 #include "ClassTbl.h"
 #include "CmpClass.h"
-#include "dDraw.h"
 #include "Graphics/DXEngine/OpenXRBackend.h" // VR (OpenXR) -- clean teardown on exit
 #include "dialog.h" // Campaign tool includes
 #include "DispCfg.h"
@@ -541,13 +540,15 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
     // Runs AFTER ReadFalcon4Config() (winmain ~490), so the Graphics/Advanced page settings win over the
     // legacy FFViper.cfg "set g_bUseOpenXR/..." dev overrides. VR is now toggled by the Advanced checkbox.
     {
-        extern bool g_bUseOpenXR, g_bUseQuadViews, g_bMsaaEnable;
-        extern int  g_nMsaaSamples, g_nVrResolutionScale;
+        extern bool g_bUseOpenXR, g_bUseQuadViews, g_bMsaaEnable, g_bAnisoEnable;
+        extern int  g_nMsaaSamples, g_nVrResolutionScale, g_nAnisoSamples;
         g_bUseOpenXR        = DisplayOptions.bUseOpenXR;
         g_bUseQuadViews     = DisplayOptions.bUseQuadViews;
         g_bMsaaEnable       = DisplayOptions.bMsaaEnable;
         g_nMsaaSamples      = DisplayOptions.nMsaaSamples;
         g_nVrResolutionScale = DisplayOptions.nVrResolutionScale;
+        g_bAnisoEnable      = DisplayOptions.bAnisotropicFiltering;   // Artscout - 2026: aniso on/off + level -> samplers
+        g_nAnisoSamples     = DisplayOptions.nAnisotropicSamples;
     }
 
     FalconDisplay.Setup(gLangIDNum);
@@ -675,9 +676,60 @@ void EndUI(void)
 }
 
 
+// Artscout - 2026 (#92): confine the OS cursor to `hwnd`'s client rect. In 3D the exclusive DI mouse
+// confines for free; the 2D menu uses the ordinary OS cursor and only got a ClipCursor on a WM_ACTIVATE
+// transition, so with no focus change (startup menu / exit-3D back to menu) the cursor escaped. We call
+// this on WM_MOUSEMOVE in BOTH top-level WndProcs (either can own the menu mouse), so it self-heals as the
+// mouse moves inside the window. checkForeground=true guards the mouse-move path from trapping the cursor
+// while Alt-Tabbed away; the WM_ACTIVATE(gain) path passes false (we KNOW we're activating).
+static void ClipCursorToClient(HWND hwnd, bool checkForeground)
+{
+    extern bool g_bClipCursorWindowed;
+    if (not g_bClipCursorWindowed or not hwnd) return;
+    if (checkForeground)
+    {
+        HWND fg = GetForegroundWindow();
+        DWORD fgPid = 0; if (fg) GetWindowThreadProcessId(fg, &fgPid);
+        if (fgPid != GetCurrentProcessId()) return;
+    }
+    RECT rc;
+    if (GetClientRect(hwnd, &rc))
+    {
+        POINT tl = { rc.left, rc.top }, br = { rc.right, rc.bottom };
+        ClientToScreen(hwnd, &tl);
+        ClientToScreen(hwnd, &br);
+        RECT screenRc = { tl.x, tl.y, br.x, br.y };
+        ClipCursor(&screenRc);
+    }
+}
+
+// Artscout - 2026 (#93): unified focus handling for BOTH top-level windows (appWin/FalconMessageHandler and
+// mainMenuWnd/SimWndProc) -- either can receive WM_ACTIVATE. On GAIN: re-Acquire DI devices, reset stale
+// keyboard modifier counts (the Alt-Tab "ESC needs Alt+F4" fix), re-clip the cursor. On LOSS: release DI
+// devices, reset modifiers, free the cursor so the other app gets input+cursor cleanly.
+static void HandleWindowActivate(HWND hwnd, WPARAM wParam)
+{
+    extern void ReacquireAllInputDevices(void);
+    extern void UnacquireAllInputDevices(void);
+
+    if (LOWORD(wParam) != 0)        // becoming active
+    {
+        ReacquireAllInputDevices();
+        ClipCursorToClient(hwnd, false);
+    }
+    else                            // becoming inactive (Alt-Tab out)
+    {
+        UnacquireAllInputDevices();
+        ClipCursor(NULL);
+    }
+}
+
 LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     LRESULT retval = 0;
+
+    if (message == WM_MOUSEMOVE)
+        ClipCursorToClient(hwnd, true);   // #92: keep the cursor inside the menu window (self-heals)
 
     // Looking for multiplayer stomp...
     ShiAssert(TeamInfo[1] == NULL or TeamInfo[1]->cteam not_eq 0xFC);
@@ -815,6 +867,7 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
             break;
 
         case WM_ACTIVATE:
+            HandleWindowActivate(hwnd, wParam);   // Artscout - 2026 (#92/#93): focus/clip/reacquire on the menu window too
             retval = 0;
             break;
 
@@ -1508,6 +1561,9 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 #endif
 #endif
 
+    if (message == WM_MOUSEMOVE)
+        ClipCursorToClient(hwnd, true);   // Artscout - 2026 (#92): keep the cursor inside this window too (self-heals)
+
     switch (message)
     {
 #ifdef NDEBUG
@@ -1526,38 +1582,10 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             // until then UI is only thing that can handle surface lost
         case WM_ACTIVATEAPP:
         case WM_ACTIVATE:
-            // Artscout - 2026: on regaining focus (Alt-Tab back) explicitly re-Acquire every
-            // DirectInput device. Foreground/exclusive devices are auto-unacquired by DirectInput on
-            // focus loss; relying only on the lazy per-read re-acquire left the keyboard and
-            // controllers intermittently dead after Alt-Tab. LOWORD(wParam) != 0 means "becoming
-            // active" for both WM_ACTIVATE (WA_ACTIVE/WA_CLICKACTIVE) and WM_ACTIVATEAPP (TRUE).
-            if (LOWORD(wParam) != 0)
-            {
-                extern void ReacquireAllInputDevices(void);
-                ReacquireAllInputDevices();
-            }
-
-            // Artscout - 2026: in WINDOWED mode confine the cursor to the window so it can't slide off onto
-            // the desktop / a 2nd monitor while flying; release it on focus loss (so Alt-Tab works). Windows
-            // also auto-releases the clip when the window loses activation, but we clear it explicitly too.
-            {
-                extern bool g_bClipCursorWindowed;
-                if (g_bClipCursorWindowed and LOWORD(wParam) != 0 and not FalconDisplay.displayFullScreen
-                    and FalconDisplay.appWin)
-                {
-                    RECT rc;
-                    if (GetClientRect(FalconDisplay.appWin, &rc))
-                    {
-                        POINT tl = { rc.left, rc.top }, br = { rc.right, rc.bottom };
-                        ClientToScreen(FalconDisplay.appWin, &tl);
-                        ClientToScreen(FalconDisplay.appWin, &br);
-                        RECT screenRc = { tl.x, tl.y, br.x, br.y };
-                        ClipCursor(&screenRc);
-                    }
-                }
-                else if (LOWORD(wParam) == 0)
-                    ClipCursor(NULL);   // becoming inactive -> free the cursor
-            }
+            // Artscout - 2026 (#92/#93): unified focus handling (reacquire/unacquire DI devices, reset stale
+            // keyboard modifier counts for the Alt-Tab ESC fix, clip/free the cursor). Shared with SimWndproc
+            // so whichever top-level window gets WM_ACTIVATE handles it.
+            HandleWindowActivate(hwnd, wParam);
 
             if (doUI and FalconDisplay.displayFullScreen)
             {
@@ -2225,8 +2253,8 @@ void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface
     // (movie/surface.cpp: pDD->CreateSurface / Blt / Lock). Under D3D11 the DDraw object is NULL,
     // so playing a movie (intro logos / campaign cutscenes) would crash. No-op until the player is
     // ported to a D3D11 path. Movies are non-essential, so skipping them is safe.
-    extern bool g_bUseD3D11;
-    if (g_bUseD3D11)
+    extern bool g_bUseD3D11, g_bUseD3D12;
+    if (g_bUseD3D11 or g_bUseD3D12)   // #DX12: movie player is DDraw-based; skip under any GPU backend
         return;
 
     HWND hwnd;

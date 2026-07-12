@@ -419,23 +419,11 @@ DWORD PaletteHandle::m_dwTotalBytes = 0; // Total number of bytes allocated (inc
 
 PaletteHandle::PaletteHandle(IDirectDraw7 *pDD, UInt16 PalBitsPerEntry, UInt16 PalNumEntries)
 {
-    m_pIDDP = NULL;	// with pDD==NULL (D3D11) CreatePalette isn't called -> else garbage -> crash in Load
-    DWORD dwFlags = DDPCAPS_8BIT;
-
-    if (PalNumEntries == 0x100) dwFlags or_eq DDPCAPS_ALLOW256;
-
-    DWORD pal[256];
-    ZeroMemory(pal, sizeof(DWORD) * PalNumEntries);
-
-    HRESULT hr = 0;
-
-    if (pDD)
-        hr = pDD->CreatePalette(dwFlags, (LPPALETTEENTRY) pal, &m_pIDDP, NULL);
-
-    ShiAssert(SUCCEEDED(hr));
-
-    if (SUCCEEDED(hr))
-        m_nNumEntries = PalNumEntries;
+    // Artscout - 2026: [DX7-PURGE] DDraw IDirectDrawPalette removed. The GPU path bakes the
+    // palette on the CPU into m_pPalData; no DirectDraw palette object is created.
+    (void)pDD; (void)PalBitsPerEntry;
+    m_pIDDP = NULL;
+    m_nNumEntries = PalNumEntries;
 
     m_pPalData = new DWORD[256];
     ShiAssert(m_pPalData);
@@ -467,13 +455,7 @@ PaletteHandle::~PaletteHandle()
 
     m_arrAttachedTextures.clear();
 
-    // Release palette interface
-    if (m_pIDDP)
-    {
-        m_pIDDP->Release();
-        m_pIDDP = NULL;
-    }
-
+    // Artscout - 2026: [DX7-PURGE] no DDraw palette interface to release.
     if (m_pPalData) delete[] m_pPalData;
 }
 
@@ -500,20 +482,10 @@ void PaletteHandle::Load(UInt16 info, UInt16 PalBitsPerEntry, UInt16 index, UInt
         m_pPalData[i] = RGBA_MAKE(RGBA_GETBLUE(dwTmp), RGBA_GETGREEN(dwTmp), RGBA_GETRED(dwTmp), RGBA_GETALPHA(dwTmp));
     }
 
-    if (m_pIDDP)   // D3D7: the DirectDraw hardware palette (NULL under D3D11 -- skip)
+    // Artscout - 2026: [DX7-PURGE] the DDraw hardware palette (m_pIDDP->SetEntries) is gone;
+    // the GPU path always rebakes bound textures from source indices for the new palette.
     {
-        HRESULT hr = m_pIDDP->SetEntries(NULL, index, entries, (LPPALETTEENTRY) PalBuffer);
-        ShiAssert(SUCCEEDED(hr));
-
-        if (SUCCEEDED(hr))
-        {
-            // Reload attached textures
-            for (int i = 0 ; static_cast<unsigned int>(i) < m_arrAttachedTextures.size() ; i++)
-                m_arrAttachedTextures[i]->Reload();
-        }
-    }
-    else
-    {
+        (void)index; (void)PalBuffer;
         // D3D11: no hardware palette -- rebake the bound textures from the source
         // indices for the new palette. Translate3D is called often (TOD timer), but the palette is almost
         // always the same, so rebake only on a REAL change (otherwise we'd create

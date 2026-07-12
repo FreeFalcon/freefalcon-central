@@ -1,4 +1,3 @@
-#include <d3dtypes.h>
 #include "MsgInc/AWACSMsg.h"
 #include "mesg.h"
 #include "simdrive.h"

@@ -110,6 +110,10 @@ public:
     void TransformBillboardPoint(Tpoint* world, Tpoint *viewOffset, ThreeDVertex* pixel);
     void TransformTreePoint(Tpoint* world, Tpoint *viewOffset, ThreeDVertex* pixel);
     void UnTransformPoint(Tpoint* pixel, Tpoint* vector);
+    // Artscout - 2026 (#58 true 3D mouse): unproject a NORMALIZED device coord (ndc in [-1,1], y down like the
+    // pixel convention) to a world/body ray direction -- UnTransformPoint's math WITHOUT the pixel->ndc viewport
+    // step, so it is resolution-independent (feed ndc = 2*cursorPx/DispSize - 1). Frame-correct via cameraRot.
+    void UnprojectNdc(float ndcx, float ndcy, Tpoint* vector);
     void TransformCameraCentricPoint(Tpoint* world, ThreeDVertex* pixel);
     float ZDistanceFromCamera(Tpoint* p);
 

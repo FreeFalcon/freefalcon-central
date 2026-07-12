@@ -3381,7 +3381,11 @@ void OTWGlanceForward(unsigned long, int, void*)
 // Artscout - 2026 (#67): VR recenter -- reset the headset so "forward" + eye height become where you are
 // looking now (fixes the view drifting / ending up staring at the ground). No-op outside OpenXR. Bind
 // SimRecenterVR to your existing "reset view" key; the reference-space rebuild runs on the render thread.
-void SimRecenterVR(unsigned long state, int, void*)
+// Artscout - 2026 (#67 recenter-key fix): the command state (KEY_DOWN/UP) is the SECOND arg (int state) --
+// the FIRST arg is the key value. The old signature named the first arg "state" and checked the key value
+// against KEY_DOWN, so the key binding never fired (only the controller B button, which calls Recenter()
+// directly, worked). Match the dispatch convention (see OTWStateStep) so the bound key recenters.
+void SimRecenterVR(unsigned long, int state, void*)
 {
     if ((state bitand KEY_DOWN) and g_bUseOpenXR and g_pOpenXRBackend)
         g_pOpenXRBackend->Recenter();

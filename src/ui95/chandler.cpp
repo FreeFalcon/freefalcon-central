@@ -1214,8 +1214,10 @@ void C_Handler::CopyToPrimary()
 
     // PHASE 1/2 (D3D7->D3D11): UI95 draws into Front_ (CPU). Compose doesn't work under D3D11 (DDraw),
     // blit the composited Front_ directly to the backbuffer + Present.
-    extern bool g_bUseD3D11;
-    if (g_bUseD3D11)
+    // #DX12: GPU mode (D3D11 OR D3D12) presents the composited Front_ through PresentD3D11 (which routes to the
+    // active backend). Legacy DDraw compose path below is skipped.
+    extern bool g_bUseD3D11, g_bUseD3D12;
+    if (g_bUseD3D11 or g_bUseD3D12)
     {
         if (Front_) Front_->PresentD3D11();
         else if (Primary_) Primary_->PresentD3D11();
@@ -1240,22 +1242,7 @@ void C_Handler::CopyToPrimary()
 
 #endif
 
-    // Make sure the drivers isnt buffering any data
-    if (g_bCheckBltStatusBeforeFlip)
-    {
-        while (true)
-        {
-            HRESULT hres = Primary_->frontSurface()->GetBltStatus(DDGBS_ISBLTDONE);
-
-            if (hres not_eq DDERR_WASSTILLDRAWING)
-            {
-                break;
-            }
-
-            // Let all the other threads have some CPU.
-            Sleep(0);
-        }
-    }
+    // Artscout - 2026: [DX7-PURGE] DDraw GetBltStatus flip-wait removed (no DDraw surface under GPU).
 
     for (i = 0; i < rectcount_; i++)
     {

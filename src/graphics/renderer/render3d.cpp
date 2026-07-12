@@ -261,7 +261,11 @@ void Render3D::SetFOV(float horizontal_fov, float NearZ)
 
         // Default FOV
         D3DXMATRIX matProj;
-        D3DXMatrixPerspectiveFov(&matProj, PI / 2, (float)(xRes / yRes), NearZ, context.ZFAR);
+        // Artscout - 2026: aspect here MUST stay ~1.0 (integer xRes/yRes). The real display aspect is
+        // applied BELOW via oneOVERtanHFOV/oneOVERtanVFOV (computed from scaleX/scaleY). Passing the
+        // true float aspect double-corrects it -> the cockpit gets squished horizontally. Only the VR
+        // SetVRFrustum path needs float division (its focus viewport can have xRes<=yRes -> int div 0).
+        D3DXMatrixPerspectiveFov(&matProj, PI / 2, (float)(xRes / yRes), context.ZFAR, NearZ);   // reversed-Z: swap near/far -> near maps to NDC 1, far to 0 (uniform float-depth precision)
 
         // Original FreeFalcon FOV transformation
         matProj.m10 *= oneOVERtanVFOV;
@@ -350,8 +354,16 @@ void Render3D::SetVRFrustum(float angL, float angR, float angU, float angD, floa
 
     if (g_bUse_DX_Engine)
     {
+        // Artscout - 2026 (VR quad drift ROOT): aspect MUST be 1.0 here, NOT xRes/yRes. The base
+        // PerspectiveFov(fovY=PI/2, aspect) sets m00 = 1/aspect; the m00 *= oneOVERtanHFOV below MULTIPLIES
+        // (does NOT overwrite), so a non-1 aspect leaked a 1/aspect factor onto m00 -> GPU horizontal scale
+        // = (2/w)/aspect while the CPU (TransformPoint) uses 2/w. For the focus view (aspect ~1.0125) the
+        // cockpit was ~1.25% narrower than the RTT symbology -> the panels drifted HORIZONTALLY off-centre
+        // (vertical m11 was fine: base yScale=1). The true off-centre H-scale is 2/w (oneOVERtanHFOV already
+        // carries the fov aspect via w vs h); aspect=1.0 removes the double-count. Also avoids the int-div-0
+        // crash the old float-division guarded against.
         D3DXMATRIX matProj;
-        D3DXMatrixPerspectiveFov(&matProj, PI / 2, (float)(xRes / yRes), NearZ, context.ZFAR);
+        D3DXMatrixPerspectiveFov(&matProj, PI / 2, 1.0f, context.ZFAR, NearZ);   // reversed-Z: swap near/far -> near maps to NDC 1, far to 0 (uniform float-depth precision)
 
         matProj.m10 *= oneOVERtanVFOV;
         matProj.m11 *= oneOVERtanVFOV;
@@ -496,6 +508,8 @@ void Render3D::SetCamera(const Tpoint* pos, const Trotation* rot)
 
     //JAM 02Jan04
     TheStateStack.SetView(pos, &cameraRot);
+    // Artscout - 2026: keep integer xRes/yRes (~1.0) -- true aspect is carried by horizontal_half_angle
+    // (via scaleX/scaleY). See the note in SetFOV; the float-division regressed the flat cockpit FOV.
     TheStateStack.SetProjection(horizontal_half_angle * 2.f, (float)(xRes / yRes));
 }
 
@@ -746,6 +760,24 @@ void Render3D::TransformTreePoint(Tpoint* p, Tpoint *viewOffset, ThreeDVertex* r
 /***************************************************************************\
     Reverse transform the given point (from screen space to world space vector)
 \***************************************************************************/
+// Artscout - 2026 (#58 true 3D mouse): resolution-independent unproject -- same as UnTransformPoint but takes the
+// NDC directly (ndc = 2*px/DispSize - 1), skipping the pixel->ndc viewport (shiftX/scaleX) step. Frame-correct.
+void Render3D::UnprojectNdc(float ndcx, float ndcy, Tpoint* result)
+{
+    extern float g_fVrCursorOffAxisX, g_fVrCursorOffAxisY;
+    float sx = ndcx + g_fVrCursorOffAxisX * m_vrOffAxisX;
+    float sy = ndcy + g_fVrCursorOffAxisY * m_vrOffAxisY;
+    sx /= oneOVERtanHFOV;
+    sy /= oneOVERtanVFOV;
+    float sz = 1.0f;
+    float x = cameraRot.M11 * sz + cameraRot.M21 * sx + cameraRot.M31 * sy;
+    float y = cameraRot.M12 * sz + cameraRot.M22 * sx + cameraRot.M32 * sy;
+    float z = cameraRot.M13 * sz + cameraRot.M23 * sx + cameraRot.M33 * sy;
+    float mag = x * x + y * y + z * z;
+    mag = (mag > 1e-12f) ? 1.0f / (float)sqrt(mag) : 0.0f;
+    result->x = x * mag; result->y = y * mag; result->z = z * mag;
+}
+
 void Render3D::UnTransformPoint(Tpoint* p, Tpoint* result)
 {
     float scratch_x, scratch_y, scratch_z;

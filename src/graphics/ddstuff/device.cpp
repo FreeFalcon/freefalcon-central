@@ -69,7 +69,10 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
 
     // For now, we go figure out the number for the resolution we want
     // TODO:  Change the DisplayDevice API to require the resNum to be passed in?
-    if (g_bUseD3D11)
+    // #DX12: GPU mode (D3D11 OR D3D12) takes the requested resolution directly and skips the DDraw mode
+    // enumeration (which is empty on modern Windows -> ShiError "unavailable resolution").
+    extern bool g_bUseD3D12;
+    if (g_bUseD3D11 or g_bUseD3D12)
     {
         g_d3d11ReqWidth = width; g_d3d11ReqHeight = height; g_d3d11ReqDepth = depth ? depth : 32;
         resNum = 0;
@@ -139,8 +142,8 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
 
         // Choose an appropriate window style
         // PHASE 1 (D3D7->D3D11): under D3D11 we render in a WINDOW -- always WS_OVERLAPPEDWINDOW (frame/controls).
-        extern bool g_bUseD3D11;
-        if (fullScreen && !g_bUseD3D11)
+        extern bool g_bUseD3D11, g_bUseD3D12;
+        if (fullScreen && !g_bUseD3D11 && !g_bUseD3D12)   // #DX12: GPU mode always uses a windowed frame
         {
             style = WS_POPUP;
         }

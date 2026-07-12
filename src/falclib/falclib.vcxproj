@@ -442,7 +442,6 @@
     <ClCompile Include="Threads.cpp" />
     <ClCompile Include="TimerThread.cpp" />
     <ClCompile Include="Token.cpp" />
-    <ClCompile Include="Twoddraw.cpp" />
     <ClCompile Include="vuxcreat.cpp" />
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>

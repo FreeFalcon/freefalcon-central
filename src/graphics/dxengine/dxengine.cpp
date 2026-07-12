@@ -20,11 +20,12 @@
 #include "OpenXRBackend.h"   // temp VR stereo diag
 #include <stdio.h>
 extern bool g_bUseD3D11;
+extern bool g_bUseGpu;   // #DX12 п.4: GPU mode (D3D11 || D3D12) -- the object pass runs on the active renderer
 
 // #34: world matrix -> the shader cbObject (D3D11). The dead D3D7 m_pD3DD->SetTransform else-branch
 // was removed.
 #define DX_SET_WORLD(M) do { \
-    if (g_pD3D11Renderer) g_pD3D11Renderer->SetWorld((const float *)&(M)); \
+    if (g_pRenderer) g_pRenderer->SetWorld((const float *)&(M)); \
 } while (0)
 
 // This variable is the Model ID presently under draw
@@ -161,7 +162,7 @@ void CDXEngine::SetCamera(D3DXMATRIX *Settings, D3DVECTOR Pos, D3DXMATRIX *BB)
     CameraView.m32 = CameraPos.z;
 #endif
     // #34 D3D11: view matrix into the shader cbuffer (dead D3D7 SetTransform else removed)
-    if (g_pD3D11Renderer) g_pD3D11Renderer->SetView((const float *)&CameraView);
+    if (g_pRenderer) g_pRenderer->SetView((const float *)&CameraView);
 
     // The BB Stuff
     BBMatrix = *BB;
@@ -185,10 +186,10 @@ VOID CDXEngine::SelectTexture(GLint texID)
 
     if (h) h = (DWORD_PTR)((TextureHandle *)h)->m_pDDS;
 
-    if (g_bUseD3D11)	// PHASE 4: m_pDDS holds the D3D11 SRV (Phase 3); while NULL -> no texture
+    if (g_bUseGpu)	// PHASE 4/#DX12: m_pDDS holds the GPU texture handle (D3D11 SRV or D3D12Texture*)
     {
-        if (g_pD3D11Renderer)
-            g_pD3D11Renderer->SetTexture(0, (struct ID3D11ShaderResourceView *)h);
+        if (g_pRenderer)
+            g_pRenderer->SetTexture(0, (struct ID3D11ShaderResourceView *)h);
         return;
     }
     // #34 dead D3D7 SetTexture stages removed (D3D11 returns above)
@@ -313,8 +314,8 @@ void CDXEngine::CreateZeroTexture(void)
     // PHASE 5: in D3D11 fill ZeroTex with a real WHITE texture (previously skipped ->
     // m_pDDS=NULL -> polygons with texID=-1 sampled nothing -> white/broken). ZeroTex is needed
     // as a neutral white texture for untextured polygons (result = white * vertexcolor).
-    extern bool g_bUseD3D11;
-    if (g_bUseD3D11)
+    extern bool g_bUseD3D11, g_bUseD3D12;
+    if (g_bUseD3D11 or g_bUseD3D12)   // #DX12: bake via Load (no-op stub under D3D12); skip the dead DDraw Blt path
     {
         static DWORD s_white[64 * 64];
         for (int i = 0; i < 64 * 64; ++i) s_white[i] = 0xFFFFFFFF;
@@ -322,17 +323,8 @@ void CDXEngine::CreateZeroTexture(void)
         return;
     }
 
-    DDPIXELFORMAT ddpf;
-    DDBLTFX ddbltfx;
-    ZeroTex->m_pDDS->GetPixelFormat(&ddpf);
-    ddbltfx.dwSize = sizeof(ddbltfx);
-    ddbltfx.dwFillColor = 0xffffffff; // Pure White
-
-    ZeroTex->m_pDDS->Blt(
-        NULL,        // Destination is entire surface
-        NULL,        // No source surface
-        NULL,        // No source rectangle
-        DDBLT_COLORFILL, &ddbltfx);
+    // Artscout - 2026: [DX7-PURGE] DDraw surface GetPixelFormat/Blt colour-fill removed
+    // (GPU path above bakes ZeroTex white via Load and returns).
 }
 
 
@@ -379,7 +371,7 @@ void CDXEngine::SetSunLight(float Ambient, float Diffuse, float Specular)
     // PHASE 6: port the directional sun light to D3D11 (object path, VS_Object
     // computes col = dwColour * saturate(ambient + sum N.L)). One directional source
     // (sun) + TOD ambient. Previously SetLights was not called -> FF_LIGHTING was off.
-    if (g_bUseD3D11 and g_pD3D11Renderer)
+    if (g_bUseGpu and g_pRenderer)
     {
         float amb[4] = { TheSun.dcvAmbient.r, TheSun.dcvAmbient.g, TheSun.dcvAmbient.b, 1.0f };
         D3D11Renderer::GpuLightCPU sun;
@@ -390,7 +382,7 @@ void CDXEngine::SetSunLight(float Ambient, float Diffuse, float Specular)
         sun.Direction[0] = -LightDir.x;  sun.Direction[1] = -LightDir.y;  sun.Direction[2] = -LightDir.z;
         sun.Color[0] = TheSun.dcvDiffuse.r; sun.Color[1] = TheSun.dcvDiffuse.g; sun.Color[2] = TheSun.dcvDiffuse.b;
         sun.Params[1] = 0.0f;   // directional
-        g_pD3D11Renderer->SetLights(amb, 1, &sun);
+        g_pRenderer->SetLights(amb, 1, &sun, sizeof(sun));
     }
 }
 
@@ -468,21 +460,21 @@ DWORD CDXEngine::SetStencilMode(DWORD Stencil)
 
     // #34 D3D11: 3D-cockpit stencil mask via D3D11 state objects (dead D3D7 switch removed).
     m_StencilMode = (StencilModeType)Stencil;
-    if (g_pD3D11Renderer)
+    if (g_pRenderer)
     {
         switch (Stencil)
         {
         case STENCIL_WRITE:
             m_StencilRef++;
-            g_pD3D11Renderer->SetStencil(2, m_StencilRef);   // cockpit writes ref
+            g_pRenderer->SetStencil(2, m_StencilRef);   // cockpit writes ref
             break;
         case STENCIL_CHECK:
-            if (m_StencilRef) g_pD3D11Renderer->SetStencil(3, m_StencilRef); // world: ref>stencil
-            else              g_pD3D11Renderer->SetStencil(0, 0);            // ref==0 -> ALWAYS
+            if (m_StencilRef) g_pRenderer->SetStencil(3, m_StencilRef); // world: ref>stencil
+            else              g_pRenderer->SetStencil(0, 0);            // ref==0 -> ALWAYS
             break;
         case STENCIL_OFF:
         default:
-            g_pD3D11Renderer->SetStencil(0, 0);
+            g_pRenderer->SetStencil(0, 0);
             break;
         }
     }
@@ -746,8 +738,8 @@ void CDXEngine::DrawSurface()
         // #34: dead D3D7 SetMaterial removed (D3D11 material via shader, #29)
         // #29 D3D11: surface specular -> shader (Blinn-Phong from light 0). power=SpecularIndex,
         // color=dcvSpecular (from DefaultSpecularity). power=0 or color=0 -> no highlight.
-        if (g_pD3D11Renderer)
-            g_pD3D11Renderer->SetMaterialSpecular(TheMaterial.dcvSpecular.r, TheMaterial.dcvSpecular.g,
+        if (g_pRenderer)
+            g_pRenderer->SetMaterialSpecular(TheMaterial.dcvSpecular.r, TheMaterial.dcvSpecular.g,
                                                   TheMaterial.dcvSpecular.b, (float)m_NODE.SURFACE->SpecularIndex);
     }
 
@@ -770,11 +762,13 @@ void CDXEngine::DrawSurface()
     ///////////////////////// Draw the Primitive /////////////////////////////////
 #ifdef INDEXED_MODE_ENGINE
 
-    if (g_bUseD3D11)
+    if (g_bUseGpu)
     {
-        // PHASE 4: draw from the D3D11 mirror VB. Indices 0-based, BaseOffset -> baseVertex.
+        // PHASE 4/#DX12 п.4: draw from the per-model GPU mirror VB (D3D11 buffer or D3D12 resource).
         hr = 0;
-        if (g_pD3D11Renderer and m_VB.VbD3D11)
+        extern bool g_bUseD3D12;
+        void* vbh = g_bUseD3D12 ? m_VB.VbD3D12 : (void*)m_VB.VbD3D11;
+        if (g_pRenderer and vbh)
         {
             // per-model buffer: vertices from 0, baseVertex=0, indices 0-based as is.
             void *idxPtr = m_NODE.BYTE + sizeof(DxSurfaceType);
@@ -783,7 +777,7 @@ void CDXEngine::DrawSurface()
             // surfaces with the ChromaKey flag (see context.cpp/SetRenderState,
             // ALPHATESTENABLE is set only in the MPR_SE_CHROMA branch). Opaque
             // surfaces draw without cutout (dark texture RGB, even at alpha=0).
-            g_pD3D11Renderer->SetAlphaTestEnabled(m_NODE.SURFACE->dwFlags.b.ChromaKey != 0);
+            g_pRenderer->SetAlphaTestEnabled(m_NODE.SURFACE->dwFlags.b.ChromaKey != 0);
 
             // #49 self-illuminated surfaces (D3D7 SwEmissive: afterburner cone, nav/formation
             // lights). D3D7 keeps the emissive (COLOR2) source on these UNLESS their switch is
@@ -803,7 +797,7 @@ void CDXEngine::DrawSurface()
                         emissive = true;   // no switch table -> D3D7 default keeps COLOR2 (glow)
                 }
 
-                g_pD3D11Renderer->SetEmissive(emissive);
+                g_pRenderer->SetEmissive(emissive);
 
                 // #49 afterburner cone: among emissive surfaces, the AB cone is the one whose
                 // switch is COMP_AB (0) / COMP_AB2 (30) -- exterior lights use other switch numbers
@@ -818,26 +812,26 @@ void CDXEngine::DrawSurface()
                               && NewFlags.b.Alpha
                               && (m_NODE.SURFACE->SwitchNumber == 0       // COMP_AB
                                   || m_NODE.SURFACE->SwitchNumber == 30);  // COMP_AB2
-                g_pD3D11Renderer->SetAfterburner(afterburner);
+                g_pRenderer->SetAfterburner(afterburner);
             }
 
             // #49 the afterburner cone is an Alpha surface (drawn in the alpha pass, BLEND_ALPHA ->
             // translucent/dull). Flip it to pure additive so it glows bright (then restore alpha
             // for the surrounding translucent surfaces e.g. canopy glass).
             if (afterburner)
-                g_pD3D11Renderer->SetObjectAdditiveBlend(true);
+                g_pRenderer->SetObjectAdditiveBlend(true);
 
             if (m_NODE.SURFACE->dwPrimType == D3DPT_POINTLIST)
-                g_pD3D11Renderer->DrawObjectStrip(m_NODE.SURFACE->dwPrimType, m_VB.VbD3D11, VERTEX_STRIDE,
+                g_pRenderer->DrawObjectStrip(m_NODE.SURFACE->dwPrimType, vbh, VERTEX_STRIDE,
                                                   (int)((DWORD) * ((Int16*)idxPtr)),
                                                   (int)m_NODE.SURFACE->dwVCount);
             else
-                g_pD3D11Renderer->DrawObjectIndexed(m_NODE.SURFACE->dwPrimType, m_VB.VbD3D11, VERTEX_STRIDE,
+                g_pRenderer->DrawObjectIndexed(m_NODE.SURFACE->dwPrimType, vbh, VERTEX_STRIDE,
                                                     0, (unsigned short*)idxPtr,
                                                     (int)m_NODE.SURFACE->dwVCount);
 
             if (afterburner)
-                g_pD3D11Renderer->SetObjectAdditiveBlend(false);   // restore alpha-pass blend
+                g_pRenderer->SetObjectAdditiveBlend(false);   // restore alpha-pass blend
         }
     }
     // #34: dead D3D7 DrawPrimitiveVB/DrawIndexedPrimitiveVB else-branches removed (D3D11 draws above)
@@ -1684,8 +1678,8 @@ void CDXEngine::DrawAlphaSurfaces(void)
     ObjectInstance *LastObj = NULL;
     float LastFog = 0;
 
-    if (g_pD3D11Renderer)	// PHASE 5: translucent surfaces (canopy glass) -- alpha-blend (D3D7 removed #34)
-        g_pD3D11Renderer->SetObjectAlphaBlend(true);
+    if (g_pRenderer)	// PHASE 5: translucent surfaces (canopy glass) -- alpha-blend (D3D7 removed #34)
+        g_pRenderer->SetObjectAlphaBlend(true);
 
     while (PopSurface(&m_AlphaStack, &State))
     {
@@ -1712,8 +1706,8 @@ void CDXEngine::DrawAlphaSurfaces(void)
         DrawSurface();
     }
 
-    if (g_pD3D11Renderer)	// PHASE 5: restore the opaque state (D3D7 removed #34)
-        g_pD3D11Renderer->SetObjectAlphaBlend(false);
+    if (g_pRenderer)	// PHASE 5: restore the opaque state (D3D7 removed #34)
+        g_pRenderer->SetObjectAlphaBlend(false);
 }
 
 
@@ -1729,8 +1723,8 @@ void CDXEngine::DrawSortedAlpha(DWORD Level, bool SetupMode)
     if (SetupMode) FlushInit();
 
     // Setup Alpha features
-    if (g_pD3D11Renderer)	// PHASE 5: sorted transparency (D3D7 removed #34)
-        g_pD3D11Renderer->SetObjectAlphaBlend(true);
+    if (g_pRenderer)	// PHASE 5: sorted transparency (D3D7 removed #34)
+        g_pRenderer->SetObjectAlphaBlend(true);
 
     // Get the surface data and update transformations / features
     GetSurface(Level, &m_AlphaStack, &State);
@@ -1803,15 +1797,15 @@ void CDXEngine::FlushBuffers(void)
     // First of all save present renderer State
     DWORD StateHandle = 0;
 
-    if (g_bUseD3D11)
+    if (g_bUseGpu)
     {
-        // PHASE 4: D3D11 object pass -- shaders/state/transforms/lighting.
-        if (g_pD3D11Renderer and g_pD3D11Renderer->IsValid())
+        // PHASE 4/#DX12 п.4: GPU object pass (D3D11 or D3D12) -- shaders/state/transforms/lighting.
+        if (g_pRenderer and g_pRenderer->IsValid())
         {
-            g_pD3D11Renderer->BeginObjectPass();
-            g_pD3D11Renderer->SetProj((const float *)&Projection);
-            g_pD3D11Renderer->SetView((const float *)&CameraView);
-            g_pD3D11Renderer->SetCameraPos(CameraPos.x, CameraPos.y, CameraPos.z);	// #29 specular
+            g_pRenderer->BeginObjectPass();
+            g_pRenderer->SetProj((const float *)&Projection);
+            g_pRenderer->SetView((const float *)&CameraView);
+            g_pRenderer->SetCameraPos(CameraPos.x, CameraPos.y, CameraPos.z);	// #29 specular
 
             // Sun (directional) + ambient. CROSS-CHECK WITH FF7: object light model =
             // vertexColor * (TheSun.dcvAmbient + TheSun.dcvDiffuse.N.L), where dcvAmbient/dcvDiffuse
@@ -1832,7 +1826,7 @@ void CDXEngine::FlushBuffers(void)
             sun.Color[2] = envL.dcvDiffuse.b;
             sun.Params[1] = 0.0f;	// directional
             const float amb[4] = { envL.dcvAmbient.r, envL.dcvAmbient.g, envL.dcvAmbient.b, 1.0f };
-            g_pD3D11Renderer->SetLights(amb, 1, &sun);
+            g_pRenderer->SetLights(amb, 1, &sun, sizeof(sun));
             // #28: save for per-object dynamic lighting (UpdateDynamicLights).
             g_d3d11Sun = sun;
             g_d3d11Amb[0] = amb[0]; g_d3d11Amb[1] = amb[1]; g_d3d11Amb[2] = amb[2]; g_d3d11Amb[3] = amb[3];

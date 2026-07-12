@@ -7,7 +7,6 @@
 #include <windows.h>
 #include "falclib.h"
 #include "targa.h"
-#include "dxutil/ddutil.h"
 #include "Graphics/Include/imagebuf.h"
 #include "chandler.h"
 #include "ui95_ext.h"

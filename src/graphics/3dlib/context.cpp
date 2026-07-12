@@ -31,8 +31,11 @@ extern DWORD p3DpitLolite; // Cobra - 3D pit low night lighting color
 #include "Graphics/DXEngine/DXVBManager.h"
 #include "Graphics/DXEngine/d3d11/D3D11Renderer.h"	// PHASE 4: D3D11 screen-path
 #include "Graphics/DXEngine/D3D11Backend.h"	// PHASE 4: RTV bind
+#include "Graphics/DXEngine/D3D12Backend.h"	// #DX12 п.5: per-eye gScreenSize (SceneW/H) for the 2D sky/terrain
 extern bool g_bUse_DX_Engine;
 extern bool g_bUseD3D11;
+extern bool g_bUseD3D12;   // Artscout - 2026: #DX12 -- GPU-mode (D3D12) selector, parallel to g_bUseD3D11
+extern bool g_bUseGpu;     // Artscout - 2026: #DX12 -- GPU render mode (D3D11 || D3D12), not dead DDraw7
 
 extern bool g_bSlowButSafe;
 extern float g_fMipLodBias;
@@ -120,7 +123,7 @@ ContextMPR::ContextMPR()
     m_colFG_Raw = m_colBG_Raw = 0;
     bZBuffering = false;
     gZBias = 0.f;
-    m_2DPrimZ = 0.0f;	// #48: 2D screen primitives default to the near plane
+    m_2DPrimZ = 1.0f;	// #48: 2D screen primitives default to the near plane (reversed-Z: near = 1.0)
     ZFAR = 280000.f;
     // COBRA - RED - TEST
     //ZNEAR = 1.f;
@@ -172,10 +175,13 @@ BOOL ContextMPR::Setup(ImageBuffer *pIB, DXContext *c)
         m_pIB = pIB;
 
         // PHASE 4: ContextMPR on D3D11. We don't create a D3D7 device (m_pDD/m_pD3DD) - the
-        // screen path (TLVERTEX/XYZRHW) funnels into g_pD3D11Renderer->DrawTL. The VB lives in the
+        // screen path (TLVERTEX/XYZRHW) funnels into g_pRenderer->DrawTL. The VB lives in the
         // CPU array m_pVBCpu (instead of m_pVB->Lock); RestoreState -> SetState;
         // SetState(MPR_STA_*) goes through SetStateInternal (without m_pD3DD).
-        if (g_bUseD3D11)
+        // Artscout - 2026: #DX12 -- D3D12 uses the SAME CPU-VB screen context as D3D11 (TLVERTEX funnels into
+        // g_pRenderer->DrawTL; no D3D7 device). Without this the D3D12 path fell through to the dead DDraw
+        // branch below -> device create failed -> ShiError "Failed to setup rendering context" on 3D entry.
+        if (g_bUseGpu)
         {
             m_pDD = NULL;
             m_pD3DD = NULL;
@@ -205,8 +211,8 @@ BOOL ContextMPR::Setup(ImageBuffer *pIB, DXContext *c)
             ZeroMemory(&m_rcVP, sizeof(m_rcVP));
             m_bViewportLocked = false;
 
-            if (g_pD3D11Renderer and g_pD3D11Backend and g_pD3D11Backend->IsValid())
-                g_pD3D11Renderer->SetViewportSize(g_pD3D11Backend->Width(), g_pD3D11Backend->Height());
+            if (g_pRenderer and g_pD3D11Backend and g_pD3D11Backend->IsValid())
+                g_pRenderer->SetViewportSize(g_pD3D11Backend->Width(), g_pD3D11Backend->Height());
 
             return TRUE;
         }
@@ -243,17 +249,9 @@ void ContextMPR::Cleanup()
 
     m_pCtxDX = NULL;
 
-    if (m_pVB)
-    {
-        m_pVB->Release();
-        m_pVB = NULL;
-    }
-
-    if (m_pVBB)
-    {
-        m_pVBB->Release();
-        m_pVBB = NULL;
-    }
+    // Artscout - 2026: [DX7-PURGE] no DDraw7 vertex buffers to Release under GPU.
+    m_pVB = NULL;
+    m_pVBB = NULL;
 
     if (m_pIdx)
     {
@@ -304,16 +302,9 @@ void ContextMPR::NewImageBuffer(UInt lpDDSBack)
 
     m_pRenderTarget = (IDirectDrawSurface7 *)lpDDSBack;
 
-    // Some drivers (like the 3.68 detonators) implicitly create Z buffers
-    if (m_pRenderTarget)
-    {
-        IDirectDrawSurface7Ptr pDDS;
-
-        DDSCAPS2 ddscaps;
-        ZeroMemory(&ddscaps, sizeof(ddscaps));
-        ddscaps.dwCaps = DDSCAPS_ZBUFFER;
-        m_bRenderTargetHasZBuffer = SUCCEEDED(m_pRenderTarget->GetAttachedSurface(&ddscaps, &pDDS));
-    }
+    // Artscout - 2026: [DX7-PURGE] the DDraw GetAttachedSurface Z-buffer probe is gone
+    // (GPU depth is managed by the D3D11/D3D12 backend).
+    m_bRenderTargetHasZBuffer = false;
 }
 
 void ContextMPR::ClearBuffers(WORD ClearInfo)
@@ -322,11 +313,15 @@ void ContextMPR::ClearBuffers(WORD ClearInfo)
     // the start of the batch via ClearDraw), because StartRtt no longer clears (a repeated StartRtt
     // from an MFD would wipe HUD/RWR/DED). Clear only during the RTT batch (g_rttBatchActive).
     // #34: dead D3D7 m_pD3DD->Clear removed.
-    if (g_bUseD3D11)
+    // #DX12: clear the RTT atlas on the ACTIVE backend (D3D11 or D3D12). Under D3D12 this was g_bUseD3D11-gated
+    // -> never ran -> HUD/MFD symbology accumulated frame to frame. The neutral ClearCurrentRTV clears the
+    // currently-bound RTV (the RTT atlas, since g_rttBatchActive means StartRtt bound it).
+    if (g_bUseGpu)
     {
         extern bool g_rttBatchActive;
-        if (g_rttBatchActive and (ClearInfo bitand MPR_CI_DRAW_BUFFER) and g_pD3D11Backend)
-            g_pD3D11Backend->ClearCurrentRTV(0.0f, 0.0f, 0.0f, 0.0f);
+        extern IRenderBackend* g_pRenderBackend;
+        if (g_rttBatchActive and (ClearInfo bitand MPR_CI_DRAW_BUFFER) and g_pRenderBackend)
+            g_pRenderBackend->ClearCurrentRTV(0.0f, 0.0f, 0.0f, 0.0f);
     }
 }
 
@@ -342,18 +337,25 @@ void ContextMPR::EndDraw(void)
 {
     FlushVB();	// flush the display content into the current RTV (its RTT)
 
-    // PHASE 5 (RTT): after rendering the display into its RTT, restore the back buffer as the default target.
-    if (g_bUseD3D11 && m_pIB && not m_pIB->IsScreenBuffer()
+    // PHASE 5 (RTT): after rendering the display into its RTT, restore the scene target + its gScreenSize.
+    if (g_bUseD3D12 && g_pD3D12Backend && m_pIB && not m_pIB->IsScreenBuffer())
+    {
+        // #DX12 п.5: the RTT display just set gScreenSize to its atlas size; restore it to the SCENE size
+        // (eye in VR, back buffer flat) so the next scene draws map correctly. The scene RTV itself is
+        // rebound by UnbindSceneRtt/BindBackBufferRTV in the display path -- here we only fix gScreenSize.
+        if (g_pRenderer) g_pRenderer->SetViewportSize(g_pD3D12Backend->SceneW(), g_pD3D12Backend->SceneH());
+    }
+    else if (g_bUseD3D11 && m_pIB && not m_pIB->IsScreenBuffer()
         && g_pD3D11Backend && g_pD3D11Backend->IsValid())
     {
         g_pD3D11Backend->BindBackBuffer(false);
-        if (g_pD3D11Renderer)
+        if (g_pRenderer)
         {
             // Artscout - 2026 (VR): restore gScreenSize to the EYE size in a per-eye pass (see StartFrame).
             if (g_pD3D11Backend->XrEyeActive())
-                g_pD3D11Renderer->SetViewportSize(g_pD3D11Backend->XrEyeW(), g_pD3D11Backend->XrEyeH());
+                g_pRenderer->SetViewportSize(g_pD3D11Backend->XrEyeW(), g_pD3D11Backend->XrEyeH());
             else
-                g_pD3D11Renderer->SetViewportSize(g_pD3D11Backend->Width(), g_pD3D11Backend->Height());
+                g_pRenderer->SetViewportSize(g_pD3D11Backend->Width(), g_pD3D11Backend->Height());
         }
     }
 }
@@ -368,19 +370,30 @@ void ContextMPR::StartFrame(void)
     {
         m_pIB->BindD3D11RenderTarget(true);
     }
+    else if (g_bUseD3D12 && g_pD3D12Backend)
+    {
+        // #DX12 п.5: the scene target (eye in VR, back buffer flat) is already bound + cleared by
+        // BeginEyeFrame/BeginFrame. Only set gScreenSize here -- to the SCENE size, so VS_Screen's pixel->NDC
+        // for the CPU-projected 2D sky/terrain matches the eye-sized pixels (VR_SetRes -> scaleX/scaleY). This
+        // is the D3D12 analogue of the D3D11 XrEyeActive() branch below; it was missing (SetGScreenSize was a
+        // no-op stub + this block gated on g_pD3D11Backend), so the eye-sized sky was mapped by the back-buffer
+        // size -> horizon mis-scaled/inverted ("dark blue, sky only when inverted"). Terrain/objects survive it
+        // (world matProj is unaffected) which is why only the pure-2D sky visibly broke.
+        if (g_pRenderer) g_pRenderer->SetViewportSize(g_pD3D12Backend->SceneW(), g_pD3D12Backend->SceneH());
+    }
     else if (g_pD3D11Backend && g_pD3D11Backend->IsValid())
     {
         g_pD3D11Backend->BindBackBuffer(true);
-        if (g_pD3D11Renderer)
+        if (g_pRenderer)
         {
             // Artscout - 2026 (VR): gScreenSize (cbViewport) drives VS_Screen's pixel->NDC for the
             // CPU-projected terrain. In a per-eye pass the terrain is projected to EYE-sized pixels
             // (VR_SetRes -> scaleX/scaleY), so gScreenSize must be the EYE size, not the back buffer
             // -- otherwise the ground is mis-scaled/rotated/flies off (objects use matProj, unaffected).
             if (g_pD3D11Backend->XrEyeActive())
-                g_pD3D11Renderer->SetViewportSize(g_pD3D11Backend->XrEyeW(), g_pD3D11Backend->XrEyeH());
+                g_pRenderer->SetViewportSize(g_pD3D11Backend->XrEyeW(), g_pD3D11Backend->XrEyeH());
             else
-                g_pD3D11Renderer->SetViewportSize(g_pD3D11Backend->Width(), g_pD3D11Backend->Height());
+                g_pRenderer->SetViewportSize(g_pD3D11Backend->Width(), g_pD3D11Backend->Height());
         }
     }
 
@@ -394,7 +407,8 @@ void ContextMPR::BindD3D11RttNoClear(void)
     // which renders its sweep incrementally across frames into m_pRenderTarget; clearing every
     // StartDraw would wipe the accumulated image (StartScene/ClearDraw clears when a scene restarts).
     // Without this the radar sweep leaks onto the screen (no RTT bound -> draws to the back buffer).
-    if (g_bUseD3D11 && m_pIB && not m_pIB->IsScreenBuffer())
+    // #DX12 A5: BindD3D11RenderTarget delegates to the D3D12 RTT under g_bUseD3D12.
+    if ((g_bUseD3D11 || g_bUseD3D12) && m_pIB && not m_pIB->IsScreenBuffer())
         m_pIB->BindD3D11RenderTarget(false);
 }
 
@@ -404,8 +418,11 @@ void ContextMPR::ClearBoundD3D11Rtt(void)
     // batch (g_rttBatchActive) and no-ops for the GM radar's private buffer, so the sweep never cleared
     // and accumulated green to a full-field white. The GM calls this once per sweep (StartScene), after
     // StartDraw has bound its buffer; the per-beam-op accumulation within the sweep is unaffected.
+    // #DX12 A5: same for the D3D12 backend (ClearCurrentRTV clears the currently-bound off-screen RTV).
     if (g_bUseD3D11 && m_pIB && not m_pIB->IsScreenBuffer() && g_pD3D11Backend)
         g_pD3D11Backend->ClearCurrentRTV(0.0f, 0.0f, 0.0f, 0.0f);
+    else if (g_bUseD3D12 && m_pIB && not m_pIB->IsScreenBuffer() && g_pD3D12Backend)
+        g_pD3D12Backend->ClearCurrentRTV(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void ContextMPR::FinishFrame(void *lpFnPtr)
@@ -413,6 +430,13 @@ void ContextMPR::FinishFrame(void *lpFnPtr)
     FlushVB();
     // #34 D3D11: present is done by ImageBuffer::PresentD3D11; dead D3D7 EndScene/surface-lost
     // tail removed.
+
+    // Artscout - 2026: #DX12 A5 -- for an off-screen IB (TGP/FLIR/Munitions/GM) transition its D3D12 RTT
+    // back to PIXEL_SHADER_RESOURCE and rebind the scene target, so the sensor render is finished and the
+    // main pass (or the readback copy) can continue. Under D3D11 the RTV stays bound (next BindBackBuffer
+    // restores it); under D3D12 explicit unbind is required.
+    if (g_bUseD3D12 && m_pIB && not m_pIB->IsScreenBuffer())
+        m_pIB->UnbindD3D12RenderTarget();
 }
 
 // DX - COBRA - Red
@@ -423,7 +447,7 @@ void ContextMPR::TexColorDiffuse(void)
     // PHASE 4/6: emulate COLORARG1=DIFFUSE in the FFEmu shader (FF_TEXCOLORDIFFUSE): text color
     // from the vertex, the font texture is only a mask. Cleared on the next RestoreState.
     // #34: dead D3D7 SetTextureStageState removed.
-    if (g_pD3D11Renderer) g_pD3D11Renderer->SetTexColorDiffuse(true);
+    if (g_pRenderer) g_pRenderer->SetTexColorDiffuse(true);
 }
 
 
@@ -533,8 +557,8 @@ void ContextMPR::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, in
 {
     // #30/#34 D3D11: CPU bitmap (splash/cursor/mirror) via a temporary texture + screen quad.
     // Dead D3D7 D3DXCreateTexture/SetTexture path removed.
-    if (g_pD3D11Renderer)
-        g_pD3D11Renderer->DrawBitmap2D(dX, dY, w, h, totalWidth, sX, sY,
+    if (g_pRenderer)
+        g_pRenderer->DrawBitmap2D(dX, dY, w, h, totalWidth, sX, sY,
                                        (const unsigned*)pSrc, Fit,
                                        m_pCtxDX->m_nWidth, m_pCtxDX->m_nHeight);
 }
@@ -601,12 +625,12 @@ void ContextMPR::SetTexture1(DWORD_PTR texID) // Artscout - 2026 (x64): pointer-
 
         lastTexture1 = texID;
 
-        if (g_bUseD3D11)	// PHASE 4
+        if (g_bUseGpu)	// PHASE 4/#DX12
         {
-            if (g_pD3D11Renderer)
+            if (g_pRenderer)
             {
-                g_pD3D11Renderer->SetTexture(0, (texID == -1) ? NULL : (struct ID3D11ShaderResourceView *)texID);
-                g_pD3D11Renderer->SetTexture(1, NULL);
+                g_pRenderer->SetTexture(0, (texID == -1) ? NULL : (struct ID3D11ShaderResourceView *)texID);
+                g_pRenderer->SetTexture(1, NULL);
             }
             return;
         }
@@ -622,10 +646,10 @@ void ContextMPR::SetTexture2(DWORD_PTR texID) // Artscout - 2026 (x64): pointer-
 
         lastTexture2 = texID;
 
-        if (g_bUseD3D11)	// PHASE 4
+        if (g_bUseGpu)	// PHASE 4/#DX12
         {
-            if (g_pD3D11Renderer)
-                g_pD3D11Renderer->SetTexture(1, (texID == -1) ? NULL : (struct ID3D11ShaderResourceView *)texID);
+            if (g_pRenderer)
+                g_pRenderer->SetTexture(1, (texID == -1) ? NULL : (struct ID3D11ShaderResourceView *)texID);
             return;
         }
         // #34 dead D3D7 SetTexture removed (D3D11 returns above)
@@ -652,26 +676,26 @@ void ContextMPR::SelectTexture1(DWORD_PTR texID) // Artscout - 2026 (x64): point
         // PHASE 5: in D3D11 bind the texture/font REGARDLESS of bZBuffering. The
         // "if(not bZBuffering)" gate is a D3D7 quirk; because of it the MFD/HUD font wasn't bound
         // in the cockpit (bZBuffering=true) -> empty gTex0 -> "little squares".
-        if ( not bZBuffering or g_bUseD3D11)
+        if ( not bZBuffering or g_bUseGpu)
         {
             // JB 010326 CTD (too much CPU)
-            if ( not g_bUseD3D11 and g_bSlowButSafe and F4IsBadReadPtr((TextureHandle *)texID, sizeof(TextureHandle)))
+            if ( not g_bUseGpu and g_bSlowButSafe and F4IsBadReadPtr((TextureHandle *)texID, sizeof(TextureHandle)))
                 return;
 
             FlushVB();
 
             // #34 D3D11: m_pDDS holds the D3D11 SRV (dead D3D7 else removed)
-            if (g_pD3D11Renderer)
-                g_pD3D11Renderer->SetTexture(0, (struct ID3D11ShaderResourceView *)texID);
+            if (g_pRenderer)
+                g_pRenderer->SetTexture(0, (struct ID3D11ShaderResourceView *)texID);
         }
     }
-    else if (g_bUseD3D11 and g_pD3D11Renderer)
+    else if (g_bUseGpu and g_pRenderer)
     {
         // CACHE HIT (texID == currentTexture1): same texture, but the ACTUAL slot-0 binding and
         // m_hasTex0 may have desynced (SetTexture1(-1)/StartRtt unbound the slot while the cached
         // currentTexture1 stayed) -> HUD text drew without a texture (blocks). Re-sync the binding
         // (same texture, no FlushVB).
-        g_pD3D11Renderer->SetTexture(0, (struct ID3D11ShaderResourceView *)texID);
+        g_pRenderer->SetTexture(0, (struct ID3D11ShaderResourceView *)texID);
     }
 
 #ifdef _CONTEXT_ENABLE_STATS
@@ -708,8 +732,8 @@ void ContextMPR::SelectTexture2(DWORD_PTR texID) // Artscout - 2026 (x64): point
             FlushVB();
 
             // #34 D3D11 (dead D3D7 else removed)
-            if (g_pD3D11Renderer)
-                g_pD3D11Renderer->SetTexture(1, (struct ID3D11ShaderResourceView *)texID);
+            if (g_pRenderer)
+                g_pRenderer->SetTexture(1, (struct ID3D11ShaderResourceView *)texID);
         }
     }
 
@@ -756,7 +780,7 @@ void ContextMPR::RestoreState(GLint state)
     ShiAssert(state not_eq -1);
     ShiAssert(state >= 0 and state < MAXIMUM_MPR_STATE);
 
-    // PHASE 4/#34: the actual state is set by g_pD3D11Renderer->SetState (FFMapState) in FlushVB.
+    // PHASE 4/#34: the actual state is set by g_pRenderer->SetState (FFMapState) in FlushVB.
     // Dead D3D7 ApplyStateBlock path removed.
     if (state not_eq currentState)
     {
@@ -802,6 +826,17 @@ void ContextMPR::SetTVmode(BOOL state)
 void ContextMPR::SetIRmode(BOOL state)
 {
     IRmode = state;
+}
+
+// #DX12 A5: free helper to toggle the shader grey pass (FF_IRGREY) for the sensor 3D scene. NOT tied to
+// SetTVmode/SetIRmode -- RenderOTW::ComputeVertexColor (otw.cpp:2044) resets those to FALSE mid-terrain, which
+// clobbered the flag (scene drew colour, only the symbology stayed grey = inverted). Instead the sensor draw
+// (laserpod/mavdisp/lantmfd) brackets its DrawScene with FF_SetIRGrey(true/false) explicitly. Desaturates the
+// composed pixel to luma, so the terrain (whose vertex colours are cached from the main colour view) greys too.
+void FF_SetIRGrey(bool on)
+{
+    extern IRenderer* g_pRenderer;
+    if (g_pRenderer) g_pRenderer->SetIRGrey(on);
 }
 
 // COBRA - RED - Comparing or a so short conditional action has no sense, do it always
@@ -886,28 +921,9 @@ void ContextMPR::TextOut(short x, short y, DWORD col, LPSTR str)
 
     if ( not str) return;
 
-    try
-    {
-        HDC hdc;
-
-        // Get GDI Device context for Surface
-        CheckHR(m_pRenderTarget->GetDC(&hdc));
-
-        if (hdc)
-        {
-            ::SetBkMode(hdc, TRANSPARENT);
-            ::SetTextColor(hdc, col);
-            ::MoveToEx(hdc, x, y, NULL);
-
-            ::DrawText(hdc, str, strlen(str), &m_rcVP, DT_LEFT);
-
-            CheckHR(m_pRenderTarget->ReleaseDC(hdc));
-        }
-    }
-
-    catch (const _com_error &e)
-    {
-    }
+    // Artscout - 2026: [DX7-PURGE] GDI-on-DDraw-surface text (GetDC/DrawText/ReleaseDC) removed;
+    // the GPU path draws text through the renderer, not a DirectDraw surface DC.
+    (void)col; (void)x; (void)y;
 }
 
 bool ContextMPR::LockVB(int nVtxCount, void **p)
@@ -919,9 +935,9 @@ bool ContextMPR::LockVB(int nVtxCount, void **p)
     HRESULT hr;
     DWORD dwSize = 0;
 
-    // PHASE 4: D3D11 - hand back a pointer into the CPU array (base); writes go to
-    // m_pTLVtx[m_dwStartVtx + m_dwNumVtx]. No GPU lock needed.
-    if (g_bUseD3D11)
+    // PHASE 4/#DX12: GPU mode (D3D11 or D3D12) - hand back a pointer into the CPU array (base); writes go
+    // to m_pTLVtx[m_dwStartVtx + m_dwNumVtx]. No GPU/DDraw lock needed (the dead DDraw7 m_pVB is NULL).
+    if (g_bUseGpu)
     {
         // Artscout - 2026: guard against corrupted context state. Long-standing heap
         // corruption (see known-issues) zeroes the context's m_pIdx pointer / garbages the
@@ -946,46 +962,8 @@ bool ContextMPR::LockVB(int nVtxCount, void **p)
         return true;
     }
 
-    ShiAssert(FALSE == F4IsBadReadPtr(m_pVB, sizeof * m_pVB));
-
-    // Check for VB overflow
-    if ((m_dwStartVtx + m_dwNumVtx + nVtxCount) >= m_dwVBSize)
-    {
-        // would overflow
-        FlushVB();
-        m_dwStartVtx = 0;
-
-        // we are done with this VB, hint driver that he can use a another memory block to prevent breaking DMA activity
-        hr = m_pVB->Lock(DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_WRITEONLY bitor DDLOCK_WAIT bitor DDLOCK_DISCARDCONTENTS, p, &dwSize);
-    }
-
-    else if (m_pTLVtx)
-    {
-        // already locked, excellent
-        return true;
-    }
-
-    else
-    {
-        // we will only append data, dont interrupt DMA
-        if (m_dwStartVtx)
-            hr = m_pVB->Lock(DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_WRITEONLY bitor DDLOCK_WAIT bitor DDLOCK_NOOVERWRITE, p, &dwSize);
-        // ok this is the first lock
-        else
-            hr = m_pVB->Lock(DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_WRITEONLY bitor DDLOCK_WAIT bitor DDLOCK_DISCARDCONTENTS, p, &dwSize);
-    }
-
-    ShiAssert(SUCCEEDED(hr));
-
-#ifdef _DEBUG
-
-    if (SUCCEEDED(hr)) m_pVtxEnd = (BYTE *)*p + dwSize;
-    else m_pVtxEnd = NULL;
-
-#endif
-
-
-    return SUCCEEDED(hr);
+    // Artscout - 2026: [DX7-PURGE] DDraw7 m_pVB Lock path removed (GPU returns above).
+    return false;
 }
 
 void ContextMPR::UnlockVB()
@@ -994,16 +972,14 @@ void ContextMPR::UnlockVB()
     MonoPrint("ContextMPR::UnlockVB()\n");
 #endif
 
-    // PHASE 4: D3D11 - data is already in the CPU array, no GPU unlock needed
-    if (g_bUseD3D11)
+    // PHASE 4/#DX12: GPU mode - data is already in the CPU array, no GPU/DDraw unlock needed
+    if (g_bUseGpu)
     {
         m_pTLVtx = NULL;
         return;
     }
 
-    // Unlock VB
-    HRESULT hr = m_pVB->Unlock();
-    ShiAssert(SUCCEEDED(hr));
+    // Artscout - 2026: [DX7-PURGE] DDraw7 m_pVB Unlock removed (GPU returns above).
     m_pTLVtx = NULL;
 }
 
@@ -1081,7 +1057,7 @@ void ContextMPR::FlushVB()
     // (bypassing the LockVB guard). If a batch counter is garbage (corruption), DrawTL/
     // DrawTLIndexed get a huge count / out-of-range start vertex and memcpy reads off the end
     // of m_pVBCpu -> AV. Drop a clearly-invalid batch here instead of crashing.
-    if (g_bUseD3D11 and (not m_pVBCpu or not m_pIdx or
+    if (g_bUseGpu and (not m_pVBCpu or not m_pIdx or
                          m_dwNumVtx   >= m_dwVBSize or
                          m_dwStartVtx >= m_dwVBSize or
                          (m_dwStartVtx + m_dwNumVtx) > m_dwVBSize or
@@ -1102,26 +1078,26 @@ void ContextMPR::FlushVB()
     // PHASE 4: D3D11 screen path. m_nCurPrimType (D3DPT_*) == MPR_PKT_* (1..6). Multi-fan/
     // multi-line batches arrive with m_pIdx indices (as TRIANGLELIST/LINELIST) - draw
     // DrawTLIndexed; otherwise DrawTL by m_nCurPrimType.
-    if (g_bUseD3D11)
+    if (g_bUseGpu)
     {
         UnlockVB();
 
-        if (g_pD3D11Renderer and g_pD3D11Renderer->IsValid())
+        if (g_pRenderer and g_pRenderer->IsValid())
         {
-            g_pD3D11Renderer->BeginScreenPass();
-            g_pD3D11Renderer->SetState(currentState);
+            g_pRenderer->BeginScreenPass();
+            g_pRenderer->SetState(currentState);
 
             if (m_dwNumIdx)
             {
                 int listType = (m_nCurPrimType == D3DPT_LINESTRIP or m_nCurPrimType == D3DPT_LINELIST) ? 2 : 4;
-                g_pD3D11Renderer->DrawTLIndexed(listType,
+                g_pRenderer->DrawTLIndexed(listType,
                                                 (D3D11_TLVERTEX *)&m_pVBCpu[m_dwStartVtx],
                                                 (int)m_dwNumVtx,
                                                 m_pIdx, (int)m_dwNumIdx);
             }
             else
             {
-                g_pD3D11Renderer->DrawTL(m_nCurPrimType,
+                g_pRenderer->DrawTL(m_nCurPrimType,
                                          (D3D11_TLVERTEX *)&m_pVBCpu[m_dwStartVtx],
                                          (int)m_dwNumVtx);
             }
@@ -1230,9 +1206,9 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
     SPolygon *pStart, *pEnd, *pCur;
     DWORD offset, vertcnt = 0, verttot = 0;
 
-    // PHASE 4: D3D11 - copy the polygons into m_pVBCpu and draw them one by one as DrawTL(TRIFAN)
-    // with state/texture through g_pD3D11Renderer.
-    if (g_bUseD3D11)
+    // PHASE 4/#DX12: GPU mode - copy the polygons into m_pVBCpu and draw them one by one as DrawTL(TRIFAN)
+    // with state/texture through g_pRenderer.
+    if (g_bUseGpu)
     {
         if ((pHead->renderState >= STATE_ALPHA_SOLID) and (pHead->renderState <= STATE_ALPHA_TEXTURE_PERSPECTIVE_CLAMP))
         {
@@ -1240,9 +1216,9 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
             pHead = (SPolygon *)RadixSortDescending((radix_sort_t *)pHead, offset);
         }
 
-        if (g_pD3D11Renderer and g_pD3D11Renderer->IsValid())
+        if (g_pRenderer and g_pRenderer->IsValid())
         {
-            g_pD3D11Renderer->BeginScreenPass();
+            g_pRenderer->BeginScreenPass();
 
             DWORD base = 0;
             for (pCur = pHead; pCur not_eq NULL; pCur = pCur->pNext)
@@ -1250,7 +1226,7 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
                 if (base + pCur->numVertices >= m_dwVBSize) base = 0;
                 memcpy(&m_pVBCpu[base], pCur->pVertexList, sizeof(TLVERTEX) * pCur->numVertices);
 
-                g_pD3D11Renderer->SetState(pCur->renderState);
+                g_pRenderer->SetState(pCur->renderState);
 
                 if ((pCur->renderState > STATE_GOURAUD and pCur->renderState < STATE_ALPHA_SOLID)
                     or pCur->renderState > STATE_ALPHA_GOURAUD)
@@ -1261,7 +1237,7 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
                 if (pCur->renderState >= STATE_MULTITEXTURE)
                     SetTexture2(pCur->textureID1);
 
-                g_pD3D11Renderer->DrawTL(D3DPT_TRIANGLEFAN,
+                g_pRenderer->DrawTL(D3DPT_TRIANGLEFAN,
                                          (D3D11_TLVERTEX *)&m_pVBCpu[base],
                                          (int)pCur->numVertices);
                 base += pCur->numVertices;
@@ -1476,8 +1452,20 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 // NVG_LIGHT_LEVEL = 0.703125f
                 if (NVGmode or TVmode or IRmode)
                 {
-                    pVtx->color and_eq 0xFF00FF00;
-                    pVtx->color or_eq 0x0000B400;
+                    // Artscout - 2026: NVG (pilot goggles) = green phosphor. TV (TGP) / IR (Maverick, FLIR)
+                    // sensors are GRAYSCALE, not green -- green was the legacy CRT look (same as the old green
+                    // MFD labels that are really white). Grey = luma of the vertex color (Rec.601 weights).
+                    if (NVGmode)
+                    {
+                        pVtx->color and_eq 0xFF00FF00;
+                        pVtx->color or_eq 0x0000B400;
+                    }
+                    else
+                    {
+                        DWORD c = pVtx->color;
+                        DWORD lum = ((((c >> 16) bitand 0xFF) * 77) + (((c >> 8) bitand 0xFF) * 150) + ((c bitand 0xFF) * 29)) >> 8;
+                        pVtx->color = (c bitand 0xFF000000) bitor (lum << 16) bitor (lum << 8) bitor lum;
+                    }
                 }
 
                 ShiAssert(uv);
@@ -1585,8 +1573,19 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 // NVG_LIGHT_LEVEL = 0.703125f
                 if (NVGmode or TVmode or IRmode)
                 {
-                    sVertex->color and_eq 0xFF00FF00;
-                    sVertex->color or_eq 0x0000B400;
+                    // Artscout - 2026: NVG = green; TV (TGP) / IR (Maverick, FLIR) = GRAYSCALE (luma). See the
+                    // twin block above -- green is the legacy CRT look; real sensor video is monochrome grey.
+                    if (NVGmode)
+                    {
+                        sVertex->color and_eq 0xFF00FF00;
+                        sVertex->color or_eq 0x0000B400;
+                    }
+                    else
+                    {
+                        DWORD c = sVertex->color;
+                        DWORD lum = ((((c >> 16) bitand 0xFF) * 77) + (((c >> 8) bitand 0xFF) * 150) + ((c bitand 0xFF) * 29)) >> 8;
+                        sVertex->color = (c bitand 0xFF000000) bitor (lum << 16) bitor (lum << 8) bitor lum;
+                    }
                 }
 
                 ShiAssert(uv);
@@ -1775,7 +1774,7 @@ void ContextMPR::Draw2DPoint(float x, float y)
         pVtx->sy = y;
     }
 
-    pVtx->sz = m_2DPrimZ;	// #48: near (0) for UI, far (1) for the sky background
+    pVtx->sz = m_2DPrimZ;	// #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
     pVtx->rhw = 1.0f;
     pVtx->color = m_colFG;
     pVtx->specular = m_colFOG;
@@ -1937,7 +1936,7 @@ void ContextMPR::Draw2DLine(float x0, float y0, float x1, float y1)
         pVtx->sy = y0;
     }
 
-    pVtx->sz = m_2DPrimZ;	// #48: near (0) for UI, far (1) for the sky background
+    pVtx->sz = m_2DPrimZ;	// #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
     pVtx->rhw = 1.0f;
     pVtx->color = m_colFG;
     pVtx->specular = m_colFOG;
@@ -1960,7 +1959,7 @@ void ContextMPR::Draw2DLine(float x0, float y0, float x1, float y1)
         pVtx->sy = y1;
     }
 
-    pVtx->sz = m_2DPrimZ;	// #48: near (0) for UI, far (1) for the sky background
+    pVtx->sz = m_2DPrimZ;	// #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
     pVtx->rhw = 1.0f;
     pVtx->color = m_colFG;
     pVtx->specular = m_colFOG;
@@ -2126,7 +2125,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtx_
             pVtx->sy = pData->y;
         }
 
-        pVtx->sz = m_2DPrimZ;	// #48: near (0) for UI, far (1) for the sky background
+        pVtx->sz = m_2DPrimZ;	// #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
         pVtx->rhw = 1.0f;
         pVtx->color = m_colFG;
         pVtx->specular = m_colFOG;
@@ -2230,7 +2229,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
             pVtx->sy = pData->y;
         }
 
-        pVtx->sz = m_2DPrimZ;	// #48: near (0) for UI, far (1) for the sky background
+        pVtx->sz = m_2DPrimZ;	// #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
 
         // OW FIXME: this should be 1.0f / pData->z
         pVtx->rhw = 1.0f;
@@ -2375,8 +2374,9 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
                 pVtx->sy = pData[i]->y;
             }
 
-            // NOTE: HACK
-            pVtx->sz = 1.0f;
+            // NOTE: HACK -- reversed-Z: 0.0 = far plane (was 1.0 under standard Z). 2D screen prims that don't
+            // depth-test ignore it; ones that do now sit at the far plane as intended.
+            pVtx->sz = 0.0f;
             pVtx->rhw = pData[i]->q > 0.0f ? 1.0f / (pData[i]->q / Q_SCALE) : 1.0f;
 
             if (terrain)

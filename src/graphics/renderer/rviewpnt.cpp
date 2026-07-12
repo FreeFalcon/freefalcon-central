@@ -13,6 +13,7 @@
 #include "RViewPnt.h"
 #include "context.h"
 #include "FalcLib/include/dispopts.h" //JAM 04Oct03
+#include "tmap.h"   // Artscout - 2026 (#79): TheMap.LastFarTexLOD() for the far-LOD clamp
 
 //JAM 18Nov03
 #include "RealWeather.h"
@@ -22,11 +23,29 @@
 /***************************************************************************\
  Setup the view point
 \***************************************************************************/
+// Artscout - 2026 (#79 far-tiles relief): add g_nFarLodExtra extra coarse LOD ring(s) beyond the requested
+// coarsest (minDetail). Clamp to the map's last far-textured LOD so the extra rings are textured (no horizon
+// holes). Double the base range per extra level: the range loops below halve per level down from the coarsest,
+// so doubling the base keeps the finer detail rings at their original distances and only extends the far edge.
+// Gives the old coarsest ring a geomorph target (LOD < loLOD now) -> kills the far-terrain height-pop.
+static void ApplyFarLodExtra(float& gndRange, int& minDetail)
+{
+    extern int g_nFarLodExtra;
+    int extra = g_nFarLodExtra; if (extra < 0) extra = 0;
+    int maxFar = TheMap.LastFarTexLOD();
+    if (minDetail + extra > maxFar) extra = maxFar - minDetail;
+    if (extra <= 0) return;
+    minDetail += extra;
+    gndRange  *= (float)(1 << extra);
+}
+
 void RViewPoint::Setup(float gndRange, int maxDetail, int minDetail, bool isZBuffer)
 {
     int i;
 
     bZBuffering = isZBuffer; //JAM 13Dec03
+
+    ApplyFarLodExtra(gndRange, minDetail);   // #79: extend far relief + give far tiles a geomorph target
 
     ShiAssert( not IsReady());
 
@@ -128,6 +147,8 @@ void RViewPoint::SetGroundRange(float gndRange, int maxDetail, int minDetail)
     int i;
 
     ShiAssert(IsReady());
+
+    ApplyFarLodExtra(gndRange, minDetail);   // #79: keep the extra far LOD ring(s) when the draw distance changes
 
     // Calculate the ranges we'll need at each LOD
     float *Ranges = new float[minDetail + 1];

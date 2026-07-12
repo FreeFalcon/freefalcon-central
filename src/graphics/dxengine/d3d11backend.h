@@ -22,6 +22,7 @@
 #define _D3D11BACKEND_H_
 
 #include <windows.h>
+#include "IRenderBackend.h"   // Artscout - 2026: #DX12 -- API-neutral backend interface
 
 // Forward declarations keep d3d11.h out of the widely-included headers, the
 // same way context.h forward-declares the D3D7 interfaces.
@@ -32,7 +33,7 @@ struct ID3D11RenderTargetView;
 struct ID3D11Texture2D;
 struct ID3D11DepthStencilView;
 
-class D3D11Backend
+class D3D11Backend : public IRenderBackend   // Artscout - 2026: #DX12 -- implements the neutral backend surface
 {
 public:
 	D3D11Backend();

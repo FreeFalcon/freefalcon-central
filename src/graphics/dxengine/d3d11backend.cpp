@@ -174,9 +174,13 @@ bool D3D11Backend::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFu
 	};
 	D3D_FEATURE_LEVEL gotLevel = D3D_FEATURE_LEVEL_10_0;
 
+	// Artscout - 2026 (#89): honour the video-card selector. A non-NULL adapter REQUIRES driverType UNKNOWN.
+	extern struct IDXGIAdapter1 *GetSelectedDxgiAdapter();
+	IDXGIAdapter1 *pChosenAdapter = GetSelectedDxgiAdapter();
+
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(
-		NULL,                       // default adapter
-		D3D_DRIVER_TYPE_HARDWARE,
+		pChosenAdapter,                                                              // chosen or (NULL) default adapter
+		pChosenAdapter ? D3D_DRIVER_TYPE_UNKNOWN : D3D_DRIVER_TYPE_HARDWARE,         // UNKNOWN required when adapter given
 		NULL,
 		createFlags,
 		wanted, _countof(wanted),
@@ -186,6 +190,14 @@ bool D3D11Backend::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFu
 		&m_pDevice,
 		&gotLevel,
 		&m_pContext);
+
+	if (FAILED(hr) && pChosenAdapter) {   // chosen adapter failed -> retry on default hardware
+		hr = D3D11CreateDeviceAndSwapChain(
+			NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, createFlags,
+			wanted, _countof(wanted), D3D11_SDK_VERSION, &scd,
+			&m_pSwapChain, &m_pDevice, &gotLevel, &m_pContext);
+	}
+	if (pChosenAdapter) pChosenAdapter->Release();
 
 	if (FAILED(hr)) {
 		// Retry once with the debug layer dropped, in case the SDK layers
@@ -238,7 +250,7 @@ bool D3D11Backend::CreateDepthBuffer(int nWidth, int nHeight, int nDepth)
 {
 	// Artscout - 2026: Always with stencil (D24S8) -- needed for the 3D-pit mask (SetStencilMode).
 	// D32_FLOAT has no stencil component, which let the sky/world cover the pit.
-	DXGI_FORMAT fmt = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	DXGI_FORMAT fmt = DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
 	(void)nDepth;
 
 	D3D11_TEXTURE2D_DESC td;
@@ -290,7 +302,7 @@ static UINT ResolveMsaaSamples(ID3D11Device *dev, DXGI_FORMAT fmt)
 bool D3D11Backend::CreateMsaaTargets(int nWidth, int nHeight)
 {
 	const DXGI_FORMAT colFmt = DXGI_FORMAT_R8G8B8A8_UNORM;	// Artscout - 2026: = swapchain format
-	const DXGI_FORMAT depFmt = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	const DXGI_FORMAT depFmt = DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
 	const UINT samples = ResolveMsaaSamples(m_pDevice, colFmt);	// Artscout - 2026: from the Graphics-page setting
 
 	if (samples < 2)	// disabled, or no supported multisample level
@@ -453,7 +465,7 @@ void D3D11Backend::EnsureMenuRtt(int w, int h)
 	// we still have the color RTV (the 2D comms menu draws fine without depth; the exit dialog may z-fight).
 	D3D11_TEXTURE2D_DESC dd; ZeroMemory(&dd, sizeof(dd));
 	dd.Width = w; dd.Height = h; dd.MipLevels = 1; dd.ArraySize = 1;
-	dd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	dd.Format = DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
 	dd.SampleDesc.Count = 1;
 	dd.Usage = D3D11_USAGE_DEFAULT; dd.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	if (SUCCEEDED(m_pDevice->CreateTexture2D(&dd, NULL, &m_pMenuRttDepthTex)) && m_pMenuRttDepthTex)
@@ -490,7 +502,7 @@ void D3D11Backend::BindMenuRtt(bool clear)
 	{
 		const FLOAT z[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		m_pContext->ClearRenderTargetView(m_pMenuRttRTV, z);
-		if (m_pMenuRttDSV) m_pContext->ClearDepthStencilView(m_pMenuRttDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		if (m_pMenuRttDSV) m_pContext->ClearDepthStencilView(m_pMenuRttDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 0.0f, 0);
 	}
 }
 
@@ -540,7 +552,7 @@ void D3D11Backend::BeginFrame(unsigned long argb)
 
 	m_pContext->ClearRenderTargetView(rtv, rgba);
 	m_pContext->ClearDepthStencilView(dsv,
-		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 0.0f, 0);
 }
 
 void D3D11Backend::ClearDepth()
@@ -548,7 +560,7 @@ void D3D11Backend::ClearDepth()
 	ID3D11DepthStencilView* dsv = MsaaActive() ? m_pMsaaDSV : m_pDepthDSV; // #7 MSAA
 	if (m_pContext && dsv)
 		m_pContext->ClearDepthStencilView(dsv,
-			D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+			D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 0.0f, 0);
 }
 
 void D3D11Backend::BindRenderTargetView(void* rtv, int w, int h, bool clear, bool unbindSRV)
@@ -642,7 +654,7 @@ void D3D11Backend::BindBackBuffer(bool bClearDepth)
 	if (bClearDepth && dsv)
 	{
 		m_pContext->ClearDepthStencilView(dsv,
-			D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+			D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 0.0f, 0);
 		// Artscout - 2026: 3D-frame base color. Was dark navy -> an ugly dark-blue stripe wherever the
 		// sky bands leave a gap in a VR off-axis (quad) view (horizon seam / looking up). Clear to the
 		// CURRENT sky colour (g_vrClearColor, updated each frame from AdjustSkyColor / fog colour) so any
@@ -670,7 +682,7 @@ void D3D11Backend::SetXrEyeTarget(void* rtv, int w, int h)
 		D3D11_TEXTURE2D_DESC dd;
 		ZeroMemory(&dd, sizeof(dd));
 		dd.Width = w; dd.Height = h; dd.MipLevels = 1; dd.ArraySize = 1;
-		dd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		dd.Format = DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
 		dd.SampleDesc.Count = 1;
 		dd.Usage = D3D11_USAGE_DEFAULT;
 		dd.BindFlags = D3D11_BIND_DEPTH_STENCIL;

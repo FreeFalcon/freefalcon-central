@@ -9,6 +9,9 @@
 
 // PHASE 1 D3D7->D3D11: when true DXContext::Init brings up D3D11Backend instead of DDraw7/D3D7.
 bool g_bUseD3D11 = true;
+// Artscout - 2026: #DX12 Phase 1 -- when true DXContext::Init brings up D3D12Backend (and clears g_bUseD3D11
+// so the D3D11 render path stays out). g_bUseD3D12 itself is DEFINED in d3d12backend.cpp. "UseD3D12".
+extern bool g_bUseD3D12;
 
 // VR: when true (and g_bUseD3D11) DXContext::Init also brings up OpenXRBackend over the
 // D3D11 device. Default OFF -- the flat desktop path is the normal mode and stays available.
@@ -35,6 +38,10 @@ bool g_bUseQuadViews = false;
 // Apply). The engine reads these globals at the point of use; DisplayOptions is the UI source of truth.
 bool g_bMsaaEnable = true;         // 3D-scene + RTT multisample AA on/off
 int  g_nMsaaSamples = 4;           // requested MSAA sample count 1..8 (backend snaps to a supported level)
+// Artscout - 2026: anisotropic texture filtering (world/terrain WRAP samplers, both backends, flat + VR). Read
+// at sampler creation -> applied on entering 3D (like MSAA/resolution). OFF -> plain trilinear (linear mip).
+bool g_bAnisoEnable  = true;       // anisotropic filtering on/off
+int  g_nAnisoSamples = 16;         // max anisotropy 1..16 (1/off falls back to trilinear); clamped to a power of two
 int  g_nVrResolutionScale = 100;   // per-eye OpenXR swapchain resolution scale, percent 50..100
 
 // Artscout - 2026 (#59 VR menu): head-locked in-3D comms/exit menu quad geometry (meters). The menu is drawn
@@ -57,6 +64,7 @@ float g_fVrDisplayIpd = 10.65f;   // Artscout - 2026: RTT display IPD; headset-t
 // different 3D space, so the per-eye stereo depth differs -> symbology floats in front of the panel and
 // no single g_fVrDisplayIpd fixes both convergence AND depth. EXPERIMENTAL; FFViper.cfg "VrRttWorldCam 1".
 bool g_bVrRttWorldCam = false;
+// Artscout - 2026 (VR DX12 quad MFD drift): disarm the eye off-axis frustum-cant for the RTT display composite
 
 // Artscout - 2026 (horizon): how far DOWN to extend the sky filler band past the terrain end (multiple
 // of the filler height), to cover the near/far (fartiles) terrain seam with ground haze instead of a
@@ -99,8 +107,15 @@ float g_fVrCursorIpd = 1.0f;
 // nearest 3D button; trigger = click, thumbstick = 2-way switch/knob, A = zoom, B = recenter. Falls back to
 // the VR mouse when no controller is tracked. All tunable in FFViper.cfg (calibrate in-headset).
 bool  g_bVrControllers   = true;    // master on/off. FFViper.cfg "VrControllers".
-float g_fVrRayRadius     = 3.0f;    // hit radius = button.dist * this (button units). FFViper.cfg "VrRayRadius".
+float g_fVrRayRadius     = 2.0f;    // hit radius = button.dist * this (button units). FFViper.cfg "VrRayRadius".
 float g_fVrRayReach      = 300.0f;  // free-cursor reach along the ray when nothing is hit (button units). "VrRayReach".
+// Artscout - 2026 (#58 true 3D mouse): sign/scale of the mouse ray's horizontal/vertical NDC->frustum-tangent
+// mapping. 1 = direct; -1 flips that axis if the cursor moves mirrored in-headset. Tune in FFViper.cfg then bake.
+float g_fVrMouseRayX     = 1.0f;
+float g_fVrMouseRayY     = 1.0f;
+// Artscout - 2026 (#58 true 3D mouse): hit radius = button.dist * this, for the MOUSE ray only (separate from the
+// controller's VrRayRadius -- the eye-origin mouse aims coarser than the near hand). Headset-tuned; FFViper.cfg.
+float g_fVrMouseRayRadius = 2.0f;
 float g_fVrThumbThresh   = 0.6f;    // thumbstick deflection that counts as a press. "VrThumbThresh".
 float g_fVrKnobRepeatMs  = 160.0f;  // held-thumbstick repeat interval for knobs/switches (ms). "VrKnobRepeat".
 float g_fVrRayOriginOfs  = -80.0f;  // calibration: shift the ray origin forward along its dir (button units). "VrRayOriginOfs". Default from glove-hand calibration.
@@ -146,6 +161,7 @@ float g_fVrModelCull       = 1.0f;
 // "VrCursorMagnetStereo" / "VrDetectBiasXStereo" / "VrDetectBiasYStereo" / "VrCursorIpdStereo".
 float g_fVrCursorMagnetStereo = 1.0f;   // Artscout - 2026 (#58): stereo's full FOV packs buttons denser than quad's zoom focus -> ~1, not quad's 6
 float g_fVrDetectBiasXStereo  = -245.0f;   // Artscout - 2026 (#58): tuned in-headset for plain stereo (detect was ~2/3 MFD right of the button)
+float g_fVrDetectBiasXStereoDx12 = -180.0f; // Artscout - 2026 (VR DX12): D3D12 stereo cursor maps ~65px differently -> its own detect bias (tuned in-headset). Used on the D3D12 path; D3D11 uses g_fVrDetectBiasXStereo.
 float g_fVrDetectBiasYStereo  = 0.0f;
 float g_fVrCursorIpdStereo    = 1.0f;
 
@@ -322,7 +338,18 @@ bool g_bNewAcmiHud = true; // JPO
 int g_nLowDetailFactor = 0; // JPO - adjustment to the LOD show at low level
 float g_fHUDonlySize = 0.0f; // FRB - % Size increase of HUD-Only view (% = decimal)
 
-float g_fMipLodBias;
+// Artscout - 2026 (#78): D3D12 static-sampler mip LOD bias. Default 0 -- the terrain shimmer turned out to be
+// geometric (LOD-overlap z-fight), NOT texture minification (census proved tiles are fully mipped), so biasing
+// just softens the world for nothing. Kept as a live FFViper.cfg "MipLodBias" knob (>0 = blurrier mips).
+float g_fMipLodBias = 0.0f;
+// Artscout - 2026 (#78): GPU-terrain LOD ring overlap width in posts. 0 = geomorph-only (no overlap, no
+// terrain-on-terrain z-fight boil -- the shimmer-free state); 4 = old full overlap (hides intermittent holes
+// but z-fights). Live FFViper.cfg "TerrainOverlapPosts".
+float g_fTerrainOverlapPosts = 0.0f;
+// Artscout - 2026 (#79 far-tiles relief): render this many EXTRA coarse LOD ring(s) beyond the default far-tiles
+// ring, so the old coarsest gets a geomorph target (kills the horizon height-pop) + relief reaches farther.
+// Clamped to the theater map's last far-textured LOD (no untextured horizon holes). Live FFViper.cfg "FarLodExtra".
+int g_nFarLodExtra = 1;
 float g_fCloudMinHeight = -1.0f; // JPO
 float g_fRadarScale = 1.0f; // JPO
 float g_fCursorSpeed = 1.0f; // JPO
@@ -480,14 +507,21 @@ float g_fHud3DGlassFresnel = 2.5f;
 float g_fHud3DGlassSize = 1.15f;
 float g_fHud3DGlassTop = 0.85f;   // Artscout - 2026: #76 scale the glass-plate/aperture TOP half (0..1) so the tint doesn't poke above the HUD frame (bottom is depth-clipped by the ICP)
 bool g_bGpuTerrain = false;       // Artscout - 2026: #78 Phase 1 -- draw terrain as GPU world-space geometry (VS_Object, real depth) instead of the CPU screen-space path. OFF by default; the CPU path is the shipping default until parity is confirmed.
+bool g_bSensorSceneD3D12 = true;  // Artscout - 2026: #DX12 A5 -- render the TGP/Maverick/LANTIRN sensor 3D scene (terrain+objects) into the RTT atlas under D3D12. ON: with the #91 terrain batch (per-SRV DrawTerrainMesh) + the sensor radius cap (32 posts) the sensor no longer floods the command list -> no DEVICE_HUNG (confirmed: Maverick picture renders, driver alive). Was OFF (symbology only) while the terrain path was per-chunk. Set 0 to fall back to symbology-only if a specific sensor view ever hangs.
+// Artscout - 2026: #78 -- GPU terrain LOD-seam mode. TRUE = single-layer "connector" tiling (the DX7 approach):
+// each LOD occupies an EXACT integer post ring, its outer edge decimated onto the coarse (LOD+1) posts via the
+// geomorph, so fine and coarse meet on ONE shared surface -> no LOD-overlap double-layer -> no z-fight -> no
+// edge shimmer, and the decimated edge closes the T-junction crack. FALSE = the legacy overlap+depth-push path
+// (kept for A/B; it shimmers by construction). Toggle live via FFViper.cfg "TerrainConnectors".
+bool g_bTerrainConnectors = true;
 // Artscout - 2026: #78 GPU-terrain DEPTH bias (pushes terrain BACK in the depth buffer so coplanar objects --
 // the flat airbase/runway platform -- win the depth test instead of being "eaten" by the terrain at grazing
 // angles). SlopeBias is the key one: it scales with the per-pixel depth slope, so it only acts at grazing
 // (exactly the "look up on the runway" case) and is ~0 head-on / on open terrain. Const is a flat add. Both are
 // ADDED on top of the per-LOD seam bias (finer LOD still wins the seam). Tune live, then bake. Too much ->
 // distant terrain can sink behind the horizon; too little -> runway still eaten. "GpuTerrainSlopeBias/DepthBias".
-float g_fGpuTerrainSlopeBias = 64.0f;    // tuned: runway no longer eaten in the cockpit view (grazing)
-float g_fGpuTerrainDepthBias = 3000.0f;  // tuned: FOV-independent add so the zoomed quad-views FOCUS is clean too
+float g_fGpuTerrainSlopeBias = 0.0f;    // reversed-Z float depth: uniform precision + single-layer terrain -> no big push needed (object bias wins coplanar). Live-tune if terrain z-fights objects.
+float g_fGpuTerrainDepthBias = 0.0f;    // reversed-Z: 0 base terrain bias (was 3000 for standard-Z D24). Object rasterizer (+bias toward camera) keeps ground objects above the terrain.
 // Artscout - 2026 (VR HUD 3D glass): clip the collimated HUD to the combiner aperture (depthTest -- the
 // cockpit structure nearer than the glass occludes the symbology, so it no longer shows "everywhere").
 // Default ON; set 0 if depth z-fighting looks worse than the bleed. FFViper.cfg "Hud3DGlassClip".
@@ -1230,10 +1264,13 @@ static ConfigOption<bool> BoolOpts[] =
     { "HudCollimate", &g_bHudCollimate}, // HUD collimation (infinite-projection head offset)
     { "Hud3DGlass", &g_bHud3DGlass}, // Artscout - 2026 (VR): true optical collimation of HUD symbology (sits at infinity)
     { "GpuTerrain", &g_bGpuTerrain}, // Artscout - 2026: #78 Phase 1 -- GPU world-space terrain (real depth) vs CPU screen-space. OFF by default.
+    { "SensorSceneD3D12", &g_bSensorSceneD3D12}, // Artscout - 2026: #DX12 A5 -- render TGP/MAV/LANTIRN sensor 3D scene into the atlas under D3D12 (OFF: stable, symbology only; ON: needs #91 terrain batch).
+    { "TerrainConnectors", &g_bTerrainConnectors}, // Artscout - 2026: #78 -- single-layer connector LOD tiling (no overlap z-fight/shimmer) vs legacy overlap path. ON by default.
     { "VrControllers", &g_bVrControllers}, // Artscout - 2026 (VR controllers): laser-pointer clickable cockpit (VR only). ON by default.
     { "VrControllerModel", &g_bVrControllerModel}, // Artscout - 2026 (VR controller model): draw the real controller mesh vs wireframe
     { "VrUseHands", &g_bVrUseHands}, // Artscout - 2026 (VR): draw hand/glove meshes instead of the controller model
     { "VrSwitchGroups", &g_bVrSwitchGroups}, // Artscout - 2026: collapse multi-position rotaries to one hotspot + cycle
+    { "UseD3D12", &g_bUseD3D12}, // Artscout - 2026: #DX12 Phase 1 -- bring up D3D12 backend instead of D3D11 (device+present bring-up)
     { "VrModelOpaque", &g_bVrModelOpaque}, // Artscout - 2026 (VR model): draw hand/controller mesh solid vs see-through
     { "VrRayFlipH", &g_bVrRayFlipH}, // Artscout - 2026 (VR controllers): flip ray horizontal (right axis)
     { "VrRayFlipV", &g_bVrRayFlipV}, // Artscout - 2026 (VR controllers): flip ray vertical (up/down axis)
@@ -1254,6 +1291,8 @@ static ConfigOption<bool> BoolOpts[] =
 static ConfigOption<int> IntOpts[] =
 {
     { "ThrottleMode", &g_nThrottleMode },
+
+    { "FarLodExtra", &g_nFarLodExtra }, // Artscout - 2026 (#79): extra coarse terrain LOD rings (geomorph target for far tiles)
     { "PadlockBoxSize", &g_nPadlockBoxSize },
     { "PadlockMode", &g_nPadlockMode },
     { "NumDefaultHatSwitches", &NumHats },
@@ -1378,6 +1417,7 @@ static ConfigOption<char> StringOpts[] =
 static ConfigOption<float> FloatOpts[] =
 {
     { "MipLodBias", &g_fMipLodBias },
+    { "TerrainOverlapPosts", &g_fTerrainOverlapPosts }, // Artscout - 2026 (#78): 0=geomorph-only (no z-fight shimmer), 4=old overlap
     { "CloudMinHeight", &g_fCloudMinHeight}, // JPO
     { "RadarScale", &g_fRadarScale}, // JPO
     { "CursorSpeed", &g_fCursorSpeed}, // JPO
@@ -1407,6 +1447,9 @@ static ConfigOption<float> FloatOpts[] =
     { "VrCursorIpd", &g_fVrCursorIpd}, // Artscout - 2026 (VR mouse): per-eye IPD parallax scale for depth-correct clickable detection
     { "VrRayRadius", &g_fVrRayRadius}, // Artscout - 2026 (VR controllers): laser hit radius = button.dist * this
     { "VrRayReach", &g_fVrRayReach}, // Artscout - 2026 (VR controllers): free-cursor reach along the ray (button units)
+    { "VrMouseRayX", &g_fVrMouseRayX}, // Artscout - 2026 (#58 true 3D mouse): horizontal ray sign/scale (-1 flips)
+    { "VrMouseRayY", &g_fVrMouseRayY}, // Artscout - 2026 (#58 true 3D mouse): vertical ray sign/scale (-1 flips)
+    { "VrMouseRayRadius", &g_fVrMouseRayRadius}, // Artscout - 2026 (#58 true 3D mouse): mouse-ray hit radius (button.dist * this)
     { "VrThumbThresh", &g_fVrThumbThresh}, // Artscout - 2026 (VR controllers): thumbstick press threshold
     { "VrKnobRepeat", &g_fVrKnobRepeatMs}, // Artscout - 2026 (VR controllers): held-thumbstick repeat interval (ms)
     { "VrRayOriginOfs", &g_fVrRayOriginOfs}, // Artscout - 2026 (VR controllers): calibration shift of the ray origin along its dir
@@ -1424,6 +1467,7 @@ static ConfigOption<float> FloatOpts[] =
     { "GpuTerrainDepthBias", &g_fGpuTerrainDepthBias}, // Artscout - 2026: #78 terrain constant depth bias
     { "VrCursorMagnetStereo", &g_fVrCursorMagnetStereo}, // Artscout - 2026 (#58): plain-stereo (non-quad) snap radius
     { "VrDetectBiasXStereo", &g_fVrDetectBiasXStereo}, // Artscout - 2026 (#58): plain-stereo (non-quad) horizontal detect bias
+    { "VrDetectBiasXStereoDx12", &g_fVrDetectBiasXStereoDx12}, // Artscout - 2026 (VR DX12): stereo horizontal detect bias on the D3D12 path
     { "VrDetectBiasYStereo", &g_fVrDetectBiasYStereo}, // Artscout - 2026 (#58): plain-stereo (non-quad) vertical detect bias
     { "VrCursorIpdStereo", &g_fVrCursorIpdStereo}, // Artscout - 2026 (#58): plain-stereo (non-quad) IPD parallax scale
     { "MinCloudWeather",  &g_fMinCloudWeather}, //JPO

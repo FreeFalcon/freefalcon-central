@@ -58,6 +58,7 @@ void DisplayOptionsClass::Initialize(void)
     // flat desktop path stays the norm -- the user opts into OpenXR via the Advanced checkbox. Res scale 100%.
     bMsaaEnable = true;
     nMsaaSamples = 4;
+    nAnisotropicSamples = 16;   // Artscout - 2026: default max anisotropy (on/off = bAnisotropicFiltering)
     bUseOpenXR = false;
     bUseQuadViews = false;
     nVrResolutionScale = 100;
@@ -116,6 +117,7 @@ int DisplayOptionsClass::LoadOptions(char *filename)
             e->QueryBoolAttribute("render2texture",  &bRender2Texture);
             e->QueryBoolAttribute("render2Dcockpit", &bRender2DCockpit);
             e->QueryBoolAttribute("anisotropic",     &bAnisotropicFiltering);
+            e->QueryIntAttribute ("anisoLevel",      &nAnisotropicSamples);   // Artscout - 2026: max anisotropy 1..16
             e->QueryBoolAttribute("linearmip",       &bLinearMipFiltering);
             e->QueryBoolAttribute("mipmapping",      &bMipmapping);
             e->QueryBoolAttribute("zbuffer",         &bZBuffering);
@@ -164,11 +166,12 @@ int DisplayOptionsClass::LoadOptions(char *filename)
 
     // Artscout - 2026: clamp the new option ranges (UI slider bounds; protects against a hand-edited XML).
     if (nMsaaSamples       < 1  or nMsaaSamples       > 8)   nMsaaSamples       = 4;
+    if (nAnisotropicSamples < 1 or nAnisotropicSamples > 16) nAnisotropicSamples = 16;
     if (nVrResolutionScale < 50 or nVrResolutionScale > 100) nVrResolutionScale = 100;
 
     {
-        extern bool g_bUseD3D11;
-        if (g_bUseD3D11)
+        extern bool g_bUseD3D11, g_bUseD3D12;
+        if (g_bUseD3D11 or g_bUseD3D12)   // #DX12: GPU mode has no DDraw -> force RTT/2D-cockpit like D3D11
         {
             DisplayOptions.bRender2DCockpit = TRUE;
             // Artscout - 2026: force render-to-texture under D3D11. The bRender2Texture==FALSE path is a
@@ -229,6 +232,7 @@ int DisplayOptionsClass::SaveOptions(void)
     if (DispWidth  < 320 or DispWidth  > 16384) DispWidth  = 1920;
     if (DispHeight < 240 or DispHeight > 16384) DispHeight = 1080;
     if (nMsaaSamples       < 1  or nMsaaSamples       > 8)   nMsaaSamples       = 4;
+    if (nAnisotropicSamples < 1 or nAnisotropicSamples > 16) nAnisotropicSamples = 16;
     if (nVrResolutionScale < 50 or nVrResolutionScale > 100) nVrResolutionScale = 100;
 
     tinyxml2::XMLDocument doc;
@@ -253,6 +257,7 @@ int DisplayOptionsClass::SaveOptions(void)
     e->SetAttribute("render2texture",  bRender2Texture);
     e->SetAttribute("render2Dcockpit", bRender2DCockpit);
     e->SetAttribute("anisotropic",     bAnisotropicFiltering);
+    e->SetAttribute("anisoLevel",      nAnisotropicSamples);   // Artscout - 2026: max anisotropy 1..16
     e->SetAttribute("linearmip",       bLinearMipFiltering);
     e->SetAttribute("mipmapping",      bMipmapping);
     e->SetAttribute("zbuffer",         bZBuffering);

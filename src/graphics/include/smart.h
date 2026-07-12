@@ -11,18 +11,17 @@
 #define COM_SMARTPTR_TYPEDEF(a, b) typedef CComQIPtr<a, &b> a##Ptr
 #endif // USE_ATL_SMART_POINTERS
 
-COM_SMARTPTR_TYPEDEF(IDirectDraw, IID_IDirectDraw);
-COM_SMARTPTR_TYPEDEF(IDirectDrawPalette, IID_IDirectDrawPalette);
-COM_SMARTPTR_TYPEDEF(IDirectDraw7, IID_IDirectDraw7);
-COM_SMARTPTR_TYPEDEF(IDirect3D, IID_IDirect3D);
-COM_SMARTPTR_TYPEDEF(IDirect3D7, IID_IDirect3D7);
-COM_SMARTPTR_TYPEDEF(IDirectDrawSurface7, IID_IDirectDraw7);
-COM_SMARTPTR_TYPEDEF(IDirectDrawClipper, IID_IDirectDrawClipper);
-COM_SMARTPTR_TYPEDEF(IDirect3DDevice7, IID_IDirect3DDevice7);
-COM_SMARTPTR_TYPEDEF(IDirect3DVertexBuffer7, IID_IDirect3DVertexBuffer7);
-COM_SMARTPTR_TYPEDEF(IDirectDrawGammaControl, IID_IDirectDrawGammaControl);
+// Artscout - 2026: [DX7-PURGE] The DirectDraw/Direct3D7 COM smart-pointer typedefs
+// (IDirectDraw7Ptr, IDirectDrawSurface7Ptr, IDirect3DDevice7Ptr, ...) were removed.
+// They needed the real COM interfaces (__uuidof/IID_*) which no longer exist under
+// the D3D11/D3D12 path. Their only users were the now-dead DDraw surface/device
+// bring-up code in devmgr/imagebuf/tex/context, which is being excised alongside.
 
 // Helper stuff
+// Artscout - 2026: shared CHECKHR_DEFINED guard with comsup.h -- a TU that includes both must see exactly
+// one definition (see comsup.h for the Release LNK2019 this prevents).
+#ifndef CHECKHR_DEFINED
+#define CHECKHR_DEFINED
 inline void CheckHR(HRESULT hr)
 {
     if (FAILED(hr))
@@ -32,3 +31,4 @@ inline void CheckHR(HRESULT hr)
         throw _com_error(hr, pEI);
     }
 }
+#endif // CHECKHR_DEFINED

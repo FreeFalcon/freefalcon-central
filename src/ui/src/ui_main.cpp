@@ -15,7 +15,6 @@
 #endif
 
 #include "targa.h"
-#include "dxutil/ddutil.h"
 #include "Graphics/Include/imagebuf.h"
 #include "Graphics/Include/drawBSP.h"
 #include "dispcfg.h"

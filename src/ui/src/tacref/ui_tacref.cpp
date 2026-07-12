@@ -1,7 +1,6 @@
 #include <windows.h>
 #include "Graphics/Include/TimeMgr.h"
 #include "Graphics/Include/imagebuf.h"
-#include "dxutil/ddutil.h"
 #include "dispcfg.h"
 #include "Graphics/Include/renderow.h"
 #include "Graphics/Include/RViewPnt.h"
