@@ -506,7 +506,7 @@ float g_fHud3DGlassFresnel = 2.5f;
 // tint AND the clip aperture scale (so growing it never clips useful symbology). FFViper.cfg "Hud3DGlassSize".
 float g_fHud3DGlassSize = 1.15f;
 float g_fHud3DGlassTop = 0.85f;   // Artscout - 2026: #76 scale the glass-plate/aperture TOP half (0..1) so the tint doesn't poke above the HUD frame (bottom is depth-clipped by the ICP)
-bool g_bGpuTerrain = false;       // Artscout - 2026: #78 Phase 1 -- draw terrain as GPU world-space geometry (VS_Object, real depth) instead of the CPU screen-space path. OFF by default; the CPU path is the shipping default until parity is confirmed.
+bool g_bGpuTerrain = true;        // Artscout - 2026: #78 -- draw terrain as GPU world-space geometry (VS_Object, real depth) instead of the CPU screen-space path. Default ON (override via cfg "set g_bGpuTerrain 0").
 bool g_bSensorSceneD3D12 = true;  // Artscout - 2026: #DX12 A5 -- render the TGP/Maverick/LANTIRN sensor 3D scene (terrain+objects) into the RTT atlas under D3D12. ON: with the #91 terrain batch (per-SRV DrawTerrainMesh) + the sensor radius cap (32 posts) the sensor no longer floods the command list -> no DEVICE_HUNG (confirmed: Maverick picture renders, driver alive). Was OFF (symbology only) while the terrain path was per-chunk. Set 0 to fall back to symbology-only if a specific sensor view ever hangs.
 // Artscout - 2026: #78 -- GPU terrain LOD-seam mode. TRUE = single-layer "connector" tiling (the DX7 approach):
 // each LOD occupies an EXACT integer post ring, its outer edge decimated onto the coarse (LOD+1) posts via the
@@ -520,7 +520,7 @@ bool g_bTerrainConnectors = true;
 // (exactly the "look up on the runway" case) and is ~0 head-on / on open terrain. Const is a flat add. Both are
 // ADDED on top of the per-LOD seam bias (finer LOD still wins the seam). Tune live, then bake. Too much ->
 // distant terrain can sink behind the horizon; too little -> runway still eaten. "GpuTerrainSlopeBias/DepthBias".
-float g_fGpuTerrainSlopeBias = 0.0f;    // reversed-Z float depth: uniform precision + single-layer terrain -> no big push needed (object bias wins coplanar). Live-tune if terrain z-fights objects.
+float g_fGpuTerrainSlopeBias = 4.0f;    // Artscout - 2026: default 4 -- reversed-Z slope-scaled bias on the DX12 terrain PSO (bias==2) so grazing-angle terrain sinks below coplanar objects/runway and stops the see-through z-fight. Override via cfg.
 float g_fGpuTerrainDepthBias = 0.0f;    // reversed-Z: 0 base terrain bias (was 3000 for standard-Z D24). Object rasterizer (+bias toward camera) keeps ground objects above the terrain.
 // Artscout - 2026 (VR HUD 3D glass): clip the collimated HUD to the combiner aperture (depthTest -- the
 // cockpit structure nearer than the glass occludes the symbology, so it no longer shows "everywhere").

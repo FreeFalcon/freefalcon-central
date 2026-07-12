@@ -674,6 +674,7 @@ ID3D12PipelineState* D3D12Renderer::GetPSO(int pass, int blend, bool dWrite, boo
 	             | ((unsigned)(cull & 3)     << 7)
 	             | ((unsigned)(m_hudStencil & 3) << 10)   // #76 HUD aperture stencil variant (0/1/2)
 	             | ((unsigned)(bias & 1)     << 9)
+	             | ((unsigned)((bias >> 1) & 1) << 16)     // #78 bias==2 (terrain) high bit -- distinct from 0/1
 	             | ((unsigned)(samples & 0xF) << 12);      // MSAA sample-count variant
 
 	PsoMap* cache = (PsoMap*)m_pPsoCache;
@@ -761,6 +762,12 @@ ID3D12PipelineState* D3D12Renderer::GetPSO(int pass, int blend, bool dWrite, boo
 	pd.RasterizerState.DepthClipEnable = TRUE;
 	pd.RasterizerState.MultisampleEnable = (samples > 1) ? TRUE : FALSE;   // MSAA: edge AA on the multisample scene target
 	if (bias == 1) { pd.RasterizerState.DepthBias = 100; pd.RasterizerState.SlopeScaledDepthBias = 0.0f; }   // reversed-Z: +bias = toward camera   // #16 pull objects toward camera
+	else if (bias == 2)   // #78 terrain: reversed-Z NEGATIVE bias = AWAY from camera, so terrain sinks below coplanar
+	{                     // objects/runway and stops the grazing-angle z-fight/see-through. From cfg (baked at PSO build).
+		extern float g_fGpuTerrainSlopeBias, g_fGpuTerrainDepthBias;
+		pd.RasterizerState.DepthBias            = -(int)g_fGpuTerrainDepthBias;
+		pd.RasterizerState.SlopeScaledDepthBias = -g_fGpuTerrainSlopeBias;
+	}
 
 	pd.PrimitiveTopologyType = (topoType == 0) ? D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT
 	                         : (topoType == 1) ? D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE
@@ -933,7 +940,10 @@ void D3D12Renderer::BeginObjectPass()
 void D3D12Renderer::BeginTerrainPass()
 {
 	BeginObjectPass();
-	m_bias = 0;                                          // #78 terrain uses NO bias so biased objects win the seam
+	m_bias = 2;                                          // #78 terrain bias key: reversed-Z slope-scaled bias from
+	                                                     // g_fGpuTerrainSlopeBias/DepthBias (both 0 by default -> no
+	                                                     // push, biased objects still win the seam). Tune SlopeBias
+	                                                     // to sink grazing-angle terrain so it stops z-fighting/see-through.
 	static const float I[16] = { 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
 	SetWorld(I);                                         // terrain posts carry absolute world coordinates
 	m_hasTex0 = false;

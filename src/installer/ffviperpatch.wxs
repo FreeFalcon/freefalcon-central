@@ -94,9 +94,10 @@
         <File Source="$(GameDir)\openxr_loader.dll" />
       </Component>
 
-      <!-- shaders\ (runtime-loaded FFEmu.hlsl, per the game-dir shader path) -->
+      <!-- shaders\FFEmu.hlsl -- packaged straight from the SOURCE TREE (not the game dir) so the patch ships
+           the current shader. Path is relative to this .wxs (src\installer). -->
       <Component Directory="dShaders">
-        <File Source="$(GameDir)\FFEmu.hlsl" />
+        <File Name="FFEmu.hlsl" Source="..\graphics\dxengine\d3d11\shaders\ffemu.hlsl" />
       </Component>
 
       <!-- config\ + config\profiles\default\  (from installer res\, self-contained) -->
@@ -166,6 +167,11 @@
            hand textures; terrdata\misctex\ = misc terrain textures. -->
       <Files Directory="dControllers" Include="res\art\ckptart\controllers\*" />
       <Files Directory="dMiscTex"     Include="res\terrdata\misctex\*" />
+
+      <!-- Artscout - 2026: particle-system config (new-damage/effect tuning) -->
+      <Component Directory="dTerrdata">
+        <File Source="res\terrdata\particlesys.ini" />
+      </Component>
     </ComponentGroup>
   </Fragment>
 </Wix>
