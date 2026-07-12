@@ -157,6 +157,23 @@ void ReadCampAIInputs(char * name)
     if( not F4FindFile(tmpName, fileName, 256, &off, &len))
         exit(0);
 
+    // GetPrivateProfileInt requires an ABSOLUTE path to a real file (else it looks in Windows).
+    // FF6 data has no files.dir -> F4FindFile returned a bare name -> ATM params=0 -> div-by-zero.
+    {
+        extern char FalconCampaignSaveDirectory[], FalconDataDirectory[];
+        char absPath[_MAX_PATH];
+        if (GetFileAttributes(fileName) == INVALID_FILE_ATTRIBUTES)
+        {
+            char cand[_MAX_PATH];
+            sprintf(cand, "%s\\%s", FalconCampaignSaveDirectory, tmpName);
+            if (GetFileAttributes(cand) == INVALID_FILE_ATTRIBUTES)
+                sprintf(cand, "%s\\%s", FalconDataDirectory, tmpName);
+            strncpy(fileName, cand, 255); fileName[255]=0;
+        }
+        if (GetFullPathName(fileName, _MAX_PATH, absPath, NULL)) { strncpy(fileName, absPath, 255); fileName[255]=0; }
+    }
+
+
     /* ATM Inputs */
     IMMEDIATE_MIN_TIME = (short)GetPrivateProfileInt("ATM", "ImmediatePlanMinTime", 0, fileName);
     IMMEDIATE_MAX_TIME = (short)GetPrivateProfileInt("ATM", "ImmediatePlanMaxTime", 0, fileName);

@@ -5,7 +5,7 @@
 
  - And then there was light
 \***************************************************************************/
-#include "d3d.h"
+#include "d3d7compat.h"
 #include "polylib.h"
 #include "Graphics/DXEngine/DXEngine.h"
 #include "Graphics/DXEngine/DXVBManager.h"

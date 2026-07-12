@@ -15,6 +15,7 @@
 #include "ui/include/FalcUser.h"
 #include "ThreadMgr.h"
 #include "dispcfg.h"
+#include "dispopts.h" // #33: DisplayOptions.bWindowed
 #include "simDrive.h"
 #include "OTWDrive.h"
 #include "sinput.h"
@@ -134,7 +135,9 @@ static unsigned int __stdcall StartingGraphicsWrapper(void)
     _controlfp(_RC_CHOP, MCW_RC);
 
     // Set the FPU to 24bit precision
-    _controlfp(_PC_24, MCW_PC);
+#if defined(_M_IX86)
+    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+#endif
 #endif
 
     int Result = 0;
@@ -312,7 +315,9 @@ void SimulationLoopControl::Loop(void)
 
 #if defined(_MSC_VER)
     _controlfp(_RC_CHOP, MCW_RC); // Set the FPU to Truncate
-    _controlfp(_PC_24, MCW_PC); // Set the FPU to 24 bit precision
+#if defined(_M_IX86)
+    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+#endif
 #else
 #error Pay special attention to rounding mode and precision effects on floating point ops
 #endif
@@ -911,6 +916,24 @@ void SimulationLoopControl::StartLoop(void)
             // Go ahead and start rendering frames
             InitializeStatistics();
 #endif
+
+            // Artscout - 2026 (#65 perf): drain the async asset loader before handing control to the player.
+            // The original pre-load wait (commented out above) was removed during bring-up, so the initial
+            // scene -- terrain blocks, object LODs and their textures already QUEUED during theater/camera
+            // setup -- streamed in during the first ~5-10s of flight on the loader thread, spiking CPU and
+            // stuttering. Drain it here while the splash is still up (the VR pump keeps the panel alive during
+            // the Sleep). BOUNDED (~10s cap) so a stalled/never-empty loader can never hang entry (cf. #41,
+            // whose root was an UNbounded wait). Gated on wait_for_loaded (FALSE only with -noloader).
+            if (wait_for_loaded)
+            {
+                int loadGuard = 0;
+                while (not TheLoader.LoaderQueueEmpty() and loadGuard < 200)   // 200 * 50ms = 10s ceiling
+                {
+                    Sleep(50);
+                    loadGuard++;
+                }
+            }
+
             // stop and cleanup splash screen
             OTWDriver.CleanupSplashScreen();
 
@@ -936,6 +959,10 @@ void SimulationLoopControl::StartLoop(void)
              delayCounter--;
             }*/
 
+            // #33: apply the windowed/fullscreen choice for the 3D session only (the menu
+            // window is restored on exit). Restyles the shared window in place.
+            FalconDisplay.EnterSimWindowMode(DisplayOptions.bWindowed);
+
             g_intellivibeData.In3D = true;
             g_intellivibeData.IsEndFlight = false;
 
@@ -960,6 +987,9 @@ void SimulationLoopControl::StartLoop(void)
 
             g_intellivibeData.In3D = false;
             memcpy(gSharedIntellivibe, &g_intellivibeData, sizeof(g_intellivibeData));
+
+            // #33: restore the menu window mode after leaving the 3D session.
+            FalconDisplay.LeaveSimWindowMode();
 
             OTWDriver.ShowSimpleWaitScreen("leave");
         }

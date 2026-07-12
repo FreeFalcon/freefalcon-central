@@ -464,7 +464,7 @@ void RenderButtonViewPoly(SourceButtonViewType *sb, tagRECT *destrect, GLint alp
 
     OTWDriver.pCockpitManager->AddTurbulence(pVtx);
     OTWDriver.renderer->context.RestoreState(alpha);
-    OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
+    OTWDriver.renderer->context.SelectTexture1((DWORD_PTR) pTex);
     OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
 
 }
@@ -549,7 +549,7 @@ void CPButtonView::CreateLit(void)
             }
 
         }
-        catch (_com_error e)
+        catch (const _com_error &e)
         {
             MonoPrint("CPButtonView::CreateLit - Error 0x%X (%s)\n", e.Error(), e.ErrorMessage());
             DiscardLit();

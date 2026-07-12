@@ -26,6 +26,16 @@ public:
     bool bFontTexelAlignment;
     bool bSpecularLighting;
     bool bScreenCoordinateBiasFix; //Wombat778 4-01-04
+    bool bWindowed; // #33: run the 3D session in a window (false = borderless fullscreen)
+
+    // Artscout - 2026: graphics options added to the Graphics/Advanced setup pages. Persisted here
+    // (XML now, see dispopts.cpp) and pushed into the engine globals at startup (winmain) + on Apply.
+    bool bMsaaEnable;        // 3D-scene + RTT multisample AA on/off (Graphics page)
+    int  nMsaaSamples;       // requested MSAA sample count 1..8 (snapped to a supported level in the backend)
+    int  nAnisotropicSamples;// max anisotropy 1..16 for the anisotropic filter (Graphics page). On/off = bAnisotropicFiltering.
+    bool bUseOpenXR;         // VR via OpenXR (Advanced page) -> g_bUseOpenXR. Default OFF = flat desktop path.
+    bool bUseQuadViews;      // foveated quad-views (Advanced page) -> g_bUseQuadViews
+    int  nVrResolutionScale; // per-eye swapchain resolution scale in percent 50..100 -> g_nVrResolutionScale
 
     enum TEXMODE
     {

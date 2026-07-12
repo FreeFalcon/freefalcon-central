@@ -89,29 +89,52 @@ BOOL RenderOTW::GetRoofMode()
 /***************************************************************************\
     Draw the sky  ( Assumes square pixels )
 \***************************************************************************/
+// Artscout - 2026 (VR off-axis): shift the sky horizon-line positions to meet the off-axis-projected
+// terrain & sky geometry. The bands are placed in screen pixels from tan(Pitch())*scale (a SYMMETRIC
+// projection assumption); the geometry is shifted by the off-axis (T-fold), so without this the per-eye
+// clear shows through as a coloured stripe at the horizon. Apply ONLY the component of the off-axis
+// screen shift (oaX,oaY) PERPENDICULAR to the horizon line (along (sR,cR)). The sky is uniform ALONG
+// the horizon, so the along-horizon component is pointless AND harmful: a large horizontal shift (gaze
+// to the side -> big oaX) would slide the finite-width haze quad off the focus view, leaving a flat
+// clear-sky block + seam (seen in 7.png). For a level horizon this reduces to a pure vertical shift.
+static void ShiftHorizonOffAxis(HorizonRecord* h, float oaX, float oaY, float sR, float cR)
+{
+    const float perp = oaX * sR + oaY * cR;   // component perpendicular to the horizon line
+    if (perp == 0.0f) return;
+    const float dx = perp * sR, dy = perp * cR;
+    h->vx   += dx; h->vy   += dy;
+    h->vxUp += dx; h->vyUp += dy;
+    h->vxDn += dx; h->vyDn += dy;
+}
+
 BOOL RenderOTW::DrawSky(void)
 {
     // Update the sky color based on our current attitude and position
     AdjustSkyColor();
 
+    // #48: the sky is drawn through the 2D screen-primitive path. Push the sky background to the FAR plane so the
+    // pit and the world draw in front of it. reversed-Z: far = 0.0 (was 1.0 under standard Z). Restored before return.
+    context.m_2DPrimZ = 0.0f;
+    BOOL needTerrain;
 
     if ( not skyRoof)
     {
         DrawSkyNoRoof();
-        return TRUE; // Need to draw terrain
+        needTerrain = TRUE; // Need to draw terrain
     }
-
-
-    if (viewpoint->Z() < -SKY_ROOF_HEIGHT)
+    else if (viewpoint->Z() < -SKY_ROOF_HEIGHT)
     {
         DrawSkyAbove();
-        return FALSE; // Don't need to draw terrain
+        needTerrain = FALSE; // Don't need to draw terrain
     }
     else
     {
         DrawSkyBelow();
-        return TRUE; // Need to draw terrain
+        needTerrain = TRUE; // Need to draw terrain
     }
+
+    context.m_2DPrimZ = 1.0f; // restore NEAR plane for UI/HUD 2D primitives (reversed-Z: near = 1.0)
+    return needTerrain;
 }
 
 
@@ -202,6 +225,16 @@ void RenderOTW::DrawSkyNoRoof(void)
     pixelDistance = scaleX * (float)percentHalfXscale;
     horizon.vxDn = pixelDistance * sR;
     horizon.vyDn = pixelDistance * cR;
+
+    // Artscout - 2026 (horizon): extend the filler band DOWN past the terrain end so the near/far
+    // (fartiles) terrain seam shows GROUND HAZE through the gap (the sky is drawn behind the terrain),
+    // instead of a black contour stripe. Terrain draws on top where it exists, so over-extending the
+    // (behind-terrain) filler is safe -- it only shows in the gaps.
+    extern float g_fHorizonFillerExtend;
+    horizon.vxDn += (horizon.vxDn - horizon.vx) * g_fHorizonFillerExtend;
+    horizon.vyDn += (horizon.vyDn - horizon.vy) * g_fHorizonFillerExtend;
+
+    ShiftHorizonOffAxis(&horizon, -m_vrOffAxisX * scaleX, -m_vrOffAxisY * scaleY, sR, cR);
 
     // Do sunrise/sunset horizon calculations
     ComputeHorizonEffect(&horizon);
@@ -321,6 +354,16 @@ void RenderOTW::DrawSkyBelow(void)
     pixelDistance = scaleX * (float)percentHalfXscale;
     horizon.vxDn = pixelDistance * sR;
     horizon.vyDn = pixelDistance * cR;
+
+    // Artscout - 2026 (horizon): extend the filler band DOWN past the terrain end so the near/far
+    // (fartiles) terrain seam shows GROUND HAZE through the gap (the sky is drawn behind the terrain),
+    // instead of a black contour stripe. Terrain draws on top where it exists, so over-extending the
+    // (behind-terrain) filler is safe -- it only shows in the gaps.
+    extern float g_fHorizonFillerExtend;
+    horizon.vxDn += (horizon.vxDn - horizon.vx) * g_fHorizonFillerExtend;
+    horizon.vyDn += (horizon.vyDn - horizon.vy) * g_fHorizonFillerExtend;
+
+    ShiftHorizonOffAxis(&horizon, -m_vrOffAxisX * scaleX, -m_vrOffAxisY * scaleY, sR, cR);
 
 
     // Clear that part of the screen which will not be covered by sky or terrain
@@ -540,6 +583,16 @@ void RenderOTW::DrawSkyAbove(void)
     pixelDistance = scaleX * (float)percentHalfXscale;
     horizon.vxDn = pixelDistance * sR;
     horizon.vyDn = pixelDistance * cR;
+
+    // Artscout - 2026 (horizon): extend the filler band DOWN past the terrain end so the near/far
+    // (fartiles) terrain seam shows GROUND HAZE through the gap (the sky is drawn behind the terrain),
+    // instead of a black contour stripe. Terrain draws on top where it exists, so over-extending the
+    // (behind-terrain) filler is safe -- it only shows in the gaps.
+    extern float g_fHorizonFillerExtend;
+    horizon.vxDn += (horizon.vxDn - horizon.vx) * g_fHorizonFillerExtend;
+    horizon.vyDn += (horizon.vyDn - horizon.vy) * g_fHorizonFillerExtend;
+
+    ShiftHorizonOffAxis(&horizon, -m_vrOffAxisX * scaleX, -m_vrOffAxisY * scaleY, sR, cR);
 
 
     if (drawClear)
@@ -1311,7 +1364,12 @@ void RenderOTW::DrawSun(void)
     {
         context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD);
         context.SelectTexture1(viewpoint->SunTexture.TexHandle());
-        DrawCelestialBody(&center, dist / 4.f, 1.f, 0.984375f, 0.9765625f, 0.87109375f);
+        // Artscout - 2026 (#79): full dist -- the old dist/4 blew the sun up to 4x (billboard angular size ~ 1/dist).
+        DrawCelestialBody(&center, dist, 1.f, 0.984375f, 0.9765625f, 0.87109375f);
+        // Artscout - 2026 (#79): flush the billboard NOW, while SunTexture is still bound to slot 0. DrawSquare
+        // batches into the VB; without this the sun verts flushed later (after the GPU terrain re-bound slot 0 via
+        // a direct SetTexture(0)) and sampled the terrain tile / white -> the "square with ground/white" in VR.
+        context.FlushPending();
     }
     else
     {
@@ -1319,6 +1377,7 @@ void RenderOTW::DrawSun(void)
         context.SelectTexture1(viewpoint->SunTexture.TexHandle());
         DrawCelestialBody(&center, dist, alpha);
         Draw2DSunGlowEffect(this, &center, dist, alpha);
+        context.FlushPending();   // #79: submit while SunTexture is bound (see above)
     }
 
     //JAM
@@ -1385,6 +1444,7 @@ void RenderOTW::DrawMoon(void)
     }
 
     DrawCelestialBody(&center, dist, moonblend);
+    context.FlushPending();   // Artscout - 2026 (#79): submit while MoonTexture is bound to slot 0 (see DrawSun)
 }
 
 
@@ -1825,6 +1885,11 @@ void RenderOTW::AdjustSkyColor(void)
     }
 
     TheTimeOfDay.SetCurrentSkyColor(&sky_color);
+
+    // Artscout - 2026 (VR): feed the current sky colour to the per-eye clear (D3D11Backend) so any
+    // residual off-axis sky-band gap blends with the sky rather than a fixed colour.
+    { extern float g_vrClearColor[3];
+      g_vrClearColor[0] = sky_color.r; g_vrClearColor[1] = sky_color.g; g_vrClearColor[2] = sky_color.b; }
 }
 
 

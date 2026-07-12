@@ -52,7 +52,6 @@ typedef enum
     AXIS_TRIM_YAW, // bipolar
     AXIS_TRIM_ROLL, // bipolar
     AXIS_BRAKE_LEFT, // left, or EXCLUSIVE, brake unipolar
-    // AXIS_BRAKE_RIGHT, // unipolar
     AXIS_FOV, // Field of View unipolar
     AXIS_ANT_ELEV, // Radar Antenna Elevation bipolar
     AXIS_CURSOR_X, // Cursor/Enable-X bipolar
@@ -65,12 +64,13 @@ typedef enum
     AXIS_HUD_BRIGHTNESS, // HUD Symbology Intensity unipolar
     AXIS_RET_DEPR, // Manual Reticle Depression unipolar
     AXIS_ZOOM, // View Zoom unipolar
-    AXIS_INTERCOM_VOLUME, // InterCom Volume, that´s kinda a 'master volume' for all comm channels  // unipolar
-    AXIS_MAX // Add any additional axis BEFORE that one 
+    AXIS_INTERCOM_VOLUME, // InterCom Volume, thatï¿½s kinda a 'master volume' for all comm channels  // unipolar
+    AXIS_BRAKE_RIGHT, // right toe brake (differential braking); added at the end so existing axis indices do not shift // unipolar
+    AXIS_MAX // Add any additional axis BEFORE that one
 } GameAxis_t;
 
 #define SIMLIB_MAX_ANALOG AXIS_MAX // max number of axis
-#define SIMLIB_MAX_DIGITAL      32 // max number of dinput buttons per device (the rest would have to be emulated as keypresses)
+#define SIMLIB_MAX_DIGITAL      128 // DIJOYSTATE2: up to 128 buttons/device (was 32 for DIJOYSTATE)
 #define SIMLIB_MAX_POV 4 // max number of POVs per device
 
 struct DeviceAxis
@@ -110,6 +110,11 @@ struct AxisMapping
     GUID FlightControllerGUID;
     int totalDeviceCount;
 
+    // #19: each device's GUID by its index at save time. On load it
+    // lets axis Device indices be remapped to the current enumeration (robust to
+    // a change in device order/set). Changes sizeof(AxisMapping) -> old .dat is invalid.
+    GUID DeviceGUIDs[SIM_NUMDEVICES];
+
     DeviceAxis Pitch;
     DeviceAxis Bank;
     DeviceAxis Yaw;
@@ -147,6 +152,7 @@ struct AxisMapping
         FlightControlDevice = -1;
         memset(&FlightControllerGUID, 0, sizeof(GUID));
         totalDeviceCount = 0;
+        memset(DeviceGUIDs, 0, sizeof(DeviceGUIDs));
     }
 };
 
@@ -289,6 +295,10 @@ public:
     // reads/writes mapping of real axis to ingame axis
     int ReadAxisMappingFile();
     int WriteAxisMappingFile();
+
+    // #19: after device enumeration, remap axis Device indices by the saved GUIDs
+    // (call AFTER EnumDevices, since ReadAxisMappingFile runs before enumeration)
+    void RemapAxisMappingByGUID();
 
     // loads the custom axis shaping data
     int LoadAxisCalibrationFile(); // Retro 23Jan2004

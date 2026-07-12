@@ -8,7 +8,6 @@
 #include <windows.h>
 #include "falclib.h"
 #include "targa.h"
-#include "dxutil/ddutil.h"
 #include "Graphics/Include/imagebuf.h"
 #include "Graphics/Include/matrix.h"
 #include "Graphics/Include/drawbsp.h"

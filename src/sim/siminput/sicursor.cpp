@@ -159,7 +159,12 @@ BOOL CreateSimCursors()
         gpSimCursors[i].CursorBuffer->Unlock();
 
         //Wombat778 3-24-04 If rendered cursor is on, read the mouse cursor as a texture.
-        if (DisplayOptions.bRender2DCockpit)
+        // Artscout - 2026: under D3D11 the cursor ALWAYS uses the rendered path (ClipAndDrawCursor,
+        // the DDraw ComposeTransparent blit is dead). So the render texture must exist regardless of
+        // bRender2DCockpit -- otherwise CursorRenderTexture[0] is out of range -> crash. This block
+        // already ran (and worked) under D3D11 when bRender2DCockpit was TRUE, so it is D3D11-safe.
+        extern bool g_bUseD3D11;
+        if (DisplayOptions.bRender2DCockpit or g_bUseD3D11)
         {
             gpSimCursors[i].CursorRenderBuffer = texFile.image.image;
 
@@ -194,7 +199,7 @@ BOOL CreateSimCursors()
                 }
 
             }
-            catch (_com_error e)
+            catch (const _com_error &e)
             {
                 MonoPrint("CreateSimCursors - Error 0x%X (%s)\n", e.Error(), e.ErrorMessage());
             }
@@ -264,6 +269,11 @@ void CleanupSimCursors()
 }
 
 
+// Artscout - 2026 (VR): cursor draw-size multiplier. In the foveated focus view the eye has ~2-3x more
+// pixels per degree, so the fixed-pixel cursor looks tiny; otwloop sets this to the focus/periphery zoom
+// before drawing the focus cursor and back to 1.0 otherwise. 1.0 = unchanged (flat/periphery path).
+float g_vrCursorDrawScale = 1.0f;
+
 void ClipAndDrawCursor(int displayWidth, int displayHeight)
 {
 
@@ -275,15 +285,21 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
         return;
     }
 
+    const float cs = g_vrCursorDrawScale;
+    const int curW = (int)(gpSimCursors[gSelectedCursor].Width  * cs);
+    const int curH = (int)(gpSimCursors[gSelectedCursor].Height * cs);
+    const int curHX = (int)(gpSimCursors[gSelectedCursor].xHotspot * cs);
+    const int curHY = (int)(gpSimCursors[gSelectedCursor].yHotspot * cs);
+
     CursorSrc.top = 0;
     CursorSrc.left = 0;
     CursorSrc.bottom = gpSimCursors[gSelectedCursor].Height;
     CursorSrc.right = gpSimCursors[gSelectedCursor].Width;
 
-    CursorDest.top = gyPos - gpSimCursors[gSelectedCursor].yHotspot;
-    CursorDest.left = gxPos - gpSimCursors[gSelectedCursor].xHotspot;
-    CursorDest.bottom = CursorDest.top + gpSimCursors[gSelectedCursor].Height;
-    CursorDest.right = CursorDest.left + gpSimCursors[gSelectedCursor].Width;
+    CursorDest.top = gyPos - curHY;
+    CursorDest.left = gxPos - curHX;
+    CursorDest.bottom = CursorDest.top + curH;
+    CursorDest.right = CursorDest.left + curW;
 
     gyLast = gyPos;
     gxLast = gxPos;
@@ -313,15 +329,28 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
         CursorDest.bottom = displayHeight - 1;
     }
 
-    if ( not DisplayOptions.bRender2DCockpit)
+    // Artscout - 2026: ComposeTransparent is the legacy D3D7 DDraw blit (uses m_pBltTarget, which is
+    // NULL under D3D11 -> null deref crash, confirmed). Take it ONLY under D3D7. Under D3D11 always use
+    // the rendered-cursor path below, regardless of bRender2DCockpit (it can be off and would otherwise
+    // route here and crash).
+    extern bool g_bUseD3D11; extern bool g_bUseGpu;   // Artscout - 2026: #DX12 -- ComposeTransparent is dead DDraw7 (m_pBltTarget NULL in BOTH GPU modes -> null deref); take it ONLY under legacy DDraw
+    if ( not DisplayOptions.bRender2DCockpit and not g_bUseGpu)
         OTWDriver.OTWImage->ComposeTransparent(gpSimCursors[gSelectedCursor].CursorBuffer, &CursorSrc, &CursorDest);
     else
     {
         //Wombat778 3-24-04  If rendered cursor is enabled, dont blit, but render it instead
 
         OTWDriver.renderer->StartDraw();
-        OTWDriver.renderer->CenterOriginInViewport();
-        OTWDriver.renderer->SetViewport(-1.0, 1.0, 1.0, -1.0);
+
+        // Artscout - 2026: the legacy D3D7 cursor path called CenterOriginInViewport()/
+        // SetViewport(-1,1,1,-1) to set up a 2D coord space. In the D3D11 screen path that is
+        // both unnecessary and harmful: the cursor vertices below are already in ABSOLUTE screen
+        // pixels (CursorDest.*) and DrawPrimitive feeds them straight to sx/sy while the screen
+        // VS maps pixel->NDC by the backbuffer size (scaleX/shiftX are never applied here). Those
+        // two calls only mutated the SHARED OTW renderer's persistent 2D transform (scaleX/shiftX
+        // and dmatrix translation), which nothing re-applies per frame -> the next frame's 2D
+        // screen-path (sky gradient, HUD, MFD) mapped off-screen permanently after one mouse
+        // move (clouds/world/cockpit use the object path and were unaffected). Dropped.
 
         TextureHandle *pTex = gpSimCursors[gSelectedCursor].CursorRenderTexture[0];
         // Setup vertices
@@ -358,9 +387,17 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
 
 
         OTWDriver.renderer->context.RestoreState(STATE_ALPHA_TEXTURE_NOFILTER);
-        OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
+        OTWDriver.renderer->context.SelectTexture1((DWORD_PTR) pTex);
         OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
         OTWDriver.renderer->EndDraw();
+
+        // Artscout - 2026: the cursor binds its texture to stage 0, which leaves the renderer's
+        // sticky m_hasTex0=TRUE. That flag is NOT cleared by InvalidateState/StartFrame, so the
+        // next frame's texture-state-but-no-real-texture 2D draws (HUD lines, MFD/DED symbology,
+        // sky gradient bands) keep FF_TEXTURE0 set, sample an empty gTex0 and get chroma-keyed
+        // away -> they vanish (Release: cursor texture actually binds; Debug: m_pDDS still null,
+        // so the leak was hidden). Unbind stage 0 so the no-texture default is restored.
+        OTWDriver.renderer->context.SelectTexture1(0);
 
         //Wombat778 3-24-04 end
     }

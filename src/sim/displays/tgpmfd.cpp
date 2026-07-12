@@ -40,7 +40,7 @@ void TgpMfdDrawable::DisplayInit(ImageBuffer* image)
     if ((g_bGreyMFD) and ( not bNVGmode))
         privateDisplay->SetColor(GetMfdColor(MFD_WHITE));
     else
-        privateDisplay->SetColor(0xff00ff00);
+        privateDisplay->SetColor(0xffffffff);
 
     ((Render3D*)privateDisplay)->SetFOV(6.0f * DTR);
 }
@@ -122,7 +122,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
     if ((g_bGreyMFD) and ( not bNVGmode))
         display->SetColor(GetMfdColor(MFD_WHITE));
     else
-        display->SetColor(0xff00ff00);
+        display->SetColor(0xffffffff);
 
     // OSB Button Labels
     OSBLabels(display);

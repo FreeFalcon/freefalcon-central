@@ -40,7 +40,7 @@ BOOL C_3dViewer::Setup()
     BSPLIST *cur;
 
     // COBRA - DX - Switching btw Old and New Engine - Initialize DX Engine and VB Manager
-    if (g_bUse_DX_Engine) TheVbManager.Setup((gMainHandler->GetFront())->GetDisplayDevice()->GetDefaultRC()->m_pD3D);
+    if (g_bUse_DX_Engine) TheVbManager.Setup();   // #34 C1
 
     if (objects_)
     {
@@ -79,7 +79,26 @@ BOOL C_3dViewer::Init3d(float ViewAngle)
 
 
     rend3d_ = new Render3D;
-    rend3d_->Setup(gMainHandler->GetFront());
+
+    // Artscout - 2026 (#34 menu 3D-viewer): under D3D11 render the model into an off-screen RTT
+    // ImageBuffer instead of the screen backbuffer. Drawing straight to the backbuffer sets
+    // g_bD3D11GPUDraw and flips Present into chroma-composite mode, which blacks out the 2D menu.
+    // We read the model back into the menu's 2D surface (see View3d) and keep a normal full blit.
+    {
+        extern bool g_bUseD3D11, g_bUseD3D12;   // #DX12 A5: the off-screen viewer RTT exists on both GPU paths
+        ImageBuffer *target = gMainHandler->GetFront();
+
+        if (g_bUseD3D11 || g_bUseD3D12)
+        {
+            int rw = gMainHandler->GetFront()->targetXres();
+            int rh = gMainHandler->GetFront()->targetYres();
+            m_pRTT = new ImageBuffer;
+            m_pRTT->Setup(gMainHandler->GetFront()->GetDisplayDevice(), rw, rh, SystemMem, None);
+            target = m_pRTT;
+        }
+
+        rend3d_->Setup(target);
+    }
     // The Near Z must be at least 10.0feet having a so tight angle
     rend3d_->SetFOV(ViewAngle * DTR, 10.0f);
     rend3d_->SetViewport(l, t, r, b);
@@ -182,6 +201,14 @@ BOOL C_3dViewer::Cleanup()
         rend3d_->Cleanup();
         delete rend3d_;
         rend3d_ = NULL;
+    }
+
+    // Artscout - 2026 (#34): off-screen RTT (rend3d_ above held it via context.m_pIB; free after it).
+    if (m_pRTT)
+    {
+        m_pRTT->Cleanup();
+        delete m_pRTT;
+        m_pRTT = NULL;
     }
 
     if (rendOTW_)
@@ -443,6 +470,37 @@ BOOL C_3dViewer::View3d(long ID)
             rend3d_->EndDraw();
             // CLose the Frame
             rend3d_->context.FinishFrame(NULL);
+
+            // Artscout - 2026 (#34): pull the model out of the off-screen RTT into the menu's 2D
+            // surface (the viewport rect), then clear g_bD3D11GPUDraw so Present does a normal full
+            // 2D blit (menu + embedded model) instead of the chroma path that blacks out the menu.
+            {
+                extern bool g_bUseD3D11, g_bUseD3D12;
+                extern bool g_bD3D11GPUDraw;
+
+                if ((g_bUseD3D11 || g_bUseD3D12) && m_pRTT)
+                {
+                    ImageBuffer *front = gMainHandler->GetFront();
+                    unsigned short *dst = (unsigned short *)front->Lock();
+
+                    if (dst)
+                    {
+                        m_pRTT->BlitD3D11RTTTo565(dst, front->targetXres(), front->targetYres(),
+                                                  viewport.left, viewport.top,
+                                                  viewport.right - viewport.left,
+                                                  viewport.bottom - viewport.top);
+                        front->Unlock();
+                    }
+
+                    // Artscout - 2026: #DX12 A5 -- under D3D11 (immediate) clear g_bD3D11GPUDraw so Present does a
+                    // full 2D blit of the menu (with the embedded model). Under D3D12 the viewer opened a real
+                    // command frame holding the model draws + the deferred readback COPY; a fresh BeginFrame would
+                    // RESET that list and discard the copy (readback never completes). So keep g_bD3D11GPUDraw set
+                    // -> PresentD3D11 composites the 2D menu (with the 1-frame-latent model) over the viewer's
+                    // frame and PRESENTS it, preserving the copy.
+                    if (g_bUseD3D11) g_bD3D11GPUDraw = false;
+                }
+            }
 
             gMainHandler->Lock();
             return(TRUE);

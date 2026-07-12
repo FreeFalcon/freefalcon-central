@@ -21,8 +21,8 @@
 #define SKY_ROOF_RANGE 200000.f
 #define SKY_MAX_HEIGHT 70000.f
 
-#define NOP _asm {nop}
-#define INT3 _asm {int 3}
+#define NOP ((void)0)         // Artscout - 2026 (x64): was _asm{nop}; no-op, builds on x86+x64
+#define INT3 __debugbreak()   // Artscout - 2026 (x64): int 3 intrinsic, builds on x86+x64
 
 #define SAFE_DELETE(p) { if(p) { delete (p); (p) = NULL; } }
 #define SAFE_DELETE_ARRAY(p) { if(p) { delete[] (p); (p) = NULL; } }

@@ -736,7 +736,7 @@ void C_Handler::CheckHelpText(SCREEN *surface)
 {
     C_Fontmgr *font;
 
-    if (OverLast_.Control_ and OverLast_.Tip_ and GetCurrentTime() > (DWORD)(OverLast_.Time_ + 1000))
+    if (OverLast_.Control_ and OverLast_.Tip_ and GetCurrentTime() > (DWORD)(OverLast_.Time_ + 250))   // #53 tooltip delay 1000 -> 250 ms
     {
         font = gFontList->Find(OverLast_.HelpFont_);
 
@@ -1024,14 +1024,11 @@ void C_Handler::Fill(SCREEN *surface, COLORREF Color, UI95_RECT *dst)
 
         while (i < dst->bottom)
         {
-            __asm
             {
-                mov eax, color
-                mov ecx, len
-                mov edi, dest
-                add edi, start
-                rep stosd
-            };
+                // Artscout - 2026 (x64): rep stosd -> fill 'len' DWORDs with color (builds on x86+x64).
+                DWORD *d = (DWORD *)((BYTE *)dest + start);
+                for (long k = 0; k < len; k++) d[k] = color;
+            }
 
             i++;
             start += surface->width * sizeof(DWORD);
@@ -1053,14 +1050,11 @@ void C_Handler::Fill(SCREEN *surface, COLORREF Color, UI95_RECT *dst)
 
         while (i < dst->bottom)
         {
-            __asm
             {
-                mov AX, color
-                mov ECX, len
-                mov EDI, dest
-                add EDI, start
-                rep stosw
-            };
+                // Artscout - 2026 (x64): rep stosw -> fill 'len' WORDs with color (builds on x86+x64).
+                WORD *d = (WORD *)((BYTE *)dest + start);
+                for (long k = 0; k < len; k++) d[k] = color;
+            }
 
             i++;
             start += surface->width * sizeof(WORD);
@@ -1218,6 +1212,20 @@ void C_Handler::CopyToPrimary()
     if ( not DrawFlags)
         return;
 
+    // PHASE 1/2 (D3D7->D3D11): UI95 draws into Front_ (CPU). Compose doesn't work under D3D11 (DDraw),
+    // blit the composited Front_ directly to the backbuffer + Present.
+    // #DX12: GPU mode (D3D11 OR D3D12) presents the composited Front_ through PresentD3D11 (which routes to the
+    // active backend). Legacy DDraw compose path below is skipped.
+    extern bool g_bUseD3D11, g_bUseD3D12;
+    if (g_bUseD3D11 or g_bUseD3D12)
+    {
+        if (Front_) Front_->PresentD3D11();
+        else if (Primary_) Primary_->PresentD3D11();
+        UpdateFlag = 0;
+        rectcount_ = 0;
+        return;
+    }
+
     // OW now handled by running in software mode on V1 and V2
 #if 0
 
@@ -1234,22 +1242,7 @@ void C_Handler::CopyToPrimary()
 
 #endif
 
-    // Make sure the drivers isnt buffering any data
-    if (g_bCheckBltStatusBeforeFlip)
-    {
-        while (true)
-        {
-            HRESULT hres = Primary_->frontSurface()->GetBltStatus(DDGBS_ISBLTDONE);
-
-            if (hres not_eq DDERR_WASSTILLDRAWING)
-            {
-                break;
-            }
-
-            // Let all the other threads have some CPU.
-            Sleep(0);
-        }
-    }
+    // Artscout - 2026: [DX7-PURGE] DDraw GetBltStatus flip-wait removed (no DDraw surface under GPU).
 
     for (i = 0; i < rectcount_; i++)
     {
@@ -1606,7 +1599,9 @@ unsigned int __stdcall C_Handler::ControlLoop(void *myself)
     _controlfp(_RC_CHOP, MCW_RC);
 
     // Set the FPU to 24bit precision
-    _controlfp(_PC_24, MCW_PC);
+#if defined(_M_IX86)
+    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+#endif
 #endif
     ((C_Handler *)myself)->DoControlLoop();
     _endthreadex(0);
@@ -1620,7 +1615,9 @@ unsigned int __stdcall C_Handler::TimerLoop(void *myself)
     _controlfp(_RC_CHOP, MCW_RC);
 
     // Set the FPU to 24bit precision
-    _controlfp(_PC_24, MCW_PC);
+#if defined(_M_IX86)
+    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+#endif
 #endif
     ((C_Handler *)myself)->PostTimerMessage();
     _endthreadex(0);
@@ -1634,7 +1631,9 @@ unsigned int __stdcall C_Handler::OutputLoop(void *myself)
     _controlfp(_RC_CHOP, MCW_RC);
 
     // Set the FPU to 24bit precision
-    _controlfp(_PC_24, MCW_PC);
+#if defined(_M_IX86)
+    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+#endif
 #endif
     ((C_Handler *)myself)->DoOutputLoop();
     _endthreadex(0);
@@ -2171,7 +2170,11 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     MouseZ and_eq HIWORD(wParam);
     // here we invert, since positive in mouse wheel
     // is forward, and forward is up in screen coordinates (neg values)
-    Grab_.Control_->Wheel(MouseZ ? 1 : -1, MouseX, MouseY);
+    // #22: if the control under the cursor didn't handle the wheel (list rows = buttons), scroll
+    // the vertical scrollbar of that control's CLIENT -- gives wheel scrolling over the list.
+    if ( not Grab_.Control_->Wheel(MouseZ ? 1 : -1, MouseX, MouseY))
+        overme->WheelClient(Grab_.Control_->GetClient(), MouseZ ? 1 : -1, MouseX, MouseY);
+
     ret = TRUE;
 }
     break;

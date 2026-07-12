@@ -76,7 +76,11 @@ int FalconWeaponsFire::Process(uchar autodisp)
             }
 
             //Cobra test
-            if ((theEntity->IsAirplane() or theEntity->IsHelicopter()) /* and dataBlock.weaponType not_eq FalconWeaponsFire::GUN*/)
+            // #36/voice: the GUN exception is restored (was commented out) -- otherwise
+            // every gun shot sent rcFIRING with idx=163 ("guns") -> voice "guns guns guns"
+            // (started after the chatter fix #35). Per user request 2026-06-17 we remove
+            // the voice callout specifically for the gun. Missiles/bombs (FOX/AMRAAM) are kept.
+            if ((theEntity->IsAirplane() or theEntity->IsHelicopter()) and dataBlock.weaponType not_eq FalconWeaponsFire::GUN)
             {
                 FalconRadioChatterMessage *radioMessage = new FalconRadioChatterMessage(simEntity->Id(), FalconLocalSession);
                 radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;

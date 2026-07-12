@@ -56,8 +56,19 @@ VuEntity *VuListIterator::GetNext()
 {
     VuLinkedList *vl = static_cast<VuLinkedList*>(collection_);
 
+    // FIX: without a collection curr_ is value-initialized (ctor); and you can't increment an end() iterator
+    // (debug-STL "cannot increment value-initialized/end list iterator"). Check BEFORE ++curr_.
+    if ( not vl)
+    {
+        return NULL;
+    }
+
     do
     {
+        if (curr_ == vl->l_.end())
+        {
+            return NULL;
+        }
         if (++curr_ == vl->l_.end())
         {
             return NULL;

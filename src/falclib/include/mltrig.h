@@ -10,7 +10,7 @@ typedef struct
 
 inline void mlSinCos(mlTrig* trig, Float32 angle)
 {
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && defined(_M_IX86)
     __asm
     {
         __asm mov     ecx, trig;
@@ -20,6 +20,7 @@ inline void mlSinCos(mlTrig* trig, Float32 angle)
         __asm fstp    dword ptr [ecx]trig.sin;
     }
 #else
+    // Artscout - 2026 (x64): fsincos asm is x86-only; std sin/cos on x64.
     trig->sin = (Float32)sin(angle);
     trig->cos = (Float32)cos(angle);
 #endif

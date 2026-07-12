@@ -228,8 +228,171 @@ CharStr *C_Fontmgr::GetChar(short ID)
 }
 
 
+extern WORD RGB8toRGB565(DWORD); //XX (chandler.cpp)
+
+// true if the string contains at least one character outside the bitmap-font range
+// (Cyrillic CP1251 0xC0-0xFF etc.) -- such text is drawn via GDI.
+bool C_Fontmgr::NeedGDI(_TCHAR *str, long length)
+{
+    if ( not str)
+        return false;
+
+    // Treat any byte >= 0x80 as non-Latin (Cyrillic CP1251 etc.) and route
+    // to GDI: the bitmap fonts here are Western; for 0x80-0xFF they're either empty or
+    // 'box' glyphs, even if the code nominally falls in [first_, last_].
+    for (long k = 0; k < length and str[k]; ++k)
+    {
+        if ((unsigned char)str[k] >= 0x80)
+            return true;
+    }
+
+    return false;
+}
+
+// GDI path: render the whole string with a system TTF (RUSSIAN_CHARSET, Cyrillic)
+// into a 32-bit DIB (white text on black = a coverage mask), then alpha-composite
+// onto the SCREEN surface (16- or 32-bit). cliprect is optional.
+void C_Fontmgr::DrawGDI(SCREEN *surface, _TCHAR *str, long length, WORD color, long x, long y, UI95_RECT *cliprect)
+{
+    if ( not surface or not str or length <= 0)
+        return;
+
+    int fh = (height_ > 2) ? (int)height_ : 12;
+
+    HDC memDC = CreateCompatibleDC(NULL);
+
+    if ( not memDC)
+        return;
+
+    HFONT hFont = CreateFontA(-(fh - 4), 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+                              RUSSIAN_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS,
+                              ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Tahoma");
+    HGDIOBJ oldFont = SelectObject(memDC, hFont);
+
+    SIZE sz;
+    ZeroMemory(&sz, sizeof(sz));
+    GetTextExtentPoint32A(memDC, (LPCSTR)str, (int)length, &sz);
+    int tw = sz.cx;
+    int th = fh;
+
+    if (tw <= 0 or tw > 4096)
+    {
+        SelectObject(memDC, oldFont);
+        DeleteObject(hFont);
+        DeleteDC(memDC);
+        return;
+    }
+
+    BITMAPINFO bi;
+    ZeroMemory(&bi, sizeof(bi));
+    bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bi.bmiHeader.biWidth = tw;
+    bi.bmiHeader.biHeight = -th; // top-down
+    bi.bmiHeader.biPlanes = 1;
+    bi.bmiHeader.biBitCount = 32;
+    bi.bmiHeader.biCompression = BI_RGB;
+    void *bits = NULL;
+    HBITMAP dib = CreateDIBSection(memDC, &bi, DIB_RGB_COLORS, &bits, NULL, 0);
+
+    if ( not dib)
+    {
+        SelectObject(memDC, oldFont);
+        DeleteObject(hFont);
+        DeleteDC(memDC);
+        return;
+    }
+
+    HGDIOBJ oldBmp = SelectObject(memDC, dib);
+
+    ZeroMemory(bits, (size_t)tw * th * 4); // black background
+    SetBkMode(memDC, TRANSPARENT);
+    SetTextColor(memDC, RGB(255, 255, 255)); // white -> pixel intensity = coverage
+    TextOutA(memDC, 0, 0, (LPCSTR)str, (int)length);
+    GdiFlush();
+
+    DWORD trgb = RGB565toRGB8(color);
+    int tr = (int)((trgb >> 16) & 0xFF);
+    int tg = (int)((trgb >> 8) & 0xFF);
+    int tb = (int)(trgb & 0xFF);
+    bool b32 = (surface->bpp == 32);
+
+    long clipL = 0, clipT = 0, clipR = surface->width, clipB = surface->height;
+
+    if (cliprect)
+    {
+        if (cliprect->left > clipL) clipL = cliprect->left;
+        if (cliprect->top > clipT) clipT = cliprect->top;
+        if (cliprect->right < clipR) clipR = cliprect->right;
+        if (cliprect->bottom < clipB) clipB = cliprect->bottom;
+    }
+
+    DWORD *srcpix = (DWORD *)bits;
+
+    for (int py = 0; py < th; ++py)
+    {
+        long dy = y + py;
+
+        if (dy < clipT or dy >= clipB)
+            continue;
+
+        for (int px = 0; px < tw; ++px)
+        {
+            int a = (int)(srcpix[py * tw + px] & 0xFF); // coverage 0..255
+
+            if ( not a)
+                continue;
+
+            long dx = x + px;
+
+            if (dx < clipL or dx >= clipR)
+                continue;
+
+            DWORD bg;
+            WORD *d16 = NULL;
+            DWORD *d32 = NULL;
+
+            if (b32)
+            {
+                d32 = ((DWORD *)surface->mem) + (dy * surface->width + dx);
+                bg = *d32;
+            }
+            else
+            {
+                d16 = surface->mem + (dy * surface->width + dx);
+                bg = RGB565toRGB8(*d16);
+            }
+
+            int br = (int)((bg >> 16) & 0xFF);
+            int bgg = (int)((bg >> 8) & 0xFF);
+            int bb = (int)(bg & 0xFF);
+            int rr = (tr * a + br * (255 - a)) / 255;
+            int gg = (tg * a + bgg * (255 - a)) / 255;
+            int bbv = (tb * a + bb * (255 - a)) / 255;
+            DWORD outc = ((DWORD)rr << 16) | ((DWORD)gg << 8) | (DWORD)bbv;
+
+            if (b32)
+                *d32 = outc;
+            else
+                *d16 = RGB8toRGB565(outc);
+        }
+    }
+
+    SelectObject(memDC, oldBmp);
+    SelectObject(memDC, oldFont);
+    DeleteObject(dib);
+    DeleteObject(hFont);
+    DeleteDC(memDC);
+}
+
+
 void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long x, long y)
 {
+    if (NeedGDI(str, length))
+    {
+        DrawGDI(surface, str, length, color, x, y, NULL);
+        return;
+    }
+
     long idx, i, j;
     long xoffset, yoffset;
     unsigned long thechar;
@@ -462,6 +625,12 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, WORD color, WORD bgcolor
 void C_Fontmgr::_Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, long x, long y, UI95_RECT *cliprect)
 // not void C_Fontmgr::Draw(SCREEN *surface,_TCHAR *str,short length,WORD color,long x,long y,UI95_RECT *cliprect)
 {
+    if (NeedGDI(str, length))
+    {
+        DrawGDI(surface, str, length, color, x, y, cliprect);
+        return;
+    }
+
     long idx, i, j;
     long xoffset, yoffset;
     unsigned long thechar;
@@ -549,6 +718,12 @@ void C_Fontmgr::_Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, l
 
 void C_Fontmgr::_Draw32(SCREEN *surface, _TCHAR *str, long length, DWORD dwColor, long x, long y, UI95_RECT *cliprect)
 {
+    if (NeedGDI(str, length))
+    {
+        DrawGDI(surface, str, length, RGB8toRGB565(dwColor), x, y, cliprect);
+        return;
+    }
+
     long idx, i, j;
     long xoffset, yoffset;
     unsigned long thechar;
@@ -641,6 +816,14 @@ void C_Fontmgr::_Draw32(SCREEN *surface, _TCHAR *str, long length, DWORD dwColor
 //XX
 void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color, WORD bgcolor, long x, long y, UI95_RECT *cliprect)
 {
+    if (NeedGDI(str, length))
+    {
+        // Cyrillic: skip the background fill under the text (row highlight is drawn
+        // separately), pass only the text itself to GDI
+        DrawGDI(surface, str, length, color, x, y, cliprect);
+        return;
+    }
+
     if (surface->bpp == 32)
         _DrawSolid32(surface, str, length, RGB565toRGB8(color), RGB565toRGB8(bgcolor), x, y, cliprect);
     else
@@ -874,6 +1057,12 @@ void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long
 {
     if (str)
     {
+        if (NeedGDI(str, length))
+        {
+            DrawGDI(surface, str, length, color, x, y, cliprect);
+            return;
+        }
+
         //XX
         if (surface->bpp == 32)
             _Draw32(surface, str, length, RGB565toRGB8(color), x, y, cliprect);

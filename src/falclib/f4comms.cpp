@@ -1,6 +1,8 @@
 #include <objbase.h>
 #include <cguid.h>
-#include <dplay8.h>
+// #include <dplay8.h> (removed from the SDK; DP8 networking -- a separate track)
+struct IDirectPlay8Server;
+struct IDirectPlay8Client;
 #include <initguid.h>
 
 #include "F4Comms.h"

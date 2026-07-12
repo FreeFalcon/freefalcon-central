@@ -10,12 +10,21 @@
 #include "minidump.h" //Wombat778 5-01-04
 #include "DBGHELP_MINDUMP.h" //Wombat778 5-01-04
 
+// Artscout - 2026 (x64): CONTEXT instruction/stack pointer differ by arch (Eip/Esp vs Rip/Rsp).
+#if defined(_M_X64)
+#define CTX_IP(c) ((c)->Rip)
+#define CTX_SP(c) ((c)->Rsp)
+#else
+#define CTX_IP(c) ((c)->Eip)
+#define CTX_SP(c) ((c)->Esp)
+#endif
+
 
 extern DWORD gDebugLodID; // The Model ID under draw by the DX Engine... 0xffffffff if no model
 extern DWORD gDebugTextureID; // The Texture ID currently referenced
 extern char g_sVersion[];
 
-// Copyright © 1998 Bruce Dawson.
+// Copyright ï¿½ 1998 Bruce Dawson.
 
 // Heavily modified by JPO (2001) to uses the crashhandler library
 // so we get full stack traces and other information
@@ -433,7 +442,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
         // VirtualQuery can be used to get the allocation base associated with a
         // code address, which is the same as the ModuleHandle. This can be used
         // to get the filename of the module that the crash happened in.
-        if (VirtualQuery((void*)Context->Eip, &MemInfo, sizeof(MemInfo)) and 
+        if (VirtualQuery((void*)CTX_IP(Context), &MemInfo, sizeof(MemInfo)) and 
             GetModuleFileName((HINSTANCE)MemInfo.AllocationBase,
                               CrashModulePathName,
                               sizeof(CrashModulePathName)) > 0)
@@ -441,7 +450,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
 
         hprintf(LogFile, "%s caused %s in module %s at %04x:%08x.",
                 FileName, GetExceptionDescription(Exception->ExceptionCode),
-                CrashModuleFileName, Context->SegCs, Context->Eip);
+                CrashModuleFileName, Context->SegCs, CTX_IP(Context));
     }
 
     hprintf(LogFile, "%s\r\n", GetFaultReason(data));
@@ -474,7 +483,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
     // is no memory to read. If the dereferencing of code[] fails, the
     // exception handler will print '??'.
     hprintf(LogFile, "Code: ");
-    unsigned char *code = (unsigned char*)Context->Eip;
+    unsigned char *code = (unsigned char*)CTX_IP(Context);
 
     for (int codebyte = 0; codebyte < NumCodeBytes; codebyte++)
     {
@@ -518,8 +527,9 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
             {
                 // Esp contains the bottom of the stack, or at least the bottom of
                 // the currently used area.
-                DWORD* pStack = (DWORD *)Context->Esp;
+                DWORD* pStack = (DWORD *)CTX_SP(Context);
                 DWORD* pStackTop;
+#if defined(_M_IX86)
                 __asm
                 {
                     // Load the top (highest address) of the stack from the
@@ -528,6 +538,10 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
                     mov eax, fs:[4]
                     mov pStackTop, eax
                 }
+#else
+                // Artscout - 2026 (x64): NT_TIB.StackBase is at gs:[8] on x64.
+                pStackTop = (DWORD *)__readgsqword(8);
+#endif
 
                 if (pStackTop > pStack + MaxStackDump)
                     pStackTop = pStack + MaxStackDump;

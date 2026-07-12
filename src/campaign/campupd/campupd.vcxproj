@@ -1,163 +1,314 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Remote|Win32">
+      <Configuration>Remote</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Remote|x64">
+      <Configuration>Remote</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1B95EBF6-D3A4-49F1-8DB7-CB3058A5FFCF}</ProjectGuid>
-    <SccProjectName />
     <SccLocalPath>..\..</SccLocalPath>
+    <WindowsTargetPlatformVersion>10.0.28000.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Remote|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Remote|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v145</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <UseOfAtl>false</UseOfAtl>
-    <CharacterSet>NotSet</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <VCToolsVersion>14.51.36231</VCToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v145</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>MultiByte</CharacterSet>
+    <VCToolsVersion>14.51.36231</VCToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v145</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
-    <CharacterSet>NotSet</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v145</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Remote|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Remote|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../build/x86/release_win32/campaign/campupd/</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../build/x86/release_win32/campaign/campupd/</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../build/x86/debug_win32/campaign/campupd/</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../build/x86/debug_win32/campaign/campupd/</IntDir>
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NativeMinimumRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NativeMinimumRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">campupd</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">campupd</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+    <_ProjectFileVersion>16.0.30028.132</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+    <OutDir>.\..\..\Falcon4___Win32_Release\Campaign\CampUpd\</OutDir>
+    <IntDir>.\..\..\Falcon4___Win32_Release\Campaign\CampUpd\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>.\..\..\Falcon4___x64_Release\Campaign\CampUpd\</OutDir>
+    <IntDir>.\..\..\Falcon4___x64_Release\Campaign\CampUpd\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>.\..\..\Falcon4___Win32_Debug\Campaign\CampUpd\</OutDir>
+    <IntDir>.\..\..\Falcon4___Win32_Debug\Campaign\CampUpd\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>.\..\..\Falcon4___x64_Debug\Campaign\CampUpd\</OutDir>
+    <IntDir>.\..\..\Falcon4___x64_Debug\Campaign\CampUpd\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Remote|Win32'">
+    <OutDir>$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalOptions>/wd4430 %(AdditionalOptions)</AdditionalOptions>
-      <Optimization>Disabled</Optimization>
-      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..\Include;..\..\Falclib\include;..\..;..\..\Sim\Include;..\..\codelib\include;..\..\vu2\include;..\..\UI\Include;..\..\Graphics\Include;..\..\Graphics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>VC_EXTRALEAN;NDEBUG;_LIB;WIN32;STRICT;WIN32_LEAN_AND_MEAN;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>VC_EXTRALEAN;NDEBUG;_LIB;TARGET=m_i486;WIN32;STRICT;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_DEPRECATE;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
-      <MinimalRebuild>false</MinimalRebuild>
+      <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <StructMemberAlignment>4Bytes</StructMemberAlignment>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
-      <PrecompiledHeaderOutputFile>
-      </PrecompiledHeaderOutputFile>
-      <AssemblerOutput>NoListing</AssemblerOutput>
-      <AssemblerListingLocation>../../../build/x86/release_win32/campaign/campupd/</AssemblerListingLocation>
-      <ObjectFileName>../../../build/x86/release_win32/campaign/campupd/</ObjectFileName>
-      <ProgramDataBaseFileName>../../../build/x86/release_win32/campaign/campupd/</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Release\Campaign\CampUpd/CampUpd.pch</PrecompiledHeaderOutputFile>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <AssemblerListingLocation>.\</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\Falcon4___Win32_Release\Campaign\CampUpd/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Release\Campaign\CampUpd/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
-      <PrecompiledHeaderFile>
-      </PrecompiledHeaderFile>
-      <CompileAsManaged>false</CompileAsManaged>
-      <CompileAsWinRT>false</CompileAsWinRT>
-      <SDLCheck>true</SDLCheck>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
-      <SmallerTypeCheck>false</SmallerTypeCheck>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <EnableParallelCodeGeneration>false</EnableParallelCodeGeneration>
-      <FloatingPointExceptions>false</FloatingPointExceptions>
-      <CreateHotpatchableImage>false</CreateHotpatchableImage>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <OpenMPSupport>true</OpenMPSupport>
-      <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
-      <UseFullPaths>true</UseFullPaths>
-      <UndefinePreprocessorDefinitions>
-      </UndefinePreprocessorDefinitions>
     </ClCompile>
-    <Lib>
-      <OutputFile>../../../build/x86/release_win32/campaign/campupd/campupd.lib</OutputFile>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-    </Lib>
     <ResourceCompile>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
     </ResourceCompile>
+    <Lib>
+      <OutputFile>.\..\..\Falcon4___Win32_Release\Campaign\CampUpd\CampUpd.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>..\Include;..\..\Falclib\include;..\..;..\..\Sim\Include;..\..\codelib\include;..\..\vu2\include;..\..\UI\Include;..\..\Graphics\Include;..\..\Graphics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>VC_EXTRALEAN;NDEBUG;_LIB;TARGET=m_i486;WIN32;STRICT;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_DEPRECATE;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Release\Campaign\CampUpd/CampUpd.pch</PrecompiledHeaderOutputFile>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <AssemblerListingLocation>.\</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\Falcon4___Win32_Release\Campaign\CampUpd/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Release\Campaign\CampUpd/</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>.\..\..\Falcon4___Win32_Release\Campaign\CampUpd\CampUpd.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\Include;..\..\Falclib\include;..\..;..\..\Sim\Include;..\..\codelib\include;..\..\vu2\include;..\..\UI\Include;..\..\Graphics\Include;..\..\Graphics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>VC_EXTRALEAN;CAMPTOOL;_DEBUG;_LIB;WIN32;STRICT;WIN32_LEAN_AND_MEAN;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>VC_EXTRALEAN;CAMPTOOL;_DEBUG;_LIB;TARGET=m_i486;WIN32;STRICT;WIN32_LEAN_AND_MEAN;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
-      <PrecompiledHeaderOutputFile>
-      </PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>../../../build/x86/debug_win32/campaign/campupd/</AssemblerListingLocation>
-      <ObjectFileName>../../../build/x86/debug_win32/campaign/campupd/</ObjectFileName>
-      <ProgramDataBaseFileName>../../../build/x86/debug_win32/campaign/campupd/</ProgramDataBaseFileName>
-      <BrowseInformation>false</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Debug\Campaign\CampUpd/CampUpd.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\..\..\Falcon4___Win32_Debug\Campaign\CampUpd/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\Falcon4___Win32_Debug\Campaign\CampUpd/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Debug\Campaign\CampUpd/</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
-      <MinimalRebuild>true</MinimalRebuild>
-      <CompileAsManaged>false</CompileAsManaged>
-      <CompileAsWinRT>false</CompileAsWinRT>
-      <SDLCheck>false</SDLCheck>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
-      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <StringPooling>true</StringPooling>
-      <SmallerTypeCheck>true</SmallerTypeCheck>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <EnableParallelCodeGeneration>false</EnableParallelCodeGeneration>
-      <FloatingPointExceptions>false</FloatingPointExceptions>
-      <CreateHotpatchableImage>false</CreateHotpatchableImage>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <OpenMPSupport>true</OpenMPSupport>
-      <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
-      <UseFullPaths>true</UseFullPaths>
     </ClCompile>
-    <Lib>
-      <OutputFile>../../../build/x86/debug_win32/campaign/campupd/campupd.lib</OutputFile>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-    </Lib>
     <ResourceCompile>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
     </ResourceCompile>
+    <Lib>
+      <OutputFile>.\..\..\Falcon4___Win32_Debug\Campaign\CampUpd\CampUpd.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\Include;..\..\Falclib\include;..\..;..\..\Sim\Include;..\..\codelib\include;..\..\vu2\include;..\..\UI\Include;..\..\Graphics\Include;..\..\Graphics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>VC_EXTRALEAN;CAMPTOOL;_DEBUG;_LIB;TARGET=m_i486;WIN32;STRICT;WIN32_LEAN_AND_MEAN;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Debug\Campaign\CampUpd/CampUpd.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\..\..\Falcon4___Win32_Debug\Campaign\CampUpd/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\Falcon4___Win32_Debug\Campaign\CampUpd/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Debug\Campaign\CampUpd/</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>.\..\..\Falcon4___Win32_Debug\Campaign\CampUpd\CampUpd.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Remote|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>..\Include;..\..\Falclib\include;..\..;..\..\Sim\Include;..\..\codelib\include;..\..\vu2\include;..\..\UI\Include;..\..\Graphics\Include;..\..\Graphics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>VC_EXTRALEAN;NDEBUG;_LIB;TARGET=m_i486;WIN32;STRICT;WIN32_LEAN_AND_MEAN;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StructMemberAlignment>4Bytes</StructMemberAlignment>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Release\Campaign\CampUpd/CampUpd.pch</PrecompiledHeaderOutputFile>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <AssemblerListingLocation>.\</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\Falcon4___Win32_Release\Campaign\CampUpd/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Release\Campaign\CampUpd/</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>.\..\..\Falcon4___Win32_Release\Campaign\CampUpd\CampUpd.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Remote|x64'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>..\Include;..\..\Falclib\include;..\..;..\..\Sim\Include;..\..\codelib\include;..\..\vu2\include;..\..\UI\Include;..\..\Graphics\Include;..\..\Graphics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>VC_EXTRALEAN;NDEBUG;_LIB;TARGET=m_i486;WIN32;STRICT;WIN32_LEAN_AND_MEAN;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StructMemberAlignment>4Bytes</StructMemberAlignment>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Release\Campaign\CampUpd/CampUpd.pch</PrecompiledHeaderOutputFile>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <AssemblerListingLocation>.\</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\Falcon4___Win32_Release\Campaign\CampUpd/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Release\Campaign\CampUpd/</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>.\..\..\Falcon4___Win32_Release\Campaign\CampUpd\CampUpd.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Campaign.cpp" />
@@ -174,6 +325,7 @@
     <ClCompile Include="Weather.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\RedProfiler.h" />
     <ClInclude Include="..\Include\Campaign.h" />
     <ClInclude Include="..\include\campbase.h" />
     <ClInclude Include="..\Include\Cmpclass.h" />
@@ -182,7 +334,6 @@
     <ClInclude Include="..\Include\GameMgr.h" />
     <ClInclude Include="..\include\iaction.h" />
     <ClInclude Include="..\Include\NoFly.h" />
-    <ClInclude Include="..\..\RedProfiler.h" />
     <ClInclude Include="..\Include\Supply.h" />
     <ClInclude Include="..\include\tactics.h" />
     <ClInclude Include="..\Include\Update.h" />

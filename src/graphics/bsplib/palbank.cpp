@@ -74,7 +74,37 @@ void PaletteBankClass::ReadPool(int file)
     ShiAssert(PalettePool);
 
     // Read the data for each palette
+#if defined(_M_IX86)
     result = read(file, PalettePool, sizeof(*PalettePool) * nPalettes);
+#else
+    // Artscout - 2026: x64 serialization fix. The .DXH file stores Palette
+    // records in the 32-bit (x86) layout. On x64 the Palette class is larger
+    // (palHandle pointer grows 4->8 bytes), so a bulk read of sizeof(Palette)*N
+    // over-reads and shifts the file position, corrupting everything that
+    // follows (TheObjectLODsCount -> bad_array_new_length). Read the on-disk
+    // 32-bit layout explicitly and copy only the meaningful field (paletteData);
+    // palHandle/refCount are runtime-only and left as the constructor set them.
+    {
+#pragma pack(push, 4)
+        struct DiskPalette
+        {
+            DWORD  paletteData[256];
+            UInt32 palHandle; // x86 pointer slot on disk (ignored at runtime)
+            int    refCount;  // ignored (ctor sets 0)
+        };
+#pragma pack(pop)
+
+        DiskPalette *disk = new DiskPalette[nPalettes];
+        result = read(file, disk, sizeof(DiskPalette) * nPalettes);
+
+        for (int i = 0; i < nPalettes; i++)
+        {
+            memcpy(PalettePool[i].paletteData, disk[i].paletteData, sizeof(disk[i].paletteData));
+        }
+
+        delete[] disk;
+    }
+#endif
 
     if (result < 0)
     {

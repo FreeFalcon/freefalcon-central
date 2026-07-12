@@ -11,9 +11,8 @@
 #include <windows.h>
 
 
-// Convert a Direct Draw return code into an error message
-BOOL DDErrorCheck(HRESULT result);
-BOOL D3DErrorCheck(HRESULT result);
+// Artscout - 2026: [DX7-PURGE] DDErrorCheck/D3DErrorCheck removed (dead DDraw/D3D7
+// decoders, 0 call-sites). Only the DirectSound decoder survives.
 BOOL DSErrorCheck(HRESULT result);
 
 #endif // _DDERROR_H_

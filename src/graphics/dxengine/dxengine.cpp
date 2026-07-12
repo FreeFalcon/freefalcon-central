@@ -15,6 +15,18 @@
 #include "../include/Tod.h"
 #include "../../falclib/include/Fakerand.h"
 #include "../../include/ComSup.h"
+#include "d3d11/D3D11Renderer.h"	// PHASE 4: D3D11 object path
+#include "D3D11Backend.h"
+#include "OpenXRBackend.h"   // temp VR stereo diag
+#include <stdio.h>
+extern bool g_bUseD3D11;
+extern bool g_bUseGpu;   // #DX12 п.4: GPU mode (D3D11 || D3D12) -- the object pass runs on the active renderer
+
+// #34: world matrix -> the shader cbObject (D3D11). The dead D3D7 m_pD3DD->SetTransform else-branch
+// was removed.
+#define DX_SET_WORLD(M) do { \
+    if (g_pRenderer) g_pRenderer->SetWorld((const float *)&(M)); \
+} while (0)
 
 // This variable is the Model ID presently under draw
 DWORD gDebugLodID;
@@ -31,9 +43,7 @@ extern char TheLODNames[10000][32];
 
 CDXEngine TheDXEngine;
 
-IDirect3DDevice7 *CDXEngine::m_pD3DD;
-IDirect3D7 *CDXEngine::m_pD3D;
-IDirectDraw7 *CDXEngine::m_pDD;
+// #34 C1: CDXEngine D3D7 device statics (m_pD3DD/m_pD3D/m_pDD) removed.
 
 D3DXMATRIX CDXEngine::State, CDXEngine::DofTransformation, CDXEngine::AppliedState;
 DWORD CDXEngine::StateStackLevel;
@@ -43,6 +53,11 @@ D3DVECTOR CDXEngine::CameraPos;
 D3DVECTOR CDXEngine::LightDir;
 D3DXMATRIX CDXEngine::Projection;
 D3DXMATRIX CDXEngine::World;
+
+// #28: current-frame sun+ambient -- for per-object dynamic lighting (UpdateDynamicLights
+// in dxlightengine.cpp builds the 'sun + nearby dynamic lamps' set and calls SetLights).
+D3D11Renderer::GpuLightCPU g_d3d11Sun = {};
+float g_d3d11Amb[4] = { 0.45f, 0.45f, 0.45f, 1.0f };
 D3DVIEWPORT7 CDXEngine::ViewPort;
 _MM_ALIGN16 XMMVector CDXEngine::XMMCamera; // the Camera position compatible with XMM Math
 DWORD CDXEngine::m_TexID, CDXEngine::m_LastTexID;
@@ -119,7 +134,8 @@ CDXEngine::~CDXEngine(void)
 {
     CleanUpTexturesOnDevice();
     ReleaseTextures();
-	if (DxEngineStateHandle) CheckHR(m_pD3DD->DeleteStateBlock(DxEngineStateHandle));
+	// #34: DxEngineStateHandle is never set under D3D11 (StoreSetupState is a no-op); dead D3D7
+	// DeleteStateBlock removed.
 }
 
 // The Default engine states for the renderer
@@ -127,49 +143,7 @@ CDXEngine::~CDXEngine(void)
 // BSP engine state changes
 void CDXEngine::StoreSetupState(void)
 {
-    // First of all save present renderer State
-    DWORD StateHandle;
-    CheckHR(m_pD3DD->CreateStateBlock(D3DSBT_ALL, &StateHandle));
-
-    // Setup all Default engine States
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_STIPPLEDALPHA, FALSE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, FALSE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_STENCILENABLE, FALSE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE, TRUE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_LASTPIXEL, TRUE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_SPECULARENABLE, TRUE);
-
-    // Disable all stages
-    for (int i = 0; i < 8; i++)
-    {
-        m_pD3DD->SetTextureStageState(i, D3DTSS_COLOROP, D3DTOP_DISABLE);
-        m_pD3DD->SetTextureStageState(i, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-    }
-
-    m_pD3DD->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
-    m_pD3DD->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFN_LINEAR);
-    m_pD3DD->SetTextureStageState(1, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
-    m_pD3DD->SetTextureStageState(1, D3DTSS_MINFILTER, D3DTFN_LINEAR);
-    m_pD3DD->SetTextureStageState(2, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
-    m_pD3DD->SetTextureStageState(2, D3DTSS_MINFILTER, D3DTFN_LINEAR);
-    m_pD3DD->SetTextureStageState(3, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
-    m_pD3DD->SetTextureStageState(3, D3DTSS_MINFILTER, D3DTFN_LINEAR);
-
-    // Enable Alpha Rendering
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-
-    CheckHR(m_pD3DD->CreateStateBlock(D3DSBT_PIXELSTATE, &DxEngineStateHandle));
-
-    // Restore Previous State Block and delete it from memory
-    CheckHR(m_pD3DD->ApplyStateBlock(StateHandle));
-    CheckHR(m_pD3DD->DeleteStateBlock(StateHandle));
-
-
+    // #34 D3D11: D3D7 state-block save/restore replaced by D3D11 state objects (FFStateMap); no-op.
 }
 
 void CDXEngine::SetFogLevel(float FogLevel)
@@ -187,7 +161,8 @@ void CDXEngine::SetCamera(D3DXMATRIX *Settings, D3DVECTOR Pos, D3DXMATRIX *BB)
     CameraView.m31 = CameraPos.y;
     CameraView.m32 = CameraPos.z;
 #endif
-    m_pD3DD->SetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&CameraView);
+    // #34 D3D11: view matrix into the shader cbuffer (dead D3D7 SetTransform else removed)
+    if (g_pRenderer) g_pRenderer->SetView((const float *)&CameraView);
 
     // The BB Stuff
     BBMatrix = *BB;
@@ -205,21 +180,19 @@ VOID CDXEngine::SelectTexture(GLint texID)
 {
     // eventually select other textures for NVG/TV
 
-    // get the Handle of the Texture from the Texture Bank
-    texID = (texID not_eq -1) ? TheTextureBank.GetHandle(texID) : (GLint)ZeroTex;
+    // Artscout - 2026 (x64): texID is a small bank index, but the handle/SRV it resolves to are
+    // pointer-sized. Use a DWORD_PTR local so the pointer isn't truncated (GLint dropped the high 32 bits).
+    DWORD_PTR h = (texID not_eq -1) ? TheTextureBank.GetHandle(texID) : (DWORD_PTR)ZeroTex;
 
-    if (texID) texID = (GLint)((TextureHandle *)texID)->m_pDDS;
+    if (h) h = (DWORD_PTR)((TextureHandle *)h)->m_pDDS;
 
-    // only Texture on Stage 0 is needed for normal View
-    if (m_RenderState == DX_OTW)
+    if (g_bUseGpu)	// PHASE 4/#DX12: m_pDDS holds the GPU texture handle (D3D11 SRV or D3D12Texture*)
     {
-        CheckHR(m_pD3DD->SetTexture(0, (IDirectDrawSurface7 *)texID));
+        if (g_pRenderer)
+            g_pRenderer->SetTexture(0, (struct ID3D11ShaderResourceView *)h);
         return;
     }
-
-    // if here, TV and NVG need othe texture stages setted
-    CheckHR(m_pD3DD->SetTexture(1, (IDirectDrawSurface7 *)texID));
-    CheckHR(m_pD3DD->SetTexture(3, (IDirectDrawSurface7 *)texID));
+    // #34 dead D3D7 SetTexture stages removed (D3D11 returns above)
 }
 
 
@@ -240,11 +213,9 @@ void CDXEngine::SetViewport(DWORD l, DWORD t, DWORD r, DWORD b)
 
 
 // The Engine initialization Function
-void CDXEngine::Setup(IDirect3DDevice7 *pD3DD, IDirect3D7 *pD3D, IDirectDraw7 *pDD)
+void CDXEngine::Setup()
 {
-    m_pD3DD = pD3DD;
-    m_pD3D = pD3D;
-    m_pDD = pDD;
+    // #34 C1: no D3D7 device to store.
     m_LastFlags.w = 0;
     m_TexID = m_LastTexID = -1;
     INIT_S_STACK(m_AlphaStack, MAX_ALPHA_SURFACES);
@@ -263,7 +234,7 @@ void CDXEngine::Setup(IDirect3DDevice7 *pD3DD, IDirect3D7 *pD3D, IDirectDraw7 *p
     DX2D_Init();
 
     // Initialize the Light engine
-    TheLightEngine.Setup(pD3DD, pD3D);
+    TheLightEngine.Setup();   // #34 C1: D3D7 device args removed
 
     ZeroMemory(&TheMaterial, sizeof(TheMaterial));
     TheMaterial.ambient.r = TheMaterial.ambient.g = TheMaterial.ambient.b = 1.0f;
@@ -340,17 +311,20 @@ void CDXEngine::CreateZeroTexture(void)
     ZeroTex = new TextureHandle();
     ZeroTex->Create("", 0, 32, 64, 64, TextureHandle::FLAG_MATCHPRIMARY);
 
-    DDPIXELFORMAT ddpf;
-    DDBLTFX ddbltfx;
-    ZeroTex->m_pDDS->GetPixelFormat(&ddpf);
-    ddbltfx.dwSize = sizeof(ddbltfx);
-    ddbltfx.dwFillColor = 0xffffffff; // Pure White
+    // PHASE 5: in D3D11 fill ZeroTex with a real WHITE texture (previously skipped ->
+    // m_pDDS=NULL -> polygons with texID=-1 sampled nothing -> white/broken). ZeroTex is needed
+    // as a neutral white texture for untextured polygons (result = white * vertexcolor).
+    extern bool g_bUseD3D11, g_bUseD3D12;
+    if (g_bUseD3D11 or g_bUseD3D12)   // #DX12: bake via Load (no-op stub under D3D12); skip the dead DDraw Blt path
+    {
+        static DWORD s_white[64 * 64];
+        for (int i = 0; i < 64 * 64; ++i) s_white[i] = 0xFFFFFFFF;
+        ZeroTex->Load(0, 0, (BYTE*)s_white);   // bakes a white 64x64 -> valid SRV
+        return;
+    }
 
-    ZeroTex->m_pDDS->Blt(
-        NULL,        // Destination is entire surface
-        NULL,        // No source surface
-        NULL,        // No source rectangle
-        DDBLT_COLORFILL, &ddbltfx);
+    // Artscout - 2026: [DX7-PURGE] DDraw surface GetPixelFormat/Blt colour-fill removed
+    // (GPU path above bakes ZeroTex white via Load and returns).
 }
 
 
@@ -358,7 +332,7 @@ void CDXEngine::CreateZeroTexture(void)
 
 void CDXEngine::Release(void)
 {
-    m_pD3DD->DeleteStateBlock(DxEngineStateHandle);
+    // #34 C1: no D3D7 device / state block to release.
     // Release the 2D Engine items
     DX2D_Release();
 
@@ -393,6 +367,23 @@ void CDXEngine::SetSunLight(float Ambient, float Diffuse, float Specular)
     LightDir.y = -LightDir.y ;
     LightDir.z = -LightDir.z ;
 #endif
+
+    // PHASE 6: port the directional sun light to D3D11 (object path, VS_Object
+    // computes col = dwColour * saturate(ambient + sum N.L)). One directional source
+    // (sun) + TOD ambient. Previously SetLights was not called -> FF_LIGHTING was off.
+    if (g_bUseGpu and g_pRenderer)
+    {
+        float amb[4] = { TheSun.dcvAmbient.r, TheSun.dcvAmbient.g, TheSun.dcvAmbient.b, 1.0f };
+        D3D11Renderer::GpuLightCPU sun;
+        memset(&sun, 0, sizeof(sun));
+        // -LightDir: the shader takes Ldir = -L.Direction; LightDir is already 'toward the sun' (reference negates
+        // GetLightDirection). Consistent with FlushBuffers (the effective path). Previously this was
+        // +LightDir (backwards), but the call was overwritten by FlushBuffers -- unify them.
+        sun.Direction[0] = -LightDir.x;  sun.Direction[1] = -LightDir.y;  sun.Direction[2] = -LightDir.z;
+        sun.Color[0] = TheSun.dcvDiffuse.r; sun.Color[1] = TheSun.dcvDiffuse.g; sun.Color[2] = TheSun.dcvDiffuse.b;
+        sun.Params[1] = 0.0f;   // directional
+        g_pRenderer->SetLights(amb, 1, &sun, sizeof(sun));
+    }
 }
 
 
@@ -465,41 +456,28 @@ void CDXEngine::UnLoadTextures(DWORD ID)
 // Stenciling Functions
 DWORD CDXEngine::SetStencilMode(DWORD Stencil)
 {
-
     DWORD LastMode = (DWORD)m_StencilMode;
 
-    switch (Stencil)
+    // #34 D3D11: 3D-cockpit stencil mask via D3D11 state objects (dead D3D7 switch removed).
+    m_StencilMode = (StencilModeType)Stencil;
+    if (g_pRenderer)
     {
-
-        case STENCIL_OFF:
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_STENCILFUNC, D3DCMP_ALWAYS);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_STENCILPASS, D3DSTENCILOP_KEEP);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_STENCILENABLE, FALSE);
-            break;
-
-        case STENCIL_ON:
-            break;
-
+        switch (Stencil)
+        {
         case STENCIL_WRITE:
             m_StencilRef++;
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_STENCILFUNC, D3DCMP_ALWAYS);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_STENCILMASK, 0xffffffff);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_STENCILWRITEMASK, 0xffffffff);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_STENCILREF, m_StencilRef);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_STENCILPASS, D3DSTENCILOP_REPLACE);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_STENCILENABLE, TRUE);
+            g_pRenderer->SetStencil(2, m_StencilRef);   // cockpit writes ref
             break;
-
         case STENCIL_CHECK:
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_STENCILFUNC, m_StencilRef ? D3DCMP_GREATER : D3DCMP_ALWAYS);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_STENCILMASK, 0xffffffff);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_STENCILWRITEMASK, 0xffffffff);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_STENCILREF, m_StencilRef);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_STENCILPASS, D3DSTENCILOP_KEEP);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_STENCILENABLE, TRUE);
+            if (m_StencilRef) g_pRenderer->SetStencil(3, m_StencilRef); // world: ref>stencil
+            else              g_pRenderer->SetStencil(0, 0);            // ref==0 -> ALWAYS
             break;
+        case STENCIL_OFF:
+        default:
+            g_pRenderer->SetStencil(0, 0);
+            break;
+        }
     }
-
     return LastMode;
 }
 
@@ -639,93 +617,8 @@ inline void CDXEngine::PopMatrix(D3DXMATRIX *p)
 // Function Selecting Normal View Mode, no NVG, no TV
 void CDXEngine::SetViewMode(void)
 {
-
-    switch (m_RenderState)
-    {
-
-        case DX_DBS:
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, NVG_T_FACTOR);
-            /*m_pD3DD->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TFACTOR);
-            m_pD3DD->SetTextureStageState(0,D3DTSS_COLORARG2,D3DTA_DIFFUSE);
-            m_pD3DD->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);*/
-            m_pD3DD->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_DISABLE);
-            m_pD3DD->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-            m_pD3DD->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);
-            m_pD3DD->SetTextureStageState(3, D3DTSS_COLOROP, D3DTOP_DISABLE);;
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_FLAT);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
-
-            // The Texture Stage used for Alpha Calculations
-            m_AlphaTextureStage = 0;
-            // Select the appropriate Light
-            TheNVG.dvDirection = TheTV.dvDirection = TheSun.dvDirection;
-            m_pD3DD->SetLight(0, &TheNVG);
-            m_pD3DD->LightEnable(0, true);
-            break;
-
-
-
-        case DX_NVG:
-        case DX_TV:
-
-            // FRB - B&W
-            if ((m_RenderState == DX_TV) and ( not bNVGmode) and (g_bGreyMFD))
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, 0x00a0a0a0);
-            else
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, 0x0000a000 /*NVG_T_FACTOR*/);
-
-            //m_pD3DD->SetRenderState( D3DRENDERSTATE_TEXTUREFACTOR, NVG_T_FACTOR);
-
-            m_pD3DD->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
-            m_pD3DD->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-            m_pD3DD->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_ADDSMOOTH);
-
-            m_pD3DD->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-            m_pD3DD->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);
-            m_pD3DD->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_ADDSIGNED);
-
-            m_pD3DD->SetTextureStageState(2, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-            m_pD3DD->SetTextureStageState(2, D3DTSS_COLORARG1, D3DTA_CURRENT);
-            m_pD3DD->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DOTPRODUCT3);
-
-            m_pD3DD->SetTextureStageState(3, D3DTSS_COLORARG2, D3DTA_TFACTOR);
-            m_pD3DD->SetTextureStageState(3, D3DTSS_COLORARG1, D3DTA_CURRENT);
-            m_pD3DD->SetTextureStageState(3, D3DTSS_COLOROP, D3DTOP_ADDSIGNED);
-
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_GOURAUD);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
-
-            // The Texture Stage used for Alpha Calculations
-            m_AlphaTextureStage = 3;
-            // Select the appropriate Light
-            m_pD3DD->LightEnable(0, false);
-            TheNVG.dvDirection = TheTV.dvDirection = TheSun.dvDirection;
-            m_pD3DD->SetLight(0, (m_RenderState == DX_NVG) ? &TheNVG : &TheTV);
-            m_pD3DD->LightEnable(0, true);
-            break;
-
-        case DX_OTW:
-        default :
-            m_pD3DD->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-            m_pD3DD->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-            m_pD3DD->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-            m_pD3DD->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-            m_pD3DD->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);
-            m_pD3DD->SetTextureStageState(3, D3DTSS_COLOROP, D3DTOP_DISABLE);;
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_GOURAUD);
-#ifdef EDIT_ENGINE
-#else
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
-#endif
-
-            // The Texture Stage used for Alpha Calculations
-            m_AlphaTextureStage = 0;
-            // Select the appropriate Light
-            m_pD3DD->LightEnable(0, false);
-            m_pD3DD->SetLight(0, &TheSun);
-            m_pD3DD->LightEnable(0, true);
-            break;
-    }
+    // #34 D3D11: texture stages / NVG/TV modes are emulated by the FFEmu shader.
+    m_AlphaTextureStage = 0;
 }
 
 
@@ -735,108 +628,7 @@ void CDXEngine::SetViewMode(void)
 // Function switching the renderer State
 void CDXEngine::SetRenderState(DXFlagsType Flags, DXFlagsType NewFlags, bool Enable)
 {
-
-    // ********************** ENABLE BLOCK *********************
-    if (Enable)
-    {
-
-#ifdef EDIT_ENGINE
-
-        if (m_FrameDrawMode)
-        {
-            Flags.w = 0;
-            Flags.b.Line = 1;
-            Flags.b.VColor = 1;
-            NewFlags.w = 0;
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_FILLMODE, D3DFILL_WIREFRAME);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_EMISSIVEMATERIALSOURCE, D3DMCS_MATERIAL);
-            TheMaterial.specular.r = TheMaterial.specular.g = TheMaterial.specular.b = 1.0f;
-            TheMaterial.emissive.r = TheMaterial.emissive.g = TheMaterial.emissive.b = 1.0f;
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_CULLMODE, (m_bCullEnable) ? D3DCULL_CW : D3DCULL_NONE);
-        }
-
-#endif
-
-        // **** CHROMA KEYING INITIALIZATION ****
-        if (Flags.b.ChromaKey)
-        {
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, TRUE);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHAREF, (DWORD)1);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
-            m_pD3DD->SetTextureStageState(m_AlphaTextureStage, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-            m_pD3DD->SetTextureStageState(m_AlphaTextureStage, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-            m_pD3DD->SetTextureStageState(m_AlphaTextureStage, D3DTSS_MAGFILTER, D3DTFG_POINT);
-            m_pD3DD->SetTextureStageState(m_AlphaTextureStage, D3DTSS_MINFILTER, D3DTFN_POINT);
-        }
-
-        // **************************************
-
-
-
-        // *** ALPHA BLENDING SELECTION - FROM VERTEX COLOR SELECTION *
-        if (Flags.b.VColor)
-        {
-            m_pD3DD->SetTextureStageState(m_AlphaTextureStage, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
-            m_pD3DD->SetTextureStageState(m_AlphaTextureStage, D3DTSS_ALPHAARG2, D3DTA_TEXTURE);
-            m_pD3DD->SetTextureStageState(m_AlphaTextureStage, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-
-        }
-
-
-#ifdef EDIT_ENGINE
-
-        if (Flags.b.Gouraud) m_pD3DD->SetRenderState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_GOURAUD);
-
-#endif
-    }
-
-
-    // ********************** DISABLE BLOCK *********************
-    if ( not Enable)
-    {
-
-#ifdef EDIT_ENGINE
-
-        if (m_FrameDrawMode)
-        {
-            // Done to reset material
-            TheMaterial.specular.r = TheMaterial.specular.g = TheMaterial.specular.b = 0.0f;
-            TheMaterial.emissive.r = TheMaterial.emissive.g = TheMaterial.emissive.b = 0.0f;
-            TheMaterial.dvPower = -1.0f;
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_CULLMODE, (m_bCullEnable) ? D3DCULL_CW : D3DCULL_NONE);
-        }
-
-#endif
-
-        // **** CHROMA KEYING DISABLES ****
-        if (Flags.b.ChromaKey)
-        {
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, FALSE);
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_ALWAYS);
-            m_pD3DD->SetTextureStageState(m_AlphaTextureStage, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-            m_pD3DD->SetTextureStageState(m_AlphaTextureStage, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
-            m_pD3DD->SetTextureStageState(m_AlphaTextureStage, D3DTSS_MINFILTER, D3DTFN_LINEAR);
-        }
-
-        // **************************************
-
-        // *** ALPHA BLENDING SELECTION - FROM TEXTURE COLOR SELECTION *
-        if (Flags.b.VColor)
-        {
-            m_pD3DD->SetTextureStageState(m_AlphaTextureStage, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
-            m_pD3DD->SetTextureStageState(m_AlphaTextureStage, D3DTSS_ALPHAARG2, D3DTA_TEXTURE);
-            m_pD3DD->SetTextureStageState(m_AlphaTextureStage, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-
-        }
-
-#ifdef EDIT_ENGINE
-
-        if (Flags.b.Gouraud) m_pD3DD->SetRenderState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_FLAT);
-
-#endif
-    }
+    // #34 D3D11: per-surface render flags are D3D11 state objects (FFStateMap); no-op.
 }
 
 
@@ -861,14 +653,7 @@ void CDXEngine::DrawSurface()
     DXFlagsType NewFlags;
     NewFlags.w = m_NODE.SURFACE->dwFlags.w;
 
-    // Switching Emissive surfaces feature, setup the flags for the surface
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_EMISSIVEMATERIALSOURCE, D3DMCS_COLOR2);
-
-    if (m_TheObjectInstance->SwitchValues and (NewFlags.b.SwEmissive))
-    {
-        if ( not (m_TheObjectInstance->SwitchValues[m_NODE.SURFACE->SwitchNumber]&m_NODE.SURFACE->SwitchMask))
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_EMISSIVEMATERIALSOURCE, D3DMCS_MATERIAL);
-    }
+    // #34: dead D3D7 emissive-source SetRenderState removed (D3D11 emissive via FF_EMISSIVE shader, #49).
 
 
     ////////////////////// Test if any change in rendering mode /////////////
@@ -923,7 +708,7 @@ void CDXEngine::DrawSurface()
     if (m_LastZBias not_eq m_NODE.SURFACE->dwzBias)
     {
         m_LastZBias = m_NODE.SURFACE->dwzBias;
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_ZBIAS, m_LastZBias);
+        // #34: dead D3D7 ZBIAS removed (no device under D3D11)
     }
 
 #endif
@@ -938,7 +723,7 @@ void CDXEngine::DrawSurface()
         R.m31 = AppliedState.m31;
         R.m32 = AppliedState.m32;
         R.m33 = 1.0f;
-        m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&R);
+        DX_SET_WORLD(R);
     }
 
 
@@ -950,7 +735,12 @@ void CDXEngine::DrawSurface()
         TheMaterial.dcvSpecular.r = (float)((m_LastSpecular >> 16) bitand 0xff) / 255.0f;
         TheMaterial.dcvSpecular.g = (float)((m_LastSpecular >> 8) bitand 0xff) / 255.0f;
         TheMaterial.dcvSpecular.b = (float)(m_LastSpecular bitand 0xff) / 255.0f;
-        m_pD3DD->SetMaterial(&TheMaterial);
+        // #34: dead D3D7 SetMaterial removed (D3D11 material via shader, #29)
+        // #29 D3D11: surface specular -> shader (Blinn-Phong from light 0). power=SpecularIndex,
+        // color=dcvSpecular (from DefaultSpecularity). power=0 or color=0 -> no highlight.
+        if (g_pRenderer)
+            g_pRenderer->SetMaterialSpecular(TheMaterial.dcvSpecular.r, TheMaterial.dcvSpecular.g,
+                                                  TheMaterial.dcvSpecular.b, (float)m_NODE.SURFACE->SpecularIndex);
     }
 
 
@@ -972,18 +762,79 @@ void CDXEngine::DrawSurface()
     ///////////////////////// Draw the Primitive /////////////////////////////////
 #ifdef INDEXED_MODE_ENGINE
 
-    if (m_NODE.SURFACE->dwPrimType == D3DPT_POINTLIST)
+    if (g_bUseGpu)
     {
-        // SelectTexture(NULL);
-        // m_LastTexID=-1;
-        hr = m_pD3DD->DrawPrimitiveVB(m_NODE.SURFACE->dwPrimType, m_VB.Vb, (DWORD) * ((Int16*)(m_NODE.BYTE + sizeof(DxSurfaceType))) + m_VB.BaseOffset,
-                                      m_NODE.SURFACE->dwVCount, 0);
+        // PHASE 4/#DX12 п.4: draw from the per-model GPU mirror VB (D3D11 buffer or D3D12 resource).
+        hr = 0;
+        extern bool g_bUseD3D12;
+        void* vbh = g_bUseD3D12 ? m_VB.VbD3D12 : (void*)m_VB.VbD3D11;
+        if (g_pRenderer and vbh)
+        {
+            // per-model buffer: vertices from 0, baseVertex=0, indices 0-based as is.
+            void *idxPtr = m_NODE.BYTE + sizeof(DxSurfaceType);
+
+            // Alpha-test (chroma cutout) -- strictly like D3D7: enable ONLY for
+            // surfaces with the ChromaKey flag (see context.cpp/SetRenderState,
+            // ALPHATESTENABLE is set only in the MPR_SE_CHROMA branch). Opaque
+            // surfaces draw without cutout (dark texture RGB, even at alpha=0).
+            g_pRenderer->SetAlphaTestEnabled(m_NODE.SURFACE->dwFlags.b.ChromaKey != 0);
+
+            // #49 self-illuminated surfaces (D3D7 SwEmissive: afterburner cone, nav/formation
+            // lights). D3D7 keeps the emissive (COLOR2) source on these UNLESS their switch is
+            // off (then EMISSIVEMATERIALSOURCE -> MATERIAL = no glow). The D3D11 object shader
+            // had dropped emissive entirely, so the afterburner plume went dark at dusk/night.
+            // Mirror the D3D7 rule and flag only SwEmissive surfaces (panels stay light-shaded).
+            bool afterburner = false;   // #49 hoisted: also used to wrap the draw in additive blend
+            {
+                bool emissive = false;
+
+                if (NewFlags.b.SwEmissive)
+                {
+                    if (m_TheObjectInstance->SwitchValues)
+                        emissive = (m_TheObjectInstance->SwitchValues[m_NODE.SURFACE->SwitchNumber]
+                                    & m_NODE.SURFACE->SwitchMask) != 0;
+                    else
+                        emissive = true;   // no switch table -> D3D7 default keeps COLOR2 (glow)
+                }
+
+                g_pRenderer->SetEmissive(emissive);
+
+                // #49 afterburner cone: among emissive surfaces, the AB cone is the one whose
+                // switch is COMP_AB (0) / COMP_AB2 (30) -- exterior lights use other switch numbers
+                // (tail strobe 7, nav 8, land 9). Flag it so the shader applies the warm flame
+                // gradient (reference real_af.png) instead of the model's stylized blue emissive.
+                // Require the Alpha flag: the AB cone is an Alpha surface (drawn in the alpha pass).
+                // Restricting to Alpha keeps the additive blend flip INSIDE the alpha pass, where
+                // restoring BLEND_ALPHA is correct. Without this, an opaque emissive surface with
+                // switch 0 in the SOLID pass would leave alpha-blend + no-depth-write set for the
+                // rest of the pass -> the whole aircraft turned translucent (interior showed through).
+                afterburner = emissive
+                              && NewFlags.b.Alpha
+                              && (m_NODE.SURFACE->SwitchNumber == 0       // COMP_AB
+                                  || m_NODE.SURFACE->SwitchNumber == 30);  // COMP_AB2
+                g_pRenderer->SetAfterburner(afterburner);
+            }
+
+            // #49 the afterburner cone is an Alpha surface (drawn in the alpha pass, BLEND_ALPHA ->
+            // translucent/dull). Flip it to pure additive so it glows bright (then restore alpha
+            // for the surrounding translucent surfaces e.g. canopy glass).
+            if (afterburner)
+                g_pRenderer->SetObjectAdditiveBlend(true);
+
+            if (m_NODE.SURFACE->dwPrimType == D3DPT_POINTLIST)
+                g_pRenderer->DrawObjectStrip(m_NODE.SURFACE->dwPrimType, vbh, VERTEX_STRIDE,
+                                                  (int)((DWORD) * ((Int16*)idxPtr)),
+                                                  (int)m_NODE.SURFACE->dwVCount);
+            else
+                g_pRenderer->DrawObjectIndexed(m_NODE.SURFACE->dwPrimType, vbh, VERTEX_STRIDE,
+                                                    0, (unsigned short*)idxPtr,
+                                                    (int)m_NODE.SURFACE->dwVCount);
+
+            if (afterburner)
+                g_pRenderer->SetObjectAdditiveBlend(false);   // restore alpha-pass blend
+        }
     }
-    else
-    {
-        hr = m_pD3DD->DrawIndexedPrimitiveVB(m_NODE.SURFACE->dwPrimType, m_VB.Vb, m_VB.BaseOffset, m_VB.NVertices,
-                                             (LPWORD)(m_NODE.BYTE + sizeof(DxSurfaceType)), m_NODE.SURFACE->dwVCount, 0);
-    }
+    // #34: dead D3D7 DrawPrimitiveVB/DrawIndexedPrimitiveVB else-branches removed (D3D11 draws above)
 
 
 #else
@@ -1009,7 +860,7 @@ void CDXEngine::DrawSurface()
     if (NewFlags.b.BillBoard)
     {
         // Get back to original transformation
-        m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&AppliedState);
+        DX_SET_WORLD(AppliedState);
     }
 
 }
@@ -1171,7 +1022,7 @@ void CDXEngine::DOF(void)
     // Mix All and set to Actual Applied State
     D3DXMatrixMultiply(&R, &R, &T);
     D3DXMatrixMultiply(&AppliedState, &R, &AppliedState);
-    m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&AppliedState);
+    DX_SET_WORLD(AppliedState);
 }
 
 
@@ -1282,6 +1133,9 @@ void CDXEngine::SWITCHManage()
 // * This Function just Transformates the Object and pass it to the VB Manager for later Drawing *
 // The 'CameraSpace' flag is used for child items from an undergoing draw, as the position is already relative to the camera
 // and so need no camera relative calculations
+// #16/#26 forward decl (falclib/include/isbad.h) for guarding dangling reads in the lights loop.
+extern bool F4IsBadReadPtr(const void *lp, unsigned int ucb);
+
 void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const Ppoint *Pos, const float sx, const float sy, const float sz, const float scale, bool CameraSpace, DWORD LightOwner)
 {
     D3DXMATRIX Scale, State;
@@ -1372,8 +1226,7 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
 #ifndef DEBUG_ENGINE
         // Compute the object visibility -  Return if Clipped out
         D3DVALUE r = (D3DVALUE)(objInst->Radius() * scale);
-        DWORD ClipResult;
-        m_pD3DD->ComputeSphereVisibility(&p, &r, 1, 0, &ClipResult);
+        DWORD ClipResult = 0;	// PHASE 4: D3D11 -- without the D3D7 clip test treat as visible (frustum cull later)
 
         // if Visible assert it, if not visible got to check for Lights
         if (ClipResult bitand D3DSTATUS_DEFAULT) goto LightCheck;
@@ -1396,6 +1249,9 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
         D3DXMatrixMultiply(&State, &State, &Scale);
         // *******************************************
 
+        // #16 DIAG REMOVED (#10): per-object/per-frame fopen("objxform_diag.txt") stalled rendering on
+        // the ground (tons of file I/O) -- the cockpit could not appear in time. The block was purely
+        // diagnostic (projection to a file), did not affect rendering.
     }
 
     // check if child enlighted
@@ -1510,7 +1366,19 @@ LightCheck:
         // and add all of them to the dynamic lights list
         while (LightsNr--)
         {
-            if (Light->Switch == -1 or (objInst->SwitchValues[Light->Switch] bitand Light->SwitchMask)) TheLightEngine.AddDynamicLight(Liter, Light, RotMatrix, &p, LODRange);
+            // #16/#26 guard: Switch==-1 means "always on". Otherwise index objInst->SwitchValues
+            // ONLY if the array is present and readable up to that index -- a dangling/garbage
+            // objInst->SwitchValues or a bogus Light->Switch was crashing here on 3D entry
+            // (PreLoadScene -> DrawableBuilding). If unreadable, treat the light as off.
+            bool lightOn = (Light->Switch == -1);
+
+            if ( not lightOn and Light->Switch >= 0 and objInst->SwitchValues
+                 and not F4IsBadReadPtr(objInst->SwitchValues, (unsigned)(Light->Switch + 1) * sizeof(objInst->SwitchValues[0])))
+            {
+                lightOn = (objInst->SwitchValues[Light->Switch] bitand Light->SwitchMask) != 0;
+            }
+
+            if (lightOn) TheLightEngine.AddDynamicLight(Liter, Light, RotMatrix, &p, LODRange);
 
             Light++;
         }
@@ -1528,33 +1396,12 @@ void CDXEngine::FlushInit(void)
     // if not yet created create the Zero Texture
     if ( not ZeroTex) CreateZeroTexture();
 
-    // Initialize the Default Material
-    m_pD3DD->SetMaterial(&TheMaterial);
-
     D3DXMATRIX unit;
     D3DXMatrixIdentity(&unit);
-    m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&unit);
 
-    // Initial zBias
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ZBIAS, DEFAULT_ZBIAS);
+    // #34 D3D11: identity world into cbObject (dead D3D7 material/render-state setup removed).
+    DX_SET_WORLD(unit);
     m_LastZBias = DEFAULT_ZBIAS;
-    // Draw Mode
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_FILLMODE, D3DFILL_SOLID);
-    // Light On
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_LIGHTING, TRUE);
-    // Culling
-#ifndef DEBUG_ENGINE
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CW);
-#else
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_CULLMODE, (m_bCullEnable) ? D3DCULL_CW : D3DCULL_NONE);
-#endif
-    // ZBuffering
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
-    // **************************************
-
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_SPECULARENABLE, TRUE);
 
     // Select the appropriate View Mode
     SetViewMode();
@@ -1631,7 +1478,7 @@ inline void CDXEngine::DrawNode(ObjectInstance *objInst, DWORD LightOwner, DWORD
 
 #endif
             PopMatrix(&AppliedState);
-            m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&AppliedState);
+            DX_SET_WORLD(AppliedState);
             break;
 
             // if bad slot exit else get the Slot Children
@@ -1694,16 +1541,13 @@ void CDXEngine::FlushObjects(void)
     // Till objects to Draw
     while (TheVbManager.GetDrawItem(&objInst, &LodID, &AppliedState, &Lited, &LightOwner, &m_FogLevel))
     {
-
         // ok, just entered Pit Mode
         if (m_PitMode and not WasInPitMode)
         {
             //START_PROFILE("3D PIT");
             // enable stenciling in Write Mode
             SetStencilMode(STENCIL_WRITE);
-            // No Fog into the pit
-            float Start = 5.0f;
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGSTART, *(DWORD*)&Start);
+            // #34 D3D11: pit fog is handled by the shader; dead D3D7 FOGSTART removed
         }
 
         // ok, just Exited Pit Mode
@@ -1716,9 +1560,7 @@ void CDXEngine::FlushObjects(void)
             AppliedState = OldState;
             // enable stenciling in Check Mode
             SetStencilMode(STENCIL_CHECK);
-            // Restore Fog
-            float Start = 0.0f;
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGSTART, *(DWORD*)&Start);
+            // #34 D3D11: pit fog is handled by the shader; dead D3D7 FOGSTART removed
 
         }
 
@@ -1774,9 +1616,9 @@ void CDXEngine::FlushObjects(void)
 
 
         // Ok... transform the object
-        m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&AppliedState);
+        DX_SET_WORLD(AppliedState);
         // Stup the Fog level fro this object
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND,   *(DWORD *)(&m_FogLevel));
+        // #34: dead D3D7 FOGEND removed
 
 
         // Calculates the Texture Base Index in the Texture Bank
@@ -1795,12 +1637,26 @@ void CDXEngine::FlushObjects(void)
         m_NODE.BYTE = (BYTE*)m_VB.Nodes;
 
         // Till end of Model
+        // #54 LOAD-HANG GUARD: this traversal holds cs_VbManager (taken in FlushBuffers:2344);
+        // a broken/half-loaded model with dwNodeSize==0 (or a lost DX_MODELEND) -> INFINITE loop
+        // -> the lock is never released -> the loader thread hangs forever in SetupModel (LOCK_VB_MANAGER).
+        // Bail out on a zero step and on a cap = the model's declared node count (+slack).
+        long _ndGuard = 0;
+        long _ndMax   = (long)m_VB.NNodes + 16;   // a model cannot have more nodes than its header declares
+
         while (m_NODE.HEAD->Type not_eq DX_MODELEND)
         {
             // Draw the Node
             DrawNode(objInst, LightOwner, LodID);
             // Traverse the model
-            m_NODE.BYTE += m_NODE.HEAD->dwNodeSize;
+            DWORD _ndStep = m_NODE.HEAD->dwNodeSize;
+
+            // #54: a zero-sized node (or runaway count) would loop forever holding cs_VbManager;
+            // bail out of the traversal instead of hanging.
+            if (_ndStep == 0 or ++_ndGuard > _ndMax)
+                break;
+
+            m_NODE.BYTE += _ndStep;
         }
 
         //                                                                                                           //
@@ -1822,14 +1678,12 @@ void CDXEngine::DrawAlphaSurfaces(void)
     ObjectInstance *LastObj = NULL;
     float LastFog = 0;
 
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
+    if (g_pRenderer)	// PHASE 5: translucent surfaces (canopy glass) -- alpha-blend (D3D7 removed #34)
+        g_pRenderer->SetObjectAlphaBlend(true);
 
     while (PopSurface(&m_AlphaStack, &State))
     {
-        if (AppliedState not_eq State) m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&State);
+        if (AppliedState not_eq State) DX_SET_WORLD(State);
 
         AppliedState = State;
 #ifndef DEBUG_ENGINE
@@ -1849,15 +1703,11 @@ void CDXEngine::DrawAlphaSurfaces(void)
 #endif
 #endif
 
-        // Stup the Fog level for this object
-        if (m_FogLevel not_eq LastFog) m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND,   *(DWORD *)(&m_FogLevel));
-
-        LastFog = m_FogLevel;
         DrawSurface();
     }
 
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
+    if (g_pRenderer)	// PHASE 5: restore the opaque state (D3D7 removed #34)
+        g_pRenderer->SetObjectAlphaBlend(false);
 }
 
 
@@ -1873,18 +1723,15 @@ void CDXEngine::DrawSortedAlpha(DWORD Level, bool SetupMode)
     if (SetupMode) FlushInit();
 
     // Setup Alpha features
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
+    if (g_pRenderer)	// PHASE 5: sorted transparency (D3D7 removed #34)
+        g_pRenderer->SetObjectAlphaBlend(true);
 
     // Get the surface data and update transformations / features
     GetSurface(Level, &m_AlphaStack, &State);
-    m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&State);
+    DX_SET_WORLD(State);
     AppliedState = State;
 
     if (m_LastObjectInstance not_eq m_TheObjectInstance) TheLightEngine.EnableMappedLights(), m_LastObjectInstance = m_TheObjectInstance;
-
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND,   *(DWORD *)(&m_FogLevel));
 
     // Draw the surface
     DrawSurface();
@@ -1899,17 +1746,11 @@ void CDXEngine::DrawSolidSurfaces(void)
     ObjectInstance *LastObj = NULL;
     float LastFog = 0;
 
-#ifndef DEBUG_ENGINE
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CW);
-#else
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_CULLMODE, (m_bCullEnable) ? D3DCULL_CW : D3DCULL_NONE);
-#endif
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
-
+    // #34 D3D11: cull/zwrite come from BeginObjectPass (dead D3D7 state setup removed).
 
     while (PopSurface(&m_SolidStack, &State))
     {
-        if (State not_eq AppliedState) m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&State);
+        if (State not_eq AppliedState) DX_SET_WORLD(State);
 
         AppliedState = State;
 #ifndef DEBUG_ENGINE
@@ -1928,105 +1769,14 @@ void CDXEngine::DrawSolidSurfaces(void)
 #endif
 #endif
 
-        // Stup the Fog level for this object
-        if (m_FogLevel not_eq LastFog) m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND,   *(DWORD *)(&m_FogLevel));
-
-        LastFog = m_FogLevel;
         DrawSurface();
     }
 }
 
 
 #ifdef DEBUG_ENGINE
-void CDXEngine::DrawFrameSurfaces(NodeScannerType *NODE, float Alpha)
-{
-    // First of all save present renderer State
-    D3DXMATRIX State;
-    D3DMATERIAL7 OldMat = TheMaterial, Mat2;
+// Artscout - 2026: #34 removed dead DrawFrameSurfaces (EDIT_ENGINE wireframe draw; no callers, all D3D7 m_pD3DD).
 
-    if (SelectColor >= 1.0f) StepColor = -0.2f;
-
-    if (SelectColor <= 0.0f) StepColor = 0.2f;
-
-    //SelectColor+=StepColor;
-    SelectColor = 0.9f;
-
-    m_NODE = *NODE;
-
-    // First of all save present renderer State
-    DWORD StateHandle;
-    CheckHR(m_pD3DD->CreateStateBlock(D3DSBT_ALL, &StateHandle));
-
-    TheMaterial.emissive.a = Alpha;
-    TheMaterial.emissive.g = TheMaterial.emissive.b = 1.0f - SelectColor;
-    TheMaterial.emissive.r = 1.0f;
-    TheMaterial.diffuse.a = Alpha;
-    TheMaterial.diffuse.g = TheMaterial.diffuse.b = 1.0f - SelectColor;
-    TheMaterial.diffuse.r = 1.0f;
-    TheMaterial.ambient.a = Alpha;
-    TheMaterial.ambient.g = TheMaterial.ambient.b = 1.0f - SelectColor;
-    TheMaterial.ambient.r = 1.0f;
-    TheMaterial.specular.a = Alpha;
-    TheMaterial.specular.r = TheMaterial.specular.g = TheMaterial.specular.b = 1.0f;;
-
-
-    Mat2.emissive.a = Alpha * 0.2f;
-    Mat2.emissive.g = Mat2.emissive.b = 1.0f - SelectColor;
-    Mat2.emissive.r = SelectColor / 2 + 0.5f;
-    Mat2.diffuse.a = Alpha * 0.2f;
-    Mat2.diffuse.g = Mat2.diffuse.b = 1.0f - SelectColor;
-    Mat2.diffuse.r = SelectColor;
-    Mat2.ambient.a = Alpha * 0.2f;
-    Mat2.ambient.g = Mat2.ambient.b = 1.0f - SelectColor;
-    Mat2.ambient.r = SelectColor;
-    Mat2.specular.a = Alpha * 0.2f;
-    Mat2.specular.r = Mat2.specular.g = Mat2.specular.b = SelectColor;
-
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_SPECULARENABLE, FALSE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_COLORVERTEX, FALSE);
-
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, FALSE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_CULLMODE, (m_bCullEnable) ? D3DCULL_CW : D3DCULL_NONE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
-    //m_pD3DD->SetRenderState(D3DRENDERSTATE_ZFUNC,D3DCMP_ALWAYS);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_SPECULARENABLE, FALSE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-
-    m_pD3DD->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_DISABLE);
-    m_pD3DD->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_LIGHTING, TRUE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_AMBIENTMATERIALSOURCE, D3DMCS_MATERIAL);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_EMISSIVEMATERIALSOURCE, D3DMCS_MATERIAL);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_DIFFUSEMATERIALSOURCE, D3DMCS_MATERIAL);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_FLAT);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ZBIAS, 15);
-
-    m_TexID = -1;
-    /* while(PopSurface(&m_FrameStack, &State)){
-     m_pD3DD->SetTransform( D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&State );
-     AppliedState=State;*/
-    m_pD3DD->SetMaterial(&Mat2);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_EMISSIVEMATERIALSOURCE, D3DMCS_MATERIAL);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_FILLMODE, D3DFILL_SOLID);
-    CheckHR(m_pD3DD->DrawPrimitive(m_NODE.SURFACE->dwPrimType, D3DFVF_MANAGED, m_NODE.BYTE + sizeof(DxSurfaceType), m_NODE.SURFACE->dwVCount, 0));
-    m_pD3DD->SetMaterial(&TheMaterial);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_EMISSIVEMATERIALSOURCE, D3DMCS_MATERIAL);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_FILLMODE, D3DFILL_WIREFRAME);
-    CheckHR(m_pD3DD->DrawPrimitive(m_NODE.SURFACE->dwPrimType, D3DFVF_MANAGED, m_NODE.BYTE + sizeof(DxSurfaceType), m_NODE.SURFACE->dwVCount, 0));
-
-    // }
-
-
-    // Restore Previous State Block and delete it from memory
-    CheckHR(m_pD3DD->ApplyStateBlock(StateHandle));
-    CheckHR(m_pD3DD->DeleteStateBlock(StateHandle));
-
-    TheMaterial = OldMat;
-    m_pD3DD->SetMaterial(&TheMaterial);
-}
 #endif
 
 
@@ -2039,63 +1789,58 @@ void CDXEngine::FlushBuffers(void)
     D3DErroCount = 3;
 
 
+
 #ifndef DEBUG_ENGINE
     //REPORT_VALUE("LODs : ", LODsLoaded);
 #endif
 
     // First of all save present renderer State
-    DWORD StateHandle;
-    CheckHR(m_pD3DD->CreateStateBlock(D3DSBT_ALL, &StateHandle));
+    DWORD StateHandle = 0;
 
-    // Setup the state for the DX engine
-    CheckHR(m_pD3DD->ApplyStateBlock(DxEngineStateHandle));
-
-    CheckHR(m_pD3DD->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_TRUE));
-
-    // *** Default engine initializations ***
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_COLORVERTEX, TRUE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_AMBIENT, 0xff000000);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_DIFFUSEMATERIALSOURCE, D3DMCS_COLOR1);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_AMBIENTMATERIALSOURCE, D3DMCS_COLOR1);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_EMISSIVEMATERIALSOURCE, D3DMCS_COLOR2);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_GOURAUD);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_CLIPPING, FALSE);
-
-    // Initialize data parameters
-    FlushInit();
-
-#ifndef DEBUG_ENGINE
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_RANGEFOGENABLE, TRUE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_NONE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE, D3DFOG_LINEAR);
-
-    // New Fog stuff
-    if (m_LinearFog)
+    if (g_bUseGpu)
     {
-        m_LinearFogLevel = realWeather->LinearFogEnd();
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND, *(DWORD *)(&m_FogLevel));
-    }
-    else
-    {
+        // PHASE 4/#DX12 п.4: GPU object pass (D3D11 or D3D12) -- shaders/state/transforms/lighting.
+        if (g_pRenderer and g_pRenderer->IsValid())
+        {
+            g_pRenderer->BeginObjectPass();
+            g_pRenderer->SetProj((const float *)&Projection);
+            g_pRenderer->SetView((const float *)&CameraView);
+            g_pRenderer->SetCameraPos(CameraPos.x, CameraPos.y, CameraPos.z);	// #29 specular
+
+            // Sun (directional) + ambient. CROSS-CHECK WITH FF7: object light model =
+            // vertexColor * (TheSun.dcvAmbient + TheSun.dcvDiffuse.N.L), where dcvAmbient/dcvDiffuse
+            // are time-of-day modulated in SetSunLight() (statestack.cpp). Previously we took
+            // TheSunColour (unmodulated) + a fixed ambient 0.45 -> objects stayed bright at night.
+            // Now we give the shader TOD values -> on par with the reference (dark night).
+            // Ambient light source by mode (like the reference SetLight(0,&The*)):
+            // NVG -> green boost TheNVG, TV -> TheTV, else the sun.
+            D3DLIGHT7 &envL = (m_RenderState == DX_NVG) ? TheNVG
+                            : (m_RenderState == DX_TV)  ? TheTV : TheSun;
+            D3D11Renderer::GpuLightCPU sun;
+            ZeroMemory(&sun, sizeof(sun));
+            sun.Direction[0] = -LightDir.x;
+            sun.Direction[1] = -LightDir.y;
+            sun.Direction[2] = -LightDir.z;
+            sun.Color[0] = envL.dcvDiffuse.r;
+            sun.Color[1] = envL.dcvDiffuse.g;
+            sun.Color[2] = envL.dcvDiffuse.b;
+            sun.Params[1] = 0.0f;	// directional
+            const float amb[4] = { envL.dcvAmbient.r, envL.dcvAmbient.g, envL.dcvAmbient.b, 1.0f };
+            g_pRenderer->SetLights(amb, 1, &sun, sizeof(sun));
+            // #28: save for per-object dynamic lighting (UpdateDynamicLights).
+            g_d3d11Sun = sun;
+            g_d3d11Amb[0] = amb[0]; g_d3d11Amb[1] = amb[1]; g_d3d11Amb[2] = amb[2]; g_d3d11Amb[3] = amb[3];
+
+            // PHASE 5: the stencil buffer is cleared to 0 each frame -> reset the CPU counter too
+            // for ref, else on an 8-bit stencil ref&0xFF==0 once every 256 frames (black frame).
+            m_StencilRef = 0;
+        }
+
+        FlushInit();
         m_LinearFogLevel = MAX_FOG_RANGE;
+        m_LastSpecular = 0;
     }
-
-    FogStart = 0.0f;
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGSTART, *(DWORD *)(&FogStart));
-#endif
-
-    // Initalize last specularity
-    m_LastSpecular = 0;
-
-    // Set Up the View port
-    m_pD3DD->SetViewport(&ViewPort);
-
-    // Set Up the Field of View Projection
-    m_pD3DD->SetTransform(D3DTRANSFORMSTATE_PROJECTION, (LPD3DMATRIX)&Projection);
-
-    // Set Up the camera View for the drawing
-    m_pD3DD->SetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&CameraView);
+    // #34 D3D11: dead D3D7 device/state setup (else-branch) removed.
 
 
     LOCK_VB_MANAGER;
@@ -2123,9 +1868,7 @@ void CDXEngine::FlushBuffers(void)
 
     UNLOCK_VB_MANAGER;
 
-    // Restore Previous State Block and delete it from memory
-    CheckHR(m_pD3DD->ApplyStateBlock(StateHandle));
-    CheckHR(m_pD3DD->DeleteStateBlock(StateHandle));
+    // #34 D3D11: no D3D7 state block to restore.
 
     gDebugLodID = -1;
     m_AlphaStack.StackLevel = 0;
@@ -2196,7 +1939,7 @@ DrawSection:
     TheLightEngine.UpdateDynamicLights(LightOwner, &pos, 2000.0f/*objInst->Radius()*/);
 
     // Ok... transform the object
-    m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&AppliedState);
+    DX_SET_WORLD(AppliedState);
 
     // Calculates the Texture Base Index in the Texture Bank
     DWORD *texOffset = (DWORD*)(Textures + objInst->TextureSet * nTexsPerBank);

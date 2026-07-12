@@ -80,8 +80,8 @@ public:
     static BOOL IsValidIndex(int id);
     static void SyncDDSTextures(bool bForce = false);
     static void RestoreTexturePool();
-    static void SelectHandle(DWORD);
-    static DWORD GetHandle(DWORD id);
+    static void SelectHandle(DWORD_PTR); // Artscout - 2026 (x64): pointer-sized handle
+    static DWORD_PTR GetHandle(DWORD id); // Artscout - 2026 (x64): returns pointer-sized handle
 
 
 protected:
@@ -99,7 +99,8 @@ protected:
     static TexFlagsType *TexFlags;
     static void CreateCallBack(LoaderQ* request);
     static bool   RatedLoad; // This flag makes textures loaded once x loader frame
-    static short  *CacheLoad, *CacheRelease, LoadIn, LoadOut, ReleaseIn, ReleaseOut;
+    static short  *CacheLoad, *CacheRelease;
+    static volatile short LoadIn, LoadOut, ReleaseIn, ReleaseOut;
 
 public:
     static bool UpdateBank(void);

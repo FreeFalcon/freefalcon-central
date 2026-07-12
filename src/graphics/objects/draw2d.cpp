@@ -3694,6 +3694,7 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
     if (spos.csZ < 1.0f)
         return;
 
+
     // hack to make long hanging smoke look better
     if (type == DRAW2D_LONG_HANGING_SMOKE2)
     {

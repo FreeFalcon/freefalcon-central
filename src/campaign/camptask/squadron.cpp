@@ -770,7 +770,7 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
 // RV - Biker - Scramble code with appropriate function
 void SquadronClass::Scramble(void)
 {
-    int i, want_alert;
+    int i, want_alert = 0;	// RTC: otherwise used uninitialized at 790
 
     // Set up an alert bird for this squadron
     if (rating[ARO_CA] > 25)

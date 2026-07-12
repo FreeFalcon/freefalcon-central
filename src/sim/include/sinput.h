@@ -130,6 +130,8 @@ extern VU_TIME gTimeLastMouseMove;
 extern VU_TIME gTimeLastCursorUpdate; //Wombat778 1-24-04
 extern int gTotalJoy;
 extern _TCHAR* gDIDevNames[SIM_NUMDEVICES - SIM_JOYSTICK1];
+extern int gDIDevButtons[SIM_NUMDEVICES]; // button count per device (for the assignment UI #18)
+extern GUID gDIDevGUIDs[SIM_NUMDEVICES]; // device instance GUID (stable axis/button binding #19)
 extern DIDEVCAPS gCurJoyCaps;
 
 // Functions called by other modules
@@ -159,6 +161,12 @@ void OnSimKeyboardInput(void);
 void OnSimMouseInput(HWND);
 void ProcessJoyButtonAndPOVHat(void);
 void AcquireDeviceInput(int, BOOL);
+// Artscout - 2026: re-Acquire every active DirectInput device (keyboard/mouse/joysticks). Call on
+// WM_ACTIVATE when the app regains focus after Alt-Tab -- foreground devices are auto-unacquired on
+// focus loss and must be explicitly re-acquired, else input stays dead until a lazy per-read
+// re-acquire happens to succeed (intermittent "controls/keyboard lost after Alt-Tab").
+void ReacquireAllInputDevices(void);
+void UnacquireAllInputDevices(void);           // Artscout - 2026 (#93): release all DI devices on focus loss
 BOOL CheckDeviceAcquisition(int DeviceIndex);
 BOOL CreateSimCursors(void);
 void CleanupSimCursors(void);

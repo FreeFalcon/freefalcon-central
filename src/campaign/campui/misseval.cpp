@@ -613,7 +613,7 @@ void MissionEvaluationClass::PreEvalFlight(Flight element, Flight flight)
         vc = GetVehicleClassData(element->GetVehicleID(0));
 
         if (vc) // JB 010113
-            _stprintf(flight_ptr->aircraft_name, vc->Name);
+            { _sntprintf(flight_ptr->aircraft_name, sizeof(flight_ptr->aircraft_name)-1, "%s", vc->Name); flight_ptr->aircraft_name[sizeof(flight_ptr->aircraft_name)-1]=0; }
         else
             _stprintf(flight_ptr->aircraft_name, "");
 

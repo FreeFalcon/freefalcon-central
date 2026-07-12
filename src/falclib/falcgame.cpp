@@ -403,7 +403,7 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
      else if (ent_class == CLASS_FEATURE or ent_class == CLASS_VEHICLE)
      {
      // KCK: If there's a valid deaggregate owner, set owner to that..
-     if ((int)((SimBaseClass*)ent)->campaignObject > MAX_IA_CAMP_UNIT and ((CampBaseClass*)((SimBaseClass*)ent)->campaignObject)->deag_owner not_eq sess->Id())
+     if ((DWORD_PTR)((SimBaseClass*)ent)->campaignObject > MAX_IA_CAMP_UNIT and ((CampBaseClass*)((SimBaseClass*)ent)->campaignObject)->deag_owner not_eq sess->Id())
      ((SimBaseClass*)ent)->ChangeOwner(((CampBaseClass*)((SimBaseClass*)ent)->campaignObject)->GetDeaggregateOwner());
      // Otherwise, change ownership to the host (let campaign entity know too)
      else

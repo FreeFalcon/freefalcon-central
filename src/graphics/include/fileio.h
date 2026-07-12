@@ -1,7 +1,7 @@
 #ifndef _3DEJ_FILEIO_H_
 #define _3DEJ_FILEIO_H_
 
-#include <cISO646>
+#include <iso646.h>
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>

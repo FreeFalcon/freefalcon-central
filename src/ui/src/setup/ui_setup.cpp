@@ -30,6 +30,7 @@ Dave Power (x4373)
 #include "logbook.h"
 #include "sim/include/sinput.h"
 #include "sim/include/simio.h"
+#include "sim/include/controlsxml.h"   // #53: axes from the profile XML
 #include "cmusic.h"
 #include "dispcfg.h"
 #include "Graphics/Include/draw2d.h"
@@ -101,6 +102,11 @@ SIM_INT Calibrate(void);
 void InitKeyDescrips(void);
 void CleanupKeys(void);
 void RefreshJoystickCB(long ID, short hittype, C_Base *control);
+// Artscout - 2026: modal button-assign dialog (defined in controltab.cpp). While it is open the
+// user may not leave options; the setup-exit callbacks below bounce back to it.
+bool ControlTab_IsButtonAssignOpen(void);
+void ControlTab_ForceCloseButtonAssign(void);
+void ControlTab_KeepButtonAssignFront(void);
 BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount);
 void CalibrateCB(long ID, short hittype, C_Base *control);
 BOOL SaveKeyMapList(char *filename);
@@ -112,6 +118,11 @@ void SaveKeyButtonCB(long ID, short hittype, C_Base *control);
 void LoadKeyButtonCB(long ID, short hittype, C_Base *control);
 void ControllerSelectCB(long ID, short hittype, C_Base *control);
 void BuildControllerList(C_ListBox *lbox);
+// #22: search / device filter for the function list in the main controls window
+void KeyListSearchCB(long ID, short hittype, C_Base *control);
+void KeyListDevFilterCB(long ID, short hittype, C_Base *control);
+extern char g_keyFilter[64];
+extern int  g_keyDevFilter;
 void HideKeyStatusLines(C_Window *win);
 void RecenterJoystickCB(long ID, short hittype, C_Base *control);
 void AdvancedControlCB(long ID, short hittype, C_Base *control); // Retro 31Dec2003
@@ -140,6 +151,8 @@ void BuildingDetailCB(long ID, short hittype, C_Base *control);
 void ObjectDetailCB(long ID, short hittype, C_Base *control);
 void VehicleSizeCB(long ID, short hittype, C_Base *control);
 void TerrainDetailCB(long ID, short hittype, C_Base *control);
+void MsaaSamplesCB(long ID, short hittype, C_Base *control);   // Artscout - 2026: MSAA samples live readout
+void VrResScaleSliderCB(long ID, short hittype, C_Base *control); // Artscout - 2026: OpenXR res-scale live readout
 //void TextureDistanceCB(long ID,short hittype,C_Base *control);
 void VideoCardCB(long ID, short hittype, C_Base *control);
 void VideoDriverCB(long ID, short hittype, C_Base *control);
@@ -601,12 +614,20 @@ void STPSetupControls(void)
 #if 1
         // OW
         // Handled in BuildResolutionList
-        DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(DisplayOptions.DispVideoDriver);
-
-        if (pDI)
+        // #39: in D3D11 the current mode is ALREADY selected in BuildResolutionList (isel by g_d3d11Modes index).
+        // The old FindDisplayMode searches m_arrModes (EMPTY in D3D11) -> -1 -> SetValue(0) -> overwrote
+        // the selection with index 0 (640/800). Because of that Apply from ANY tab (sound etc.) reset
+        // the resolution to 800x600 (SaveValues reads SET_RESOLUTION regardless of the active tab).
+        extern bool g_bUseD3D11, g_bUseD3D12;
+        if ( not (g_bUseD3D11 or g_bUseD3D12))
         {
-            int nIndex = pDI->FindDisplayMode(DisplayOptions.DispWidth, DisplayOptions.DispHeight, DisplayOptions.DispDepth);
-            lbox->SetValue(nIndex not_eq -1 ? nIndex : 0);
+            DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(DisplayOptions.DispVideoDriver);
+
+            if (pDI)
+            {
+                int nIndex = pDI->FindDisplayMode(DisplayOptions.DispWidth, DisplayOptions.DispHeight, DisplayOptions.DispDepth);
+                lbox->SetValue(nIndex not_eq -1 ? nIndex : 0);
+            }
         }
 
 #else
@@ -962,6 +983,33 @@ void STPSetupControls(void)
         }
     }
 
+    // Artscout - 2026: MSAA (Graphics page) <- DisplayOptions. Checkbox + samples slider (STEPS 7 -> 1..8).
+    button = (C_Button *)win->FindControl(MSAA_ENABLE);
+
+    if (button)
+    {
+        button->SetState(DisplayOptions.bMsaaEnable ? C_STATE_1 : C_STATE_0);
+        button->Refresh();
+    }
+
+    slider = (C_Slider *)win->FindControl(MSAA_SAMPLES);
+
+    if (slider not_eq NULL)
+    {
+        int s = DisplayOptions.nMsaaSamples;
+        if (s < 1) s = 1;
+        if (s > 8) s = 8;
+        slider->SetSliderPos(FloatToInt32((float)(slider->GetSliderMax() - slider->GetSliderMin()) * (s - 1) / 7.0F));
+        ebox = (C_EditBox *)win->FindControl(MSAA_SAMPLES_READOUT);
+
+        if (ebox)
+        {
+            ebox->SetInteger(s);
+            ebox->Refresh();
+            slider->SetUserNumber(0, MSAA_SAMPLES_READOUT);
+        }
+    }
+
     /* slider=(C_Slider *)win->FindControl(TEXTURE_DISTANCE);
      if(slider not_eq NULL)
      {
@@ -1023,11 +1071,52 @@ void STPSetupControls(void)
 
     if (lbox)
     {
+        // #19: load the saved axis mapping into the settings MENU ONCE per session.
+        // ReadAxisMappingFile is otherwise only called when entering the sim (siloop), so
+        // in the menu FlightControlDevice=-1 -> the controller dropdown showed keyboard, and
+        // changing it calls IO.Reset() and wipes pitch/roll (MOZA X/Y bug). We load
+        // once devices are already enumerated (needed for the GUID remap).
+        static bool s_uiAxisLoaded = false;
+
+        if ( not s_uiAxisLoaded and gTotalJoy > 0)
+        {
+            extern AxisMapping AxisMap;
+            ControlsXml_ReadAxes(&AxisMap);   // #53: axes from the profile axismapping.xml (not binary)
+            IO.RemapAxisMappingByGUID();
+            s_uiAxisLoaded = true;
+        }
+
         BuildControllerList(lbox);
 
         extern AxisMapping AxisMap; // Retro 31Dec2003
         lbox->SetValue(AxisMap.FlightControlDevice + 1); // Retro 31Dec2003
         lbox->Refresh();
+    }
+
+    // #22: device filter for the function list (SEPARATE from JOYSTICK_SELECT — no POV/FFB).
+    // Defaults to Keyboard (show keyboard combos as before). Filters are reset when
+    // the window opens so the previous visit's state is not carried over.
+    g_keyFilter[0] = 0;
+    g_keyDevFilter = -1;
+
+    {
+        C_ListBox *devf = (C_ListBox *)win->FindControl(SETUP_KEY_DEVFILTER);
+
+        if (devf)
+        {
+            BuildControllerList(devf);            // Keyboard + all joysticks
+            devf->SetValue(SIM_KEYBOARD + 1);     // default — Keyboard (keys)
+            devf->SetCallback(KeyListDevFilterCB);
+            devf->Refresh();
+        }
+
+        C_EditBox *sb = (C_EditBox *)win->FindControl(SETUP_KEY_SEARCH);
+
+        if (sb)
+        {
+            sb->SetText("");
+            sb->SetCallback(KeyListSearchCB);
+        }
     }
 
     //if (S_joycaps.wCaps bitand JOYCAPS_HASZ)
@@ -1404,7 +1493,8 @@ static void SaveValues(void)
         DisplayOptions.DispHeight = nHeight;
         DisplayOptions.DispDepth = nDepth;
 
-        ShiAssert(DisplayOptions.DispWidth <= 1600);
+        // PHASE 5: widescreen (1920/2560/3840) — old 1600 cap removed
+        ShiAssert(DisplayOptions.DispWidth <= 3840);
         FalconDisplay.SetSimMode(DisplayOptions.DispWidth, DisplayOptions.DispHeight, DisplayOptions.DispDepth); // OW
 #else
         DisplayOptions.DispWidth = static_cast<short>(lbox->GetTextID());
@@ -1649,6 +1739,29 @@ static void SaveValues(void)
         PlayerOptions.ObjMagnification = static_cast<float>(FloatToInt32((float)slider->GetSliderPos() / (float)(slider->GetSliderMax() - slider->GetSliderMin()) * 4.0F + 1.0F));
     }
 
+    // Artscout - 2026: MSAA (Graphics page) -> DisplayOptions. Checkbox = on/off; slider STEPS 7 spans 1..8 samples.
+    button = (C_Button *)win->FindControl(MSAA_ENABLE);
+
+    if (button) DisplayOptions.bMsaaEnable = button->GetState() == C_STATE_1;
+
+    slider = (C_Slider *)win->FindControl(MSAA_SAMPLES);
+
+    if (slider not_eq NULL)
+    {
+        int span = slider->GetSliderMax() - slider->GetSliderMin();
+
+        if (span > 0)   // round to nearest step (0..7) -> samples 1..8 (truncation lost a step otherwise)
+        {
+            int step = FloatToInt32((float)slider->GetSliderPos() / (float)span * 7.0F + 0.5F);
+            if (step < 0) step = 0;
+            if (step > 7) step = 7;
+            DisplayOptions.nMsaaSamples = 1 + step;
+        }
+
+        if (DisplayOptions.nMsaaSamples < 1) DisplayOptions.nMsaaSamples = 1;
+        if (DisplayOptions.nMsaaSamples > 8) DisplayOptions.nMsaaSamples = 8;
+    }
+
     /* slider=(C_Slider *)win->FindControl(TEXTURE_DISTANCE);
      if(slider not_eq NULL)
      {
@@ -1718,9 +1831,35 @@ static void SaveValues(void)
 
     if (button) DisplayOptions.bAnisotropicFiltering = button->GetState() == C_STATE_1;
 
-    button = (C_Button *)win->FindControl(SETUP_ADVANCED_RENDER_2DCOCKPIT);
+    // Artscout - 2026: "Rendered 2D Cockpit" removed from the Advanced page (D3D11 always forces it TRUE in
+    // dispopts.cpp). Its row now hosts the VR controls. bRender2DCockpit keeps its forced value, untouched here.
 
-    if (button) DisplayOptions.bRender2DCockpit = button->GetState() == C_STATE_1;
+    // Artscout - 2026: VR (Advanced page) -> DisplayOptions. OpenXR on/off + foveated QuadViews + per-eye res scale.
+    button = (C_Button *)win->FindControl(SETUP_ADVANCED_OPENXR);
+
+    if (button) DisplayOptions.bUseOpenXR = button->GetState() == C_STATE_1;
+
+    button = (C_Button *)win->FindControl(SETUP_ADVANCED_QUADVIEWS);
+
+    if (button) DisplayOptions.bUseQuadViews = button->GetState() == C_STATE_1;
+
+    slider = (C_Slider *)win->FindControl(SETUP_ADVANCED_VR_RESSCALE);
+
+    if (slider not_eq NULL)
+    {
+        int span = slider->GetSliderMax() - slider->GetSliderMin();
+
+        if (span > 0)   // round to nearest step (0..5) -> 50,60,70,80,90,100 (stops of 10)
+        {
+            int step = FloatToInt32((float)slider->GetSliderPos() / (float)span * 5.0F + 0.5F);
+            if (step < 0) step = 0;
+            if (step > 5) step = 5;
+            DisplayOptions.nVrResolutionScale = 50 + step * 10;
+        }
+
+        if (DisplayOptions.nVrResolutionScale < 50)  DisplayOptions.nVrResolutionScale = 50;
+        if (DisplayOptions.nVrResolutionScale > 100) DisplayOptions.nVrResolutionScale = 100;
+    }
 
     button = (C_Button *)win->FindControl(SETUP_ADVANCED_SCREEN_COORD_BIAS_FIX);
 
@@ -1737,6 +1876,11 @@ static void SaveValues(void)
 
     if (button) DisplayOptions.bMipmapping = button->GetState() == C_STATE_1;
 
+    // #33: windowed/fullscreen toggle for the 3D session (applied on entering 3D)
+    button = (C_Button *)win->FindControl(SETUP_ADVANCED_WINDOWED);
+
+    if (button) DisplayOptions.bWindowed = button->GetState() == C_STATE_1;
+
     button = (C_Button *) win->FindControl(SETUP_ADVANCED_RENDER_TO_TEXTURE);
 
     if (button) DisplayOptions.bRender2Texture = button->GetState() == C_STATE_1;
@@ -1750,6 +1894,19 @@ static void SaveValues(void)
     //  DisplayOptions.m_texMode = TEX_MODE_DDS;
     //========================================
 
+    // Artscout - 2026: mirror the just-edited graphics options into the engine globals so Apply takes
+    // effect on the NEXT 3D entry without a restart (backend MSAA / OpenXR read these at device/session init).
+    {
+        extern bool g_bUseOpenXR, g_bUseQuadViews, g_bMsaaEnable, g_bAnisoEnable;
+        extern int  g_nMsaaSamples, g_nVrResolutionScale, g_nAnisoSamples;
+        g_bUseOpenXR         = DisplayOptions.bUseOpenXR;
+        g_bUseQuadViews      = DisplayOptions.bUseQuadViews;
+        g_bMsaaEnable        = DisplayOptions.bMsaaEnable;
+        g_nMsaaSamples       = DisplayOptions.nMsaaSamples;
+        g_nVrResolutionScale = DisplayOptions.nVrResolutionScale;
+        g_bAnisoEnable       = DisplayOptions.bAnisotropicFiltering;   // Artscout - 2026: aniso on/off + level -> samplers
+        g_nAnisoSamples      = DisplayOptions.nAnisotropicSamples;
+    }
 
     PlayerOptions.SaveOptions();
     DisplayOptions.SaveOptions();
@@ -1767,6 +1924,9 @@ static void SaveValues(void)
 
 void ShutdownSetup()
 {
+    // Artscout - 2026: defensive — never leave the modal assign dialog floating after teardown.
+    ControlTab_ForceCloseButtonAssign();
+
     if (Objects)
     {
         delete [] Objects;
@@ -1819,6 +1979,14 @@ void CloseSetupWindowCB(long ID, short hittype, C_Base *control)
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
+
+    // Artscout - 2026: modal — can't leave options while the button-assign dialog is up.
+    // Ignore the exit and pop the dialog back to the front; only its OK/Cancel release control.
+    if (ControlTab_IsButtonAssignOpen())
+    {
+        ControlTab_KeepButtonAssignFront();
+        return;
+    }
 
     ShutdownSetup();
     PlayerOptions.LoadOptions();
@@ -1884,6 +2052,12 @@ void SetupOkCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
+    // Artscout - 2026: modal — block leaving options while the button-assign dialog is up.
+    if (ControlTab_IsButtonAssignOpen())
+    {
+        ControlTab_KeepButtonAssignFront();
+        return;
+    }
 
     SaveValues();
     InitSoundSetup();
@@ -1936,6 +2110,13 @@ void CancelSetupCB(long ID, short hittype, C_Base *control)
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
+
+    // Artscout - 2026: modal — block leaving options while the button-assign dialog is up.
+    if (ControlTab_IsButtonAssignOpen())
+    {
+        ControlTab_KeepButtonAssignFront();
+        return;
+    }
 
     ShutdownSetup();
     PlayerOptions.LoadOptions();
@@ -2024,10 +2205,13 @@ static void HookupSetupControls(long ID)
     if (button not_eq NULL)
         button->SetCallback(SetupRadioCB);
 
+    // #53 CONTROLLERS tab now opens the dedicated tabbed controls window
+    // (SETUP_CONTROL_ADVANCED_WIN: CONTROLS SETUP / AXIS SETUP / ADVANCED) instead of
+    // switching to the in-place controllers page. The old "Advanced" button is gone.
     button = (C_Button *)win->FindControl(CONTROLLERS_TAB);
 
     if (button not_eq NULL)
-        button->SetCallback(SetupRadioCB);
+        button->SetCallback(AdvancedControlCB);
 
 
     //Sim Tab
@@ -2406,6 +2590,13 @@ static void HookupSetupControls(long ID)
         slider->SetCallback(VehicleSizeCB);
     }
 
+    slider = (C_Slider *)win->FindControl(MSAA_SAMPLES);   // Artscout - 2026: MSAA samples live readout
+
+    if (slider not_eq NULL)
+    {
+        slider->SetCallback(MsaaSamplesCB);
+    }
+
     slider = (C_Slider *)win->FindControl(TERRAIN_DETAIL);
 
     if (slider not_eq NULL)
@@ -2430,6 +2621,29 @@ static void HookupSetupControls(long ID)
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
     if ( not win) return;
+
+    // Artscout - 2026: OpenXR Resolution Scale slider lives on the advanced window. Hook it HERE (reliable, runs
+    // once at setup load) rather than in SetAdvanced(), which can bail early on the device-manager checks before
+    // reaching the VR block -> the live readout never got its callback. Mirrors the MSAA slider on SETUP_WIN.
+    slider = (C_Slider *)win->FindControl(SETUP_ADVANCED_VR_RESSCALE);
+
+    if (slider not_eq NULL)
+    {
+        int scl = DisplayOptions.nVrResolutionScale;
+        if (scl < 50)  scl = 50;
+        if (scl > 100) scl = 100;
+        slider->SetSliderPos(FloatToInt32((float)(slider->GetSliderMax() - slider->GetSliderMin()) * (scl - 50) / 50.0F));
+        slider->SetUserNumber(0, SETUP_ADVANCED_VR_RESSCALE_READOUT);
+        slider->SetCallback(VrResScaleSliderCB);
+
+        C_EditBox *reb = (C_EditBox *)win->FindControl(SETUP_ADVANCED_VR_RESSCALE_READOUT);
+
+        if (reb)
+        {
+            reb->SetInteger(scl);
+            reb->Refresh();
+        }
+    }
 
     // disable parent notification for close and cancel button
     button = (C_Button *)win->FindControl(AAPPLY);

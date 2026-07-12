@@ -20,7 +20,7 @@ extern class FarTexDB TheFarTextures;
 typedef struct FarTexEntry
 {
     BYTE *bits; // 8 bit pixel data (NULL if not loaded)
-    UInt handle; // Rasterization engine texture handle (NULL if not available)
+    DWORD_PTR handle; // Rasterization engine texture handle (NULL if not available) // Artscout - 2026 (x64): pointer-sized
     int refCount; // Reference count
 } FarTexEntry;
 
@@ -56,6 +56,9 @@ public:
     void Request(TextureID texID);
     void Release(TextureID texID);
     void Select(ContextMPR *localContext, TextureID texID);
+    // Artscout - 2026: #78 return the D3D11 SRV for a far tile texID (activating if needed) for the GPU
+    // terrain path. NULL if not loadable (caller falls back to flat color).
+    void *GetTileSRV(TextureID texID);
     void RestoreAll();
     void FlushHandles();
     bool SyncDDSTextures(bool bForce = false);

@@ -112,7 +112,7 @@ typedef struct
     LPDIRECT3DVERTEXBUFFER7 Vb; // Assigned Vb;
     DWORD Index, Index2; // The indexes in the VBuffer
     DWORD NrVertices; // vertices
-    DWORD TexHandle; // The Texture Handle
+    DWORD_PTR TexHandle; // The Texture Handle // Artscout - 2026 (x64): pointer-sized
     DWORD Flags;
     float Height;
 } DrawItemType;

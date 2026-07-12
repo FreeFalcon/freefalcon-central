@@ -1,7 +1,5 @@
 #include <windows.h>
-#include <ddraw.h>
 #include "debuggr.h"
-#include "dxutil/ddutil.h"
 #include "UI/Include/targa.h"
 #include "chandler.h"
 

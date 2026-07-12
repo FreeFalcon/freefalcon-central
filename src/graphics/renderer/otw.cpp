@@ -28,6 +28,8 @@
 #include "FalcLib/include/dispopts.h"
 #include "Graphics/DXEngine/DXEngine.h"
 #include "Graphics/DXEngine/DXVBManager.h"
+#include "Graphics/DXEngine/d3d11/D3D11Renderer.h"	// terrain fog: g_pD3D11Renderer->SetFog
+extern bool g_bUseD3D11;
 
 //JAM 18Nov03
 #include "RealWeather.h"
@@ -856,6 +858,21 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
 
     // reset 2D Engine
     TheDXEngine.DX2D_Reset();
+
+    // Terrain fog (D3D11): once per frame set the haze color and distance.
+    // The shader fogs the screen pass by distance (1/rhw) -> distant terrain
+    // dissolves into haze (removes the 'steps' / 'too close' effect).
+    // #DX12 A7: terrain haze on BOTH GPU backends (SetFog exists on D3D12Renderer). Was g_bUseD3D11-only.
+    extern bool g_bUseGpu;
+    if (g_bUseGpu and g_pRenderer)
+    {
+        Tcolor *fc = GetFogColor();
+        unsigned long argb = 0xFF000000u
+            | ((unsigned long)(fc->r * 255.0f) << 16)
+            | ((unsigned long)(fc->g * 255.0f) << 8)
+            | ((unsigned long)(fc->b * 255.0f));
+        g_pRenderer->SetFog(argb, haze_start, haze_start + haze_depth);
+    }
     // OK - Here it kills the lights from the Pit, as the Pit has is own call out of the DrawScene
     // Passed into the DX Engine, at the end of any data flush, as it's the end of a scene
     //TheDXEngine.ClearLights();
@@ -864,7 +881,16 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
     GetViewport(&prevLeft, &prevTop, &prevRight, &prevBottom);
 
     // Reduce the viewport size to save on overdraw costs if there's a tunnel in effect
-    if (tunnelSolidWidth > 0.0f)
+    // Artscout - 2026 (VR): this overdraw optimization narrows the FOV and shrinks the viewport, which is fine
+    // on the flat path (the periphery is blacked out by the tunnel ring anyway). But VR has a FIXED per-eye
+    // projection -- shrinking it renders the scene into a small central square and leaves the rest showing the
+    // sky-blue eye clear ("blue squares per view"). In VR keep the full per-eye frame; DrawTunnelBorder still
+    // darkens the periphery from the edges inward.
+    // Gate on g_bVrFrameActive (presenting stereo this frame), not g_bUseOpenXR (enabled in options):
+    // the per-eye-projection reasoning below only applies when actually rendering to the HMD; with the
+    // headset off we render flat and the tunnel-solid fill must behave as on the normal flat path.
+    extern bool g_bVrFrameActive;
+    if (tunnelSolidWidth > 0.0f and not g_bVrFrameActive)
     {
         float visible = (1.0f - tunnelSolidWidth) * big;
 
@@ -1127,8 +1153,12 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
     {
         viewpoint->ObjectsAboveRoof()->DrawBeyond(0.0f, 0, this);
 
-        // Restore the FOV if it was changed by the tunnel code
-        if (tunnelSolidWidth > 0.0f)
+        // Restore the FOV if it was changed by the tunnel code.
+        // Artscout - 2026 (#60 VR tunnel/GLOC): in VR the shrink above is skipped (g_bVrFrameActive), so the
+        // FOV/viewport were never narrowed -- there is nothing to restore. prevFOV/prevViewport are the SYMMETRIC
+        // GetFOV()/GetViewport(); calling SetFOV/SetViewport here would OVERWRITE the per-eye OFF-AXIS frustum set
+        // by SetVRFrustum, mis-projecting the focus view (strong cant) -> the cockpit doubles/sticks under G. Skip in VR.
+        if (tunnelSolidWidth > 0.0f and not g_bVrFrameActive)
         {
             SetFOV(prevFOV);
             SetViewport(prevLeft, prevTop, prevRight, prevBottom);
@@ -1190,12 +1220,19 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
 
 
     // Update Particle Sys
-#ifdef USE_NEW_PS
+    // #36 ROOT: PS_Exec (running/drawing the NEW particle system) was under #ifdef USE_NEW_PS,
+    // and USE_NEW_PS is DEFINED NOWHERE -> PS_Exec was never called. Yet particles ARE ADDED via
+    // PS_AddParticleEx (no #ifdef, see #23) -> accumulated but never drawn. Result: explosions/
+    // smoke/effects missing (TryParticleEffect routes them into particles). PS_Exec's body and its callees
+    // compile unconditionally. Call it always. (The loader's USE_NEW_PS #else branches stay as in #23.)
     DrawableParticleSys::PS_Exec(this);
-#endif
 
-    // Restore the FOV if it was changed by the tunnel code
-    if (tunnelSolidWidth > 0.0f)
+    // Restore the FOV if it was changed by the tunnel code.
+    // Artscout - 2026 (#60 VR tunnel/GLOC): see the skyRoof branch above. In VR the tunnel viewport-shrink is
+    // skipped, so prevFOV/prevViewport (symmetric) must NOT be re-applied -- doing so clobbers the per-eye
+    // off-axis frustum (SetVRFrustum) for everything drawn after the world (cockpit/instruments), which in the
+    // strongly-canted FOCUS view shifts the cockpit and makes the gaze inset double / look "stuck" under G. Skip in VR.
+    if (tunnelSolidWidth > 0.0f and not g_bVrFrameActive)
     {
         SetFOV(prevFOV);
         SetViewport(prevLeft, prevTop, prevRight, prevBottom);
@@ -1209,6 +1246,14 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
 void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
 {
     SpanListEntry* span;
+
+    // Artscout - 2026: #78 GPU world-space terrain. When enabled, draw the ground through the object path
+    // (VS_Object, real depth). The CPU screen-space terrain squares below are then SKIPPED, but the world
+    // objects (DrawBeyond, interleaved in the ring loop) STILL draw -- they now depth-sort against the GPU
+    // terrain's real depth buffer. Default OFF -> the CPU path is untouched.
+    extern bool g_bGpuTerrain;
+    extern void TerrainGpu_Render(RViewPoint*);
+    if (g_bGpuTerrain) TerrainGpu_Render(viewpoint);
 
 #ifdef TWO_D_MAP_AVAILABLE
 
@@ -1381,10 +1426,12 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
     for (span = spanList + 1; span < firstEmptySpan; span++)
     {
 
-        // Call the appropriate routine to draw the ring
+        // Call the appropriate routine to draw the ring.
+        // Artscout - 2026: #78 skip the CPU terrain squares when GPU terrain is on (drawn above), but KEEP
+        // the span advancement below so the object DrawBeyond distance bands stay correct.
         if (span->LOD == (span + 1)->LOD)
         {
-            DrawTerrainRing(span);
+            if (!g_bGpuTerrain) DrawTerrainRing(span);
         }
         else
         {
@@ -1392,12 +1439,12 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
             span++;
 
             // Use the first span at the new LOD to draw the connector ring
-            DrawConnectorRing(span);
+            if (!g_bGpuTerrain) DrawConnectorRing(span);
 
             span++;
 
             // Draw the gap filler
-            DrawGapFiller(span);
+            if (!g_bGpuTerrain) DrawGapFiller(span);
         }
 
 
@@ -1973,6 +2020,21 @@ void RenderOTW::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
         }
     }
 
+
+    // #14: distant terrain uses state_far = STATE_GOURAUD, which under D3D11 has NO
+    // shader fog (FF_FOG), and the old vertex-specular fog (TheStateStack.SetFog below)
+    // is ignored under D3D11 (VS_Screen: o.Spec=0). Without this the far zone draws in the PURE
+    // terrain color -> a sharp 'stepped' boundary with the fogged mid zone (which the shader pulls
+    // toward the haze color). Bake the haze color straight into the GOURAUD vertex color so the far zone
+    // seamlessly continues the fully-fogged edge. D3D11 only, far zone only.
+    extern bool g_bUseD3D11;
+    if (g_bUseD3D11 and distance > haze_start + haze_depth)
+    {
+        Tcolor *fc = GetFogColor();
+        r = fc->r;
+        g = fc->g;
+        b = fc->b;
+    }
 
     vert->r = r;
     vert->g = g;

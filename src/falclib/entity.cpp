@@ -149,7 +149,7 @@ int LoadClassTable(char *filename)
     HKEY theKey;
     DWORD size, type;
     // Get the path data from the registry
-    RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS, &theKey);
+    RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS | KEY_WOW64_32KEY, &theKey);
 
     size = sizeof(FalconObjectDataDir);
     RegQueryValueEx(theKey, "objectdir", 0, &type, (LPBYTE)FalconObjectDataDir, &size);

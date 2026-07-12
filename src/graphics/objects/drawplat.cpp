@@ -58,6 +58,14 @@ DrawablePlatform::DrawablePlatform(float s)
 ***************************************************************************/
 DrawablePlatform::~DrawablePlatform()
 {
+    // #41/UAF ROOT: the platform was deleted WITHOUT removing itself from the list (neither callbacks, nor prev/next,
+    // nor child promotion) -> dangling prev/next on neighbors + a leftover callback -> crashes traversing
+    // the list (UpdateMetrics) and drawing (SafeDrawObject in DrawBeyond). RemoveObject unlinks
+    // prev/next under ObjListLock AND calls the virtual DrawablePlatform::SetParentList(NULL) (remove
+    // callbacks + promote children to the parent) BEFORE the Cleanup of empty child lists below.
+    if (parentList)
+        parentList->RemoveObject(this);
+
     // Mark this object as finished (no area contained)
     InclusionRadiusSquared = -1.0f;
 

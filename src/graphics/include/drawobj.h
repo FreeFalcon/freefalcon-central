@@ -9,7 +9,7 @@
 #ifndef _DRAWOBJ_H_
 #define _DRAWOBJ_H_
 
-#include <cISO646>
+#include <iso646.h>
 #include <math.h>
 #include "grTypes.h"
 
@@ -21,10 +21,10 @@ public:
         drawClassID = Default, scale = s, parentList = NULL, prev = next = NULL;
     };
     // sfr: update parent list before destroying...
-    virtual ~DrawableObject()
-    {
-        ShiAssert(parentList == NULL)
-    };
+    // #41/UAF: out-of-line (objlist.cpp). The original only ASSERTed parentList==NULL, but in Release
+    // didn't remove the object from the list -> deleting a LINKED object left dangling prev/next ->
+    // traversal/draw crashes (DrawBeyond/UpdateMetrics). Now auto-removal (RemoveObject under the lock).
+    virtual ~DrawableObject();
 
     // RED- Object volume, used for Radar stuff
     virtual float GetRadarSign(void)

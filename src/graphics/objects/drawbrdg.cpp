@@ -10,6 +10,7 @@
 #include "RenderOW.h"
 #include "DrawGrnd.h"
 #include "DrawBrdg.h"
+#include "FalcLib/include/IsBad.h"	// #41 F4IsBadReadPtr to guard a dangling neighbor
 
 #ifdef USE_SH_POOLS
 MEM_POOL DrawableBridge::pool;
@@ -60,6 +61,15 @@ DrawableBridge::DrawableBridge(float s)
 ***************************************************************************/
 DrawableBridge::~DrawableBridge(void)
 {
+    // #41 UAF ROOT (stack: SafeCallUpdateCB->DrawableBridge::UpdateMetrics, reading 0xDDDD..):
+    // the bridge was deleted while left LINKED in the parent's prev/next -> neighbors held a dangling
+    // pointer to the freed bridge -> AV (prev->distance, offset 0x28). The old SetParentList(NULL)
+    // only removed callbacks and promoted children, but did NOT unlink the bridge from prev/next.
+    // RemoveObject does BOTH the prev/next unlink (under ObjListLock, with F4 guards) AND calls
+    // the virtual SetParentList(NULL) (callbacks + child promotion) -- full removal in one call.
+    if (parentList)
+        parentList->RemoveObject(this);
+
     ShiAssert(parentList == NULL);
 
     // Mark this object as finished (no area contained)
@@ -280,6 +290,7 @@ void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr 
     DrawableObject *obj;
     DrawableObject *objNext;
     float checkDistance;
+    long _g;	// #41 guard against a looped list (hang in DrawableBridge::UpdateMetrics)
 
 
     // Have the object lists update their sort metrics.
@@ -294,9 +305,10 @@ void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr 
     dynamicObjects.ResetTraversal();
     obj = dynamicObjects.GetNextAndAdvance();
 
+    _g = 0;
     while (obj)
     {
-
+        if (++_g > 100000) break;	// #41 guard: looped dynamicObjects -> break instead of hanging
         // Push the object back up to our parent list if it has moved beyond our area
         if ( not ObjectInside(obj))
         {
@@ -313,9 +325,20 @@ void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr 
     checkDistance = distance + 2.0f * Radius();
     obj = prev;
 
-    while (obj and (obj->distance < checkDistance))
+    _g = 0;
+    while (obj)
     {
-
+        if (++_g > 100000) break;	// #41 guard: looped parent list (prev) -> break
+        // #41 UAF ROOT: the neighbor may have been freed CONCURRENTLY (campaign thread) via a path not
+        // taking ObjListLock (TOCTOU, see objlist.cpp SafeCallUpdateCB). The freed one is filled
+        // with 0xDD: memory is committed (F4IsBadReadPtr passes), BUT parentList != our list. The same
+        // robust check as in RemoveObject (objlist.cpp:140). A dead neighbor -> the whole chain
+        // (objNext = obj->prev) is garbage -> abort the traversal (previously it crashed reading obj->distance,
+        // swallowed by __except -> first-chance every frame = HANG under a debugger).
+        if (F4IsBadReadPtr(obj, sizeof(DrawableObject)) or obj->parentList not_eq parentList)
+            break;
+        if ( not (obj->distance < checkDistance))
+            break;
         // Pull object down from our parent list if it's inside our area
         objNext = obj->prev;
 
@@ -334,9 +357,15 @@ void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr 
     checkDistance = distance;
     obj = next;
 
-    while (obj and (obj->distance > checkDistance))
+    _g = 0;
+    while (obj)
     {
-
+        if (++_g > 100000) break;	// #41 guard: looped parent list (next) -> break
+        // #41 UAF: the same dangling-neighbor guard as for the prev traversal above.
+        if (F4IsBadReadPtr(obj, sizeof(DrawableObject)) or obj->parentList not_eq parentList)
+            break;
+        if ( not (obj->distance > checkDistance))
+            break;
         // Pull object down from our parent list if it's inside our area
         objNext = obj->next;
 

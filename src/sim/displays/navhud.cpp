@@ -148,8 +148,8 @@ void HudClass::DrawAirspeed(void)
                 display->TextRight(rightEdge - 0.03F, boxY, tmpStr, 8);
             }
 
-            bigTickLen = hudWinWidth[AIRSPEED_WINDOW] * 0.5F;
-            smallTickLen = bigTickLen * 0.5F;
+            bigTickLen = hudWinWidth[AIRSPEED_WINDOW] * 0.85F;	// #45 ticks were short (~6px) -> longer
+            smallTickLen = bigTickLen * 0.55F;
             tickInc = hudWinHeight[AIRSPEED_WINDOW] / (float)(NUM_VERTICAL_TICKS - 1);
             display->Line(rightEdge * 0.95F, winCenter, rightEdge * 0.95F + bigTickLen, winCenter);
         }
@@ -157,7 +157,7 @@ void HudClass::DrawAirspeed(void)
         {
             // this is the line which draws the airspeed box
             display->TextRight(rightEdge - 0.06F, boxY, tmpStr, 8);
-            bigTickLen = hudWinWidth[AIRSPEED_WINDOW] * 0.2F;
+            bigTickLen = hudWinWidth[AIRSPEED_WINDOW] * 0.45F;	// #45 was *0.2 (ticks short) -> longer
             smallTickLen = bigTickLen * 0.6F;
             tickInc = hudWinHeight[AIRSPEED_WINDOW] / (float)(NUM_VERTICAL_TICKS - 1);
             display->Line(rightEdge * 0.95F, winCenter, rightEdge * 0.95F + hudWinWidth[AIRSPEED_WINDOW] * 0.5F, winCenter);
@@ -434,12 +434,12 @@ void HudClass::DrawAltitude(void)
         //MI
         if ( not g_bRealisticAvionics)
         {
-            bigTickLen = hudWinWidth[ALTITUDE_WINDOW] * 0.5F;
-            smallTickLen = bigTickLen * 0.5F;
+            bigTickLen = hudWinWidth[ALTITUDE_WINDOW] * 0.85F;	// #45 ticks were short (~6px) -> longer
+            smallTickLen = bigTickLen * 0.55F;
         }
         else
         {
-            bigTickLen = hudWinWidth[ALTITUDE_WINDOW] * 0.2F;
+            bigTickLen = hudWinWidth[ALTITUDE_WINDOW] * 0.45F;	// #45 was *0.2 -> longer
             smallTickLen = bigTickLen * 0.55F;
         }
 
@@ -1427,7 +1427,7 @@ void HudClass::DrawILS(void)
     }
     else
     {
-        //lines are 2° left and right, not like above
+        //lines are 2ï¿½ left and right, not like above
         display->Line(0.18F * hDev - 0.018F, 0.18F, 0.18F * hDev + 0.018F, 0.18F);
         display->Line(0.18F * hDev - 0.018F, 0.09F, 0.18F * hDev + 0.018F, 0.09F);
         display->Line(0.18F * hDev - 0.018F, -0.18F, 0.18F * hDev + 0.018F, -0.18F);
@@ -1458,7 +1458,7 @@ void HudClass::DrawILS(void)
     }
     else
     {
-        //lines are 2° left and right, not like above
+        //lines are 2ï¿½ left and right, not like above
         display->Line(0.18F, 0.18F * vDev - 0.018F, 0.18F, 0.18F * vDev + 0.018F);
         display->Line(0.09F, 0.18F * vDev - 0.018F, 0.09F, 0.18F * vDev + 0.018F);
         display->Line(-0.18F, 0.18F * vDev - 0.018F, -0.18F, 0.18F * vDev + 0.018F);
@@ -2024,7 +2024,7 @@ int HudClass::FindRollAngle(float Alt)
       Alt is hight above terrain*/
     if (Alt <= 3000)
     {
-        //Below 3000ft we always have 60°
+        //Below 3000ft we always have 60ï¿½
         if (((AircraftClass*)ownship)->af->platform->IsPlayer())
         {
             if ((cockpitFlightData.roll * RTD) <= 60 and cockpitFlightData.roll * RTD >= -60)
@@ -2041,7 +2041,7 @@ int HudClass::FindRollAngle(float Alt)
     {
         if (((AircraftClass*)ownship)->af->platform->IsPlayer())
         {
-            float factor = 2000 / 30; //30° less bank in 2000ft
+            float factor = 2000 / 30; //30ï¿½ less bank in 2000ft
             float Roll = (Alt - 3000) / factor;
             float Angle = 60 - Roll;
 
@@ -2059,7 +2059,7 @@ int HudClass::FindRollAngle(float Alt)
     {
         if (((AircraftClass*)ownship)->af->platform->IsPlayer())
         {
-            float factor = 5000 / 5; //5° less bank in 5000ft
+            float factor = 5000 / 5; //5ï¿½ less bank in 5000ft
             float Roll = (Alt - 5000) / factor;
             float Angle = 30 - Roll;
 
@@ -2076,7 +2076,7 @@ int HudClass::FindRollAngle(float Alt)
     {
         if (((AircraftClass*)ownship)->af->platform->IsPlayer())
         {
-            float factor = 15000 / 10; //10° less bank in 15000ft
+            float factor = 15000 / 10; //10ï¿½ less bank in 15000ft
             float Roll = (Alt - 15000) / factor;
             float Angle = 25 - Roll;
 
@@ -2093,7 +2093,7 @@ int HudClass::FindRollAngle(float Alt)
     {
         if (((AircraftClass*)ownship)->af->platform->IsPlayer())
         {
-            float factor = 25000 / 5; //5° less bank in 25000ft
+            float factor = 25000 / 5; //5ï¿½ less bank in 25000ft
             float Roll = (Alt - 25000) / factor;
             float Angle = 15 - Roll;
 
@@ -2119,7 +2119,7 @@ int HudClass::FindPitchAngle(float Alt)
 
     if (Alt <= 5000)
     {
-        //Below 5000ft we always have 30°
+        //Below 5000ft we always have 30ï¿½
         if (((AircraftClass*)ownship)->af->platform->IsPlayer())
         {
             if ((cockpitFlightData.pitch * RTD) <= 30 and 
@@ -2135,7 +2135,7 @@ int HudClass::FindPitchAngle(float Alt)
     {
         if (((AircraftClass*)ownship)->af->platform->IsPlayer())
         {
-            float factor = 5000 / 5; //5° less bank in 5000ft
+            float factor = 5000 / 5; //5ï¿½ less bank in 5000ft
             float Pitch = (Alt - 5000) / factor;
             float Angle = 30 - Pitch;
 
@@ -2152,7 +2152,7 @@ int HudClass::FindPitchAngle(float Alt)
     {
         if (((AircraftClass*)ownship)->af->platform->IsPlayer())
         {
-            float factor = 15000 / 10; //10° less bank in 15000ft
+            float factor = 15000 / 10; //10ï¿½ less bank in 15000ft
             float Pitch = (Alt - 15000) / factor;
             float Angle = 25 - Pitch;
 
@@ -2169,7 +2169,7 @@ int HudClass::FindPitchAngle(float Alt)
     {
         if (((AircraftClass*)ownship)->af->platform->IsPlayer())
         {
-            float factor = 25000 / 5; //5° less bank in 25000ft
+            float factor = 25000 / 5; //5ï¿½ less bank in 25000ft
             float Pitch = (Alt - 25000) / factor;
             float Angle = 15 - Pitch;
 
@@ -2640,7 +2640,7 @@ void HudClass::DrawCMDSTRG(void)
     LocalizerDev *= RTD;
     GlideSlopeDev *= RTD;
 
-    //up to 5° we're on a correction
+    //up to 5ï¿½ we're on a correction
     float CorrectionLimit = 5.0F;
 
     //set correction sensitivity
@@ -2680,7 +2680,7 @@ void HudClass::DrawCMDSTRG(void)
     }
 
 
-    //Calculate 45° intercept Bearing2
+    //Calculate 45ï¿½ intercept Bearing2
     float headingDiff = RWYHeading - curHeading;
 
     //left or right turn?

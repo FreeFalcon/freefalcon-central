@@ -72,7 +72,43 @@ void InitClassTableAndData(char *name, char *objset)
         }
 
         Falcon4ClassTable = new Falcon4EntityClassType[NumEntities];
+#if defined(_M_IX86)
         fread(Falcon4ClassTable, sizeof(Falcon4EntityClassType), NumEntities, filePtr);
+#else
+        // Artscout - 2026: x64 serialization fix. The .ct file stores
+        // Falcon4EntityClassType in the 32-bit (x86) layout where the trailing
+        // dataPtr is a 4-byte field (it actually holds a small index that
+        // LoadClassTable fixes up into a real pointer later). On x64 the struct
+        // is 4 bytes larger (dataPtr 8 bytes), so a bulk fread of sizeof()*N
+        // over-reads and desyncs every entry -> garbage dataType/dataPtr ->
+        // out-of-bounds write in the fixup loop. The prefix (vuClassData..
+        // dataType) is byte-identical on disk and in x64 memory (pack(1), no
+        // pointers/8-byte members in VuEntityType). Read the on-disk 32-bit
+        // layout, copy the common prefix, and widen dataPtr.
+        {
+#pragma pack(1)
+            struct DiskEntityClass
+            {
+                VuEntityType vuClassData;
+                short        visType[7];
+                short        vehicleDataIndex;
+                uchar        dataType;
+                unsigned int dataPtr; // 32-bit (x86) pointer/index slot on disk
+            };
+#pragma pack()
+            DiskEntityClass *disk = new DiskEntityClass[NumEntities];
+            fread(disk, sizeof(DiskEntityClass), NumEntities, filePtr);
+            const size_t prefix = offsetof(DiskEntityClass, dataPtr);
+
+            for (int n = 0; n < NumEntities; n++)
+            {
+                memcpy(&Falcon4ClassTable[n], &disk[n], prefix);
+                Falcon4ClassTable[n].dataPtr = (void *)(size_t)disk[n].dataPtr;
+            }
+
+            delete[] disk;
+        }
+#endif
         fclose(filePtr);
     }
     else

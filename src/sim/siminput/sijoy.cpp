@@ -66,6 +66,7 @@ void CallFunc(InputFunctionType theFunc, unsigned long val, int state, void* pBu
 
 
 extern AxisMapping AxisMap;
+bool ControlsXml_WriteAxes(const AxisMapping *in);   // #57 persist axes + soft props to axismapping.xml (replaces joystick.cal)
 
 LPDIRECTINPUTEFFECT* gForceFeedbackEffect;
 int* gForceEffectIsRepeating = NULL;
@@ -74,9 +75,9 @@ int gNumEffectsLoaded = 0;
 
 int g_nThrottleID = DIJOFS_Z; // OW
 
-//#define THE_MPS_WAY_OF_LIFE // Retro 2Jan2004 - with this enabled, old 'IO.analog[].engrVal' algorithm is used. Else it´s mine =)
+//#define THE_MPS_WAY_OF_LIFE // Retro 2Jan2004 - with this enabled, old 'IO.analog[].engrVal' algorithm is used. Else itï¿½s mine =)
 #define AUTOCENTERFUN // this should bring back autocentering with the FFB-button in the advanced controls tab disabled
-#define NO_CENTER_FOR_MY_AXIS_PLEASE // Retro 9Jan2004 - what´s the point ? Doesn´t work too good anyways BTW (has offset)
+#define NO_CENTER_FOR_MY_AXIS_PLEASE // Retro 9Jan2004 - whatï¿½s the point ? Doesnï¿½t work too good anyways BTW (has offset)
 #define USE_IDLE_CUTOFF // Retro 2Feb2004 - with this enable we use analog[].cutoff as well as the ABDetent
 #define SYMMETRIC_THROTTLEDETENTS // Retro 2Feb2004 - ABDetent and cuttof var are set for BOTH throttles by the LEFT throttle 
 
@@ -100,14 +101,13 @@ long throttleInactiveValue = 0;
 bool throttleInactive = false;
 void SetThrottleInActive()
 {
-    if (IO.AnalogIsUsed(AXIS_THROTTLE) == false)
-        return;
-
-    ReadThrottle();
-
-    throttleInactiveValue = IO.GetAxisValue(AXIS_THROTTLE);
-    IO.analog[AXIS_THROTTLE].engrValue = 0.0F;
-    throttleInactive = true;
+    // Artscout - 2026: the legacy "throttle inactive until you wiggle it" gate (throttleInactive +
+    // the <5000 deadband check in the per-frame read) intermittently left the throttle stuck at 0 on
+    // 3D entry -- you had to jiggle the RUD to taxi. Disable it so the engine reads the REAL physical
+    // throttle position immediately. (Cold/RAMP starts still keep the engine off via
+    // AirframeClass::EngineOff/ThrottleCheck -- that is a separate, legitimate gate.)
+    throttleInactive = false;
+    throttleInactiveValue = 0;
 }
 
 void resetStaticPOVButtonStates() // Retro 24Aug2004
@@ -151,7 +151,7 @@ inline void ProcessJoystickInput(GameAxis_t axis, long *value)
 
         IO.analog[axis].ioVal = *value;
     }
-    else // This one´s better imo, (C) H. Kern of the TU Vienna.. showed it to me in "Konstruktion systemfähiger Messgeräte" ;)
+    else // This oneï¿½s better imo, (C) H. Kern of the TU Vienna.. showed it to me in "Konstruktion systemfï¿½higer Messgerï¿½te" ;)
     {
         if (IO.analog[axis].smoothingFactor)
         {
@@ -172,13 +172,13 @@ inline void ProcessJoystickInput(GameAxis_t axis, long *value)
 void GetURHelmetInput()
 {
     HRESULT hRes;
-    DIJOYSTATE joyState;
+    DIJOYSTATE2 joyState;
     float headx, heady, vx, vy;
     static long PrevButtonStates;
 
     hRes = ((LPDIRECTINPUTDEVICE2)gpDIDevice[SIM_JOYSTICK1 + mHelmetID])->Poll();
 
-    hRes = gpDIDevice[SIM_JOYSTICK1 + mHelmetID]->GetDeviceState(sizeof(DIJOYSTATE), &joyState);
+    hRes = gpDIDevice[SIM_JOYSTICK1 + mHelmetID]->GetDeviceState(sizeof(DIJOYSTATE2), &joyState);
 
     switch (hRes)
     {
@@ -237,12 +237,12 @@ void GetJoystickInput()
     Prof(GetJoystickInput);
 
     HRESULT hRes;
-    DIJOYSTATE joyState;
+    DIJOYSTATE2 joyState;
 
     if ( not gTotalJoy)
-        return; // returning if we don´t have a stick
+        return; // returning if we donï¿½t have a stick
 
-    long device_axis_values[SIM_NUMDEVICES][8]; // 8 axis in a DIJOYSTATE structure.. don´t think we´ll switch to DIJOYSTATE2
+    long device_axis_values[SIM_NUMDEVICES][8]; // 8 axis in a DIJOYSTATE structure.. donï¿½t think weï¿½ll switch to DIJOYSTATE2
 
     /*******************************************************************************/
     // Polling all devices..
@@ -268,7 +268,7 @@ void GetJoystickInput()
 
         // Retro 21Jan2004 end
 
-        hRes = gpDIDevice[i]->GetDeviceState(sizeof(DIJOYSTATE), &joyState);
+        hRes = gpDIDevice[i]->GetDeviceState(sizeof(DIJOYSTATE2), &joyState);
 
         switch (hRes)
         {
@@ -297,7 +297,7 @@ void GetJoystickInput()
 
         /*******************************************************************************/
         // polling the buttons (but NOT the POVs) of ALL connected joystick devices
-        // device 0 gets inputbuttons 0-31, device 1 gets 32-63, device 2 gets 64-95 etc
+        // DIJOYSTATE2: device 0 -> buttons 0-127, device 1 -> 128-255, etc (was 32/device)
         //
         // could be optimized by 1) only polling devices with axis assigned and 2)
         // only polling devices that own buttons (and only these buttons, not 32)
@@ -332,15 +332,19 @@ void GetJoystickInput()
 
     /*******************************************************************************/
     // Copy and process flight control (roll and pitch) info
+    // #24: pitch/roll are read from THEIR OWN device (Pitch.Device/Bank.Device),
+    // like throttle/yaw, not from FlightControlDevice. This separates the pitch/roll choice
+    // (now in the axes window) from the 'controller' dropdown. FlightControlDevice remains
+    // only for POV/FFB/sanity. device_axis_values is filled for all devices (above).
     /*******************************************************************************/
     if ((IO.AnalogIsUsed(AXIS_PITCH)) and (IO.AnalogIsUsed(AXIS_ROLL)))
     {
-        ProcessJoystickInput(AXIS_PITCH, &device_axis_values[AxisMap.FlightControlDevice][AxisMap.Pitch.Axis]);
-        ProcessJoystickInput(AXIS_ROLL, &device_axis_values[AxisMap.FlightControlDevice][AxisMap.Bank.Axis]);
+        ProcessJoystickInput(AXIS_PITCH, &device_axis_values[AxisMap.Pitch.Device][AxisMap.Pitch.Axis]);
+        ProcessJoystickInput(AXIS_ROLL, &device_axis_values[AxisMap.Bank.Device][AxisMap.Bank.Axis]);
 
 #ifdef THE_MPS_WAY_OF_LIFE
         //IO.analog[0].engrValue = min(max((joyState.lX + IO.analog[0].center)/1000.0f, -1.0F),1.0F);
-        IO.analog[AXIS_PITCH].engrValue = (float)device_axis_values[AxisMap.FlightControlDevice][AxisMap.Pitch.Axis] + IO.analog[AXIS_PITCH].center;
+        IO.analog[AXIS_PITCH].engrValue = (float)device_axis_values[AxisMap.Pitch.Device][AxisMap.Pitch.Axis] + IO.analog[AXIS_PITCH].center;
 
         if (IO.analog[AXIS_PITCH].engrValue * IO.analog[AXIS_PITCH].center > 0)
             IO.analog[AXIS_PITCH].engrValue /= (9400.0F + (float)abs(IO.analog[AXIS_PITCH].center));
@@ -348,7 +352,7 @@ void GetJoystickInput()
             IO.analog[AXIS_PITCH].engrValue /= (9400.0F - (float)abs(IO.analog[AXIS_PITCH].center));
 
         //IO.analog[1].engrValue = min(max((joyState.lY + IO.analog[1].center)/1000.0f, -1.0F),1.0F);
-        IO.analog[AXIS_ROLL].engrValue = (float)device_axis_values[AxisMap.FlightControlDevice][AxisMap.Bank.Axis] + IO.analog[AXIS_ROLL].center;
+        IO.analog[AXIS_ROLL].engrValue = (float)device_axis_values[AxisMap.Bank.Device][AxisMap.Bank.Axis] + IO.analog[AXIS_ROLL].center;
 
         if (IO.analog[AXIS_ROLL].engrValue * IO.analog[AXIS_ROLL].center > 0)
             IO.analog[AXIS_ROLL].engrValue /= (10000.0F + (float)abs(IO.analog[AXIS_ROLL].center));
@@ -359,7 +363,7 @@ void GetJoystickInput()
 
         if (g_bUseNewSmoothing == false)
         {
-            IO.analog[AXIS_PITCH].engrValue = (float)device_axis_values[AxisMap.FlightControlDevice][AxisMap.Pitch.Axis] + IO.analog[AXIS_PITCH].center;
+            IO.analog[AXIS_PITCH].engrValue = (float)device_axis_values[AxisMap.Pitch.Device][AxisMap.Pitch.Axis] + IO.analog[AXIS_PITCH].center;
 
             if (IO.analog[AXIS_PITCH].engrValue > 0)
                 IO.analog[AXIS_PITCH].engrValue /= Abs(10000.0F + IO.analog[AXIS_PITCH].center);
@@ -378,7 +382,7 @@ void GetJoystickInput()
 
         if (g_bUseNewSmoothing == false)
         {
-            IO.analog[AXIS_ROLL].engrValue = (float)device_axis_values[AxisMap.FlightControlDevice][AxisMap.Bank.Axis] + IO.analog[AXIS_ROLL].center;
+            IO.analog[AXIS_ROLL].engrValue = (float)device_axis_values[AxisMap.Bank.Device][AxisMap.Bank.Axis] + IO.analog[AXIS_ROLL].center;
 
             if (IO.analog[AXIS_ROLL].engrValue > 0)
                 IO.analog[AXIS_ROLL].engrValue /= Abs(10000.0F + IO.analog[AXIS_ROLL].center);
@@ -399,8 +403,8 @@ void GetJoystickInput()
 
         if (center)
         {
-            IO.analog[AXIS_PITCH].center = device_axis_values[AxisMap.FlightControlDevice][AxisMap.Pitch.Axis] * -1;
-            IO.analog[AXIS_ROLL].center = device_axis_values[AxisMap.FlightControlDevice][AxisMap.Bank.Axis] * -1;
+            IO.analog[AXIS_PITCH].center = device_axis_values[AxisMap.Pitch.Device][AxisMap.Pitch.Axis] * -1;
+            IO.analog[AXIS_ROLL].center = device_axis_values[AxisMap.Bank.Device][AxisMap.Bank.Axis] * -1;
         }
     }
 
@@ -586,7 +590,7 @@ void GetJoystickInput()
     /*******************************************************************************/
     // Copy and process additional axis
     // These are the axis added by Retro; their processing is a bit less elaborate,
-    // and they don´t have ABDetent functionality. Unipolar Axis don´t have
+    // and they donï¿½t have ABDetent functionality. Unipolar Axis donï¿½t have
     // center functionality either.
     /*******************************************************************************/
     extern GameAxisSetup_t AxisSetup[AXIS_MAX];
@@ -634,21 +638,23 @@ void GetJoystickInput()
         }
     }
 
+    // #57 persist the soft axis props (center/ABDetent/cutoff/reversed/smoothing) into
+    // axismapping.xml instead of the old binary joystick.cal.
     if (center)
     {
-        IO.SaveFile();
+        ControlsXml_WriteAxes(&AxisMap);
         center = FALSE;
     }
 
     if (setABdetent)
     {
-        IO.SaveFile();
+        ControlsXml_WriteAxes(&AxisMap);
         setABdetent = FALSE;
     }
 
     if (setIdleCutoff) // Retro 1Feb2004
     {
-        IO.SaveFile();
+        ControlsXml_WriteAxes(&AxisMap);
         setIdleCutoff = FALSE;
     }
 
@@ -759,14 +765,9 @@ void ProcessJoyButtonAndPOVHat(void)
                         OTWDriver.pCockpitManager->Dispatch(ID, 0);//the 0 should be mousside but I don't have anywhere
                     } //to store it and all functions currently use 0. ;)
                 }
-                else if ((i % SIMLIB_MAX_DIGITAL) == 0)
-                {
-                    TriggerOverride = TRUE;
-                }
-                else if ((i % SIMLIB_MAX_DIGITAL) == 1)
-                {
-                    PickleOverride = TRUE;
-                }
+                // #53 REMOVED the hardcoded default 'button0=trigger, button1=pickle': trigger/pickle is now
+                // only by an EXPLICIT binding. Otherwise an unbound button 0/1 of any device (a toggle in
+                // the ON position -> permanently 'pressed') fired spontaneously from the start.
 
                 LastPressed[i] = 1;
             }
@@ -781,14 +782,7 @@ void ProcessJoyButtonAndPOVHat(void)
             {
                 CallFunc(theFunc, 1, 0, NULL); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
             }
-            else if ((i % SIMLIB_MAX_DIGITAL) == 0)
-            {
-                TriggerOverride = FALSE;
-            }
-            else if ((i % SIMLIB_MAX_DIGITAL) == 1)
-            {
-                PickleOverride = FALSE;
-            }
+            // #53 TriggerOverride/PickleOverride default removed (see above)
         }
 
 #endif // Retro 24Aug2004
@@ -883,7 +877,7 @@ float ReadThrottle(void)
 {
 
     HRESULT hRes;
-    DIJOYSTATE joyState;
+    DIJOYSTATE2 joyState;
 
     if ((gTotalJoy) and (IO.AnalogIsUsed(AXIS_THROTTLE) == true)) // Retro 4Jan2004
     {
@@ -906,7 +900,7 @@ float ReadThrottle(void)
 
         // Retro 21Jan2004 end
 
-        hRes = gpDIDevice[AxisMap.Throttle.Device]->GetDeviceState(sizeof(DIJOYSTATE), &joyState);
+        hRes = gpDIDevice[AxisMap.Throttle.Device]->GetDeviceState(sizeof(DIJOYSTATE2), &joyState);
 
         //ShiAssert(hRes == DI_OK); // Retro 4Jan2004  // MLR 5/2/2004 - driving me nuts
 
@@ -992,7 +986,7 @@ AxisIDStuff DIAxisNames[SIM_NUMDEVICES*NUM_OF_STICK_AXIS];
 /*****************************************************************************/
 // Retro 31Dec2003
 // all this one does is to note the name of every axis located on a device -
-// I don´t care if it´s x,y,z,rx,ry,rz,sl0 or sl1 yet
+// I donï¿½t care if itï¿½s x,y,z,rx,ry,rz,sl0 or sl1 yet
 // - just note its name (copy it into that globat array above) and be done
 // with it
 /*****************************************************************************/
@@ -1059,12 +1053,12 @@ BOOL FAR PASCAL EnumDeviceObjects(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef
 #else // USE_DINPUT_8
 /*****************************************************************************/
 // Retro 16Jan2004 - with dinput8, enumerating device objects seems busted
-// it´s picking up imaginary axis, and does not see real ones.. so I have to
+// itï¿½s picking up imaginary axis, and does not see real ones.. so I have to
 // look for the real existing axis this way. Functionally it is the same
 // as the CallBack function above (EnumDeviceObjects) but it handles all
 // possible axis on a joystick at once.
 //
-// Of course, should the dataformat change (to joystick2) then we´d have to
+// Of course, should the dataformat change (to joystick2) then weï¿½d have to
 // change a bit here (and in the rest of the code )
 /*****************************************************************************/
 void CheckAxisOnDevice(LPDIRECTINPUTDEVICE8 pdev, const char* DevName)
@@ -1121,8 +1115,8 @@ void CheckAxisOnDevice(LPDIRECTINPUTDEVICE8 pdev, const char* DevName)
 /*****************************************************************************/
 // brrrr... trying to get the mousewheel as 'just another axis'
 //
-// of course it isn´t that clear cut: mousewheel has no deadzone, no saturation
-// and I can´t set range props. instead I´ll have to clamp the values depending
+// of course it isnï¿½t that clear cut: mousewheel has no deadzone, no saturation
+// and I canï¿½t set range props. instead Iï¿½ll have to clamp the values depending
 // on if the mapped axis is bipolar or unipolar
 /*****************************************************************************/
 void CheckForMouseAxis(void)
@@ -1191,7 +1185,7 @@ void CheckForMouseAxis(void)
 // autocenter goes OFF (we do it ourselves then), else we turn it back ON so
 // that at least centering spring forces are there, else it feels like ass.
 //
-// I´m ASSuming that this IS a FFB stick  You can´t check this with
+// Iï¿½m ASSuming that this IS a FFB stick  You canï¿½t check this with
 // HasForceFeedback however (at least not here) 
 /*****************************************************************************/
 int ActivateAutoCenter(const bool OnOff, const int theJoyIndex)
@@ -1363,7 +1357,7 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
     /*****************************************************************************/
     // set joystick data format
     /*****************************************************************************/
-    SetupResult = VerifyResult(pdev->SetDataFormat(&c_dfDIJoystick));
+    SetupResult = VerifyResult(pdev->SetDataFormat(&c_dfDIJoystick2));
 
     /*****************************************************************************/
     // so what do we have here ?
@@ -1422,6 +1416,13 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
 
         if (gDIDevNames[SIM_JOYSTICK1 + gTotalJoy])
             _tcscpy(gDIDevNames[SIM_JOYSTICK1 + gTotalJoy], pdinst->tszProductName);
+
+        // remember the device's button count for the assignment UI (#18); clamp to the digital buffer
+        gDIDevButtons[SIM_JOYSTICK1 + gTotalJoy] =
+            (devcaps.dwButtons > SIMLIB_MAX_DIGITAL) ? SIMLIB_MAX_DIGITAL : (int)devcaps.dwButtons;
+
+        // remember the device's stable GUID for robust axis/button binding (#19)
+        gDIDevGUIDs[SIM_JOYSTICK1 + gTotalJoy] = pdinst->guidInstance;
 
         if ( not strcmp(pdinst->tszProductName, "Union Reality Gear"))
         {

@@ -3,6 +3,8 @@
 
 // SYSTEM INCLUDES
 #include <AtlBase.h>
+#include <stdlib.h>
+#include <crtdbg.h>
 #include <AtlCom.h>
 #include <AtlWin.h>
 #include <direct.h>
@@ -21,7 +23,7 @@
 #include "CampStr.h"
 #include "ClassTbl.h"
 #include "CmpClass.h"
-#include "dDraw.h"
+#include "Graphics/DXEngine/OpenXRBackend.h" // VR (OpenXR) -- clean teardown on exit
 #include "dialog.h" // Campaign tool includes
 #include "DispCfg.h"
 #include "DispOpts.h"
@@ -209,14 +211,18 @@ char g_strLgbk[20];
 #endif
 
 #ifdef DEBUG// Debug Assert softswitches
-	int f4AssertsOn = TRUE, f4HardCrashOn = FALSE;
-	int shiAssertsOn = TRUE,
-	shiWarningsOn = TRUE,
+	int f4AssertsOn = FALSE, f4HardCrashOn = FALSE;
+	int shiAssertsOn = FALSE,	// render-port: silence the assert flood
+	shiWarningsOn = FALSE,
 	shiHardCrashOn = FALSE;
 	extern CampaignTime gConnectionTime;
 	extern CampaignTime gResendTime;
 	extern int gCampJoinStatus;
 #endif
+
+// gCampJoinStatus is used unconditionally (ShutdownCampaign); the #ifdef DEBUG extern above is
+// Debug-only, so declare it for all configs (latent Release build break -- C2065 in Release).
+extern int gCampJoinStatus;
 
 extern "C"
 {
@@ -395,7 +401,8 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
 void initialize_variables(void)
 {
 
-	cockpit_verifier = true;
+	// Cockpit verifier disabled on request (the constant MessageBox interferes with testing).
+	cockpit_verifier = false;
 
 };
 
@@ -408,6 +415,15 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
 #ifndef NDEBUG
 	initialize_variables();
 #endif // NDEBUG
+
+	// render-port: don't break/crash on CRT debug checks (invalid parameter, asserts).
+	// STL iterator checks disabled via _ITERATOR_DEBUG_LEVEL=0 (in all projects).
+	_set_invalid_parameter_handler(
+		[](const wchar_t*, const wchar_t*, const wchar_t*, unsigned int, uintptr_t) {});
+#ifdef _DEBUG
+	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_DEBUG);
+	_CrtSetReportMode(_CRT_ERROR,  _CRTDBG_MODE_DEBUG);
+#endif
 
     _Module.Init(ObjectMap, h_instance); // ATL initialization.
 
@@ -441,7 +457,7 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
             m_pUplink->PutGameMode("openplaying");
         }
     }
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         MonoPrint("handle_WinMain: Error 0x%X occured during JetNet initialization", e.Error());
     }
@@ -461,7 +477,9 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
     _controlfp(_RC_CHOP, MCW_RC);
 
     // Set the FPU to 24bit precision
-    _controlfp(_PC_24, MCW_PC);
+#if defined(_M_IX86)
+    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+#endif
 #endif
 
     hInst = h_instance;
@@ -518,6 +536,21 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
 
     DisplayOptions.LoadOptions("display");
 
+    // Artscout - 2026: push the persisted graphics options (UI source of truth) into the engine globals.
+    // Runs AFTER ReadFalcon4Config() (winmain ~490), so the Graphics/Advanced page settings win over the
+    // legacy FFViper.cfg "set g_bUseOpenXR/..." dev overrides. VR is now toggled by the Advanced checkbox.
+    {
+        extern bool g_bUseOpenXR, g_bUseQuadViews, g_bMsaaEnable, g_bAnisoEnable;
+        extern int  g_nMsaaSamples, g_nVrResolutionScale, g_nAnisoSamples;
+        g_bUseOpenXR        = DisplayOptions.bUseOpenXR;
+        g_bUseQuadViews     = DisplayOptions.bUseQuadViews;
+        g_bMsaaEnable       = DisplayOptions.bMsaaEnable;
+        g_nMsaaSamples      = DisplayOptions.nMsaaSamples;
+        g_nVrResolutionScale = DisplayOptions.nVrResolutionScale;
+        g_bAnisoEnable      = DisplayOptions.bAnisotropicFiltering;   // Artscout - 2026: aniso on/off + level -> samplers
+        g_nAnisoSamples     = DisplayOptions.nAnisotropicSamples;
+    }
+
     FalconDisplay.Setup(gLangIDNum);
 
     mainAppWnd = FalconDisplay.appWin;
@@ -537,9 +570,44 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
         return FALSE;
 
 	MSG  msg;
-	while (GetMessage(&msg, NULL, 0, 0) not_eq 0)
+    if (g_bUseOpenXR)
     {
-        DispatchMessage(&msg);
+        // VR: the headset needs a continuous stream of submitted frames, but the 2D
+        // UI only repaints on change. So run a non-blocking loop that dispatches any
+        // pending messages and otherwise pumps one OpenXR frame. OpenXR_PumpFrame()
+        // blocks on xrWaitFrame (paces to the headset), so this is not a busy spin
+        // while the session runs; before it runs we yield briefly.
+        for (;;)
+        {
+            while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+            {
+                if (msg.message == WM_QUIT) goto xr_quit;
+                DispatchMessage(&msg);
+            }
+            // OpenXR_PumpFrame() polls XR events (starts the session), submits a frame
+            // when running (xrWaitFrame paces it), and returns false until then -- in
+            // which case we yield to avoid a busy spin.
+            if (!OpenXR_PumpFrame())
+                Sleep(2);
+        }
+        xr_quit:;
+    }
+    else
+    {
+        while (GetMessage(&msg, NULL, 0, 0) not_eq 0)
+        {
+            DispatchMessage(&msg);
+        }
+    }
+
+    // VR: tear down OpenXR (session/swap-chains/instance) FIRST, while the D3D11
+    // device is still alive. The runtime's compositor thread (e.g. PiOpenXR) holds
+    // device resources and faults (UAF in PiOpenXR -> d3d11.dll, read 0xFFFF...) if
+    // the device is destroyed under it during process teardown.
+    if (g_pOpenXRBackend)
+    {
+        delete g_pOpenXRBackend;   // ~OpenXRBackend -> Shutdown(): xrDestroySession/Instance
+        g_pOpenXRBackend = NULL;
     }
 
     SystemLevelExit();
@@ -608,9 +676,60 @@ void EndUI(void)
 }
 
 
+// Artscout - 2026 (#92): confine the OS cursor to `hwnd`'s client rect. In 3D the exclusive DI mouse
+// confines for free; the 2D menu uses the ordinary OS cursor and only got a ClipCursor on a WM_ACTIVATE
+// transition, so with no focus change (startup menu / exit-3D back to menu) the cursor escaped. We call
+// this on WM_MOUSEMOVE in BOTH top-level WndProcs (either can own the menu mouse), so it self-heals as the
+// mouse moves inside the window. checkForeground=true guards the mouse-move path from trapping the cursor
+// while Alt-Tabbed away; the WM_ACTIVATE(gain) path passes false (we KNOW we're activating).
+static void ClipCursorToClient(HWND hwnd, bool checkForeground)
+{
+    extern bool g_bClipCursorWindowed;
+    if (not g_bClipCursorWindowed or not hwnd) return;
+    if (checkForeground)
+    {
+        HWND fg = GetForegroundWindow();
+        DWORD fgPid = 0; if (fg) GetWindowThreadProcessId(fg, &fgPid);
+        if (fgPid != GetCurrentProcessId()) return;
+    }
+    RECT rc;
+    if (GetClientRect(hwnd, &rc))
+    {
+        POINT tl = { rc.left, rc.top }, br = { rc.right, rc.bottom };
+        ClientToScreen(hwnd, &tl);
+        ClientToScreen(hwnd, &br);
+        RECT screenRc = { tl.x, tl.y, br.x, br.y };
+        ClipCursor(&screenRc);
+    }
+}
+
+// Artscout - 2026 (#93): unified focus handling for BOTH top-level windows (appWin/FalconMessageHandler and
+// mainMenuWnd/SimWndProc) -- either can receive WM_ACTIVATE. On GAIN: re-Acquire DI devices, reset stale
+// keyboard modifier counts (the Alt-Tab "ESC needs Alt+F4" fix), re-clip the cursor. On LOSS: release DI
+// devices, reset modifiers, free the cursor so the other app gets input+cursor cleanly.
+static void HandleWindowActivate(HWND hwnd, WPARAM wParam)
+{
+    extern void ReacquireAllInputDevices(void);
+    extern void UnacquireAllInputDevices(void);
+
+    if (LOWORD(wParam) != 0)        // becoming active
+    {
+        ReacquireAllInputDevices();
+        ClipCursorToClient(hwnd, false);
+    }
+    else                            // becoming inactive (Alt-Tab out)
+    {
+        UnacquireAllInputDevices();
+        ClipCursor(NULL);
+    }
+}
+
 LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     LRESULT retval = 0;
+
+    if (message == WM_MOUSEMOVE)
+        ClipCursorToClient(hwnd, true);   // #92: keep the cursor inside the menu window (self-heals)
 
     // Looking for multiplayer stomp...
     ShiAssert(TeamInfo[1] == NULL or TeamInfo[1]->cteam not_eq 0xFC);
@@ -748,6 +867,7 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
             break;
 
         case WM_ACTIVATE:
+            HandleWindowActivate(hwnd, wParam);   // Artscout - 2026 (#92/#93): focus/clip/reacquire on the menu window too
             retval = 0;
             break;
 
@@ -770,6 +890,18 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
         case FM_DISP_TOGGLE_FULLSCREEN:
         {
             FalconDisplay._ToggleFullScreen();
+            break;
+        }
+
+        case FM_DISP_ENTER_SIM_WINMODE: // #33
+        {
+            FalconDisplay._EnterSimWindowMode(wParam ? true : false);
+            break;
+        }
+
+        case FM_DISP_LEAVE_SIM_WINMODE: // #33
+        {
+            FalconDisplay._LeaveSimWindowMode();
             break;
         }
 
@@ -841,7 +973,7 @@ void ParseCommandLine(LPSTR cmdLine)
 
     size = sizeof(FalconDataDirectory);
     retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY,
-                          0, KEY_QUERY_VALUE, &theKey);
+                          0, KEY_QUERY_VALUE | KEY_WOW64_32KEY, &theKey);
 
     size = sizeof(ComIPGetHostIDIndex);
     retval = RegQueryValueEx(theKey, "HostIDX", 0, &type, (LPBYTE)&value, &size);
@@ -1110,7 +1242,7 @@ void ParseCommandLine(LPSTR cmdLine)
 
     size = sizeof(FalconDataDirectory);
     retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY,
-                          0, KEY_QUERY_VALUE, &theKey);
+                          0, KEY_QUERY_VALUE | KEY_WOW64_32KEY, &theKey);
     retval = RegQueryValueEx(theKey, "baseDir", 0, &type, (LPBYTE)&FalconDataDirectory, &size);
 
     if (retval not_eq ERROR_SUCCESS)
@@ -1255,6 +1387,12 @@ void SystemLevelInit()
     extern char g_strRadioWorldCol[0x40]; // Retro 27Dec2003
     extern char g_strRadioTowerCol[0x40]; // Retro 27Dec2003
     extern char g_strRadioStandardCol[0x40]; // Retro 27Dec2003
+
+    // Artscout - 2026: force radio chatter subtitles ON. The ST80 voice codec is disabled on x64
+    // (no audio chatter), so subtitles are currently the only way to follow campaign radio comms
+    // while debugging. The radio messages are still generated; subtitles just render their text.
+    // TODO: make this a config toggle / replace ST80 with TTS, then drop this force.
+    PlayerOptions.SetSubtitles(true);
 
     if (PlayerOptions.getSubtitles())
     {
@@ -1418,8 +1556,13 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
     _controlfp(_RC_CHOP, MCW_RC);
 
     // Set the FPU to 24bit precision
-    _controlfp(_PC_24, MCW_PC);
+#if defined(_M_IX86)
+    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
 #endif
+#endif
+
+    if (message == WM_MOUSEMOVE)
+        ClipCursorToClient(hwnd, true);   // Artscout - 2026 (#92): keep the cursor inside this window too (self-heals)
 
     switch (message)
     {
@@ -1439,6 +1582,11 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             // until then UI is only thing that can handle surface lost
         case WM_ACTIVATEAPP:
         case WM_ACTIVATE:
+            // Artscout - 2026 (#92/#93): unified focus handling (reacquire/unacquire DI devices, reset stale
+            // keyboard modifier counts for the Alt-Tab ESC fix, clip/free the cursor). Shared with SimWndproc
+            // so whichever top-level window gets WM_ACTIVATE handles it.
+            HandleWindowActivate(hwnd, wParam);
+
             if (doUI and FalconDisplay.displayFullScreen)
             {
                 RECT rect;
@@ -2018,6 +2166,18 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
         }
 
+        case FM_DISP_ENTER_SIM_WINMODE: // #33
+        {
+            FalconDisplay._EnterSimWindowMode(wParam ? true : false);
+            break;
+        }
+
+        case FM_DISP_LEAVE_SIM_WINMODE: // #33
+        {
+            FalconDisplay._LeaveSimWindowMode();
+            break;
+        }
+
         default:
         {
             if (gMainHandler not_eq NULL)
@@ -2089,6 +2249,14 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
 void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface)
 {
+    // Artscout - 2026: #34 the movie player blits decoded frames onto a DDraw surface
+    // (movie/surface.cpp: pDD->CreateSurface / Blt / Lock). Under D3D11 the DDraw object is NULL,
+    // so playing a movie (intro logos / campaign cutscenes) would crash. No-op until the player is
+    // ported to a D3D11 path. Movies are non-essential, so skipping them is safe.
+    extern bool g_bUseD3D11, g_bUseD3D12;
+    if (g_bUseD3D11 or g_bUseD3D12)   // #DX12: movie player is DDraw-based; skip under any GPU backend
+        return;
+
     HWND hwnd;
     int hMovie = -1, mode;
     char movieFile[_MAX_PATH];

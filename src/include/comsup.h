@@ -7,17 +7,23 @@
 #include <comcat.h>
 #include <string>
 
-inline void CheckHR(HRESULT hr);
-
-//inline void CheckHR(HRESULT hr)
-//{
-// //if(FAILED(hr))
-// //{
-// // IErrorInfo *pEI = NULL;
-// // ::GetErrorInfo(NULL, &pEI);
-// // throw _com_error(hr, pEI);
-// //}
-//}
+// Artscout - 2026: CheckHR must be DEFINED (not just declared) in every TU that calls it. The old bodyless
+// `inline void CheckHR(HRESULT);` linked in Debug only by luck (an un-inlined COMDAT copy of smart.h's body
+// in a graphics obj); in Release that copy is fully inlined away, so UIComms (serverbrowser.obj) had no
+// definition -> LNK2019. The CHECKHR_DEFINED guard is shared with smart.h so a TU that pulls in both still
+// sees exactly one definition.
+#ifndef CHECKHR_DEFINED
+#define CHECKHR_DEFINED
+inline void CheckHR(HRESULT hr)
+{
+    if (FAILED(hr))
+    {
+        IErrorInfo *pEI = NULL;
+        ::GetErrorInfo(NULL, &pEI);
+        throw _com_error(hr, pEI);
+    }
+}
+#endif // CHECKHR_DEFINED
 
 namespace ComSup
 {

@@ -1,4 +1,4 @@
-#include <cISO646>
+#include <iso646.h>
 #ifndef OMNI_HEADER
 #   define  OMNI_HEADER 1
 

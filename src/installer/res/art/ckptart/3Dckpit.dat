@@ -1,0 +1,120 @@
+// 3-d cockpit description
+// F16C version by Thomas Hamarcak
+
+// Use animated instruments
+usenew3dpit 1
+
+// Boresight cross height
+// boresighty 0.60;
+
+// Shared render to texture target size, width height depth, depth needs to be 32 for texture alpha to work default is primary 
+//rttTarget 512 512 32;
+rttTarget 768 768 32;
+//rttTarget 1024 1024 32;
+
+// 3-d coords for Upper Right, Upper Left and Lower Left  
+// Rtt Top (x), Left(y), Right(x), Bottom(y), BlendMode, Alpha  (0,0 at upper left)
+// BlendModes are a = alpha blending, c = color blending, g = texture gouraud, t = texture, default = g 
+// example hud with 0.5 vertex alpha:    hud  20.0 -2.0 0.0    20.0 2.0 0.0    20.0 -2.0 4.0    5 5 260 260    a 0.5;
+
+// 512x512
+//hud      20.063 -2.750   -0.618    20.063    2.750 -0.618    20.063   -2.750  4.902    1   1   286 286 c;   
+//rwr      20.780  -5.200   6.247    20.780   -3.288  6.247   20.780   -5.200  8.059    167 333 287 453 c;  
+//ded      16.400  2.850    4.250    16.400    5.500  4.250    16.400    2.850  5.205    1   333 134 387 c;  
+//pfl      10.600  6.800   13.245    10.600    9.700 13.245    10.200    6.800 14.200    1   400 134 453 c;  	
+//machasi  21.178 -2.453   14.334    21.178   -0.553 14.334    21.178   -2.453 16.234
+//mfdleft  21.350 -7.350    9.450    21.350   -3.750  9.450    20.520   -7.350 12.830    367 1   500 134 c; 
+//mfdright 21.350  3.804    9.450    21.350    7.400  9.450    20.520    3.804 12.830    367 167 500 300 c; 
+
+// 768x768
+hud      20.063 -2.750   -0.618     20.063    2.750 -0.618    20.063   -2.750  4.902      1   1 430 430 c; 
+rwr      20.780 -5.200    6.247    20.780   -3.288  6.247    20.780   -5.200  8.059    250 500 430 680 c; 
+ded      16.400  2.850    4.250     16.400    5.500  4.250    16.400    2.850  5.205      1 500 200 580 c;
+pfl      10.600  6.800   13.245     10.600    9.700 13.245    10.200    6.800 14.200      1 600 200 680 c;
+machasi  21.178 -2.453   14.334     21.178   -0.553 14.334    21.178   -2.453 16.234
+mfdleft  21.350 -7.350   9.450     21.350   -3.750  9.450    20.520   -7.350 12.830    550   1 750 200 c;
+mfdright 21.350  3.804    9.450     21.350    7.400  9.450    20.520    3.804 12.830    550 250 750 450 c;
+
+// 1024x1024
+//hud      20.063 -2.750   -0.618    20.063    2.750 -0.618    20.063   -2.750  4.902      5   5 520 520 c; 
+//rwr      20.780  -5.200   6.247    20.780   -3.288  6.247   20.780   -5.200  8.059      5 840 170 1000 c; 
+//ded      16.400  2.850    4.250    16.400    5.500  4.250    16.400    2.850  5.205      5 600 390 700 c;
+//pfl      10.600  6.800   13.245    10.600    9.700 13.245    10.200    6.800 14.200      5 710 390 810 c;	
+//machasi  21.178 -2.453   14.334    21.178   -0.553 14.334    21.178   -2.453 16.234
+//mfdleft  21.350 -7.350    9.450    21.350   -3.750  9.450    20.520   -7.350 12.830    520   5 830 310 c;
+//mfdright 21.350  3.804    9.450    21.350    7.400  9.450     20.520    3.804 12.830    520 520 830 830 c;
+
+// various colours
+padlockbg ff7c4706; //padlock background
+padlockliftline ff5ee75e; //padlock liftline, green
+padlockvpside ff00ffff; //padlock viewport box 3 sides, yellow
+padlockvptop ffffffff; //padlock viewport top, white
+padlocktick ff0000ff; //padlock zero level tickmark, red
+needlecolor0 ffdddddd; // primary needle color, gray
+needlecolor1 ffdddddd; // secondary needle color, redish
+dedcolor FF3FB179; //  DED color, green (#7, было FF009CFF оранж)
+rwrcolor FF00FFBB; //  RWR color, yellow-green
+highlight FF0000D0 // High night lighting (interior/instruments) color (red) 
+lowlight FF000080 // Low night lighting (interior/instruments) color (dark red)
+
+// the LOD models to use.
+cockpitmodel 2402; // the main 3d cockpit model
+cockpitdfmodel 2402; // the dogfight variant
+mainmodel 1052;	// the primary model
+damagedmodel 1052;  // the damaged model
+
+
+// oil gauge
+DIAL
+	numendpoints = 3;
+	points = -0.646 0.723 0.513;
+	values =  0.0   100.0 103.3;
+	radius0 = 0.85;
+	color0 = ffdddddd;
+	callbackslot = 43;
+	destloc = 17.990 7.935 9.327   17.990 8.634 9.327     17.870 7.935 10.016;
+#end
+
+// nozzle gauge
+DIAL
+	numendpoints = 2;
+	points = 0.944  2.269;
+	values = 0.000  100.0;
+	radius0 = 0.85;
+	color0 = ffdddddd;
+	callbackslot = 41;
+	destloc = 17.800 8.006 10.165   17.800 9.006 10.165    17.627 8.006 11.510;
+#end
+
+// rpm gauge
+DIAL
+	numendpoints = 4;
+	points = 1.571 0.0 3.142 2.307;
+	values =  0.0 60.0 100.0 110.0;
+	radius0 = 0.85;
+	color0 = ffdddddd;
+	callbackslot = 40;
+	destloc =17.575 8.195 11.882   17.575 9.255 11.882   17.349 8.195 13.163;
+#end
+
+// ftit gauge
+DIAL
+	numendpoints = 6;
+	points = -0.319 -1.445 -2.808 2.412 1.208 0.621;
+	values = 2.0 6.0 8.0 9.0 10.0 12.0;
+	radius0 = 0.85;
+	color0 = ffdddddd;
+	callbackslot = 42;
+	destloc = 17.226 9.189 14.196  17.226 10.289 14.196   17.017 9.189 15,478;
+#end
+
+// altimeter gauge
+DIAL
+	numendpoints = 2;
+	points =  1.57  1.571
+	values =  0.0   1000.0;
+	radius0 = 1.20;
+	color0 = ffdddddd;
+	callbackslot = 44;
+	destloc = 21.178 0.787 14.334   21.178 2.687 14.334    21.085 0.787 16.234;
+#end

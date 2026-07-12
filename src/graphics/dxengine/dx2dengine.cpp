@@ -2,9 +2,13 @@
 #include "../include/ObjectInstance.h"
 #include "dxdefines.h"
 #include "DXVBManager.h"
+extern bool g_bUseD3D11;	// PHASE 4
+extern bool g_bUseGpu;		// Artscout - 2026: #DX12 -- GPU mode (D3D11||D3D12); the DDraw7 2D-engine VB path is dead in both
+// #DX12 A4: g_pRenderer (neutral IRenderer*) comes from IRenderer.h via the D3D11Renderer.h include below.
 #include "mmsystem.h"
 #include "../include/TexBank.h"
 #include "dxengine.h"
+#include "d3d11/D3D11Renderer.h"	// #27: DrawDynamic2D/BeginDynamic2D + g_pRenderer
 #include "../include/ObjectLOD.h"
 #include "../../falclib/include/token.h"
 #include "../../falclib/include/falclib.h"
@@ -153,7 +157,7 @@ void CDXEngine::LoadTexture(char *FileName)
 
 
 
-DWORD CDXEngine::GetTextureHandle(char *TexName)
+DWORD_PTR CDXEngine::GetTextureHandle(char *TexName) // Artscout - 2026 (x64): pointer-sized
 {
 
     // look for an item owning such a name
@@ -356,10 +360,39 @@ void CDXEngine::DX2D_Reset(void)
     for (int i = 0; i < MAX_2D_BUFFERS; i++)
     {
         Dyn2DVertexBuffer[i].LastIndex = Dyn2DVertexBuffer[i].LastTapeIndex = 0;
-        Dyn2DVertexBuffer[i].Vb->Lock(DDLOCK_DISCARDCONTENTS bitor DDLOCK_NOSYSLOCK bitor DDLOCK_WAIT bitor DDLOCK_WRITEONLY, (void**)&Dyn2DVertexBuffer[i].VbPtr, NULL);;
+        // Artscout - 2026: [DX7-PURGE] GPU-only: the DDraw7 2D-engine VB (Vb->Lock) is gone.
     }
 }
 
+
+// #27 D3D11: frustum sphere culling -- replaces D3D7 ComputeSphereVisibility.
+// M = CameraView*Projection (row-major, the shader applies clip = worldPos*M, world=identity).
+// Gribb-Hartmann planes for the v*M convention: colK=(m0K,m1K,m2K,m3K).
+// The sphere is VISIBLE if its center is no farther than -radius from any plane (conservative:
+// cull only fully-outside ones -> visible particles never disappear).
+static bool DX2D_SphereVisibleD3D11(const D3DXMATRIX &View, const D3DXMATRIX &Proj,
+                                    float px, float py, float pz, float r)
+{
+    D3DXMATRIX M;
+    D3DXMatrixMultiply(&M, &View, &Proj);
+    const float pl[6][4] =
+    {
+        { M.m00 + M.m03, M.m10 + M.m13, M.m20 + M.m23, M.m30 + M.m33 }, // left  (x>=-w)
+        { M.m03 - M.m00, M.m13 - M.m10, M.m23 - M.m20, M.m33 - M.m30 }, // right (x<= w)
+        { M.m01 + M.m03, M.m11 + M.m13, M.m21 + M.m23, M.m31 + M.m33 }, // bottom(y>=-w)
+        { M.m03 - M.m01, M.m13 - M.m11, M.m23 - M.m21, M.m33 - M.m31 }, // top   (y<= w)
+        { M.m02,         M.m12,         M.m22,         M.m32         }, // near  (z>= 0)
+        { M.m03 - M.m02, M.m13 - M.m12, M.m23 - M.m22, M.m33 - M.m32 }, // far   (z<= w)
+    };
+    for (int i = 0; i < 6; ++i)
+    {
+        const float a = pl[i][0], b = pl[i][1], c = pl[i][2], d = pl[i][3];
+        const float len = sqrtf(a * a + b * b + c * c);
+        if (len < 1e-6f) continue;
+        if ((px * a + py * b + pz * c + d) / len < -r) return false;
+    }
+    return true;
+}
 
 // This function returns the visibility for an objects of a certain radius in a certain Pos
 // WARNING  This function stores the calculated position for following uses in XMMPos variable
@@ -376,11 +409,16 @@ bool CDXEngine::DX2D_GetVisibility(D3DXVECTOR3 *Pos, float Radius, DWORD Flags)
     if ( not (Flags bitand CAMERA_VERTICES)) XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
 
     // Check for object visibility, return NULL is not visible
-    m_pD3DD->ComputeSphereVisibility((D3DVECTOR*)&XMMPos.d3d, &Radius2D, 1, 0, &ClipResult);
-
-    if (ClipResult bitand D3DSTATUS_DEFAULT) return false;
-
-    return true;
+    if (g_bUseGpu)
+    {
+        if (Flags bitand CAMERA_VERTICES) return true;   // verts already in camera space
+        // #13/clouds: CameraView is rotation ONLY (no translation), so the frustum is centered
+        // at the origin -> we must test the CAMERA-RELATIVE point (XMMPos = Pos - Camera,
+        // see above), not the world Pos. Previously world was passed -> visibility depended on HEADING
+        // (clouds came and went). The D3D7 path below also uses XMMPos.d3d. (per report 2026-06-17)
+        return DX2D_SphereVisibleD3D11(CameraView, Projection, XMMPos.d3d.x, XMMPos.d3d.y, XMMPos.d3d.z, Radius);
+    }
+    return true;   // #34 dead D3D7 ComputeSphereVisibility path removed (D3D11 returns above)
 }
 
 
@@ -391,10 +429,11 @@ DWORD CDXEngine::ComputeSphereVisibility(LPD3DVECTOR lpCenters, LPD3DVALUE  lpRa
     XMMAcc = _mm_loadu_ps((float*)lpCenters);
     XMMPos.Xmm = _mm_sub_ps(XMMAcc, XMMCamera.Xmm);
     // Check for object visibility, return NULL is not visible
-    m_pD3DD->ComputeSphereVisibility((D3DVECTOR*)&XMMPos.d3d, lpRadii, dwNumSpheres, 0, &ClipResult);
-
-    return ClipResult;
-
+    if (g_bUseGpu)
+        // #13: camera-relative point (XMMPos = lpCenters - Camera, see above), not world -- see comment in DX2D_GetVisibility
+        return DX2D_SphereVisibleD3D11(CameraView, Projection, XMMPos.d3d.x, XMMPos.d3d.y, XMMPos.d3d.z,
+                                       lpRadii ? lpRadii[0] : 0.0f) ? 0 : D3DSTATUS_DEFAULT;
+    return 0;   // #34 dead D3D7 ComputeSphereVisibility path removed (D3D11 returns above)
 }
 
 
@@ -408,10 +447,14 @@ float CDXEngine::DX2D_GetDistance(D3DXVECTOR3 *Pos, float Radius, DWORD Flags)
 
     if ( not (Flags bitand CAMERA_VERTICES))XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
 
-    // Check for object visibility, return NULL is not visible
-    m_pD3DD->ComputeSphereVisibility((D3DVECTOR*)&XMMPos.d3d, &Radius2D, 1, 0, &ClipResult);
-
-    if (ClipResult bitand D3DSTATUS_DEFAULT) return -1.0f;
+    // Check for object visibility, return -1 if not visible (out of frustum)
+    if (g_bUseGpu)
+    {
+        if ( not (Flags bitand CAMERA_VERTICES)
+             and not DX2D_SphereVisibleD3D11(CameraView, Projection, XMMPos.d3d.x, XMMPos.d3d.y, XMMPos.d3d.z, Radius))	// #13: camera-relative, not world (CameraView has no translation)
+            return -1.0f;
+    }
+    // #34 dead D3D7 ComputeSphereVisibility else-branch removed (D3D11 path above)
 
     // setup the DISTANCE FROM CAMERA
     XMMStore.Xmm = _mm_mul_ps(XMMPos.Xmm, XMMPos.Xmm);
@@ -460,15 +503,11 @@ void CDXEngine::DX2D_MakeCameraSpace(D3DXVECTOR3 *Result, D3DXVECTOR3 *Pos)
 
 inline bool CDXEngine::CheckBufferSpace(DWORD VbIndex, DWORD Size)
 {
-    // check for buffer limit
-    if (VbIndex + Size >= MAX_2D_VERTICES)
-    {
-        // Start with a new Buffer from index 0
-        VBSelected++;
-        VbIndex = 0;
-    }
-
-    // if no more buffers, exit here
+    // Buffer full -> drop the remaining primitives of the frame.
+    // PREVIOUSLY: VBSelected++ on overflow, but MAX_2D_BUFFERS=1 -> VBSelected=1, and
+    // the next Add* accessed Dyn2DVertexBuffer[1] (out of the static array) -> OOB.
+    // The multi-buffer mechanism is vestigial (1 buffer) -- just drop, leave VBSelected alone.
+    if (VbIndex + Size >= MAX_2D_VERTICES) return false;
     if (VBSelected >= MAX_2D_BUFFERS) return false;
 
     return true;
@@ -477,8 +516,9 @@ inline bool CDXEngine::CheckBufferSpace(DWORD VbIndex, DWORD Size)
 
 // This function add a Quad to the vertex buffers and sorting list...
 // WARNING  Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
-void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Quad, float Radius, DWORD TexHandle)
+void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Quad, float Radius, DWORD_PTR TexHandle)
 {
+    // #27 D3D11: accumulate in the CPU VbPtr (DX2D_Init), draw in DX2D_Flush2DObjects via DrawDynamic2D.
     _MM_ALIGN16 XMMVector V[4];
 
 #ifdef DATE_PROTECTION
@@ -621,8 +661,9 @@ void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
 
 // This function add a Quad to the vertex buffers and sorting list...
 // WARNING  Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
-void CDXEngine::DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Tri, float Radius, DWORD TexHandle)
+void CDXEngine::DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Tri, float Radius, DWORD_PTR TexHandle)
 {
+    // #27 D3D11: accumulate in the CPU VbPtr, draw via DrawDynamic2D in DX2D_Flush2DObjects.
     _MM_ALIGN16 XMMVector V[4];
 
     // not going to overflow stuff
@@ -711,8 +752,9 @@ void CDXEngine::DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVE
 
 // This function add a 2 vertex element to the vertex buffers and sorting list...
 // WARNING  Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
-void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD TexHandle)
+void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD_PTR TexHandle)
 {
+    // #27 D3D11: accumulate in the CPU VbPtr, draw via DrawDynamic2D in DX2D_Flush2DObjects.
     _MM_ALIGN16 XMMVector V[2];
 
     // not going to overflow stuff
@@ -833,8 +875,9 @@ void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVER
 
 // This function add a SINGLE VERTEX element to the vertex buffers and sorting list...
 // WARNING  Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
-void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD TexHandle)
+void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD_PTR TexHandle)
 {
+    // #27 D3D11: accumulate in the CPU VbPtr, draw via DrawDynamic2D in DX2D_Flush2DObjects.
     _MM_ALIGN16 XMMVector V;
 
     // not going to overflow stuff
@@ -946,8 +989,9 @@ void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDY
 
 
 
-void CDXEngine::DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Poly, float Radius, DWORD Vertices, DWORD TexHandle)
+void CDXEngine::DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Poly, float Radius, DWORD Vertices, DWORD_PTR TexHandle)
 {
+    // #27 D3D11: accumulate in the CPU VbPtr, draw via DrawDynamic2D in DX2D_Flush2DObjects.
     _MM_ALIGN16 XMMVector V;
 
 
@@ -1099,7 +1143,7 @@ DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
     // Setup the starting VB
     DWORD Vb = (DWORD)Draws2D[Start].Vb;
 #endif
-    DWORD Tex = Draws2D[Start].TexHandle;
+    DWORD_PTR Tex = Draws2D[Start].TexHandle; // Artscout - 2026 (x64): pointer-sized
 
     // Setup for lines
     if (Draws2D[Start].Flags bitand POLY_LINE) LineMode = true;
@@ -1448,104 +1492,20 @@ DWORD CDXEngine::DX2D_SortIndexes(DWORD Start)
 // Sorting and Flushing all the 2D objects
 void CDXEngine::DX2D_SetViewMode(void)
 {
-    DXFlagsType Flags;
-    // Fog at Max range
-    m_FogLevel = m_LinearFogLevel;
-
-    D3DXMATRIX unit;
-    D3DXMatrixIdentity(&unit);
-    m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&unit);
-
-    // Reset any previous state flag
-    Flags.w = 0xffff;
-    SetRenderState(Flags, Flags, DISABLE);
-    // adjust the flags for the surface
-    Flags.w = 0;
-    Flags.b.Texture = Flags.b.Alpha = 1;
-    // set the engine status
-    SetRenderState(Flags, Flags, ENABLE);
-    // No Culling
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE);
-    // set the engine status
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
-
-    // Disable any texture stage Alpha and Color
-    m_pD3DD->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_DISABLE);
-    m_pD3DD->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-    m_pD3DD->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-    m_pD3DD->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-    m_pD3DD->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);
-    m_pD3DD->SetTextureStageState(2, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-    m_pD3DD->SetTextureStageState(3, D3DTSS_COLOROP, D3DTOP_DISABLE);
-    m_pD3DD->SetTextureStageState(3, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-
-
-    switch (m_RenderState)
+    if (g_bUseGpu)
     {
-
-        case DX_TV:
-
-            // FRB - B&W
-            if ((g_bGreyMFD) and ( not bNVGmode))
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, 0x00a0a0a0);
-            else
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, 0x0000a000 /*NVG_T_FACTOR*/);
-
-            m_pD3DD->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-            m_pD3DD->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-            m_pD3DD->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-
-            m_pD3DD->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_TFACTOR);
-            m_pD3DD->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_CURRENT);
-            m_pD3DD->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATE);
-            break;
-
-        case DX_NVG:
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, 0x0000a000 /*NVG_T_FACTOR*/);
-
-            m_pD3DD->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-            m_pD3DD->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-            m_pD3DD->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-
-            m_pD3DD->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_TFACTOR);
-            m_pD3DD->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_CURRENT);
-            m_pD3DD->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATE);
-            break;
-
-        case DX_OTW:
-        default :
-            m_pD3DD->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-            m_pD3DD->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-            m_pD3DD->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-            break;
-
+        // #27 D3D11: a single 2D-in-3D state (alpha-blend, no Z-write, no lighting, alpha-test
+        // chroma) is set by BeginDynamic2D. Texture/indices in DX2D_Flush2DObjects.
+        if (g_pRenderer) g_pRenderer->BeginDynamic2D(false);   // #DX12 A4: IRenderer has no default arg (D3D11Renderer did)
+        return;
     }
-
-    // More setting for 2D drawing
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, TRUE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHAREF, (DWORD)1);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
-    m_pD3DD->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-    m_pD3DD->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-    m_pD3DD->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-
-    // No HW Light for 2D objects
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_DIFFUSEMATERIALSOURCE, D3DMCS_COLOR1);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_EMISSIVEMATERIALSOURCE, D3DMCS_COLOR2);
-
-    m_FogLevel = m_LinearFogLevel;
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND,   *(DWORD *)(&m_FogLevel));
+    // Artscout - 2026: #34 dead D3D7 tail removed (D3D11 branch above returns).
 }
 
 // Sorting and Flushing all the 2D objects
 void CDXEngine::DX2D_Flush2DObjects(void)
 {
-    DWORD LastTexHandle = -1;
+    DWORD_PTR LastTexHandle = -1; // Artscout - 2026 (x64): pointer-sized
 
     // Track of the drawing mode
     bool Mode_2D = false, Mode_3D = false;
@@ -1555,6 +1515,12 @@ void CDXEngine::DX2D_Flush2DObjects(void)
 
     // Set the View Mode for the 2D stuff
     DX2D_SetViewMode();
+
+    // #27 D3D11: vertices accumulated by Add* in the CPU VbPtr -- convert+upload ONCE
+    // (MAX_2D_BUFFERS=1 -> VBSelected=0). Then DrawDynamic2DIndexed per Draws2D item.
+    if (g_bUseGpu and g_pRenderer)
+        g_pRenderer->UploadDynamic2D(Dyn2DVertexBuffer[VBSelected].VbPtr,
+                                          (int)Dyn2DVertexBuffer[VBSelected].LastIndex);
 
 #ifdef DEBUG_2D_ENGINE
     DWORD Vertices = 0;
@@ -1576,6 +1542,14 @@ void CDXEngine::DX2D_Flush2DObjects(void)
     do
     {
         Layer = DrawOrder[l++];
+
+        // Artscout - 2026 (x64): skip invalid layers BEFORE indexing Layers[]. DX2D_Reset leaves
+        // DrawOrder filled with LAYER_NODRAW (0xFFFFFFFF); if a flush runs with items before any
+        // DX2D_SetDrawOrder (e.g. the menu Munitions 3D viewer, no world render), Layer==0xFFFFFFFF.
+        // The old code indexed Layers[0xFFFFFFFF] at line below and only checked NODRAW afterwards:
+        // on x86 the index wrapped mod 2^32 into mapped static memory (harmless); on x64 it faults.
+        if (Layer >= MAX_2D_LAYERS) continue; // covers LAYER_NODRAW and any garbage index
+
         // get the Layer Entry point in the list
         DrawStart = Layers[Layer].Start;
 #ifdef DEBUG_2D_ENGINE
@@ -1592,7 +1566,6 @@ void CDXEngine::DX2D_Flush2DObjects(void)
 #endif
 
         // TOP LAYER makes no Z Checks
-        if (Layer == LAYER_TOP) m_pD3DD->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
 
         // ok, flush all the Draws till end of Layer
         while (DrawStart not_eq 0xffffffff)
@@ -1636,27 +1609,19 @@ void CDXEngine::DX2D_Flush2DObjects(void)
                 // eventually assign texture
                 if (LastTexHandle not_eq Draw.TexHandle)
                 {
-                    if (Draw.TexHandle) m_pD3DD->SetTexture(0, ((TextureHandle *)Draw.TexHandle)->m_pDDS);
-                    else m_pD3DD->SetTexture(0, NULL);
-
+                    // #34 dead D3D7 SetTexture removed (D3D11 sets the texture in DrawDynamic2DIndexed)
                     LastTexHandle = Draw.TexHandle;
                 }
 
                 // Chweck if a set of lines
-                if (Draw.Flags bitand POLY_LINE)
+                // #34 dead D3D7 else-branches removed (D3D11 indexed draw only)
                 {
-                    m_pD3DD->DrawIndexedPrimitiveVB(D3DPT_LINELIST, Draw.Vb, 0, MAX_2D_VERTICES,
-                                                    (LPWORD)&DrawIndexes, Indexed2D, 0);
-                }
-                else
-                {
-                    //make the Draw
-#ifdef DRAW_USING_2D_FANS
-                    m_pD3DD->DrawPrimitiveVB(D3DPT_TRIANGLEFAN, Draw.Vb, Draw.Index, Draw.NrVertices, 0);
-#else
-                    m_pD3DD->DrawIndexedPrimitiveVB(D3DPT_TRIANGLELIST, Draw.Vb, 0, MAX_2D_VERTICES,
-                                                    (LPWORD)&DrawIndexes, Indexed2D, 0);
-#endif
+                    // #27: indexed draw over the uploaded UploadDynamic2D buffer.
+                    void *srv = Draw.TexHandle ? (void*)((TextureHandle *)Draw.TexHandle)->m_pDDS : NULL;
+                    int prim = (Draw.Flags bitand POLY_LINE) ? D3DPT_LINELIST : D3DPT_TRIANGLELIST;
+                    if (g_pRenderer)
+                        g_pRenderer->DrawDynamic2DIndexed((unsigned short*)&DrawIndexes, (int)Indexed2D,
+                                                               (struct ID3D11ShaderResourceView*)srv, prim);
                 }
 
                 // Mark that we are in 2D mode
@@ -1674,7 +1639,6 @@ void CDXEngine::DX2D_Flush2DObjects(void)
 #endif
         }
 
-        if (Layer == LAYER_TOP) m_pD3DD->SetRenderState(D3DRENDERSTATE_ZENABLE, TRUE);
     }
     while (Layer not_eq LAYER_TOP and l <= LAYER_TOP); // END with TOP LAYER in any case
 
@@ -1756,9 +1720,16 @@ void CDXEngine::DX2D_Init(void)
     VBDesc.dwFVF = D3DFVF_DYNAMIC;
     VBDesc.dwNumVertices = MAX_2D_VERTICES - 1;
 
+    // #34 D3D11: instead of a locked D3D7 VB -- a persistent CPU buffer. Add* accumulate into it
+    // (SIMD stores, as before), the flush converts to the object vertex and draws via
+    // DrawDynamic2D. VbPtr is kept alive the whole session (DX2D_Reset only zeroes LastIndex).
+    // Vb=NULL (unused in D3D11). Dead D3D7 D3D->CreateVertexBuffer branch removed.
     for (int i = 0; i < MAX_2D_BUFFERS; i++)
     {
-        CheckHR(D3D->CreateVertexBuffer(&VBDesc, &Dyn2DVertexBuffer[i].Vb, NULL));
+        Dyn2DVertexBuffer[i].Vb = NULL;
+        // +16 vertices of padding: the D3D7 VB rounded the size, malloc does not; guards a small
+        // write overrun of billboard quads at the very end of the buffer (else heap corruption).
+        Dyn2DVertexBuffer[i].VbPtr = (D3DDYNVERTEX*)malloc(((size_t)MAX_2D_VERTICES + 16) * sizeof(D3DDYNVERTEX));
     }
 
     DX2D_Reset();
@@ -1773,7 +1744,7 @@ void CDXEngine::DX2D_Release(void)
     //ReleaseTextures();
     for (int i = 0; i < MAX_2D_BUFFERS; i++)
     {
-        Dyn2DVertexBuffer[i].Vb->Release();
+        // Artscout - 2026: [DX7-PURGE] no D3D7 2D VB to release (Vb is NULL under GPU).
     }
 }
 
@@ -1784,14 +1755,11 @@ float CDXEngine::GetDetailLevel(D3DVECTOR *WorldPos, float MaxRange)
 {
     _MM_ALIGN16 XMMVector CPos;
     // make it in camera space
-    _asm
-    {
-        mov edx, DWORD PTR WorldPos // Get th World position
-        movups xmm0, XMMWORD PTR [edx] // into XMM0
-        subps xmm0, XMMCamera // subtract it
-        mulps xmm0, xmm0; // square of all parameters
-        movaps CPos, xmm0; // stores
-    }
+    // Artscout - 2026 (x64): SSE asm rewritten with intrinsics (x86+x64; rest of file uses .Xmm).
+    // Load x,y,z safely (no 16-byte OOB read past the 12-byte D3DVECTOR).
+    __m128 wp = _mm_set_ps(0.0f, WorldPos->z, WorldPos->y, WorldPos->x);
+    CPos.Xmm = _mm_sub_ps(wp, XMMCamera.Xmm);   // subtract camera
+    CPos.Xmm = _mm_mul_ps(CPos.Xmm, CPos.Xmm);  // square all components
 
     return  sqrtf(CPos.d3d.x + CPos.d3d.y + CPos.d3d.z) / MaxRange * m_LODBiasCx;
 }
@@ -1803,48 +1771,23 @@ float CDXEngine::GetDetailLevel(D3DVECTOR *WorldPos, float MaxRange)
 // The 3D Point draw function
 void CDXEngine::Draw3DPoint(D3DVECTOR *WorldPos, DWORD Color, bool Emissive, bool CameraSpace)
 {
-
-    // check for Buffer locked
-    if ( not TheVbManager.SimpleBuffer.VbPtr) TheVbManager.OpenSimpleBuffer();
-
-    // Get the appropriate index list in the buffer
-    DWORD Index = POINTS_OFFSET + TheVbManager.SimpleBuffer.Points;
-    D3DSIMPLEVERTEX *VPtr = &TheVbManager.SimpleBuffer.VbPtr[Index];
-
-    if ( not CameraSpace)
+    if (g_bUseGpu)
     {
-        // make it in camera space
-        _asm
+        // #27 D3D11: store FULL world-space (view*proj handles it), without camera subtraction.
+        SimpleBufferType &sb = TheVbManager.SimpleBuffer;
+        if (sb.VbPtr and sb.Points < MAX_POINTS)
         {
-            mov edx, DWORD PTR WorldPos // Get th World position
-            movups xmm0, XMMWORD PTR [edx] // into XMM0
-            mov eax, DWORD PTR VPtr // Get the Camera position
-            subps xmm0, XMMCamera // subtract it
-            movups XMMWORD PTR [eax], xmm0 // save in the vertex
+            D3DSIMPLEVERTEX *VPtr = &sb.VbPtr[POINTS_OFFSET + sb.Points];
+            VPtr->pos = *WorldPos;
+            VPtr->dwColour = Color;
+            VPtr->dwSpecular = Emissive ? Color : 0;
+            VPtr->tu = VPtr->tv = 0.0f;
+            sb.Points++;
+            if (sb.MaxPoints < MAX_POINTS) sb.MaxPoints++;
         }
+        return;
     }
-    else
-    {
-        _asm
-        {
-            mov edx, DWORD PTR WorldPos // Get th World position
-            movups xmm0, XMMWORD PTR [edx] // into XMM0
-            mov eax, DWORD PTR VPtr // Get the Camera position
-            movups XMMWORD PTR [eax], xmm0 // save in the vertex
-        }
-    }
-
-    VPtr->dwColour = Color;
-
-    if (Emissive) VPtr->dwSpecular = Color;
-    else VPtr->dwSpecular = 0;
-
-    // update pointers and Counters
-    TheVbManager.SimpleBuffer.Points++;
-
-    if (TheVbManager.SimpleBuffer.MaxPoints < MAX_POINTS) TheVbManager.SimpleBuffer.MaxPoints++;
-
-    if (TheVbManager.SimpleBuffer.Points >= MAX_POINTS) TheVbManager.SimpleBuffer.Points = 0;
+    // Artscout - 2026: #34 dead D3D7 tail removed (D3D11 branch above returns).
 }
 
 
@@ -1853,64 +1796,23 @@ void CDXEngine::Draw3DPoint(D3DVECTOR *WorldPos, DWORD Color, bool Emissive, boo
 // The 3D Line draw function
 void CDXEngine::Draw3DLine(D3DVECTOR *WorldStart, D3DVECTOR *WorldEnd, DWORD ColorStart, DWORD ColorEnd, bool Emissive, bool CameraSpace)
 {
-
-    // check for Buffer locked
-    if ( not TheVbManager.SimpleBuffer.VbPtr) TheVbManager.OpenSimpleBuffer();
-
-    // Get the appropriate index list in the buffer
-    DWORD Index = LINES_OFFSET + TheVbManager.SimpleBuffer.Lines * 2;
-    D3DSIMPLEVERTEX *VPtr = &TheVbManager.SimpleBuffer.VbPtr[Index];
-
-    if ( not CameraSpace)
+    if (g_bUseGpu)
     {
-        // make it in camera space
-        _asm
+        // #27 D3D11: tracers. FULL world-space for both ends, without camera subtraction.
+        SimpleBufferType &sb = TheVbManager.SimpleBuffer;
+        if (sb.VbPtr and sb.Lines < MAX_LINES)
         {
-            mov edx, DWORD PTR WorldStart // Get the World Start position
-            movups xmm0, XMMWORD PTR [edx] // into XMM0
-            mov eax, DWORD PTR VPtr // Get the Camera position
-            subps xmm0, XMMCamera // subtract it
-            mov ecx, DWORD PTR WorldEnd // Get the World End position
-            movups XMMWORD PTR [eax], xmm0 // save in the vertex
-            movups xmm1, XMMWORD PTR [ecx] // into XMM0
-            subps xmm1, XMMCamera // subtract it
-            movups XMMWORD PTR [eax+SIZE D3DSIMPLEVERTEX], xmm1 // save in the 2nd vertex
+            D3DSIMPLEVERTEX *VPtr = &sb.VbPtr[LINES_OFFSET + sb.Lines * 2];
+            VPtr[0].pos = *WorldStart; VPtr[0].dwColour = ColorStart;
+            VPtr[0].dwSpecular = Emissive ? ColorStart : 0; VPtr[0].tu = VPtr[0].tv = 0.0f;
+            VPtr[1].pos = *WorldEnd;   VPtr[1].dwColour = ColorEnd;
+            VPtr[1].dwSpecular = Emissive ? ColorEnd : 0;   VPtr[1].tu = VPtr[1].tv = 0.0f;
+            sb.Lines++;
+            if (sb.MaxLines < MAX_LINES) sb.MaxLines++;
         }
+        return;
     }
-    else
-    {
-        _asm
-        {
-            mov edx, DWORD PTR WorldStart // Get the World Start position
-            movups xmm0, XMMWORD PTR [edx] // into XMM0
-            mov eax, DWORD PTR VPtr // Get the Camera position
-            mov ecx, DWORD PTR WorldEnd // Get the World End position
-            movups XMMWORD PTR [eax], xmm0 // save in the vertex
-            movups xmm1, XMMWORD PTR [ecx] // into XMM0
-            movups XMMWORD PTR [eax+SIZE D3DSIMPLEVERTEX], xmm1 // save in the 2nd vertex
-        }
-    }
-
-    VPtr->dwColour = ColorStart;
-    (VPtr + 1)->dwColour = ColorEnd;
-
-    if (Emissive)
-    {
-        VPtr->dwSpecular = ColorStart;
-        (VPtr + 1)->dwSpecular = ColorEnd;
-    }
-    else
-    {
-        VPtr->dwSpecular = 0;
-        (VPtr + 1)->dwSpecular = 0;
-    }
-
-    // update pointers and Counters
-    TheVbManager.SimpleBuffer.Lines++;
-
-    if (TheVbManager.SimpleBuffer.MaxLines < MAX_LINES) TheVbManager.SimpleBuffer.MaxLines++;
-
-    if (TheVbManager.SimpleBuffer.Lines >= MAX_LINES) TheVbManager.SimpleBuffer.Lines = 0;
+    // Artscout - 2026: #34 dead D3D7 tail removed (D3D11 branch above returns).
 }
 
 
@@ -1949,86 +1851,25 @@ void CDXEngine::DX2D_SetupSquareCx(float y, float z)
 
 void CDXEngine::FlushDynamicObjects(void)
 {
-    // First of all save present renderer State
-    DWORD StateHandle;
-
-    // Finished Drawing, unlock all Vertex Buffers
-    for (int i = 0; i < MAX_2D_BUFFERS; i++) Dyn2DVertexBuffer[i].Vb->Unlock();
-
-    CheckHR(m_pD3DD->CreateStateBlock(D3DSBT_ALL, &StateHandle));
-
-
-    DXFlagsType Flags;
-    m_FogLevel = m_LinearFogLevel;
-
-    FlushInit();
-
-#ifdef DEBUG_2D_ENGINE
-    REPORT_VALUE("2D Vertices", Dyn2DVertexBuffer[0].LastIndex);
-#endif
-    SetStencilMode(STENCIL_CHECK);
-
-    // unlock the Simple Buffer if used
-    if (TheVbManager.SimpleBuffer.VbPtr)
+    if (g_bUseGpu)
     {
-        TheVbManager.SimpleBuffer.Vb->Unlock();
-        TheVbManager.SimpleBuffer.VbPtr = NULL;
+        // #27 D3D11: first the simple items (points/line tracers from Draw3DPoint/Line),
+        // then 2D particles. All via the object pipeline (BeginDynamic2D), no texture.
+        SimpleBufferType &sb = TheVbManager.SimpleBuffer;
+        if (g_pRenderer and sb.VbPtr and (sb.MaxPoints or sb.MaxLines))
+        {
+            g_pRenderer->BeginDynamic2D(true);   // #31 tracers/sparks -- additive glow
+            if (sb.MaxPoints)
+                g_pRenderer->DrawDynamic2D(&sb.VbPtr[POINTS_OFFSET], (int)sb.MaxPoints, NULL, D3DPT_POINTLIST);
+            if (sb.MaxLines)
+                g_pRenderer->DrawDynamic2D(&sb.VbPtr[LINES_OFFSET], (int)sb.MaxLines * 2, NULL, D3DPT_LINELIST);
+        }
+        sb.Points = sb.Lines = sb.MaxPoints = sb.MaxLines = 0;   // reset for the next frame
+
+        DX2D_Flush2DObjects();
+        return;
     }
-
-    /////////////////////// PROGRAM FOR 'SOLID' POINTS/LINES \\\\\\\\\\\\\\\\\\\\\
-
-    // Reset any previous state flag
-    Flags.w = 0xffff;
-    SetRenderState(Flags, Flags, DISABLE);
-    // adjust the flags for the surface
-    Flags.w = 0;
-    Flags.b.Alpha = Flags.b.Point = Flags.b.VColor = 1;
-    // set the engine status
-    SetRenderState(Flags, Flags, ENABLE);
-    // set the engine status
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-    // Stup the Fog level fro this object
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND,   *(DWORD *)(&m_FogLevel));
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE);
-    m_pD3DD->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_DISABLE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE);
-
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_DIFFUSEMATERIALSOURCE, D3DMCS_COLOR1);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_EMISSIVEMATERIALSOURCE, D3DMCS_COLOR2);
-
-    ////////////////////////////// POINTS FLUSH \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-    if (TheVbManager.SimpleBuffer.MaxPoints)
-    {
-        // Make the draw
-        m_pD3DD->DrawPrimitiveVB(D3DPT_POINTLIST, TheVbManager.SimpleBuffer.Vb, POINTS_OFFSET, TheVbManager.SimpleBuffer.Points, 0);
-        TheVbManager.SimpleBuffer.Points = TheVbManager.SimpleBuffer.MaxPoints = 0;
-    }
-
-
-    ////////////////////////////// LINES FLUSH \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-    if (TheVbManager.SimpleBuffer.MaxLines)
-    {
-        // Make the draw
-        m_pD3DD->DrawPrimitiveVB(D3DPT_LINELIST, TheVbManager.SimpleBuffer.Vb, LINES_OFFSET, TheVbManager.SimpleBuffer.MaxLines * 2, 0);
-        TheVbManager.SimpleBuffer.Lines = TheVbManager.SimpleBuffer.MaxLines = 0;
-    }
-
-#ifdef DEBUG_2D_ENGINE
-    START_PROFILE("DYN FLUSH:");
-#endif
-    DX2D_Flush2DObjects();
-#ifdef DEBUG_2D_ENGINE
-    STOP_PROFILE("DYN FLUSH:");
-#endif
-    //CheckHR(m_pD3DD->ApplyStateBlock(StateHandle));
-    m_pD3DD->ApplyStateBlock(StateHandle);
-    CheckHR(m_pD3DD->DeleteStateBlock(StateHandle));
-
-    // Reset any previous state flag
-    ResetFeatures();
-
+    // Artscout - 2026: #34 dead D3D7 tail removed (D3D11 branch above returns).
 }
 
 
@@ -2100,7 +1941,8 @@ void CDXEngine::DrawBlip(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const P
 
 void CDXEngine::FlushBlips(void)
 {
-
+    // #27 D3D11: radar blips (DX_DBS) via the object pipeline, green material.
+    // #34: the dead D3D7 (m_pD3DD) paths have been removed from this file.
     ObjectInstance *objInst = NULL;
     DWORD LodID;
     bool Lited;
@@ -2121,14 +1963,13 @@ void CDXEngine::FlushBlips(void)
     RadarMaterial.ambient.r = RadarMaterial.ambient.g = RadarMaterial.ambient.b = 0.0f;
     RadarMaterial.dvPower = 0.0f;
 
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_SPECULARENABLE, FALSE);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_DIFFUSEMATERIALSOURCE, D3DMCS_MATERIAL);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_AMBIENTMATERIALSOURCE, D3DMCS_MATERIAL);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_EMISSIVEMATERIALSOURCE, D3DMCS_MATERIAL);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
+    // Radar: alpha-blend ON, no texture; color comes from the material (green, set per blip below).
+    // Artscout - 2026: #34 dead D3D7 else-branch removed.
+    if (g_pRenderer)
+    {
+        g_pRenderer->SetObjectAlphaBlend(true);
+        g_pRenderer->SetTexture(0, NULL);
+    }
 
 
 
@@ -2152,13 +1993,15 @@ void CDXEngine::FlushBlips(void)
         if ( not m_VB.Valid) continue;
 
         // Ok... transform the object
-        m_pD3DD->SetTransform(D3DTRANSFORMSTATE_WORLD, (LPD3DMATRIX)&AppliedState);
-        // Dof Level at 0
         DofLevel = 0;
-
         RadarMaterial.diffuse.a = m_BlipIntensity / 255.0f;
 
-        m_pD3DD->SetMaterial(&RadarMaterial);
+        if (g_pRenderer)   // #34 dead D3D7 else-branch removed
+        {
+            g_pRenderer->SetWorld((const float*)&AppliedState);
+            // green blip, alpha=intensity (equiv. D3D7 emissive.g + diffuse.a).
+            g_pRenderer->SetMaterialColor(0.15f, 1.0f, 0.15f, m_BlipIntensity / 255.0f);
+        }
 
 
         //////////////////////// ********* HERE STARTS THE REAL NODES PARSING ***** ///////////////////////////////////
@@ -2221,32 +2064,35 @@ void CDXEngine::FlushBlips(void)
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_DIFFUSEMATERIALSOURCE, D3DMCS_COLOR1);
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_EMISSIVEMATERIALSOURCE, D3DMCS_COLOR2);
-    m_pD3DD->SetMaterial(&TheMaterial);
+    if (g_pRenderer)   // #34 dead D3D7 else-branch removed
+    {
+        g_pRenderer->SetMaterialColor(1.0f, 1.0f, 1.0f, 1.0f);   // reset material
+        g_pRenderer->SetObjectAlphaBlend(false);
+    }
 
 }
 
 
 void CDXEngine::DrawBlitNode(void)
 {
-    ///////////////////////// Draw the Primitive /////////////////////////////////
-#ifdef INDEXED_MODE_ENGINE
-    if (m_NODE.SURFACE->dwPrimType == D3DPT_POINTLIST)
+    if (g_bUseGpu)
     {
-        m_pD3DD->DrawPrimitiveVB(m_NODE.SURFACE->dwPrimType, m_VB.Vb, (DWORD) * ((Int16*)(m_NODE.BYTE + sizeof(DxSurfaceType))) + m_VB.BaseOffset,
-                                 m_NODE.SURFACE->dwVCount, 0);
+        // #27/#DX12 A4: draw the radar-blip surface from the GPU mirror VB (D3D11 buffer or D3D12 resource).
+        extern bool g_bUseD3D12;
+        void* vbh = g_bUseD3D12 ? m_VB.VbD3D12 : m_VB.VbD3D11;
+        if (g_pRenderer and vbh)
+        {
+            void *idxPtr = m_NODE.BYTE + sizeof(DxSurfaceType);
+            if (m_NODE.SURFACE->dwPrimType == D3DPT_POINTLIST)
+                g_pRenderer->DrawObjectStrip(m_NODE.SURFACE->dwPrimType, vbh, VERTEX_STRIDE,
+                                                  (int)((DWORD) * ((Int16*)idxPtr)),
+                                                  (int)m_NODE.SURFACE->dwVCount);
+            else
+                g_pRenderer->DrawObjectIndexed(m_NODE.SURFACE->dwPrimType, vbh, VERTEX_STRIDE,
+                                                    0, (unsigned short*)idxPtr,
+                                                    (int)m_NODE.SURFACE->dwVCount);
+        }
+        return;
     }
-    else
-    {
-        m_pD3DD->DrawIndexedPrimitiveVB(m_NODE.SURFACE->dwPrimType, m_VB.Vb, m_VB.BaseOffset, m_VB.NVertices,
-                                        (LPWORD)(m_NODE.BYTE + sizeof(DxSurfaceType)), m_NODE.SURFACE->dwVCount, 0);
-    }
-
-
-#else
-    m_pD3DD->DrawPrimitiveVB(m_NODE.SURFACE->dwPrimType, m_VB.Vb, (DWORD) * ((Int16*)(m_NODE.BYTE + sizeof(DxSurfaceType))) + m_VB.BaseOffset,
-                             m_NODE.SURFACE->dwVCount, 0);
-#endif
-
+    // Artscout - 2026: #34 dead D3D7 tail removed (D3D11 branch above returns).
 }

@@ -19,6 +19,13 @@ MLR
 #include "context.h"
 #include "mltrig.h"
 
+// Artscout - 2026: #VFX Phase 2 -- master toggle for the GPU-instanced particle emit.
+// true  : mapped effects (explosions / fire) render as sprite-atlas billboards via
+//         g_pRenderer->DrawParticlesInstanced (accumulated per-atlas, flushed once/frame).
+// false : the original per-particle DX2D_AddQuad path, byte-for-byte as before.
+// Effects with no atlas mapping (see kPsAtlas in drawparticlesys.cpp) always keep the DX2D path.
+extern bool g_bGpuParticles;
+
 #define PARTICLE_NAMES_LEN 32
 #define LOG10_ARRAY_ITEMS 500
 #define ASIN_ARRAY_ITEMS 500
@@ -138,7 +145,7 @@ struct timedFloat
 /******************************/
 struct TextureLink
 {
-    DWORD TexHandle;
+    DWORD_PTR TexHandle; // Artscout - 2026 (x64): pointer-sized
     CTextureItem *TexItem;
 };
 
@@ -235,7 +242,7 @@ typedef struct
     int ColorStage;
     int LightStage;
     // The textuer Handle
-    DWORD TexHandle;
+    DWORD_PTR TexHandle; // Artscout - 2026 (x64): pointer-sized
     // The Size random CX
     //CTextureItem *TexItem;
     // the Quad UV vertices
@@ -560,7 +567,7 @@ public:
     void *Sequence; // pointer to the Frame List pointers in memory
     int Flags;
 
-    GLint Run(int &Frame, float &TimeRest, float Elapsed, Tpoint &pos, float &alpha);
+    DWORD_PTR Run(int &Frame, float &TimeRest, float Elapsed, Tpoint &pos, float &alpha); // Artscout - 2026 (x64): pointer-sized handle
 
 };
 

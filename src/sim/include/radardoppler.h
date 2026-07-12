@@ -1,7 +1,7 @@
 #ifndef _RADAR_MODEL_H
 #define _RADAR_MODEL_H
 
-#include <cISO646>
+#include <iso646.h>
 #include "radar.h"
 #include "Campwp.h"  // MD -- 20040214: added for GM SP mode pseudo waypoint
 #include "alist.h"

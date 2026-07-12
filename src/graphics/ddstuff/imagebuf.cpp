@@ -12,6 +12,13 @@
 #include "Rotate.h"
 #include "Device.h"
 #include "ImageBuf.h"
+#include "Graphics/DXEngine/D3D11Backend.h"	// PHASE 1: D3D11 backend
+#include "Graphics/DXEngine/D3D12Backend.h"	// Artscout - 2026: #DX12 Phase 1
+#include "Graphics/DXEngine/d3d12/D3D12TextureManager.h"	// Artscout - 2026: #DX12 A5 -- off-screen RTT (D3D12Texture)
+#include "Graphics/DXEngine/OpenXRBackend.h"	// VR (OpenXR)
+#include "../../sim/INCLUDE/ivibedata.h"	// VR: g_intellivibeData.In3D (menu vs sim)
+#include "Graphics/DXEngine/d3d11/D3D11Renderer.h"	// PHASE 5: composite the 2D UI over 3D
+#include <d3d11.h>	// PHASE 5 (RTT): off-screen render target
 #include "FalcLib/include/debuggr.h"
 #include "Falclib/Include/IsBad.h"
 //#define _IMAGEBUFFER_PROTECT_SURF_LOCK
@@ -38,6 +45,15 @@ ImageBuffer::ImageBuffer()
     m_pDDSBack = NULL;
     ZeroMemory(&m_rcFront, sizeof(m_rcFront));
     m_pBltTarget = NULL;
+    m_bIsScreenBuffer = false;
+    m_pSysMem = NULL;
+
+    // PHASE 5 (RTT)
+    m_pD3D11RTTex = NULL;
+    m_pD3D11RTV = NULL;
+    m_pD3D11SRV = NULL;
+    m_pD3D11Staging = NULL;
+    m_pD3D12RTT = NULL;   // Artscout - 2026: #DX12 A5 -- off-screen RTT (D3D12Texture*)
 
 #ifdef _IMAGEBUFFER_PROTECT_SURF_LOCK
     InitializeCriticalSection(&m_cs);
@@ -74,413 +90,32 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
         width = w;
         height = h;
 
-        IDirectDraw7Ptr pDD(dev->GetMPRdevice());
-
-        DDSURFACEDESC2 ddsd;
-        ZeroMemory(&ddsd, sizeof(ddsd));
-        ddsd.dwFlags = DDSD_CAPS;
-        ddsd.dwSize = sizeof(ddsd);
-
-        switch (front)
+        // PHASE 1 (D3D7->D3D11): no DDraw surfaces. CPU buffer 16-bit RGB565, the UI composites
+        // via Lock; the screen buffer (front==Primary) drives Present.
+        extern bool g_bUseD3D11, g_bUseD3D12;
+        if (g_bUseD3D11 or g_bUseD3D12)   // #DX12: GPU mode also uses the CPU RGB565 buffer (no DDraw surfaces)
         {
-            case Primary:
-            {
-                switch (back)
-                {
-                    case SystemMem:
-                    {
-                        ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
-                        CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
-
-                        ddsd.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
-                        ddsd.dwWidth  = w;
-                        ddsd.dwHeight = h;
-                        ddsd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY bitor DDSCAPS_3DDEVICE;
-                        CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSBack, NULL));
-
-                        break;
-                    }
-
-                    case VideoMem:
-                    {
-                        ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
-                        CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
-
-                        ddsd.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
-                        ddsd.dwWidth  = w;
-                        ddsd.dwHeight = h;
-                        ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY bitor DDSCAPS_3DDEVICE;
-                        CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSBack, NULL));
-
-                        break;
-                    }
-
-                    case Flip:
-                    {
-                        if ( not fullScreen)
-                        {
-                            ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
-                            CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
-
-                            ddsd.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
-                            ddsd.dwWidth  = w;
-                            ddsd.dwHeight = h;
-                            ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY bitor DDSCAPS_3DDEVICE;
-                            CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSBack, NULL));
-                        }
-
-                        else
-                        {
-                            // Create the primary surface.
-                            ddsd.dwFlags or_eq DDSD_BACKBUFFERCOUNT;
-                            ddsd.ddsCaps.dwCaps or_eq DDSCAPS_PRIMARYSURFACE bitor DDSCAPS_3DDEVICE bitor DDSCAPS_COMPLEX bitor DDSCAPS_FLIP;
-                            ddsd.dwBackBufferCount = 1;
-                            CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
-
-                            // Get the attached backbuffer surface
-                            DDSCAPS2 ddscaps;
-                            ZeroMemory(&ddscaps, sizeof(ddscaps));
-                            ddscaps.dwCaps = DDSCAPS_BACKBUFFER;
-                            CheckHR(m_pDDSFront->GetAttachedSurface(&ddscaps, &m_pDDSBack));
-                        }
-
-                        break;
-                    }
-
-                    case None:
-                    {
-                        ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE bitor DDSCAPS_3DDEVICE;
-                        CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
-
-                        CheckHR(m_pDDSFront->QueryInterface(IID_IDirectDrawSurface7, (void **) &m_pDDSBack));
-
-                        break;
-                    }
-
-                    default:
-                    {
-                        ShiAssert(false); // illegal combination
-                        return FALSE;
-                    }
-                }
-
-                // auto adjust front rect when creating the primary surface in windowed mode
-                if ( not fullScreen)
-                {
-                    GetClientRect(targetWin, &m_rcFront);
-                    ClientToScreen(targetWin, (LPPOINT)&m_rcFront);
-                    ClientToScreen(targetWin, (LPPOINT)&m_rcFront + 1);
-                    m_bFrontRectValid = true;
-                }
-
-                break;
-            }
-
-            case SystemMem:
-            {
-                switch (back)
-                {
-                    case SystemMem:
-                    {
-                        ShiAssert(false); // not implemented yet
-                        break;
-                    }
-
-                    case VideoMem:
-                    {
-                        ShiAssert(false); // not implemented yet
-                        break;
-                    }
-
-                    case Flip:
-                    {
-                        ShiAssert(false); // not implemented yet
-                        break;
-                    }
-
-                    case None:
-                    {
-                        ddsd.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
-                        ddsd.dwWidth  = w;
-                        ddsd.dwHeight = h;
-                        ddsd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY bitor DDSCAPS_3DDEVICE;
-                        CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
-
-                        CheckHR(m_pDDSFront->QueryInterface(IID_IDirectDrawSurface7, (void **) &m_pDDSBack));
-
-                        break;
-                    }
-
-                    default:
-                    {
-                        ShiAssert(false); // illegal combination
-                        return FALSE;
-                    }
-                }
-
-                break;
-            }
-
-            case VideoMem:
-            {
-                switch (back)
-                {
-                    case SystemMem:
-                    {
-                        ShiAssert(false); // not implemented yet
-                        break;
-                    }
-
-                    case VideoMem:
-                    {
-                        ShiAssert(false); // not implemented yet
-                        break;
-                    }
-
-                    case Flip:
-                    {
-                        ShiAssert(false); // not implemented yet
-                        break;
-                    }
-
-                    case None:
-                    {
-                        ddsd.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
-                        ddsd.dwWidth  = w;
-                        ddsd.dwHeight = h;
-                        ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY bitor DDSCAPS_3DDEVICE;
-                        HRESULT hr = pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL);
-
-                        if (FAILED(hr))
-                        {
-                            if (hr == DDERR_OUTOFVIDEOMEMORY)
-                            {
-                                MonoPrint("ImageBuffer::Setup - EVICTING MANAGED TEXTURES \n");
-
-                                // if we are out of video memory, evict all managed textures and retry
-                                CheckHR(dev->GetDefaultRC()->m_pD3D->EvictManagedTextures());
-                                CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
-                            }
-
-                            else throw _com_error(hr);
-                        }
-
-                        CheckHR(m_pDDSFront->QueryInterface(IID_IDirectDrawSurface7, (void **) &m_pDDSBack));
-
-                        break;
-                    }
-
-                    default:
-                    {
-                        ShiAssert(false); // illegal combination
-                        return FALSE;
-                    }
-                }
-
-                break;
-            }
-
-            case LocalVideoMem:
-            case LocalVideoMem3D:
-            {
-                switch (back)
-                {
-                    case SystemMem:
-                    {
-                        ShiAssert(false); // not implemented yet
-                        break;
-                    }
-
-                    case VideoMem:
-                    {
-                        ShiAssert(false); // not implemented yet
-                        break;
-                    }
-
-                    case Flip:
-                    {
-                        ShiAssert(false); // not implemented yet
-                        break;
-                    }
-
-                    case None:
-                    {
-                        ddsd.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
-                        ddsd.dwWidth  = w;
-                        ddsd.dwHeight = h;
-                        ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY bitor DDSCAPS_LOCALVIDMEM;
-
-                        if (front == LocalVideoMem3D)
-                            ddsd.ddsCaps.dwCaps or_eq DDSCAPS_3DDEVICE;
-                        else
-                            ddsd.ddsCaps.dwCaps or_eq DDSCAPS_OFFSCREENPLAIN;
-
-                        HRESULT hr = pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL);
-
-                        if (FAILED(hr))
-                        {
-                            if (hr == DDERR_OUTOFVIDEOMEMORY)
-                            {
-                                MonoPrint("ImageBuffer::Setup - EVICTING MANAGED TEXTURES \n");
-
-                                // if we are out of video memory, evict all managed textures and retry
-                                CheckHR(dev->GetDefaultRC()->m_pD3D->EvictManagedTextures());
-                                CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
-                            }
-
-                            else throw _com_error(hr);
-                        }
-
-                        CheckHR(m_pDDSFront->QueryInterface(IID_IDirectDrawSurface7, (void **) &m_pDDSBack));
-
-                        break;
-                    }
-
-                    default:
-                    {
-                        ShiAssert(false); // illegal combination
-                        return FALSE;
-                    }
-                }
-
-                break;
-            }
-
-            /*
-             case Flip:
-             {
-             switch(back)
-             {
-             case SystemMem:
-             {
-             break;
-             }
-
-             case VideoMem:
-             {
-             break;
-             }
-
-             case Flip:
-             {
-             break;
-             }
-
-             case None:
-             {
-             break;
-             }
-
-             default:
-             {
-             ShiAssert(false); // illegal combination
-             return FALSE;
-             }
-             }
-
-             break;
-             }
-            */
-
-            case None: // Note: This doesnt create a 3D surface and it lets the driver decide where to put it)
-            {
-                switch (back)
-                {
-                    case SystemMem:
-                    {
-                        ShiAssert(false); // not implemented yet
-                        break;
-                    }
-
-                    case VideoMem:
-                    {
-                        ShiAssert(false); // not implemented yet
-                        break;
-                    }
-
-                    case Flip:
-                    {
-                        ShiAssert(false); // not implemented yet
-                        break;
-                    }
-
-                    case None:
-                    {
-                        ddsd.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
-                        ddsd.dwWidth  = w;
-                        ddsd.dwHeight = h;
-                        ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN;
-                        CheckHR(pDD->CreateSurface(&ddsd, &m_pDDSFront, NULL));
-
-                        CheckHR(m_pDDSFront->QueryInterface(IID_IDirectDrawSurface7, (void **) &m_pDDSBack));
-
-                        break;
-                    }
-
-                    default:
-                    {
-                        ShiAssert(false); // illegal combination
-                        return FALSE;
-                    }
-                }
-
-                break;
-            }
-
-            default:
-            {
-                ShiAssert(false); // illegal combination
-                return FALSE;
-            }
+            m_bIsScreenBuffer = (front == Primary);
+            ZeroMemory(&m_ddsdFront, sizeof(m_ddsdFront));
+            ZeroMemory(&m_ddsdBack, sizeof(m_ddsdBack));
+            m_ddsdFront.ddpfPixelFormat.dwRGBBitCount = 16;
+            m_ddsdFront.ddpfPixelFormat.dwRBitMask = 0xF800;
+            m_ddsdFront.ddpfPixelFormat.dwGBitMask = 0x07E0;
+            m_ddsdFront.ddpfPixelFormat.dwBBitMask = 0x001F;
+            m_ddsdBack.lPitch = width * 2;
+            ComputeColorShifts();
+            if (m_pSysMem) { free(m_pSysMem); m_pSysMem = NULL; }   // #55 don't leak on a repeated Setup without Cleanup
+            m_pSysMem = (BYTE*)malloc((size_t)width * height * 2);
+            if (m_pSysMem) memset(m_pSysMem, 0, (size_t)width * height * 2);
+            m_bReady = TRUE;
+            return TRUE;
         }
 
-        if (clip and m_pDDSFront)
-        {
-            ShiAssert( not fullScreen);
-            IDirectDrawClipperPtr pDDCLP;
-            CheckHR(pDD->CreateClipper(0, &pDDCLP, NULL));
-            CheckHR(pDDCLP->SetHWnd(0, targetWin));
-            CheckHR(m_pDDSFront->SetClipper(pDDCLP));
-        }
-
-        // Compute the color format conversion parameters
-        m_ddsdFront.dwSize = sizeof(DDSURFACEDESC2);
-        CheckHR(m_pDDSFront->GetSurfaceDesc(&m_ddsdFront));
-        m_ddsdBack.dwSize = sizeof(DDSURFACEDESC2);
-        CheckHR(m_pDDSBack->GetSurfaceDesc(&m_ddsdBack));
-
-        /* #ifdef _DEBUG
-         if(back == None)
-        // MonoPrint("ImageBuffer::Setup - %dx%d front (%s) created in %s memory\n",
-        // m_ddsdFront.dwWidth, m_ddsdFront.dwHeight, arrType2String[front],
-        // m_ddsdFront.ddsCaps.dwCaps bitand DDSCAPS_SYSTEMMEMORY  ? "SYSTEM" :
-        // (m_ddsdFront.ddsCaps.dwCaps bitand DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"));
-         else
-        /* MonoPrint("ImageBuffer::Setup - %dx%d front (%s) created in %s memory, back (%s) created in %s memory\n",
-         m_ddsdFront.dwWidth, m_ddsdFront.dwHeight,
-         arrType2String[front],
-         m_ddsdFront.ddsCaps.dwCaps bitand DDSCAPS_SYSTEMMEMORY  ? "SYSTEM" :
-         (m_ddsdFront.ddsCaps.dwCaps bitand DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"),
-          arrType2String[back],
-         m_ddsdBack.ddsCaps.dwCaps bitand DDSCAPS_SYSTEMMEMORY  ? "SYSTEM" :
-         (m_ddsdBack.ddsCaps.dwCaps bitand DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"));
-         #endif
-        */
-        // Set blt target surface depending on whether we will page flip or not
-        if (bWillCallSwapBuffer)
-            m_pBltTarget = m_pDDSBack;
-        else
-            m_pBltTarget = m_pDDSFront;
-
-        ComputeColorShifts();
-
-        // Everything worked, so finish up and return
-        m_bReady = TRUE;
 
         return TRUE;
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         MonoPrint("ImageBuffer::Setup - Error 0x%X\n", e.Error());
         return FALSE;
@@ -493,41 +128,9 @@ void ImageBuffer::AttachSurfaces(DisplayDevice *pDev, IDirectDrawSurface7 *pDDSF
     if ( not pDev or not pDDSFront)
         return;
 
-    if ( not pDDSBack)
-        pDDSBack = pDDSFront;
-
-    try
-    {
-        CheckHR(pDDSFront->QueryInterface(IID_IDirectDrawSurface7, (void **) &m_pDDSFront));
-        CheckHR(pDDSBack->QueryInterface(IID_IDirectDrawSurface7, (void **) &m_pDDSBack));
-
-        // Compute the color format conversion parameters
-        m_ddsdFront.dwSize = sizeof(DDSURFACEDESC2);
-        CheckHR(m_pDDSFront->GetSurfaceDesc(&m_ddsdFront));
-        m_ddsdBack.dwSize = sizeof(DDSURFACEDESC2);
-        CheckHR(m_pDDSBack->GetSurfaceDesc(&m_ddsdBack));
-
-        // Set blt target surface depending on whether we will page flip or not
-        m_pBltTarget = m_pDDSFront;
-
-        // Record the properties of the buffer(s) we're creating
-        device = pDev;
-        width = m_ddsdFront.dwWidth;
-        height = m_ddsdFront.dwHeight;
-
-        m_bFrontRectValid = false;
-        ZeroMemory(&m_rcFront, sizeof(m_rcFront));
-
-        ComputeColorShifts();
-
-        // Everything worked, so finish up and return
-        m_bReady = TRUE;
-    }
-
-    catch (_com_error e)
-    {
-        MonoPrint("ImageBuffer::AttachSurfaces - Error 0x%X\n", e.Error());
-    }
+    // Artscout - 2026: [DX7-PURGE] DDraw surface attach removed. The GPU (D3D11/D3D12)
+    // path never attaches DirectDraw surfaces -- it composes into the CPU RGB565 buffer.
+    (void)pDev; (void)pDDSFront; (void)pDDSBack;
 }
 
 
@@ -536,20 +139,35 @@ void ImageBuffer::Cleanup(void)
 {
     m_bReady = FALSE;
 
-    if (m_pDDSBack) // MUST be released before releasing the front buffer
-    {
-        m_pDDSBack->Release();
-        m_pDDSBack = NULL;
-    }
-
-    // Destroy our surface (including attached back buffer)
-    if (m_pDDSFront)
-    {
-        m_pDDSFront->Release();
-        m_pDDSFront = NULL;
-    }
-
+    // Artscout - 2026: [DX7-PURGE] DDraw surface Release() removed (no DDraw surfaces under GPU).
+    m_pDDSBack = NULL;
+    m_pDDSFront = NULL;
     m_pBltTarget = NULL;
+
+    // PHASE 5 (RTT): release the off-screen render target
+    if (m_pD3D11SRV)     { m_pD3D11SRV->Release();     m_pD3D11SRV = NULL; }
+    if (m_pD3D11RTV)     { m_pD3D11RTV->Release();     m_pD3D11RTV = NULL; }
+    if (m_pD3D11RTTex)   { m_pD3D11RTTex->Release();   m_pD3D11RTTex = NULL; }
+    if (m_pD3D11Staging) { m_pD3D11Staging->Release(); m_pD3D11Staging = NULL; }
+
+    // Artscout - 2026: #DX12 A5 -- free the D3D12 off-screen RTT + drop its readback slot in the backend.
+    if (m_pD3D12RTT)
+    {
+        if (g_pD3D12Backend) g_pD3D12Backend->ReleaseReadbackFor(m_pD3D12RTT);
+        if (g_pD3D12TextureManager)
+        {
+            D3D12Texture* t = (D3D12Texture*)m_pD3D12RTT;
+            g_pD3D12TextureManager->Destroy(*t);
+            g_pD3D12TextureManager->Free(t);
+        }
+        m_pD3D12RTT = NULL;
+    }
+
+    // #55 MEMORY-LEAK ROOT on 3D enter/exit: the D3D11 surface CPU buffer (565), malloc'd in
+    // Setup() line 101, was NEVER freed -> every ImageBuffer (cockpit 2x35MB, display 7MB,
+    // MFD...) leaked its backing buffer on EVERY entry -> ~70+MB/cycle -> std::bad_alloc.
+    // Cleanup is called from ~ImageBuffer -> free it here.
+    if (m_pSysMem) { free(m_pSysMem); m_pSysMem = NULL; }
 }
 
 
@@ -629,63 +247,16 @@ void ImageBuffer::UpdateFrontWindowRect(RECT *rect)
 // Fix in memory and return and pointer to the memory associated with our back buffer
 void *ImageBuffer::Lock(bool bLockMutexOnly, bool bWriteOnly)
 {
-#ifdef _IMAGEBUFFER_PROTECT_SURF_LOCK
-    EnterCriticalSection(&m_cs);
-
-    if (bLockMutexOnly)
-        return NULL;
-
-#endif
-
-    ShiAssert(IsReady());
-
-    HRESULT hr;
-
-    DDSURFACEDESC2 ddsd;
-    ZeroMemory(&ddsd, sizeof(ddsd));
-    ddsd.dwSize = sizeof(ddsd);
-
-    // DWORD dwFlags = DDLOCK_NOSYSLOCK bitor DDLOCK_WAIT bitor DDLOCK_SURFACEMEMORYPTR;
-    DWORD dwFlags = DDLOCK_WAIT bitor DDLOCK_SURFACEMEMORYPTR;
-
-    if (bWriteOnly) dwFlags or_eq DDLOCK_WRITEONLY;
-
-    int nRetries = 1;
-
-Retry:
-    hr = m_pDDSBack->Lock(NULL, &ddsd, dwFlags, NULL);
-    m_bBitsLocked = SUCCEEDED(hr);
-
-    if (FAILED(hr))
-    {
-        MonoPrint("ImageBuffer::Lock - Lock failed with 0x%X\n", hr);
-
-        if (hr == DDERR_SURFACELOST and nRetries)
-        {
-            RestoreAll();
-            nRetries--;
-            goto Retry;
-        }
-    }
-
-    return ddsd.lpSurface;
+    // Artscout - 2026: [DX7-PURGE] GPU (D3D11/D3D12) is the only path -- always the CPU RGB565 buffer.
+    (void)bLockMutexOnly; (void)bWriteOnly;
+    return m_pSysMem;
 }
 
 // Reliquish our exclusive pointer to the memory associated with our back buffer
 void ImageBuffer::Unlock()
 {
-    ShiAssert(IsReady());
-
-    if (m_bBitsLocked)
-    {
-        HRESULT hr = m_pDDSBack->Unlock(NULL);
-        ShiAssert(SUCCEEDED(hr));
-        m_bBitsLocked = false;
-    }
-
-#ifdef _IMAGEBUFFER_PROTECT_SURF_LOCK
-    LeaveCriticalSection(&m_cs);
-#endif
+    // Artscout - 2026: [DX7-PURGE] GPU path has no DDraw surface to unlock -- nothing to do.
+    m_bBitsLocked = false;
 }
 
 // Set the color key for this surface to be used when it is transparently
@@ -717,10 +288,8 @@ void ImageBuffer::SetChromaKey(UInt32 colorKey)
     else
         m_dwColorKey or_eq (colorKey << -blueShift) bitand m_ddsdFront.ddpfPixelFormat.dwBBitMask;
 
-    DDCOLORKEY key = { m_dwColorKey, m_dwColorKey};
-
-    // Submit the request to DirectDraw
-    HRESULT hr = m_pDDSFront->SetColorKey(DDCKEY_SRCBLT, &key);
+    // Artscout - 2026: [DX7-PURGE] m_dwColorKey is consumed by the CPU composite path;
+    // the DDraw SetColorKey() submission is gone (no DDraw surface under GPU).
 }
 
 // Convert a 32 bit alpha, blue, green, red color to a 16 bit pixel
@@ -857,41 +426,7 @@ void ImageBuffer::Compose(ImageBuffer *srcBuffer, RECT *dstRect, RECT *srcRect)
     ShiAssert(FALSE == F4IsBadReadPtr(srcBuffer, sizeof * srcBuffer));
 
 
-    bool bStretch = ((srcRect->right - srcRect->left) not_eq (dstRect->right - dstRect->left)) or ((srcRect->bottom - srcRect->top) not_eq (dstRect->bottom - dstRect->top));
-    HRESULT hr;
-
-    if ( not m_bFrontRectValid and not bStretch)
-    {
-        if (srcRect and m_pBltTarget not_eq m_pDDSBack)
-        {
-            RECT rcSrc = *srcRect;
-            rcSrc.left += m_rcFront.left;
-            rcSrc.top += m_rcFront.top;
-
-            hr = m_pBltTarget->BltFast(rcSrc.left, rcSrc.top, srcBuffer->m_pDDSBack, dstRect, DDBLTFAST_WAIT bitor DDBLTFAST_NOCOLORKEY);
-        }
-
-        else hr = m_pBltTarget->BltFast(srcRect->left, srcRect->top, srcBuffer->m_pDDSBack, dstRect, DDBLTFAST_WAIT bitor DDBLTFAST_NOCOLORKEY);
-    }
-
-    else
-    {
-        if (m_bFrontRectValid and srcRect and m_pBltTarget not_eq m_pDDSBack)
-        {
-            RECT rcSrc = *srcRect;
-            rcSrc.left += m_rcFront.left;
-            rcSrc.right += m_rcFront.left;
-            rcSrc.top += m_rcFront.top;
-            rcSrc.bottom += m_rcFront.top;
-
-            hr = m_pBltTarget->Blt(&rcSrc, srcBuffer->m_pDDSBack, dstRect, DDBLT_WAIT, NULL);
-        }
-
-        else hr = m_pBltTarget->Blt(srcRect, srcBuffer->m_pDDSBack, dstRect, DDBLT_WAIT, NULL);
-    }
-
-    if ( not SUCCEEDED(hr))
-        MonoPrint("ImageBuffer::Compose - Error 0x%X\n", hr);
+    // Artscout - 2026: [DX7-PURGE] DDraw surface->Blt composite removed (GPU path composes via renderer).
 }
 
 // Copy a retangular area from the source image's front buffer to the this images's
@@ -904,43 +439,7 @@ void ImageBuffer::ComposeTransparent(ImageBuffer *srcBuffer, RECT *dstRect, RECT
     ShiAssert(FALSE == F4IsBadReadPtr(dstRect, sizeof * dstRect));
     ShiAssert(FALSE == F4IsBadReadPtr(srcBuffer, sizeof * srcBuffer));
 
-    bool bStretch = ((srcRect->right - srcRect->left) not_eq (dstRect->right - dstRect->left)) or ((srcRect->bottom - srcRect->top) not_eq (dstRect->bottom - dstRect->top));
-    HRESULT hr;
-
-    if ( not m_bFrontRectValid and not bStretch)
-    {
-        if (srcRect and m_pBltTarget not_eq m_pDDSBack)
-        {
-            RECT rcSrc = *srcRect;
-            rcSrc.left += m_rcFront.left;
-            rcSrc.top += m_rcFront.top;
-
-            hr = m_pBltTarget->BltFast(rcSrc.left, rcSrc.top, srcBuffer->m_pDDSBack, dstRect, DDBLTFAST_WAIT bitor DDBLTFAST_SRCCOLORKEY);
-        }
-
-        else hr = m_pBltTarget->BltFast(srcRect->left, srcRect->top, srcBuffer->m_pDDSBack, dstRect, DDBLTFAST_WAIT bitor DDBLTFAST_SRCCOLORKEY);
-    }
-
-    else
-    {
-        if (m_bFrontRectValid and srcRect and m_pBltTarget not_eq m_pDDSBack)
-        {
-            RECT rcSrc = *srcRect;
-            rcSrc.left += m_rcFront.left;
-            rcSrc.right += m_rcFront.left;
-            rcSrc.top += m_rcFront.top;
-            rcSrc.bottom += m_rcFront.top;
-
-            hr = m_pBltTarget->Blt(&rcSrc, srcBuffer->m_pDDSBack, dstRect, DDBLT_WAIT bitor DDBLT_KEYSRC, NULL);
-        }
-
-        else hr = m_pBltTarget->Blt(srcRect, srcBuffer->m_pDDSBack, dstRect, DDBLT_WAIT bitor DDBLT_KEYSRC, NULL);
-    }
-
-    ShiAssert(SUCCEEDED(hr));
-
-    if ( not SUCCEEDED(hr))
-        MonoPrint("ImageBuffer::ComposeTransparent - Error 0x%X\n", hr);
+    // Artscout - 2026: [DX7-PURGE] DDraw surface->Blt transparent composite removed (GPU path composes via renderer).
 }
 
 // Copy a retangular area from the source image's BACK buffer to the this images's
@@ -1020,56 +519,363 @@ void ImageBuffer::ComposeRoundRot(ImageBuffer *srcBuffer, RECT *srcRect, RECT *d
 }
 
 // Move this image's back buffer contents into its front buffer, possibly making it visible.
+// PHASE 2 (2D UI): blits THIS CPU buffer to the D3D11 backbuffer and presents (regardless of
+// m_bIsScreenBuffer). CopyToPrimary calls on Front_ (the composited UI frame).
+// PHASE 5 (RTT): create an off-screen render target (RTV+SRV) sized to the buffer.
+bool ImageBuffer::EnsureD3D11RenderTarget()
+{
+    extern bool g_bUseD3D11;
+    if (!g_bUseD3D11 || !g_pD3D11Backend) return false;
+    if (m_bIsScreenBuffer) return false;          // screen buffer = backbuffer
+    if (m_pD3D11RTV && m_pD3D11SRV) return true;  // already created
+    if (width <= 0 || height <= 0) return false;
+
+    ID3D11Device* dev = g_pD3D11Backend->GetDevice();
+    if (!dev) return false;
+
+    D3D11_TEXTURE2D_DESC td; ZeroMemory(&td, sizeof(td));
+    td.Width = width; td.Height = height; td.MipLevels = 1; td.ArraySize = 1;
+    td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;       // = backbuffer format (the screen path draws the same)
+    td.SampleDesc.Count = 1;
+    td.Usage = D3D11_USAGE_DEFAULT;
+    td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+    if (FAILED(dev->CreateTexture2D(&td, NULL, &m_pD3D11RTTex))) return false;
+    if (FAILED(dev->CreateRenderTargetView(m_pD3D11RTTex, NULL, &m_pD3D11RTV)))
+    { m_pD3D11RTTex->Release(); m_pD3D11RTTex = NULL; return false; }
+    if (FAILED(dev->CreateShaderResourceView(m_pD3D11RTTex, NULL, &m_pD3D11SRV)))
+    { m_pD3D11RTV->Release(); m_pD3D11RTV = NULL; m_pD3D11RTTex->Release(); m_pD3D11RTTex = NULL; return false; }
+    return true;
+}
+
+// PHASE 5 (RTT): bind as render target (MFD/HUD/radar content is drawn here).
+void ImageBuffer::BindD3D11RenderTarget(bool clear)
+{
+    // Artscout - 2026: #DX12 A5 -- under D3D12 the off-screen RTT is a D3D12Texture bound via BindSceneRtt.
+    // ContextMPR::StartFrame calls THIS unconditionally for an off-screen IB, so the delegation keeps the
+    // call site backend-agnostic (the flat D3D11 path below is untouched).
+    extern bool g_bUseD3D12;
+    if (g_bUseD3D12) { BindD3D12RenderTarget(clear); return; }
+
+    if (!EnsureD3D11RenderTarget()) return;
+    ID3D11DeviceContext* ctx = g_pD3D11Backend->GetContext();
+    if (!ctx) return;
+
+    ctx->OMSetRenderTargets(1, &m_pD3D11RTV, NULL);   // depth not needed for 2D content
+    D3D11_VIEWPORT vp;
+    vp.TopLeftX = 0; vp.TopLeftY = 0;
+    vp.Width = (FLOAT)width; vp.Height = (FLOAT)height;
+    vp.MinDepth = 0.0f; vp.MaxDepth = 1.0f;
+    ctx->RSSetViewports(1, &vp);
+
+    if (clear) { const FLOAT z[4] = { 0, 0, 0, 0 }; ctx->ClearRenderTargetView(m_pD3D11RTV, z); }
+
+    // the renderer's gScreenSize = the RTT size (VS_Screen: pixel->NDC by this size)
+    if (g_pD3D11Renderer) g_pD3D11Renderer->SetViewportSize(width, height);
+}
+
+// Artscout - 2026: #DX12 A5 -- lazily create the D3D12 off-screen render-target (RGBA8, RTV+SRV) sized to
+// this buffer, from the texture manager. Rest state = PIXEL_SHADER_RESOURCE (so it can be sampled/copied).
+bool ImageBuffer::EnsureD3D12RenderTarget()
+{
+    extern bool g_bUseD3D12;
+    if (!g_bUseD3D12 || !g_pD3D12Backend || !g_pD3D12TextureManager) return false;
+    if (m_bIsScreenBuffer) return false;              // screen buffer = back buffer / eye image
+    if (m_pD3D12RTT) return true;                     // already created
+    if (width <= 0 || height <= 0) return false;
+
+    D3D12Texture* t = g_pD3D12TextureManager->Alloc();
+    if (!t) return false;
+    if (!g_pD3D12TextureManager->CreateRenderTarget(*t, width, height))
+    {
+        g_pD3D12TextureManager->Free(t);
+        return false;
+    }
+    m_pD3D12RTT = t;
+    return true;
+}
+
+// #DX12 A5: bind the D3D12 off-screen RTT as the scene target (displays/sensor scene draw into it). No depth
+// (the sensor path renders z-less, like the D3D11 RTT). gScreenSize = the RTT size (VS_Screen pixel->NDC).
+void ImageBuffer::BindD3D12RenderTarget(bool clear)
+{
+    if (!EnsureD3D12RenderTarget()) return;
+    // #DX12 A5: only bind within an already-open frame. BindSceneRtt would otherwise EnsureFrameStarted and open
+    // an orphan backbuffer frame if called off the render loop (sim-update sensor/GM render) -> #527 barrier
+    // mismatch + VR xrEndFrame failure (black headset). Off-frame RTT binds are simply skipped.
+    if (!g_pD3D12Backend->IsRecording()) return;
+    g_pD3D12Backend->BindSceneRtt(m_pD3D12RTT, width, height, clear);
+    extern IRenderer* g_pRenderer;
+    if (g_pRenderer) g_pRenderer->SetViewportSize(width, height);
+}
+
+// #DX12 A5: transition the RTT back to PIXEL_SHADER_RESOURCE and rebind the scene target (back buffer / eye).
+// Called by ContextMPR::FinishFrame for an off-screen IB so the main scene render can continue afterwards.
+void ImageBuffer::UnbindD3D12RenderTarget()
+{
+    extern bool g_bUseD3D12;
+    if (!g_bUseD3D12 || !g_pD3D12Backend || !m_pD3D12RTT) return;
+    g_pD3D12Backend->UnbindSceneRtt(m_pD3D12RTT);   // -> PIXEL_SHADER_RESOURCE + BindBackBufferRTV
+    // Restore gScreenSize to the scene target size (BindBackBufferRTV rebinds the RTV/viewport but not the
+    // renderer's cbViewport) so any 2D screen draw after the sensor pass isn't mapped by the small RTT size.
+    extern IRenderer* g_pRenderer;
+    if (g_pRenderer) g_pRenderer->SetViewportSize(g_pD3D12Backend->SceneW(), g_pD3D12Backend->SceneH());
+}
+
+// Artscout - 2026 (#34 menu 3D-viewer): copy a [x,y,w,h] rect out of this off-screen RTT into a
+// 565 CPU buffer (the on-screen UI surface). The C_3dViewer renders a model into a screen-sized
+// off-screen RTT; we read its viewport rect back and stamp it into the menu's 2D surface, so the
+// model appears in the normal full 2D blit instead of the present-mode chroma path (black-out).
+void ImageBuffer::BlitD3D11RTTTo565(unsigned short* dst, int dstStridePix, int dstHeightPix, int x, int y, int w, int h)
+{
+    extern bool g_bUseD3D11, g_bUseD3D12;
+    // Artscout - 2026: #DX12 A5 -- read back the D3D12 off-screen RTT (deferred: this call converts the
+    // PREVIOUS frame's copy into dst and records THIS frame's copy; 1-frame latent, no mid-frame GPU stall).
+    if (g_bUseD3D12)
+    {
+        if (g_pD3D12Backend && dst && m_pD3D12RTT)
+            g_pD3D12Backend->ReadbackRttTo565(m_pD3D12RTT, dst, dstStridePix, dstHeightPix, x, y, w, h);
+        return;
+    }
+    if (!g_bUseD3D11 || !g_pD3D11Backend || !dst) return;
+    if (!m_pD3D11RTTex) return;                 // nothing was rendered into the RTT
+
+    ID3D11Device* dev = g_pD3D11Backend->GetDevice();
+    ID3D11DeviceContext* ctx = g_pD3D11Backend->GetContext();
+    if (!dev || !ctx) return;
+
+    // Lazily create the STAGING copy (same size/format as the RTT, CPU-readable).
+    if (!m_pD3D11Staging)
+    {
+        D3D11_TEXTURE2D_DESC td; ZeroMemory(&td, sizeof(td));
+        td.Width = width; td.Height = height; td.MipLevels = 1; td.ArraySize = 1;
+        td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        td.SampleDesc.Count = 1;
+        td.Usage = D3D11_USAGE_STAGING;
+        td.BindFlags = 0;
+        td.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+        if (FAILED(dev->CreateTexture2D(&td, NULL, &m_pD3D11Staging))) return;
+    }
+
+    ctx->CopyResource(m_pD3D11Staging, m_pD3D11RTTex);
+
+    D3D11_MAPPED_SUBRESOURCE map;
+    if (FAILED(ctx->Map(m_pD3D11Staging, 0, D3D11_MAP_READ, 0, &map))) return;
+
+    // Clip the requested rect to both the RTT (source) and the destination buffer.
+    int x0 = x, y0 = y;
+    if (x0 < 0) x0 = 0;
+    if (y0 < 0) y0 = 0;
+    int x1 = x + w, y1 = y + h;
+    if (x1 > width)  x1 = width;
+    if (y1 > height) y1 = height;
+    if (x1 > dstStridePix) x1 = dstStridePix;
+    if (y1 > dstHeightPix) y1 = dstHeightPix;
+
+    const BYTE* srcBase = (const BYTE*)map.pData;
+    for (int row = y0; row < y1; ++row)
+    {
+        const BYTE* src = srcBase + (size_t)row * map.RowPitch + (size_t)x0 * 4;
+        unsigned short* d = dst + (size_t)row * dstStridePix + x0;
+        for (int col = x0; col < x1; ++col)
+        {
+            BYTE r = src[0], g = src[1], b = src[2];   // R8G8B8A8
+            *d++ = (unsigned short)(((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3));
+            src += 4;
+        }
+    }
+
+    ctx->Unmap(m_pD3D11Staging, 0);
+}
+
+// Artscout - 2026: GPU-copy this RTT's texture into another texture (same size/format). Used by the GM
+// radar to snapshot a completed sweep into a persistent panel texture (CopyResource = no CPU readback).
+void ImageBuffer::CopyD3D11RTTo(void* destTex2D)
+{
+    extern bool g_bUseD3D11, g_bUseD3D12;
+    // Artscout - 2026: #DX12 A5 -- GM radar snapshot. Under D3D12 destTex2D is the panel handle's D3D12Texture*
+    // (targetHandle->m_pDDS). GPU copy on the main list (no readback): src RTT -> dst panel texture.
+    if (g_bUseD3D12)
+    {
+        if (g_pD3D12Backend && destTex2D && m_pD3D12RTT)
+            g_pD3D12Backend->CopyRtt(m_pD3D12RTT, destTex2D);
+        return;
+    }
+    if (!g_bUseD3D11 || !g_pD3D11Backend || !destTex2D || !m_pD3D11RTTex) return;
+    ID3D11DeviceContext* ctx = g_pD3D11Backend->GetContext();
+    if (!ctx) return;
+    ctx->CopyResource((ID3D11Resource*)destTex2D, (ID3D11Resource*)m_pD3D11RTTex);
+}
+
+void ImageBuffer::PresentD3D11()
+{
+    // Artscout - 2026: #DX12 -- present through D3D12. A GPU frame (3D scene recorded into the command list
+    // by D3D12Renderer, which set g_bD3D11GPUDraw + opened the frame via EnsureFrameStarted) is just presented;
+    // a 2D frame (menu) opens a fresh frame and blits the RGB565 UI surface. NOTE: the UI composite OVER the 3D
+    // (Phase-3 CompositeUISurface, black=transparent) is the next increment -- for now the 2D overlay is skipped
+    // on GPU frames so the terrain shows on its own.
+    if (g_bUseD3D12)
+    {
+        if (g_pD3D12Backend)
+        {
+            extern bool g_bD3D11GPUDraw;
+            if (g_bD3D11GPUDraw)
+            {
+                // #DX12 п.2: composite the 2D UI (black=transparent) over the 3D, then present. Clear the CPU
+                // layer afterwards so stale overlays don't ghost (overlays are redrawn each frame).
+                if (g_pD3D12Backend) g_pD3D12Backend->ResolveMsaaToBackBuffer();   // MSAA: resolve 3D into backbuffer BEFORE the UI composite
+                if (m_pSysMem && g_pRenderer) g_pRenderer->CompositeUISurface(m_pSysMem, width, height);
+                if (m_pSysMem) memset(m_pSysMem, 0, (size_t)width * height * 2);
+                g_pD3D12Backend->Present(true);          // 3D already recorded -> close/execute/present
+            }
+            else
+            {
+                g_pD3D12Backend->BeginFrame(0xFF000000);
+                if (m_pSysMem) g_pD3D12Backend->BlitBitmap565(m_pSysMem, width, height);
+                g_pD3D12Backend->Present(true);
+                // #DX12 п.5 (VR menu): feed the 2D UI surface to the XR pump (RunMenuFrame quad panel).
+                extern bool g_bUseOpenXR;
+                if (g_bUseOpenXR && m_pSysMem)
+                {
+                    extern void OpenXR_CacheMenuSurface(const void* src565, int w, int h);
+                    OpenXR_CacheMenuSurface(m_pSysMem, width, height);
+                }
+            }
+            g_bD3D11GPUDraw = false;
+        }
+        return;
+    }
+    extern bool g_bUseD3D11;
+    extern bool g_bD3D11GPUDraw;
+    if (!g_bUseD3D11 || !g_pD3D11Backend) return;
+    // PHASE 5: 2D UI. On a GPU frame (3D scene in the RTV) composite the UI OVER 3D with
+    // black chroma-key (in-sim overlays: text/cursor/dialogs). On a pure 2D frame
+    // (menu) -- a full blit from m_pSysMem.
+    // #7 MSAA: on a 3D frame resolve the multisample target into the swapchain backbuffer BEFORE any UI
+    // (and before present), regardless of m_pSysMem presence/render validity. Without MSAA -- no-op.
+    if (g_bD3D11GPUDraw)
+        g_pD3D11Backend->ResolveMsaaToBackBuffer();
+    if (m_pSysMem)
+    {
+        if (g_bD3D11GPUDraw && g_pD3D11Renderer && g_pD3D11Renderer->IsValid())
+        {
+            g_pD3D11Renderer->CompositeUISurface(m_pSysMem, width, height);
+            // On a 3D frame clear the CPU layer to black (=transparent): overlays are drawn
+            // anew each frame, else stale content (old menu) ghosts over the 3D.
+            memset(m_pSysMem, 0, (size_t)width * height * 2);
+        }
+        else if (!g_bD3D11GPUDraw)
+        {
+            g_pD3D11Backend->BlitBitmap565(m_pSysMem, width, height);
+            // VR: this is the real (menu) 2D present path (runs on the ui95 OutputLoop
+            // thread). Cache the UI surface so the XR pump can show it as a quad panel.
+            extern bool g_bUseOpenXR;
+            if (g_bUseOpenXR)
+            {
+                // Artscout - 2026 (VR menu): COPY the surface into a lock-protected stable buffer (m_pSysMem
+                // is valid on THIS thread now) so the pump never reads a freed/resized ImageBuffer.
+                extern void OpenXR_CacheMenuSurface(const void* src565, int w, int h);
+                OpenXR_CacheMenuSurface(m_pSysMem, width, height);
+            }
+        }
+    }
+    g_pD3D11Backend->Present(true);
+    g_bD3D11GPUDraw = false;
+}
+
 void ImageBuffer::SwapBuffers(bool bDontFlip)
 {
     ShiAssert(IsReady());
 
-    // Return right away is there is nothing to do
-    if (m_pDDSBack == NULL)
-        return;
-
-    HRESULT hr;
-
-    //START_PROFILE("SWAP WAIT : ");
-    // Make sure the drivers isnt buffering any data
-    if (g_bCheckBltStatusBeforeFlip)
+    // Artscout - 2026: #DX12 -- screen buffer present through D3D12 (same GPU-frame vs 2D-frame split as
+    // PresentD3D11 above). GPU frame (3D recorded, g_bD3D11GPUDraw set) -> present as-is; 2D frame (menu) ->
+    // fresh frame + blit the RGB565 UI. UI-over-3D composite = next increment.
+    if (g_bUseD3D12)
     {
-        while (true)
+        if (m_bIsScreenBuffer && g_pD3D12Backend)
         {
-            HRESULT hres = m_pDDSBack->GetFlipStatus(DDGFS_CANFLIP);
-
-            if (hres not_eq DDERR_WASSTILLDRAWING)
+            extern bool g_bD3D11GPUDraw;
+            if (g_bD3D11GPUDraw)
             {
-                break;
+                // #DX12 п.2: composite the 2D UI (black=transparent) over the 3D scene, then present.
+                if (g_pD3D12Backend) g_pD3D12Backend->ResolveMsaaToBackBuffer();   // MSAA: resolve 3D into backbuffer BEFORE the UI composite
+                if (m_pSysMem && g_pRenderer) g_pRenderer->CompositeUISurface(m_pSysMem, width, height);
+                if (m_pSysMem) memset(m_pSysMem, 0, (size_t)width * height * 2);
+                g_pD3D12Backend->Present(true);
             }
-
-            // Let all the other threads have some CPU.
-            Sleep(0);
+            else
+            {
+                g_pD3D12Backend->BeginFrame(0xFF000000);
+                if (m_pSysMem) g_pD3D12Backend->BlitBitmap565(m_pSysMem, width, height);
+                g_pD3D12Backend->Present(true);
+                // #DX12 п.5 (VR menu/splash): feed the 2D UI + load-splash surface to the XR pump so the
+                // headset shows the menu/splash panel instead of a blue void (mirrors the D3D11 branch below).
+                extern bool g_bUseOpenXR;
+                if (g_bUseOpenXR && m_pSysMem)
+                {
+                    extern void OpenXR_CacheMenuSurface(const void* src565, int w, int h);
+                    OpenXR_CacheMenuSurface(m_pSysMem, width, height);
+                }
+            }
+            g_bD3D11GPUDraw = false;
         }
-    }
-
-    //STOP_PROFILE("SWAP WAIT : ");
-    // OW
-    if ( not bDontFlip and (m_ddsdFront.ddsCaps.dwCaps bitand DDSCAPS_FLIP))
-    {
-        hr = m_pDDSFront->Flip(NULL, DDFLIP_WAIT);
-        // hr = m_pDDSFront->Flip(NULL, DDFLIP_NOVSYNC);
-        ShiAssert(SUCCEEDED(hr));
-
         return;
     }
 
-    RECT backRect = { 0, 0, m_ddsdBack.dwWidth, m_ddsdBack.dwHeight };
+    extern bool g_bUseD3D11;
+    extern bool g_bD3D11GPUDraw;
+    if (g_bUseD3D11)
+    {
+        if (m_bIsScreenBuffer && g_pD3D11Backend)
+        {
+            // Artscout - 2026 (VR mirror): in a VR 3D frame the scene was rendered into the XR eye
+            // images (NOT the MSAA backbuffer target), and RenderFrame already copied the eye(s) onto
+            // the back buffer for the desktop mirror. Resolving the (stale) MSAA target and compositing
+            // the (stale splash) UI surface here would ERASE that mirror -> skip both in VR. The headset
+            // gets its frame from xrEndFrame regardless; this only controls the desktop window.
+            // NOTE: gate on g_bUseOpenXR, NOT g_bVrFrameActive. This present runs on the ui95 OutputLoop
+            // thread, while g_bVrFrameActive is written on the render thread inside otwloop -- reading it here
+            // is a cross-thread race: a stale 'false' flips vrMirror off, runs an extra Resolve/Composite in
+            // the middle of a live XR frame, and desyncs the OpenXR frame loop (xrBeginFrame -> CALL_ORDER_
+            // INVALID -> _com_error flood -> black screen). g_bUseOpenXR is stable, so VR stays consistent.
+            extern bool g_bUseOpenXR, g_bXrMirror;
+            const bool vrMirror = g_bUseOpenXR && g_bXrMirror && g_bD3D11GPUDraw;
 
-    if ( not m_bFrontRectValid) // assumes no clipper is attached (fullscreen) 
-        hr = m_pDDSFront->BltFast(m_rcFront.left, m_rcFront.top, m_pDDSBack, &backRect, DDBLTFAST_WAIT bitor DDBLTFAST_NOCOLORKEY);
-    else
-        hr = m_pDDSFront->Blt(&m_rcFront, m_pDDSBack, &backRect, DDBLT_WAIT, NULL);
+            // PHASE 5: GPU frame (3D) -> composite UI over 3D; 2D (menu) -> blit.
+            // #7 MSAA: 3D frame -> resolve the multisample target into the backbuffer before UI/present (no-op without MSAA).
+            if (g_bD3D11GPUDraw && !vrMirror)
+                g_pD3D11Backend->ResolveMsaaToBackBuffer();
+            if (m_pSysMem && !vrMirror)
+            {
+                if (g_bD3D11GPUDraw && g_pD3D11Renderer && g_pD3D11Renderer->IsValid())
+                {
+                    g_pD3D11Renderer->CompositeUISurface(m_pSysMem, width, height);
+                    memset(m_pSysMem, 0, (size_t)width * height * 2);
+                }
+                else if (!g_bD3D11GPUDraw)
+                {
+                    g_pD3D11Backend->BlitBitmap565(m_pSysMem, width, height);
+                    // VR: this 2D path also carries the 3D-load splash (OTWImage 2D blit).
+                    // Cache it so the XR pump shows the splash on the panel instead of black.
+                    extern bool g_bUseOpenXR;
+                    if (g_bUseOpenXR)
+                    {
+                        extern void OpenXR_CacheMenuSurface(const void* src565, int w, int h);
+                        OpenXR_CacheMenuSurface(m_pSysMem, width, height);   // copy under lock (no UAF)
+                    }
+                }
+            }
+            g_pD3D11Backend->Present(true);
+            g_bD3D11GPUDraw = false;
+            // VR: in the 3D world the headset frame is driven by the per-eye STEREO loop in
+            // OTWDriverClass::RenderFrame (the scene is rendered once per eye into the XR eye
+            // images there). Menus are driven by the main-loop pump (OpenXR_PumpFrame). So
+            // SwapBuffers no longer drives XR for the 3D path.
+        }
+        return;
+    }
 
-    ShiAssert(SUCCEEDED(hr));
 
-    if ( not SUCCEEDED(hr))
-        MonoPrint("ImageBuffer::SwapBuffers - Error 0x%X\n", hr);
+    // Artscout - 2026: [DX7-PURGE] DDraw Flip/Blt present removed -- the D3D11/D3D12 paths above present and return.
 }
 
 // Helpful function to drop a screen capture to disk (BACK buffer to 24 bit RAW file)
@@ -1251,34 +1057,7 @@ void ImageBuffer::RestoreAll()
 {
     ShiAssert(IsReady());
 
-    HRESULT hr;
-    hr = m_pDDSFront->IsLost();
-
-    if (hr == DDERR_SURFACELOST)
-    {
-        hr = m_pDDSFront->Restore();
-
-        if (SUCCEEDED(hr))
-        {
-            MonoPrint("ImageBuffer::RestoreAll - Front restored\n");
-
-            if (m_pDDSFront not_eq m_pDDSBack)
-            {
-                hr = m_pDDSBack->IsLost();
-
-                if (hr == DDERR_SURFACELOST)
-                {
-                    hr = m_pDDSBack->Restore();
-
-                    if (SUCCEEDED(hr))
-                        MonoPrint("ImageBuffer::RestoreAll - Back restored\n");
-                    else MonoPrint("ImageBuffer::RestoreAll - Failed to restore back (0x%X)\n", hr);
-                }
-            }
-        }
-
-        else MonoPrint("ImageBuffer::RestoreAll - Failed to restore front (0x%X)\n", hr);
-    }
+    // Artscout - 2026: [DX7-PURGE] DDraw surface IsLost/Restore removed (no DDraw surfaces under GPU).
 }
 
 

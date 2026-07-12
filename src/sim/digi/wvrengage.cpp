@@ -777,11 +777,13 @@ void DigitalBrain::SetThreat(FalconEntity *obj)
         }
 
         // create new target data and reference it
-#ifdef DEBUG
-        //threatPtr = new SimObjectType( OBJ_TAG, self, obj );
-#else
+        // CRASH ROOT (2026-06-17): in a DEBUG build (DEBUG defined) the #ifdef DEBUG branch
+        // left threatPtr COMMENTED OUT -> threatPtr == NULL (after threatPtr=NULL
+        // below in a previous call) -> line ~810 threatPtr->localData->range = AV 0x0000000C
+        // (debugger-confirmed: this->threatPtr == nullptr). In Release the #else branch
+        // assigned and didn't crash. The old DEBUG variant (OBJ_TAG,self,obj) is long dead.
+        // Assign in BOTH configurations.
         threatPtr = new SimObjectType(obj);
-#endif
         threatTimer = 10.0f;
         SetTarget(threatPtr);
 
@@ -798,7 +800,11 @@ void DigitalBrain::SetThreat(FalconEntity *obj)
         else if (randNum < 40)
         {
             //Inform flight
-            if (threatPtr->localData->range > 2.0F * NM_TO_FT)
+            // #41/crash-guard: AV reading 0x0000000C in SetThreat:801 -- threatPtr->localData
+            // came in NULL/broken (FF6-data/FF7-code desync or heap corruption in combat/campaign,
+            // see known-issues). The code matches the reference. NULL localData -> treat as the close
+            // case (rcENGDEFENSIVEC), don't crash.
+            if (threatPtr->localData and threatPtr->localData->range > 2.0F * NM_TO_FT)
             {
                 if (PlayerOptions.BullseyeOn())
                 {

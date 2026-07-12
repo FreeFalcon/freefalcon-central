@@ -419,25 +419,17 @@ DWORD PaletteHandle::m_dwTotalBytes = 0; // Total number of bytes allocated (inc
 
 PaletteHandle::PaletteHandle(IDirectDraw7 *pDD, UInt16 PalBitsPerEntry, UInt16 PalNumEntries)
 {
-    DWORD dwFlags = DDPCAPS_8BIT;
-
-    if (PalNumEntries == 0x100) dwFlags or_eq DDPCAPS_ALLOW256;
-
-    DWORD pal[256];
-    ZeroMemory(pal, sizeof(DWORD) * PalNumEntries);
-
-    HRESULT hr = 0;
-
-    if (pDD)
-        hr = pDD->CreatePalette(dwFlags, (LPPALETTEENTRY) pal, &m_pIDDP, NULL);
-
-    ShiAssert(SUCCEEDED(hr));
-
-    if (SUCCEEDED(hr))
-        m_nNumEntries = PalNumEntries;
+    // Artscout - 2026: [DX7-PURGE] DDraw IDirectDrawPalette removed. The GPU path bakes the
+    // palette on the CPU into m_pPalData; no DirectDraw palette object is created.
+    (void)pDD; (void)PalBitsPerEntry;
+    m_pIDDP = NULL;
+    m_nNumEntries = PalNumEntries;
 
     m_pPalData = new DWORD[256];
     ShiAssert(m_pPalData);
+    if (m_pPalData) ZeroMemory(m_pPalData, sizeof(DWORD) * 256); // else the first bake under D3D11 reads garbage
+
+    m_bBakedValid = false;
 
 #ifdef _DEBUG
     InterlockedIncrement((long *) &m_dwNumHandles); // Number of instances
@@ -463,26 +455,25 @@ PaletteHandle::~PaletteHandle()
 
     m_arrAttachedTextures.clear();
 
-    // Release palette interface
-    if (m_pIDDP)
-    {
-        m_pIDDP->Release();
-        m_pIDDP = NULL;
-    }
-
+    // Artscout - 2026: [DX7-PURGE] no DDraw palette interface to release.
     if (m_pPalData) delete[] m_pPalData;
 }
 
 void PaletteHandle::Load(UInt16 info, UInt16 PalBitsPerEntry, UInt16 index, UInt16 entries, UInt8 *PalBuffer)
 {
-    ShiAssert(m_pIDDP and entries <= m_nNumEntries);
-
-    if ( not m_pIDDP or not m_pPalData) return;
+    // D3D11 FIX: it was `if (not m_pIDDP or not m_pPalData) return;`. But m_pIDDP==NULL under D3D11
+    // (no DDraw palette, see the constructor) -> Load returned immediately, m_pPalData was NEVER
+    // filled -> the palette stayed 0xCDCDCDCD -> chroma + palettized textures (FONTS!)
+    // drew as squares. Fill m_pPalData ALWAYS (read by the D3D11 palette-resolve in
+    // tex.cpp); touch the hardware palette (m_pIDDP->SetEntries, D3D7) only if it exists.
+    if ( not m_pPalData) return;
+    if (entries > m_nNumEntries) entries = m_nNumEntries;
 
     if ((DWORD *) PalBuffer not_eq m_pPalData)
         memcpy(m_pPalData, PalBuffer, sizeof(DWORD) * entries);
 
-    // Convert palette
+    // Convert palette (R<->B into D3D order; m_dwChromaKey is swizzled the same way in tex.cpp ->
+    // a chroma entry is detected in the resolve and the glyph background becomes transparent).
     DWORD dwTmp;
 
     for (int i = 0; i < m_nNumEntries; i++)
@@ -491,14 +482,22 @@ void PaletteHandle::Load(UInt16 info, UInt16 PalBitsPerEntry, UInt16 index, UInt
         m_pPalData[i] = RGBA_MAKE(RGBA_GETBLUE(dwTmp), RGBA_GETGREEN(dwTmp), RGBA_GETRED(dwTmp), RGBA_GETALPHA(dwTmp));
     }
 
-    HRESULT hr = m_pIDDP->SetEntries(NULL, index, entries, (LPPALETTEENTRY) PalBuffer);
-    ShiAssert(SUCCEEDED(hr));
-
-    if (SUCCEEDED(hr))
+    // Artscout - 2026: [DX7-PURGE] the DDraw hardware palette (m_pIDDP->SetEntries) is gone;
+    // the GPU path always rebakes bound textures from source indices for the new palette.
     {
-        // Reload attached textures
-        for (int i = 0 ; static_cast<unsigned int>(i) < m_arrAttachedTextures.size() ; i++)
-            m_arrAttachedTextures[i]->Reload();
+        (void)index; (void)PalBuffer;
+        // D3D11: no hardware palette -- rebake the bound textures from the source
+        // indices for the new palette. Translate3D is called often (TOD timer), but the palette is almost
+        // always the same, so rebake only on a REAL change (otherwise we'd create
+        // dozens of textures every frame).
+        if ( not m_bBakedValid or memcmp(m_arrBaked, m_pPalData, sizeof(DWORD) * m_nNumEntries) not_eq 0)
+        {
+            memcpy(m_arrBaked, m_pPalData, sizeof(DWORD) * m_nNumEntries);
+            m_bBakedValid = true;
+
+            for (int i = 0 ; static_cast<unsigned int>(i) < m_arrAttachedTextures.size() ; i++)
+                m_arrAttachedTextures[i]->Reload();
+        }
     }
 }
 

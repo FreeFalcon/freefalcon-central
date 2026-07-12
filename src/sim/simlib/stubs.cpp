@@ -26,7 +26,7 @@ int _CrtDbgReport(int reportType, const char *filename, int linenumber, const ch
         }
         else if (choice == IDRETRY)
         {
-            __asm int 3
+            __debugbreak();
         }
     }
 

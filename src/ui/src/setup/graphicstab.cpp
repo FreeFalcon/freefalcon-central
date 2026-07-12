@@ -1143,6 +1143,33 @@ void BuildVideoCardList(C_ListBox *lbox)
     C_ListBox *VidCardList = (C_ListBox *)lbox->Parent_->FindControl(SET_VIDEO_DRIVER);
     Driver = VidCardList->GetTextID() - 1;
 
+    // Artscout - 2026: D3D11/D3D12 -- the DDraw device enum is bypassed. Populate the card combo from the
+    // real DXGI adapters (GPU names) so the selector actually lets you pick a GPU; resolutions come from
+    // g_d3d11Modes (adapter-independent). Falls back to one synthetic entry if enumeration fails.
+    extern bool g_bUseD3D11, g_bUseD3D12;
+    if (g_bUseD3D11 or g_bUseD3D12)
+    {
+        value = lbox->GetTextID();
+        lbox->RemoveAllItems();
+        int nAdapters = DeviceManager::GetDxgiAdapterCount();
+        if (nAdapters > 0)
+        {
+            for (int a = 0; a < nAdapters; ++a)
+            {
+                char nm[256];
+                if (DeviceManager::GetDxgiAdapterName(a, nm, sizeof(nm)))
+                    lbox->AddItem(a + 1, C_TYPE_ITEM, nm);
+            }
+        }
+        else
+        {
+            lbox->AddItem(1, C_TYPE_ITEM, g_bUseD3D12 ? "Direct3D 12 Device" : "Direct3D 11 Device");
+        }
+        lbox->SetValue(value ? value : 1);
+        lbox->Refresh();
+        return;
+    }
+
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(Driver);
 
     if ( not pDI) return;
@@ -1184,6 +1211,18 @@ void BuildVideoDriverList(C_ListBox *lbox)
 
     lbox->RemoveAllItems();
 
+    // Artscout - 2026: under D3D11 the DDraw driver enum is bypassed (devmgr empty) -> the combo stayed
+    // blank and the resolution list (keyed off the driver index) never built. Show one synthetic
+    // adapter (index -> id 1 -> Driver 0) so the UI populates; the actual modes come from g_d3d11Modes.
+    extern bool g_bUseD3D11, g_bUseD3D12;
+    if (g_bUseD3D11 or g_bUseD3D12)
+    {
+        lbox->AddItem(1, C_TYPE_ITEM, g_bUseD3D12 ? "Direct3D 12" : "Direct3D 11");
+        lbox->SetValue(1);
+        lbox->Refresh();
+        return;
+    }
+
     while (buf = FalconDisplay.devmgr.GetDriverName(i))
     {
         if (FalconDisplay.devmgr.GetDeviceName(i, 0))
@@ -1218,19 +1257,41 @@ void BuildResolutionList(C_ListBox *lbox)
     value = lbox->GetTextID();
     lbox->RemoveAllItems();
 
+    // Artscout - 2026: under D3D11 the DDraw driver/device enumeration is bypassed (DevMgr), so
+    // GetDriver/GetDevice return NULL -> the old early-returns left the resolution list empty (only the
+    // default 640x480) and the adapter/driver combos blank. The D3D11 mode list comes from GetMode's
+    // curated g_d3d11Modes table (driver/card-independent), so DON'T bail under D3D11 -- pDI/pD3DDI are
+    // only used by the DDraw depth filter in the !g_bUseD3D11 branch below.
+    extern bool g_bUseD3D11, g_bUseD3D12;
+    const bool bModernApi = g_bUseD3D11 or g_bUseD3D12;
+
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(Driver);
 
-    if ( not pDI) return;
+    if ( not pDI and not bModernApi) return;
 
-    DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI = pDI->GetDevice(Card);
+    DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI = pDI ? pDI->GetDevice(Card) : NULL;
 
-    if ( not pD3DDI) return;
+    if ( not pD3DDI and not bModernApi) return;
 
     // OW
 #if 1
 
     while (FalconDisplay.devmgr.GetMode(Driver, Card, i++, &width, &height, &depth))
     {
+        // PHASE 5: under D3D11/D3D12 GetMode returns an already-curated list (incl. widescreen),
+        // the 4:3 filter and DDraw depth checks are not needed -- take the mode as is.
+        if (bModernApi)
+        {
+            sprintf(buf2, "%0dx%0d - %d Bit", width, height, depth);
+            lbox->AddItem(i - 1, C_TYPE_ITEM, buf2);
+
+            if (width == DisplayOptions.DispWidth and height == DisplayOptions.DispHeight and depth == DisplayOptions.DispDepth)
+                isel = i - 1;
+
+            nNumItems++;
+            continue;
+        }
+
         // For now we only allow 640x480, 800x600, 1280x960, 1600x1200
         // (MPR already does the 4:3 aspect ratio check for us)
         if (height > 400 and ((width == 640 or width == 800 or width == 1024 or
@@ -1289,6 +1350,64 @@ void DisableEnableResolutions(C_ListBox*)
 {
 }
 
+// Artscout - 2026: live readout for the OpenXR Resolution Scale slider. The ui95 slider fires its callback
+// (C_TYPE_MOUSEMOVE) on every drag step; the stock graphics sliders had NO callback, so their linked readout
+// (SetUserNumber(0,id)) never actually updated -- nobody consumes that link. Wire it explicitly: recompute the
+// percent (50..100, STEPS 5 -> step 10) from the slider position and push it into the readout editbox.
+void VrResScaleSliderCB(long, short, C_Base *control)
+{
+    C_Slider *slider = (C_Slider *)control;
+    long roId = slider->GetUserNumber(0);
+
+    if ( not roId or not control->Parent_) return;
+
+    C_EditBox *ebox = (C_EditBox *)control->Parent_->FindControl(roId);
+
+    if ( not ebox) return;
+
+    // Artscout - 2026: map via the STEP INDEX (0..5), not the raw pixel ratio. The slider snaps to span/5
+    // pixel stops (integer division), and FloatToInt32 truncates -> a direct pos->percent gave 50/59/69/79/89/100.
+    // Rounding to the nearest step first, then percent = 50 + step*10, lands exactly on 50/60/70/80/90/100.
+    int span = slider->GetSliderMax() - slider->GetSliderMin();
+    int step = (span > 0) ? FloatToInt32((float)slider->GetSliderPos() / (float)span * 5.0F + 0.5F) : 0;
+
+    if (step < 0) step = 0;
+    if (step > 5) step = 5;
+
+    int val = 50 + step * 10;   // 50,60,70,80,90,100
+
+    ebox->SetInteger(val);
+    ebox->Refresh();
+}
+
+// Artscout - 2026: live readout for the MSAA Samples slider (Graphics page), same pattern as VehicleSizeCB:
+// fires on drag (C_TYPE_MOUSEMOVE), maps the slider pos (STEPS 7) to 1..8 samples and pushes it into the
+// linked readout editbox (slider's UserNumber[0] = MSAA_SAMPLES_READOUT, set in SetupGraphicsControls).
+void MsaaSamplesCB(long, short hittype, C_Base *control)
+{
+    if (hittype not_eq C_TYPE_MOUSEMOVE)
+        return;
+
+    C_Slider *slider = (C_Slider *)control;
+    // Artscout - 2026: round to the nearest STEP INDEX (0..7) first -- the pixel stops (span/7, integer) and
+    // FloatToInt32's truncation otherwise lose a step (e.g. requested 2 read back as 1). samples = 1 + step.
+    int span = slider->GetSliderMax() - slider->GetSliderMin();
+    int step = (span > 0) ? FloatToInt32((float)slider->GetSliderPos() / (float)span * 7.0F + 0.5F) : 0;
+
+    if (step < 0) step = 0;
+    if (step > 7) step = 7;
+
+    int samples = 1 + step;   // 1..8
+
+    C_EditBox *ebox = (C_EditBox *)control->Parent_->FindControl(slider->GetUserNumber(0));
+
+    if (ebox)
+    {
+        ebox->SetInteger(samples);
+        ebox->Refresh();
+    }
+}
+
 void SetAdvanced()
 {
     C_Window *win;
@@ -1299,23 +1418,20 @@ void SetAdvanced()
 
     if (win == NULL) return;
 
+    // Artscout - 2026: the device-info lookup is needed ONLY for the Render-To-Texture SupportsSRT() check
+    // below. Under D3D11 the legacy DDraw device manager enumerates nothing, so GetDriver/GetDevice return
+    // NULL -- and the original hard `if (not pDI) return;` bailed out HERE, before populating ANY of the
+    // advanced checkboxes from DisplayOptions. Result: every advanced toggle (anisotropic, mipmapping,
+    // windowed, OpenXR, QuadViews...) showed unchecked on reopen regardless of the saved XML -> looked like
+    // "settings don't save". Make it soft: pDI may stay NULL; only the SRT button enable is gated on it.
+    DeviceManager::DDDriverInfo *pDI = NULL;
     lbox = (C_ListBox *)win->FindControl(SET_VIDEO_DRIVER);
 
-    if ( not lbox) return;
-
-    int nDriver = lbox->GetTextID() - 1;
-    lbox = (C_ListBox *)win->FindControl(SET_VIDEO_CARD);
-
-    if ( not lbox) return;
-
-    int nDevice = lbox->GetTextID() - 1;
-    DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(nDriver);
-
-    if ( not pDI) return;
-
-    DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI = pDI->GetDevice(nDevice);
-
-    if ( not pD3DDI) return;
+    if (lbox)
+    {
+        int nDriver = lbox->GetTextID() - 1;
+        pDI = FalconDisplay.devmgr.GetDriver(nDriver);
+    }
 
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
@@ -1339,9 +1455,40 @@ void SetAdvanced()
 
     if (button) button->SetState(DisplayOptions.bLinearMipFiltering ? C_STATE_1 : C_STATE_0);
 
-    button = (C_Button *) win->FindControl(SETUP_ADVANCED_RENDER_2DCOCKPIT);
+    // Artscout - 2026: VR controls (Advanced page) <- DisplayOptions. These replaced the removed
+    // "Rendered 2D Cockpit" checkbox (forced TRUE under D3D11 anyway). OpenXR + QuadViews + res-scale slider.
+    {
+        C_Slider  *slider;
+        C_EditBox *ebox;
 
-    if (button) button->SetState(DisplayOptions.bRender2DCockpit ? C_STATE_1 : C_STATE_0);
+        button = (C_Button *) win->FindControl(SETUP_ADVANCED_OPENXR);
+
+        if (button) button->SetState(DisplayOptions.bUseOpenXR ? C_STATE_1 : C_STATE_0);
+
+        button = (C_Button *) win->FindControl(SETUP_ADVANCED_QUADVIEWS);
+
+        if (button) button->SetState(DisplayOptions.bUseQuadViews ? C_STATE_1 : C_STATE_0);
+
+        slider = (C_Slider *) win->FindControl(SETUP_ADVANCED_VR_RESSCALE);
+
+        if (slider not_eq NULL)
+        {
+            int scl = DisplayOptions.nVrResolutionScale;
+            if (scl < 50)  scl = 50;
+            if (scl > 100) scl = 100;
+            slider->SetSliderPos(FloatToInt32((float)(slider->GetSliderMax() - slider->GetSliderMin()) * (scl - 50) / 50.0F));
+            ebox = (C_EditBox *) win->FindControl(SETUP_ADVANCED_VR_RESSCALE_READOUT);
+
+            if (ebox)
+            {
+                ebox->SetInteger(scl);
+                ebox->Refresh();
+                slider->SetUserNumber(0, SETUP_ADVANCED_VR_RESSCALE_READOUT);
+            }
+
+            slider->SetCallback(VrResScaleSliderCB);   // Artscout - 2026: live readout on drag
+        }
+    }
 
     button = (C_Button *) win->FindControl(SETUP_ADVANCED_SCREEN_COORD_BIAS_FIX);
 
@@ -1351,11 +1498,18 @@ void SetAdvanced()
 
     if (button) button->SetState(DisplayOptions.bMipmapping ? C_STATE_1 : C_STATE_0);
 
+    // #33: windowed/fullscreen toggle for the 3D session
+    button = (C_Button *) win->FindControl(SETUP_ADVANCED_WINDOWED);
+
+    if (button) button->SetState(DisplayOptions.bWindowed ? C_STATE_1 : C_STATE_0);
+
     button = (C_Button *) win->FindControl(SETUP_ADVANCED_RENDER_TO_TEXTURE);
 
     if (button)
     {
-        if (pDI->SupportsSRT()) button->SetFlagBitOn(C_BIT_ENABLED);
+        // Artscout - 2026: pDI may be NULL under D3D11 (no DDraw enumeration). Treat unknown as "supported"
+        // so the button stays usable -- D3D11 always renders to texture anyway (forced in dispopts.cpp).
+        if ( not pDI or pDI->SupportsSRT()) button->SetFlagBitOn(C_BIT_ENABLED);
         else
         {
             button->SetFlagBitOff(C_BIT_ENABLED);

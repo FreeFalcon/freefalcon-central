@@ -86,6 +86,13 @@ protected:
     float r, g, b;
     int type;
     Tpoint LastPos;
+    // Artscout - 2026: wall-clock (ms) of the last time this tracer actually moved. The "frozen
+    // tracer" cull used to fire on the FIRST render frame where the position hadn't changed since
+    // the previous draw. Tracers are driven by the gun Exec (sim rate); at high render FPS many
+    // frames elapse between sim ticks, so live tracers were culled almost immediately -> the stream
+    // looked sparse/faint in Release but fine in (slow) Debug. We now only cull after the position
+    // has been stale for STALE_MS of real time, and keep drawing it meanwhile.
+    DWORD lastMoveMs;
 #define TRACER_TYPE_TRACER 0
 #define TRACER_TYPE_BALL 1
 

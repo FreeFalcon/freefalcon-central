@@ -290,11 +290,9 @@ void HeliBrain::SetTargetEntity(FalconEntity *obj)
         }
 
         // create new target data and reference it
-#ifdef DEBUG
-        //targetPtr = new SimObjectType( OBJ_TAG, self, obj );
-#else
+        // #47 UAF ROOT: create UNCONDITIONALLY (in Debug the DEBUG branch was empty -> targetPtr
+        // dangling -> Reference/localData on garbage).
         targetPtr = new SimObjectType(obj);
-#endif
         targetPtr->Reference();
         targetData = targetPtr->localData;
         // SetTarget( targetPtr );

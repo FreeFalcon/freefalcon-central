@@ -175,6 +175,7 @@ float AirframeClass::CalcTASfromCAS(float cas)
     float sound, pdelta, desMach;
 
     pdelta = CalcPressureRatio(-z, &ttheta, &rsigma);
+
     desMach = CalcMach(cas, pdelta);
 
     sound = (float)sqrt(ttheta) * AASL;

@@ -8,7 +8,6 @@
 #include <windows.h>
 #include "falclib.h"
 #include "targa.h"
-#include "dxutil/ddutil.h"
 #include "Graphics/Include/imagebuf.h"
 #include "chandler.h"
 #include "ui95_ext.h"
@@ -151,7 +150,7 @@ void GetHighScores()
 
 #if _USE_REGISTRY_
     size = sizeof(HighScoreList);
-    retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS, &theKey);
+    retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS | KEY_WOW64_32KEY, &theKey);
     retval = RegQueryValueEx(theKey, "initData", 0, &type, (LPBYTE)&Scores, &size);
     RegCloseKey(theKey);
 
@@ -194,7 +193,7 @@ void SaveHighScores()
 
 #if _USE_REGISTRY_
     size = sizeof(HighScoreList);
-    retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS, &theKey);
+    retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS | KEY_WOW64_32KEY, &theKey);
 
     if (retval == ERROR_SUCCESS)
         retval = RegSetValueEx(theKey, "initData", 0, REG_BINARY, (LPBYTE)&Scores, size);

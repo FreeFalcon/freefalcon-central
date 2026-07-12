@@ -268,14 +268,15 @@ void OTWDriverClass::InsertObject(DrawableObject *dObj)
 void OTWDriverClass::RemoveObject(DrawableObject *dObj, int deleteObject)
 {
     //JAM 19Feb04 - Let's add a meaningful warning here instead of causing a CTD.
+    // Cross-thread UAF FIX [[known-issues]]: do NOT delete the object and do NOT touch OTW lists from
+    // a foreign thread (campaign/ATC etc.). Otherwise `delete dObj` (below) corrupts memory while
+    // the sim/render thread iterates the lists (display-list/litObjectRoot/callback) -> 0xDDDDDDDD
+    // in all traversals. The sim thread removes the object correctly (via entity logic). Better a deferred
+    // cleanup/one-frame ghost than a crash. (The guard was intended but commented out.)
     if (GetCurrentThreadId() not_eq gSimThreadID)
     {
-        ShiWarning("RemoveObject being called outside of the sim thread");
+        return;
     }
-
-    //if (g_bNeedSimThreadToRemoveObject and GetCurrentThreadId() not_eq gSimThreadID)
-    // return;
-    //JAM
 
     //if (dObj) // JB 010221 CTD
     // sfr: @todo remove JB check

@@ -955,6 +955,27 @@ void C_Window::AdjustScrollbar(long client)
     }
 }
 
+// #22: scroll the client's vertical scrollbar with the mouse wheel. Needed because list rows
+// (buttons) don't handle the wheel themselves -- the wheel dispatcher calls this as a fallback when
+// the control under the cursor returned FALSE from Wheel().
+BOOL C_Window::WheelClient(long client, int increments, WORD mx, WORD my)
+{
+    if (client >= 0 and client < WIN_MAX_CLIENTS and VScroll_[client])
+        return VScroll_[client]->Wheel(increments, mx, my);
+
+    return FALSE;
+}
+
+// #22: clear focus from the active control (see cwindow.h).
+void C_Window::ClearActiveControl()
+{
+    if (CurControl_)
+    {
+        CurControl_->Deactivate();
+        CurControl_ = NULL;
+    }
+}
+
 void C_Window::AddControlTop(C_Base *NewControl)
 {
     CONTROLLIST *cnt;
@@ -2015,26 +2036,19 @@ void C_Window::Fill(SCREEN *surface, WORD Color, UI95_RECT *rect)
     else
     {
         //WORD
+        // Artscout - 2026 (x64): rep stosw rect-fill rewritten in C (builds on x86+x64).
+        WORD c = Color;
+        WORD *dptr = dest + startpos;
 
-        __asm
+        while (h--)
         {
-            mov ecx, h
-            mov edi, dest
-            add edi, startpos
-            add edi, startpos
-        };
-        Loop1:
-        __asm
-        {
-            push ecx
-            mov ecx, w
-            mov ax, Color
-            rep stosw
-            add edi, addpos
-            add edi, addpos
-            pop ecx
-            loop Loop1
-        };
+            i = w;
+
+            while (i--)
+                *dptr++ = c;
+
+            dptr += addpos;
+        }
     }
 }
 

@@ -1,4 +1,5 @@
 #include "stdhdr.h"
+#include "Falclib/Include/IsBad.h"	// F4IsBadReadPtr -- guard against cross-thread UAF
 #include "Graphics/Include/renderow.h"
 #include "Graphics/Include/Drawbsp.h"
 #include "Graphics/Include/Drawgrnd.h"
@@ -178,6 +179,11 @@ void OTWDriverClass::UpdateAllLitObjects(void)
     // Check each object and see if it wants to be turned on or off
     for (entry = litObjectRoot; entry; entry = entry->next)
     {
+        // Cross-thread UAF guard [[known-issues]]: drawPointer (DrawableBSP) may be
+        // freed by another thread (0xDDDDDDDD) -> SetSwitchMask crashed. F4IsBad catches the already-
+        // freed one; we check the list node too.
+        if (F4IsBadReadPtr(entry, sizeof(drawPtrList))) break;
+        if (F4IsBadReadPtr(entry->drawPointer, 4)) continue;
         UpdateOneLitObject(entry, lightLevel);
     }
 }

@@ -2,11 +2,11 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{b185b4ba-4b81-4e36-abf3-1088e88337fb}</UniqueIdentifier>
+      <UniqueIdentifier>{12e19cd4-6ea3-4f63-81cd-e83ac43d2303}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{7ddd3601-6286-45a0-828e-f47e60af4602}</UniqueIdentifier>
+      <UniqueIdentifier>{ceb6c200-0c33-4a20-9510-17b1b77af3b6}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
     </Filter>
   </ItemGroup>
@@ -303,9 +303,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MsgSrc\TrackMsg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Twoddraw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MsgSrc\UnitAssignmentMsg.cpp">

@@ -6,8 +6,7 @@
 
 
 
-#include <ddraw.h>
-#include <d3d.h>
+#include "d3d7compat.h"
 #include <d3dxcore.h>
 #include <d3dxmath.h>
 #include "../include/TexBank.h"
@@ -89,10 +88,7 @@ public:
     CDXEngine(void);
     ~CDXEngine(void);
 
-    IDirect3DDevice7* GetD3DD(void)
-    {
-        return m_pD3DD;
-    };
+    // #34 C1: GetD3DD() removed (D3D7 device gone; no callers)
 
 
     // Various functions for Debug
@@ -109,7 +105,7 @@ public:
 #endif
 
 #ifdef DEBUG_ENGINE
-    void DrawFrameSurfaces(NodeScannerType *NODE, float Alpha = 1.0f);
+    // #34 DrawFrameSurfaces removed (dead EDIT_ENGINE D3D7 wireframe draw)
     bool UseZBias;
     static IDirect3DDevice7 *m_pD3DD;
     static IDirect3D7 *m_pD3D;
@@ -121,18 +117,23 @@ public:
     void FlushBuffers(void);
     void DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const Ppoint *Pos, const float sx, const float sy, const float sz, const float scale, bool CameraSpace = false, DWORD LightID = NULL);
     void DrawBlip(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const Ppoint *Pos, const float sx, const float sy, const float sz, const float scale, bool CameraSpace);
-    void Setup(IDirect3DDevice7 *pD3DD, IDirect3D7 *pD3D, IDirectDraw7 *pDD);
+    void Setup();   // #34 C1: D3D7 device args removed
     void Release(void);
     void SetCamera(D3DXMATRIX *Settings, D3DVECTOR Pos, D3DXMATRIX *BB);
     void SetProjection(D3DXMATRIX *Settings)
     {
-        Projection = *Settings;
-        m_pD3DD->SetTransform(D3DTRANSFORMSTATE_PROJECTION, (LPD3DMATRIX)&Projection);
+        Projection = *Settings;   // #34 C1: D3D11 sets proj via the shader cbuffer
     }
     void SetWorld(D3DXMATRIX *Settings)
     {
         World = *Settings;
     }
+    // Artscout - 2026: #78 GPU terrain reads the SAME object-path camera (world-space view/proj/pos) so the
+    // ground lines up with objects and the cockpit. These statics are set per eye by SetCamera/SetProjection
+    // BEFORE the scene is drawn, so they are valid when the terrain hook runs in RenderOTW::DrawScene.
+    static const D3DXMATRIX& GetObjProjection() { return Projection; }
+    static const D3DXMATRIX& GetObjView()       { return CameraView; }
+    static const D3DVECTOR&  GetObjCameraPos()  { return CameraPos; }
     void SetViewport(DWORD l, DWORD t, DWORD r, DWORD b);
     void SetFogLevel(float FogLevel);
     void SetBlipIntensity(float Intensity)
@@ -152,7 +153,7 @@ public:
         m_FogColor = *Color;
     }
     void CreateZeroTexture(void);
-    void SelectDDSTexture(IDirectDrawSurface7 * TexID);
+    // #34 C1: SelectDDSTexture removed (no definition / no callers)
     void SelectTexture(GLint texID);
     void ClearLights(void)
     {
@@ -161,7 +162,7 @@ public:
     DWORD SetStencilMode(DWORD Stencil);
     void ClearStencil(void)
     {
-        m_pD3DD->Clear(NULL, NULL, D3DCLEAR_STENCIL, 0, 1.0f, 0);
+        // #34 C1: no D3D7 device; D3D11 clears stencil per-frame on the backend.
         m_StencilRef = 0;
         SetStencilMode(STENCIL_OFF);
     }
@@ -194,6 +195,13 @@ public:
     void SetPitMode(bool Mode)
     {
         m_PitMode = Mode;
+        // Artscout - 2026: #72 drive the cockpit-fidelity shader pass off the SAME pit/world discriminator
+        // the engine uses at DRAW time. The pit is QUEUED (VCock_DrawThePit) then FLUSHED later via the VB
+        // manager's PitList, which calls SetPitMode(true) per pit object as it dispenses them (dxvbmanager
+        // .cpp:819) and SetPitMode(false) for world objects (:830). So this is the exact window the pit
+        // surfaces actually reach BeginObjectPass/DrawSurface -> FF_COCKPIT is now live during the flush.
+        extern void FF_SetCockpitPass(bool on);
+        FF_SetCockpitPass(Mode);
     }
     bool GetPitMode(void)
     {
@@ -275,11 +283,7 @@ private:
 
 
     // The main D3DD used by the Engine
-#ifndef DEBUG_ENGINE
-    static IDirect3DDevice7 *m_pD3DD;
-    static IDirect3D7 *m_pD3D;
-    static IDirectDraw7 *m_pDD;
-#endif
+    // #34 C1: CDXEngine D3D7 device members (m_pD3DD/m_pD3D/m_pDD) removed.
     //The Stacks for Surfaces
     SURFACE_STACK(m_AlphaStack, MAX_ALPHA_SURFACES);
     SURFACE_STACK(m_SolidStack, MAX_SOLID_SURFACES);
@@ -334,7 +338,7 @@ public:
     float GetDetailLevel(D3DVECTOR *WorldPos, float MaxRange);
     void SetupTexturesOnDevice(void);
     void LoadTexture(char *FileName);
-    DWORD GetTextureHandle(char *TexName);
+    DWORD_PTR GetTextureHandle(char *TexName); // Artscout - 2026 (x64): pointer-sized
     CTextureItem *DX2D_GetTextureItem(char *TexName);
     void DX2D_GetTextureCoords(CTextureItem *Ti, CDrawBaseItem *Item);
     void CleanUpTexturesOnDevice(void);
@@ -392,11 +396,11 @@ public:
     };
     void DX2D_Reset(void);
     void DX2D_InitLists(void);
-    void DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Quad, float Radius, DWORD TexHandle);
-    void DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Tri, float Radius, DWORD TexHandle);
-    void DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD TexHandle);
-    void DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD TexHandle);
-    void DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Poly, float Radius, DWORD Vertices, DWORD TexHandle);
+    void DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Quad, float Radius, DWORD_PTR TexHandle);
+    void DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Tri, float Radius, DWORD_PTR TexHandle);
+    void DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD_PTR TexHandle);
+    void DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD_PTR TexHandle);
+    void DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Poly, float Radius, DWORD Vertices, DWORD_PTR TexHandle);
     void DX2D_SetDrawOrder(DWORD *Order);
     void DX2D_SetupSquareCx(float y, float z);
     // void DX2D_TransformBB(D3DXVECTOR3 *Pos, D3DDYNVERTEX *Coord, D3DDYNVERTEX *Dest, DWORD Nr=1);

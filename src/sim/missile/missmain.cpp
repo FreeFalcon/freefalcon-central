@@ -796,7 +796,17 @@ float MissileClass::GetRMax(float alt, float vt, float az, float targetVt, float
     // 2000-11-17 MODIFIED BY S.G. az CAN'T BE USED HERE BECAUSE IT CAN BE NEGATIVE AND THE DATA FILE DO NOT ACCOUNT FOR THAT. PLUS HEAD AND TAIL HAVE THE SAME VALUE (BAD)
     float rmax = 10.0f;
 
-    if (rangeData)
+    // Artscout - 2026: validate the breakpoint tables before ThreedInterp. The old guard only
+    // checked sizeof(rangeData) == 8 bytes (the pointer itself), so a rangeData pointing at stale
+    // /wrong memory passed it and ThreedInterp then dereferenced a garbage altBreakpoints pointer
+    // (AV). Counts are 0<n<100 by construction (see MissileRangeRead asserts). The result is
+    // normally overwritten by weaponData->Range below anyway, so skipping is safe.
+    if (rangeData
+            and rangeData->altBreakpoints and rangeData->velBreakpoints
+            and rangeData->aspectBreakpoints and rangeData->data
+            and rangeData->numAltBreakpoints    > 0 and rangeData->numAltBreakpoints    < 100
+            and rangeData->numVelBreakpoints    > 0 and rangeData->numVelBreakpoints    < 100
+            and rangeData->numAspectBreakpoints > 0 and rangeData->numAspectBreakpoints < 100)
     {
         // FRB - CTD's
         rmax = Math.ThreedInterp(alt, vt, ataFrom,
@@ -1130,11 +1140,10 @@ MissileClass::EndMissile(void)
                     if (targetPtr)
                         targetPtr->Release();
 
-#ifdef DEBUG
-                    /*    targetPtr = new SimObjectType( OBJ_TAG, NULL, campBaseObj );*/
-#else
+                    // #47 UAF ROOT (explicit): in Debug the DEBUG branch is empty -> after Release targetPtr
+                    // was NOT reassigned -> Reference() below poked the mutex/refCount in freed
+                    // memory (0xDD). Create UNCONDITIONALLY.
                     targetPtr = new SimObjectType(campBaseObj);
-#endif
                     targetPtr->Reference();
                 }
 

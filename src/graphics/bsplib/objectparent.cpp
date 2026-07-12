@@ -293,7 +293,29 @@ void ObjectParent::ReadParentList(int file)
         {
             if (g_bUse_DX_Engine) read(file, LODName, sizeof(LODName));
 
+#if defined(_M_IX86)
             result = read(file, &objParent->pLODs[i], sizeof(*objParent->pLODs));
+#else
+            // Artscout - 2026: x64 serialization fix. LODrecord on disk uses the
+            // 32-bit (x86) layout: a 4-byte objLOD offset + 4-byte maxRange. On x64
+            // LODrecord is 16 bytes (objLOD pointer grew 4->8), so a direct read
+            // over-reads and desyncs the stream. Read the 32-bit record and place
+            // the offset in the pointer field; the fixup loop below converts it to
+            // a real pointer via (int)(objLOD) >> 1.
+            {
+#pragma pack(push, 4)
+                struct DiskLODrecord
+                {
+                    UInt32 objLOD; // offset on disk (index << 1 with marker bit)
+                    float  maxRange;
+                };
+#pragma pack(pop)
+                DiskLODrecord dlr;
+                result = read(file, &dlr, sizeof(dlr));
+                objParent->pLODs[i].objLOD   = (ObjectLOD *)(UINT_PTR)dlr.objLOD;
+                objParent->pLODs[i].maxRange = dlr.maxRange;
+            }
+#endif
 #ifdef DEBUG_LOD_ID
 
             // LOD ID DEBUG

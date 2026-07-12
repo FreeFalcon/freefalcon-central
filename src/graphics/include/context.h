@@ -8,7 +8,7 @@
 #ifndef _3DEJ_CONTEXT_H_
 #define _3DEJ_CONTEXT_H_
 
-#include <cISO646>
+#include <iso646.h>
 #include "define.h"
 
 #if not defined(MPR_INTERNAL)
@@ -17,10 +17,20 @@
 
 #include <vector>
 #include <string>
-#include <ddraw.h>
-#include <d3dtypes.h>
+#include "d3d7compat.h"
 #include "alloc.h"
 #include "../../mathlib/color.h"
+
+// Artscout - 2026: ODR/layout guard. ContextMPR contains 8-byte-aligned members (__int64 in
+// the nested Stats struct), so its size/alignment depend on the active struct packing. Many
+// legacy headers use the old "#pragma pack(1) ... #pragma pack()" style; when such a header is
+// mid-pack while this file is first included (it differs per translation unit by include order),
+// ContextMPR ends up packed differently in different .cpp files. That made the cursor path
+// (sicursor.cpp) see ContextMPR 16 bytes smaller and the VirtualDisplay::context member 4 bytes
+// earlier than the engine that constructs it -> ContextMPR methods were called with a this
+// pointer 4 bytes off, dropping the screen 2D batch (sky/HUD/MFD vanished on mouse move; Release
+// only, because Debug shared a consistent layout). Pin packing to 8 here so every TU agrees.
+#pragma pack(push, 8)
 
 #ifdef  __cplusplus
 extern  "C" {
@@ -282,6 +292,10 @@ extern  "C" {
 #define MPR_TI_1024 0x040000
 #define MPR_TI_2048 0x080000
 #define MPR_TI_INVALID 0x100000
+// Artscout - 2026: lift the legacy DX7 2048 texture cap. Bit 24+ is free; the modern D3D11/12
+// backends handle 4096/8192 fine. Used by Texture::LoadImage/CreateTexture (see tex.cpp).
+#define MPR_TI_4096 0x1000000
+#define MPR_TI_8192 0x2000000
 
     // ASSO
 #define MPR_TI_RGB16 0x200000
@@ -375,6 +389,8 @@ extern  "C" {
         BYTE *m_pImageData; // Copy if palettized src image data if the device doesnt not support palettized textures
         bool m_bImageDataOwned; // self allocated or not
         int m_nImageDataStride;
+        void *m_pD3D11Tex; // PHASE 3: ID3D11Texture2D* (m_pDDS holds the SRV); NULL under D3D7
+        void *m_pD3D11RTV; // PHASE 5 (RTT): ID3D11RenderTargetView* for FLAG_RENDERTARGET textures
 
         enum _TextureHandleFlags
         {
@@ -463,6 +479,10 @@ extern  "C" {
         std::vector<TextureHandle *> m_arrAttachedTextures;
         short m_nNumEntries;
         DWORD *m_pPalData;
+        // PHASE 5 (D3D11): cache of the last baked palette - re-bake attached textures only
+        // when it actually changes (Translate3D is called every frame).
+        DWORD m_arrBaked[256];
+        bool  m_bBakedValid;
 
 #ifdef _DEBUG
     public:
@@ -564,8 +584,12 @@ extern  "C" {
         STATE_MULTITEXTURE,
         STATE_MULTITEXTURE_ALPHA,
 
+        STATE_RTT_SOFT, // #7 AA-RTT: soft composite of the displays atlas (D3D11/MSAA only)
+
+        STATE_WATER, // #12: animated water terrain tile (D3D11 only)
+
         //
-        MAXIMUM_MPR_STATE = 38
+        MAXIMUM_MPR_STATE = 41
     };
 
 
@@ -620,8 +644,8 @@ extern  "C" {
 
         DWORD numVertices;
         int renderState;
-        GLint textureID0;
-        GLint textureID1;
+        DWORD_PTR textureID0; // Artscout - 2026 (x64): caches SRV pointer (currentTexture1/2)
+        DWORD_PTR textureID1;
         DWORD zBuffer;
 
     public:
@@ -669,8 +693,8 @@ extern  "C" {
 
         DWORD numVertices;
         int renderState;
-        GLint textureID0;
-        GLint textureID1;
+        DWORD_PTR textureID0; // Artscout - 2026 (x64): caches SRV pointer (currentTexture1/2)
+        DWORD_PTR textureID1;
         DWORD zBuffer;
 
         LPD3DMATRIX mW;
@@ -701,15 +725,23 @@ extern  "C" {
         void StartDraw(void);
         void EndDraw(void);
         void StartFrame(void);
+        // Artscout - 2026: bind this context's off-screen RTT WITHOUT clearing it (D3D11). For
+        // incremental renderers (GM radar beam sweep) that must accumulate across frames; the caller's
+        // own ClearDraw handles clearing when a new scene begins. No-op if the target is the screen.
+        void BindD3D11RttNoClear(void);
+        // Artscout - 2026: clear the currently-bound D3D11 RTT now (unconditionally, NOT gated to the
+        // RTT batch like ClearBuffers). The GM radar uses this to clear its PRIVATE off-screen buffer
+        // once at the start of each sweep -- otherwise the sweep accumulates to a full-field white.
+        void ClearBoundD3D11Rtt(void);
         void FinishFrame(void *lpFnPtr);
         void SetColorCorrection(DWORD color, float percent);
         void SetupMPRState(GLint flag = 0);
         void SelectForegroundColor(GLint color);
         void SelectBackgroundColor(GLint color);
-        void SelectTexture1(GLint texID);
-        void SelectTexture2(GLint texID);
-        void SetTexture1(GLint texID);
-        void SetTexture2(GLint texID);
+        void SelectTexture1(DWORD_PTR texID); // Artscout - 2026 (x64): pointer-sized texture handle/SRV
+        void SelectTexture2(DWORD_PTR texID);
+        void SetTexture1(DWORD_PTR texID);
+        void SetTexture2(DWORD_PTR texID);
         void RestoreState(GLint state);
         void ApplyStateBlock(GLint state);
         void UpdateSpecularFog(DWORD specular);
@@ -775,10 +807,12 @@ extern  "C" {
         GLint m_colBG_Raw;
         GLint currentState;
         GLint lastState;
-        GLint currentTexture1;
-        GLint currentTexture2;
-        GLint lastTexture1;
-        GLint lastTexture2;
+        // Artscout - 2026 (x64): these cache texture handles / SRV pointers, which are
+        // pointer-sized. GLint (32-bit) truncated them on x64 -> sign-extended garbage SRV.
+        DWORD_PTR currentTexture1;
+        DWORD_PTR currentTexture2;
+        DWORD_PTR lastTexture1;
+        DWORD_PTR lastTexture2;
         BOOL bZBuffering;
         BOOL NVGmode;
         BOOL TVmode;
@@ -793,6 +827,14 @@ extern  "C" {
         float ZFAR;
         float ZNEAR;
         float gZBias;
+
+        // #48: NDC depth assigned to 2D screen-space primitives (DrawPrimitive with
+        // MPRVtx_t/MPRVtxTexClr_t). Default 0.0 = near plane (UI/HUD overlays drawn on top,
+        // painter order). The sky background is also drawn through the 2D path; with a single
+        // coherent depth buffer (#48) a near-plane sky would write depth 0 and occlude the
+        // cockpit. The sky draw temporarily sets this to 1.0 (far plane) so the pit and the
+        // world correctly draw in front of it. Restored to 0.0 after the sky.
+        float m_2DPrimZ;
 
         float szCX1; // COBRA - RED - Constant to be calculated once for Drawing
         float szCX2; // COBRA - RED - Constant to be calculated once for Drawing
@@ -838,6 +880,7 @@ extern  "C" {
         short m_nCurPrimType;
         LVERTEX *m_pLVtx;
         TLVERTEX *m_pTLVtx;
+        TLVERTEX *m_pVBCpu;	// PHASE 4: CPU vertex backing for the D3D11 screen path (replaces m_pVB->Lock)
         int mIdx;
         DWORD plainPolyVCnt, texturedPolyVCnt, translucentPolyVCnt;
         SPolygon *plainPolys, *texturedPolys, *translucentPolys;
@@ -913,6 +956,9 @@ extern  "C" {
         void Stats();
 
     public:
+        // PHASE 5 (RTT): public wrapper over FlushVB - so FinishRtt flushes the displays'
+        // pending content into the renderTexture BEFORE switching to the backbuffer.
+        void FlushPending() { FlushVB(); }
         void DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdxPtr, int *IIdxPtr, Ptexcoord *uv, bool bUseFGColor = false);
         void Draw2DPoint(Tpoint *v0);
         void Draw2DPoint(float x, float y);
@@ -927,7 +973,14 @@ extern  "C" {
         void LockViewport();
         void UnlockViewport();
         void GetViewport(RECT *prc);
-        void FlushPolyLists();
+        // #48: clearDepthBeforeObjects -- legacy D3D11 workaround that wiped the depth
+        // buffer between the screen-path terrain and the object-path flush so the cockpit
+        // would draw on top. It also destroyed terrain->object occlusion (objects showed
+        // through the ground). The OTW world pass now passes false to keep a single
+        // coherent depth buffer (the proven D3D7 ordering: pit at near-Z + terrain +
+        // world objects all z-tested together). Mini-scene displays (radar/MFD/mirror/
+        // c3dview) keep the default true so their behaviour is unchanged.
+        void FlushPolyLists(bool clearDepthBeforeObjects = true);
         // ASSO
         void ZeroViewport();
     };
@@ -935,5 +988,7 @@ extern  "C" {
 #ifdef  __cplusplus
 };
 #endif
+
+#pragma pack(pop)	// Artscout - 2026: end ODR/layout packing guard (see top of file)
 
 #endif // _3DEJ_CONTEXT_H_

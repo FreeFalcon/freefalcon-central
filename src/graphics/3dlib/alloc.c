@@ -1,5 +1,6 @@
-#include <cISO646>
+#include <iso646.h>
 #include <stdlib.h>
+#include <stdint.h>   /* Artscout - 2026: uintptr_t for x64-safe pointer arithmetic (was truncating to 32 bits) */
 #include "alloc.h"
 #include "xmmintrin.h"
 
@@ -23,8 +24,13 @@ static alloc_hdr_t *root = 0UL;
 
 char *AllocSetToAlignment(char *c)
 {
-    unsigned int i = (unsigned int)c;
-    i = (i + ALIGN_BYTES - 1) bitand -ALIGN_BYTES;
+    /* Artscout - 2026 (x64): was `unsigned int i = (unsigned int)c` -- truncated the 64-bit pointer to its
+       low 32 bits, so the aligned pointer lost its high half. When malloc placed an arena block above 4GB
+       (LargeAddressAware / ASLR), every Alloc() out of it returned a low-32-bit address (e.g. 0x0220F000) ->
+       writes landed in unmapped low memory -> intermittent CTD (more likely under heavy terrain streaming as
+       more arena blocks are malloc'd). Use uintptr_t so the full pointer survives the alignment round-up. */
+    uintptr_t i = (uintptr_t)c;
+    i = (i + ALIGN_BYTES - 1) bitand -(intptr_t)ALIGN_BYTES;
     return(char*)i;
 }
 
@@ -62,7 +68,7 @@ char *Alloc(int size)
     mem = blk->free;
     blk->free += size;
 
-    if ((unsigned int)(blk->free) > (unsigned int)(blk->end))
+    if ((uintptr_t)(blk->free) > (uintptr_t)(blk->end))   /* Artscout - 2026 (x64): was (unsigned int) -> truncated to 32 bits */
     {
         if (blk->next not_eq 0UL)
         {

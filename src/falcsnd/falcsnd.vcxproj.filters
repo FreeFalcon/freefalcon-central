@@ -2,11 +2,11 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{5ee90231-981f-41b1-b889-d50f4e3e57b5}</UniqueIdentifier>
+      <UniqueIdentifier>{0eba0d3f-a50f-43d9-8184-4ac71988b43c}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{c1c9c4ba-da69-4d33-8ff4-a53d756f19e7}</UniqueIdentifier>
+      <UniqueIdentifier>{d364dbb7-fca7-49d5-8b76-71b31573aa8d}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
     </Filter>
   </ItemGroup>
@@ -88,6 +88,9 @@
     <ClInclude Include="SoundPos.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Talkio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="transprt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -103,5 +106,8 @@
     <ClInclude Include="winampfrontend.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Obsolete.txt" />
   </ItemGroup>
 </Project>

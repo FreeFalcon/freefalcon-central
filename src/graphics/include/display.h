@@ -13,6 +13,12 @@
 #include "Context.h" // ASSO:
 #include "Tex.h" // ASSO:
 
+// Artscout - 2026: ODR/layout guard (see context.h). VirtualDisplay embeds a ContextMPR member
+// (`context`); its offset must match in every translation unit, otherwise callers compute a
+// wrong `this` for context.* (the mouse-cursor 2D-vanish bug). Pin packing to 8 so the member
+// layout is identical regardless of any ambient "#pragma pack" leaking in via include order.
+#pragma pack(push, 8)
+
 
 //#define USE_ORIGINAL_FONT
 //#define USE_STROKE_FONT
@@ -162,6 +168,12 @@ public:
     float GetXOffset(void);
     float GetYOffset(void);
 
+    // VR: temporarily render at a per-eye resolution. Caller follows with SetViewport()
+    // (recomputes scaleX/scaleY) and SetFOV() (recomputes the projection), then restores.
+    void VR_SetRes(int w, int h) { xRes = w; yRes = h; txRes = w; tyRes = h; }
+    int  VR_GetResX(void) const { return xRes; }
+    int  VR_GetResY(void) const { return yRes; }
+
     enum
     {
         DISPLAY_GENERAL = 0,
@@ -238,11 +250,28 @@ public:
     static bool CleanupRttTarget();
     void StartRtt(Render3D* r3d_);
     void FinishRtt();
+    // Artscout - 2026: re-bind the shared RTT atlas as the active D3D11 target WITHOUT the StartRtt
+    // bookkeeping (no save/clear/rect reset). The GM radar's beam sub-render does EndDraw->BindBackBuffer
+    // mid-batch, which unbinds the atlas; its 2D composite then leaked to the back buffer (GM drawn big
+    // on screen, absent from the atlas). Call this to restore the atlas before the composite.
+    void ReBindRttTarget();
+    // Artscout - 2026: confine the D3D11 viewport to THIS display's atlas sub-zone (tLeft..tRight, the
+    // same rect DrawRttQuad samples). A sensor scene's 3D OBJECTS (VS_Object, centred clip-NDC) otherwise
+    // render at the FULL-atlas centre regardless of the display zone -> they leak into whatever other
+    // display's zone covers the centre (TGP/Maverick target appearing on HUD/DED/RWR). Call before the
+    // object flush; restore the full viewport afterwards (ReBindRttTarget). The terrain (screen-path,
+    // full-atlas coords) is drawn earlier with the full viewport and is unaffected.
+    void ConfineObjectViewportToZone();
     void SetRttCanvas(Tpoint* ul_, Tpoint* ur_, Tpoint* ll_, char blendMode_, float alpha_);
     void SetRttRect(int tLeft_, int tTop_, int tRight_, int tBottom_,  bool rt_ = true);
     void AdjustRttViewport();
     void ResetRttViewport();
     void DrawRttQuad();
+    // Artscout - 2026 (VR HUD 3D glass): draw a flat tinted semi-transparent quad over the RTT canvas
+    // (the physical combiner-glass rectangle) so the glass plate reads as glass. Uses the SAME canvas
+    // transform as DrawRttQuad (fixed in the cockpit world, NOT collimated), alpha-blended, no texture.
+    void DrawGlassPlate(float r, float g, float b, float a);
+    void DrawRttDebugOverlay();	// debug helper: draw the raw renderTexture into a screen corner
     int HasRttTarget();
     void GetRttCanvas(Tpoint* Canvas);
 protected:
@@ -271,6 +300,8 @@ protected:
     static Render3D* r3d;
     // ASSO: END
 };
+
+#pragma pack(pop)	// Artscout - 2026: end ODR/layout packing guard (see top of file)
 
 
 #endif // _DISPLAY_H_

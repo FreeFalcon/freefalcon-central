@@ -168,6 +168,9 @@ int LimiterMgrClass::HasLimiter(int key, int dataset)
 
      return FALSE;*/
 
+    if (dataset < 0 or dataset >= numDatasets or key < 0 or key >= NumLimiterTypes)   // Artscout - 2026: bound-check (see GetLimiter)
+        return 0;
+
     return limiterDatasets[dataset * NumLimiterTypes + key] ? 1 : 0;
 }
 
@@ -184,6 +187,14 @@ Limiter *LimiterMgrClass::GetLimiter(int key, int dataset)
      }
 
      return NULL;*/
+    // Artscout - 2026: bound-check the flat [dataset * NumLimiterTypes + key] index. dataset == an aircraft's
+    // vehicleIndex (data-driven, and can be stale/garbage if the entity is read during/after death -- the known
+    // SimObjectType lifetime issue). The OOB read returned benign garbage in Debug but a -1 pointer in Release
+    // -> CTD in AirframeClass::Roll (limiter->Limit on a bogus pointer, e.g. while AI dogfights hard). Every
+    // caller null-checks the result, so returning NULL just means "no limiter for this axis" (graceful).
+    if (dataset < 0 or dataset >= numDatasets or key < 0 or key >= NumLimiterTypes)
+        return NULL;
+
     return limiterDatasets[dataset * NumLimiterTypes + key];
 }
 

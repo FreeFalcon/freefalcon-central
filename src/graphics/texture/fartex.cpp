@@ -11,17 +11,14 @@
 #include "TOD.h"
 #include "Image.h"
 #include "FarTex.h"
-#include "dxtlib.h"
+#include "ddsdiskhdr.h" // Artscout - 2026 (x64): correct on-disk DDS header read
+#include "Graphics/DXEngine/d3d11/D3D11TextureManager.h" // Artscout - 2026: NVTT 3 DDS export
 #include "Falclib/Include/IsBad.h"
 #include "FalcLib/include/playerop.h"
 #include "FalcLib/include/dispopts.h"
 
 extern bool g_bEnableStaticTerrainTextures;
 extern bool g_bUseMappedFiles;
-extern int fileout;
-extern void ConvertToNormalMap(int kerneltype, int colorcnv, int alpha, float scale, int minz, bool wrap, bool bInvertX, bool bInvertY, int w, int h, int bits, void * data);
-extern void ReadDTXnFile(unsigned long count, void * buffer);
-extern void WriteDTXnFile(unsigned long count, void *buffer);
 
 #include "FalcLib/include/PlayerOp.h"
 
@@ -158,7 +155,11 @@ BOOL FarTexDB::Setup(DXContext *hrc, const char* path)
 
         if ( not fp) return TRUE;
 
+#if defined(_M_IX86)
         fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
+#else
+        { DDSDiskHeader _h; fread(&_h, 1, DDS_DISK_HEADER_SIZE, fp); DDSDiskToDesc(_h, ddsd); } // Artscout - 2026 (x64): on-disk DDS header
+#endif
         ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE)
 
         linearSize = ddsd.dwLinearSize;
@@ -527,7 +528,7 @@ void FarTexDB::Load(DWORD offset, bool forceNoDDS)
         ShiAssert(texArray[offset].bits);
 
         // Read the image data
-        if ( not fartexDDSFile.ReadDataAt(sizeof(DDSURFACEDESC2) + (offset * linearSize), texArray[offset].bits, linearSize))
+        if ( not fartexDDSFile.ReadDataAt(DDS_DISK_HEADER_SIZE + (offset * linearSize), texArray[offset].bits, linearSize))
         {
             char string[80];
             char message[120];
@@ -581,7 +582,7 @@ void FarTexDB::Activate(DWORD offset)
 
     if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
     {
-        texArray[offset].handle = (UInt)new TextureHandle;
+        texArray[offset].handle = (DWORD_PTR)new TextureHandle; // Artscout - 2026 (x64): pointer-sized
         ShiAssert(texArray[offset].handle);
 
         DWORD info = MPR_TI_DDS;
@@ -593,7 +594,7 @@ void FarTexDB::Activate(DWORD offset)
     }
     else
     {
-        texArray[offset].handle = (UInt)new TextureHandle;
+        texArray[offset].handle = (DWORD_PTR)new TextureHandle; // Artscout - 2026 (x64): pointer-sized
         ShiAssert(texArray[offset].handle);
         palHandle->AttachToTexture((TextureHandle *)texArray[offset].handle);
 
@@ -716,6 +717,22 @@ void FarTexDB::Select(ContextMPR *localContext, TextureID texID)
     localContext->SelectTexture1(texArray[texID].handle);
 }
 
+// Artscout - 2026: #78 return the D3D11 SRV for a far tile (activating if needed). Mirrors Select but
+// returns the SRV instead of binding through a ContextMPR.
+void *FarTexDB::GetTileSRV(TextureID texID)
+{
+    if ( not IsReady()) return 0;
+    if (texID == INVALID_TEXID) return 0;
+    if ( not (texID >= 0 and texID < (DWORD)texCount)) return 0;
+    if (texArray[texID].handle == NULL)
+    {
+        if ( not texArray[texID].bits) return 0;
+        Activate(texID);
+    }
+    if ( not texArray[texID].handle) return 0;
+    return (void *)((TextureHandle *)texArray[texID].handle)->m_pDDS;
+}
+
 void FarTexDB::RestoreAll()
 {
     EnterCriticalSection(&cs_textureList);
@@ -746,7 +763,11 @@ void FarTexDB::FlushHandles()
 
         if ( not fp) return;
 
+#if defined(_M_IX86)
         fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
+#else
+        { DDSDiskHeader _h; fread(&_h, 1, DDS_DISK_HEADER_SIZE, fp); DDSDiskToDesc(_h, ddsd); } // Artscout - 2026 (x64): on-disk DDS header
+#endif
         ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE)
 
         linearSize = ddsd.dwLinearSize;
@@ -797,7 +818,11 @@ bool FarTexDB::SyncDDSTextures(bool bForce)
         sprintf(szDDSName, "%s\\%d.dds", texturePath, i);
         fpDDS = fopen(szDDSName, "rb");
         fread(&dwMagic, 1, sizeof(DWORD), fpDDS);
+#if defined(_M_IX86)
         fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fpDDS);
+#else
+        { DDSDiskHeader _h; fread(&_h, 1, DDS_DISK_HEADER_SIZE, fpDDS); DDSDiskToDesc(_h, ddsd); } // Artscout - 2026 (x64): on-disk DDS header
+#endif
 
         pBuf = new BYTE[ddsd.dwLinearSize];
         fread(pBuf, 1, ddsd.dwLinearSize, fpDDS);
@@ -879,23 +904,9 @@ bool FarTexDB::DumpImageToFile(DWORD offset)
 
 bool FarTexDB::SaveDDS_DXTn(const char *szFileName, BYTE* pDst, int dimensions)
 {
-    CompressionOptions options;
-
-#if _MSC_VER >= 1300
-
-    fileout = _open(szFileName, O_WRONLY bitor O_BINARY bitor O_CREAT, S_IWRITE);
-
-    options.MipMapType = dNoMipMaps;
-    options.bBinaryAlpha = false;
-    options.TextureFormat = dDXT1;
-
-    //nvDXTcompress((BYTE *)pDst,dimensions,dimensions,dimensions*4,&options,4,0);
-
-    _close(fileout);
-
-#endif
-
-    return true;
+    // Far tiles carry no alpha/chroma -> plain DXT1/BC1. Compress the BGRA source
+    // to a .dds via modern NVTT 3 (x64).
+    return D3D11TextureManager::SaveBCnDDS(szFileName, 0, pDst, dimensions, dimensions);
 }
 
 

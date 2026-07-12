@@ -34,7 +34,7 @@ int F4GetRegistryString(char* keyName, char* dataPtr, int dataSize)
 
     size = dataSize;
     retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY,
-                          0, KEY_ALL_ACCESS, &theKey);
+                          0, KEY_ALL_ACCESS | KEY_WOW64_32KEY, &theKey);
     retval = RegQueryValueEx(theKey, keyName, 0, &type, (LPBYTE)dataPtr, &size);
 
     if (retval not_eq ERROR_SUCCESS)

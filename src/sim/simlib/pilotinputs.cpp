@@ -142,7 +142,7 @@ void PilotInputs::Update()
     // the other is not considered.
     //
     // This 3-state variable should also control various other avionics-related
-    // operations so that we don´t have to introduce 6.23*10^23 new keypresses
+    // operations so that we donï¿½t have to introduce 6.23*10^23 new keypresses
     //
     // Access functions to get the current controlled axis and to set it are provided
     // insider the pilotinput class. The enum is within the class scope 
@@ -320,7 +320,10 @@ void PilotInputs::Update()
 
     //all joystick button functionality is now in sijoy
     //if (IO.ReadDigital(0) or keyboardTriggerOverride)
-    if (keyboardTriggerOverride or TriggerOverride)
+    // #53 REMOVED the joystick TriggerOverride (the hardcoded 'button0=trigger' default armed from any
+    // unbound button 0, including the Winwing engine detent -> firing from the start). The trigger is now
+    // only via the explicit SimTrigger function (keyboardTriggerOverride; works on a device button too).
+    if (keyboardTriggerOverride)
     {
         trigger = Down;
     }
@@ -332,7 +335,7 @@ void PilotInputs::Update()
         // RV - I-Hawk - Added a check to allow ARH "Maddog" launch only in boresight mode
         if ((SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsAirplane()))
         {
-            if (keyboardPickleOverride or PickleOverride)
+            if (keyboardPickleOverride)   // #53 the joystick PickleOverride is removed (see above)
             {
                 if ( not PickleTime) PickleTime = SimLibElapsedTime;
                 else if ((SimLibElapsedTime - PickleTime) > playerAC->FCC->GetPickleTime() and pickleButton == Off and 

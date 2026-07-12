@@ -29,6 +29,11 @@ public:
     virtual int Wake(void);
     //char parentReferenced;
     int rackSlot;
+    // #21: set when this weapon was counted into gNumWeaponsInAir (Instant Action player
+    // missile throttle). Decremented symmetrically on Sleep regardless of parent/mode state,
+    // so the counter cannot leak (the old code keyed both inc and dec on parent==player and
+    // leaked when the parent went stale, eventually blocking all firing in IA).
+    int countedInAir;
     uchar shooterPilotSlot; // The pilotSlot of the pilot who shot this weapon
     Float32 lethalRadiusSqrd;
     FalconEntityBin parent;

@@ -36,6 +36,12 @@ ChaffClass::~ChaffClass()
 void ChaffClass::InitLocalData()
 {
     bombType = Chaff;
+    // Artscout - 2026: ChaffClass declares its OWN drawPointer (chaff.h:64, DrawableBSP*) that SHADOWS
+    // SimBaseClass::drawPointer. BombClass's ctor only zeroes the BASE pointer, so this shadowing member was
+    // left as SmartHeap pool garbage (0xFFFFFFFF) at Wake -> the `if (drawPointer)` guard passed on garbage and
+    // RemoveObject deref'd it -> CTD (which is why chaff removal was commented out). Zero it here so every ctor
+    // path starts NULL and the normal RemoveObject is safe again. (NOT the F4IsBad >4GB bug -- different root.)
+    drawPointer = NULL;
 }
 
 void ChaffClass::InitData()
@@ -234,7 +240,9 @@ void ChaffClass::InitTrail()
 
     if (drawPointer)
     {
-        //OTWDriver.RemoveObject(drawPointer, TRUE); // FRB - causes CTD
+        // Artscout - 2026: re-enabled. The old CTD was drawPointer = uninitialized pool garbage (0xFFFFFFFF)
+        // at Wake; now zeroed in InitLocalData() so this guard only passes on a real drawable -> safe to remove.
+        OTWDriver.RemoveObject(drawPointer, TRUE);
         drawPointer = NULL;
     }
 

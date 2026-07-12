@@ -9,6 +9,8 @@
 #ifndef _FAKERAND_
 #define _FAKERAND_
 
+#include <intrin.h>   // Artscout - 2026 (x64): __rdtsc intrinsic for GenerateFastRandom
+
 // fakerand wasn't good enough for doing something that
 // needed to be cyclicly randomiized like the tracer fire.
 #define NRANDPOS ((float)( (float)rand()/(float)RAND_MAX ))
@@ -109,6 +111,7 @@ inline long GenerateFastRandom(void)
 #undef xor
     static long LastRandom;
     long FastRandom; // The Random Variable
+#if defined(_M_IX86)
     _asm
     {
         push edx
@@ -123,6 +126,17 @@ inline long GenerateFastRandom(void)
         pop edx
     }
     return(FastRandom);
+#else
+    // Artscout - 2026 (x64): same recipe via the __rdtsc intrinsic (edx:eax = timestamp).
+    unsigned __int64 ts = __rdtsc();
+    long edx = (long)(ts >> 32);
+    long eax = (long)(ts & 0xffffffffu);
+    FastRandom  = edx;
+    FastRandom ^= eax;
+    FastRandom += LastRandom;
+    LastRandom += edx;
+    return(FastRandom);
+#endif
 #define xor ^
 }
 

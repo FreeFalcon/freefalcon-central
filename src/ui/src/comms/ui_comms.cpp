@@ -1011,7 +1011,7 @@ void ReceiveChatString(VU_ID from, _TCHAR *message)
 #endif
 
     _tcscpy(msg->Text_, message);
-    PostMessage(gCommsMgr->AppWnd_, FM_RECEIVE_CHAT, 0, (long)msg);
+    PostMessage(gCommsMgr->AppWnd_, FM_RECEIVE_CHAT, 0, (LPARAM)msg); // Artscout - 2026 (x64): (long) truncated the CHATSTR* pointer -> sign-extended garbage on receive
 
 
 }
@@ -1494,7 +1494,7 @@ static void RemoveOldPeopleTreeCB(TREELIST *old)
             m_pUplink->RemovePlayer(((C_Player*)old->Item_)->GetName());
         }
 
-        catch (_com_error e)
+        catch (const _com_error &e)
         {
             MonoPrint("StartCampaignGame: Error 0x%X occured during UpLink startup", e.Error());
         }
@@ -1853,7 +1853,7 @@ void UpdateLocalGameTree()
                         m_pUplink->AddPlayer(((C_Player*)player->Item_)->GetName());
                     }
 
-                    catch (_com_error e)
+                    catch (const _com_error &e)
                     {
                         MonoPrint("StartCampaignGame: Error 0x%X occured during UpLink startup", e.Error());
                     }

@@ -101,11 +101,10 @@ void DigitalBrain::DecisionLogic(void)
                         }
                     }
 
-#ifdef DEBUG
-                    //airtargetPtr = new SimObjectType( OBJ_TAG, self, (FalconEntity*) airtarget );
-#else
+                    // #47 UAF ROOT: it was #ifdef DEBUG (empty) / #else new -> in a Debug build
+                    // (DEBUG defined via assert.h under _DEBUG) the object was NOT created -> a dangling
+                    // airtargetPtr -> Reference()/SetTarget on garbage. Create UNCONDITIONALLY.
                     airtargetPtr = new SimObjectType((FalconEntity*) airtarget);
-#endif
                     airtargetPtr->Reference();
                     SetTarget(airtargetPtr);
 

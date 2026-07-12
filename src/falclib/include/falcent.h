@@ -1,7 +1,7 @@
 #ifndef FALCENT_H
 #define FALCENT_H
 
-#include <cISO646>
+#include <iso646.h>
 //#include "shi/shierror.h"
 #include "dirtybits.h"
 #include "../../mathlib/math.h"

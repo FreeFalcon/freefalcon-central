@@ -46,9 +46,19 @@
 #include "drawable.h"
 #include "RedMacros.h"
 
+// Artscout - 2026: #VFX Phase 2 -- LIVE particle emit -> GPU-instanced billboards.
+#include <vector>
+#include <algorithm>   // Artscout - 2026: #VFX std::sort (depth-sort particle buckets)
+#include "Graphics/DXEngine/d3d11/IRenderer.h"   // IRenderer::DrawParticlesInstanced + g_pRenderer
+
 // for when fakerand just won't do
 #define NRANDPOS ((float)( (float)rand()/(float)RAND_MAX ))
 #define DTR 0.01745329F
+
+// #54 per-emitter particle cap per frame -- a fuse against emission blowup on a huge
+// PS_ElapsedTime (after a long loading frame) -> infinite while(qty>=1) -> hang.
+// Any real effect (including big explosions) << this; triggers only on an abnormal dt.
+#define PS_MAX_EMIT_PER_FRAME 4096.0f
 
 extern int g_nGfxFix;
 extern char FalconDataDirectory[];
@@ -70,6 +80,453 @@ static char ErrorMessage[128];
 bool g_bNoParticleSys = 0;
 BOOL gParticleSysGreenMode = 0;
 Tcolor gParticleSysLitColor = {1, 1, 1};
+
+// ============================================================================
+// Artscout - 2026: #VFX Phase 2 -- GPU-instanced billboard particles.
+// The LIVE particle poly path (PS_PolyRun) normally emits one CPU-built billboard
+// quad per particle into the DX2D batcher (DX2D_AddQuad). Here we route mapped
+// effects (explosions / fire) into the Phase-1 GPU-instanced path instead: per
+// particle we push a GpuParticleInstance (world-relative centre, size, rotation,
+// colour, atlas-cell UV) into a per-atlas bucket, then flush each bucket once per
+// frame with g_pRenderer->DrawParticlesInstanced. Effects with no mapping stay on
+// the DX2D path. Master switch g_bGpuParticles falls the whole thing back to the
+// original emit (identical output) when false.
+// ============================================================================
+
+// Master toggle (declared extern in the header).
+// Artscout - 2026: #VFX -- GPU-instanced billboard path (DrawParticlesInstanced), thousands of
+// particles per draw. Reproduces the DX7->D3D11 volume that the DX2D path had:
+// (a) DEPTH SORT: the particle system loads ONE atlas (particlesys.ini has a single TextureFile=
+//     MainSFX), so every routed sprite shares one SRV -> one (srv,blend) bucket -> the per-bucket
+//     back-to-front sort in PS_FlushGpuParticles IS a GLOBAL sort (correct translucent compositing).
+// (b) GRADIENT: VS_Particle applies the top=1.0 / bottom=0.68 vertical shade the legacy quad carried
+//     via HiColor/LoColor -- the fake self-shadow that makes an overlapping sprite cloud read as VOLUME.
+// FALSE falls every billboard back to the legacy DX2D_AddQuad path (still valid; DrawDynamic2DIndexed
+// is implemented under D3D12). NB: smoke TRAILS (PS_SubTrailRun) always use DX2D regardless of this flag.
+bool g_bGpuParticles = true;
+
+// Artscout - 2026: #VFX -- master toggle for the dedicated HERO-flipbook explosions (the single
+// EmberGen billboard spawned per blast event). Default OFF: under D3D12 the hero path SUPPRESSED
+// the whole native volumetric particle cloud (PS_NearActiveHero) and replaced it with a few flat
+// camera-facing plates -> the DX11 "volume" regressed to "flat / layered". With this OFF the full
+// native cloud (many sorted alpha billboards -- smoke, fire, sparks, debris) renders as it did in
+// D3D11. Re-enable only once the hero atlases are worth compositing ON TOP of the native cloud.
+bool g_bHeroExplosions = true;
+
+namespace
+{
+
+// One GPU-instanced billboard record. Layout MUST match D3D12ParticleInstance
+// (D3D12Renderer.h) and the particle input layout in ffemu.hlsl: 44 bytes, tightly
+// packed, all 4-byte fields, colour as B8G8R8A8_UNORM (packed D3DCOLOR ARGB).
+#pragma pack(push, 1)
+struct GpuParticleInstance
+{
+    float    center[3];   // billboard centre, CAMERA-RELATIVE world space (see note in PS_PolyRun)
+    float    size[2];     // world width,height
+    float    rot;         // radians, billboard plane
+    unsigned color;       // packed D3DCOLOR
+    float    uvRect[4];   // xy = atlas cell offset, zw = atlas cell scale
+};
+#pragma pack(pop)
+
+// unit quad in the VS spans +/-0.5 -> full extent = Size. The legacy billboard put
+// its corners at radius `size` from the centre (bounding box 2*size). Scale to match
+// the on-screen extent. Tunable.
+const float PS_GPU_SIZE_SCALE = 2.0f;
+// Loops/second for continuous flipbooks (burning wreck). Tunable.
+const float PS_GPU_LOOP_SPEED = 0.75f;
+// 8x8 sprite sheet; frame 0 of every sheet is empty (pre-ignition) -> map to 1..63.
+const int   PS_GPU_GRID       = 8;
+
+// Effect(name) -> sprite-atlas descriptor. `effectName` matches PS_PPType::name,
+// which for the stock effects is a nameList entry (e.g. "$AIR_EXPLOSION").
+struct PsAtlasDef
+{
+    const char* effectName;
+    const char* atlasFile;   // DDS in terrdata/misctex, loaded by GetTextureHandle(name)
+    bool  bottomAnchored;    // sprite base sits at Part.pos (rising column) vs centred
+    bool  loop;              // continuous flipbook (life wraps) vs one-shot (life 0..1)
+};
+
+// The catalog. Effects NOT listed here keep the legacy DX2D_AddQuad emit.
+const PsAtlasDef kPsAtlas[] =
+{
+    // AIR explosions (aircraft / missile) -- centre-anchored one-shot.
+    { "$AC_AIR_EXPLOSION",           "air_explosion.dds",       false, false },
+    { "$AIR_EXPLOSION",              "air_explosion.dds",       false, false },
+    { "$AIR_EXPLOSION_NOGLOW",       "air_explosion.dds",       false, false },
+    // GROUND / vehicle explosions (rising smoke column) -- bottom-anchored one-shot.
+    { "$GROUND_EXPLOSION",           "ground_explosion.dds",    true,  false },
+    { "$GROUND_EXPLOSION_NO_CRATER", "ground_explosion.dds",    true,  false },
+    // FUEL / secondary fireball -- centre-anchored one-shot.
+    { "$FIREBALL",                   "fuel_explosion.dds",      false, false },
+    { "$WATER_FIREBALL",             "fuel_explosion.dds",      false, false },
+    { "$TRAIL_FIREBALL",             "fuel_explosion.dds",      false, false },
+    // SMALL hit / AAA airburst -- centre-anchored one-shot.
+    { "$SMALL_HIT_EXPLOSION",        "small_explosion.dds",     false, false },
+    { "$AAA_EXPLOSION",              "small_explosion.dds",     false, false },
+    { "$AIRBURST",                   "small_explosion.dds",     false, false },
+    // Burning wreck / continuous fire (fire + black smoke) -- bottom-anchored LOOP.
+    { "$VEHICLE_BURNING",            "oil_fire_render_all.dds", true,  true  },
+    { "$FIRE",                       "oil_fire_render_all.dds", true,  true  },
+    { "$SHIP_BURNING_FIRE",          "oil_fire_render_all.dds", true,  true  },
+};
+const int kPsAtlasCount = (int)(sizeof(kPsAtlas) / sizeof(kPsAtlas[0]));
+
+// Per-row runtime state: resolved SRV (lazy) + reused accumulation bucket.
+struct PsAtlasRuntime
+{
+    void* srv;    // ((TextureHandle*)handle)->m_pDDS, or NULL if the DDS is missing
+    bool  tried;  // GetTextureHandle already attempted (don't retry every frame)
+    std::vector<GpuParticleInstance> bucket;
+    PsAtlasRuntime() : srv(NULL), tried(false) {}
+};
+PsAtlasRuntime g_psAtlas[kPsAtlasCount];   // reused across frames (capacity amortised)
+
+// Artscout - 2026: #VFX Phase 2 -- GENERAL GPU billboard path. Every drawtype=poly particle
+// (smoke, flash, trails, sparks, ...) is emitted as an instanced billboard using ITS OWN sprite
+// (Poly.TexHandle -- the same handle the legacy DX2D_AddQuad would have bound). This restores
+// ALL particle effects under D3D12 (the legacy DX2D_Flush indexed path is a stub there, so any
+// poly not routed here is invisible). Buckets are keyed by (srv, blend): a frame has only a
+// handful of distinct particle textures, so a linear-scanned vector beats a map. Entries persist
+// across frames (insts cleared, capacity kept) so there is no per-frame reallocation churn.
+struct GpuTexBucket
+{
+    void* srv;
+    int   blend;   // 0 additive, 1 straight alpha, 2 premultiplied
+    std::vector<GpuParticleInstance> insts;
+    GpuTexBucket() : srv(NULL), blend(1) {}
+};
+std::vector<GpuTexBucket> g_gpuBuckets;
+
+std::vector<GpuParticleInstance>& PS_BucketFor(void* srv, int blend)
+{
+    for (size_t i = 0; i < g_gpuBuckets.size(); ++i)
+        if (g_gpuBuckets[i].srv == srv and g_gpuBuckets[i].blend == blend)
+            return g_gpuBuckets[i].insts;
+
+    g_gpuBuckets.push_back(GpuTexBucket());
+    GpuTexBucket &b = g_gpuBuckets.back();
+    b.srv = srv; b.blend = blend;
+    return b.insts;
+}
+
+// ---- Artscout - 2026: #VFX Phase 2b -- HERO explosion flipbook -------------------------
+// A cluster's native fire/flash children are tiny sprites tuned for the old DX7 look; their
+// lifespans (~0.3s) are far too short to retime a 64-frame hero animation onto. So instead we
+// spawn ONE dedicated EmberGen billboard per explosion EVENT (hooked in PS_AddParticleEx),
+// with its OWN ~1.4s clock, at the blast centre. The native smoke/debris still add context.
+// Atlases are 8x8=64 frames, premultiplied, loaded via `TextureFile=` in particlesys.ini and
+// resolved here by base name.
+struct HeroDef { const char* effect; const char* atlas; float size; int durMs; bool bottom; };
+const HeroDef kHero[] =
+{
+    // effect ($ name spawned by PS_AddParticleEx)   atlas base name   world-size  dur(ms) groundColumn
+    { "$AIR_EXPLOSION",                "air_explosion",    300.0f, 1400, false },
+    { "$AC_AIR_EXPLOSION",             "air_explosion",    550.0f, 1900, false },
+    { "$GROUND_EXPLOSION",             "ground_explosion", 340.0f, 1500, true  },
+    { "$GROUND_EXPLOSION_NO_CRATER",   "ground_explosion", 300.0f, 1400, true  },
+    { "$HIT_EXPLOSION",                "fuel_explosion",   260.0f, 1300, false },
+    { "$VEHICLE_EXPLOSION",            "fuel_explosion",   280.0f, 1400, true  },
+    { "$ARTILLERY_EXPLOSION",          "ground_explosion", 220.0f, 1200, true  },
+    { "$AAA_EXPLOSION",                "small_explosion",  140.0f,  900, false },
+    { "$SMALL_HIT_EXPLOSION",          "small_explosion",  120.0f,  900, false },
+    { "$WATER_EXPLOSION",              "fuel_explosion",   320.0f, 1500, true  },
+    { "$FEATURE_EXPLOSION",            "ground_explosion", 380.0f, 1600, true  },
+};
+const int kHeroCount = (int)(sizeof(kHero) / sizeof(kHero[0]));
+
+// Lazily-resolved atlas SRV per hero row (the TextureFile= load happens at PS init; here we
+// only look the handle up once). NULL -> atlas missing -> that effect gets no hero billboard.
+struct HeroSrvCache { void* srv; bool tried; HeroSrvCache() : srv(NULL), tried(false) {} };
+HeroSrvCache g_heroSrv[kHeroCount];
+
+// A live hero explosion: fixed WORLD centre + own animation clock. `rot` is a per-instance
+// random billboard roll so several explosions (a killed flight) don't stack as identical plates.
+struct HeroExplosion { float cx, cy, cz, size, rot; int startMs, durMs; void* srv; bool bottom; };
+std::vector<HeroExplosion> g_heroExpl;
+
+// True if (x,y,z) is inside any live hero explosion's EARLY/bright phase -- used to suppress the
+// redundant native fire/flash sprites there (the hero flipbook already IS the fireball). g_heroExpl
+// holds heroes alive as of the last tick (PS_PolyRun runs before PS_TickHeroExplosions), plus any
+// spawned this sim-step via PS_AddParticleEx.
+// Artscout - 2026: #VFX -- suppress ONLY during the hero's first ~40% (nowMs = PS clock). The native
+// lingering BLACK SMOKE cloud is born ~0.5s after the blast and drifts/persists for seconds; if we
+// suppress it for the hero's whole ~1.9s life it only pops in AFTER the hero fades -> "explosion
+// plays, clear sky, THEN a smoke cloud appears" (a visible gap). Ending suppression early lets the
+// smoke emerge on its own schedule and OVERLAP the still-bright hero -> a smooth fire->smoke handoff.
+bool PS_NearActiveHero(float x, float y, float z, int nowMs)
+{
+    for (size_t i = 0; i < g_heroExpl.size(); ++i)
+    {
+        const HeroExplosion &e = g_heroExpl[i];
+        if (nowMs - e.startMs > (int)(e.durMs * 0.40f)) continue;   // past the bright phase -> let native through
+        float dx = x - e.cx, dy = y - e.cy, dz = z - e.cz;
+        float r = e.size * 1.0f;   // suppression radius (tunable) -- cover the whole blast, not just the core
+        if (dx*dx + dy*dy + dz*dz < r*r) return true;
+    }
+    return false;
+}
+
+int PS_FindHeroRow(const char* effect)
+{
+    if ( not effect or not effect[0]) return -1;
+    for (int i = 0; i < kHeroCount; ++i)
+        if (stricmp(kHero[i].effect, effect) == 0) return i;
+    return -1;
+}
+
+void* PS_HeroSrv(int row)
+{
+    HeroSrvCache &c = g_heroSrv[row];
+    if ( not c.tried)
+    {
+        c.tried = true;
+        DWORD_PTR h = TheDXEngine.GetTextureHandle((char*)kHero[row].atlas);
+        c.srv = h ? (void*)((TextureHandle*)h)->m_pDDS : NULL;
+    }
+    return c.srv;
+}
+
+// Spawn a hero billboard for `effect` at world (x,y,z), if that effect is mapped + its atlas
+// loaded. Called from PS_AddParticleEx (once per explosion event). nowMs = the PS clock
+// (DrawableParticleSys::PS_RunTime, a class-static the anon-namespace helpers can't touch).
+void PS_SpawnHero(const char* effect, float x, float y, float z, int nowMs)
+{
+    int row = PS_FindHeroRow(effect);
+    if (row < 0) return;
+    void* srv = PS_HeroSrv(row);
+#ifdef _DEBUG
+    {   // #VFX Phase 2b TEMP diag (remove once confirmed): first hero spawns + atlas resolution.
+        static int s_n = 0;
+        if (s_n < 24)
+        {
+            s_n++;
+            char m[192];
+            sprintf(m, "[VFXHERO] spawn effect='%s' -> row=%d atlas='%s' srv=%s pos=(%.0f %.0f %.0f)\n",
+                    effect, row, kHero[row].atlas, srv ? "y" : "NULL(atlas not loaded!)", x, y, z);
+            OutputDebugString(m);
+        }
+    }
+#endif
+    if ( not srv) return;
+
+    // Spawn a small CLUSTER of sub-billboards instead of ONE flat plate. Each is offset in 3D,
+    // scaled, rolled and frame-phase-jittered, so they overlap into a roiling VOLUME rather than a
+    // single camera-facing card -- a general real-time trick to give sprite explosions depth.
+    // All share the atlas SRV -> still one DrawParticlesInstanced. Tunable via nSub.
+    const float baseSize = kHero[row].size;
+    const int   nSub     = 4;
+    for (int s = 0; s < nSub; ++s)
+    {
+        HeroExplosion e;
+        // sub 0 is centred & full size (the anchor); the rest jitter around it.
+        float ox = 0.0f, oy = 0.0f, oz = 0.0f;
+        if (s > 0)
+        {
+            ox = (PRANDFloatPos() - 0.5f) * baseSize * 0.45f;
+            oy = (PRANDFloatPos() - 0.5f) * baseSize * 0.45f;
+            oz = (PRANDFloatPos() - 0.5f) * baseSize * 0.45f;
+        }
+        e.cx = x + ox; e.cy = y + oy; e.cz = z + oz;
+        e.size    = (s == 0) ? baseSize : baseSize * (0.55f + PRANDFloatPos() * 0.45f);
+        e.startMs = nowMs - (int)(PRANDFloatPos() * 150.0f);   // phase-shift so the sub-frames desync
+        e.durMs   = kHero[row].durMs;
+        e.srv     = srv;
+        e.bottom  = kHero[row].bottom;
+        e.rot     = PRANDFloatPos() * 6.2831853f;
+        g_heroExpl.push_back(e);
+    }
+}
+
+// Advance every live hero explosion and emit its current flipbook frame as a premultiplied
+// billboard (blend 2). Called from PS_Exec just before the bucket flush. Removes finished ones.
+void PS_TickHeroExplosions(int nowMs)
+{
+    if (g_heroExpl.empty()) return;
+
+    const D3DVECTOR &camPos = CDXEngine::GetObjCameraPos();
+
+    for (size_t i = 0; i < g_heroExpl.size(); )
+    {
+        HeroExplosion &e = g_heroExpl[i];
+        int el = nowMs - e.startMs;
+
+        if (el < 0) el = 0;
+        if (el >= e.durMs)   // finished -> swap-remove
+        {
+            e = g_heroExpl.back();
+            g_heroExpl.pop_back();
+            continue;
+        }
+
+        float t = (float)el / (float)e.durMs;          // 0..1 over the animation
+        int frame = 1 + (int)(t * 62.0f);              // cell 1..63 (0 is the empty frame)
+        if (frame < 1)  frame = 1;
+        if (frame > 63) frame = 63;
+
+        // Soft fade-out over the last 20% so the sprite doesn't pop off.
+        float fade = (t > 0.8f) ? (1.0f - (t - 0.8f) / 0.2f) : 1.0f;
+        int a8 = (int)(255.0f * fade);
+        if (a8 < 0)   a8 = 0;
+        if (a8 > 255) a8 = 255;
+        unsigned au = (unsigned)a8;
+
+        GpuParticleInstance inst;
+        inst.center[0] = e.cx - camPos.x;
+        inst.center[1] = e.cy - camPos.y;
+        inst.center[2] = e.cz - camPos.z;
+        if (e.bottom) inst.center[2] -= e.size * 0.5f;   // base sits at the impact point (world up = -Z)
+        inst.size[0] = inst.size[1] = e.size;
+        inst.rot     = e.rot;
+        inst.color   = (au << 24) | (au << 16) | (au << 8) | au;   // premult: scale RGB+A together
+
+        const float inv = 1.0f / (float)PS_GPU_GRID;
+        inst.uvRect[0] = (frame % PS_GPU_GRID) * inv;
+        inst.uvRect[1] = (frame / PS_GPU_GRID) * inv;
+        inst.uvRect[2] = inv;
+        inst.uvRect[3] = inv;
+
+        PS_BucketFor(e.srv, 2).push_back(inst);
+#ifdef _DEBUG
+        {   // #VFX Phase 2b TEMP diag: confirm the flipbook advances (frame 1..63, not stuck/empty).
+            static int s_n = 0;
+            if (s_n < 40) { s_n++; char m[128];
+                sprintf(m, "[VFXHERO] tick t=%.2f frame=%d fade=%.2f size=%.0f\n", t, frame, fade, e.size);
+                OutputDebugString(m); }
+        }
+#endif
+        ++i;
+    }
+}
+
+#ifdef _DEBUG
+// Artscout - 2026: #VFX Phase 2 TEMP diagnostic (remove once confirmed). Per-frame emit
+// tallies, dumped from PS_FlushGpuParticles every N flushes to the VS Output window.
+int g_dbgPolyVisible = 0;   // visible poly particles that reached the GPU-emit decision
+int g_dbgGpuPush     = 0;   // pushed into a GPU bucket
+int g_dbgSrvNull     = 0;   // particle sprite SRV unresolved -> nothing drawn
+int g_dbgZPoly       = 0;   // flat ground decal -> stays on DX2D
+#endif
+
+// Table row for an effect by name, or -1 if unmapped -> legacy DX2D path.
+int PS_FindAtlasRow(const char* effectName)
+{
+    if ( not effectName or not effectName[0]) return -1;
+
+    for (int i = 0; i < kPsAtlasCount; ++i)
+        if (stricmp(kPsAtlas[i].effectName, effectName) == 0) return i;
+
+    return -1;
+}
+
+// Lazily resolve + cache the atlas SRV for row i. NULL -> DDS missing / rejected by
+// the loader, caller falls back to the legacy emit for that effect.
+void* PS_AtlasSrv(int i)
+{
+    PsAtlasRuntime &rt = g_psAtlas[i];
+
+    if ( not rt.tried)
+    {
+        rt.tried = true;
+        // Same TexHandle resolution the object/2D path uses (dx2dengine.cpp
+        // DX2D_Flush2DObjects): GetTextureHandle returns a TextureHandle* (as
+        // DWORD_PTR); its ->m_pDDS is the backend SRV / D3D12Texture* SetTexture wants.
+        DWORD_PTR h = TheDXEngine.GetTextureHandle((char*)kPsAtlas[i].atlasFile);
+        rt.srv = h ? (void*)((TextureHandle*)h)->m_pDDS : NULL;
+
+        if ( not rt.srv)
+        {
+            char msg[160];
+            sprintf(msg, "#VFX Phase 2: particle atlas '%s' unavailable -- legacy DX2D emit\n", kPsAtlas[i].atlasFile);
+            OutputDebugString(msg);
+        }
+    }
+
+    return rt.srv;
+}
+
+// Flush every non-empty (srv,blend) bucket, once per frame (end of PS_Exec). One
+// DrawParticlesInstanced per bucket. Entries persist (insts cleared, capacity kept).
+void PS_FlushGpuParticles(void)
+{
+#ifdef _DEBUG
+    // Artscout - 2026: #VFX Phase 2 TEMP diagnostic (remove once confirmed). Dump the emit
+    // tallies + renderer state + per-bucket counts every 120 frames to the VS Output window,
+    // then reset. Shows where the chain breaks: no visible polys (sim not running), srvNull
+    // (particle texture unresolved -> nothing to draw), pushes but no draw (renderer invalid).
+    {
+        static int s_dbgFrame = 0;
+        if (++s_dbgFrame >= 120)
+        {
+            int totBucket = 0, nb = 0;
+            char rows[300]; rows[0] = 0;
+            for (size_t i = 0; i < g_gpuBuckets.size(); ++i)
+            {
+                int n = (int)g_gpuBuckets[i].insts.size();
+                totBucket += n;
+                if (n > 0)
+                {
+                    nb++;
+                    char seg[48];
+                    sprintf(seg, "b%u=%d ", (unsigned)i, n);
+                    if (strlen(rows) + strlen(seg) < sizeof(rows)) strcat(rows, seg);
+                }
+            }
+            char msg[512];
+            sprintf(msg, "[VFXDIAG] gpuPart=%d rend=%p valid=%d | visPoly=%d push=%d srvNull=%d zpoly=%d | buckets=%d/%u instNow=%d [%s]\n",
+                    (int)g_bGpuParticles, (void*)g_pRenderer,
+                    (g_pRenderer ? (int)g_pRenderer->IsValid() : -1),
+                    g_dbgPolyVisible, g_dbgGpuPush, g_dbgSrvNull, g_dbgZPoly,
+                    nb, (unsigned)g_gpuBuckets.size(), totBucket, rows);
+            OutputDebugString(msg);
+            g_dbgPolyVisible = g_dbgGpuPush = g_dbgSrvNull = g_dbgZPoly = 0;
+            s_dbgFrame = 0;
+        }
+    }
+#endif
+
+    if ( not g_bGpuParticles or not g_pRenderer or not g_pRenderer->IsValid())
+    {
+        // Drop anything accumulated (e.g. toggled off mid-frame) so it can't leak into a later frame.
+        for (size_t i = 0; i < g_gpuBuckets.size(); ++i) g_gpuBuckets[i].insts.clear();
+        return;
+    }
+
+
+    for (size_t i = 0; i < g_gpuBuckets.size(); ++i)
+    {
+        GpuTexBucket &b = g_gpuBuckets[i];
+
+        if ( not b.insts.empty())
+        {
+            if (b.srv)
+            {
+                // Artscout - 2026: #VFX -- depth-sort back-to-front before the draw. The instances
+                // are pushed in spawn order; for straight/premultiplied alpha (blend 1/2) unsorted
+                // transparent billboards composite wrong -> the cloud reads as hard "layers" instead
+                // of a coherent VOLUME (the D3D11 DX2D path sorted per layer via DX2D_SortIndexes).
+                // center[] is camera-relative, so |center|^2 is the squared view distance; sort
+                // farthest first. Additive (blend 0) is order-independent, so skip the sort there.
+                if (b.blend != 0 and b.insts.size() > 1)
+                {
+                    std::sort(b.insts.begin(), b.insts.end(),
+                        [](const GpuParticleInstance &a, const GpuParticleInstance &c) {
+                            float da = a.center[0]*a.center[0] + a.center[1]*a.center[1] + a.center[2]*a.center[2];
+                            float dc = c.center[0]*c.center[0] + c.center[1]*c.center[1] + c.center[2]*c.center[2];
+                            return da > dc;   // farthest drawn first
+                        });
+                }
+                g_pRenderer->DrawParticlesInstanced(&b.insts[0], (int)b.insts.size(), b.srv, b.blend);
+            }
+
+            b.insts.clear();   // keeps capacity -> no per-frame realloc
+        }
+    }
+}
+
+} // anonymous namespace
 
 extern int g_nPSKillFPS;//Cobra
 extern bool g_bHighSFX; // Cobra
@@ -277,7 +734,7 @@ class ParticleTextureNode : public ANode
 {
 public:
     char TexName[32];
-    DWORD TexHandle;
+    DWORD_PTR TexHandle; // Artscout - 2026 (x64): pointer-sized
     CTextureItem *TexItem;
 };
 
@@ -522,7 +979,7 @@ public:
     // The Vertices
     ThreeDVertex v0, v1, v2, v3;
     // The textuer Handle
-    DWORD TexHandle;
+    DWORD_PTR TexHandle; // Artscout - 2026 (x64): pointer-sized
     // The Size random CX
     float SizeRandom;
     CTextureItem *TexItem;
@@ -1162,7 +1619,7 @@ bool SubEmitter::Run(RenderOTW *renderer, ParticleNode *owner)
 
 // COBRA - RED - This function choose the right frame for an animation and updates
 // caller animation parameters
-GLint ParticleAnimationNode::Run(int &Frame, float &TimeRest, float Elapsed, Tpoint &pos, float &alpha)
+DWORD_PTR ParticleAnimationNode::Run(int &Frame, float &TimeRest, float Elapsed, Tpoint &pos, float &alpha) // Artscout - 2026 (x64): pointer-sized handle
 {
     if ((Elapsed + TimeRest) >= Fps)  //
     {
@@ -1763,11 +2220,8 @@ void DrawableParticleSys::SetHeadVelocity(Tpoint *FPS)
 
 inline DWORD ROL(DWORD n)
 {
-    _asm
-    {
-        rol n, 1;
-    }
-    return n;
+    // Artscout - 2026 (x64): rotate-left intrinsic instead of x86 'rol' asm (builds on x86+x64).
+    return _rotl(n, 1);
 }
 
 void DrawableParticleSys::Draw(class RenderOTW *renderer, int LOD)
@@ -2179,7 +2633,17 @@ int DrawableParticleSys::GetNameId(char *name)
 
 #else
 
-        if (PPN[l] and PPN[l]->name and stricmp(name, PPN[l]->name) == 0) return l;
+        // #21/particles: the loader (below, "copy pointers to PPN array") writes into PPN[id]
+        // an INDEX into PS_PPN (USE_NEW_PS scheme), not a real pointer. USE_NEW_PS is nowhere
+        // defined -> this #else branch dereferenced the index as a pointer -> crash on
+        // missile-end in Instant Action. Treat PPN[l] as an index + bounds (holes in PPN
+        // = 0xCDCDCDCD -> exceed PPNCount -> skipped).
+        {
+            DWORD psi = (DWORD)PPN[l];
+
+            if (psi < (DWORD)PPNCount and PS_PPN[psi].name and stricmp(name, PS_PPN[psi].name) == 0)
+                return l;
+        }
 
 #endif
     }
@@ -2949,6 +3413,12 @@ void DrawableParticleSys::PS_AddPoly(PS_PTR owner, PS_PTR ID)
 // Function pasring and updating all Polys... responsable to kill dead ones too
 void  DrawableParticleSys::PS_PolyRun(void)
 {
+    // Artscout - 2026: #VFX Phase 1/2 hook: the GPU-instanced path (g_pRenderer->DrawParticlesInstanced)
+    // will REPLACE the per-particle DX2D_AddQuad emit below. Instead of pushing one CPU-built billboard
+    // quad per particle into the DX2D batcher, Phase 2 accumulates a D3D12ParticleInstance (world pos,
+    // size, rotation, D3DCOLOR, atlas-cell uvRect) per particle into a per-{texture,blend} array, then
+    // flushes each group once via DrawParticlesInstanced(&arr[0], n, atlasSrv, blendMode). Wired by hand
+    // in Phase 2 -- the DX2D_AddQuad calls in this function stay the emit path until then.
 #ifdef DEBUG_NEW_PS_POLYS
     DWORD Count = 0;
 #endif
@@ -3106,6 +3576,10 @@ void  DrawableParticleSys::PS_PolyRun(void)
         // ok, if not visible, skip all the rest
         if ( not Visible) goto Skip;
 
+#ifdef _DEBUG
+        g_dbgPolyVisible++;   // #VFX Phase 2 TEMP diag
+#endif
+
         // compute Alpha of the Poly
         float alpha = PS_EvalTimedLinLogFloat(Life, Poly.AlphaStage, ppn.alphaStages, ppn.alpha);
 
@@ -3114,6 +3588,101 @@ void  DrawableParticleSys::PS_PolyRun(void)
 
         // Rotation stuff
         Poly.Rotation += Poly.RotationRate * PS_ElapsedTime;
+
+        // Artscout - 2026: #VFX Phase 2 -- GENERAL GPU-instanced billboard emit. EVERY
+        // camera-facing poly particle (smoke, flash, sparks, trails, ...) is drawn as an
+        // instanced billboard using ITS OWN sprite (Poly.TexHandle -- the same handle the
+        // legacy DX2D_AddQuad below would bind). This is REQUIRED under D3D12: the legacy
+        // DX2D_Flush indexed path is a stub there, so any poly not routed here is invisible.
+        // ZPoly (flat ground decals: craters) are not camera-facing billboards -> DX2D.
+#ifdef _DEBUG
+        if (ppn.ZPoly) g_dbgZPoly++;   // #VFX Phase 2 TEMP diag
+#endif
+        if (g_bGpuParticles and not ppn.ZPoly)
+        {
+            // #VFX Phase 2b: inside a live hero explosion, drop ALL redundant native sprites --
+            // the EmberGen hero flipbook already contains both the fire AND the smoke, and 500+
+            // flat sprites on top of it just read as "flat black smoke and fire". Suppression is
+            // gated on being NEAR a live hero, so: (a) unmapped effects keep their native sprites,
+            // and (b) once the hero ends (~1.9s) the native smoke/debris re-emerge as aftermath.
+            if (g_bHeroExplosions and PS_NearActiveHero(Part.pos.x, Part.pos.y, Part.pos.z, (int)PS_RunTime))
+                goto Skip;
+
+            // This particle's own sprite SRV: the TextureHandle resolved at spawn from the PPN
+            // "texture=" name (GetTextureHandle -> TextureHandle*, whose ->m_pDDS is the backend
+            // SRV). NULL -> can't draw it on the GPU path (and DX2D is a stub) -> leave to DX2D.
+            void *srv = Poly.TexHandle ? (void*)((TextureHandle*)Poly.TexHandle)->m_pDDS : NULL;
+#ifdef _DEBUG
+            if ( not srv) g_dbgSrvNull++;   // #VFX Phase 2 TEMP diag
+#endif
+            if (srv)
+            {
+                GpuParticleInstance inst;
+
+                // Camera-relative centre: gView is rotation-only in the game build (the object
+                // path adds translation only under EDIT_ENGINE), and VS_Particle does
+                // viewPos = Center * gView, so Center must be relative to the camera. The legacy
+                // DX2D path subtracts the camera internally; we do the same here.
+                const D3DVECTOR &camPos = CDXEngine::GetObjCameraPos();
+                inst.center[0] = Part.pos.x - camPos.x;
+                inst.center[1] = Part.pos.y - camPos.y;
+                inst.center[2] = Part.pos.z - camPos.z;
+
+                // Legacy corners sit at +/-size (full extent 2*size); the unit quad spans +/-0.5,
+                // so the instance size (= full world extent) is 2*size (PS_GPU_SIZE_SCALE, tunable).
+                inst.size[0] = inst.size[1] = size * PS_GPU_SIZE_SCALE;
+                inst.rot     = Poly.Rotation;
+                inst.color   = HiColor;   // per-particle tint * alpha (D3DCOLOR ARGB); straight alpha
+
+                void *useSrv = srv;
+                int   blend  = 1;         // straight alpha -- matches the legacy DX2D particle blend
+
+                // Hero-flipbook override (Phase 2b): a MAPPED effect animates a 64-cell
+                // premultiplied EmberGen atlas instead of its flat sprite. The table is keyed by
+                // effect name; a cluster's child particles carry their OWN names, so re-key
+                // kPsAtlas to those child ids (e.g. "air-explosion-flash-2") to light this up.
+                int row = PS_FindAtlasRow(ppn.name);
+                if (row >= 0 and PS_AtlasSrv(row))
+                {
+                    useSrv     = PS_AtlasSrv(row);
+                    blend      = 2;              // premultiplied EmberGen sheet
+                    inst.color = 0xFFFFFFFFu;    // let the flipbook drive brightness
+
+                    if (kPsAtlas[row].bottomAnchored)
+                        inst.center[2] -= inst.size[1] * 0.5f;   // base sits at Part.pos (world up = -Z)
+
+                    int frame = kPsAtlas[row].loop
+                        ? 1 + (int)(fmodf((float)PS_RunTime * 0.001f * PS_GPU_LOOP_SPEED, 1.0f) * 63.0f)
+                        : 1 + (int)(Life * 63.0f);
+                    if (frame < 1)  frame = 1;
+                    if (frame > 63) frame = 63;
+                    const float inv = 1.0f / (float)PS_GPU_GRID;
+                    inst.uvRect[0] = (frame % PS_GPU_GRID) * inv;
+                    inst.uvRect[1] = (frame / PS_GPU_GRID) * inv;
+                    inst.uvRect[2] = inv;
+                    inst.uvRect[3] = inv;
+                }
+                else
+                {
+                    // General path: the particle's OWN atlas sub-rect. pn.tu/tv were filled at
+                    // spawn (PS_AddPoly) from the MainSFX .ITM item via DX2D_GetTextureUV -- most
+                    // FF particle sprites (SMOKE1-5, FIRE1-5, sparks, debris, shockrings, trails)
+                    // are named regions of the shared MainSFX atlas, NOT standalone DDS, so a
+                    // full 0..1 UV would sample the WHOLE atlas (garbage). Corner 0 = top-left,
+                    // corner 2 = bottom-right (see LoadTexture's default item ordering).
+                    inst.uvRect[0] = Poly.tu[0];
+                    inst.uvRect[1] = Poly.tv[0];
+                    inst.uvRect[2] = Poly.tu[2] - Poly.tu[0];
+                    inst.uvRect[3] = Poly.tv[2] - Poly.tv[0];
+                }
+
+                PS_BucketFor(useSrv, blend).push_back(inst);
+#ifdef _DEBUG
+                g_dbgGpuPush++;   // #VFX Phase 2 TEMP diag
+#endif
+                goto Skip;   // skip the legacy DX2D emit for this (GPU-drawn) particle
+            }
+        }
 
         Quad[0].dwColour = Quad[1].dwColour = HiColor;
         Quad[2].dwColour = Quad[3].dwColour = LoColor;
@@ -3280,6 +3849,14 @@ void  DrawableParticleSys::PS_EmitterRun(void)
         }
 
 
+        // #54 EMISSION-BLOWUP GUARD (load hang): for PSEM_PERSEC qty = rate *
+        // PS_ElapsedTime + rollover; after a LONG frame (load/stall) PS_ElapsedTime is huge
+        // -> qty = millions -> while(qty>=1) spews particles forever (stack: PS_EmitterRun ->
+        // GetRandomPosition -> rand) -> rendering never finishes the frame -> 'hung'. Cap the emission
+        // per frame at a reasonable ceiling (any real effect << this; a big dt must not flood).
+        if (qty > PS_MAX_EMIT_PER_FRAME)
+            qty = PS_MAX_EMIT_PER_FRAME;
+
         while (qty >= 1)
         {
             float v;
@@ -3396,6 +3973,12 @@ void DrawableParticleSys::PS_GenerateEmitters(PS_PTR owner, PS_PPType &PPN)
 // Thhe public Call
 void DrawableParticleSys::PS_AddParticleEx(int ID, Tpoint *Pos, Tpoint *Vel)
 {
+    // FIX (FF6 data vs FF7 code): SFX may send an unregistered particle-ID,
+    // then PPN[ID] -> a garbage index -> PS_PPN[garbage] AV. Validate as IsValidPSId.
+    if (ID < 0 or not IsValidPSId(ID)) return;
+    // Artscout - 2026: #VFX Phase 2b -- spawn a HERO explosion flipbook billboard at the blast
+    // centre for mapped explosion effects (own ~1.4s clock, independent of the native cluster).
+    if (g_bHeroExplosions and Pos and ID < SFX_NUM_TYPES) PS_SpawnHero(nameList[ID], Pos->x, Pos->y, Pos->z, (int)PS_RunTime);
     PS_AddParticle((int)PPN[ID], Pos, Vel);
 }
 
@@ -3403,6 +3986,10 @@ void DrawableParticleSys::PS_AddParticleEx(int ID, Tpoint *Pos, Tpoint *Vel)
 // Adds a PARTICLE NODE to the Particle nodes list, setups all it's parameters
 void DrawableParticleSys::PS_AddParticle(int ID, Tpoint *Pos, Tpoint *Vel, Tpoint *Aim, float fRotationRate, PS_PTR Cluster, PS_PTR Light)
 {
+    // FIX: backstop -- the resolved ID must be within the PS_PPN malloc block,
+    // else PS_PPN[ID] = out of bounds (AV). Guards against FF6 data desync.
+    if (ID < 0 or (DWORD)ID >= MAX_PARTICLE_PARAMETERS) return;
+
     // Get a free slot
     PS_PTR ptr = PS_AddItem(PS_PARTICLES_IDX);
 
@@ -3969,7 +4556,7 @@ TRAIL_HANDLE DrawableParticleSys::PS_AddTrail(int ID, Tpoint *Pos, PS_PTR OWNER,
     Trail.SizeCx = SizeCx, Trail.AlphaCx = AlphaCx;
 
     ParticleTextureNode *pt = tpn.SideTexture;
-    DWORD SideTexHandle = pt->TexHandle;
+    DWORD_PTR SideTexHandle = pt->TexHandle;
     float Spare;
     TheDXEngine.DX2D_GetTextureUV(pt->TexItem, 0, Trail.su[0], Spare);
     TheDXEngine.DX2D_GetTextureUV(pt->TexItem, 1, Trail.su[1], Spare);
@@ -4328,12 +4915,16 @@ float GetCollisionPoint(D3DXVECTOR3 A, D3DXVECTOR3 B, float R)
 
 void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &Origin, DWORD &Entry, DWORD &Exit, DWORD Elements, PS_PTR tpn)
 {
-    float Life, Alpha;
+    float Life = 0.0f, Alpha = 0.0f;	// #36: init (/RTCu in PS_SubTrailRun -- goto Skip/branches)
     XMMVector XMMPos, Div2;
-    float TimeStep = PS_ElapsedTime, LastSize;
+    // #36: Size/LastSize hoisted to function scope and initialized. There was a crash (Debug RTC
+    // /RTCu) in PS_SubTrailRun:4896 'LastSize = Size' -- `goto Skip` (4475) jumped over
+    // the declaration `float Size=...` (4486) -> Size uninitialized. Surfaced after enabling
+    // PS_Exec (#36). Now Size lives the whole function, default 0.
+    float TimeStep = PS_ElapsedTime, LastSize = 0.0f, Size = 0.0f;
     bool TrailValid = false, EntrySegment = true, TrailCompleted = false, RecalcP1 = true, LineMode = false;
     DWORD Index = Entry;
-    psRGBA Color, LastColor, ColorStep, ColorNew;
+    psRGBA Color = {0}, LastColor = {0}, ColorStep = {0}, ColorNew = {0};	// #36: init (Color read at label Skip before assignment on goto -> /RTCu)
 
     // Get the Trail parameter Node
     PS_TPType &TPN = PS_TPN[tpn];
@@ -4353,8 +4944,8 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
     D3DDYNVERTEX Quad[4];
     D3DDYNVERTEX Side[2];
     D3DXVECTOR3 S0, S1, ST, SL, V1, SVector;
-    DWORD dwColor;
-    float LastSU, LastSegAlpha, ST_Distance, S0_Distance, SegmentSize, S1_Distance;
+    DWORD dwColor = 0;	// #36: init (/RTCu)
+    float LastSU = 0.0f, LastSegAlpha = 0.0f, ST_Distance = 0.0f, S0_Distance = 0.0f, SegmentSize = 0.0f, S1_Distance = 0.0f;	// #36: init (read at label Skip/segments before write on goto)
     bool Flip = false;
 
 
@@ -4365,7 +4956,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
     // Link here the Texture and get its U/V Coord
     // The BB Surfaces texture
     ParticleTextureNode *pt = TPN.Texture;
-    DWORD TexHandle = pt->TexHandle;
+    DWORD_PTR TexHandle = pt->TexHandle;
     float su[4], sv[4];
     TheDXEngine.DX2D_GetTextureUV(pt->TexItem, 0, Quad[0].tu, Quad[0].tv);
     TheDXEngine.DX2D_GetTextureUV(pt->TexItem, 1, Quad[1].tu, Quad[1].tv);
@@ -4374,7 +4965,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
 
     // The SIDE Texture
     pt = TPN.SideTexture;
-    DWORD SideTexHandle = pt->TexHandle;
+    DWORD_PTR SideTexHandle = pt->TexHandle;
     TheDXEngine.DX2D_GetTextureUV(pt->TexItem, 0, su[0], sv[0]);
     TheDXEngine.DX2D_GetTextureUV(pt->TexItem, 1, su[1], sv[1]);
     TheDXEngine.DX2D_GetTextureUV(pt->TexItem, 2, su[2], sv[2]);
@@ -4439,8 +5030,8 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
 
         //**********************************************************************************
 
-        // Update Size
-        float   Size = (BaseSize + SizeRate * InvLogLife) * Part.SizeRnd;
+        // Update Size (#36: was `float Size=` -- now an assignment to the function local, see above)
+        Size = (BaseSize + SizeRate * InvLogLife) * Part.SizeRnd;
 
         // Update position...
         S0.x += Part.Offset.x * InvLogLife + Part.Wind.x * WindStep;
@@ -4622,7 +5213,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
              Quad[3].tu=tu[3], Quad[3].tv=tv[3];
             */
 
-            float TexStep, NewTex, SizeStep, NewSize;
+            float TexStep = 0.0f, NewTex = 0.0f, SizeStep = 0.0f, NewSize = 0.0f;	// #36 /RTCu: path past the assignment (4687) -> use (4727) on garbage
             float SegmentStep, SegmentDone;
 
             // Check if segment or part of it inside frag radius
@@ -4699,7 +5290,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
 
 
                 // Update Alpha based on distance
-                float SegAlpha, AlphaMixCx;//, AlphaMixCx3;
+                float SegAlpha = 0.0f, AlphaMixCx = 0.0f;//, AlphaMixCx3;	// #36: init (/RTCu -- read before write on branch/goto)
                 // Update the Alpha Mix CX
                 AlphaMixCx = ((ST_Distance - FragMixOut) / FragMixSpan);
                 // to be used Cubed
@@ -4943,6 +5534,13 @@ void DrawableParticleSys::PS_Exec(class RenderOTW *renderer)
     PS_ElapsedTime = (float)(PS_RunTime - PS_LastTime) * .001f;
     PS_LastTime = PS_RunTime;
 
+    // #54 LOAD-HANG ROOT: after a long frame (load/stall) the delta is huge ->
+    // emission qty = rate*PS_ElapsedTime explodes -> infinite while(qty>=1) -> rendering hangs;
+    // plus particle 'teleport' (pos += vel*hugeDt). Clamp dt to a reasonable max (>> a normal
+    // frame, but not a second). Protects the WHOLE particle engine (emission+integration), not just emission.
+    if (PS_ElapsedTime > 0.1f) PS_ElapsedTime = 0.1f;
+    if (PS_ElapsedTime < 0.0f) PS_ElapsedTime = 0.0f;   // in case of a negative delta (clock change)
+
     // Setup Colors
     TheTimeOfDay.GetTextureLightingColor(&PS_HiLightCx);
 
@@ -5010,6 +5608,16 @@ void DrawableParticleSys::PS_Exec(class RenderOTW *renderer)
 
     // Sounds
     PS_SoundRun();
+
+    // Artscout - 2026: #VFX Phase 2b -- advance + emit the hero explosion flipbooks (own clock)
+    // into the same GPU buckets, then flush. Done here, during the world draw, while the renderer
+    // still holds the world camera's view/proj.
+    if (g_bHeroExplosions) PS_TickHeroExplosions((int)PS_RunTime);
+
+    // Artscout - 2026: #VFX Phase 2 -- flush the GPU-instanced billboard buckets that
+    // PS_PolyRun accumulated this frame (one DrawParticlesInstanced per atlas). Done here,
+    // during the world draw, while the renderer still holds the world camera's view/proj.
+    PS_FlushGpuParticles();
 
     //STOP_PROFILE("New PS");
 }

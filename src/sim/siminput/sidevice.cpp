@@ -4,6 +4,11 @@
 
 int gTotalJoy = 0;
 _TCHAR* gDIDevNames[SIM_NUMDEVICES - SIM_JOYSTICK1] = {NULL};
+// button count per device (DIDEVCAPS.dwButtons), index [SIM_JOYSTICK1+joy]; for the UI #18
+int gDIDevButtons[SIM_NUMDEVICES] = {0};
+// device instance GUID (a stable ID across runs), index [SIM_JOYSTICK1+joy];
+// for robust axis binding (#19). A zero GUID = slot unused.
+GUID gDIDevGUIDs[SIM_NUMDEVICES] = {0};
 
 //********************************************************************
 //
@@ -27,6 +32,40 @@ void AcquireDeviceInput(int DeviceIndex, BOOL Flag)
         else
         {
             gpDeviceAcquired[DeviceIndex] = SUCCEEDED(gpDIDevice[DeviceIndex]->Unacquire());
+        }
+    }
+}
+
+//*********************************************************************
+// void ReacquireAllInputDevices()
+// Artscout - 2026: re-Acquire every active DirectInput device. Called on WM_ACTIVATE when the app
+// regains focus (Alt-Tab back). Foreground/exclusive devices are auto-unacquired by DirectInput on
+// focus loss; without an explicit re-Acquire the keyboard and controllers stay dead until a lazy
+// per-read re-acquire happens to succeed -> the intermittent "input lost after Alt-Tab" symptom.
+//*********************************************************************
+void ReacquireAllInputDevices(void)
+{
+    for (int i = 0; i < SIM_NUMDEVICES; i++)
+    {
+        if (gpDIDevice[i])
+            gpDeviceAcquired[i] = SUCCEEDED(gpDIDevice[i]->Acquire());
+    }
+}
+
+//*********************************************************************
+// void UnacquireAllInputDevices()
+// Artscout - 2026 (#93): explicitly release every DirectInput device on focus LOSS (Alt-Tab out). The
+// exclusive/foreground devices are auto-unacquired by DI anyway, but doing it deliberately keeps the
+// acquired flags honest and frees the mouse/keyboard cleanly so the other app gets them immediately.
+//*********************************************************************
+void UnacquireAllInputDevices(void)
+{
+    for (int i = 0; i < SIM_NUMDEVICES; i++)
+    {
+        if (gpDIDevice[i])
+        {
+            gpDIDevice[i]->Unacquire();
+            gpDeviceAcquired[i] = FALSE;
         }
     }
 }

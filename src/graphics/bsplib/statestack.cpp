@@ -194,11 +194,11 @@ void StateStackClass::SetFog(float alpha, Pcolor *color)
         c or_eq FloatToInt32(color->g * 255.9f) << 8;
         c or_eq FloatToInt32(color->b * 255.9f) << 16;
         context->SetState(MPR_STA_FOG_COLOR, c);
-        D3DCOLORVALUE cx;
-        cx.dvR = color->r;
-        cx.dvG = color->g;
-        cx.dvB = color->b;
-        cx.dvA = color->a;
+        D3DCOLORVALUE cx;   // Artscout - 2026: [DX7-PURGE] D3DCOLORVALUE uses r/g/b/a (was dvR/dvG/dvB/dvA)
+        cx.r = color->r;
+        cx.g = color->g;
+        cx.b = color->b;
+        cx.a = color->a;
         TheDXEngine.SetFogColor(&cx);
     }
 

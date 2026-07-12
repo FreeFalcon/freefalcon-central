@@ -178,6 +178,17 @@ void MaverickDisplayClass::DrawDisplay(void)
             DrawTerrain();
 
         display->StartDraw();
+
+        // Artscout - 2026: display->EndDraw() above did ContextMPR::EndDraw -> BindBackBuffer, which
+        // UNBINDS the shared RTT atlas; display->StartDraw() only InvalidateState's (does NOT rebind).
+        // Without this the rest of the WPN/MAV page -- crosshair lines AND the OSB button labels (same
+        // display context) -- renders to the back buffer instead of the atlas -> the whole Maverick page
+        // is BLACK (confirmed: page is fine with no Maverick loaded = no EndDraw/StartDraw dance). Re-bind
+        // the atlas, exactly like the GM radar beam sub-render fix.
+        {
+            extern bool g_bUseD3D11;
+            if (g_bUseD3D11) display->ReBindRttTarget();
+        }
     }
 
     if ((g_bGreyMFD) and ( not bNVGmode))
@@ -467,14 +478,35 @@ void MaverickDisplayClass::DrawTerrain(void)
     // funtions are all virtualized if necessary...  Since I
     // don't want to test this, I'll leave it for now...
 
-    // RV - RED - ZBuffer Enabled
-    ((RenderTV*)display)->context.SetZBuffering(TRUE);
+    // Artscout - 2026: do NOT enable Z-buffering here (the original "RV - RED - ZBuffer Enabled"
+    // SetZBuffering(TRUE)). The RTT atlas has no depth buffer so it does nothing useful, AND it routed
+    // the terrain (context-path) into the deferred z-sorted poly list, mixing it with the objects in
+    // FlushPolyLists -> the per-object zone-viewport below would then mis-map the terrain. The sensor
+    // displays default to bZBuffering=FALSE (same as TGP): terrain flushes immediately (full viewport),
+    // FlushPolyLists carries ONLY the queued objects.
+    // #DX12 A5: the whole sensor 3D-scene block runs only under D3D11 or when the D3D12 sensor scene is enabled
+    // (g_bSensorSceneD3D12). Under D3D12 with it OFF (default) the open Maverick MFD page does NOT rebind the
+    // atlas / set a zone scissor / flush each frame -> stable (symbology only). See laserpod.cpp / #91.
+    extern bool g_bUseD3D11, g_bUseD3D12, g_bSensorSceneD3D12;
+    extern void FF_SetIRGrey(bool);
+    extern void FF_SetTerrainRadiusCap(int);
+    const bool doA5 = !g_bUseD3D12 || g_bSensorSceneD3D12;
     /* if (displayType == AGM65_IR)
      {*/
     ((RenderIR*)display)->StartDraw();
-    ((RenderIR*)display)->DrawScene(&cameraPos, &viewRotation);
-
-    ((RenderIR*)display)->context.FlushPolyLists();
+    if (doA5)
+    {
+        ((VirtualDisplay*)display)->ReBindRttTarget();
+        if (g_bUseD3D12) ((VirtualDisplay*)display)->ConfineObjectViewportToZone();
+        FF_SetIRGrey(true);
+        FF_SetTerrainRadiusCap(32);
+        ((RenderIR*)display)->DrawScene(&cameraPos, &viewRotation);
+        ((VirtualDisplay*)display)->ConfineObjectViewportToZone();
+        ((RenderIR*)display)->context.FlushPolyLists();
+        FF_SetIRGrey(false);
+        FF_SetTerrainRadiusCap(0);
+        ((VirtualDisplay*)display)->ReBindRttTarget();
+    }
     ((RenderIR*)display)->PostSceneCloudOcclusion();
     ((RenderIR*)display)->EndDraw();
     /* }

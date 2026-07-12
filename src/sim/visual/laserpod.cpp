@@ -21,7 +21,7 @@
 #define LOCK_RING_MAX_SIZE     0.5F
 #define LOCK_RING_MIN_SIZE     0.25F
 #define LOCK_RING_TICK_SIZE    0.075F
-//MI we only got 150°
+//MI we only got 150ï¿½
 //#define LGB_GIMBAL_MAX         (160.0F * DTR)
 #define LGB_GIMBAL_MAX         (150.0F * DTR)
 extern bool g_bRealisticAvionics;
@@ -138,6 +138,15 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
             }
 
             display->StartDraw();
+
+            // Artscout - 2026: display->EndDraw() above unbound the shared RTT atlas (BindBackBuffer) and
+            // display->StartDraw() does NOT rebind it. Re-bind so the TGP symbology drawn below (crosshair/
+            // FOV/box + OSB labels) lands in the atlas instead of leaking to the back buffer. Same fix as
+            // the GM radar / Maverick sub-render.
+            {
+                extern bool g_bUseD3D11;
+                if (g_bUseD3D11) display->ReBindRttTarget();
+            }
         }
 
         // Reset color after terrain
@@ -389,12 +398,34 @@ void LaserPodClass::DrawTerrain(void)
     viewRotation.M23 = -cospsi * sinphi + sinpsi * sintha * cosphi;
     viewRotation.M33 = costha * cosphi;
 
-    ((RenderTV*)display)->StartDraw();
-    ((RenderTV*)display)->DrawScene(&cameraPos, &viewRotation);
+    // #DX12 A5: these RTT corrections were D3D11-only; extend to D3D12 (the underlying ReBindRttTarget /
+    // ConfineObjectViewportToZone / FlushPolyLists are backend-neutral). Without them under D3D12 the sensor
+    // objects flush later against the full atlas -> full-COLOR (IR/TV mode already reset) + spill onto HUD +
+    // duplicate onto other MFD pages (SMS). The MFD renders in the render loop (in-frame), so no orphan frame.
+    extern bool g_bUseD3D11, g_bUseD3D12, g_bSensorSceneD3D12;
+    // #DX12 A5: run the sensor 3D-scene block (atlas rebind + zone confine + DrawScene + grey + object flush)
+    // ONLY under D3D11 or when the D3D12 sensor scene is explicitly enabled. Under D3D12 with it OFF (default)
+    // the whole A5 block is skipped so an open sensor MFD page does NOT re-bind the atlas / set a zone scissor /
+    // flush every frame (those side-effects destabilised the frame -> DEVICE_HUNG). Symbology-only, stable.
+    extern void FF_SetIRGrey(bool);
+    extern void FF_SetTerrainRadiusCap(int);
+    const bool doA5 = !g_bUseD3D12 || g_bSensorSceneD3D12;
 
-    //JAM 12Dec03 - ZBUFFERING OFF
-    if (DisplayOptions.bZBuffering)
-        ((RenderTV*)display)->context.FlushPolyLists();
+    ((RenderTV*)display)->StartDraw();
+    if (doA5)
+    {
+        ((VirtualDisplay*)display)->ReBindRttTarget();           // rebind the shared RTT atlas (StartDraw unbound it)
+        if (g_bUseD3D12) ((VirtualDisplay*)display)->ConfineObjectViewportToZone();  // zone the terrain BEFORE DrawScene
+        FF_SetIRGrey(true);                                      // grey the sensor scene (TV) -- luma in the PS
+        FF_SetTerrainRadiusCap(32);                              // #91: small GPU-terrain radius for the zoomed sensor
+        ((RenderTV*)display)->DrawScene(&cameraPos, &viewRotation);
+        ((VirtualDisplay*)display)->ConfineObjectViewportToZone();
+        if (DisplayOptions.bZBuffering or g_bUseD3D11 or g_bUseD3D12)
+            ((RenderTV*)display)->context.FlushPolyLists();
+        FF_SetIRGrey(false);                                     // end grey before the MFD symbology
+        FF_SetTerrainRadiusCap(0);                               // restore full radius for the main world view
+        ((VirtualDisplay*)display)->ReBindRttTarget();
+    }
 
     //   ((RenderTV*)display)->PostSceneCloudOcclusion();
     ((RenderTV*)display)->EndDraw();

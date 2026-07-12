@@ -435,7 +435,7 @@ void FireControlComputer::TargetingPodMode(void)
                         sensoryaw = -(float)atan2(dy, dx);  // sensor yaw
 
                         phi =   pi / 2.0F + sensoryaw; // rotation angle of x-axis
-                        alpha = pi / 2.0F + ((float)atan(-dz / groundrange)); // (90° - sensor pitch)
+                        alpha = pi / 2.0F + ((float)atan(-dz / groundrange)); // (90ï¿½ - sensor pitch)
 
                         costheta = (float) cos(theta);
                         sintheta = (float) sin(theta);
@@ -450,13 +450,13 @@ void FireControlComputer::TargetingPodMode(void)
                             {
                                 if (targetingPod->IsSOI())
                                 {
-                                    deltaX = yMove * 50000.0F * dz / (cosalpha * cosalpha) * (0.03F / 4000) * g_fCursorSpeed * (LASER_SLEW_RATE / 8.0F) * SimLibMajorFrameTime; // calibrated for 4000 ft high and 10° pitch, (cos^2 10) = 0.03; "dx = z/(cos^2 alpha)*dalpha"
+                                    deltaX = yMove * 50000.0F * dz / (cosalpha * cosalpha) * (0.03F / 4000) * g_fCursorSpeed * (LASER_SLEW_RATE / 8.0F) * SimLibMajorFrameTime; // calibrated for 4000 ft high and 10ï¿½ pitch, (cos^2 10) = 0.03; "dx = z/(cos^2 alpha)*dalpha"
                                     deltaY = xMove * 12000.0F * range / 21000.0F * g_fCursorSpeed * (LASER_SLEW_RATE / 8.0F) * SimLibMajorFrameTime; // calibrated for 21000 ft range
                                 }
                             }
                             else
                             {
-                                deltaX = yMove * 50000.0F * dz / (cosalpha * cosalpha) * (0.03F / 4000) * g_fCursorSpeed * (LASER_SLEW_RATE / 8.0F) * SimLibMajorFrameTime; // calibrated for 4000 ft high and 10° pitch, (cos^2 10) = 0.03; "dx = z/(cos^2 alpha)*dalpha"
+                                deltaX = yMove * 50000.0F * dz / (cosalpha * cosalpha) * (0.03F / 4000) * g_fCursorSpeed * (LASER_SLEW_RATE / 8.0F) * SimLibMajorFrameTime; // calibrated for 4000 ft high and 10ï¿½ pitch, (cos^2 10) = 0.03; "dx = z/(cos^2 alpha)*dalpha"
                                 deltaY = xMove * 12000.0F * range / 21000.0F * g_fCursorSpeed * (LASER_SLEW_RATE / 8.0F) * SimLibMajorFrameTime; // calibrated for 21000 ft range
                             }
                         }
@@ -467,14 +467,14 @@ void FireControlComputer::TargetingPodMode(void)
                             {
                                 if (targetingPod->IsSOI())
                                 {
-                                    deltaX = yMove * 50000.0F * dz / (cosalpha * cosalpha) * (0.03F / 4000) * g_fCursorSpeed * LASER_SLEW_RATE  * SimLibMajorFrameTime; // calibrated for 4000 ft high and 10° pitch, (cos^2 10) = 0.03
+                                    deltaX = yMove * 50000.0F * dz / (cosalpha * cosalpha) * (0.03F / 4000) * g_fCursorSpeed * LASER_SLEW_RATE  * SimLibMajorFrameTime; // calibrated for 4000 ft high and 10ï¿½ pitch, (cos^2 10) = 0.03
                                     deltaY = xMove * 12000.0F * range / 21000.0F * g_fCursorSpeed * LASER_SLEW_RATE  * SimLibMajorFrameTime; // calibrated for 21000 ft range
                                 }
                             }
                             else
                             {
 
-                                deltaX = yMove * 50000.0F * dz / (cosalpha * cosalpha) * (0.03F / 4000) * g_fCursorSpeed * LASER_SLEW_RATE * SimLibMajorFrameTime; // calibrated for 4000 ft high and 10° pitch, (cos^2 10) = 0.03; "dx = z/(cos^2 alpha)*dalpha"
+                                deltaX = yMove * 50000.0F * dz / (cosalpha * cosalpha) * (0.03F / 4000) * g_fCursorSpeed * LASER_SLEW_RATE * SimLibMajorFrameTime; // calibrated for 4000 ft high and 10ï¿½ pitch, (cos^2 10) = 0.03; "dx = z/(cos^2 alpha)*dalpha"
                                 deltaY = xMove * 12000.0F * range / 21000.0F * g_fCursorSpeed * LASER_SLEW_RATE * SimLibMajorFrameTime; // calibrated for 21000 ft range
                             }
                         }
@@ -866,11 +866,9 @@ void FireControlComputer::CheckFeatures(LaserPodClass* targetingPod)
         if (closestObj)
         {
             Tpoint pos;
-#ifdef DEBUG
-            //tmpTarget = new SimObjectType(OBJ_TAG, platform, closestObj);
-#else
+            // #47 UAF ROOT: create UNCONDITIONALLY (in Debug the DEBUG branch was empty -> tmpTarget
+            // dangling -> Reference on garbage).
             tmpTarget = new SimObjectType(closestObj);
-#endif
             tmpTarget->Reference();
 
             //if ((SimBaseClass*)tmpTarget->BaseData()-> )

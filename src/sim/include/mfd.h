@@ -94,6 +94,7 @@ public:
     void SetNewRenderer(Render3D *r3d);
     void SetNewMode(MfdMode); //VWF 8/12/97
     void Exec(int, int); //VWF 4/5/97
+    void DrawRttComposite(void);   // Artscout - 2026: composite THIS MFD's atlas zone onto its 3D panel
     void Exit(void);
     void UpdateVirtualPosition(const Tpoint *pos, const Trotation *rot);
     void SetImageBuffer(ImageBuffer*, float, float, float, float);

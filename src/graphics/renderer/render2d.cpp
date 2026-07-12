@@ -7,6 +7,8 @@
 \***************************************************************************/
 #include <cISO646>
 #include <math.h>
+#include <stdio.h>
+#include <windows.h>
 #include "falclib/include/debuggr.h"
 #include "Image.h"
 #include "Device.h"
@@ -235,7 +237,40 @@ void Render2D::Render2DLine(float x1, float y1, float x2, float y2)
 {
     if (ForceAlpha) context.RestoreState(STATE_CHROMA_TEXTURE_GOURAUD2); // COBRA - RED - Alpha Option
 
-    context.Draw2DLine(x1 + (int)OffsetX, y1 + (int)OffsetY, x2 + (int)OffsetX, y2 + (int)OffsetY);
+    const float ox = (float)(int)OffsetX, oy = (float)(int)OffsetY;
+
+    // #7 LINE THICKNESS under SSAA: Draw2DLine draws a LINESTRIP = always 1px in atlas pixels.
+    // Under SSAA (atlas x g_rttFontScale) a 1px line gives 1/g on the panel = 'thin'. Draw g parallel
+    // lines offset 1px along the perpendicular -> ~g px in the atlas = ~1px on the panel.
+    // BUT thickening DEPENDS ON LENGTH: long lines (ASEC circle ~114px/segment, horizon, ladder)
+    // are bold (x1.4, closer to BMS); short ones (speed/altitude scale ticks ~6px, FPM) are thin, else
+    // thickening collapses a short tick into a 'dot' instead of a short bar (ex1.png). Outside RTT = 1px.
+    extern bool g_rttBatchActive; extern float g_rttFontScale;
+
+    float dx = x2 - x1, dy = y2 - y1;
+    float len = (float)sqrt(dx * dx + dy * dy);   // length in atlas pixels
+
+    int w = 1;
+    if (g_rttBatchActive && g_rttFontScale > 1.5f)
+        w = (len > 15.0f) ? (int)(g_rttFontScale * 1.4f + 0.5f)   // long: bold
+                          : (int)(g_rttFontScale + 0.5f);          // short ticks: ~1px panel = thin bar
+
+    if (w <= 1)
+    {
+        context.Draw2DLine(x1 + ox, y1 + oy, x2 + ox, y2 + oy);
+        return;
+    }
+
+    float px = 0.0f, py = 0.0f;
+    if (len > 0.0001f) { px = -dy / len; py = dx / len; }   // unit perpendicular
+
+    float start = -(float)(w - 1) * 0.5f;
+    for (int i = 0; i < w; ++i)
+    {
+        float off = start + (float)i;
+        float sx = px * off, sy = py * off;
+        context.Draw2DLine(x1 + ox + sx, y1 + oy + sy, x2 + ox + sx, y2 + oy + sy);
+    }
 }
 
 
@@ -268,7 +303,11 @@ void Render2D::Render2DTri(float x1, float y1, float x2, float y2, float x3, flo
     // context.RestoreState( STATE_ALPHA_SOLID );
     if (ForceAlpha) context.RestoreState(STATE_CHROMA_TEXTURE_GOURAUD2); // COBRA - RED - Alpha Option
 
-    context.DrawPrimitive(MPR_PRM_TRIANGLES, 0, 3, verts, sizeof(verts[0]));
+    // Artscout - 2026: was MPR_PRM_TRIANGLES -- but the D3D11 2D-immediate index generator (context.cpp
+    // DrawPrimitive) only emits indices for TRIANGLEFAN / LINESTRIP, NOT TRIANGLELIST, so a TRIANGLES call
+    // produced ZERO indices and drew nothing (the filled tri was invisible while Render2DLine worked). A
+    // 3-vertex TRIFAN is the identical triangle and DOES get indices -> it actually renders.
+    context.DrawPrimitive(MPR_PRM_TRIFAN, 0, 3, verts, sizeof(verts[0]));
 }
 
 
@@ -368,6 +407,12 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
     x = (float)floor(xLeft) + OffsetX;
     y = (float)floor(yTop) + OffsetY;
 
+    // #7: text size multiplier for the enlarged RTT atlas (1024). Active ONLY during
+    // the displays' RTT pass (g_rttBatchActive); outside it = 1.0 (menus/2D untouched).
+    // Scale glyph geometry (width/height/advance), leave UV untouched.
+    extern bool g_rttBatchActive; extern float g_rttFontScale;
+    float fS = g_rttBatchActive ? g_rttFontScale : 1.0f;
+
     // Select font texture here
 
     color = Color();
@@ -392,7 +437,7 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
         vert[0].x = x - 1.8F; //MI changed from - 2.0F
         vert[0].y = y;
         vert[1].x = vert[0].x;
-        vert[1].y = vert[0].y + pFontSet->fontData[pFontSet->fontNum][32].pixelHeight - 1; //MI added -1
+        vert[1].y = vert[0].y + pFontSet->fontData[pFontSet->fontNum][32].pixelHeight * fS - 1; //MI added -1
         vert[2].x = vert[0].x + ScreenTextWidth(string) + 1.8F; //MI changed from +4.0F
         vert[2].y = vert[1].y;
         vert[3].x = vert[2].x;
@@ -414,7 +459,7 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
         vert[0].x = x - 1.8F; //MI changed from - 2.0F
         vert[0].y = y;
         vert[1].x = vert[0].x;
-        vert[1].y = vert[0].y + pFontSet->fontData[pFontSet->fontNum][32].pixelHeight - 1; //MI added -1
+        vert[1].y = vert[0].y + pFontSet->fontData[pFontSet->fontNum][32].pixelHeight * fS - 1; //MI added -1
         vert[2].x = vert[0].x + ScreenTextWidth(string) + 1.8F; //MI changed from +4.0F
         vert[2].y = vert[1].y;
         vert[3].x = vert[2].x;
@@ -431,10 +476,21 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
 
     SetColor(color);
 
+    // #7 DISPLAY TEXT BRIGHTNESS: glyph color FROM THE VERTEX (TexColorDiffuse: the font texture =
+    // a mask only) -> uniform brightness = Color(). Otherwise STATE_TEXTURE_TEXT takes color FROM
+    // the font TEXTURE (palette/AA) -> uneven/dim (DED unreadable).
     if (ForceAlpha)
     {
-        // force the Hud mode bitand text gets color from the Vertices
+        // HUD (translucent): GOURAUD2 (x2 brightness, ADDR_WRAP -- the HUD font UVs stay within cells).
         context.RestoreState(STATE_CHROMA_TEXTURE_GOURAUD2); // COBRA - RED - Alpha Option
+        context.TexColorDiffuse();
+    }
+    else if (g_rttBatchActive)
+    {
+        // RTT displays DED/MFD/RWR: mask (uniform brightness) BUT on STATE_TEXTURE_TEXT with
+        // ADDR_CLAMP -- GOURAUD2 with ADDR_WRAP smeared glyphs vertically (sampling neighboring
+        // font-atlas cells 12x9/16x12).
+        context.RestoreState(STATE_TEXTURE_TEXT);
         context.TexColorDiffuse();
     }
     else context.RestoreState(STATE_TEXTURE_TEXT);   //JAM 18Oct03
@@ -447,9 +503,21 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
 
     while (*string)
     {
+        // #7 PIXEL-SNAP: glyphs are placed in float (x accumulates by a fractional step, sizes width*256*fS
+        // fractional) -> bilinear sampling of a fractional position gives DIFFERENT height/thickness between
+        // glyphs ('font swims'). Snap the glyph quad corners to WHOLE atlas pixels ->
+        // even baseline + equal thickness. Only for RTT displays (g_rttBatchActive).
+        const float _gw = pFontSet->fontData[pFontSet->fontNum][*string].width * 256.0f * fS;
+        const float _gh = pFontSet->fontData[pFontSet->fontNum][*string].pixelHeight * fS;
+        // #7 PIXEL-SNAP TEMPORARILY OFF (test 'bare', closer to FF6/D3D7): glyphs in float, as in the original.
+        const float sx  = x;
+        const float sy  = y;
+        const float sx2 = x + _gw;
+        const float sy2 = y + _gh;
+
         // Top Left 1
-        pVtx[0].x = x;
-        pVtx[0].y = y;
+        pVtx[0].x = sx;
+        pVtx[0].y = sy;
         pVtx[0].r = r;
         pVtx[0].g = g;
         pVtx[0].b = b;
@@ -460,8 +528,8 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
         pVtx[0].q = 1.0F;
 
         // Top Right 1
-        pVtx[1].x = x + (pFontSet->fontData[pFontSet->fontNum][*string].width * 256.0f);
-        pVtx[1].y = y;
+        pVtx[1].x = sx2;
+        pVtx[1].y = sy;
         pVtx[1].r = r;
         pVtx[1].g = g;
         pVtx[1].b = b;
@@ -472,8 +540,8 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
         pVtx[1].q = 1.0F;
 
         // Bottom Left 1
-        pVtx[2].x = x;
-        pVtx[2].y = y + pFontSet->fontData[pFontSet->fontNum][*string].pixelHeight;
+        pVtx[2].x = sx;
+        pVtx[2].y = sy2;
         pVtx[2].r = r;
         pVtx[2].g = g;
         pVtx[2].b = b;
@@ -490,8 +558,8 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
         pVtx[4] = pVtx[1];
 
         // Bottom Right 2
-        pVtx[5].x = x + (pFontSet->fontData[pFontSet->fontNum][*string].width * 256.0f);
-        pVtx[5].y = y + pFontSet->fontData[pFontSet->fontNum][*string].pixelHeight;
+        pVtx[5].x = sx2;
+        pVtx[5].y = sy2;
         pVtx[5].r = r;
         pVtx[5].g = g;
         pVtx[5].b = b;
@@ -514,7 +582,7 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
         if ( not (pVtx[5].x <= rightPixel and pVtx[5].x >= leftPixel and pVtx[5].y <= bottomPixel and pVtx[5].y >= topPixel))
             break;
 
-        x += pFontSet->fontData[pFontSet->fontNum][*string].pixelWidth;
+        x += pFontSet->fontData[pFontSet->fontNum][*string].pixelWidth * fS;
         string++;
         n++;
         pVtx += 6;
@@ -534,7 +602,7 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
         float x1 = xLeft - 2.0f;
         float y1 = yTop  - 2.0f;
         float x2 = (float)(x + 1);
-        float y2 = yTop + pFontSet->fontData[pFontSet->fontNum][32].pixelHeight;
+        float y2 = yTop + pFontSet->fontData[pFontSet->fontNum][32].pixelHeight * fS;
 
         // Only draw the box if it is entirely on screen
         if ((x1 > leftPixel) and (x2 < rightPixel) and (y1 > topPixel) and (y2 < bottomPixel))
@@ -549,12 +617,14 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
     // Left Arrow
     if (boxed == 0x4)
     {
-        float x0 = xLeft - 5.0F;
-        float y0 = yTop + (pFontSet->fontData[pFontSet->fontNum][32].pixelHeight / 2);
+        // Artscout - 2026: arrow tip depth proportional to the box height (was a flat -5 px) -> clear '<'.
+        float bh = pFontSet->fontData[pFontSet->fontNum][32].pixelHeight * fS;
+        float x0 = (xLeft - 2.0F) - bh * 0.55F;
+        float y0 = yTop + (pFontSet->fontData[pFontSet->fontNum][32].pixelHeight * fS / 2);
         float x1 = xLeft - 2.0f;
         float y1 = yTop;
         float x2 = (float)(x + 1);
-        float y2 = yTop + pFontSet->fontData[pFontSet->fontNum][32].pixelHeight;
+        float y2 = yTop + pFontSet->fontData[pFontSet->fontNum][32].pixelHeight * fS;
 
         x1 = max(x1, leftPixel + 1.0F);
 
@@ -572,12 +642,15 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
     // Right Arrow
     if (boxed == 0x8)
     {
-        float x0 = float(x + 4);
-        float y0 = yTop + (pFontSet->fontData[pFontSet->fontNum][32].pixelHeight / 2);
+        // Artscout - 2026: arrow tip depth proportional to the box height (was a flat +4 px -> looked like a
+        // straight edge at HUD scale). ~0.55x height gives a clear '>' like the real F-16 / BMS airspeed box.
+        float bh = pFontSet->fontData[pFontSet->fontNum][32].pixelHeight * fS;
+        float x0 = float(x + 1) + bh * 0.55F;
+        float y0 = yTop + (pFontSet->fontData[pFontSet->fontNum][32].pixelHeight * fS / 2);
         float x1 = xLeft - 2.0f;
         float y1 = yTop;
         float x2 = (float)(x + 1);
-        float y2 = yTop + pFontSet->fontData[pFontSet->fontNum][32].pixelHeight;
+        float y2 = yTop + pFontSet->fontData[pFontSet->fontNum][32].pixelHeight * fS;
 
         // Only draw the box if it is entirely on screen
         x1 = max(x1, leftPixel + 1.0F);
@@ -636,7 +709,7 @@ void Render2D::Load2DFontSet()
         //This should ensure that old setups arent broken if scaling is disabled
 
         // RV - Biker - Check for widescreen resolutions
-        if (DisplayOptions.DispWidth == 848 or DisplayOptions.DispWidth == 1440 or DisplayOptions.DispWidth == 1680 or DisplayOptions.DispWidth == 1920)
+        if (DisplayOptions.DispWidth == 848 or DisplayOptions.DispWidth == 1440 or DisplayOptions.DispWidth == 1680 or DisplayOptions.DispWidth == 1920 or DisplayOptions.DispWidth == 2560 or DisplayOptions.DispWidth == 3840)
         {
             switch (DisplayOptions.DispWidth)
             {
@@ -703,7 +776,7 @@ void Render2D::Load2DFontSet()
                     Font2D.ReadFontMetrics(2, "art\\ckptart\\autofont\\16x12font.rct");
                     Font2D.totalFont = 3; // JPO new font.
 
-                    if (Font2D.ReadFontMetrics(3, "art\\ckptart\\autofont\\16warn_font.rct") and 
+                    if (Font2D.ReadFontMetrics(3, "art\\ckptart\\autofont\\16warn_font.rct") and
                         Font2D.fontTexture[3].LoadImage("art\\ckptart\\autofont\\16warn_font.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE, FALSE))
                     {
                         Font2D.fontTexture[3].CreateTexture("16warn_font.gif");
@@ -892,7 +965,7 @@ void Render2D::Load3DFontSet()
     else
     {
         // RV - Biker - Check for widescreen resolutions
-        if (DisplayOptions.DispWidth == 848 or DisplayOptions.DispWidth == 1440 or DisplayOptions.DispWidth == 1680 or DisplayOptions.DispWidth == 1920)
+        if (DisplayOptions.DispWidth == 848 or DisplayOptions.DispWidth == 1440 or DisplayOptions.DispWidth == 1680 or DisplayOptions.DispWidth == 1920 or DisplayOptions.DispWidth == 2560 or DisplayOptions.DispWidth == 3840)
         {
             switch (DisplayOptions.DispWidth)
             {
@@ -1165,7 +1238,28 @@ int FontSet::ReadFontMetrics(int index, char*fileName) // JPO return status
             //JAM 22Dec03 - Not anymore, all modern video cards do automatic biasing.
             //TODO: Add global cfg variable for older cards.
             // if(DisplayOptions.bFontTexelAlignment)
-            if (g_bOldFontTexelFix) //Wombat778 4-01-04 complete fix in drawprimitive
+            extern bool g_bUseD3D11;
+            if (false /* #7 texel inset OFF: tradeoff height vs (left-edge clip/column gaps),
+                         not cleanly solvable in this pipeline. The real fix is ROW PADDING in the .gif
+                         font atlas (1px gap), then the bleed goes away without an inset. A content fix. */)
+            {
+                // #7 UNEVEN LETTER HEIGHT: font glyphs in the atlas are packed TIGHTLY in ROWS
+                // (A in the row top=2, M/R at top=20). D3D11 without auto texel-bias -> the bilinear filter
+                // mixes in the NEIGHBORING ROW at the glyph's top/bottom -> uneven height. Inset UV ONLY
+                // VERTICALLY (top+0.5, height-1) removes row-bleed -> even height.
+                // LEAVE HORIZONTAL ALONE: glyphs have DIFFERENT widths, and width-1 thinned them UNEVENLY
+                // (narrow ones more) -> uneven thickness (test-confirmed). Leave pixelHeight/Width alone.
+                // Shift +0.5 texel on BOTH axes (consistent -> equal sharpness for horiz/vert
+                // strokes). Shrink (-1) ONLY the height (tightly packed rows there -> row-bleed);
+                // do NOT shrink width (glyphs vary in width, -1 would thin unevenly).
+                fontData[index][idx].top    = (top    + 0.5f) / 256.0f;
+                fontData[index][idx].height = (height - 1.0f) / 256.0f;
+                fontData[index][idx].left   = (left   + 0.5f) / 256.0f;
+                fontData[index][idx].width  = width / 256.0f;
+                fontData[index][idx].pixelHeight = (float)height;
+                fontData[index][idx].pixelWidth = (float)(width + lead);
+            }
+            else if (g_bOldFontTexelFix) //Wombat778 4-01-04 complete fix in drawprimitive
             {
                 // OW: shift u,v by a half texel. if you dont do that and the card filters it fetches the wrong texels
                 // because if you specify 1.0 you're saying that you want the far-right edge of this texel

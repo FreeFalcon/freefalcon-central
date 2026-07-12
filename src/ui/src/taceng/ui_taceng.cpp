@@ -21,7 +21,6 @@
 #include "tac_class.h"
 #include "te_defs.h"
 #include <windows.h>
-#include <ddraw.h>
 #include "unit.h"
 #include "team.h"
 #include "CmpGlobl.h"

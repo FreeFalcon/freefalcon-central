@@ -202,7 +202,10 @@ public:
     unsigned long GetFileLength(int tlkind);
     unsigned long GetCompressedLength(int tlkind);
     char *GetDataPtr(int tlkind);
+    // Artscout - 2026: ST80 -> PCM transcode moved to the standalone x86 tool src/tools/st80conv.
+    // Runtime keeps only PCM playback (g_bVoicePcmMode passthrough in lhsp.cpp) + ST80 live fallback.
 };
+
 #define NEWVOICE
 
 class VoiceManager

@@ -12,7 +12,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <windows.h>
-#include <ddraw.h>
 #include "falclib.h"
 #include "unit.h"
 #include "team.h"

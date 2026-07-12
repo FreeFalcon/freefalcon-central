@@ -7,6 +7,12 @@
 #include "../include/ObjectLOD.h"
 #include "DXTools.h"
 #include "DXLightEngine.h"
+#include "d3d11/D3D11Renderer.h"	// #28: GpuLightCPU + SetLights (per-object dynamic light)
+extern bool g_bUseD3D11;	// PHASE 4: D3D7 lighting replaced by a shader cbuffer (SetLights)
+extern bool g_bUseGpu;		// #DX12 п.4: dynamic object lighting on the active renderer (D3D11 || D3D12)
+// #28: current-frame sun+ambient (filled in CDXEngine::FlushBuffers).
+extern D3D11Renderer::GpuLightCPU g_d3d11Sun;
+extern float g_d3d11Amb[4];
 
 #ifndef DEBUG_ENGINE
 
@@ -18,8 +24,7 @@
 CDXLight TheLightEngine;
 
 _MM_ALIGN16 CDXLightElement CDXLight::LightList[MAX_DYNAMIC_LIGHTS];
-IDirect3DDevice7 *CDXLight::m_pD3DD;
-IDirect3D7 *CDXLight::m_pD3D;
+// #34 C1: CDXLight::m_pD3DD/m_pD3D (D3D7 device) removed.
 LightIndexType CDXLight::SwitchedList[MAX_SAMETIME_LIGHTS];
 DWORD CDXLight::LightID;
 DWORD CDXLight::DynamicLights;
@@ -29,12 +34,9 @@ bool CDXLight::LightsLoaded;
 
 
 
-void CDXLight::Setup(IDirect3DDevice7 *pD3DD, IDirect3D7 *pD3D)
+void CDXLight::Setup()
 {
-    // assign the D3D pointers
-    m_pD3DD = pD3DD;
-    m_pD3D = pD3D;
-
+    // #34 C1: no D3D7 device to store.
     // clear the light list
     memset(LightList, 0x00, sizeof(LightList));
 
@@ -56,8 +58,8 @@ void CDXLight::ResetLightsList(void)
         // setup max distance
         LightList[idx].CameraDistance = DYNAMIC_LIGHT_INSIDE_RANGE + 1;
         // and if light is on switch it off
-        /*if(LightList[idx].On) */
-        m_pD3DD->LightEnable(idx + 1, false);
+        // Artscout - 2026: #34 dropped the dead D3D7 m_pD3DD->LightEnable (D3D11 uploads lights
+        // per-object via SetLights; there are no fixed-function light slots).
         LightList[idx].On = false;
         LightsToOn[idx] = false;
     }
@@ -155,227 +157,50 @@ extern char TheLODNames[10000][32];
 // This function switch on the nearest lights to an object of a certain radius
 void CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
 {
-    _MM_ALIGN16 XMMVector Pos, Acc, Square;
-    DWORD idx, ldx, LightsInList = 0;
-    float Dist, MaxDist = 0.0f;
-
-    // setup the position for XMM use
-    *(D3DVECTOR*)&Pos.d3d = *pos;
-
-    // if 1st call in this rendering
-    if ( not LightsLoaded)
+    if (g_bUseGpu)
     {
-        // Enable the lights + 1 ( light #0 is the Sun )
-        idx = 0;
+        // #28 D3D11: the per-object light set = the sun (light 0) + the nearest active
+        // point lamps (flashes/explosions) within their range of the object. Attenuation
+        // is computed by the shader (Params.x=range). Then SetLights -> cbLights for this object.
+        if ( not g_pRenderer) return;
+        const int MAXL = 8;	// = MAX_LIGHTS in FFEmu.hlsl
+        D3D11Renderer::GpuLightCPU lights[MAXL];
+        int n = 0;
+        lights[n++] = g_d3d11Sun;	// sun
 
-        // while(idx<MAX_DYNAMIC_LIGHTS and LightList[idx].CameraDistance<=DYNAMIC_LIGHT_INSIDE_RANGE){
-        while (idx < DynamicLights)
+        for (DWORD i = 0; i < DynamicLights and n < MAXL; ++i)
         {
-            m_pD3DD->SetLight(idx + 1, &LightList[idx++].Light);
-        }
+            D3DLIGHT7 &L = LightList[i].Light;
+            const float dx = L.dvPosition.x - pos->x;
+            const float dy = L.dvPosition.y - pos->y;
+            const float dz = L.dvPosition.z - pos->z;
+            const float range = L.dvRange + Radius;
+            if (dx * dx + dy * dy + dz * dz > range * range) continue;	// too far
 
-        LightsLoaded = true;
+            D3D11Renderer::GpuLightCPU &g = lights[n++];
+            ZeroMemory(&g, sizeof(g));
+            g.Position[0] = L.dvPosition.x; g.Position[1] = L.dvPosition.y; g.Position[2] = L.dvPosition.z;
+            g.Color[0] = L.dcvDiffuse.r;    g.Color[1] = L.dcvDiffuse.g;    g.Color[2] = L.dcvDiffuse.b;
+            g.Params[0] = (L.dvRange > 1.0f) ? L.dvRange : 1.0f;	// range (attenuation)
+            g.Params[1] = 1.0f;	// point
+        }
+        g_pRenderer->SetLights(g_d3d11Amb, n, lights, sizeof(lights[0]));
+        return;
     }
-
-    //reset object own light list
-    for (idx = 0; idx < MAX_SAMETIME_LIGHTS; idx++)
-    {
-        SwitchedList[idx].Distance = DYNAMIC_LIGHT_INSIDE_RANGE + 1.0f;
-        SwitchedList[idx].Index = 0;
-    }
-
-    //for each light in list setup a distance list
-    idx = 0;
-
-    //while(idx<MAX_DYNAMIC_LIGHTS and LightList[idx].CameraDistance<=DYNAMIC_LIGHT_INSIDE_RANGE){
-    while (idx < DynamicLights)
-    {
-
-        // Light defaults to OFF
-        LightsToOn[idx] = false;
-
-        // if this is a light illuminating ONLY THE OWNER, and we r not the owners, skip
-        if (LightList[idx].Flags.OwnLight and LightList[idx].LightID not_eq ID)
-        {
-            idx++;
-            continue;
-        }
-
-        // if this is a light illuminating NOT THE OWNER, and we r the owners, skip
-        if (LightList[idx].Flags.NotSelfLight and LightList[idx].LightID == ID)
-        {
-            idx++;
-            continue;
-        }
-
-        // get Vectors distance on X/Y/Z Axis and Square it for incoming use
-        Acc.Xmm = _mm_sub_ps(Pos.Xmm, LightList[idx].Pos.Xmm);
-        Square.Xmm = _mm_mul_ps(Acc.Xmm, Acc.Xmm);
-        // Get the Distance
-        Dist = sqrtf(Square.d3d.x + Square.d3d.y + Square.d3d.z);
-
-        // If Object out of the Light range
-        if ((Dist - Radius) > LightList[idx].Light.dvRange)
-        {
-            idx++;
-            continue;
-        }
-
-        // Calculation for SPOT LIGHTs cone
-        if (LightList[idx].Light.dltType == D3DLIGHT_SPOT)
-        {
-
-            // Get the Distance btw Light bitand Object
-            //float dx=Pos.d3d.x-LightList[idx].Light.dvPosition.x;
-            //float dy=Pos.d3d.y-LightList[idx].Light.dvPosition.y;
-            //float dz=Pos.d3d.z-LightList[idx].Light.dvPosition.z;
-            // Calculate Horizontal and Vertical Angle btw Light bitand Object
-            float ax = atan2(Acc.d3d.x, Acc.d3d.y);
-            float ay = atan2(Acc.d3d.z, sqrtf(Square.d3d.x + Square.d3d.y));
-
-            // transform the angles in same Sign Domain of the light angles X/Y
-            if (fabs(ax - LightList[idx].alphaX) > PI) ax += ax > LightList[idx].alphaX ? -2 * PI : 2 * PI;
-
-            if (fabs(ay - LightList[idx].alphaY) > PI) ay += ax > LightList[idx].alphaY ? -2 * PI : 2 * PI;
-
-            float lPhy = LightList[idx].phi;
-            float laX = LightList[idx].alphaX;
-            float laY = LightList[idx].alphaY;
-            // Calculate the Angular Delta given by Object Radius
-            float dPhi = atanf(Radius / Dist);
-
-#ifdef LIGHT_ENGINE_DEBUG
-            REPORT_VALUE("Max :", (int)(LightList[idx].alphaX * 180 / PI));
-            REPORT_VALUE("Min :", (int)(LightList[idx].alphaY * 180 / PI));
-#ifdef DEBUG_LOD_ID
-            sprintf(TheLODNames[gDebugLodID], "%3.1f %3.1f", ax * 180 / PI, dPhi * 180 / PI);
-#endif
-#endif
-
-            if (ax - dPhi > (laX + lPhy) or ax + dPhi < (laX - lPhy) or ay - dPhi > (laY + lPhy) or ay + dPhi < (laY - lPhy))
-            {
-                idx++;
-                continue;
-            }
-
-
-        }
-
-        Dist -= Radius;
-
-        // if List still has a slot, add immediatly the light
-        if (LightsInList < MAX_SAMETIME_LIGHTS)
-        {
-            // setup new distance and index in the list
-            SwitchedList[LightsInList].Distance = Dist;
-            SwitchedList[LightsInList++].Index = idx;
-            // flag the light as going to be switched on
-            LightsToOn[idx] = true;
-
-            // and update the longest in list
-            if (Dist > MaxDist) MaxDist = Dist;
-        }
-        else
-        {
-            // else only if more near than any light in list
-            if (Dist < MaxDist)
-            {
-                // setup a temporary for the new Max Distance
-                float TempDist = 0.0f;
-
-                // check if lower distance than any in the object lites list
-                for (ldx = 0; ldx < MAX_SAMETIME_LIGHTS; ldx++)
-                {
-                    // if distance is less
-                    if (SwitchedList[ldx].Distance == MaxDist)
-                    {
-                        // disable the previous light
-                        LightsToOn[SwitchedList[ldx].Index] = false;
-                        // setup new distance and index in the list
-                        SwitchedList[ldx].Distance = Dist;
-                        SwitchedList[ldx].Index = idx;
-                        // enable the new light
-                        LightsToOn[idx] = true;
-                    }
-
-                    // check if new longest distance
-                    if (SwitchedList[ldx].Distance > TempDist) TempDist = SwitchedList[ldx].Distance;
-                }
-
-                // update new Max Distance
-                MaxDist = TempDist;
-            }
-        }
-
-        idx++;
-    }
-
-    EnableMappedLights();
 }
 
 
 void CDXLight::EnableMappedLights(void)
 {
-    // OK...Go disable not usefull lights
-    for (DWORD idx = 0; idx < DynamicLights; idx++)
-    {
-        // if light to be disabled
-        if (( not LightsToOn[idx]) and LightList[idx].On)
-        {
-            m_pD3DD->LightEnable(idx + 1, false);
-            LightList[idx].On = false;
-        }
-    }
-
-    for (DWORD idx = 0; idx < DynamicLights; idx++)
-    {
-        if (LightsToOn[idx] and ( not LightList[idx].On))
-        {
-            m_pD3DD->LightEnable(idx + 1, true);
-            LightList[idx].On = true;
-        }
-    }
+    // Artscout - 2026: #34 D3D11 uploads per-object lights via SetLights; there are no
+    // fixed-function light slots to enable/disable. Kept as a no-op for external callers.
 }
 
 
 
-
-
-
-// This function adds a light in the Dynamic Lights List
-void CDXEngine::AddDynamicLight(D3DLIGHT7 *Light, D3DXMATRIX *RotMatrix, D3DVECTOR *Pos)
-{
-    // Only if space available in the list
-    if (LightsNumber < MAX_DYNAMIC_LIGHTS)
-    {
-        // copy the light features
-        DXLightsList[LightsNumber] = *Light;
-        // transform the Direction
-        D3DXVec3TransformCoord((D3DXVECTOR3*)&DXLightsList[LightsNumber].dvDirection, (D3DXVECTOR3*)&DXLightsList[LightsNumber].dvDirection, RotMatrix);
-        // transform the Position
-        D3DXVec3TransformCoord((D3DXVECTOR3*)&DXLightsList[LightsNumber].dvPosition, (D3DXVECTOR3*)&DXLightsList[LightsNumber].dvPosition, RotMatrix);
-        // and translate it
-        DXLightsList[LightsNumber].dvPosition.x += Pos->x;
-        DXLightsList[LightsNumber].dvPosition.y += Pos->y;
-        DXLightsList[LightsNumber].dvPosition.z += Pos->z;
-        // Enable the light + 1 ( light #0 is the Sun )
-        m_pD3DD->SetLight(LightsNumber + 1, &DXLightsList[LightsNumber]);
-        m_pD3DD->LightEnable(LightsNumber + 1, true);
-        // a New light in list
-        LightsNumber++;
-    }
-}
-
-
-// This function clears the Dynamic Lights List
-void CDXEngine::RemoveDynamicLights(void)
-{
-    while (LightsNumber)
-    {
-        m_pD3DD->LightEnable(LightsNumber, false);
-        LightsNumber--;
-    }
-}
+// Artscout - 2026: #34 removed the dead D3D7 CDXEngine::AddDynamicLight(D3DLIGHT7*) (3-arg)
+// and RemoveDynamicLights -- no callers (the live path is CDXLight::AddDynamicLight, 5-arg,
+// D3D11 #28). They used the D3D7 device (m_pD3DD->SetLight/LightEnable).
 
 
 

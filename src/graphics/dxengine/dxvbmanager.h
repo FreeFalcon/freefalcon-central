@@ -1,7 +1,6 @@
 #pragma once
 
-#include <ddraw.h>
-#include <d3d.h>
+#include "d3d7compat.h"
 #include <d3dxcore.h>
 #include <d3dxmath.h>
 #include "../include/ObjectInstance.h"
@@ -9,6 +8,9 @@
 
 // The only VB Manager
 extern class CDXVbManager TheVbManager;
+
+// PHASE 4: D3D11 mirror of the vertex buffers (object path)
+struct ID3D11Buffer;
 
 
 // Macros to enter bitand leave VB Critical section
@@ -110,13 +112,15 @@ typedef struct
     CVbVAT *pVAT; // Root for the VB VAT
     DWORD BootGap; // The Eventual 1st Gap to 1st VAT
     LPDIRECT3DVERTEXBUFFER7 Vb; // Assigned VB
+    ID3D11Buffer *VbD3D11; // PHASE 4: D3D11 mirror of this VB
+    void *VbD3D12; // #DX12 п.4: D3D12 mirror (ID3D12Resource*)
 } VBufferListType;
 
 
 
 
 #define MAX_MANAGED_MODELS 0x4000
-#define D3D m_pD3D
+// #34 C1: D3D7 m_pD3D removed
 #define D3DFVF_MANAGED (D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_DIFFUSE|D3DFVF_SPECULAR|D3DFVF_TEX1)
 #define VERTEX_STRIDE sizeof(D3DVERTEXEX)
 
@@ -124,6 +128,8 @@ typedef struct
 typedef struct
 {
     LPDIRECT3DVERTEXBUFFER7 Vb; // Assigned VB address
+    ID3D11Buffer *VbD3D11; // PHASE 4: D3D11 mirror
+    void *VbD3D12; // #DX12 п.4: D3D12 mirror (ID3D12Resource*)
     CVbVAT *pVAT; // The VB VAT assigned
     VBufferListType *pVbList; // Pointer to the VB List Item assigned
     DWORD NVertices; // Number Of Vertices composing the object
@@ -229,7 +235,7 @@ public:
     {
         pVBuffers[ID].Valid = true;
     }
-    void Setup(IDirect3D7 *pD3D);
+    void Setup();   // #34 C1: D3D7 device arg removed
     void Release(void);
     void GetModelData(VBItemType &, DWORD);
     DWORD GetTextureID(DWORD ID, DWORD TexIdx);
@@ -241,7 +247,7 @@ public:
     void Encrypt(DWORD *);
     void Decrypt(DWORD *);
     bool CheckDataID(DWORD ID);
-    (BYTE*) GetModelRoot(DWORD ID)
+    BYTE* GetModelRoot(DWORD ID)
     {
         return ((BYTE*)pVBuffers[ID].Root);
     }
@@ -249,10 +255,7 @@ public:
     {
         return pVBuffers[ID].Texs;
     }
-    IDirect3D7* GetVBD3D(void)
-    {
-        return m_pD3D;
-    };
+    // #34 C1: GetVBD3D() removed (D3D7 m_pD3D gone; no callers)
 
     VBufferListType *GetVbList(void)
     {
@@ -268,7 +271,7 @@ protected:
     void DestroyVAT(VBufferListType *pVb, CVbVAT *Vat);
 
     VBItemType pVBuffers[MAX_MANAGED_MODELS];
-    IDirect3D7 *m_pD3D;
+    // #34 C1: D3D7 m_pD3D removed
     VBufferListType pVbList[MAX_VERTEX_BUFFERS]; // List of managed vertex Buffers
     VBufferListType PitList; // The Pit List
 

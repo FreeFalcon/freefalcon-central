@@ -1,6 +1,6 @@
 #ifndef VU_TEMPLATES_H
 #define VU_TEMPLATES_H
-#include <cISO646>
+#include <iso646.h>
 
 /** @file vu_templates.h templates for VU. */
 

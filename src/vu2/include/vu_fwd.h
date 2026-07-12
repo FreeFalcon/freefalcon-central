@@ -1,6 +1,6 @@
 #ifndef VU_FWD_H
 #define VU_FWD_H
-#include <cISO646>
+#include <iso646.h>
 
 /** @file vu_fwd.h
 * forward declaration of all classes declared in vu

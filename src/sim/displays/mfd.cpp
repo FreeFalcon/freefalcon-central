@@ -170,7 +170,10 @@ MFDClass::MFDClass(int count, Render3D *r3d)
     privateImage->Setup(&FalconDisplay.theDisplayDevice, MfdSize, MfdSize, /*VideoMem*/SystemMem, None);
     privateImage->SetChromaKey(0x0);
     image = OTWDriver.OTWImage;
-    color = 0x00ff00;
+    color = 0x00ffffff;	// #2: MFD shell base color green->white. The shell calls SetColor(Color())
+                        // before Display() of EACH page -> overrode DisplayInit -> all pages
+                        // (SMS/HAD/...) were green. This is the common root. (alpha 0 as in the original;
+                        // for MFD text alpha is forced to 1.0). RWR/HUD/DED keep their own color, unaffected.
     intensity = 0;
     mode = primarySecondary[curmm][0];
     restoreMode = mode;
@@ -709,6 +712,21 @@ void ClearFlightDataOsbLabels()
 }
 
 
+// Artscout - 2026: composite THIS MFD's atlas zone onto ITS 3D panel. The display object behind an MFD
+// can be SHARED between both MFDs -- WpnMfdDrawable::GetDisplay() and SmsDrawable::GetDisplay() both
+// return the single mavDisplay->GetDisplay() when a Maverick is loaded. Exec sets the display's RTT
+// rect/canvas, but the LAST MFD Exec'd wins, so the OTHER MFD's composite (vcock called
+// GetDisplay()->DrawRttQuad() directly) used the wrong zone/panel -> the WPN MFD was BLACK whenever the
+// SMS page also showed the Maverick. Re-apply THIS MFD's rect/canvas right before the composite.
+void MFDClass::DrawRttComposite(void)
+{
+    if (not drawable or not drawable->GetDisplay()) return;
+    VirtualDisplay* d = drawable->GetDisplay();
+    d->SetRttCanvas(&cUL, &cUR, &cLL, cBlend, cAlpha);
+    d->SetRttRect(tLeft, tTop, tRight, tBottom);
+    d->DrawRttQuad();
+}
+
 void MFDClass::Exec(int clearFrame, int virtualCockpit)
 {
     float vpLeft, vpTop, vpRight, vpBottom;
@@ -976,7 +994,12 @@ void MFDClass::DecreaseBrightness()
 // JPO Default color - green tempered by mask
 int MFDClass::Color()
 {
-    return 0xff00 bitand MFDMasks[intensity];
+    // #2 the TRUE root of MFD green: previously ONLY the green byte was returned
+    // (0xff00 & mask) -- regardless of the page. The shell calls SetColor(Color()) before
+    // EACH page -> all MFD text was green. Now WHITE at the same brightness:
+    // take the brightness byte (the mask's green channel) and replicate to R/G/B. (per the BMS reference, MFD is white)
+    int g = 0xff00 bitand MFDMasks[intensity];      // brightness byte in the G position (8..15)
+    return (g >> 8) bitor g bitor (g << 8);          // R=G=B=brightness -> white
 }
 
 // default intensity mask
@@ -1041,7 +1064,7 @@ void MfdDrawable::DisplayInit(ImageBuffer* image)
     privateDisplay = new Render2D;
     ((Render2D*)privateDisplay)->Setup(image);
 
-    privateDisplay->SetColor(0xff00ff00);
+    privateDisplay->SetColor(0xffffffff);	// #7: MFD default WHITE (was green) -- F-16 realism
 }
 
 void MfdDrawable::PushButton(int whichButton, int whichMFD)

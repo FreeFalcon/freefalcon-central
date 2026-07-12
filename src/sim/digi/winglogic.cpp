@@ -221,11 +221,9 @@ void DigitalBrain::AiSearchTargetList(VuEntity* pentity)
         //    if ( not targetPtr or targetPtr->BaseData() not_eq theTarget)
         if (( not targetPtr or targetPtr->BaseData() not_eq theTarget) and ( not groundTargetPtr or groundTargetPtr->BaseData() not_eq theTarget))
         {
-#ifdef DEBUG
-            /*     objectPtr = new SimObjectType (OBJ_TAG, self, theTarget);*/
-#else
+            // #47 UAF ROOT: create UNCONDITIONALLY (in Debug the DEBUG branch was empty -> objectPtr
+            // dangling/NULL -> SetTarget on garbage).
             objectPtr = new SimObjectType(theTarget);
-#endif
             SetTarget(objectPtr);
             // 2000-09-18 ADDED BY S.G. SO AI STARTS SHOOTING RIGHT NOW AND STOP WAITING THAT STUPID 30 SECONDS
             missileShotTimer = 0;

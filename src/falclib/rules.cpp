@@ -5,22 +5,36 @@
 RulesClass gRules[rNUM_MODES];
 RulesModes RuleMode = rINSTANT_ACTION;
 
+// Artscout - 2026: per-pilot rules live in the active profile folder (config\profiles\<dir>\
+// rules.rul), not config\<callsign>.rul. Forward-declared to avoid pulling the sim controlsxml
+// header into falclib; the symbol resolves at the final exe link.
+extern bool ControlsXml_ActiveProfilePath(char *out, int outSize);
+
 int LoadAllRules(char *filename)
 {
     size_t success = 0;
     _TCHAR path[_MAX_PATH];
+    char  prof[_MAX_PATH];
     long size;
     FILE *fp;
 
-    _stprintf(path, _T("%s\\config\\%s.rul"), FalconDataDirectory, filename);
+    ControlsXml_ActiveProfilePath(prof, sizeof(prof));
+    _stprintf(path, _T("%s\\rules.rul"), prof);
 
     fp = _tfopen(path, _T("rb"));
 
     if ( not fp)
     {
         MonoPrint(_T("Couldn't open %s rules file\n"), filename);
-        _stprintf(path, _T("%s\\Config\\default.rul"), FalconDataDirectory);
-        fp = _tfopen(path, "rb");
+        // fallback: shipped default profile, then the legacy config\default.rul
+        _stprintf(path, _T("%s\\config\\profiles\\default\\rules.rul"), FalconDataDirectory);
+        fp = _tfopen(path, _T("rb"));
+
+        if ( not fp)
+        {
+            _stprintf(path, _T("%s\\config\\default.rul"), FalconDataDirectory);
+            fp = _tfopen(path, "rb");
+        }
 
         if ( not fp)
         {
@@ -105,18 +119,27 @@ int RulesClass::LoadRules(char *filename)
 {
     size_t success = 0;
     _TCHAR path[_MAX_PATH];
+    char  prof[_MAX_PATH];
     long size;
     FILE *fp;
 
-    _stprintf(path, _T("%s\\config\\%s.rul"), FalconDataDirectory, filename);
+    ControlsXml_ActiveProfilePath(prof, sizeof(prof));
+    _stprintf(path, _T("%s\\rules.rul"), prof);
 
     fp = _tfopen(path, _T("rb"));
 
     if ( not fp)
     {
         MonoPrint(_T("Couldn't open %s rules file\n"), filename);
-        _stprintf(path, _T("%s\\Config\\default.rul"), FalconDataDirectory);
-        fp = _tfopen(path, "rb");
+        // fallback: shipped default profile, then the legacy config\default.rul
+        _stprintf(path, _T("%s\\config\\profiles\\default\\rules.rul"), FalconDataDirectory);
+        fp = _tfopen(path, _T("rb"));
+
+        if ( not fp)
+        {
+            _stprintf(path, _T("%s\\config\\default.rul"), FalconDataDirectory);
+            fp = _tfopen(path, "rb");
+        }
 
         if ( not fp)
         {
@@ -187,9 +210,12 @@ int RulesClass::SaveRules(_TCHAR *filename)
 {
     FILE *fp;
     _TCHAR path[_MAX_PATH];
+    char  prof[_MAX_PATH];
     size_t success = 0;
 
-    _stprintf(path, _T("%s\\config\\%s.rul"), FalconDataDirectory, filename);
+    ControlsXml_ActiveProfilePath(prof, sizeof(prof));   // rules in the profile folder
+    _stprintf(path, _T("%s\\rules.rul"), prof);
+    (void)filename;
 
     if ((fp = _tfopen(path, "wb")) == NULL)
     {

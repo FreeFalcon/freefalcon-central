@@ -9,7 +9,7 @@
 #define _3DEJ_DEFINE_H_
 
 #include "../../codelib//include/shi/SHIerror.h"
-#include <ddraw.h>
+#include "d3d7compat.h"
 
 #ifdef USE_SMART_HEAP
 #include <stdlib.h>

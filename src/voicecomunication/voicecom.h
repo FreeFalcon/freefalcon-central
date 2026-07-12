@@ -1,17 +1,21 @@
 #include "f4vu.h"
 #include "fsound.h"
-#include "falcsnd/voicemanager.h"
+#include "falcsnd\voicemanager.h"
 #include "CmpClass.h"
 #include "flight.h"
-#include "sim/include/simdrive.h"
+#include "sim\include\simdrive.h"
 #define _WIN32_DCOM
 #include <stdio.h>
-#include <dplay8.h>
-#include <dplobby8.h>
-#include <dvoice.h>
+// DirectPlay8/DirectPlay Voice are removed from the modern SDK. This header needs only DPNID.
+// #include <dplay8.h>
+// #include <dplobby8.h>
+// #include <dvoice.h>
+#ifndef DPNID
+typedef DWORD DPNID;	// DirectPlay8 player id (was in dplay8.h)
+#endif
 #include "debuggr.h"
 
-#include "sim/include/navsystem.h"
+#include "sim\include\navsystem.h"
 #include <tchar.h>
 
 //-----------------------------------------------------------------------------
@@ -23,7 +27,7 @@ HRESULT WINAPI DirectVoiceServerMessageHandler(PVOID pvUserContext, DWORD dwMess
 HRESULT WINAPI DirectVoiceClientMessageHandler(PVOID pvUserContext, DWORD dwMessageId, PVOID pMsgBuffer);
 
 BOOL    IsServiceProviderValid(const GUID* pGuidSP);
-void StopVoice();
+void StopVoice ();
 HRESULT InitDirectPlay();
 HRESULT InitDirectPlayVoice();
 HRESULT CreateDeviceAddress();
@@ -40,14 +44,14 @@ HWND    GetConsoleHwnd();
 void    CleanupDirectPlay();
 int main(char* ip);
 void CreateGroup(unsigned long freq);
-void SetListenFreqsHost(DPNID playerid, unsigned long com1, unsigned long com2, unsigned long guard);
-void SetListenFreqsClient(unsigned long com1, unsigned long com2, unsigned long guard);
-void TransmistoFreq(unsigned long freq);
+void SetListenFreqsHost (DPNID playerid,unsigned long com1,unsigned long com2,unsigned long guard);
+void SetListenFreqsClient (unsigned long com1,unsigned long com2,unsigned long guard);
+void TransmistoFreq (unsigned long freq);
 void Transmit(int com);
 void RefreshVoiceFreqs(void);
-void startupvoice(char*);
+void startupvoice (char*);
 
-void DirectVoiceSetVolume(int Channel = 0); // only 1 channel // MLR 1/29/2004 -
+void DirectVoiceSetVolume(int Channel=0); // only 1 channel // MLR 1/29/2004 - 
 
 
 /*VOID DXUtil_ConvertWideStringToGeneric( TCHAR* tstrDestination, const WCHAR* wstrSource, int cchDestChar = -1 );

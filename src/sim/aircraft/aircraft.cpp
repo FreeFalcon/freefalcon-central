@@ -625,8 +625,10 @@ void AircraftClass::Init(SimInitDataClass* initData)
         }
         else
         {
-            // Unlimited fuel?
-            if (PlayerOptions.UnlimitedFuel())
+            // Unlimited fuel? #21: Instant Action ALWAYS gives the player unlimited fuel,
+            // independent of the UnlimitedFuel option (the option still works in other
+            // modes; the RunningInstantAction() check keeps this scoped to IA only).
+            if (PlayerOptions.UnlimitedFuel() or SimDriver.RunningInstantAction())
             {
                 af->SetFlag(AirframeClass::NoFuelBurn);
             }
@@ -1079,7 +1081,11 @@ void AircraftClass::Init(SimInitDataClass* initData)
 
         if (Sms->NumHardpoints() and isDigital)
         {
-            Sms->SetUnlimitedAmmo(FALSE);
+            // #21: in Instant Action ammo must stay unlimited (like fuel) -- do not clobber
+            // the SetUnlimitedAmmo(TRUE) set in virtuals.cpp.
+            if ( not SimDriver.RunningInstantAction())
+                Sms->SetUnlimitedAmmo(FALSE);
+
             FCC->SetMasterMode(FireControlComputer::Missile);
             FCC->SetSubMode(FireControlComputer::Aim9);
         }

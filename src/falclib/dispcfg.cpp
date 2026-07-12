@@ -45,8 +45,8 @@ FalconDisplayConfiguration::FalconDisplayConfiguration(void)
     doubleBuffer[Layout] = FALSE;
 
     //default values
-    width[Sim] = 640;
-    height[Sim] = 480;
+    width[Sim] = 1920;	// 3D default -- Full HD (was 640x480; overridden by SetSimMode from DispWidth)
+    height[Sim] = 1080;
     depth[Sim] = 16;
     doubleBuffer[Sim] = TRUE;
 
@@ -330,6 +330,14 @@ void FalconDisplayConfiguration::LeaveMode(void)
 
 void FalconDisplayConfiguration::SetSimMode(int newwidth, int newheight, int newdepth)
 {
+    // Artscout - 2026: guard against uninitialized/garbage dimensions. DispWidth/DispHeight can be
+    // unset (e.g. an old/short options.pop leaves the field uninitialized -> 0xCCCC = 52428 in debug);
+    // that propagated into width[Sim] -> a 52428x52428 swapchain/depth/MSAA on 3D entry (CreateTexture2D
+    // INVALIDDIMENSIONS + "no buffers available" -> broken device). Reject out-of-range values and keep
+    // the current (constructor default 1920x1080) Sim mode so the device inits at a sane size.
+    if (newwidth < 1 or newwidth > 16384 or newheight < 1 or newheight > 16384)
+        return;
+
     width[Sim] = newwidth;
     height[Sim] = newheight;
     depth[Sim] = newdepth;
@@ -360,4 +368,88 @@ void FalconDisplayConfiguration::ToggleFullScreen(void)
 	displayFullScreen ? displayFullScreen = false : displayFullScreen = true;
     MakeWindow();
     EnterMode(currentMode);
+}
+
+// #33: enter the 3D-session window mode (windowed or borderless fullscreen). The shared app
+// window is restyled IN PLACE (no DestroyWindow/MakeWindow -> avoids the #41 enter/exit hang
+// area); the swap chain is left untouched and DXGI stretches the back buffer to the client
+// area. The previous (menu) style/rect are saved so LeaveSimWindowMode restores them exactly.
+#ifdef _FORCE_MAIN_THREAD
+void FalconDisplayConfiguration::EnterSimWindowMode(bool windowed)
+{
+    SendMessage(appWin, FM_DISP_ENTER_SIM_WINMODE, windowed ? 1 : 0, 0);
+}
+
+void FalconDisplayConfiguration::_EnterSimWindowMode(bool windowed)
+#else
+void FalconDisplayConfiguration::_EnterSimWindowMode(bool) {}
+
+void FalconDisplayConfiguration::EnterSimWindowMode(bool windowed)
+#endif
+{
+    if (mInSimWinMode or not appWin) return;
+
+    // Save the current (menu) window state for restoration on 3D exit.
+    mSavedWinStyle   = (long)GetWindowLong(appWin, GWL_STYLE);
+    GetWindowRect(appWin, &mSavedWinRect);
+    mSavedFullScreen = displayFullScreen;
+    mInSimWinMode    = true;
+
+    const int sw = GetSystemMetrics(SM_CXSCREEN);
+    const int sh = GetSystemMetrics(SM_CYSCREEN);
+
+    if (windowed)
+    {
+        // Windowed: client = chosen 3D resolution, centered and clamped to the desktop.
+        RECT rect = { 0, 0, width[Sim], height[Sim] };
+        AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
+        int ww = rect.right - rect.left;
+        int wh = rect.bottom - rect.top;
+        if (ww > sw) ww = sw;
+        if (wh > sh) wh = sh;
+        int x = (sw - ww) / 2; if (x < 0) x = 0;
+        int y = (sh - wh) / 2; if (y < 0) y = 0;
+        SetWindowLong(appWin, GWL_STYLE, WS_OVERLAPPEDWINDOW);
+        SetWindowPos(appWin, HWND_TOP, x, y, ww, wh, SWP_FRAMECHANGED bitor SWP_SHOWWINDOW);
+        displayFullScreen = false;
+    }
+    else
+    {
+        // Borderless fullscreen: cover the whole monitor; the back buffer is stretched to fit.
+        SetWindowLong(appWin, GWL_STYLE, WS_POPUP);
+        SetWindowPos(appWin, HWND_TOP, 0, 0, sw, sh, SWP_FRAMECHANGED bitor SWP_SHOWWINDOW);
+        displayFullScreen = true;
+    }
+
+    SetForegroundWindow(appWin);
+    SetFocus(appWin);
+}
+
+#ifdef _FORCE_MAIN_THREAD
+void FalconDisplayConfiguration::LeaveSimWindowMode()
+{
+    SendMessage(appWin, FM_DISP_LEAVE_SIM_WINMODE, 0, 0);
+}
+
+void FalconDisplayConfiguration::_LeaveSimWindowMode()
+#else
+void FalconDisplayConfiguration::_LeaveSimWindowMode() {}
+
+void FalconDisplayConfiguration::LeaveSimWindowMode()
+#endif
+{
+    if (not mInSimWinMode) return;
+
+    if (appWin)
+    {
+        SetWindowLong(appWin, GWL_STYLE, mSavedWinStyle);
+        SetWindowPos(appWin, HWND_TOP,
+                     mSavedWinRect.left, mSavedWinRect.top,
+                     mSavedWinRect.right - mSavedWinRect.left,
+                     mSavedWinRect.bottom - mSavedWinRect.top,
+                     SWP_FRAMECHANGED bitor SWP_SHOWWINDOW);
+    }
+
+    displayFullScreen = mSavedFullScreen;
+    mInSimWinMode = false;
 }

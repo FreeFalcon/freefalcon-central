@@ -18,6 +18,7 @@
 #include "TexBank.h"
 #include "Image.h"
 #include "TerrTex.h"
+#include "ddsdiskhdr.h" // Artscout - 2026 (x64): correct on-disk DDS header read
 #include "FalcLib/include/playerop.h"
 #include "FalcLib/include/dispopts.h"
 
@@ -37,7 +38,7 @@ BYTE* TextureBankClass::TexBuffer;
 DWORD TextureBankClass::TexBufferSize;
 bool TextureBankClass::RatedLoad;
 short *TextureBankClass::CacheLoad, *TextureBankClass::CacheRelease;
-short TextureBankClass::LoadIn, TextureBankClass::LoadOut, TextureBankClass::ReleaseIn, TextureBankClass::ReleaseOut;
+volatile short TextureBankClass::LoadIn, TextureBankClass::LoadOut, TextureBankClass::ReleaseIn, TextureBankClass::ReleaseOut;
 
 DWORD gDebugTextureID;
 
@@ -162,7 +163,57 @@ void TextureBankClass::ReadPool(int file, char *basename)
 
     // sfr: Ok some ????? did this and now we cannot change Texture class a bit
     // since this stop working
+#if defined(_M_IX86)
     result = read(file, TempTexturePool, sizeof(*TempTexturePool) * nTextures);
+#else
+    // Artscout - 2026: x64 serialization fix. The .DXH file stores TempTexBankEntry
+    // in the 32-bit (x86) layout. On x64 the embedded Texture class grows
+    // (3 pointers 4->8 bytes), so sizeof(TempTexBankEntry) is larger and a bulk
+    // read over-reads, shifting the file position and corrupting the LOD count
+    // read that follows. Read the on-disk 32-bit layout and copy only the
+    // meaningful fields; the runtime Texture pointers are zeroed (reloaded later
+    // via MPR_TI_INVALID).
+    {
+#pragma pack(push, 4)
+        struct DiskTexture
+        {
+            int    dimensions;
+            UInt32 imageData; // void*  on x86 disk
+            DWORD  flags;
+            DWORD  chromaKey;
+            UInt32 palette;   // Palette*        on x86 disk
+            UInt32 texHandle; // TextureHandle*  on x86 disk
+        };
+        struct DiskTempTexBankEntry
+        {
+            long        fileOffset;
+            long        fileSize;
+            DiskTexture tex;
+            int         palID;
+            int         refCount;
+        };
+#pragma pack(pop)
+
+        DiskTempTexBankEntry *disk = new DiskTempTexBankEntry[nTextures];
+        result = read(file, disk, sizeof(DiskTempTexBankEntry) * nTextures);
+
+        for (int i = 0; i < nTextures; i++)
+        {
+            TempTexturePool[i].fileOffset = disk[i].fileOffset;
+            TempTexturePool[i].fileSize   = disk[i].fileSize;
+            // Zero the Texture (clears palette/texHandle/imageData pointers), then
+            // restore the meaningful serialized fields.
+            memset(&TempTexturePool[i].tex, 0, sizeof(Texture));
+            TempTexturePool[i].tex.dimensions = disk[i].tex.dimensions;
+            TempTexturePool[i].tex.flags      = disk[i].tex.flags;
+            TempTexturePool[i].tex.chromaKey  = disk[i].tex.chromaKey;
+            TempTexturePool[i].palID    = disk[i].palID;
+            TempTexturePool[i].refCount = disk[i].refCount;
+        }
+
+        delete[] disk;
+    }
+#endif
 
     if (result < 0)
     {
@@ -252,6 +303,11 @@ void TextureBankClass::Reference(int id)
     gDebugTextureID = id;
 
     ShiAssert(IsValidIndex(id));
+    // Artscout - 2026: real bounds guard (ShiAssert is a no-op in this build). An out-of-range
+    // texture id (e.g. a bad TextureSet on an object instance) otherwise indexes past TexturePool
+    // and dereferences a garbage palette -> AV in Palette::Reference. Skip rather than crash.
+    if ( not IsValidIndex(id))
+        return;
 
     // Get our reference to this texture recorded to ensure it doesn't disappear out from under us
     //EnterCriticalSection(&ObjectLOD::cs_ObjectLOD);
@@ -278,6 +334,9 @@ void TextureBankClass::Reference(int id)
         // but since we cannot add anything to texture structure (because Jammer read them
         // directly from file instead of from a method) I make the check when releasing
         // the palette.
+        // Artscout - 2026: guard palID too (defensive; palID is normally forced to 0).
+        if ( not ThePaletteBank.IsValidIndex(TexturePool[id].palID))
+            return;
         TexturePool[id].tex.SetPalette(&ThePaletteBank.PalettePool[TexturePool[id].palID]);
         ShiAssert(TexturePool[id].tex.GetPalette());
         TexturePool[id].tex.GetPalette()->Reference();
@@ -307,6 +366,9 @@ void TextureBankClass::Reference(int id)
 void TextureBankClass::Release(int id)
 {
     ShiAssert(IsValidIndex(id));
+    // Artscout - 2026: real bounds guard (ShiAssert is a no-op in this build).
+    if ( not IsValidIndex(id))
+        return;
     ShiAssert(TexturePool[id].refCount > 0);
 
     // RED - no reference, no party... 
@@ -473,7 +535,7 @@ void TextureBankClass::Select(int id)
 }
 
 
-void TextureBankClass::SelectHandle(DWORD TexHandle)
+void TextureBankClass::SelectHandle(DWORD_PTR TexHandle) // Artscout - 2026 (x64): pointer-sized handle
 {
     TheStateStack.context->SelectTexture1(TexHandle);
 }
@@ -528,6 +590,9 @@ void TextureBankClass::UnpackPalettizedTexture(DWORD id)
     if (TexturePool[id].tex.dimensions > 0)
     {
         //sfr: (see my comment regarding palette origin above)
+        // Artscout - 2026: guard palID too (defensive; palID is normally forced to 0).
+        if ( not ThePaletteBank.IsValidIndex(TexturePool[id].palID))
+            return;
         TexturePool[id].tex.SetPalette(&ThePaletteBank.PalettePool[TexturePool[id].palID]);
         ShiAssert(TexturePool[id].tex.GetPalette());
         TexturePool[id].tex.GetPalette()->Reference();
@@ -561,13 +626,20 @@ void TextureBankClass::ReadImageDDS(DWORD id)
     fp = fopen(szFile, "rb");
 
     // RV - RED - Avoid CTD if a missing texture
-    if ( not fp) return;
+    if ( not fp)
+    {
+        return;
+    }
 
     fread(&dwMagic, 1, sizeof(DWORD), fp);
     ShiAssert(dwMagic == MAKEFOURCC('D', 'D', 'S', ' '));
 
     // Read first compressed mipmap
+#if defined(_M_IX86)
     fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
+#else
+    { DDSDiskHeader _h; fread(&_h, 1, DDS_DISK_HEADER_SIZE, fp); DDSDiskToDesc(_h, ddsd); } // Artscout - 2026 (x64): on-disk DDS header
+#endif
 
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
@@ -681,7 +753,11 @@ void TextureBankClass::ReadImageDDSN(DWORD id)
     ShiAssert(dwMagic == MAKEFOURCC('D', 'D', 'S', ' '));
 
     // Read first compressed mipmap
+#if defined(_M_IX86)
     fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
+#else
+    { DDSDiskHeader _h; fread(&_h, 1, DDS_DISK_HEADER_SIZE, fp); DDSDiskToDesc(_h, ddsd); } // Artscout - 2026 (x64): on-disk DDS header
+#endif
 
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
@@ -786,7 +862,7 @@ void TextureBankClass::RestoreTexturePool()
 
 
 
-DWORD TextureBankClass::GetHandle(DWORD id)
+DWORD_PTR TextureBankClass::GetHandle(DWORD id) // Artscout - 2026 (x64): pointer-sized handle
 {
     // if already on release, avoid using or requesting it
     if (TexFlags[id].OnRelease) return NULL;
@@ -865,13 +941,42 @@ void TextureBankClass::WaitUpdates(void)
     // Pause the Loader...
     TheLoader.SetPause(true);
 
-    while ( not TheLoader.Paused());
+    // PHASE 5 (hang-fix): the busy-wait for pause confirmation must NOT hang forever.
+    // The loader thread may sleep on WaitForSingleObject(INFINITE), be dead,
+    // or lose a race with the auto-reset event -> paused never becomes PAUSED,
+    // and the main thread would hang forever (black screen on 3D exit). Timeout ~2s.
+    {
+        DWORD t0 = GetTickCount();
+        while ( not TheLoader.Paused())
+        {
+            if (GetTickCount() - t0 > 2000)
+            {
+                // Loader pause acknowledgement timed out -> bail rather than hang.
+                TheLoader.SetPause(false);
+                return;
+            }
+            Sleep(0);   // yield a quantum, don't burn a core
+        }
+    }
 
     // Not slow loading
     RatedLoad = false;
 
-    // Parse all objects till any opration to do
-    while (UpdateBank());
+    // Parse all objects till any opration to do.
+    // PHASE 5 (hang-fix): cap on the iteration count. If a request can't complete and
+    // re-queues (e.g. a missing terrain .dds, terrtex.cpp:1435),
+    // UpdateBank() would return true forever -> a hang. Log and bail out.
+    {
+        long guard = 0;
+        while (UpdateBank())
+        {
+            if (++guard > 200000)
+            {
+                // Drain cap hit (a request that never completes would loop forever) -> bail.
+                break;
+            }
+        }
+    }
 
     // Restore rated loading
     RatedLoad = true;

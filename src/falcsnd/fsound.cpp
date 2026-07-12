@@ -398,7 +398,9 @@ int InitSoundManager(HWND hWnd, int, char *falconDataDir)
     SoundPosSection = F4CreateCriticalSection("SoundPosSection");
 
 
-#if _MSC_VER >= 1300
+// Artscout - 2026 (x64): _set_SSE2_enable was removed from the modern CRT (SSE2 is always on, and
+// mandatory on x64). Keep the legacy call only on the old x86 toolset.
+#if defined(_M_IX86) && _MSC_VER >= 1300 && _MSC_VER < 1900
     int i = _set_SSE2_enable(1);
 #endif
 

@@ -402,6 +402,11 @@ void SIMLIB_IO_CLASS::ResetAllInputs()
 /*****************************************************************************/
 void SIMLIB_IO_CLASS::SaveGUIDAndCount()
 {
+    // #19: snapshot the GUIDs of all devices by their current indices -- on the next start
+    // it lets axis Device indices be remapped to the new enumeration
+    memcpy(AxisMap.DeviceGUIDs, gDIDevGUIDs, sizeof(AxisMap.DeviceGUIDs));
+    AxisMap.totalDeviceCount = gTotalJoy;
+
     if (AxisMap.FlightControlDevice not_eq -1)
     {
         HRESULT hres;
@@ -411,7 +416,104 @@ void SIMLIB_IO_CLASS::SaveGUIDAndCount()
         hres = gpDIDevice[AxisMap.FlightControlDevice]->GetDeviceInfo(&devinst);
 
         AxisMap.FlightControllerGUID = devinst.guidInstance;
-        AxisMap.totalDeviceCount = gTotalJoy;
+    }
+}
+
+// #19: remap one saved Device index to the current enumeration by GUID.
+// Returns the device's current index, or -1 if the device is currently absent.
+static int RemapDeviceIndexByGUID_(int savedIdx, const GUID* savedGUIDs)
+{
+    if (savedIdx < SIM_JOYSTICK1)        // keyboard/mouse/unset -- index is fixed
+        return savedIdx;
+
+    if (savedIdx >= SIM_NUMDEVICES)
+        return -1;
+
+    static const GUID zeroGUID = {0};
+    GUID g = savedGUIDs[savedIdx];
+
+    if (memcmp(&g, &zeroGUID, sizeof(GUID)) == 0)   // no saved GUID for the slot
+        return -1;
+
+    for (int i = SIM_JOYSTICK1; i < SIM_NUMDEVICES; ++i)
+    {
+        if (memcmp(&gDIDevGUIDs[i], &g, sizeof(GUID)) == 0)
+            return i;
+    }
+
+    return -1;   // device is not connected right now
+}
+
+static void RemapAxis_(DeviceAxis* da, const GUID* savedGUIDs)
+{
+    if ( not da)
+        return;
+
+    if (da->Device < SIM_JOYSTICK1)      // keyboard/mouse/unset
+        return;
+
+    int n = RemapDeviceIndexByGUID_(da->Device, savedGUIDs);
+
+    // Only improve the index on a GUID match. If the GUID is not found -- do NOT touch
+    // (keep the index binding as is): it won't get worse than before the changes.
+    if (n >= 0)
+        da->Device = n;
+}
+
+void SIMLIB_IO_CLASS::RemapAxisMappingByGUID()
+{
+    const GUID* sg = AxisMap.DeviceGUIDs;
+
+    // If there are no saved GUIDs (old .dat format or a save without GUID) -- do NOT remap,
+    // so we don't wipe a working index binding (otherwise the sanity check in siloop
+    // would see FlightControlDevice=-1 and reset everything to keyboard). Activates only
+    // when the file actually contains device GUIDs.
+    static const GUID zeroGUID = {0};
+    bool hasGUIDs = false;
+
+    for (int i = SIM_JOYSTICK1; i < SIM_NUMDEVICES; ++i)
+    {
+        if (memcmp(&sg[i], &zeroGUID, sizeof(GUID)) not_eq 0)
+        {
+            hasGUIDs = true;
+            break;
+        }
+    }
+
+    if ( not hasGUIDs)
+        return;
+
+    RemapAxis_(&AxisMap.Pitch, sg);
+    RemapAxis_(&AxisMap.Bank, sg);
+    RemapAxis_(&AxisMap.Yaw, sg);
+    RemapAxis_(&AxisMap.Throttle, sg);
+    RemapAxis_(&AxisMap.Throttle2, sg);
+    RemapAxis_(&AxisMap.BrakeLeft, sg);
+    RemapAxis_(&AxisMap.BrakeRight, sg);
+    RemapAxis_(&AxisMap.FOV, sg);
+    RemapAxis_(&AxisMap.PitchTrim, sg);
+    RemapAxis_(&AxisMap.YawTrim, sg);
+    RemapAxis_(&AxisMap.BankTrim, sg);
+    RemapAxis_(&AxisMap.AntElev, sg);
+    RemapAxis_(&AxisMap.RngKnob, sg);
+    RemapAxis_(&AxisMap.CursorX, sg);
+    RemapAxis_(&AxisMap.CursorY, sg);
+    RemapAxis_(&AxisMap.Comm1Vol, sg);
+    RemapAxis_(&AxisMap.Comm2Vol, sg);
+    RemapAxis_(&AxisMap.MSLVol, sg);
+    RemapAxis_(&AxisMap.ThreatVol, sg);
+    RemapAxis_(&AxisMap.InterComVol, sg);
+    RemapAxis_(&AxisMap.HudBrt, sg);
+    RemapAxis_(&AxisMap.RetDepr, sg);
+    RemapAxis_(&AxisMap.Zoom, sg);
+
+    // the lead flight-control device -- also only on a GUID match
+    if (AxisMap.FlightControlDevice >= SIM_JOYSTICK1)
+    {
+        int n = RemapDeviceIndexByGUID_(AxisMap.FlightControlDevice, sg);
+
+        if (n >= 0)
+            AxisMap.FlightControlDevice = n;
     }
 }
 
@@ -462,7 +564,6 @@ GameAxisSetup_t AxisSetup[AXIS_MAX] =
     { &AxisMap.YawTrim.Device, &AxisMap.YawTrim.Axis, &AxisMap.YawTrim.Deadzone, &AxisMap.YawTrim.Saturation, false},
     { &AxisMap.BankTrim.Device, &AxisMap.BankTrim.Axis, &AxisMap.BankTrim.Deadzone, &AxisMap.BankTrim.Saturation,  false},
     { &AxisMap.BrakeLeft.Device, &AxisMap.BrakeLeft.Axis, 0, &AxisMap.BrakeLeft.Saturation, true},
-    // { &AxisMap.BrakeRight.Device, &AxisMap.BrakeRight.Axis, 0, &AxisMap.BrakeRight.Saturation, true},
     { &AxisMap.FOV.Device, &AxisMap.FOV.Axis, 0, &AxisMap.FOV.Saturation, true},
     { &AxisMap.AntElev.Device, &AxisMap.AntElev.Axis, &AxisMap.AntElev.Deadzone, &AxisMap.AntElev.Saturation, false},
     { &AxisMap.CursorX.Device, &AxisMap.CursorX.Axis, &AxisMap.CursorX.Deadzone, &AxisMap.CursorX.Saturation, false},
@@ -476,4 +577,6 @@ GameAxisSetup_t AxisSetup[AXIS_MAX] =
     { &AxisMap.RetDepr.Device, &AxisMap.RetDepr.Axis, 0, &AxisMap.RetDepr.Saturation, true},
     { &AxisMap.Zoom.Device, &AxisMap.Zoom.Axis, 0, &AxisMap.Zoom.Saturation, true},
     { &AxisMap.InterComVol.Device, &AxisMap.InterComVol.Axis, 0, &AxisMap.InterComVol.Saturation, true},
+    // AXIS_BRAKE_RIGHT (last, matching the enum) - right toe brake for differential braking
+    { &AxisMap.BrakeRight.Device, &AxisMap.BrakeRight.Axis, 0, &AxisMap.BrakeRight.Saturation, true},
 };

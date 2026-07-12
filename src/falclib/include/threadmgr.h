@@ -1,7 +1,7 @@
 #ifndef _THREAD_MANAGER_H_
 #define _THREAD_MANAGER_H_
 
-#include <cISO646>
+#include <iso646.h>
 #include <windows.h>
 #include <process.h>
 

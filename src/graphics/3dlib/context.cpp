@@ -29,12 +29,18 @@ extern DWORD p3DpitLolite; // Cobra - 3D pit low night lighting color
 
 #include "Graphics/DXEngine/DXEngine.h"
 #include "Graphics/DXEngine/DXVBManager.h"
+#include "Graphics/DXEngine/d3d11/D3D11Renderer.h"	// PHASE 4: D3D11 screen-path
+#include "Graphics/DXEngine/D3D11Backend.h"	// PHASE 4: RTV bind
+#include "Graphics/DXEngine/D3D12Backend.h"	// #DX12 п.5: per-eye gScreenSize (SceneW/H) for the 2D sky/terrain
 extern bool g_bUse_DX_Engine;
+extern bool g_bUseD3D11;
+extern bool g_bUseD3D12;   // Artscout - 2026: #DX12 -- GPU-mode (D3D12) selector, parallel to g_bUseD3D11
+extern bool g_bUseGpu;     // Artscout - 2026: #DX12 -- GPU render mode (D3D11 || D3D12), not dead DDraw7
 
 extern bool g_bSlowButSafe;
 extern float g_fMipLodBias;
 
-#define INT3 _asm {int 3}
+#define INT3 __debugbreak()   // Artscout - 2026 (x64): int 3 intrinsic, builds on x86+x64
 
 #ifdef _DEBUG
 
@@ -110,12 +116,14 @@ ContextMPR::ContextMPR()
     m_pIB = NULL;
     m_nFrameDepth = 0;
     m_pTLVtx = NULL;
+    m_pVBCpu = NULL;
     m_bRenderTargetHasZBuffer = false;
     m_bViewportLocked = false;
     m_colFG = m_colBG = 0;
     m_colFG_Raw = m_colBG_Raw = 0;
     bZBuffering = false;
     gZBias = 0.f;
+    m_2DPrimZ = 1.0f;	// #48: 2D screen primitives default to the near plane (reversed-Z: near = 1.0)
     ZFAR = 280000.f;
     // COBRA - RED - TEST
     //ZNEAR = 1.f;
@@ -165,87 +173,54 @@ BOOL ContextMPR::Setup(ImageBuffer *pIB, DXContext *c)
         if ( not pIB) return FALSE;
 
         m_pIB = pIB;
-        IDirectDrawSurface7 *lpDDSBack = pIB->targetSurface();
-        NewImageBuffer((UInt)lpDDSBack);
 
-        m_pDD = m_pCtxDX->m_pDD;
-        m_pD3DD = m_pCtxDX->m_pD3DD;
-
-        // Setup the vertex buffer
-        IDirect3DVertexBuffer7Ptr p;
-        D3DVERTEXBUFFERDESC vbdesc;
-        ZeroMemory(&vbdesc, sizeof(vbdesc));
-        vbdesc.dwSize = sizeof(vbdesc);
-        vbdesc.dwFVF = D3DFVF_XYZRHW bitor D3DFVF_DIFFUSE bitor D3DFVF_TEX2 bitor D3DFVF_SPECULAR;
-        vbdesc.dwCaps = D3DVBCAPS_WRITEONLY bitor D3DVBCAPS_DONOTCLIP ;//| D3DVBCAPS_VIDEOMEMORY;
-
-        //m_dwVBSize = 1024;
-        m_dwVBSize = 32768;
-        vbdesc.dwNumVertices = m_dwVBSize;
-
-        CheckHR(m_pCtxDX->m_pD3D->CreateVertexBuffer(&vbdesc, &m_pVB, NULL));
-        CheckHR(m_pCtxDX->m_pD3D->CreateVertexBuffer(&vbdesc, &m_pVBB, NULL));
-
-        m_pIdx = new WORD[vbdesc.dwNumVertices * 3];
-
-        if ( not m_pIdx) throw _com_error(E_OUTOFMEMORY);
-
-        // Setup our set of cached rendering states
-        SetupMPRState(CHECK_PREVIOUS_STATE);
-
-        // Initialise render states
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_COLORVERTEX, TRUE);
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE);
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE);
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE, TRUE);
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_STIPPLEDALPHA, FALSE);
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, FALSE);
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_STENCILENABLE, FALSE);
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE);
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_CLIPPING, FALSE);
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS);
-
-        // Disable all stages
-        for (int i = 0; i < 8; i++)
+        // PHASE 4: ContextMPR on D3D11. We don't create a D3D7 device (m_pDD/m_pD3DD) - the
+        // screen path (TLVERTEX/XYZRHW) funnels into g_pRenderer->DrawTL. The VB lives in the
+        // CPU array m_pVBCpu (instead of m_pVB->Lock); RestoreState -> SetState;
+        // SetState(MPR_STA_*) goes through SetStateInternal (without m_pD3DD).
+        // Artscout - 2026: #DX12 -- D3D12 uses the SAME CPU-VB screen context as D3D11 (TLVERTEX funnels into
+        // g_pRenderer->DrawTL; no D3D7 device). Without this the D3D12 path fell through to the dead DDraw
+        // branch below -> device create failed -> ShiError "Failed to setup rendering context" on 3D entry.
+        if (g_bUseGpu)
         {
-            m_pD3DD->SetTextureStageState(i, D3DTSS_COLOROP, D3DTOP_DISABLE);
-            m_pD3DD->SetTextureStageState(i, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+            m_pDD = NULL;
+            m_pD3DD = NULL;
+            m_pVB = m_pVBB = NULL;
+
+            m_dwVBSize = 32768;
+            m_pVBCpu = new TLVERTEX[m_dwVBSize];
+            if ( not m_pVBCpu) throw _com_error(E_OUTOFMEMORY);
+
+            m_pIdx = new WORD[m_dwVBSize * 3 + 64];	// +slack: fan triangulation is right up against 3*N
+            if ( not m_pIdx) throw _com_error(E_OUTOFMEMORY);
+
+            m_bUseSetStateInternal = true;	// SetState(MPR_STA_*) -> SetStateInternal (m_pD3DD-free)
+
+            // Initialize the buckets/states (like the D3D7 branch below, but without D3D7 calls)
+            mIdx = 0;
+            plainPolys = texturedPolys = translucentPolys = NULL;
+            plainPolyVCnt = texturedPolyVCnt = translucentPolyVCnt = 0;
+            currentState = lastState = currentTexture1 = currentTexture2 = lastTexture1 = lastTexture2 = -1;
+            m_dwStartVtx = m_dwNumVtx = m_dwNumIdx = 0;
+            m_nCurPrimType = 0;
+            memPool = AllocInit();
+            RadixReset();
+
+            InvalidateState();
+            RestoreState(STATE_SOLID);
+            ZeroMemory(&m_rcVP, sizeof(m_rcVP));
+            m_bViewportLocked = false;
+
+            if (g_pRenderer and g_pD3D11Backend and g_pD3D11Backend->IsValid())
+                g_pRenderer->SetViewportSize(g_pD3D11Backend->Width(), g_pD3D11Backend->Height());
+
+            return TRUE;
         }
 
-        // Setup stage 0
-        m_pD3DD->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TEXTURE);
-        m_pD3DD->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT);
-        m_pD3DD->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-        m_pD3DD->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
-
-        // Set Mipmap LOD Bias
-        if (DisplayOptions.bMipmapping)
-            m_pD3DD->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&g_fMipLodBias)));
-
-        // Initialize our poly, mem, and radix buckets
-        mIdx = 0;
-        plainPolys = texturedPolys = translucentPolys = NULL;
-        plainPolyVCnt = texturedPolyVCnt = translucentPolyVCnt = 0;
-        currentState = lastState = currentTexture1 = currentTexture2 = lastTexture1 = lastTexture2 = -1;
-        memPool = AllocInit();
-        RadixReset();
-
-        InvalidateState();
-        RestoreState(STATE_SOLID);
-        ZeroMemory(&m_rcVP, sizeof(m_rcVP));
-        m_bViewportLocked = false;
-
-#ifdef _CONTEXT_ENABLE_STATS
-        m_stats.Init();
-        m_stats.StartBatch();
-#endif
-
-        bRetval = TRUE;
+        // #34 D3D7 device/state setup removed (D3D11 returns TRUE above).
     }
 
-    catch (_com_error e)
+    catch (const _com_error &e)
     {
         MonoPrint("ContextMPR::Setup - Error 0x%X\n", e.Error());
     }
@@ -274,22 +249,20 @@ void ContextMPR::Cleanup()
 
     m_pCtxDX = NULL;
 
-    if (m_pVB)
-    {
-        m_pVB->Release();
-        m_pVB = NULL;
-    }
-
-    if (m_pVBB)
-    {
-        m_pVBB->Release();
-        m_pVBB = NULL;
-    }
+    // Artscout - 2026: [DX7-PURGE] no DDraw7 vertex buffers to Release under GPU.
+    m_pVB = NULL;
+    m_pVBB = NULL;
 
     if (m_pIdx)
     {
         delete[] m_pIdx;
         m_pIdx = NULL;
+    }
+
+    if (m_pVBCpu)	// PHASE 4
+    {
+        delete[] m_pVBCpu;
+        m_pVBCpu = NULL;
     }
 
     m_pIdx = NULL;
@@ -329,164 +302,141 @@ void ContextMPR::NewImageBuffer(UInt lpDDSBack)
 
     m_pRenderTarget = (IDirectDrawSurface7 *)lpDDSBack;
 
-    // Some drivers (like the 3.68 detonators) implicitly create Z buffers
-    if (m_pRenderTarget)
-    {
-        IDirectDrawSurface7Ptr pDDS;
-
-        DDSCAPS2 ddscaps;
-        ZeroMemory(&ddscaps, sizeof(ddscaps));
-        ddscaps.dwCaps = DDSCAPS_ZBUFFER;
-        m_bRenderTargetHasZBuffer = SUCCEEDED(m_pRenderTarget->GetAttachedSurface(&ddscaps, &pDDS));
-    }
+    // Artscout - 2026: [DX7-PURGE] the DDraw GetAttachedSurface Z-buffer probe is gone
+    // (GPU depth is managed by the D3D11/D3D12 backend).
+    m_bRenderTargetHasZBuffer = false;
 }
 
 void ContextMPR::ClearBuffers(WORD ClearInfo)
 {
-#ifdef _CONTEXT_TRACE_ALL
-    MonoPrint("ContextMPR::ClearBuffers(0x%X)\n", ClearInfo);
-#endif
-
-    DWORD dwClearFlags = 0;
-
-    if (ClearInfo bitand MPR_CI_DRAW_BUFFER) dwClearFlags or_eq D3DCLEAR_TARGET;
-
-    if (ClearInfo bitand MPR_CI_ZBUFFER) dwClearFlags or_eq D3DCLEAR_ZBUFFER;
-
-    HRESULT hr = m_pD3DD->Clear(NULL, NULL, dwClearFlags, m_colBG, 1.0f, NULL);
-    ShiAssert(SUCCEEDED(hr));
+    // PHASE: back-buffer clear is on the D3D11Backend side. We clear the RTT atlas HERE (once at
+    // the start of the batch via ClearDraw), because StartRtt no longer clears (a repeated StartRtt
+    // from an MFD would wipe HUD/RWR/DED). Clear only during the RTT batch (g_rttBatchActive).
+    // #34: dead D3D7 m_pD3DD->Clear removed.
+    // #DX12: clear the RTT atlas on the ACTIVE backend (D3D11 or D3D12). Under D3D12 this was g_bUseD3D11-gated
+    // -> never ran -> HUD/MFD symbology accumulated frame to frame. The neutral ClearCurrentRTV clears the
+    // currently-bound RTV (the RTT atlas, since g_rttBatchActive means StartRtt bound it).
+    if (g_bUseGpu)
+    {
+        extern bool g_rttBatchActive;
+        extern IRenderBackend* g_pRenderBackend;
+        if (g_rttBatchActive and (ClearInfo bitand MPR_CI_DRAW_BUFFER) and g_pRenderBackend)
+            g_pRenderBackend->ClearCurrentRTV(0.0f, 0.0f, 0.0f, 0.0f);
+    }
 }
 
 
 void ContextMPR::StartDraw(void)
 {
-
-    // Returns false if render target unchanged
-    if (m_pCtxDX->SetRenderTarget(m_pRenderTarget))
-    {
-        m_pD3DD->Clear(NULL, NULL, D3DCLEAR_ZBUFFER, 0, 1.f, NULL);
-    }
-
-    UpdateViewport();
+    // PHASE 5 (RTT): the display's render target is switched by StartRtt/AdjustRttViewport.
+    // #34: dead D3D7 SetRenderTarget/Clear/UpdateViewport path removed.
     InvalidateState();
 }
 
 void ContextMPR::EndDraw(void)
 {
-    FlushVB();
+    FlushVB();	// flush the display content into the current RTV (its RTT)
+
+    // PHASE 5 (RTT): after rendering the display into its RTT, restore the scene target + its gScreenSize.
+    if (g_bUseD3D12 && g_pD3D12Backend && m_pIB && not m_pIB->IsScreenBuffer())
+    {
+        // #DX12 п.5: the RTT display just set gScreenSize to its atlas size; restore it to the SCENE size
+        // (eye in VR, back buffer flat) so the next scene draws map correctly. The scene RTV itself is
+        // rebound by UnbindSceneRtt/BindBackBufferRTV in the display path -- here we only fix gScreenSize.
+        if (g_pRenderer) g_pRenderer->SetViewportSize(g_pD3D12Backend->SceneW(), g_pD3D12Backend->SceneH());
+    }
+    else if (g_bUseD3D11 && m_pIB && not m_pIB->IsScreenBuffer()
+        && g_pD3D11Backend && g_pD3D11Backend->IsValid())
+    {
+        g_pD3D11Backend->BindBackBuffer(false);
+        if (g_pRenderer)
+        {
+            // Artscout - 2026 (VR): restore gScreenSize to the EYE size in a per-eye pass (see StartFrame).
+            if (g_pD3D11Backend->XrEyeActive())
+                g_pRenderer->SetViewportSize(g_pD3D11Backend->XrEyeW(), g_pD3D11Backend->XrEyeH());
+            else
+                g_pRenderer->SetViewportSize(g_pD3D11Backend->Width(), g_pD3D11Backend->Height());
+        }
+    }
 }
 
 
 void ContextMPR::StartFrame(void)
 {
-#ifdef _CONTEXT_TRACE_ALL
-    MonoPrint("ContextMPR::StartFrame()\n");
-#endif
-
-    // Returns false if render target unchanged
-    if (m_pCtxDX->SetRenderTarget(m_pRenderTarget))
-        UpdateViewport();
-
-    InvalidateState();
-
-    // COBRA - RED - Passed in InvalidateState();
-    //currentState = lastState = currentTexture1 = currentTexture2 = lastTexture1 = lastTexture2 = -1;
-
-    HRESULT hr;
-
-    hr = m_pD3DD->Clear(NULL, NULL, D3DCLEAR_ZBUFFER, 0, 1.f, NULL);
-
-    // if( bInBeginScene ) INT3; // ASSO: break if already in BeginScene
-    if (bInBeginScene) m_pD3DD->EndScene();  // MD -- BUGBUG INT3; // ASSO: break if already in BeginScene
-
-    hr = m_pD3DD->BeginScene();
-    bInBeginScene = true; // ASSO:
-
-    if (FAILED(hr))
+    // PHASE 4/5: no D3D7 BeginScene/Clear; the screen pass goes through DrawTL. If this context has
+    // an off-screen target (MFD/HUD/radar) bind its RTT texture, else the back buffer.
+    // #34: dead D3D7 BeginScene/Clear/surface-lost tail removed.
+    if (m_pIB && not m_pIB->IsScreenBuffer())
     {
-        MonoPrint("ContextMPR::FinishFrame - BeginScene failed 0x%X\n", hr);
-
-        if (hr == DDERR_SURFACELOST)
+        m_pIB->BindD3D11RenderTarget(true);
+    }
+    else if (g_bUseD3D12 && g_pD3D12Backend)
+    {
+        // #DX12 п.5: the scene target (eye in VR, back buffer flat) is already bound + cleared by
+        // BeginEyeFrame/BeginFrame. Only set gScreenSize here -- to the SCENE size, so VS_Screen's pixel->NDC
+        // for the CPU-projected 2D sky/terrain matches the eye-sized pixels (VR_SetRes -> scaleX/scaleY). This
+        // is the D3D12 analogue of the D3D11 XrEyeActive() branch below; it was missing (SetGScreenSize was a
+        // no-op stub + this block gated on g_pD3D11Backend), so the eye-sized sky was mapped by the back-buffer
+        // size -> horizon mis-scaled/inverted ("dark blue, sky only when inverted"). Terrain/objects survive it
+        // (world matProj is unaffected) which is why only the pure-2D sky visibly broke.
+        if (g_pRenderer) g_pRenderer->SetViewportSize(g_pD3D12Backend->SceneW(), g_pD3D12Backend->SceneH());
+    }
+    else if (g_pD3D11Backend && g_pD3D11Backend->IsValid())
+    {
+        g_pD3D11Backend->BindBackBuffer(true);
+        if (g_pRenderer)
         {
-            MonoPrint("ContextMPR::StartFrame - Restoring all surfaces\n", hr);
-
-            TheTextureBank.RestoreAll();
-            TheTerrTextures.RestoreAll();
-            TheFarTextures.RestoreAll();
-
-            //if( not bInBeginScene ) INT3; // ASSO: break if not in BeginScene
-            hr = m_pD3DD->EndScene();
-            bInBeginScene = true; // ASSO:
-
-            /*if(FAILED(hr))
-            {
-             //UNLOCK_VB_MANAGER;
-             MonoPrint("ContextMPR::StartFrame - Retry for BeginScene failed 0x%X\n",hr);
-             return;
-            }*/
+            // Artscout - 2026 (VR): gScreenSize (cbViewport) drives VS_Screen's pixel->NDC for the
+            // CPU-projected terrain. In a per-eye pass the terrain is projected to EYE-sized pixels
+            // (VR_SetRes -> scaleX/scaleY), so gScreenSize must be the EYE size, not the back buffer
+            // -- otherwise the ground is mis-scaled/rotated/flies off (objects use matProj, unaffected).
+            if (g_pD3D11Backend->XrEyeActive())
+                g_pRenderer->SetViewportSize(g_pD3D11Backend->XrEyeW(), g_pD3D11Backend->XrEyeH());
+            else
+                g_pRenderer->SetViewportSize(g_pD3D11Backend->Width(), g_pD3D11Backend->Height());
         }
     }
 
-#if defined _DEBUG and defined _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT_REPLACE
+    InvalidateState();
+}
 
-    if (bEnableRenderStateHighlightReplace)
-    {
-        Sleep(1000);
 
-        if (GetKeyState(VK_F4) bitand compl 1)
-            DebugBreak();
+void ContextMPR::BindD3D11RttNoClear(void)
+{
+    // Artscout - 2026: bind this context's off-screen RTT but do NOT clear it. Used by the GM radar,
+    // which renders its sweep incrementally across frames into m_pRenderTarget; clearing every
+    // StartDraw would wipe the accumulated image (StartScene/ClearDraw clears when a scene restarts).
+    // Without this the radar sweep leaks onto the screen (no RTT bound -> draws to the back buffer).
+    // #DX12 A5: BindD3D11RenderTarget delegates to the D3D12 RTT under g_bUseD3D12.
+    if ((g_bUseD3D11 || g_bUseD3D12) && m_pIB && not m_pIB->IsScreenBuffer())
+        m_pIB->BindD3D11RenderTarget(false);
+}
 
-        bRenderStateHighlightReplaceTargetState++;
-    }
-
-#endif
-
+void ContextMPR::ClearBoundD3D11Rtt(void)
+{
+    // Artscout - 2026: clear the currently-bound off-screen RTV NOW. ClearBuffers() is gated to the RTT
+    // batch (g_rttBatchActive) and no-ops for the GM radar's private buffer, so the sweep never cleared
+    // and accumulated green to a full-field white. The GM calls this once per sweep (StartScene), after
+    // StartDraw has bound its buffer; the per-beam-op accumulation within the sweep is unaffected.
+    // #DX12 A5: same for the D3D12 backend (ClearCurrentRTV clears the currently-bound off-screen RTV).
+    if (g_bUseD3D11 && m_pIB && not m_pIB->IsScreenBuffer() && g_pD3D11Backend)
+        g_pD3D11Backend->ClearCurrentRTV(0.0f, 0.0f, 0.0f, 0.0f);
+    else if (g_bUseD3D12 && m_pIB && not m_pIB->IsScreenBuffer() && g_pD3D12Backend)
+        g_pD3D12Backend->ClearCurrentRTV(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void ContextMPR::FinishFrame(void *lpFnPtr)
 {
-#ifdef _CONTEXT_TRACE_ALL
-    MonoPrint("ContextMPR::FinishFrame(0x%X)\n", lpFnPtr);
-#endif
-
     FlushVB();
+    // #34 D3D11: present is done by ImageBuffer::PresentD3D11; dead D3D7 EndScene/surface-lost
+    // tail removed.
 
-    //if( not bInBeginScene ) INT3; // ASSO: break if not in BeginScene
-    HRESULT hr = m_pD3DD->EndScene();
-    bInBeginScene = false; // ASSO:
-
-    if (FAILED(hr))
-    {
-        MonoPrint("ContextMPR::FinishFrame - EndScene failed 0x%X\n", hr);
-
-        if (hr == DDERR_SURFACELOST)
-        {
-            MonoPrint("ContextMPR::FinishFrame - Restoring all surfaces\n", hr);
-
-            TheTextureBank.RestoreAll();
-            TheTerrTextures.RestoreAll();
-            TheFarTextures.RestoreAll();
-
-            if ( not bInBeginScene) INT3; // ASSO: break if not in BeginScene
-
-            hr = m_pD3DD->EndScene();
-            bInBeginScene = false; // ASSO:
-
-            if (FAILED(hr))
-            {
-                MonoPrint("ContextMPR::FinishFrame - Retry for EndScene failed 0x%X\n", hr);
-                return;
-            }
-        }
-    }
-
-#ifdef _CONTEXT_ENABLE_STATS
-    m_stats.StartFrame();
-#endif
-
-    ShiAssert(lpFnPtr == NULL);
-    Stats();
-
+    // Artscout - 2026: #DX12 A5 -- for an off-screen IB (TGP/FLIR/Munitions/GM) transition its D3D12 RTT
+    // back to PIXEL_SHADER_RESOURCE and rebind the scene target, so the sensor render is finished and the
+    // main pass (or the readback copy) can continue. Under D3D11 the RTV stays bound (next BindBackBuffer
+    // restores it); under D3D12 explicit unbind is required.
+    if (g_bUseD3D12 && m_pIB && not m_pIB->IsScreenBuffer())
+        m_pIB->UnbindD3D12RenderTarget();
 }
 
 // DX - COBRA - Red
@@ -494,401 +444,23 @@ void ContextMPR::FinishFrame(void *lpFnPtr)
 // Used for HUD Text
 void ContextMPR::TexColorDiffuse(void)
 {
-    m_pD3DD->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
+    // PHASE 4/6: emulate COLORARG1=DIFFUSE in the FFEmu shader (FF_TEXCOLORDIFFUSE): text color
+    // from the vertex, the font texture is only a mask. Cleared on the next RestoreState.
+    // #34: dead D3D7 SetTextureStageState removed.
+    if (g_pRenderer) g_pRenderer->SetTexColorDiffuse(true);
 }
 
 
 
 void ContextMPR::SetState(WORD State, DWORD Value)
 {
+    // #34 D3D11: render state is applied via SetStateInternal / the FFEmu shader (FFStateMap).
+    // Under D3D11 m_bUseSetStateInternal is always true (set in Setup); the legacy D3D7
+    // fixed-function state machine (m_pD3DD switch) has been removed.
     if (m_bUseSetStateInternal)
     {
         SetStateInternal(State, Value);
         return;
-    }
-
-#ifdef _CONTEXT_TRACE_ALL
-    MonoPrint("ContextMPR::SetState(%d,0x%X)\n", State, Value);
-#endif
-    ShiAssert(FALSE == F4IsBadReadPtr(m_pD3DD, sizeof * m_pD3DD));
-
-    if ( not m_pD3DD)
-        return;
-
-    switch (State)
-    {
-        case MPR_STA_ENABLES:
-        {
-            if (Value bitand MPR_SE_MODULATION)
-            {
-                FlushVB();
-
-                m_pD3DD->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-            }
-
-            if (Value bitand MPR_SE_ALPHA)
-            {
-                FlushVB();
-
-                if (m_pCtxDX->m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps bitand D3DCMP_GREATEREQUAL)
-                {
-                    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, TRUE);
-                    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHAREF, (DWORD)1);
-                    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-                }
-
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
-                m_pD3DD->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-            }
-
-            // ASSO: new color blending state for 3D pit HUD
-            if (Value bitand MPR_SE_CHROMA2)
-            {
-                FlushVB();
-
-                if (m_pCtxDX->m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps bitand D3DCMP_GREATEREQUAL)
-                {
-                    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, TRUE);
-                    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHAREF, (DWORD)1);
-                    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-                }
-
-                // Original CODE
-                /* m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,TRUE);
-                 m_pD3DD->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_ONE);
-                 m_pD3DD->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_ONE);
-                 m_pD3DD->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);*/
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-                m_pD3DD->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-                m_pD3DD->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-            }
-
-            if (Value bitand MPR_SE_CHROMA)
-            {
-                FlushVB();
-
-                if (m_pCtxDX->m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps bitand D3DCMP_GREATEREQUAL)
-                {
-                    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, TRUE);
-                    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHAREF, (DWORD)1);
-                    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-                }
-
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
-                m_pD3DD->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-            }
-
-            if (Value bitand MPR_SE_CHROMA_ALPHATEST) //Wombat778 3-30-04 new state to avoid blue line around chroma gifs
-            {
-                FlushVB();
-
-                if (m_pCtxDX->m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps bitand D3DCMP_GREATEREQUAL)
-                {
-                    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, TRUE);
-                    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHAREF, (DWORD)0xBF);
-                    m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_GREATER);
-                }
-
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
-                m_pD3DD->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-            }
-
-            if (Value bitand MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE)
-            {
-                FlushVB();
-
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE, FALSE);
-            }
-
-            if (Value bitand MPR_SE_SHADING)
-            {
-                FlushVB();
-
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_GOURAUD);
-            }
-
-            if ((Value bitand MPR_SE_SCISSORING) and not m_bEnableScissors)
-            {
-                FlushVB();
-
-                m_bEnableScissors = true;
-                UpdateViewport();
-            }
-
-            if (Value bitand MPR_SE_Z_BUFFERING)
-            {
-                FlushVB();
-
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
-            }
-
-            if (Value bitand MPR_SE_Z_WRITE)
-            {
-                FlushVB();
-
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
-            }
-
-            break;
-        }
-
-        case MPR_STA_DISABLES:
-        {
-            if (Value bitand MPR_SE_MODULATION)
-            {
-                FlushVB();
-
-                m_pD3DD->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-            }
-
-            if (Value bitand MPR_SE_TEXTURING)
-            {
-                FlushVB();
-
-                m_pD3DD->SetTexture(0, NULL);
-            }
-
-            if (Value bitand MPR_SE_SHADING)
-            {
-                FlushVB();
-
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_FLAT);
-            }
-
-            if (Value bitand MPR_SE_FILTERING)
-            {
-                FlushVB();
-
-                m_pD3DD->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_POINT);
-                m_pD3DD->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFN_POINT);
-            }
-
-            if (Value bitand MPR_SE_ALPHA)
-            {
-                FlushVB();
-
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE);
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, FALSE);
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_ALWAYS);
-                m_pD3DD->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-            }
-
-            if (Value bitand MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE)
-            {
-                FlushVB();
-
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE, TRUE);
-            }
-
-            if ((Value bitand MPR_SE_SCISSORING) and m_bEnableScissors)
-            {
-                FlushVB();
-
-                m_bEnableScissors = false;
-                UpdateViewport();
-            }
-
-            if (Value bitand MPR_SE_Z_BUFFERING)
-            {
-                FlushVB();
-
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS);
-            }
-
-            if (Value bitand MPR_SE_Z_WRITE)
-            {
-                FlushVB();
-
-                m_pD3DD->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
-            }
-
-            break;
-        }
-
-        case MPR_STA_SRC_BLEND_FUNCTION:
-        {
-            FlushVB();
-
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_SRCBLEND, Value);
-
-            break;
-        }
-
-        case MPR_STA_DST_BLEND_FUNCTION:
-        {
-            FlushVB();
-
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_DESTBLEND, Value);
-
-            break;
-        }
-
-        case MPR_STA_ALPHA_OP_FUNCTION:
-        {
-            FlushVB();
-
-            m_pD3DD->SetTextureStageState(0, D3DTSS_ALPHAOP, Value);
-
-            break;
-        }
-
-        case MPR_STA_COLOR_OP_FUNCTION:
-        {
-            FlushVB();
-
-            m_pD3DD->SetTextureStageState(0, D3DTSS_COLOROP, Value);
-
-            break;
-        }
-
-        case MPR_STA_TEXTURE_FACTOR:
-        {
-            FlushVB();
-
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, Value);
-
-            break;
-        }
-
-        case MPR_STA_TEX_FILTER:
-        {
-            FlushVB();
-
-            switch (Value)
-            {
-                case MPR_TX_NONE:
-                {
-                    m_pD3DD->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_POINT);
-                    m_pD3DD->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFN_POINT);
-                    break;
-                }
-
-                case MPR_TX_BILINEAR:
-                case MPR_TX_BILINEAR_NOCLAMP:
-                {
-                    if (DisplayOptions.bAnisotropicFiltering)
-                    {
-                        m_pD3DD->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_ANISOTROPIC);
-                        m_pD3DD->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFN_ANISOTROPIC);
-                        m_pD3DD->SetTextureStageState(0, D3DTSS_MAXANISOTROPY, m_pCtxDX->m_pD3DHWDeviceDesc->dwMaxAnisotropy);
-                    }
-
-                    else
-                    {
-                        m_pD3DD->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
-                        m_pD3DD->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFN_LINEAR);
-                    }
-
-                    if (Value == MPR_TX_BILINEAR)
-                    {
-                        m_pD3DD->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);
-                    }
-
-                    break;
-                }
-
-                case MPR_TX_MIPMAP_NEAREST:
-                {
-                    m_pD3DD->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTFP_NONE);
-                    break;
-                }
-
-                case MPR_TX_MIPMAP_LINEAR:
-                {
-                    if (DisplayOptions.bLinearMipFiltering)
-                        m_pD3DD->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTFP_LINEAR);
-
-                    break;
-                }
-            }
-
-            break;
-        }
-
-        case MPR_STA_FG_COLOR:
-        {
-            SelectForegroundColor(Value);
-            break;
-        }
-
-        case MPR_STA_BG_COLOR:
-        {
-            SelectBackgroundColor(Value);
-            break;
-        }
-
-        case MPR_STA_FOG_COLOR:
-        {
-            FlushVB();
-
-            m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGCOLOR, MPRColor2D3DRGBA(Value));
-            break;
-        }
-
-        case MPR_STA_SCISSOR_LEFT:
-        {
-            if (Value not_eq m_rcVP.left)
-            {
-                FlushVB();
-
-                m_rcVP.left = Value;
-                UpdateViewport();
-            }
-
-            break;
-        }
-
-        case MPR_STA_SCISSOR_TOP:
-        {
-            if (Value not_eq m_rcVP.top)
-            {
-                FlushVB();
-
-                m_rcVP.top = Value;
-                UpdateViewport();
-            }
-
-            break;
-        }
-
-        case MPR_STA_SCISSOR_RIGHT:
-        {
-            if (Value not_eq m_rcVP.right)
-            {
-                FlushVB();
-
-                m_rcVP.right = Value;
-                UpdateViewport();
-            }
-
-            break;
-        }
-
-        case MPR_STA_SCISSOR_BOTTOM:
-        {
-            if (Value not_eq m_rcVP.bottom)
-            {
-                FlushVB();
-
-                m_rcVP.bottom = Value;
-                UpdateViewport();
-            }
-
-            break;
-        }
-
-        case MPR_STA_NONE:
-        {
-            break;
-        }
     }
 }
 
@@ -906,960 +478,99 @@ void ContextMPR::SetStateInternal(WORD State, DWORD Value)
         {
             bool bNewVal = (State == MPR_STA_ENABLES) ? true : false;
 
+            // Artscout - 2026: currentState is -1 right after InvalidateState() (the rendered-
+            // cursor path runs StartDraw -> SetViewport(SCISSORING) before any RestoreState).
+            // Writing StateTableInternal[-1] is an out-of-bounds store that corrupted adjacent
+            // memory -> Release-only crash on mouse move (garbage m_dwNumVtx / nulled m_pIdx,
+            // lost sky/HUD/MFD). Only touch the per-slot table when the slot index is valid;
+            // the scissor enable still updates the global m_bEnableScissors below.
+            bool bValidSlot = (currentState >= 0 and currentState < MAXIMUM_MPR_STATE);
+
             if (Value bitand MPR_SE_SCISSORING)
-                StateTableInternal[currentState].SE_SCISSORING = bNewVal;
+            {
+                if (bValidSlot) StateTableInternal[currentState].SE_SCISSORING = bNewVal;
+                // PHASE 5: apply the per-display viewport (MFD/HUD are positioned by it)
+                if (bNewVal not_eq (m_bEnableScissors ? true : false))
+                {
+                    FlushVB();
+                    m_bEnableScissors = bNewVal;
+                    UpdateViewport();
+                }
+            }
 
-            if (Value bitand MPR_SE_MODULATION)
-                StateTableInternal[currentState].SE_MODULATION = bNewVal;
+            if (bValidSlot)
+            {
+                if (Value bitand MPR_SE_MODULATION)
+                    StateTableInternal[currentState].SE_MODULATION = bNewVal;
 
-            if (Value bitand MPR_SE_TEXTURING)
-                StateTableInternal[currentState].SE_TEXTURING = bNewVal;
+                if (Value bitand MPR_SE_TEXTURING)
+                    StateTableInternal[currentState].SE_TEXTURING = bNewVal;
 
-            if (Value bitand MPR_SE_SHADING)
-                StateTableInternal[currentState].SE_SHADING = bNewVal;
+                if (Value bitand MPR_SE_SHADING)
+                    StateTableInternal[currentState].SE_SHADING = bNewVal;
 
-            if (Value bitand MPR_SE_Z_BUFFERING)
-                StateTableInternal[currentState].SE_Z_BUFFERING = bNewVal;
+                if (Value bitand MPR_SE_Z_BUFFERING)
+                    StateTableInternal[currentState].SE_Z_BUFFERING = bNewVal;
 
-            if (Value bitand MPR_SE_Z_WRITE)
-                StateTableInternal[currentState].SE_Z_WRITE = bNewVal;
+                if (Value bitand MPR_SE_Z_WRITE)
+                    StateTableInternal[currentState].SE_Z_WRITE = bNewVal;
 
-            if (Value bitand MPR_SE_FILTERING)
-                StateTableInternal[currentState].SE_FILTERING = bNewVal;
+                if (Value bitand MPR_SE_FILTERING)
+                    StateTableInternal[currentState].SE_FILTERING = bNewVal;
 
-            if (Value bitand MPR_SE_ALPHA)
-                StateTableInternal[currentState].SE_ALPHA = bNewVal;
+                if (Value bitand MPR_SE_ALPHA)
+                    StateTableInternal[currentState].SE_ALPHA = bNewVal;
 
-            if (Value bitand MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE)
-                StateTableInternal[currentState].SE_NON_PERSPECTIVE_CORRECTION_MODE = bNewVal;
+                if (Value bitand MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE)
+                    StateTableInternal[currentState].SE_NON_PERSPECTIVE_CORRECTION_MODE = bNewVal;
+            }
 
             break;
         }
+
+        // PHASE 5: the display's scissor rect (MFD/HUD). In D3D11 it wasn't handled before ->
+        // all displays were fullscreen. Now -> per-display viewport.
+        case MPR_STA_SCISSOR_LEFT:
+            if (Value not_eq (DWORD)m_rcVP.left)   { FlushVB(); m_rcVP.left = Value;   UpdateViewport(); }
+            break;
+        case MPR_STA_SCISSOR_TOP:
+            if (Value not_eq (DWORD)m_rcVP.top)    { FlushVB(); m_rcVP.top = Value;    UpdateViewport(); }
+            break;
+        case MPR_STA_SCISSOR_RIGHT:
+            if (Value not_eq (DWORD)m_rcVP.right)  { FlushVB(); m_rcVP.right = Value;  UpdateViewport(); }
+            break;
+        case MPR_STA_SCISSOR_BOTTOM:
+            if (Value not_eq (DWORD)m_rcVP.bottom) { FlushVB(); m_rcVP.bottom = Value; UpdateViewport(); }
+            break;
     }
 }
 
 // flag bitand 0x01  --> skip StateSetupCount checking --> reset/set state
 void ContextMPR::SetCurrentState(GLint state, GLint flag)
 {
-    UInt32 i = 0;
-
-#ifdef _CONTEXT_TRACE_ALL
-    MonoPrint("ContextMPR::SetCurrentState (%d,0x%X)\n", state, flag);
-#endif
-
-    ShiAssert(FALSE == F4IsBadReadPtr(m_pD3DD, sizeof * m_pD3DD));
-
-    //Disable secondary stage
-    m_pD3DD->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-    m_pD3DD->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-
-    m_pD3DD->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
-    m_pD3DD->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-
-    switch (state)
-    {
-        case STATE_SOLID:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_ALPHA |
-                     MPR_SE_TEXTURING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_SHADING);
-
-            break;
-
-        case STATE_LIT:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_ALPHA |
-                     MPR_SE_TEXTURING |
-                     MPR_SE_SHADING);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_MODULATION);
-
-            break;
-
-        case STATE_GOURAUD:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_ALPHA |
-                     MPR_SE_TEXTURING |
-                     MPR_SE_MODULATION);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_SHADING);
-
-            break;
-
-        case STATE_TEXTURE:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_ALPHA |
-                     MPR_SE_MODULATION |
-                     MPR_SE_SHADING);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE |
-                     MPR_SE_TEXTURING);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_TEXTURE_LIT:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_ALPHA |
-                     MPR_SE_SHADING);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE |
-                     MPR_SE_TEXTURING |
-                     MPR_SE_MODULATION);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_TEXTURE_LIT_PERSPECTIVE:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_ALPHA |
-                     MPR_SE_SHADING |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING |
-                     MPR_SE_MODULATION);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_TEXTURE_SMOOTH:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_ALPHA);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE |
-                     MPR_SE_TEXTURING |
-                     MPR_SE_SHADING);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_TEXTURE_GOURAUD:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_ALPHA);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE |
-                     MPR_SE_TEXTURING |
-                     MPR_SE_SHADING |
-                     MPR_SE_MODULATION);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_TEXTURE_PERSPECTIVE:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_ALPHA |
-                     MPR_SE_MODULATION |
-                     MPR_SE_SHADING |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_TEXTURE_SMOOTH_PERSPECTIVE:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_ALPHA |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING |
-                     MPR_SE_SHADING);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_TEXTURE_GOURAUD_PERSPECTIVE:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_ALPHA |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING |
-                     MPR_SE_SHADING |
-                     MPR_SE_MODULATION);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_ALPHA_SOLID:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_TEXTURING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_SHADING);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_ALPHA);
-
-            break;
-
-        case STATE_ALPHA_LIT:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_TEXTURING |
-                     MPR_SE_SHADING);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_MODULATION |
-                     MPR_SE_ALPHA);
-
-            break;
-
-        case STATE_ALPHA_GOURAUD:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_TEXTURING);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_SHADING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_ALPHA);
-
-            break;
-
-            // ASSO: new color blending state for 3D pit HUD
-        case STATE_CHROMA_TEXTURE_GOURAUD2:
-            SetState(MPR_STA_DISABLES,
-                     // MPR_SE_LIGHTING |
-                     MPR_SE_FILTERING);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE |
-                     MPR_SE_TEXTURING |
-                     MPR_SE_SHADING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_CHROMA2);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-
-            break;
-
-        case STATE_CHROMA_TEXTURE:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_SHADING);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE |
-                     MPR_SE_TEXTURING |
-                     MPR_SE_CHROMA);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn() and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_ALPHA_TEXTURE:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_SHADING);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE |
-                     MPR_SE_TEXTURING |
-                     MPR_SE_ALPHA);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_CHROMA_TEXTURE_LIT:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_SHADING);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE |
-                     MPR_SE_TEXTURING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_CHROMA);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn() and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_ALPHA_TEXTURE_LIT:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_SHADING);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE |
-                     MPR_SE_TEXTURING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_ALPHA);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_CHROMA_TEXTURE_LIT_PERSPECTIVE:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_SHADING |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_CHROMA);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn() and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_ALPHA_TEXTURE_LIT_PERSPECTIVE:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_SHADING |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_ALPHA);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_ALPHA_TEXTURE_SMOOTH:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_MODULATION);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE |
-                     MPR_SE_TEXTURING |
-                     MPR_SE_SHADING |
-                     MPR_SE_ALPHA);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_ALPHA_TEXTURE_SMOOTH_PERSPECTIVE:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING |
-                     MPR_SE_SHADING |
-                     MPR_SE_ALPHA);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_CHROMA_TEXTURE_GOURAUD:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE |
-                     MPR_SE_TEXTURING |
-                     MPR_SE_SHADING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_CHROMA);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn() and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_ALPHA_TEXTURE_GOURAUD:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE |
-                     MPR_SE_TEXTURING |
-                     MPR_SE_SHADING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_ALPHA);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_CHROMA_TEXTURE_PERSPECTIVE:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_SHADING |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING |
-                     MPR_SE_CHROMA);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn() and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_ALPHA_TEXTURE_PERSPECTIVE:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_SHADING |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING |
-                     MPR_SE_ALPHA);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_CHROMA_TEXTURE_GOURAUD_PERSPECTIVE:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING |
-                     MPR_SE_SHADING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_CHROMA);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn() and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_ALPHA_TEXTURE_GOURAUD_PERSPECTIVE:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING |
-                     MPR_SE_SHADING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_ALPHA);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR_NOCLAMP);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        case STATE_TEXTURE_NOFILTER:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_ALPHA |
-                     MPR_SE_SHADING);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE |
-                     MPR_SE_TEXTURING |
-                     MPR_SE_MODULATION);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            break;
-
-        case STATE_TEXTURE_NOFILTER_PERSPECTIVE:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_ALPHA |
-                     MPR_SE_SHADING |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING |
-                     MPR_SE_MODULATION);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            break;
-
-        case STATE_ALPHA_TEXTURE_NOFILTER:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_SHADING);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING |
-                     MPR_SE_ALPHA |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            break;
-
-        case STATE_ALPHA_TEXTURE_NOFILTER_PERSPECTIVE:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_SHADING |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING |
-                     MPR_SE_ALPHA);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            break;
-
-        case STATE_LANDSCAPE_LIT:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_ALPHA |
-                     MPR_SE_SHADING |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING |
-                     MPR_SE_MODULATION);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR);
-
-            if (DisplayOptions.m_texMode not_eq DisplayOptionsClass::TEX_MODE_DDS)
-                SetState(MPR_STA_DISABLES, MPR_SE_MODULATION);
-
-            break;
-
-        case STATE_LANDSCAPE_GOURAUD:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_ALPHA |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING |
-                     MPR_SE_SHADING |
-                     MPR_SE_MODULATION);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR);
-
-            if (DisplayOptions.m_texMode not_eq DisplayOptionsClass::TEX_MODE_DDS)
-                SetState(MPR_STA_DISABLES, MPR_SE_MODULATION);
-
-            break;
-
-        case STATE_MULTITEXTURE:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_ALPHA |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING |
-                     MPR_SE_SHADING |
-                     MPR_SE_MODULATION);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR);
-
-            //TEXTURESTAGE1
-            m_pD3DD->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_TEXTURE);
-            m_pD3DD->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_CURRENT);
-            m_pD3DD->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_ADD);
-            m_pD3DD->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-
-            m_pD3DD->SetTextureStageState(1, D3DTSS_MINFILTER, D3DTFN_POINT);
-            m_pD3DD->SetTextureStageState(1, D3DTSS_MAGFILTER, D3DTFG_POINT);
-            m_pD3DD->SetTextureStageState(1, D3DTSS_MIPFILTER, D3DTFP_NONE);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                if (DisplayOptions.bAnisotropicFiltering)
-                {
-                    m_pD3DD->SetTextureStageState(1, D3DTSS_MAGFILTER, D3DTFG_ANISOTROPIC);
-                    m_pD3DD->SetTextureStageState(1, D3DTSS_MINFILTER, D3DTFN_ANISOTROPIC);
-                    m_pD3DD->SetTextureStageState(1, D3DTSS_MAXANISOTROPY, m_pCtxDX->m_pD3DHWDeviceDesc->dwMaxAnisotropy);
-                }
-                else
-                {
-                    m_pD3DD->SetTextureStageState(1, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
-                    m_pD3DD->SetTextureStageState(1, D3DTSS_MINFILTER, D3DTFN_LINEAR);
-                }
-            }
-
-            break;
-
-        case STATE_MULTITEXTURE_ALPHA:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING |
-                     MPR_SE_ALPHA |
-                     MPR_SE_SHADING |
-                     MPR_SE_MODULATION);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR);
-
-            //TEXTURESTAGE1
-            m_pD3DD->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_CURRENT);
-            m_pD3DD->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_TEXTURE);
-            m_pD3DD->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_ADD);
-
-            m_pD3DD->SetTextureStageState(1, D3DTSS_ALPHAARG1, D3DTA_CURRENT);
-            m_pD3DD->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-
-            m_pD3DD->SetTextureStageState(1, D3DTSS_MINFILTER, D3DTFN_POINT);
-            m_pD3DD->SetTextureStageState(1, D3DTSS_MAGFILTER, D3DTFG_POINT);
-            m_pD3DD->SetTextureStageState(1, D3DTSS_MIPFILTER, D3DTFP_NONE);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                if (DisplayOptions.bAnisotropicFiltering)
-                {
-                    m_pD3DD->SetTextureStageState(1, D3DTSS_MAGFILTER, D3DTFG_ANISOTROPIC);
-                    m_pD3DD->SetTextureStageState(1, D3DTSS_MINFILTER, D3DTFN_ANISOTROPIC);
-                    m_pD3DD->SetTextureStageState(1, D3DTSS_MAXANISOTROPY, m_pCtxDX->m_pD3DHWDeviceDesc->dwMaxAnisotropy);
-                }
-                else
-                {
-                    m_pD3DD->SetTextureStageState(1, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
-                    m_pD3DD->SetTextureStageState(1, D3DTSS_MINFILTER, D3DTFN_LINEAR);
-                }
-            }
-
-            break;
-
-        case STATE_TEXTURE_TEXT:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_SHADING |
-                     MPR_SE_FILTERING);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE |
-                     MPR_SE_TEXTURING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_ALPHA);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            break;
-
-        case STATE_ALPHA_TEXTURE_PERSPECTIVE_CLAMP:
-            SetState(MPR_STA_DISABLES,
-                     MPR_SE_FILTERING |
-                     MPR_SE_SHADING |
-                     MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE);
-
-            SetState(MPR_STA_ENABLES,
-                     MPR_SE_TEXTURING |
-                     MPR_SE_MODULATION |
-                     MPR_SE_ALPHA);
-
-            SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_NEAREST);
-
-            if (PlayerOptions.FilteringOn())
-            {
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR);
-                SetState(MPR_STA_TEX_FILTER, MPR_TX_MIPMAP_LINEAR);
-            }
-
-            break;
-
-        default:
-            ShiWarning("BAD OR MISSING CONTEXT STATE");
-    }
+    // #34 D3D11: dead -- this was the D3D7 state-block recorder (m_pD3DD texture-stage/render
+    // states), only reached via SetStateTable<-SetupMPRState, which never runs under D3D11
+    // (StateSetupCounter stays 0; m_pD3DD is NULL). State is applied via SetStateInternal/FFStateMap.
 }
 
 void ContextMPR::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, int totalWidth, DWORD *pSrc, bool Fit)
 {
-    DWORD *pDst = NULL;
-
-#ifdef _CONTEXT_TRACE_ALL
-    MonoPrint("ContextMPR::Render2DBitmap(%d,%d,%d,%d,%d,%d,%d,0x%X)\n", sX, sY, dX, dY, w, h, totalWidth, pSrc);
-#endif
-    ShiAssert(FALSE == F4IsBadReadPtr(m_pD3DD, sizeof * m_pD3DD));
-
-    try
-    {
-        // Convert from ABGR to ARGB ;(
-        pSrc = (DWORD *)(((BYTE *)pSrc) + (sY * (totalWidth << 2)) + sX);
-        pDst = new DWORD[w * h];
-
-        if ( not pDst) throw _com_error(E_OUTOFMEMORY);
-
-        for (int y = 0; y < h; y++)
-        {
-            for (int x = 0; x < w; x++)
-                pDst[y * w + x] = RGBA_MAKE(RGBA_GETBLUE(pSrc[x]), RGBA_GETGREEN(pSrc[x]),
-                                            RGBA_GETRED(pSrc[x]), RGBA_GETALPHA(pSrc[x]));
-
-            pSrc = (DWORD *)(((BYTE *)pSrc) + (totalWidth << 2));
-        }
-
-        // Create tmp texture
-        DWORD dwFlags = D3DX_TEXTURE_NOMIPMAP;
-        DWORD dwActualWidth = w;
-        DWORD dwActualHeight = h;
-        D3DX_SURFACEFORMAT fmt = D3DX_SF_A8R8G8B8;
-        DWORD dwNumMipMaps = 0;
-
-        IDirectDrawSurface7Ptr pDDSTex;
-        CheckHR(D3DXCreateTexture(m_pD3DD, &dwFlags, &dwActualWidth, &dwActualHeight,
-                                  &fmt, NULL, &pDDSTex, &dwNumMipMaps));
-
-        ShiAssert(FALSE == F4IsBadReadPtr(pDDSTex, sizeof * pDDSTex));
-        CheckHR(D3DXLoadTextureFromMemory(m_pD3DD, pDDSTex, 0, pDst, NULL,
-                                          D3DX_SF_A8R8G8B8, w << 2, NULL, D3DX_FT_LINEAR));
-
-        // Setup vertices
-        TwoDVertex pVtx[4];
-        ZeroMemory(pVtx, sizeof(pVtx));
-
-        // RV - RED - Scaling stuff if Fit to screen Requested
-        if (Fit)
-        {
-            w = m_pCtxDX->m_nWidth;
-            h = m_pCtxDX->m_nHeight;
-        }
-
-        pVtx[0].x = (Float_t)dX;
-        pVtx[0].y = (Float_t)dY;
-        pVtx[0].u = (Float_t)0.0f;
-        pVtx[0].v = (Float_t)0.0f;
-        pVtx[1].x = (Float_t)(dX + w);
-        pVtx[1].y = (Float_t)dY;
-        pVtx[1].u = (Float_t)1.0f;
-        pVtx[1].v = (Float_t)0.0f;
-        pVtx[2].x = (Float_t)(dX + w);
-        pVtx[2].y = (Float_t)(dY + h);
-        pVtx[2].u = (Float_t)1.0f;
-        pVtx[2].v = (Float_t)1.0f;
-        pVtx[3].x = (Float_t)dX;
-        pVtx[3].y = (Float_t)(dY + h);
-        pVtx[3].u = (Float_t)0.0f;
-        pVtx[3].v = (Float_t)1.0f;
-
-        pVtx[0].a = pVtx[0].r = pVtx[0].g = pVtx[0].b = (Float_t)1.0f;
-        pVtx[1].a = pVtx[1].r = pVtx[1].g = pVtx[1].b = (Float_t)1.0f;
-        pVtx[2].a = pVtx[2].r = pVtx[2].g = pVtx[2].b = (Float_t)1.0f;
-        pVtx[3].a = pVtx[3].r = pVtx[3].g = pVtx[3].b = (Float_t)1.0f;
-
-        // Setup state
-        RestoreState(STATE_TEXTURE);
-
-        CheckHR(m_pD3DD->SetTexture(0, pDDSTex));
-
-        // Render it (finally)
-        DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
-
-        FlushVB();
-        InvalidateState();
-    }
-
-    catch (_com_error e)
-    {
-        MonoPrint("ContextMPR::Render2DBitmap - Error 0x%X\n", e.Error());
-    }
-
-    if (pDst) delete[] pDst;
+    // #30/#34 D3D11: CPU bitmap (splash/cursor/mirror) via a temporary texture + screen quad.
+    // Dead D3D7 D3DXCreateTexture/SetTexture path removed.
+    if (g_pRenderer)
+        g_pRenderer->DrawBitmap2D(dX, dY, w, h, totalWidth, sX, sY,
+                                       (const unsigned*)pSrc, Fit,
+                                       m_pCtxDX->m_nWidth, m_pCtxDX->m_nHeight);
 }
 
 inline void ContextMPR::SetStateTable(GLint state, GLint flag)
 {
-    if ( not m_pD3DD)
-        return;
-
-    // Record a stateblock
-    HRESULT hr = m_pD3DD->BeginStateBlock();
-    ShiAssert(SUCCEEDED(hr));
-
-    SetCurrentState(state, flag);
-
-    hr = m_pD3DD->EndStateBlock((DWORD *)&StateTable[state]);
-    ShiAssert(SUCCEEDED(hr) and StateTable[state]);
-
-    // Record internal state
-    m_bUseSetStateInternal = true;
-    SetCurrentState(state, flag);
-    m_bUseSetStateInternal = false;
+    // #34 D3D11: dead -- recorded a D3D7 state block (m_pD3DD Begin/EndStateBlock). Not used.
 }
 
 inline void ContextMPR::ClearStateTable(GLint state)
 {
-    HRESULT hr = m_pD3DD->DeleteStateBlock(StateTable[state]);
-    ShiAssert(SUCCEEDED(hr));
-
-    StateTable[state] = 0;
+    // #34 D3D11: dead -- released a D3D7 state block (m_pD3DD->DeleteStateBlock). Not used.
 }
 
 
@@ -1906,7 +617,7 @@ void ContextMPR::CleanupMPRState(GLint flag)
         ClearStateTable(i);
 }
 
-void ContextMPR::SetTexture1(GLint texID)
+void ContextMPR::SetTexture1(DWORD_PTR texID) // Artscout - 2026 (x64): pointer-sized handle/SRV
 {
     if (texID not_eq lastTexture1)
     {
@@ -1914,18 +625,20 @@ void ContextMPR::SetTexture1(GLint texID)
 
         lastTexture1 = texID;
 
-        if (texID == -1)
-            hr = m_pD3DD->SetTexture(0, NULL);
-        else
-            hr = m_pD3DD->SetTexture(0, (IDirectDrawSurface7 *)texID);
-
-        if ( not SUCCEEDED(hr)) INT3;
-
-        m_pD3DD->SetTexture(1, NULL);
+        if (g_bUseGpu)	// PHASE 4/#DX12
+        {
+            if (g_pRenderer)
+            {
+                g_pRenderer->SetTexture(0, (texID == -1) ? NULL : (struct ID3D11ShaderResourceView *)texID);
+                g_pRenderer->SetTexture(1, NULL);
+            }
+            return;
+        }
+        // #34 dead D3D7 SetTexture removed (D3D11 returns above)
     }
 }
 
-void ContextMPR::SetTexture2(GLint texID)
+void ContextMPR::SetTexture2(DWORD_PTR texID) // Artscout - 2026 (x64): pointer-sized handle/SRV
 {
     if (texID not_eq lastTexture2)
     {
@@ -1933,25 +646,24 @@ void ContextMPR::SetTexture2(GLint texID)
 
         lastTexture2 = texID;
 
-        if (texID == -1)
-            hr = m_pD3DD->SetTexture(1, NULL);
-        else
-            hr = m_pD3DD->SetTexture(1, (IDirectDrawSurface7 *)texID);
-
-        if ( not SUCCEEDED(hr)) INT3;
+        if (g_bUseGpu)	// PHASE 4/#DX12
+        {
+            if (g_pRenderer)
+                g_pRenderer->SetTexture(1, (texID == -1) ? NULL : (struct ID3D11ShaderResourceView *)texID);
+            return;
+        }
+        // #34 dead D3D7 SetTexture removed (D3D11 returns above)
     }
 }
 
-void ContextMPR::SelectTexture1(GLint texID)
+void ContextMPR::SelectTexture1(DWORD_PTR texID) // Artscout - 2026 (x64): pointer-sized handle/SRV
 {
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::ApplyTexture1(0x%X)\n", texID);
 #endif
 
-    GLint OriginalID = texID;
-
     if (texID)
-        texID = (GLint)((TextureHandle *)texID)->m_pDDS;
+        texID = (DWORD_PTR)((TextureHandle *)texID)->m_pDDS; // Artscout - 2026 (x64): no pointer truncation
 
     if (texID not_eq currentTexture1)
     {
@@ -1961,19 +673,29 @@ void ContextMPR::SelectTexture1(GLint texID)
         m_stats.PutTexture(false);
 #endif
 
-        if ( not bZBuffering)
+        // PHASE 5: in D3D11 bind the texture/font REGARDLESS of bZBuffering. The
+        // "if(not bZBuffering)" gate is a D3D7 quirk; because of it the MFD/HUD font wasn't bound
+        // in the cockpit (bZBuffering=true) -> empty gTex0 -> "little squares".
+        if ( not bZBuffering or g_bUseGpu)
         {
             // JB 010326 CTD (too much CPU)
-            if (g_bSlowButSafe and F4IsBadReadPtr((TextureHandle *)texID, sizeof(TextureHandle)))
+            if ( not g_bUseGpu and g_bSlowButSafe and F4IsBadReadPtr((TextureHandle *)texID, sizeof(TextureHandle)))
                 return;
 
             FlushVB();
 
-            HRESULT hr = m_pD3DD->SetTexture(0, (IDirectDrawSurface7 *)texID);
-            ShiAssert(SUCCEEDED(hr));
-
-            m_pD3DD->SetTexture(1, NULL);
+            // #34 D3D11: m_pDDS holds the D3D11 SRV (dead D3D7 else removed)
+            if (g_pRenderer)
+                g_pRenderer->SetTexture(0, (struct ID3D11ShaderResourceView *)texID);
         }
+    }
+    else if (g_bUseGpu and g_pRenderer)
+    {
+        // CACHE HIT (texID == currentTexture1): same texture, but the ACTUAL slot-0 binding and
+        // m_hasTex0 may have desynced (SetTexture1(-1)/StartRtt unbound the slot while the cached
+        // currentTexture1 stayed) -> HUD text drew without a texture (blocks). Re-sync the binding
+        // (same texture, no FlushVB).
+        g_pRenderer->SetTexture(0, (struct ID3D11ShaderResourceView *)texID);
     }
 
 #ifdef _CONTEXT_ENABLE_STATS
@@ -1984,14 +706,14 @@ void ContextMPR::SelectTexture1(GLint texID)
     currentTexture2 = -1;
 }
 
-void ContextMPR::SelectTexture2(GLint texID)
+void ContextMPR::SelectTexture2(DWORD_PTR texID) // Artscout - 2026 (x64): pointer-sized handle/SRV
 {
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::ApplyTexture2(0x%X)\n", texID);
 #endif
 
     if (texID)
-        texID = (GLint)((TextureHandle *)texID)->m_pDDS;
+        texID = (DWORD_PTR)((TextureHandle *)texID)->m_pDDS; // Artscout - 2026 (x64): no pointer truncation
 
     if (texID not_eq currentTexture2)
     {
@@ -2009,8 +731,9 @@ void ContextMPR::SelectTexture2(GLint texID)
 
             FlushVB();
 
-            HRESULT hr = m_pD3DD->SetTexture(1, (IDirectDrawSurface7 *)texID);
-            ShiAssert(SUCCEEDED(hr));
+            // #34 D3D11 (dead D3D7 else removed)
+            if (g_pRenderer)
+                g_pRenderer->SetTexture(1, (struct ID3D11ShaderResourceView *)texID);
         }
     }
 
@@ -2048,9 +771,7 @@ void ContextMPR::ApplyStateBlock(GLint state)
     {
         lastState = state;
 
-        HRESULT hr = m_pD3DD->ApplyStateBlock(StateTable[state]);
-
-        if ( not SUCCEEDED(hr)) INT3;
+        // #34 D3D11: state applied via FFMapState in FlushVB; dead D3D7 ApplyStateBlock removed
     }
 }
 
@@ -2059,45 +780,17 @@ void ContextMPR::RestoreState(GLint state)
     ShiAssert(state not_eq -1);
     ShiAssert(state >= 0 and state < MAXIMUM_MPR_STATE);
 
-#if defined _DEBUG and defined _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT_REPLACE
-
-    if (GetKeyState(VK_F4) bitand compl 1)
-    {
-        if ( not bEnableRenderStateHighlightReplace)
-            bEnableRenderStateHighlightReplace = true;
-    }
-
-    if (bEnableRenderStateHighlightReplace and (state == bRenderStateHighlightReplaceTargetState))
-    {
-        state = STATE_SOLID;
-        m_colFG = 0xffff0000;
-        currentState = -1;
-    }
-
-#endif
-
+    // PHASE 4/#34: the actual state is set by g_pRenderer->SetState (FFMapState) in FlushVB.
+    // Dead D3D7 ApplyStateBlock path removed.
     if (state not_eq currentState)
     {
-#ifdef _CONTEXT_TRACE_ALL
-        MonoPrint("ContextMPR::RestoreState(%d)\n", state);
-#endif
-
-#ifdef _CONTEXT_RECORD_USED_STATES
-        m_setStatesUsed.insert(state);
-#endif
-
         if (currentState == -1 or (StateTableInternal[currentState].SE_TEXTURING and not StateTableInternal[state].SE_TEXTURING))
             currentTexture1 = -1;
 
-        currentState = state;
-
         if ( not bZBuffering)
-        {
             FlushVB();
 
-            HRESULT hr = m_pD3DD->ApplyStateBlock(StateTable[currentState]);
-            ShiAssert(SUCCEEDED(hr));
-        }
+        currentState = state;
     }
 }
 
@@ -2135,6 +828,17 @@ void ContextMPR::SetIRmode(BOOL state)
     IRmode = state;
 }
 
+// #DX12 A5: free helper to toggle the shader grey pass (FF_IRGREY) for the sensor 3D scene. NOT tied to
+// SetTVmode/SetIRmode -- RenderOTW::ComputeVertexColor (otw.cpp:2044) resets those to FALSE mid-terrain, which
+// clobbered the flag (scene drew colour, only the symbology stayed grey = inverted). Instead the sensor draw
+// (laserpod/mavdisp/lantmfd) brackets its DrawScene with FF_SetIRGrey(true/false) explicitly. Desaturates the
+// composed pixel to luma, so the terrain (whose vertex colours are cached from the main colour view) greys too.
+void FF_SetIRGrey(bool on)
+{
+    extern IRenderer* g_pRenderer;
+    if (g_pRenderer) g_pRenderer->SetIRGrey(on);
+}
+
 // COBRA - RED - Comparing or a so short conditional action has no sense, do it always
 void ContextMPR::SetPalID(int id)
 {
@@ -2168,50 +872,11 @@ HRESULT WINAPI ContextMPR::EnumSurfacesCB2(IDirectDrawSurface7 *lpDDSurface, str
 
 void ContextMPR::UpdateViewport()
 {
-#ifdef _CONTEXT_TRACE_ALL
-    MonoPrint("ContextMPR::UpdateViewport()\n");
-#endif
-
-    if (m_bViewportLocked or not m_pD3DD)
+    if (m_bViewportLocked)
         return;
-
-    // get current viewport
-    D3DVIEWPORT7 vp;
-    HRESULT hr = m_pD3DD->GetViewport(&vp);
-    ShiAssert(SUCCEEDED(hr));
-
-    if (FAILED(hr)) return;
-
-    if (m_bEnableScissors)
-    {
-        // Set the viewport to the specified dimensions
-        vp.dwX = m_rcVP.left;
-        vp.dwY = m_rcVP.top;
-        vp.dwWidth = m_rcVP.right - m_rcVP.left;
-        vp.dwHeight = m_rcVP.bottom - m_rcVP.top;
-
-        if ( not vp.dwWidth or not vp.dwHeight)
-            return;
-    }
-    else
-    {
-        // Set the viewport to the full target surface dimensions
-        DDSURFACEDESC2 ddsd;
-        ZeroMemory(&ddsd, sizeof(ddsd));
-        ddsd.dwSize = sizeof(ddsd);
-        hr = m_pRenderTarget->GetSurfaceDesc(&ddsd);
-        ShiAssert(SUCCEEDED(hr));
-
-        if (FAILED(hr)) return;
-
-        vp.dwX = 0;
-        vp.dwY = 0;
-        vp.dwWidth = ddsd.dwWidth;
-        vp.dwHeight = ddsd.dwHeight;
-    }
-
-    hr = m_pD3DD->SetViewport(&vp);
-    ShiAssert(SUCCEEDED(hr));
+    // PHASE 5/#34 D3D11: per-display viewport is handled by BindRenderTargetView (full texture)
+    // + absolute display coordinates; no GPU viewport narrowing here. Dead D3D7
+    // GetViewport/SetViewport path removed.
 }
 
 void ContextMPR::SetViewportAbs(int nLeft, int nTop, int nRight, int nBottom)
@@ -2245,22 +910,7 @@ void ContextMPR::GetViewport(RECT *prc)
 
 void ContextMPR::Stats()
 {
-#ifdef _DEBUG
-
-    if (m_bNoD3DStatsAvail)
-        return;
-
-    HRESULT hr;
-#ifdef _CONTEXT_USE_MANAGED_TEXTURES
-    D3DDEVINFO_TEXTUREMANAGER ditexman;
-    hr = m_pD3DD->GetInfo(D3DDEVINFOID_TEXTUREMANAGER, &ditexman, sizeof(ditexman));
-    m_bNoD3DStatsAvail = FAILED(hr) or hr == S_FALSE;
-#endif
-
-    D3DDEVINFO_TEXTURING ditex;
-    hr = m_pD3DD->GetInfo(D3DDEVINFOID_TEXTURING, &ditex, sizeof(ditex));
-    m_bNoD3DStatsAvail = FAILED(hr) or hr == S_FALSE;
-#endif
+    // #34 D3D11: no D3D7 GetInfo stats.
 }
 
 void ContextMPR::TextOut(short x, short y, DWORD col, LPSTR str)
@@ -2271,28 +921,9 @@ void ContextMPR::TextOut(short x, short y, DWORD col, LPSTR str)
 
     if ( not str) return;
 
-    try
-    {
-        HDC hdc;
-
-        // Get GDI Device context for Surface
-        CheckHR(m_pRenderTarget->GetDC(&hdc));
-
-        if (hdc)
-        {
-            ::SetBkMode(hdc, TRANSPARENT);
-            ::SetTextColor(hdc, col);
-            ::MoveToEx(hdc, x, y, NULL);
-
-            ::DrawText(hdc, str, strlen(str), &m_rcVP, DT_LEFT);
-
-            CheckHR(m_pRenderTarget->ReleaseDC(hdc));
-        }
-    }
-
-    catch (_com_error e)
-    {
-    }
+    // Artscout - 2026: [DX7-PURGE] GDI-on-DDraw-surface text (GetDC/DrawText/ReleaseDC) removed;
+    // the GPU path draws text through the renderer, not a DirectDraw surface DC.
+    (void)col; (void)x; (void)y;
 }
 
 bool ContextMPR::LockVB(int nVtxCount, void **p)
@@ -2304,46 +935,35 @@ bool ContextMPR::LockVB(int nVtxCount, void **p)
     HRESULT hr;
     DWORD dwSize = 0;
 
-    ShiAssert(FALSE == F4IsBadReadPtr(m_pVB, sizeof * m_pVB));
-
-    // Check for VB overflow
-    if ((m_dwStartVtx + m_dwNumVtx + nVtxCount) >= m_dwVBSize)
+    // PHASE 4/#DX12: GPU mode (D3D11 or D3D12) - hand back a pointer into the CPU array (base); writes go
+    // to m_pTLVtx[m_dwStartVtx + m_dwNumVtx]. No GPU/DDraw lock needed (the dead DDraw7 m_pVB is NULL).
+    if (g_bUseGpu)
     {
-        // would overflow
-        FlushVB();
-        m_dwStartVtx = 0;
+        // Artscout - 2026: guard against corrupted context state. Long-standing heap
+        // corruption (see known-issues) zeroes the context's m_pIdx pointer / garbages the
+        // batch counters; Release exposes it as a null write in DrawPrimitive or an EnsureVB
+        // size-overflow hang. If a buffer pointer was wiped, bail cleanly (drop this draw)
+        // instead of crashing; the caller treats a false return as "skip primitive".
+        if (not m_pVBCpu or not m_pIdx) { *p = NULL; m_pTLVtx = NULL; return false; }
+        if (m_dwNumVtx   >= m_dwVBSize ||
+            m_dwStartVtx >= m_dwVBSize ||
+            m_dwNumIdx   >= (DWORD)(m_dwVBSize * 3))
+        {
+            m_dwStartVtx = m_dwNumVtx = m_dwNumIdx = 0;
+        }
 
-        // we are done with this VB, hint driver that he can use a another memory block to prevent breaking DMA activity
-        hr = m_pVB->Lock(DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_WRITEONLY bitor DDLOCK_WAIT bitor DDLOCK_DISCARDCONTENTS, p, &dwSize);
-    }
-
-    else if (m_pTLVtx)
-    {
-        // already locked, excellent
+        if ((m_dwStartVtx + m_dwNumVtx + (DWORD)nVtxCount) >= m_dwVBSize)
+        {
+            FlushVB();
+            m_dwStartVtx = 0;
+        }
+        *p = m_pVBCpu;
+        m_pTLVtx = m_pVBCpu;
         return true;
     }
 
-    else
-    {
-        // we will only append data, dont interrupt DMA
-        if (m_dwStartVtx)
-            hr = m_pVB->Lock(DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_WRITEONLY bitor DDLOCK_WAIT bitor DDLOCK_NOOVERWRITE, p, &dwSize);
-        // ok this is the first lock
-        else
-            hr = m_pVB->Lock(DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_WRITEONLY bitor DDLOCK_WAIT bitor DDLOCK_DISCARDCONTENTS, p, &dwSize);
-    }
-
-    ShiAssert(SUCCEEDED(hr));
-
-#ifdef _DEBUG
-
-    if (SUCCEEDED(hr)) m_pVtxEnd = (BYTE *)*p + dwSize;
-    else m_pVtxEnd = NULL;
-
-#endif
-
-
-    return SUCCEEDED(hr);
+    // Artscout - 2026: [DX7-PURGE] DDraw7 m_pVB Lock path removed (GPU returns above).
+    return false;
 }
 
 void ContextMPR::UnlockVB()
@@ -2352,15 +972,20 @@ void ContextMPR::UnlockVB()
     MonoPrint("ContextMPR::UnlockVB()\n");
 #endif
 
-    // Unlock VB
-    HRESULT hr = m_pVB->Unlock();
-    ShiAssert(SUCCEEDED(hr));
+    // PHASE 4/#DX12: GPU mode - data is already in the CPU array, no GPU/DDraw unlock needed
+    if (g_bUseGpu)
+    {
+        m_pTLVtx = NULL;
+        return;
+    }
+
+    // Artscout - 2026: [DX7-PURGE] DDraw7 m_pVB Unlock removed (GPU returns above).
     m_pTLVtx = NULL;
 }
 
 DWORD VCounter;
 
-void ContextMPR::FlushPolyLists()
+void ContextMPR::FlushPolyLists(bool clearDepthBeforeObjects)
 {
     VCounter = 0;
 
@@ -2383,6 +1008,17 @@ void ContextMPR::FlushPolyLists()
         //START_PROFILE(DX_ENGINE_PROF);
         bool k = bZBuffering ? true : false;
         bZBuffering = false;
+        // #48: previously this ALWAYS cleared the depth buffer here so the object-path
+        // flush (cockpit + world objects, batched together) drew on top of the screen-path
+        // sky/terrain. That was a stale workaround from the era when the object projection
+        // was inverted (Flip.m02 = -1) and the cockpit ended up behind the terrain. Now the
+        // projection is correct and the screen path (sz = szCX1 + szCX2/z) and the object
+        // path (PerspectiveFov with the same ZNEAR/ZFAR) produce IDENTICAL NDC depth, so a
+        // single coherent depth buffer works: the pit at near-Z (z ~ 1 ft) beats the terrain
+        // (z >> 100 ft) on its own, and world objects are correctly occluded by the ground.
+        // The OTW world pass passes clearDepthBeforeObjects=false; mini-scene displays keep
+        // the clear (default true).
+        if (clearDepthBeforeObjects and g_bUseD3D11 and g_pD3D11Backend) g_pD3D11Backend->ClearDepth();
         TheDXEngine.FlushBuffers();
         bZBuffering = k;
         InvalidateState();
@@ -2417,59 +1053,69 @@ void ContextMPR::FlushVB()
 {
     if ( not m_dwNumVtx) return;
 
+    // Artscout - 2026: FlushVB is reached directly from SelectTexture1/RestoreState/EndDraw
+    // (bypassing the LockVB guard). If a batch counter is garbage (corruption), DrawTL/
+    // DrawTLIndexed get a huge count / out-of-range start vertex and memcpy reads off the end
+    // of m_pVBCpu -> AV. Drop a clearly-invalid batch here instead of crashing.
+    if (g_bUseGpu and (not m_pVBCpu or not m_pIdx or
+                         m_dwNumVtx   >= m_dwVBSize or
+                         m_dwStartVtx >= m_dwVBSize or
+                         (m_dwStartVtx + m_dwNumVtx) > m_dwVBSize or
+                         m_dwNumIdx   >= (DWORD)(m_dwVBSize * 3)))
+    {
+        // Cheap sanity guard: drop an out-of-range batch instead of memcpy'ing off the end of
+        // m_pVBCpu. Kept as defensive hardening against any future counter desync.
+        m_dwStartVtx = m_dwNumVtx = m_dwNumIdx = 0;
+        return;
+    }
+
     ShiAssert(m_nCurPrimType not_eq 0);
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::FlushVB()\n");
 #endif
 
-    int nPrimType = m_nCurPrimType;
-
-    // Convert triangle fans to triangle lists to make them batchable
-    if (nPrimType == D3DPT_TRIANGLEFAN)
+    // PHASE 4: D3D11 screen path. m_nCurPrimType (D3DPT_*) == MPR_PKT_* (1..6). Multi-fan/
+    // multi-line batches arrive with m_pIdx indices (as TRIANGLELIST/LINELIST) - draw
+    // DrawTLIndexed; otherwise DrawTL by m_nCurPrimType.
+    if (g_bUseGpu)
     {
-        nPrimType = D3DPT_TRIANGLELIST;
-        ShiAssert(m_dwNumIdx);
+        UnlockVB();
+
+        if (g_pRenderer and g_pRenderer->IsValid())
+        {
+            g_pRenderer->BeginScreenPass();
+            g_pRenderer->SetState(currentState);
+
+            if (m_dwNumIdx)
+            {
+                int listType = (m_nCurPrimType == D3DPT_LINESTRIP or m_nCurPrimType == D3DPT_LINELIST) ? 2 : 4;
+                g_pRenderer->DrawTLIndexed(listType,
+                                                (D3D11_TLVERTEX *)&m_pVBCpu[m_dwStartVtx],
+                                                (int)m_dwNumVtx,
+                                                m_pIdx, (int)m_dwNumIdx);
+            }
+            else
+            {
+                g_pRenderer->DrawTL(m_nCurPrimType,
+                                         (D3D11_TLVERTEX *)&m_pVBCpu[m_dwStartVtx],
+                                         (int)m_dwNumVtx);
+            }
+        }
+
+        // PHASE 5 FIX (heap corruption): in D3D11 DrawTL/DrawTLIndexed already copied the vertices
+        // into the GPU VB (Map/memcpy/Draw synchronously), so the CPU buffer can be reused FROM
+        // ZERO. Accumulating m_dwStartVtx += m_dwNumVtx pushed writes toward the m_pVBCpu[32768]
+        // boundary and clobbered the header of the neighbouring m_pIdx block (free crash in
+        // Cleanup, value ~0.3f = a vertex UV/color).
+        m_dwStartVtx = 0;
+        m_dwNumVtx = 0;
+        m_dwNumIdx = 0;
+        return;
     }
-
-    // Convert line strips to line lists to make them batchable
-    else if (nPrimType == D3DPT_LINESTRIP)
-    {
-        nPrimType = D3DPT_LINELIST;
-        ShiAssert(m_dwNumIdx);
-    }
-
-    HRESULT hr;
-
-    UnlockVB();
-
-#ifdef _VALIDATE_DEVICE
-
-    if ( not m_pCtxDX->ValidateD3DDevice())
-        MonoPrint("ContextMPR::FlushVB() - Validate Device failed - currentState=%d,currentTexture=0x%\n", currentState, currentTexture);
-
-#endif
-
-#ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-    hr = m_pD3DD->ApplyStateBlock(StateTable[STATE_SOLID]);
-    ShiAssert(SUCCEEDED(hr));
-#endif
-
-    if (m_dwNumIdx)
-        hr = m_pD3DD->DrawIndexedPrimitiveVB((D3DPRIMITIVETYPE)nPrimType, m_pVB, m_dwStartVtx, m_dwNumVtx, m_pIdx, m_dwNumIdx, NULL);
-    else
-        hr = m_pD3DD->DrawPrimitiveVB((D3DPRIMITIVETYPE) nPrimType, m_pVB, m_dwStartVtx, m_dwNumVtx, NULL);
-
-    ShiAssert(SUCCEEDED(hr));
-
-#ifdef _CONTEXT_ENABLE_STATS
-    m_stats.StartBatch();
-#endif
-
-    m_dwStartVtx += m_dwNumVtx;
-    m_dwNumVtx = 0;
-    m_dwNumIdx = 0;
+    // #34 dead D3D7 tail removed (D3D11 branch above returns).
 }
+
 // ASSO:
 void ContextMPR::ZeroViewport()
 {
@@ -2540,7 +1186,11 @@ inline void SPolygon::CalcPolyZ(float Avg)
 {
     curPoly = (SPolygon *)Alloc(sizeof(SPolygon) + numVertices * sizeof(TLVERTEX));
     curPoly->numVertices = numVertices;
-    curPoly->pVertexList = (TLVERTEX *)(DWORD(curPoly) + sizeof(SPolygon));
+    // Artscout - 2026 (x64): was `(TLVERTEX*)(DWORD(curPoly) + sizeof(SPolygon))` -- DWORD() truncated the
+    // 64-bit curPoly to 32 bits, so pVertexList pointed at the LOW 32 bits of the pointer (e.g. 0x00FEE040)
+    // -> the vertex fill in DrawPrimitive wrote into unmapped low memory -> CTD during terrain draw. Use
+    // proper byte-pointer arithmetic so the full 64-bit address is preserved.
+    curPoly->pVertexList = (TLVERTEX *)((char *)curPoly + sizeof(SPolygon));
 }
 
 inline void ContextMPR::AddPolygon(SPolygon *&polyList, SPolygon *&curPoly)
@@ -2556,93 +1206,48 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
     SPolygon *pStart, *pEnd, *pCur;
     DWORD offset, vertcnt = 0, verttot = 0;
 
-
-
-    if ((pHead->renderState >= STATE_ALPHA_SOLID) and (pHead->renderState <= STATE_ALPHA_TEXTURE_PERSPECTIVE_CLAMP))
+    // PHASE 4/#DX12: GPU mode - copy the polygons into m_pVBCpu and draw them one by one as DrawTL(TRIFAN)
+    // with state/texture through g_pRenderer.
+    if (g_bUseGpu)
     {
-        offset = DWORD(&pHead->zBuffer) - DWORD(pHead);
-        pHead = (SPolygon *)RadixSortDescending((radix_sort_t *)pHead, offset);
-    }
-
-    // if Linear Fog is enabled, add it
-    if (TheDXEngine.LinearFog())
-    {
-        float FogLevel = realWeather->LinearFogEnd();
-        float FogStart = 0;
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_RANGEFOGENABLE, TRUE);
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE, D3DFOG_LINEAR);
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_LINEAR);
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGSTART, *(DWORD *)(&FogStart));
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND,   *(DWORD *)&FogLevel);
-    }
-    else
-    {
-        m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_NONE);
-    }
-
-    pStart = pEnd = pCur = pHead;
-
-    while (pEnd not_eq NULL)
-    {
-        vertcnt += pEnd->numVertices;
-        VCounter += pEnd->numVertices;
-        pEnd = pEnd->pNext;
-
-        // was 1024
-        if ((pEnd == NULL) or (vertcnt + pEnd->numVertices > 32768))
+        if ((pHead->renderState >= STATE_ALPHA_SOLID) and (pHead->renderState <= STATE_ALPHA_TEXTURE_PERSPECTIVE_CLAMP))
         {
+            offset = DWORD(&pHead->zBuffer) - DWORD(pHead);
+            pHead = (SPolygon *)RadixSortDescending((radix_sort_t *)pHead, offset);
+        }
 
-            m_pVBB->Lock(DDLOCK_WRITEONLY bitor DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_DISCARDCONTENTS, (LPVOID *)&pIns, NULL);
+        if (g_pRenderer and g_pRenderer->IsValid())
+        {
+            g_pRenderer->BeginScreenPass();
 
-            while (pEnd not_eq pCur)
+            DWORD base = 0;
+            for (pCur = pHead; pCur not_eq NULL; pCur = pCur->pNext)
             {
-                pIns = pCur->CopyToVertexBuffer(pIns);
-                pCur = pCur->pNext;
-            }
+                if (base + pCur->numVertices >= m_dwVBSize) base = 0;
+                memcpy(&m_pVBCpu[base], pCur->pVertexList, sizeof(TLVERTEX) * pCur->numVertices);
 
-            m_pVBB->Unlock();
+                g_pRenderer->SetState(pCur->renderState);
 
-            vertcnt = 0;
-            pCur = pStart;
-
-            while (pEnd not_eq pCur)
-            {
-                ApplyStateBlock(pCur->renderState);
-
-                if (
-                    (pCur->renderState > STATE_GOURAUD and pCur->renderState < STATE_ALPHA_SOLID)
-                    or pCur->renderState > STATE_ALPHA_GOURAUD
-                )
-                {
+                if ((pCur->renderState > STATE_GOURAUD and pCur->renderState < STATE_ALPHA_SOLID)
+                    or pCur->renderState > STATE_ALPHA_GOURAUD)
                     SetTexture1(pCur->textureID0);
-                }
                 else
-                {
                     SetTexture1(-1);
-                }
 
                 if (pCur->renderState >= STATE_MULTITEXTURE)
-                {
                     SetTexture2(pCur->textureID1);
-                }
 
-
-                verttot = pCur->numVertices;
-                m_pD3DD->DrawPrimitiveVB(D3DPT_TRIANGLEFAN, m_pVBB, vertcnt, verttot, 0);
-
-                vertcnt += verttot;
-                pCur = pCur->pNext;
+                g_pRenderer->DrawTL(D3DPT_TRIANGLEFAN,
+                                         (D3D11_TLVERTEX *)&m_pVBCpu[base],
+                                         (int)pCur->numVertices);
+                base += pCur->numVertices;
             }
-
-            pCur = pStart = pEnd;
-            vertcnt = 0;
         }
+        return;
     }
-
-    // Disable Fog
-    m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_NONE);
+    // #34 dead D3D7 tail removed (D3D11 branch above returns).
 }
+
 
 void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdxPtr, int *IIdxPtr, Ptexcoord *uv, bool bUseFGColor)
 {
@@ -2699,6 +1304,35 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
         sPolygon->textureID0 = currentTexture1;
         sPolygon->pNext = NULL;
         sVertex = sPolygon->pVertexList;
+    }
+
+    // Artscout - 2026: #44 view-dependent canopy reflection. palID==2 is the static painted glass
+    // "reflection" overlay (was a flat 0x26 alpha -> looked stuck to the glass and rode the canopy
+    // when it opened). Modulate its alpha by the facet's grazing angle to the eye so the glint shifts
+    // with the view/head (VR) and reads as a real reflection. poly->A,B,C is the facet normal and
+    // TheStateStack.ObjSpaceEye the eye, BOTH in the same object space (the BSP back-face cull uses
+    // exactly these, bspnodes.cpp). cos^2 form avoids sqrt/fabs (FastMath sqrt-macro). Grazing
+    // (normal ~perpendicular to the eye direction) -> brighter; head-on -> dimmer. Toggle CanopyReflect.
+    extern bool g_bCanopyReflect;
+    DWORD reflAlpha = 0x26000000; // legacy flat alpha (used only when palID==2)
+    if (palID == 2 and g_bCanopyReflect)
+    {
+        float ex = TheStateStack.ObjSpaceEye.x;
+        float ey = TheStateStack.ObjSpaceEye.y;
+        float ez = TheStateStack.ObjSpaceEye.z;
+        float nn = poly->A * poly->A + poly->B * poly->B + poly->C * poly->C;
+        float ee = ex * ex + ey * ey + ez * ez;
+        float ne = poly->A * ex + poly->B * ey + poly->C * ez;
+        float denom = nn * ee;
+
+        if (denom > 1e-6f)
+        {
+            float cos2  = (ne * ne) / denom;   // cos^2(normal, eye direction), 0..1
+            float graze = 1.0f - cos2;         // 0 head-on .. 1 grazing
+            int   ai    = (int)((0.06f + 0.30f * graze) * 255.0f + 0.5f); // ~0x10 .. ~0x5C
+            if (ai < 0) ai = 0; else if (ai > 255) ai = 255;
+            reflAlpha = (DWORD)ai << 24;
+        }
     }
 
     // Iterate for each vertex
@@ -2808,8 +1442,9 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 if (palID == 3)
                     pVtx->color = TheColorBank.TODcolor;
                 // Set the light level with "special cockpit reflection alpha"
+                // Artscout - 2026: #44 alpha is now view-dependent (reflAlpha), keep TOD RGB.
                 else if (palID == 2)
-                    pVtx->color = TheColorBank.TODcolor bitand 0x26FFFFFF;
+                    pVtx->color = (TheColorBank.TODcolor bitand 0x00FFFFFF) bitor reflAlpha;
             }
 
             if (opFlag bitand PRIM_COLOP_TEXTURE)
@@ -2817,8 +1452,20 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 // NVG_LIGHT_LEVEL = 0.703125f
                 if (NVGmode or TVmode or IRmode)
                 {
-                    pVtx->color and_eq 0xFF00FF00;
-                    pVtx->color or_eq 0x0000B400;
+                    // Artscout - 2026: NVG (pilot goggles) = green phosphor. TV (TGP) / IR (Maverick, FLIR)
+                    // sensors are GRAYSCALE, not green -- green was the legacy CRT look (same as the old green
+                    // MFD labels that are really white). Grey = luma of the vertex color (Rec.601 weights).
+                    if (NVGmode)
+                    {
+                        pVtx->color and_eq 0xFF00FF00;
+                        pVtx->color or_eq 0x0000B400;
+                    }
+                    else
+                    {
+                        DWORD c = pVtx->color;
+                        DWORD lum = ((((c >> 16) bitand 0xFF) * 77) + (((c >> 8) bitand 0xFF) * 150) + ((c bitand 0xFF) * 29)) >> 8;
+                        pVtx->color = (c bitand 0xFF000000) bitor (lum << 16) bitor (lum << 8) bitor lum;
+                    }
                 }
 
                 ShiAssert(uv);
@@ -2916,8 +1563,9 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 if (palID == 3)
                     sVertex->color = TheColorBank.TODcolor;
                 // Set the light level with "special cockpit reflection alpha"
+                // Artscout - 2026: #44 alpha is now view-dependent (reflAlpha), keep TOD RGB.
                 else if (palID == 2)
-                    sVertex->color = TheColorBank.TODcolor bitand 0x26FFFFFF;
+                    sVertex->color = (TheColorBank.TODcolor bitand 0x00FFFFFF) bitor reflAlpha;
             }
 
             if (opFlag bitand PRIM_COLOP_TEXTURE)
@@ -2925,8 +1573,19 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 // NVG_LIGHT_LEVEL = 0.703125f
                 if (NVGmode or TVmode or IRmode)
                 {
-                    sVertex->color and_eq 0xFF00FF00;
-                    sVertex->color or_eq 0x0000B400;
+                    // Artscout - 2026: NVG = green; TV (TGP) / IR (Maverick, FLIR) = GRAYSCALE (luma). See the
+                    // twin block above -- green is the legacy CRT look; real sensor video is monochrome grey.
+                    if (NVGmode)
+                    {
+                        sVertex->color and_eq 0xFF00FF00;
+                        sVertex->color or_eq 0x0000B400;
+                    }
+                    else
+                    {
+                        DWORD c = sVertex->color;
+                        DWORD lum = ((((c >> 16) bitand 0xFF) * 77) + (((c >> 8) bitand 0xFF) * 150) + ((c bitand 0xFF) * 29)) >> 8;
+                        sVertex->color = (c bitand 0xFF000000) bitor (lum << 16) bitor (lum << 8) bitor lum;
+                    }
                 }
 
                 ShiAssert(uv);
@@ -3115,7 +1774,7 @@ void ContextMPR::Draw2DPoint(float x, float y)
         pVtx->sy = y;
     }
 
-    pVtx->sz = 0.0f;
+    pVtx->sz = m_2DPrimZ;	// #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
     pVtx->rhw = 1.0f;
     pVtx->color = m_colFG;
     pVtx->specular = m_colFOG;
@@ -3277,7 +1936,7 @@ void ContextMPR::Draw2DLine(float x0, float y0, float x1, float y1)
         pVtx->sy = y0;
     }
 
-    pVtx->sz = 0.0f;
+    pVtx->sz = m_2DPrimZ;	// #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
     pVtx->rhw = 1.0f;
     pVtx->color = m_colFG;
     pVtx->specular = m_colFOG;
@@ -3300,7 +1959,7 @@ void ContextMPR::Draw2DLine(float x0, float y0, float x1, float y1)
         pVtx->sy = y1;
     }
 
-    pVtx->sz = 0.0f;
+    pVtx->sz = m_2DPrimZ;	// #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
     pVtx->rhw = 1.0f;
     pVtx->color = m_colFG;
     pVtx->specular = m_colFOG;
@@ -3466,7 +2125,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtx_
             pVtx->sy = pData->y;
         }
 
-        pVtx->sz = 0.f;
+        pVtx->sz = m_2DPrimZ;	// #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
         pVtx->rhw = 1.0f;
         pVtx->color = m_colFG;
         pVtx->specular = m_colFOG;
@@ -3570,7 +2229,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
             pVtx->sy = pData->y;
         }
 
-        pVtx->sz = 0.f;
+        pVtx->sz = m_2DPrimZ;	// #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
 
         // OW FIXME: this should be 1.0f / pData->z
         pVtx->rhw = 1.0f;
@@ -3715,8 +2374,9 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
                 pVtx->sy = pData[i]->y;
             }
 
-            // NOTE: HACK
-            pVtx->sz = 1.0f;
+            // NOTE: HACK -- reversed-Z: 0.0 = far plane (was 1.0 under standard Z). 2D screen prims that don't
+            // depth-test ignore it; ones that do now sit at the far plane as intended.
+            pVtx->sz = 0.0f;
             pVtx->rhw = pData[i]->q > 0.0f ? 1.0f / (pData[i]->q / Q_SCALE) : 1.0f;
 
             if (terrain)
@@ -3975,7 +2635,12 @@ void ContextMPR::Stats::StartBatch()
 
 void ContextMPR::Stats::Primitive(DWORD dwType, DWORD dwNumVtx)
 {
-    arrPrimitives[dwType - 1]++;
+    // Artscout - 2026 (x64): bounds-guard. dwType is m_nCurPrimType, which is 0 until
+    // BeginPrimitive sets it (1..6). On the text path (ScreenText) it can still be 0, so
+    // dwType-1 underflows to 0xFFFFFFFF -> arrPrimitives[~16GB]. On x86 the index wrapped
+    // mod 2^32 to base-4 (silent neighbour corruption); on x64 there is no wrap -> fault.
+    if (dwType >= 1 and dwType <= 6)
+        arrPrimitives[dwType - 1]++;
     dwTotalPrimitives++;
     dwCurPrimCountPerSecond++;
     dwCurVtxCountPerSecond += dwNumVtx;

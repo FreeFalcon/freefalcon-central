@@ -252,7 +252,7 @@ void CPAdi::CreateLit(void)
             }
 
         }
-        catch (_com_error e)
+        catch (const _com_error &e)
         {
             MonoPrint("CPAdi::CreateAdiView - Error 0x%X (%s)\n", e.Error(), e.ErrorMessage());
             DiscardLit();
@@ -322,7 +322,7 @@ void CPAdi::CreateLit(void)
                     mpSurfaceBuffer = NULL;
             }
 
-            catch (_com_error e)
+            catch (const _com_error &e)
             {
                 MonoPrint("CPAdi::CreateLit - Error 0x%X (%s)\n", e.Error(), e.ErrorMessage());
                 DiscardLit();
@@ -559,7 +559,7 @@ void RenderADIPoly(tagRECT *srcrect, tagRECT *srcloc, tagRECT *destrect, GLint a
     }
 
     OTWDriver.renderer->context.RestoreState(alpha);
-    OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
+    OTWDriver.renderer->context.SelectTexture1((DWORD_PTR) pTex);
     OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 90, pVtx, sizeof(pVtx[0]));
 }
 
@@ -621,7 +621,7 @@ void CPAdi::DisplayBlit3D()
 
         // Setup state
         OTWDriver.renderer->context.RestoreState(STATE_ALPHA_TEXTURE_NOFILTER);
-        OTWDriver.renderer->context.SelectTexture1((GLint) pTex);
+        OTWDriver.renderer->context.SelectTexture1((DWORD_PTR) pTex);
 
         // Render it (finally)
         OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));

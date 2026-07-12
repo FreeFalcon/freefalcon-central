@@ -15,30 +15,15 @@ This is only a summary of the requirements and assumes a knowledge of your
 way around installing libraries on your system. For more detail, see
 [our documentation](https://github.com/FreeFalcon/docs).
 
-FreeFalcon currently requires Visual Studio 2010, updated to SP1.
+FreeFalcon currently requires Visual Studio 2026 community edition. You will 
+need Windows SDK and DirectX installed with Visual Studio and Kronis OpenXR 
+Headers and Loader packages installed via nuget package manager.
 
 To load the Installer project, you'll need the latest version of the WiX
 Toolset, which can be found [here](http://wixtoolset.org/). Without this, you
 will get an error when loading the solution, but you will still be able to
 build the FreeFalcon source code- you just won't be able to package it into
 an installer.
-
-You'll need the Windows SDK 7.1 (get it
-[here](http://www.microsoft.com/en-us/download/details.aspx?id=8279)); to
-install it successfully, you'll need to uninstall any existing Visual C++
-2010 redistributables on your machine. They will be reinstalled with the SDK.
-Then install
-[this](http://www.microsoft.com/en-us/download/details.aspx?id=4422) to update
-the compiler.
-
-The DirectX 8.1 SDK is also required (download
-[here](http://www.darwinbots.com/numsgil/dx81sdk_full.exe)). Install it
-anywhere on your hard drive, and point Visual Studio to where ever you
-installed it.
-[This tutorial](http://takinginitiative.wordpress.com/2010/07/02/setting-up-the-directx-sdk-with-visual-studio-2010/)
-covers how to do that- follow the instructions under "Setting up the Include
-and Library Paths", you can ignore "Linking the DirectX Static Libraries In
-Your Projects" as that is already taken care of.
 
 To set up the source code to run in Debug mode, you'll need an install of
 FreeFalcon on your computer. To tell Visual Studio where this installation is,
@@ -58,13 +43,16 @@ Also, if you are planning on sending patches, be sure that you set Visual
 Studio to use spaces instead of tabs! This setting is located at
 Tools -> Options... -> Text Editor -> C/C++ -> Tabs, select "Insert spaces".
 
+## Adding new resources to the game directory
+
+Inside installer folder there's res subfolder that contains new textures, setup pages
+and other files needed to run the game correctly. copy contents of that folder into
+the game folder.
+
 ## Building the Installer
 
-To build the installer, you **must** be on the Release target. You can then
-right click the project and click Build and it will create the installer. If
-you don't have an up-to-date Release build of FFViper, this may take a while-
-it will build FFViper for you if it needs to. The installer will build into
-the `pkg/` directory at the root of the repository.
+For patch installer build run build_patch.cmd from installer directory. It will 
+take exe from game dir and other files from res subfolder inside installer dir.
 
 ## Contributing
 
@@ -75,6 +63,14 @@ You can contribute to the project in various ways.
    getting your code into the main source tree.
  * If you're not a programmer, not to worry! Just let us know if you find any
    bugs or have any suggestions in the issue tracker.
+
+## Credits for 3rd party models used for touch controllers visualization
+
+"Andrews Oculus Controller Left" (https://skfb.ly/6ACKG) by djvivid is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/)
+"Andrews Oculus Controller Right" (https://skfb.ly/6ACKI) by djvivid is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/)
+"Valve Index Controller Left" (https://skfb.ly/6SpQ7) by F53 is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/)
+"Valve Index Controller Right" (https://skfb.ly/6QXCY) by F53 is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/)
+"Gloves for fps game" (https://skfb.ly/6TICP) by bobeer is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/)
 
 ## Legal
 

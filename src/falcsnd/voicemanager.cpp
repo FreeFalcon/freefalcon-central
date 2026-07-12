@@ -143,11 +143,22 @@ BOOL VoiceManager::VMBegin(void)
 int VoiceManager::VoiceOpen(void)
 {
     char filename[MAX_PATH];
+    extern bool g_bVoicePcmMode; // Artscout - 2026: PCM voice bank in use (see lhsp.cpp)
 
+    // Artscout - 2026: prefer the pre-transcoded PCM voice bank falcon_pcm.tlk (data = already
+    // decoded PCM, no ST80). Works on BOTH x86 and x64. Fall back to the ST80 falcon.tlk only if
+    // the PCM bank is absent (x86 decodes it; x64 stays silent -> subtitles). Generate the PCM
+    // bank once with the standalone x86 tool src/tools/st80conv (falcon.tlk -> falcon_pcm.tlk).
+    sprintf(filename, "%s\\falcon_pcm.tlk", FalconSoundThrDirectory);
+
+    if (voiceMap.Open(filename) == TRUE)
+    {
+        g_bVoicePcmMode = true;
+        return TRUE;
+    }
+
+    g_bVoicePcmMode = false;
     sprintf(filename, "%s\\falcon.tlk", FalconSoundThrDirectory);
-#if 0
-    voiceMapPtr = (char *)map_file(filename);
-#endif
 
     if (voiceMap.Open(filename) not_eq TRUE)
         ShiError("Can't open falcon.tlk");
@@ -1681,6 +1692,10 @@ void VoiceManager::SetChannelVolume(int channel, int volume)
 
 void VoiceManager::AddNoise(VOICE_STREAM_BUFFER *streamBuffer, VU_ID from, int channel)
 {
+    // #35: PREVIOUSLY there was an unconditional return here (chatter vanished!) -- it dropped not only
+    // the noising but also the channel VOLUME setting by distance (SetChannelVolume below),
+    // so voices played silently. The volume block is restored; the risky
+    // sample-noising loop is disabled by a separate return before it (see below).
     unsigned long i;
     int level = 255, minLevel = 253, volume, nonoise;
     VuEntity *fromEnt = NULL;
@@ -1723,6 +1738,11 @@ void VoiceManager::AddNoise(VOICE_STREAM_BUFFER *streamBuffer, VU_ID from, int c
         SetChannelVolume(channel, volume);
     }
 
+
+    // #35: the noising loop is disabled -- it used to crash on a 'wild' dataInWaveBuffer. Volume
+    // (above) is already set -- that's what's needed for chatter audibility. Restore noising later,
+    // once we confirm streamBuffer validity (the static isn't critical).
+    return;
 
     unsigned char  *pos = streamBuffer->waveBuffer;
 

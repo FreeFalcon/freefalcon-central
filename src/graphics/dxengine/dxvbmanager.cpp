@@ -6,6 +6,11 @@
 #include "DXEngine.h"
 #include "dxvbmanager.h"
 #include "DXTools.h"
+#include <d3d11.h>	// PHASE 4: D3D11 mirror VB
+#include "D3D11Backend.h"
+#include "d3d12/D3D12TextureManager.h"	// #DX12 п.4: per-model D3D12 VB
+extern bool g_bUseD3D11;
+extern bool g_bUseGpu;   // Artscout - 2026: #DX12 -- GPU mode = D3D11 OR D3D12 (never the dead DDraw7 else-branch)
 #ifndef DEBUG_ENGINE
 #include "../../sim/INCLUDE/ivibedata.h"
 #include "../../FALCLIB/include/fakerand.h"
@@ -200,7 +205,11 @@ void CDXVbManager::CreateVB(DWORD i, DWORD Class)
     VBDesc.dwFVF = D3DFVF_MANAGED;
     VBDesc.dwNumVertices = 0xffff;
 
-    CheckHR(D3D->CreateVertexBuffer(&VBDesc, &pVbList[i].Vb, NULL));
+    pVbList[i].VbD3D11 = NULL;
+
+    // #34: D3D11 geometry lives in per-model immutable buffers (SetupModel). No shared D3D7 VB.
+    pVbList[i].Vb = NULL;
+
     pVbList[i].Free = 0x10000;
     pVbList[i].Class = Class;
     pVbList[i].BootGap = 0xffff;
@@ -213,7 +222,7 @@ void CDXVbManager::CreateVB(DWORD i, DWORD Class)
 // Main Vertex Buffer Manager initialization
 // The Base Number of vertex buffers are immediatly allocated
 // and the local D3D Device assigned
-void CDXVbManager::Setup(IDirect3D7 *pD3D)
+void CDXVbManager::Setup()
 {
     // if already initialized exit here
     if (VBManagerInitialized) return;
@@ -222,7 +231,6 @@ void CDXVbManager::Setup(IDirect3D7 *pD3D)
     ZeroMemory(pVBuffers, sizeof(pVBuffers));
 
     // Assign the D3D Direct Draw Device
-    m_pD3D = pD3D;
 
     ///////////// Creates the vertex Buffers and assigns their Addresses /////////////
     ZeroMemory(pVbList, sizeof(pVbList));
@@ -259,7 +267,13 @@ void CDXVbManager::Setup(IDirect3D7 *pD3D)
     VBDesc.dwCaps = D3DVBCAPS_WRITEONLY;
     VBDesc.dwFVF = D3DFVF_SIMPLE;
     VBDesc.dwNumVertices = 0xffff;
-    CheckHR(D3D->CreateVertexBuffer(&VBDesc, &SimpleBuffer.Vb, NULL));
+    // #27/#34 D3D11: persistent CPU buffer for simple items (Draw3DPoint/Line: tracers/emitters).
+    // +16 padding (like Dyn2D): guards a write overrun at the end of the buffer.
+    // #55 free before malloc: Setup may be called again (3D entry) -> else a 1.8MB/cycle leak.
+    {
+        if (SimpleBuffer.VbPtr) { free(SimpleBuffer.VbPtr); SimpleBuffer.VbPtr = NULL; }
+        SimpleBuffer.VbPtr = (D3DSIMPLEVERTEX*)malloc(((size_t)0xffff + 16) * sizeof(D3DSIMPLEVERTEX));
+    }
 
     //////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -285,12 +299,13 @@ void CDXVbManager::Release(void)
     // Release all vertex Buffers
     for (int i = 0; i < MAX_VERTEX_BUFFERS; i++)
     {
-        if (pVbList[i].Vb) pVbList[i].Vb->Release();
+        // Artscout - 2026: [DX7-PURGE] no D3D7 VB to release (Vb is NULL under GPU).
+        if (pVbList[i].VbD3D11) { pVbList[i].VbD3D11->Release(); pVbList[i].VbD3D11 = NULL; }	// PHASE 4
     }
 
     for (int i = 0; i < MAX_DYNAMIC_BUFFERS; i++)
     {
-        if (DynamicBuffer[i].Vb) DynamicBuffer[i].Vb->Release();
+        // Artscout - 2026: [DX7-PURGE] no D3D7 dynamic VB to release.
 
         DynamicBuffer[i].LastIndex = 0;
     }
@@ -311,7 +326,7 @@ void CDXVbManager::Release(void)
     TotalDraws = 0;
 
     ///////////////// REMOVE THE SIMPLE BUFFER ///////////////
-    if (SimpleBuffer.Vb) SimpleBuffer.Vb->Release();
+    // Artscout - 2026: [DX7-PURGE] no D3D7 simple VB to release.
 
     SimpleBuffer.Vb = NULL;
 
@@ -423,6 +438,7 @@ bool CDXVbManager::VBCheckForBuffer(DWORD ID, DWORD Class, DWORD nVertices)
         {
             // Assign the Buffer address
             pVBuffers[ID].Vb = pVbList[i].Vb;
+            // VbD3D11 -- per-model, created in SetupModel
             pVBuffers[ID].BaseOffset = Base;
             pVBuffers[ID].pVbList = &pVbList[i];
             return true;
@@ -513,9 +529,41 @@ bool CDXVbManager::SetupModel(DWORD ID, BYTE *Root, DWORD Class)
 
         // Copy the Vertices in the Assigned Vertex Buffer
         LOCK_VB_MANAGER;
-        CheckHR(pVBuffers[ID].Vb->Lock(DDLOCK_NOOVERWRITE bitor DDLOCK_NOSYSLOCK bitor DDLOCK_SURFACEMEMORYPTR bitor DDLOCK_WAIT bitor DDLOCK_WRITEONLY, &ptr, NULL));
-        memcpy((void*)((BYTE*)ptr + (pVBuffers[ID].BaseOffset * VERTEX_STRIDE)), Root + pVPool, dwNVertices * VERTEX_STRIDE);
-        pVBuffers[ID].Vb->Unlock();
+
+        // Artscout - 2026: #DX12 -- GPU mode (D3D11 OR D3D12): never touch the dead DDraw7 vertex buffer
+        // (pVBuffers[ID].Vb) in the else-branch (it is NULL under D3D12 -> the loader-thread crash at
+        // SetupModel). Under D3D12 the inner g_pD3D11Backend guard skips D3D11 buffer creation (VbD3D11=NULL),
+        // so the BSP model simply has no GPU VB yet (the object-VB path is a later D3D12 increment).
+        if (g_bUseGpu)
+        {
+            // PHASE 4: per-model IMMUTABLE buffer with initial data. CreateBuffer
+            // is thread-safe (called from the loader thread); we do NOT touch the D3D11 context.
+            // Vertices start at 0 -> baseVertex=0 when drawing (BaseOffset not needed).
+            pVBuffers[ID].VbD3D11 = NULL;
+            pVBuffers[ID].VbD3D12 = NULL;
+            extern bool g_bUseD3D12;
+            if (g_bUseD3D12)
+            {
+                // #DX12 п.4: per-model DEFAULT-heap VB (uploaded via the texture manager's serialized queue).
+                if (g_pD3D12TextureManager && dwNVertices)
+                    pVBuffers[ID].VbD3D12 = (void*)g_pD3D12TextureManager->CreateVertexBufferGPU(Root + pVPool, dwNVertices * VERTEX_STRIDE);
+            }
+            else if (g_pD3D11Backend && g_pD3D11Backend->IsValid() && dwNVertices)
+            {
+                D3D11_BUFFER_DESC bd;
+                ZeroMemory(&bd, sizeof(bd));
+                bd.ByteWidth = dwNVertices * VERTEX_STRIDE;
+                bd.Usage     = D3D11_USAGE_IMMUTABLE;
+                bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+                D3D11_SUBRESOURCE_DATA srd;
+                ZeroMemory(&srd, sizeof(srd));
+                srd.pSysMem = Root + pVPool;
+                g_pD3D11Backend->GetDevice()->CreateBuffer(&bd, &srd, &pVBuffers[ID].VbD3D11);
+            }
+        }
+        // Artscout - 2026: [DX7-PURGE] D3D7 IDirect3DVertexBuffer7 Lock/Unlock path removed;
+        // the GPU (D3D11/D3D12) buffer is filled above.
+
         // Exit the Critical section
         UNLOCK_VB_MANAGER;
 
@@ -560,6 +608,8 @@ void CDXVbManager::ReleaseModel(DWORD ID)
     if (pVBuffers[ID].pVAT) DestroyVAT(pVBuffers[ID].pVbList, pVBuffers[ID].pVAT);
 
     if (pVBuffers[ID].pVbList) pVBuffers[ID].pVbList->Free += pVBuffers[ID].NVertices;
+
+    if (pVBuffers[ID].VbD3D11) { pVBuffers[ID].VbD3D11->Release(); pVBuffers[ID].VbD3D11 = NULL; }	// PHASE 4
 
     pVBuffers[ID].Vb = NULL;
     pVBuffers[ID].Nodes = NULL;
@@ -793,7 +843,13 @@ bool CDXVbManager::GetDrawItem(ObjectInstance **objInst, DWORD *ID, D3DXMATRIX *
     if ( not TotalDraws) return false;
 
     // if the Buffer has no VB assigned, we r at end of Used Buffer List... restart
-    if ( not pVbList[BufferToDraw].Vb)
+    // #16/#87: under the GPU path (D3D11 OR D3D12) .Vb is always NULL (geometry lives in the per-model
+    // VbD3D11/VbD3D12), so the 'buffer allocated' marker here is .Class (set in CreateVB for every path).
+    // Without this the buffer traversal stopped at buffer 0 -> only ~13-20 objects drew, the rest (buffers
+    // 1,2,...) were silently lost. #87: the guard used g_bUseD3D11, so under D3D12 (g_bUseD3D11==false) it
+    // fell back to the .Vb==NULL test -> ALL world objects vanished (cockpit uses the PitList, so it survived).
+    // Now gated by g_bUseGpu = D3D11||D3D12. The D3D7 path is untouched (as before -- by .Vb).
+    if ( g_bUseGpu ? ( not pVbList[BufferToDraw].Class) : ( not pVbList[BufferToDraw].Vb) )
     {
         BufferToDraw = 0;
         Traversed = true;
@@ -808,7 +864,8 @@ bool CDXVbManager::GetDrawItem(ObjectInstance **objInst, DWORD *ID, D3DXMATRIX *
         BufferToDraw++;
 
         // if the new Buffer has no VB assigned, we r at end of Used Buffer List...
-        if ( not pVbList[BufferToDraw].Vb)
+        // #16: D3D11 -- the allocated-buffer marker is .Class, not .Vb (NULL). See above.
+        if ( g_bUseGpu ? ( not pVbList[BufferToDraw].Class) : ( not pVbList[BufferToDraw].Vb) )
         {
             // CONSISTENCY CHECK - AVOID EVERLASTING LOOPS
             // if already traversed all buffer end here
@@ -859,12 +916,8 @@ bool CDXVbManager::GetDrawItem(ObjectInstance **objInst, DWORD *ID, D3DXMATRIX *
 // The simple buffer opening function
 void CDXVbManager::OpenSimpleBuffer(void)
 {
-    if ( not SimpleBuffer.VbPtr)
-    {
-        SimpleBuffer.Vb->Lock(DDLOCK_DISCARDCONTENTS bitor DDLOCK_NOSYSLOCK bitor DDLOCK_WAIT bitor DDLOCK_WRITEONLY, (void**)&TheVbManager.SimpleBuffer.VbPtr, NULL);
-        SimpleBuffer.Points = SimpleBuffer.Lines = 0;
-        SimpleBuffer.MaxLines = SimpleBuffer.MaxPoints = 0;
-    }
+    // Artscout - 2026: [DX7-PURGE] GPU-only: the DDraw7 "simple buffer" (Vb->Lock) is gone.
+    return;
 }
 
 

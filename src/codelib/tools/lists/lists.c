@@ -11,7 +11,7 @@
      KBR   12/03/96   added thread-safe code
    ---------------------------------------------------------- */
 
-#include <cISO646>
+#include <iso646.h>
 #include <stdio.h>
 #include <stdlib.h>
 

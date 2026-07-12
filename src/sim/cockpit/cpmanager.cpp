@@ -112,7 +112,7 @@ MEM_POOL gCockMemPool;
  exit(-1); \
  } \
  if (choice == IDRETRY) { \
- __asm int 3 \
+ __debugbreak(); \
  } \
 }
 #else
@@ -5493,16 +5493,10 @@ void CockpitManager::LoadCockpitDefaults(void)
     }
 
     // load the OTW View - Cobra - override OTW mode with cobra.cfg setting
-    if (g_bStartIn3Dpit)
-    {
-        OTWDriver.SetOTWDisplayMode(OTWDriverClass::Mode3DCockpit);
-    }
-    else
-    {
-        OTWDriver.SetOTWDisplayMode(
-            (OTWDriverClass::OTWDisplayMode)GetPrivateProfileInt(
-                "OTW", "Mode", OTWDriver.GetOTWDisplayMode(), dataFileName));
-    }
+    // PHASE 5/VR: FORCE the virtual 3D cockpit by default, bypassing the config
+    // (g_bStartIn3Dpit is bound to "StartIn3Dpit" and could be 0 in the config; the 2D cockpit
+    // is being removed for VR). Previously the default here fell through to external view from "OTW"/"Mode".
+    OTWDriver.SetOTWDisplayMode(OTWDriverClass::Mode3DCockpit);
 
     // Load the MFD States
     for (int i = 0; i < NUM_MFDS; i++)

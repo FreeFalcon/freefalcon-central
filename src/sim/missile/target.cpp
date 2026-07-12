@@ -76,11 +76,10 @@ void MissileClass::SetTarget(SimObjectType* newTarget)
             // We need to copy the data if this missile is on it's own.
             rdrDetect = newTarget->localData->rdrDetect;
             irSig = newTarget->localData->irSignature;
-#ifdef DEBUG
-            //newTarget = newTarget->Copy(OBJ_TAG, this);
-#else
+            // #47 UAF ROOT: the missile needs ITS OWN copy of the target node. In Debug the DEBUG branch was empty ->
+            // Copy() was skipped -> the missile shared another's node (mutating its localData) -> UAF on
+            // freeing the original. Copy UNCONDITIONALLY.
             newTarget = newTarget->Copy();
-#endif
             newTarget->localData->rdrDetect = rdrDetect;
             newTarget->localData->irSignature = irSig;
         }

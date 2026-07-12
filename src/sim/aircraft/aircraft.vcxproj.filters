@@ -2,11 +2,11 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{6d671fe6-661e-4550-b28c-10b0ee96e23c}</UniqueIdentifier>
+      <UniqueIdentifier>{002e8f51-de2b-4862-985f-c140cb14ca4c}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{25b4fed7-afb2-44ee-be89-d032c5e2000a}</UniqueIdentifier>
+      <UniqueIdentifier>{d32310c0-9fa7-4a77-a482-ca0c20e06565}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
     </Filter>
   </ItemGroup>
@@ -56,9 +56,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\aircrft.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\dofsnswitches.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

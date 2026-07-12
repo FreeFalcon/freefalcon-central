@@ -731,7 +731,8 @@ void AircraftClass::SetAutopilot(AutoPilotType flag)
             {
                 if (IO.AnalogIsUsed(AXIS_THROTTLE))
                 {
-                    // Retro 31Dec2003
+                    // Retro 31Dec2003 - #32: pwrlev/throtl already seeded from the physical throttle
+                    // (ReadThrottle) so the throttle-check baseline is the real position, not idle.
                     af->SetFlag(AirframeClass::EngineOff);
                     af->SetFlag(AirframeClass::EngineOff2);//TJL 01/22/04 multi-engine
                     af->SetFlag(AirframeClass::ThrottleCheck);

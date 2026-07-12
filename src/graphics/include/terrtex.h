@@ -65,11 +65,11 @@ typedef struct TileEntry
     int width[TEX_LEVELS]; // texture width in pixels
     int height[TEX_LEVELS]; // texture height in pixels
     BYTE *bits[TEX_LEVELS]; // Pixel data (NULL if not loaded)
-    UInt handle[TEX_LEVELS]; // Texture handle (NULL if not available)
+    DWORD_PTR handle[TEX_LEVELS]; // Texture handle (NULL if not available) // Artscout - 2026 (x64): pointer-sized
     int widthN[TEX_LEVELS];     // sfr: night texture width in pixels
     int heightN[TEX_LEVELS];    // sfr: night texture height in pixels
     BYTE *bitsN[TEX_LEVELS]; // Pixel data for Night tiles (NULL if not loaded)
-    UInt handleN[TEX_LEVELS]; // Texture handle for Night tiles (NULL if not available)
+    DWORD_PTR handleN[TEX_LEVELS]; // Texture handle for Night tiles (NULL if not available) // Artscout - 2026 (x64): pointer-sized
     int refCount[TEX_LEVELS]; // Reference count
 } TileEntry;
 
@@ -102,7 +102,7 @@ public:
     void Cleanup(void);
 
     // Function to force a single texture to override all others (for ACMI wireframe)
-    void SetOverrideTexture(UInt texHandle)
+    void SetOverrideTexture(DWORD_PTR texHandle) // Artscout - 2026 (x64): pointer-sized
     {
         overrideHandle = texHandle;
     };
@@ -111,6 +111,11 @@ public:
     void Request(TextureID texID);
     void Release(TextureID texID);
     void Select(ContextMPR *localContext, TextureID texID);
+
+    // Artscout - 2026: #78 return the DAY D3D11 SRV for a tile texID (activating it if needed) so the GPU
+    // terrain path can bind ground tiles itself -- it draws its own meshes, not via Select/ContextMPR.
+    // Returns NULL if not loadable (caller falls back to flat color).
+    void *GetTileSRV(TextureID texID);
 
     // Misc functions
     void RestoreAll();
@@ -134,7 +139,7 @@ protected:
     int numSets;
     SetEntry *TextureSets; // Array of texture set records
 
-    UInt overrideHandle; // If nonNull, use this handle for ALL texture selects
+    DWORD_PTR overrideHandle; // If nonNull, use this handle for ALL texture selects // Artscout - 2026 (x64): pointer-sized
 
     Tcolor lightColor; // Current light color
 

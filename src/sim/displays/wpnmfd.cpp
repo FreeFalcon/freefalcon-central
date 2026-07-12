@@ -53,7 +53,7 @@ void WpnMfdDrawable::DisplayInit(ImageBuffer* image)
     if ((g_bGreyMFD) and ( not bNVGmode))
         privateDisplay->SetColor(GetMfdColor(MFD_WHITE));
     else
-        privateDisplay->SetColor(0xff00ff00);
+        privateDisplay->SetColor(0xffffffff);
 
     ((Render3D*)privateDisplay)->SetFOV(6.0f * DTR);
 }
@@ -162,7 +162,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
         if ((g_bGreyMFD) and ( not bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
-            display->SetColor(0xff00ff00);
+            display->SetColor(0xffffffff);
 
         if (mavDisplay and ( not ((MissileClass*)Sms->GetCurrentWeapon())->Covered or playerAC->AutopilotType() == AircraftClass::CombatAP) and Sms->MavCoolTimer <= 0.0F)
         {
@@ -187,7 +187,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
         if ((g_bGreyMFD) and ( not bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
-            display->SetColor(0xff00ff00);
+            display->SetColor(0xffffffff);
 
         //SMSMissiles
         DrawHDPT(display, Sms);
@@ -200,7 +200,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
         if ((g_bGreyMFD) and ( not bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
-            display->SetColor(0xff00ff00);
+            display->SetColor(0xffffffff);
 
         //OSB's
         OSBLabels(display);
@@ -216,7 +216,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
         if ((g_bGreyMFD) and ( not bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
-            display->SetColor(0xff00ff00);
+            display->SetColor(0xffffffff);
 
         DrawBullseyeCircle(display, cX, cY);
     }

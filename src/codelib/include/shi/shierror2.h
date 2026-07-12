@@ -57,7 +57,7 @@ extern int shiAssertsOn, shiHardCrashOn;
  if (choice == IDABORT) { \
  exit(-1); \
  } else if (choice == IDRETRY) { \
- DebugBreak(); \
+ /*DebugBreak();*/ \
  } else if (choice == IDIGNORE) { \
  skipThisOne = TRUE; \
  } \

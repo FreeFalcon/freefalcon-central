@@ -8,8 +8,11 @@
 #include "stdafx.h"
 #include "Image.h"
 #include "Tex.h"
-#include "dxtlib.h"
 #include "PalBank.h"
+#include "Graphics/DXEngine/d3d11/D3D11TextureManager.h"	// PHASE 3
+#include "Graphics/DXEngine/d3d12/D3D12TextureManager.h"	// #DX12 п.1
+#include "Graphics/DXEngine/D3D11Backend.h"	// PHASE 5 (RTT)
+#include <d3d11.h>	// PHASE 5 (RTT)
 #include "FalcLib/include/playerop.h"
 #include "FalcLib/include/dispopts.h"
 
@@ -22,10 +25,6 @@ static DXContext *rc = NULL;
 
 extern bool g_bEnableNonPersistentTextures;
 extern bool g_bShowMipUsage;
-extern int fileout;
-extern void ConvertToNormalMap(int kerneltype, int colorcnv, int alpha, float scale, int minz, bool wrap, bool bInvertX, bool bInvertY, int w, int h, int bits, void * data);
-extern void ReadDTXnFile(unsigned long count, void * buffer);
-extern void WriteDTXnFile(unsigned long count, void *buffer);
 
 #define ARGB_TEXEL_SIZE 4
 #define ARGB_TEXEL_BITS 32
@@ -223,7 +222,8 @@ BOOL Texture::LoadImage(char *filename, DWORD newFlags, BOOL addDefaultPath)
     // We only support square textures
     ShiAssert(texFile.image.width == texFile.image.height)
     dimensions = texFile.image.width;
-    ShiAssert(dimensions <= 2048);
+    // Artscout - 2026: the 2048 cap was a DX7 limit; the modern D3D11/12 backends handle 4096/8192.
+    ShiAssert(dimensions <= 8192);
 
     if (texFile.image.palette)
     {
@@ -311,6 +311,15 @@ BOOL Texture::LoadImage(char *filename, DWORD newFlags, BOOL addDefaultPath)
 
             case 2048:
                 flags or_eq MPR_TI_2048;
+                break;
+
+            // Artscout - 2026: lifted DX7 2048 cap -- modern backends handle these.
+            case 4096:
+                flags or_eq MPR_TI_4096;
+                break;
+
+            case 8192:
+                flags or_eq MPR_TI_8192;
                 break;
 
             default:
@@ -412,6 +421,10 @@ bool Texture::CreateTexture(char *strName)
             width = 1024;
         else if (flags bitand MPR_TI_2048)
             width = 2048;
+        else if (flags bitand MPR_TI_4096)   // Artscout - 2026: lifted DX7 2048 cap
+            width = 4096;
+        else if (flags bitand MPR_TI_8192)
+            width = 8192;
 
         texHandle = new TextureHandle();
         texHandle->Create(strName, flags, 32, static_cast<UInt16>(width), static_cast<UInt16>(width));
@@ -518,6 +531,7 @@ TextureHandle::TextureHandle()
     m_pPalAttach = NULL;
     m_pImageData = NULL;
     m_nImageDataStride = -1;
+    m_pD3D11Tex = NULL;
 
 #ifdef _DEBUG
     InterlockedIncrement((long *)&m_dwNumHandles); // Number of instances
@@ -532,19 +546,8 @@ TextureHandle::~TextureHandle()
     //InterlockedExchangeAdd((long *)&m_dwTotalBytes,-sizeof(*this));
     //InterlockedExchangeAdd((long *)&m_dwTotalBytes,-m_strName.size());
 
-    if (m_pDDS)
-    {
-        DDSURFACEDESC2 ddsd;
-        ZeroMemory(&ddsd, sizeof(ddsd));
-        ddsd.dwSize = sizeof(ddsd);
-        HRESULT hr = m_pDDS->GetSurfaceDesc(&ddsd);
-        ShiAssert(SUCCEEDED(hr));
-
-        if (ddsd.ddsCaps.dwCaps bitand DDSCAPS_SYSTEMMEMORY)
-        {
-            //InterlockedExchangeAdd((long *)&m_dwTotalBytes,-(ddsd.lPitch * ddsd.dwHeight));
-        }
-    }
+    // Artscout - 2026: [DX7-PURGE] the DDraw GetSurfaceDesc byte-accounting is gone
+    // (under a GPU backend m_pDDS is an SRV handle, not a DirectDraw surface).
 
     if (m_pImageData and m_bImageDataOwned)
     {
@@ -555,10 +558,24 @@ TextureHandle::~TextureHandle()
 
 #endif
 
-    // JB 010318 CTD
-    if (m_pDDS and not F4IsBadReadPtr(m_pDDS, sizeof(IDirectDrawSurface7))) m_pDDS->Release();
-
-    m_pDDS = NULL;
+    // #DX12: under D3D12 m_pDDS is a persistent D3D12Texture* (NOT a COM object) -> free it via the manager,
+    // never ->Release() (that would call a garbage vtable). D3D11: the SRV/tex are IUnknown, release below.
+    {
+        extern bool g_bUseD3D12;
+        if (g_bUseD3D12)
+        {
+            if (m_pDDS and g_pD3D12TextureManager) g_pD3D12TextureManager->Free((D3D12Texture*)m_pDDS);
+            m_pDDS = NULL; m_pD3D11Tex = NULL;
+        }
+        else
+        {
+            // Artscout - 2026: [DX7-PURGE] under D3D11 m_pDDS holds the SRV (IUnknown) -- release it as such.
+            if (m_pDDS) ((IUnknown*)m_pDDS)->Release();
+            m_pDDS = NULL;
+            // PHASE 3: release the D3D11 texture (m_pDDS already released the SRV above -- it's IUnknown)
+            if (m_pD3D11Tex) { ((IUnknown*)m_pD3D11Tex)->Release(); m_pD3D11Tex = NULL; }
+        }
+    }
 
     if (m_pPalAttach) m_pPalAttach->DetachFromTexture(this);
 
@@ -586,228 +603,279 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
     m_nWidth = width;
     m_nHeight = height;
 
-    try
+    // PHASE 3 (D3D7->D3D11): engine textures are stubbed (m_pDDS=NULL), startup proceeds; the real
+    // load into a D3D11 texture is later. UI menus composite on the CPU.
+    extern bool g_bUseD3D11, g_bUseD3D12;
+    if (g_bUseD3D11 or g_bUseD3D12)   // #DX12: stub engine textures like D3D11 (RTT self-guards on g_pD3D11Backend)
     {
-        DDSURFACEDESC2 ddsd;
-        ZeroMemory(&ddsd, sizeof(ddsd));
+        m_pDDS = NULL;
+        m_pD3D11Tex = NULL;
+        m_pD3D11RTV = NULL;
+        if      (info & MPR_TI_DXT1) m_eSurfFmt = D3DX_SF_DXT1;
+        else if (info & MPR_TI_DXT3) m_eSurfFmt = D3DX_SF_DXT3;
+        else if (info & MPR_TI_DXT5) m_eSurfFmt = D3DX_SF_DXT5;
+        else                         m_eSurfFmt = D3DX_SF_A8R8G8B8;
 
-        ddsd.dwSize = sizeof(ddsd);
-        ddsd.dwFlags = DDSD_CAPS bitor DDSD_PIXELFORMAT bitor DDSD_WIDTH bitor DDSD_HEIGHT;
-        ddsd.ddsCaps.dwCaps = DDSCAPS_TEXTURE;
-        ddsd.dwWidth  = m_nWidth;
-        ddsd.dwHeight = m_nHeight;
-
-        if (info bitand MPR_TI_MIPMAP)
+        // #DX12 п.3 (RTT): a render-target texture on D3D12 (MFD/HUD draw into it; the panel samples it via
+        // DrawRttQuad). m_pDDS holds the D3D12Texture* (RTV+SRV); the backend binds it via BindSceneRtt.
+        if ((dwFlags bitand FLAG_RENDERTARGET) and g_bUseD3D12 and g_pD3D12TextureManager and width > 0 and height > 0)
         {
-            ddsd.dwMipMapCount = 5;
-            ddsd.ddsCaps.dwCaps or_eq DDSCAPS_MIPMAP bitor DDSCAPS_COMPLEX;
-        }
-        else
-        {
-            ddsd.dwMipMapCount = 1;
-        }
-
-        // JB 010326 CTD
-        //if( F4IsBadReadPtr(m_pD3DHWDeviceDesc,sizeof(_D3DDeviceDesc7)) )
-        //{
-        // ReportTextureLoadError("Bad Read Pointer");
-        // return false;
-        //}
-
-        // Force power of 2
-        if ((info bitand MPR_TI_MIPMAP) or (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_POW2))
-        {
-            int nMsb;
-
-            nMsb = FindMsb(ddsd.dwWidth);
-
-            if (ddsd.dwWidth bitand compl (1 << nMsb)) ddsd.dwWidth = 1 << (nMsb + 1);
-
-            nMsb = FindMsb(ddsd.dwHeight);
-
-            if (ddsd.dwHeight bitand compl (1 << nMsb)) ddsd.dwHeight = 1 << (nMsb + 1);
-        }
-
-        // Force square
-        if (ddsd.dwWidth not_eq ddsd.dwHeight and (m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps bitand D3DPTEXTURECAPS_SQUAREONLY))
-        {
-            ddsd.dwWidth = ddsd.dwHeight = max(ddsd.dwWidth, ddsd.dwHeight);
-        }
-
-        if (dwFlags bitand FLAG_RENDERTARGET)
-        {
-            // Can't render to managed surfaces
-            dwFlags or_eq FLAG_NOTMANAGED bitor FLAG_MATCHPRIMARY;
-
-            // HW devices cannot render to system memory surfaces
-            if (rc and (rc->m_eDeviceCategory >= DXContext::D3DDeviceCategory_Hardware))
+            D3D12Texture* hh = g_pD3D12TextureManager->Alloc();
+            if (hh and g_pD3D12TextureManager->CreateRenderTarget(*hh, width, height))
             {
-                dwFlags or_eq FLAG_INLOCALVIDMEM;
+                m_pDDS = (IDirectDrawSurface7*)hh;
+                m_nActualWidth = width; m_nActualHeight = height;
             }
-
-            ddsd.ddsCaps.dwCaps or_eq DDSCAPS_3DDEVICE;
+            else if (hh) g_pD3D12TextureManager->Free(hh);
+            return true;
         }
 
-        // Turn on texture management for HW devices
-        if (rc and (rc->m_eDeviceCategory >= DXContext::D3DDeviceCategory_Hardware))
+        // PHASE 5 (RTT): a render-target texture (3D cockpit: MFD/HUD draw into it,
+        // the panel samples it via DrawRttQuad). RTV+SRV, format like the backbuffer.
+        if ((dwFlags bitand FLAG_RENDERTARGET) and g_pD3D11Backend and width > 0 and height > 0)
         {
-            if ( not (dwFlags bitand FLAG_NOTMANAGED))
+            ID3D11Device* dev = g_pD3D11Backend->GetDevice();
+            if (dev)
             {
-                ddsd.ddsCaps.dwCaps2 or_eq DDSCAPS2_TEXTUREMANAGE;
-
-                // Do not create system memory copies
-                if (g_bEnableNonPersistentTextures)
-                    ddsd.ddsCaps.dwCaps2 or_eq DDSCAPS2_DONOTPERSIST;
-            }
-            // Note: mutually exclusive with texture management
-            else if (dwFlags bitand FLAG_INLOCALVIDMEM)
-            {
-                ddsd.ddsCaps.dwCaps or_eq DDSCAPS_VIDEOMEMORY;
-            }
-        }
-        else
-        {
-            ddsd.ddsCaps.dwCaps or_eq DDSCAPS_SYSTEMMEMORY;
-        }
-
-        if (dwFlags bitand FLAG_HINT_STATIC)
-        {
-            ddsd.ddsCaps.dwCaps2 or_eq DDSCAPS2_HINTSTATIC;
-        }
-
-        if (dwFlags bitand FLAG_HINT_DYNAMIC)
-        {
-            ddsd.ddsCaps.dwCaps2 or_eq DDSCAPS2_HINTDYNAMIC;
-        }
-
-        if (m_dwFlags bitand MPR_TI_PALETTE)
-        {
-            ShiAssert(m_pPalAttach);
-
-            if (m_dwFlags bitand MPR_TI_ALPHA)
-            {
-                if (m_dwFlags bitand MPR_TI_CHROMAKEY)
+                D3D11_TEXTURE2D_DESC td; ZeroMemory(&td, sizeof(td));
+                td.Width = width; td.Height = height; td.MipLevels = 1; td.ArraySize = 1;
+                td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+                td.SampleDesc.Count = 1;
+                td.Usage = D3D11_USAGE_DEFAULT;
+                td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+                ID3D11Texture2D* tex = NULL;
+                if (SUCCEEDED(dev->CreateTexture2D(&td, NULL, &tex)) and tex)
                 {
-                    ddsd.ddpfPixelFormat = m_arrPF[TEX_CAT_CHROMA_ALPHA];
-                }
-                else
-                {
-                    ddsd.ddpfPixelFormat = m_arrPF[TEX_CAT_ALPHA];
-                }
-            }
-            else if (m_dwFlags bitand MPR_TI_CHROMAKEY)
-            {
-                ddsd.ddpfPixelFormat = m_arrPF[TEX_CAT_CHROMA];
-            }
-            else
-            {
-                ddsd.ddpfPixelFormat = m_arrPF[TEX_CAT_DEFAULT];
-            }
-        }
-        else
-        {
-            if (dwFlags bitand FLAG_MATCHPRIMARY)
-            {
-                IDirectDrawSurface7Ptr pDDS;
-                CheckHR(m_pD3DD->GetRenderTarget(&pDDS));
-
-                IDirectDraw7Ptr pDD;
-                CheckHR(pDDS->GetDDInterface((void**)&pDD));
-
-                DDSURFACEDESC2 ddsdMode;
-                ZeroMemory(&ddsdMode, sizeof(ddsdMode));
-                ddsdMode.dwSize = sizeof(ddsdMode);
-
-                CheckHR(pDD->GetDisplayMode(&ddsdMode));
-                ddsd.ddpfPixelFormat = ddsdMode.ddpfPixelFormat;
-            }
-            else if (m_dwFlags bitand MPR_TI_DDS)
-            {
-                ddsd.ddpfPixelFormat.dwSize = 32;
-                ddsd.ddpfPixelFormat.dwFlags or_eq DDPF_FOURCC;
-
-                if (m_dwFlags bitand MPR_TI_DXT1)
-                {
-                    ddsd.ddpfPixelFormat.dwFourCC = MAKEFOURCC('D', 'X', 'T', '1');
-                }
-                else if (m_dwFlags bitand MPR_TI_DXT3)
-                {
-                    ddsd.ddpfPixelFormat.dwFourCC = MAKEFOURCC('D', 'X', 'T', '3');
-                }
-                else if (m_dwFlags bitand MPR_TI_DXT5)
-                {
-                    ddsd.ddpfPixelFormat.dwFourCC = MAKEFOURCC('D', 'X', 'T', '5');
+                    ID3D11RenderTargetView*   rtv = NULL;
+                    ID3D11ShaderResourceView* srv = NULL;
+                    dev->CreateRenderTargetView(tex, NULL, &rtv);
+                    dev->CreateShaderResourceView(tex, NULL, &srv);
+                    m_pD3D11Tex  = tex;
+                    m_pD3D11RTV  = rtv;
+                    m_pDDS       = (IDirectDrawSurface7*)srv;
+                    m_nActualWidth = width; m_nActualHeight = height;
                 }
             }
         }
-
-        // Create the surface
-        HRESULT hr = rc->m_pDD->CreateSurface(&ddsd, &m_pDDS, NULL);
-
-        if (FAILED(hr))
-        {
-            if (hr == DDERR_OUTOFVIDEOMEMORY)
-            {
-                MonoPrint("TextureHandle::Create - EVICTING MANAGED TEXTURES \n");
-
-                // If we are out of video memory, evict all managed textures and retry
-                CheckHR(rc->m_pD3D->EvictManagedTextures());
-                CheckHR(rc->m_pDD->CreateSurface(&ddsd, &m_pDDS, NULL));
-            }
-            else
-            {
-                throw _com_error(hr);
-            }
-        }
-
-        m_eSurfFmt = D3DXMakeSurfaceFormat(&ddsd.ddpfPixelFormat);
-
-        m_nActualWidth = ddsd.dwWidth;
-        m_nActualHeight = ddsd.dwHeight;
-
-        // Attach DirectDraw palette if real palettized texture format created
-        switch (m_eSurfFmt)
-        {
-            case D3DX_SF_PALETTE8:
-            {
-                if (m_pDDS and m_pPalAttach)
-                    m_pDDS->SetPalette(m_pPalAttach->m_pIDDP);
-
-                break;
-            }
-        }
-
-#ifdef _DEBUG
-
-        if (m_pDDS)
-        {
-            DDSURFACEDESC2 ddsd;
-            ZeroMemory(&ddsd, sizeof(ddsd));
-            ddsd.dwSize = sizeof(ddsd);
-            HRESULT hr = m_pDDS->GetSurfaceDesc(&ddsd);
-            ShiAssert(SUCCEEDED(hr));
-
-#ifdef DEBUG_TEXTURE
-            MonoPrint("Texture: %s [%s] created in %s memory\n",
-                      strName, arrSurfFmt2String[m_eSurfFmt],
-                      ddsd.ddsCaps.dwCaps bitand DDSCAPS_SYSTEMMEMORY  ? "SYSTEM" :
-                      (ddsd.ddsCaps.dwCaps bitand DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"));
-#endif
-
-            if (ddsd.ddsCaps.dwCaps bitand DDSCAPS_SYSTEMMEMORY)
-                InterlockedExchangeAdd((long *)&m_dwTotalBytes, ddsd.lPitch * ddsd.dwHeight);
-        }
-
-#endif
-
         return true;
     }
 
-    catch (_com_error e)
+    // Artscout - 2026: [DX7-PURGE] DDraw CreateSurface texture path removed; GPU textures are
+    // created above (D3D11/D3D12 texture manager). Non-GPU is unreachable.
+    return false;
+}
+
+// PHASE 5: resolves an 8-bit palettized source (indices) into a D3D11 RGBA texture (tex+srv).
+// Factored out of Load so Reload() goes the same path -- rebaking on a palette change
+// (Translate3D). In D3D7 indices lived on the GPU and a palette change went via the hardware
+// SetEntries; in D3D11 there is no hardware palette, so on every real palette change
+// we must rebake RGBA from the saved source indices.
+// #DX12 п.1: create an engine texture on the ACTIVE GPU backend. On success sets *outHandle to the opaque
+// handle stored in TextureHandle::m_pDDS -- a D3D11 SRV under D3D11, a persistent D3D12Texture* under D3D12 --
+// and *outTex to the D3D11 texture (NULL under D3D12). SelectTexture/SetTexture reinterpret the handle per API.
+static bool EngineTexCreate(void** outHandle, void** outTex, int w, int h, int fmt, const TexMipData* mips, int mipCount)
+{
+    extern bool g_bUseD3D12;
+    if (g_bUseD3D12)
     {
-        ReportTextureLoadError(e.Error());
-        return false;
+        if ( not g_pD3D12TextureManager or not g_pD3D12TextureManager->IsValid()) return false;
+        D3D12Texture* hh = g_pD3D12TextureManager->Alloc();
+        if ( not hh) return false;
+        if ( not g_pD3D12TextureManager->Create(*hh, w, h, fmt, mips, mipCount)) { g_pD3D12TextureManager->Free(hh); return false; }
+        *outHandle = hh; *outTex = NULL; return true;
     }
+    if ( not g_pD3D11TextureManager or not g_pD3D11TextureManager->IsValid()) return false;
+    D3D11Texture out;
+    if ( not g_pD3D11TextureManager->Create(out, w, h, fmt, mips, mipCount)) return false;
+    *outHandle = out.srv; *outTex = out.tex; return true;
+}
+// ===========================================================================================
+// Artscout - 2026: #78 terrain -- BC1/BC3 -> RGBA8 decode + box mip-chain generation. The terrain
+// tiles ship as SINGLE-MIP DXT1; with no mip chain the minified far ground aliases ("boils"/moire,
+// distant roads flicker) and anisotropic filtering alone can't fully kill it. Decode the top BC mip,
+// box-downsample a full RGBA mip chain, and upload RGBA8 + mips. Gated to SMALL textures (terrain
+// tiles) so large cockpit/object atlases stay compressed (VRAM). D3D12 only. No BC decoder existed
+// in the tree (NVTT only encodes), so this is a compact self-contained one (BC1/BC2/BC3).
+static inline void TexBc565(unsigned c, int& r, int& g, int& b)
+{ r = (c >> 11) & 0x1F; r = (r << 3) | (r >> 2); g = (c >> 5) & 0x3F; g = (g << 2) | (g >> 4); b = c & 0x1F; b = (b << 3) | (b >> 2); }
+
+// decode one 4x4 BC block -> 16 RGBA8 pixels (row-major; R in the low byte for DXGI_FORMAT_R8G8B8A8_UNORM).
+static void TexDecodeBCBlock(const unsigned char* blk, int dxgiFmt, unsigned out[16])
+{
+    const bool bc1 = (dxgiFmt == DXGI_FORMAT_BC1_UNORM);
+    const unsigned char* col = bc1 ? blk : (blk + 8);   // BC2/BC3 put alpha first (8 bytes), then the BC1 color block
+    unsigned c0 = col[0] | (col[1] << 8), c1 = col[2] | (col[3] << 8);
+    int r[4], g[4], b[4];
+    TexBc565(c0, r[0], g[0], b[0]);  TexBc565(c1, r[1], g[1], b[1]);
+    const bool threeCol = bc1 && (c0 <= c1);
+    if (!threeCol) { r[2]=(2*r[0]+r[1])/3; g[2]=(2*g[0]+g[1])/3; b[2]=(2*b[0]+b[1])/3;
+                     r[3]=(r[0]+2*r[1])/3; g[3]=(g[0]+2*g[1])/3; b[3]=(b[0]+2*b[1])/3; }
+    else          { r[2]=(r[0]+r[1])/2; g[2]=(g[0]+g[1])/2; b[2]=(b[0]+b[1])/2; r[3]=g[3]=b[3]=0; }
+    const unsigned idx = col[4] | (col[5]<<8) | (col[6]<<16) | ((unsigned)col[7]<<24);
+    int av[16];
+    if (dxgiFmt == DXGI_FORMAT_BC3_UNORM)
+    {
+        int a0 = blk[0], a1 = blk[1], at[8]; at[0]=a0; at[1]=a1;
+        if (a0 > a1) { for (int i=2;i<8;i++) at[i]=((8-i)*a0 + (i-1)*a1)/7; }
+        else         { for (int i=2;i<6;i++) at[i]=((6-i)*a0 + (i-1)*a1)/5; at[6]=0; at[7]=255; }
+        unsigned long long ab = 0; for (int i=0;i<6;i++) ab |= ((unsigned long long)blk[2+i]) << (8*i);
+        for (int i=0;i<16;i++) av[i] = at[(ab >> (3*i)) & 7];
+    }
+    else if (dxgiFmt == DXGI_FORMAT_BC2_UNORM)
+    { for (int i=0;i<16;i++) { int nib = (blk[i/2] >> ((i&1)*4)) & 0xF; av[i] = nib*17; } }
+    else
+    { for (int i=0;i<16;i++) av[i] = (threeCol && (((idx >> (2*i)) & 3) == 3)) ? 0 : 255; }
+    for (int i=0;i<16;i++)
+    { int ci = (idx >> (2*i)) & 3; out[i] = (unsigned)r[ci] | ((unsigned)g[ci]<<8) | ((unsigned)b[ci]<<16) | ((unsigned)av[i]<<24); }
+}
+
+static void TexDecodeBCImage(const unsigned char* bc, int w, int h, int dxgiFmt, unsigned* rgba)
+{
+    const int bw = (w+3)/4, bh = (h+3)/4, bb = (dxgiFmt == DXGI_FORMAT_BC1_UNORM) ? 8 : 16;
+    for (int by=0; by<bh; ++by) for (int bx=0; bx<bw; ++bx)
+    {
+        unsigned blk[16]; TexDecodeBCBlock(bc + (size_t)(by*bw+bx)*bb, dxgiFmt, blk);
+        for (int py=0; py<4; ++py) for (int px=0; px<4; ++px)
+        { int x=bx*4+px, y=by*4+py; if (x<w && y<h) rgba[(size_t)y*w + x] = blk[py*4+px]; }
+    }
+}
+
+static void TexBoxDown(const unsigned* s, int sw, int sh, unsigned* d, int dw, int dh)
+{
+    for (int y=0;y<dh;++y) for (int x=0;x<dw;++x)
+    {
+        int x0=x*2, y0=y*2, x1=(x0+1<sw)?x0+1:sw-1, y1=(y0+1<sh)?y0+1:sh-1;
+        unsigned a=s[(size_t)y0*sw+x0], b=s[(size_t)y0*sw+x1], c=s[(size_t)y1*sw+x0], e=s[(size_t)y1*sw+x1], o=0;
+        for (int ch=0; ch<4; ++ch)
+        { int m = ((a>>(8*ch))&0xFF)+((b>>(8*ch))&0xFF)+((c>>(8*ch))&0xFF)+((e>>(8*ch))&0xFF); o |= (unsigned)(m>>2) << (8*ch); }
+        d[(size_t)y*dw+x] = o;
+    }
+}
+
+static bool EngineTexCreateBCnMipped(void** outHandle, void** outTex, int w, int h, int dxgiFmt, const void* blob)
+{
+    extern bool g_bUseD3D12;
+    if (!g_bUseD3D12 || !g_pD3D12TextureManager || !g_pD3D12TextureManager->IsValid()) return false;
+    if (w < 1 || h < 1) return false;
+
+    int mipCount = 1; { int mw=w, mh=h; while (mw>1 || mh>1) { mw = (mw>1)?mw>>1:1; mh = (mh>1)?mh>>1:1; ++mipCount; } }
+    if (mipCount > 15) mipCount = 15;
+
+    unsigned** lv = (unsigned**)malloc((size_t)mipCount * sizeof(unsigned*));
+    int* lw = (int*)malloc((size_t)mipCount * sizeof(int));
+    int* lh = (int*)malloc((size_t)mipCount * sizeof(int));
+    TexMipData* mips = (TexMipData*)malloc((size_t)mipCount * sizeof(TexMipData));
+    if (!lv || !lw || !lh || !mips) { free(lv); free(lw); free(lh); free(mips); return false; }
+
+    lw[0]=w; lh[0]=h; lv[0] = (unsigned*)malloc((size_t)w*h*4);
+    if (!lv[0]) { free(lv); free(lw); free(lh); free(mips); return false; }
+    TexDecodeBCImage((const unsigned char*)blob, w, h, dxgiFmt, lv[0]);
+    for (int i=1;i<mipCount;++i)
+    {
+        lw[i] = (lw[i-1]>1)?lw[i-1]>>1:1; lh[i] = (lh[i-1]>1)?lh[i-1]>>1:1;
+        lv[i] = (unsigned*)malloc((size_t)lw[i]*lh[i]*4);
+        if (!lv[i]) { mipCount = i; break; }   // out of memory -> upload what we have
+        TexBoxDown(lv[i-1], lw[i-1], lh[i-1], lv[i], lw[i], lh[i]);
+    }
+    for (int i=0;i<mipCount;++i) { mips[i].data = lv[i]; mips[i].rowPitch = lw[i]*4; }
+
+    D3D12Texture* hh = g_pD3D12TextureManager->Alloc();
+    bool ok = hh && g_pD3D12TextureManager->Create(*hh, w, h, DXGI_FORMAT_R8G8B8A8_UNORM, mips, mipCount);
+    if (hh && !ok) g_pD3D12TextureManager->Free(hh);
+
+    for (int i=0;i<mipCount;++i) free(lv[i]);
+    free(lv); free(lw); free(lh); free(mips);
+    if (!ok) return false;
+    *outHandle = hh; *outTex = NULL; return true;
+}
+
+static bool EngineTexCreateBCn(void** outHandle, void** outTex, int w, int h, int fmt, const void* blob, int bytes)
+{
+    extern bool g_bUseD3D12;
+    if (g_bUseD3D12)
+    {
+        if ( not g_pD3D12TextureManager or not g_pD3D12TextureManager->IsValid()) return false;
+        D3D12Texture* hh = g_pD3D12TextureManager->Alloc();
+        if ( not hh) return false;
+        if ( not g_pD3D12TextureManager->CreateBCn(*hh, w, h, fmt, blob, bytes)) { g_pD3D12TextureManager->Free(hh); return false; }
+        *outHandle = hh; *outTex = NULL; return true;
+    }
+    if ( not g_pD3D11TextureManager or not g_pD3D11TextureManager->IsValid()) return false;
+    D3D11Texture out;
+    if ( not g_pD3D11TextureManager->CreateBCn(out, w, h, fmt, blob, bytes)) return false;
+    *outHandle = out.srv; *outTex = out.tex; return true;
+}
+
+static bool ResolvePaletteToGpu(void** outHandle, void** outTex, int w, int h, int stride,
+                                const UInt8 *src, const DWORD *pal, int nEnt,
+                                DWORD flags, DWORD chromaKey)
+{
+    if (w <= 0 or h <= 0 or not src) return false;
+    if (stride <= 0) stride = w;
+
+    const int fmt = D3D11TextureManager::DxgiFormatFromMPR(flags);
+    const bool useChroma = (flags bitand MPR_TI_CHROMAKEY) != 0;
+    const bool useAlpha  = (flags bitand MPR_TI_ALPHA) != 0;
+    const DWORD chromaRGB = chromaKey & 0x00FFFFFF;
+
+    // Alpha rules mirror the D3D7 path: chroma entry -> alpha 0 (alpha-test discards),
+    // MPR_TI_ALPHA -> alpha from the palette, else opaque. pal[i] is already swizzled to 0xAARRGGBB.
+    DWORD resolved[256];
+    for (int i = 0; i < 256; ++i)
+    {
+        DWORD c = (pal and i < nEnt) ? pal[i] : 0xFF000000;
+        if (useChroma and (c & 0x00FFFFFF) == chromaRGB) c &= 0x00FFFFFF;  // transparent
+        else if (useAlpha) c = c;                                          // alpha from the palette
+        else c |= 0xFF000000;                                             // opaque
+        resolved[i] = c;
+    }
+
+    DWORD *rgba = (DWORD*)malloc((size_t)w * h * 4);
+    if ( not rgba) return false;
+    for (int y = 0; y < h; ++y)
+        for (int x = 0; x < w; ++x)
+            rgba[y * w + x] = resolved[src[y * stride + x] & 0xFF];
+
+    // Artscout - 2026: #78 -- the theater terrain tiles are PALETTE (this path), NOT DXT, so the DXT-only
+    // mip path never reached them and the far ground kept aliasing/shimmering. The RGBA is already resolved
+    // here, so just box-downsample a mip chain and upload RGBA + mips. Cap at 2048: terrain H-tiles are
+    // 512/1024/2048 (terrtex getDDSWidth) -- the earlier 512 cap left the 1024/2048 near/mid tiles single-mip,
+    // so they kept boiling under motion and MipLODBias had only mip 0 to clamp to. UI/HUD atlases are sampled
+    // 1:1 (mip 0), so giving them a chain too is harmless (only +33% memory). D3D12 only.
+    extern bool g_bUseD3D12;
+    bool ok;
+    if (g_bUseD3D12 and w >= 2 and h >= 2 and w <= 2048 and h <= 2048)
+    {
+        int mc = 1; { int mw=w, mh=h; while (mw>1 || mh>1) { mw=(mw>1)?mw>>1:1; mh=(mh>1)?mh>>1:1; ++mc; } }
+        if (mc > 15) mc = 15;
+        unsigned** lv = (unsigned**)malloc((size_t)mc*sizeof(unsigned*));
+        int* lw = (int*)malloc((size_t)mc*sizeof(int));
+        int* lh = (int*)malloc((size_t)mc*sizeof(int));
+        TexMipData* mips = (TexMipData*)malloc((size_t)mc*sizeof(TexMipData));
+        if (lv && lw && lh && mips)
+        {
+            lv[0] = (unsigned*)rgba; lw[0] = w; lh[0] = h;
+            for (int i=1;i<mc;++i)
+            {
+                lw[i] = (lw[i-1]>1)?lw[i-1]>>1:1; lh[i] = (lh[i-1]>1)?lh[i-1]>>1:1;
+                lv[i] = (unsigned*)malloc((size_t)lw[i]*lh[i]*4);
+                if (!lv[i]) { mc = i; break; }
+                TexBoxDown(lv[i-1], lw[i-1], lh[i-1], lv[i], lw[i], lh[i]);
+            }
+            for (int i=0;i<mc;++i) { mips[i].data = lv[i]; mips[i].rowPitch = lw[i]*4; }
+            ok = EngineTexCreate(outHandle, outTex, w, h, fmt, mips, mc);
+            for (int i=1;i<mc;++i) free(lv[i]);   // lv[0] == rgba, freed below
+        }
+        else ok = false;
+        free(lv); free(lw); free(lh); free(mips);
+    }
+    else
+    {
+        TexMipData mip = { rgba, w * 4 };
+        ok = EngineTexCreate(outHandle, outTex, w, h, fmt, &mip, 1);
+    }
+    free(rgba);
+    return ok;
 }
 
 bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotLoadBits, bool bDoNotCopyBits, int nImageDataStride)
@@ -818,6 +886,150 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
     if ( not TexBuffer)
     {
         return false;
+    }
+
+    extern bool g_bUseD3D11, g_bUseD3D12;
+    if (g_bUseD3D11 or g_bUseD3D12)
+    {
+        // PHASE 3/#DX12: real load into a GPU texture on the ACTIVE backend (D3D11 SRV or D3D12 texture).
+        // Immutable + thread-safe on the loader thread (D3D11: CreateTexture2D w/ initial data; D3D12: the
+        // texture manager uploads via its own serialized queue). No active manager -> no-op (menu CPU-composited).
+        if (g_bUseD3D12 ? ( not g_pD3D12TextureManager or not g_pD3D12TextureManager->IsValid())
+                        : ( not g_pD3D11TextureManager or not g_pD3D11TextureManager->IsValid())) return true;
+
+        const int w = m_nWidth, h = m_nHeight;
+        if (w <= 0 or h <= 0) return true;
+
+        // reload -- release the old one (D3D12: free the persistent D3D12Texture* via the manager, NOT ->Release)
+        if (g_bUseD3D12)
+        {
+            if (m_pDDS and g_pD3D12TextureManager) g_pD3D12TextureManager->Free((D3D12Texture*)m_pDDS);
+            m_pDDS = NULL; m_pD3D11Tex = NULL;
+        }
+        else
+        {
+            if (m_pDDS) { ((IUnknown*)m_pDDS)->Release(); m_pDDS = NULL; }
+            if (m_pD3D11Tex) { ((IUnknown*)m_pD3D11Tex)->Release(); m_pD3D11Tex = NULL; }
+        }
+
+        m_nActualWidth = w; m_nActualHeight = h;
+        m_dwChromaKey = RGBA_MAKE(RGBA_GETBLUE(chroma), RGBA_GETGREEN(chroma), RGBA_GETRED(chroma), RGBA_GETALPHA(chroma));
+
+        const int fmt = D3D11TextureManager::DxgiFormatFromMPR(m_dwFlags);
+        const bool isDXT = (m_eSurfFmt == D3DX_SF_DXT1 or m_eSurfFmt == D3DX_SF_DXT3 or m_eSurfFmt == D3DX_SF_DXT5);
+        void* hdl = NULL; void* texptr = NULL;   // #DX12: opaque handle (D3D11 SRV or D3D12Texture*)
+
+        bool ok = false;
+
+        if (isDXT)
+        {
+            int bb = D3D11TextureManager::BlockBytes(fmt);
+            int bytes = ((w + 3) / 4) * ((h + 3) / 4) * bb;
+            // Artscout - 2026: #78 -- SMALL DXT (terrain tiles) get a decoded RGBA mip chain so the far
+            // ground stops aliasing/shimmering; large atlases stay compressed single-mip (VRAM). Falls
+            // back to plain BCn if the mip path is unavailable/fails.
+            // <=512 covers the theater terrain tiles (getDDSWidth tops out at 512; some tiles ship ONLY
+            // the H/512 version and are used at range). Larger cockpit/object atlases (>512) stay BC.
+            if (g_bUseD3D12 and w <= 512 and h <= 512)
+                ok = EngineTexCreateBCnMipped(&hdl, &texptr, w, h, fmt, TexBuffer);
+            if ( not ok)
+                ok = EngineTexCreateBCn(&hdl, &texptr, w, h, fmt, TexBuffer, bytes);
+        }
+        else if (m_dwFlags bitand MPR_TI_PALETTE)
+        {
+            int stride = (nImageDataStride > 0) ? nImageDataStride : w;
+            // Save the source indices: on a palette change (Translate3D) Reload() rebakes
+            // RGBA. The owner (CPSurface/CPObject mpSourceBuffer) keeps the buffer alive, so
+            // we keep only the pointer (bDoNotCopyBits == true on these paths).
+            if ( not bDoNotCopyBits)
+            {
+                if (m_pImageData and m_bImageDataOwned) delete[] m_pImageData;
+                m_pImageData = new BYTE[(size_t)stride * h];
+                if (m_pImageData) memcpy(m_pImageData, TexBuffer, (size_t)stride * h);
+                m_bImageDataOwned = true;
+            }
+            else
+            {
+                if (m_pImageData and m_bImageDataOwned) delete[] m_pImageData;
+                m_pImageData = TexBuffer;
+                m_bImageDataOwned = false;
+            }
+            m_nImageDataStride = stride;
+
+            DWORD *pal = (m_pPalAttach and m_pPalAttach->m_pPalData) ? m_pPalAttach->m_pPalData : NULL;
+            int nEnt = m_pPalAttach ? m_pPalAttach->m_nNumEntries : 0;
+            ok = ResolvePaletteToGpu(&hdl, &texptr, w, h, stride, TexBuffer, pal, nEnt, m_dwFlags, m_dwChromaKey);
+        }
+        else if (m_dwFlags bitand MPR_TI_RGB16)
+        {
+            // PHASE 5: 16-bit B5G6R5 -- stride w*2 (previously else sent w*4 -> broken/white)
+            TexMipData mip = { TexBuffer, w * 2 };
+            ok = EngineTexCreate(&hdl, &texptr, w, h, fmt, &mip, 1);
+        }
+        else if (m_dwFlags bitand MPR_TI_RGB24)
+        {
+            // PHASE 5: 24-bit BGR -> 32-bit BGRA (fmt=B8G8R8A8), source 3 bytes/pixel
+            DWORD *rgba = (DWORD*)malloc((size_t)w * h * 4);
+            if (rgba)
+            {
+                const BYTE *s = TexBuffer;
+                for (int p = 0; p < w * h; ++p)
+                {
+                    BYTE b = s[0], g = s[1], r = s[2]; s += 3;
+                    rgba[p] = (DWORD)b | ((DWORD)g << 8) | ((DWORD)r << 16) | 0xFF000000;
+                }
+                TexMipData mip = { rgba, w * 4 };
+                ok = EngineTexCreate(&hdl, &texptr, w, h, fmt, &mip, 1);
+                free(rgba);
+            }
+        }
+        else
+        {
+            // 32-bit ARGB source directly (B8G8R8A8). Artscout - 2026 (#78): in TEX_MODE_DDS the terrain
+            // color/night tiles (terrtex.cpp:988) are created 32-bit and land HERE -> they were single-mip,
+            // so the far/mid ground kept boiling under motion and MipLODBias had only mip 0 to clamp to.
+            // Box-downsample a mip chain (mirrors the palette path). D3D12 + <=2048; else single mip as before.
+            extern bool g_bUseD3D12;
+            bool mipAttempted = false;
+            if (g_bUseD3D12 and w >= 2 and h >= 2 and w <= 2048 and h <= 2048)
+            {
+                int mc = 1; { int mw=w, mh=h; while (mw>1 || mh>1) { mw=(mw>1)?mw>>1:1; mh=(mh>1)?mh>>1:1; ++mc; } }
+                if (mc > 15) mc = 15;
+                unsigned** lv = (unsigned**)malloc((size_t)mc*sizeof(unsigned*));
+                int* lw = (int*)malloc((size_t)mc*sizeof(int));
+                int* lh = (int*)malloc((size_t)mc*sizeof(int));
+                TexMipData* mips = (TexMipData*)malloc((size_t)mc*sizeof(TexMipData));
+                if (lv && lw && lh && mips)
+                {
+                    lv[0] = (unsigned*)TexBuffer; lw[0] = w; lh[0] = h;   // mip 0 = caller's buffer (not freed)
+                    for (int i=1;i<mc;++i)
+                    {
+                        lw[i] = (lw[i-1]>1)?lw[i-1]>>1:1; lh[i] = (lh[i-1]>1)?lh[i-1]>>1:1;
+                        lv[i] = (unsigned*)malloc((size_t)lw[i]*lh[i]*4);
+                        if (!lv[i]) { mc = i; break; }
+                        TexBoxDown(lv[i-1], lw[i-1], lh[i-1], lv[i], lw[i], lh[i]);
+                    }
+                    for (int i=0;i<mc;++i) { mips[i].data = lv[i]; mips[i].rowPitch = lw[i]*4; }
+                    ok = EngineTexCreate(&hdl, &texptr, w, h, fmt, mips, mc);
+                    for (int i=1;i<mc;++i) free(lv[i]);   // lv[0] == TexBuffer, owned by caller
+                    mipAttempted = true;
+                }
+                free(lv); free(lw); free(lh); free(mips);
+            }
+            if ( not mipAttempted)
+            {
+                TexMipData mip = { TexBuffer, w * 4 };   // fallback: single mip (non-D3D12 / >2048 / OOM)
+                ok = EngineTexCreate(&hdl, &texptr, w, h, fmt, &mip, 1);
+            }
+        }
+
+        if (ok)
+        {
+            m_pDDS = (IDirectDrawSurface7*)hdl;	// SelectTexture casts back (D3D11 SRV, or D3D12Texture* under D3D12)
+            m_pD3D11Tex = (ID3D11Texture2D*)texptr;
+        }
+
+        return true;
     }
 
 #ifdef DEBUG
@@ -1007,442 +1219,70 @@ inline WORD _RGB8toARGB4444(DWORD sc)
 
 bool TextureHandle::Reload()
 {
-    // No DX context
-    if ( not m_pDDS) return false;
-
-    if ( not (m_dwFlags bitand MPR_TI_DDS))
+    extern bool g_bUseD3D11, g_bUseD3D12;
+    if (g_bUseD3D11 or g_bUseD3D12)
     {
-        if ( not (m_dwFlags bitand MPR_TI_PALETTE))
+        // PHASE 5/#DX12: rebake the palettized texture for the updated palette (Translate3D / TOD).
+        // Non-palettized textures load once -- nothing to do here.
+        if ( not (m_dwFlags bitand MPR_TI_PALETTE)) return true;
+        if ( not m_pImageData) return false;
+
+        DWORD *pal = (m_pPalAttach and m_pPalAttach->m_pPalData) ? m_pPalAttach->m_pPalData : NULL;
+        int nEnt = m_pPalAttach ? m_pPalAttach->m_nNumEntries : 0;
+
+        void* hdl = NULL; void* texptr = NULL;
+        if ( not ResolvePaletteToGpu(&hdl, &texptr, m_nWidth, m_nHeight, m_nImageDataStride,
+                                     m_pImageData, pal, nEnt, m_dwFlags, m_dwChromaKey))
+            return false;
+
+        if (g_bUseD3D12)
         {
-            ShiAssert(false);
-            return true;
+            if (m_pDDS and g_pD3D12TextureManager) g_pD3D12TextureManager->Free((D3D12Texture*)m_pDDS);
         }
-    }
-
-    if ( not m_pImageData) return false;
-
-    DDSURFACEDESC2 ddsd;
-    ZeroMemory(&ddsd, sizeof(ddsd));
-
-    try
-    {
-        // Lock the surface
-        ddsd.dwSize = sizeof(ddsd);
-
-        // JB 010305 CTD
-        //if(F4IsBadReadPtr(m_pDDS,sizeof(IDirectDrawSurface7))) return false;
-
-        HRESULT hr = m_pDDS->Lock(NULL, &ddsd, DDLOCK_DONOTWAIT bitor DDLOCK_WRITEONLY bitor DDLOCK_SURFACEMEMORYPTR, NULL);
-
-        if (FAILED(hr))
-        {
-            if (hr == DDERR_SURFACELOST)
-            {
-                // If the surface is lost, restore it and retry
-                CheckHR(m_pDDS->Restore());
-
-                CheckHR(m_pDDS->Lock(NULL, &ddsd, DDLOCK_WAIT bitor DDLOCK_WRITEONLY bitor DDLOCK_SURFACEMEMORYPTR, NULL));
-            }
-            else
-            {
-                throw _com_error(hr);
-            }
-        }
-
-        // Can be larger but not smaller
-        ShiAssert(m_nWidth <= (int) ddsd.dwWidth and m_nHeight <= (int) ddsd.dwHeight);
-
-        // Reloading is a different story - because this is called VERY frequently we have to be very fast with whatever we are doing here
-
-        if (m_dwFlags bitand MPR_TI_DDS)
-        {
-            BYTE *pDst = (BYTE *)ddsd.lpSurface;
-            BYTE *pSrc = m_pImageData;
-
-            memcpy(pDst, pSrc, m_nImageDataStride);
-            /*for(int i = 0; i < m_nImageDataStride; i++){
-             *pDst++ = *pSrc++;
-            }*/
-        }
-        // sfr: weird.. added {} around switch
         else
         {
-            switch (m_eSurfFmt)
-            {
-                case D3DX_SF_PALETTE8:
-                {
-                    BYTE *pSrc = m_pImageData;
-                    BYTE *pDst = (BYTE *)ddsd.lpSurface;
-                    DWORD dwPitch = ddsd.lPitch;
-
-                    // If source and destination pitch match, use single loop
-                    if (dwPitch == m_nWidth and m_nImageDataStride == m_nWidth)
-                        memcpy(pDst, pSrc, m_nWidth * m_nHeight);
-                    else
-                    {
-                        for (int y = 0; y < m_nHeight; y++)
-                        {
-                            memcpy(pDst, pSrc, m_nWidth);
-
-                            pSrc += m_nImageDataStride;
-                            pDst += dwPitch;
-                        }
-                    }
-
-                    break;
-                }
-
-                case D3DX_SF_A8R8G8B8:
-                case D3DX_SF_X8R8G8B8:
-                {
-                    DWORD dwTmp;
-
-                    // Convert palette to 16bit
-                    DWORD palette[256];
-                    DWORD *pal = &m_pPalAttach->m_pPalData[0];
-
-                    for (int i = 0; i < m_pPalAttach->m_nNumEntries; i++)
-                    {
-                        dwTmp = pal[i];
-
-                        if (dwTmp not_eq m_dwChromaKey)
-                            palette[i] = dwTmp;
-                        else
-                            // Zero alpha but preserve RGB for pre-alpha test filtering (0 == full transparent, 0xff == full opaque)
-                            palette[i] = dwTmp bitand 0xffffff;
-                    }
-
-                    BYTE *pSrc = m_pImageData;
-                    DWORD *pDst = (DWORD *) ddsd.lpSurface;
-                    DWORD dwPitch = ddsd.lPitch >> 2;
-
-                    if (dwPitch == m_nWidth and m_nImageDataStride == m_nWidth)
-                    {
-                        DWORD dwSize = m_nWidth * m_nHeight;
-
-                        for (int i = 0; static_cast<unsigned int>(i) < dwSize; i++)
-                        {
-                            pDst[i] = palette[pSrc[i]];
-                        }
-                    }
-                    else
-                    {
-                        for (int y = 0; y < m_nHeight; y++)
-                        {
-                            for (int x = 0; x < m_nWidth; x++)
-                                pDst[x] = palette[pSrc[x]];
-
-                            pSrc += m_nImageDataStride;
-                            pDst += dwPitch;
-                        }
-                    }
-
-                    break;
-                }
-
-                case D3DX_SF_A1R5G5B5:
-                {
-                    WORD dwTmp;
-
-                    // Convert palette to 16bit
-                    WORD palette[256];
-                    PALETTEENTRY *pal = (PALETTEENTRY *)&m_pPalAttach->m_pPalData[0];
-
-                    for (int i = 0; i < m_pPalAttach->m_nNumEntries; i++)
-                    {
-                        dwTmp = (pal[i].peRed >> 3) bitor ((pal[i].peGreen >> 3) << 5) bitor ((pal[i].peBlue >> 3) << 10) bitor ((pal[i].peFlags >> 7) << 15);
-
-                        if (dwTmp not_eq (WORD)m_dwChromaKey)
-                            palette[i] = dwTmp;
-                        else
-                            // Zero alpha but preserve RGB for pre-alpha test filtering (0 == full transparent, 0xff == full opaque)
-                            palette[i] = dwTmp bitand 0x7fff;
-                    }
-
-                    BYTE *pSrc = m_pImageData;
-                    WORD *pDst = (WORD *)ddsd.lpSurface;
-
-                    // JB 010404 CTD
-                    if (F4IsBadReadPtr(pSrc, sizeof(BYTE)) or F4IsBadReadPtr(pDst, sizeof(WORD))) break;
-
-                    DWORD dwPitch = ddsd.lPitch >> 1;
-
-                    if (dwPitch == m_nWidth and m_nImageDataStride == m_nWidth)
-                    {
-                        // If source and destination pitch match, use single loop
-                        DWORD dwSize = m_nWidth * m_nHeight;
-
-                        for (int i = 0; static_cast<unsigned int>(i) < dwSize; i++)
-                            pDst[i] = palette[pSrc[i]];
-                    }
-                    else
-                    {
-                        for (int y = 0; y < m_nHeight; y++)
-                        {
-                            for (int x = 0; x < m_nWidth; x++)
-                                pDst[x] = palette[pSrc[x]];
-
-                            pSrc += m_nImageDataStride;
-                            pDst += dwPitch;
-                        }
-                    }
-
-                    break;
-                }
-
-                case D3DX_SF_A4R4G4B4:
-                {
-                    WORD dwTmp;
-
-                    // Convert palette to 16bit
-                    WORD palette[256];
-                    PALETTEENTRY *pal = (PALETTEENTRY *)&m_pPalAttach->m_pPalData[0];
-
-                    for (int i = 0; i < m_pPalAttach->m_nNumEntries; i++)
-                    {
-                        dwTmp = (pal[i].peRed >> 4) bitor ((pal[i].peGreen >> 4) << 4) bitor ((pal[i].peBlue >> 4) << 8) bitor ((pal[i].peFlags >> 4) << 12);
-
-                        if (dwTmp not_eq (WORD) m_dwChromaKey)
-                            palette[i] = dwTmp;
-                        else
-                            // Zero alpha but preserve RGB for pre-alpha test filtering (0 == full transparent, 0xff == full opaque)
-                            palette[i] = dwTmp bitand 0xfff;
-                    }
-
-                    BYTE *pSrc = m_pImageData;
-                    WORD *pDst = (WORD *)ddsd.lpSurface;
-                    DWORD dwPitch = ddsd.lPitch >> 1;
-
-                    if (dwPitch == m_nWidth and m_nImageDataStride == m_nWidth)
-                    {
-                        // If source and destination pitch match, use single loop
-                        DWORD dwSize = m_nWidth * m_nHeight;
-
-                        for (int i = 0; static_cast<unsigned int>(i) < dwSize; i++)
-                            pDst[i] = palette[pSrc[i]];
-                    }
-                    else
-                    {
-                        for (int y = 0; y < m_nHeight; y++)
-                        {
-                            for (int x = 0; x < m_nWidth; x++)
-                                pDst[x] = palette[pSrc[x]];
-
-                            pSrc += m_nImageDataStride;
-                            pDst += dwPitch;
-                        }
-                    }
-
-                    break;
-                }
-
-                case D3DX_SF_R5G6B5:
-                {
-                    ShiAssert( not (m_dwFlags bitand MPR_TI_CHROMAKEY));
-
-                    WORD dwTmp;
-
-                    // Convert palette to 16bit
-                    WORD palette[256];
-                    PALETTEENTRY *pal = (PALETTEENTRY *)&m_pPalAttach->m_pPalData[0];
-
-                    for (int i = 0; i < m_pPalAttach->m_nNumEntries; i++)
-                    {
-                        dwTmp = (pal[i].peRed >> 3) bitor ((pal[i].peGreen >> 2) << 5) bitor ((pal[i].peBlue >> 3) << 11);
-                        palette[i] = (WORD) dwTmp;
-                    }
-
-                    BYTE *pSrc = m_pImageData;
-                    WORD *pDst = (WORD *)ddsd.lpSurface;
-                    DWORD dwPitch = ddsd.lPitch >> 1;
-
-                    if (dwPitch == m_nWidth and m_nImageDataStride == m_nWidth)
-                    {
-                        // If source and destination pitch match, use single loop
-                        DWORD dwSize = m_nWidth * m_nHeight;
-
-                        for (int i = 0; static_cast<unsigned int>(i) < dwSize; i++)
-                            pDst[i] = palette[pSrc[i]];
-                    }
-                    else
-                    {
-                        for (int y = 0; y < m_nHeight; y++)
-                        {
-                            for (int x = 0; x < m_nWidth; x++)
-                                pDst[x] = palette[pSrc[x]];
-
-                            pSrc += m_nImageDataStride;
-                            pDst += dwPitch;
-                        }
-                    }
-
-                    break;
-                }
-
-                case D3DX_SF_R5G5B5:
-                {
-                    ShiAssert( not (m_dwFlags bitand MPR_TI_CHROMAKEY));
-
-                    WORD dwTmp;
-
-                    // Convert palette to 16bit
-                    WORD palette[256];
-                    PALETTEENTRY *pal = (PALETTEENTRY *)&m_pPalAttach->m_pPalData[0];
-
-                    for (int i = 0; i < m_pPalAttach->m_nNumEntries; i++)
-                    {
-                        dwTmp = (pal[i].peRed >> 3) bitor ((pal[i].peGreen >> 3) << 5) bitor ((pal[i].peBlue >> 3) << 10);
-                        palette[i] = (WORD) dwTmp;
-                    }
-
-                    BYTE *pSrc = m_pImageData;
-                    WORD *pDst = (WORD *)ddsd.lpSurface;
-                    DWORD dwPitch = ddsd.lPitch >> 1;
-
-                    if (dwPitch == m_nWidth and m_nImageDataStride == m_nWidth)
-                    {
-                        // If source and destination pitch match, use single loop
-                        DWORD dwSize = m_nWidth * m_nHeight;
-
-                        for (int i = 0; static_cast<unsigned int>(i) < dwSize; i++)
-                            pDst[i] = palette[pSrc[i]];
-                    }
-                    else
-                    {
-                        for (int y = 0; y < m_nHeight; y++)
-                        {
-                            for (int x = 0; x < m_nWidth; x++)
-                                pDst[x] = palette[pSrc[x]];
-
-                            pSrc += m_nImageDataStride;
-                            pDst += dwPitch;
-                        }
-                    }
-
-                    break;
-                }
-
-                default:
-                    ShiAssert(false);
-            }
-
+            if (m_pDDS)      ((IUnknown*)m_pDDS)->Release();
+            if (m_pD3D11Tex) ((IUnknown*)m_pD3D11Tex)->Release();
         }
-
-        CheckHR(m_pDDS->Unlock(NULL));
-
-        if (m_dwFlags bitand MPR_TI_MIPMAP)
-        {
-            MipLoadContext ctx = { 0, m_pDDS };
-
-            if (g_bShowMipUsage)
-                SetMipLevelColor(&ctx);
-
-            CheckHR(m_pDDS->EnumAttachedSurfaces(&ctx, MipLoadCallback));
-        }
-
+        m_pDDS      = (IDirectDrawSurface7*)hdl;
+        m_pD3D11Tex = (ID3D11Texture2D*)texptr;
+        m_nActualWidth = m_nWidth; m_nActualHeight = m_nHeight;
         return true;
     }
 
-    catch (_com_error e)
-    {
-        // Unlock if still locked
-        if (ddsd.lpSurface) m_pDDS->Unlock(NULL);
-
-        ReportTextureLoadError(e.Error(), true);
-        return false;
-    }
+    // Artscout - 2026: [DX7-PURGE] DDraw surface Lock/upload path removed; GPU rebakes above.
+    return false;
 }
 
 void TextureHandle::RestoreAll()
 {
-    if (m_pDDS and m_pDDS->IsLost() == DDERR_SURFACELOST)
-    {
-        HRESULT hr = m_pDDS->Restore();
-
-        if (SUCCEEDED(hr))
-        {
-#ifdef _DEBUG
-            MonoPrint("TextureHandle::RestoreAll - %s restored successfully\n", m_strName.c_str());
-#endif
-
-            Reload();
-        }
-
-#ifdef _DEBUG
-        else MonoPrint("TextureHandle::RestoreAll - FAILED to restore %s \n", m_strName.c_str());
-
-#endif
-    }
+    // Artscout - 2026: [DX7-PURGE] DDraw surface IsLost/Restore removed (no DDraw surfaces under GPU).
 }
 
 //FIXME
 void TextureHandle::Clear()
 {
-    DDSURFACEDESC2 ddsd;
-    ZeroMemory(&ddsd, sizeof(ddsd));
-
-    try
-    {
-        // Lock the surface
-        ddsd.dwSize = sizeof(ddsd);
-
-        CheckHR(m_pDDS->Lock(NULL, &ddsd, DDLOCK_WAIT bitor DDLOCK_WRITEONLY bitor DDLOCK_SURFACEMEMORYPTR, NULL));
-
-        // Can be larger but not smaller
-        ShiAssert(m_nWidth <= (int) ddsd.dwWidth and m_nHeight <= (int) ddsd.dwHeight);
-
-        if (ddsd.lPitch == ddsd.dwWidth)
-        {
-            // If source and destination pitch match, use single loop
-            DWORD dwSize = ddsd.dwWidth * ddsd.dwHeight * (ddsd.ddpfPixelFormat.dwRGBBitCount >> 3);
-            memset(ddsd.lpSurface, 0, dwSize);
-        }
-        else
-        {
-            BYTE *pDst = (BYTE *)ddsd.lpSurface;
-            DWORD dwSize = ddsd.dwWidth * (ddsd.ddpfPixelFormat.dwRGBBitCount >> 3);
-
-            for (int y = 0; static_cast<unsigned int>(y) < ddsd.dwHeight; y++)
-            {
-                memset(pDst, 0, dwSize);
-                pDst += ddsd.lPitch;
-            }
-        }
-
-        CheckHR(m_pDDS->Unlock(NULL));
-
-        if (m_dwFlags bitand MPR_TI_MIPMAP)
-        {
-            MipLoadContext ctx = { 0, m_pDDS };
-
-            if (g_bShowMipUsage)
-                SetMipLevelColor(&ctx);
-
-            CheckHR(m_pDDS->EnumAttachedSurfaces(&ctx, MipLoadCallback));
-        }
-    }
-
-    catch (_com_error e)
-    {
-        // Unlock if still locked
-        if (ddsd.lpSurface)
-            m_pDDS->Unlock(NULL);
-    }
+    // Artscout - 2026: this is the legacy D3D7 DDraw Lock/clear path. Under D3D11 m_pDDS is either
+    // NULL or actually an SRV (cast), so m_pDDS->Lock() would crash. It fired entering AG radar mode
+    // (RenderGMComposite::SetRange -> rTexHandle->Clear() with m_pDDS==NULL). The GM radar composite
+    // is still a DDraw subsystem (Blt/Lock) not yet ported to D3D11 -- no-op here to avoid the crash.
+    // #DX12 A5: under D3D12 m_pDDS is a D3D12Texture* (now non-NULL because the GM panel is a render
+    // target) -- the DDraw Lock below would dereference it as a surface and crash (0x1). No-op too.
+    // Artscout - 2026: [DX7-PURGE] the legacy DDraw surface Lock/clear path is gone. Under GPU
+    // m_pDDS is NULL or an SRV; clearing a GPU render target is the backend's job.
+    return;
 }
 
 bool TextureHandle::SetPriority(DWORD dwPrio)
 {
-    if (m_pDDS) return SUCCEEDED(m_pDDS->SetPriority(dwPrio));
-
+    // Artscout - 2026: [DX7-PURGE] DDraw texture-management priority removed.
+    (void)dwPrio;
     return false;
 }
 
 void TextureHandle::PreLoad()
 {
-    if (m_pDDS and m_pD3DD)
-    {
-        m_pD3DD->PreLoad(m_pDDS);
-    }
+    // Artscout - 2026: [DX7-PURGE] D3D7 device PreLoad removed.
 }
 
 void TextureHandle::ReportTextureLoadError(HRESULT hr, bool bDuringLoad)
@@ -1472,55 +1312,10 @@ void TextureHandle::PaletteDetach(PaletteHandle *p)
 
 void TextureHandle::StaticInit(IDirect3DDevice7 *pD3DD)
 {
-    // Warning: Not addref'd
-    ShiAssert(pD3DD);
+    // Artscout - 2026: [DX7-PURGE] the D3D7 device caps probe (GetCaps) and
+    // EnumTextureFormats pixel-format search are gone. Under D3D11/D3D12 texture
+    // formats are chosen by the texture manager; m_pD3DD is a dead opaque handle.
     m_pD3DD = pD3DD;
-
-    if ( not m_pD3DD)
-        return;
-
-    m_pD3DHWDeviceDesc = new D3DDEVICEDESC7;
-
-    if ( not m_pD3DHWDeviceDesc) return;
-
-    HRESULT hr = m_pD3DD->GetCaps(m_pD3DHWDeviceDesc);
-    ShiAssert(SUCCEEDED(hr));
-
-    //Note: DDS textures get their own format.If no hardware DXTn support, use one of these.
-    TEXTURESEARCHINFO tsi_16[6] =
-    {
-        //bpp,alpha,pal
-        { 16, 0, FALSE, FALSE, &m_arrPF[0] }, //DEFAULT (DXT1)
-        { 16, 1, FALSE, FALSE, &m_arrPF[1] }, //CHROMA (DXT1)
-        { 16, 4, FALSE, FALSE, &m_arrPF[2] }, //ALPHA (DXT3)
-        { 16, 4, FALSE, FALSE, &m_arrPF[3] }, //CHROMA_ALPHA (DXT3)
-    };
-
-    TEXTURESEARCHINFO tsi_32[6] =
-    {
-        //bpp,alpha,pal
-        { 32, 0, FALSE, FALSE, &m_arrPF[0] }, //DEFAULT (DXT1)
-        { 32, 8, FALSE, FALSE, &m_arrPF[1] }, //CHROMA (DXT1)
-        { 32, 8, FALSE, FALSE, &m_arrPF[2] }, //ALPHA (DXT3)
-        { 32, 8, FALSE, FALSE, &m_arrPF[3] }, //CHROMA_ALPHA (DXT3)
-    };
-
-    TEXTURESEARCHINFO *ptsi;
-
-    if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_16)
-    {
-        ptsi = tsi_16;
-    }
-    else
-    {
-        ptsi = tsi_32;
-    }
-
-    for (int i = 0; i < TEX_CAT_MAX; i++)
-    {
-        m_pD3DD->EnumTextureFormats(TextureSearchCallback, &ptsi[i]);
-        ShiAssert(ptsi[i].bFoundGoodFormat)
-    }
 }
 
 void TextureHandle::StaticCleanup()
@@ -1620,191 +1415,28 @@ void TextureHandle::MemoryUsageReport()
 
 DWORD RGB32ToSurfaceColor(DWORD col, LPDIRECTDRAWSURFACE7 lpDDSurface, DDSURFACEDESC2 *pddsd = NULL)
 {
-    // NOTE: This function is sloooooow
-
-    // Is it a palette surface?
-    IDirectDrawPalettePtr pPal;
-
-    if (SUCCEEDED(lpDDSurface->GetPalette(&pPal)))
-        return col;
-
-    DDSURFACEDESC2 ddsd;
-
-    if (pddsd == NULL)
-    {
-        ZeroMemory(&ddsd, sizeof(ddsd));
-        ddsd.dwSize = sizeof(ddsd);
-        HRESULT hr = lpDDSurface->GetSurfaceDesc(&ddsd);
-        ShiAssert(SUCCEEDED(hr));
-
-        pddsd = &ddsd;
-    }
-
-    // Compute the right shifts required to get from 24 bit RGB to this pixel format
-    UInt32 mask;
-
-    int redShift;
-    int greenShift;
-    int blueShift;
-
-    // RED
-    mask = pddsd->ddpfPixelFormat.dwRBitMask;
-    redShift = 8;
-    ShiAssert(mask);
-
-    while ( not (mask bitand 1))
-    {
-        mask >>= 1;
-        redShift--;
-    }
-
-    while (mask bitand 1)
-    {
-        mask >>= 1;
-        redShift--;
-    }
-
-    // GREEN
-    mask = pddsd->ddpfPixelFormat.dwGBitMask;
-    greenShift = 16;
-    ShiAssert(mask);
-
-    while ( not (mask bitand 1))
-    {
-        mask >>= 1;
-        greenShift--;
-    }
-
-    while (mask bitand 1)
-    {
-        mask >>= 1;
-        greenShift--;
-    }
-
-    // BLUE
-    mask = pddsd->ddpfPixelFormat.dwBBitMask;
-    ShiAssert(mask);
-    blueShift = 24;
-
-    while ( not (mask bitand 1))
-    {
-        mask >>= 1;
-        blueShift--;
-    }
-
-    while (mask bitand 1)
-    {
-        mask >>= 1;
-        blueShift--;
-    }
-
-    // Convert the key color from 32 bit RGB to the current pixel format
-    DWORD dwResult;
-
-    // RED
-    if (redShift >= 0)
-    {
-        dwResult = (col >>  redShift) bitand pddsd->ddpfPixelFormat.dwRBitMask;
-    }
-    else
-    {
-        dwResult = (col << -redShift) bitand pddsd->ddpfPixelFormat.dwRBitMask;
-    }
-
-    // GREEN
-    if (greenShift >= 0)
-    {
-        dwResult or_eq (col >>  greenShift) bitand pddsd->ddpfPixelFormat.dwGBitMask;
-    }
-    else
-    {
-        dwResult or_eq (col << -greenShift) bitand pddsd->ddpfPixelFormat.dwGBitMask;
-    }
-
-    // BLUE
-    if (blueShift >= 0)
-    {
-        dwResult or_eq (col >>  blueShift) bitand pddsd->ddpfPixelFormat.dwBBitMask;
-    }
-    else
-    {
-        dwResult or_eq (col << -blueShift) bitand pddsd->ddpfPixelFormat.dwBBitMask;
-    }
-
-    return dwResult;
+    // Artscout - 2026: [DX7-PURGE] DDraw surface colour-format probe removed (unused).
+    (void)lpDDSurface; (void)pddsd;
+    return col;
 }
 
 static void SetMipLevelColor(MipLoadContext *pCtx)
 {
-    static DWORD arrMipColors[] = { 0xffffff, 0xff0000, 0xff00, 0xff, 0xffff00,
-                                    0xffff, 0xff00ff, 0x808080, 0x800000, 0x8000,
-                                    0x80, 0x808000, 0x8080, 0x800080,
-                                  };
-
-    _ASSERTE(pCtx->nLevel < sizeof(arrMipColors) / sizeof(arrMipColors[0]));
-
-    DDSURFACEDESC2 ddsd;
-    ZeroMemory(&ddsd, sizeof(ddsd));
-    ddsd.dwSize = sizeof(ddsd);
-    HRESULT hr = pCtx->lpDDSurface->GetSurfaceDesc(&ddsd);
-    ShiAssert(SUCCEEDED(hr));
-
-    if (FAILED(hr))
-    {
-        return;
-    }
-
-    // Fill surface with a unique color representing the mipmap level
-    DDBLTFX bfx;
-    ZeroMemory(&bfx, sizeof(bfx));
-    bfx.dwSize = sizeof(bfx);
-    bfx.dwFillColor = RGB32ToSurfaceColor(arrMipColors[pCtx->nLevel], pCtx->lpDDSurface, &ddsd);
-
-    hr = pCtx->lpDDSurface->Blt(NULL, NULL, NULL, DDBLT_COLORFILL bitor DDBLT_WAIT, &bfx);
+    // Artscout - 2026: [DX7-PURGE] DDraw mip-debug fill removed.
+    (void)pCtx;
 }
 
 static HRESULT WINAPI MipLoadCallback(LPDIRECTDRAWSURFACE7 lpDDSurface, LPDDSURFACEDESC2 lpDDSurfaceDesc, LPVOID lpContext)
 {
-    MipLoadContext *pCtx = (MipLoadContext *)lpContext;
-    HRESULT hr;
-
-    if (lpDDSurfaceDesc->ddsCaps.dwCaps bitand DDSCAPS_MIPMAP)
-    {
-        if (g_bShowMipUsage)
-        {
-            SetMipLevelColor(pCtx);
-        }
-        else
-        {
-            // Perform a 2:1 stretch blit from the parent surface
-            hr = lpDDSurface->Blt(NULL, pCtx->lpDDSurface, NULL, DDBLT_WAIT, NULL);
-
-            if (FAILED(hr))
-            {
-                ShiAssert(false);
-                return DDENUMRET_CANCEL;
-            }
-        }
-
-        // Process next lower mipmap level recursively
-        MipLoadContext ctx = { pCtx->nLevel + 1, lpDDSurface };
-        hr = lpDDSurface->EnumAttachedSurfaces(&ctx, MipLoadCallback);
-
-        if (FAILED(hr))
-        {
-            ShiAssert(false);
-            return DDENUMRET_CANCEL;
-        }
-    }
-
+    // Artscout - 2026: [DX7-PURGE] DDraw mip Blt/enum callback removed (unused; GPU manages mips).
+    (void)lpDDSurface; (void)lpDDSurfaceDesc; (void)lpContext;
     return DDENUMRET_OK;
 }
 
 bool Texture::SaveDDS_DXTn(const char *szFileName, BYTE* pDst, int dimensions, DWORD flags)
 {
-    FILE *fp;
-
-    fp = fopen(szFileName, "rb");
+    // Do not overwrite an existing .dds (matches the legacy behaviour).
+    FILE *fp = fopen(szFileName, "rb");
 
     if (fp)
     {
@@ -1812,29 +1444,10 @@ bool Texture::SaveDDS_DXTn(const char *szFileName, BYTE* pDst, int dimensions, D
         return false;
     }
 
-    CompressionOptions options;
-
-#if _MSC_VER >= 1300
-
-    fileout = _open(szFileName, O_WRONLY bitor O_BINARY bitor O_CREAT, S_IWRITE);
-
-    options.MipMapType = dNoMipMaps;
-    options.bBinaryAlpha = false;
-
-    if (flags bitand MPR_TI_ALPHA)
-        options.TextureFormat = dDXT3;
-    else if (flags bitand MPR_TI_CHROMAKEY)
-        options.TextureFormat = dDXT1a;
-    else
-        options.TextureFormat = dDXT1;
-
-    //nvDXTcompress((BYTE *)pDst,dimensions,dimensions,dimensions*4,&options,4,0);
-
-    _close(fileout);
-
-#endif
-
-    return true;
+    // Compress the BGRA source to a DXT .dds via modern NVTT 3 (x64). The block
+    // format (DXT1 / DXT1a / DXT3) is derived from the MPR_TI_* flags inside
+    // SaveBCnDDS, exactly as the old nvDXTcompress path did.
+    return D3D11TextureManager::SaveBCnDDS(szFileName, flags, pDst, dimensions, dimensions);
 }
 
 bool Texture::DumpImageToFile(char *szFile, int palID)

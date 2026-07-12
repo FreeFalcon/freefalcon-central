@@ -8,7 +8,7 @@
 #ifndef _PALETTE_H_
 #define _PALETTE_H_
 
-#include <cISO646>
+#include <iso646.h>
 #include "grtypes.h"
 #include "Context.h"
 

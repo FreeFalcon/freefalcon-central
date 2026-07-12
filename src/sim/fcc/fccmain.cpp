@@ -1134,11 +1134,9 @@ SimObjectType* FireControlComputer::TargetStep(SimObjectType* startObject, int c
     if (groundTarget)
     {
         // We're targeting a feature thing - make a new SimObjectType
-#ifdef DEBUG
-        //retObject = new SimObjectType(OBJ_TAG, platform, (SimBaseClass*)groundTarget);
-#else
+        // #47 UAF ROOT: create UNCONDITIONALLY (in Debug the DEBUG branch was empty -> retObject
+        // dangling/NULL -> localData->/SetTarget on garbage).
         retObject = new SimObjectType((SimBaseClass*)groundTarget);
-#endif
         retObject->localData->ataFrom = 180.0F * DTR;
     }
 
@@ -1189,7 +1187,7 @@ void FireControlComputer::DisplayInit(ImageBuffer* image)
     if ((g_bGreyMFD) and ( not bNVGmode))
         privateDisplay->SetColor(GetMfdColor(MFD_WHITE));
     else
-        privateDisplay->SetColor(0xff00ff00);
+        privateDisplay->SetColor(0xffffffff);	// #2: FCR (right MFD) was green -> white (realism, per request 2026-06-17)
 }
 
 void FireControlComputer::Display(VirtualDisplay* newDisplay)
@@ -1751,7 +1749,14 @@ void FireControlComputer::SetMasterMode(FCCMasterMode newMode)
 
     oldMode = masterMode;
 
-    if (masterMode not_eq Dogfight and masterMode not_eq MissileOverride) masterMode = newMode;//me123
+    if (masterMode not_eq Dogfight and masterMode not_eq MissileOverride)
+        masterMode = newMode;//me123
+    else if (newMode == Dogfight or newMode == MissileOverride)
+        // BMS-accurate: the DGFT/MSL OVRD switch toggles DIRECTLY. Stock FF (and the reference) blocked
+        // changing masterMode while already Dogfight/MissileOverride -> stuck in one override, you couldn't
+        // switch to the other (SimSelectMRM/SRMOverride went 'dead') without Clear/center. Allow an explicit
+        // override<->override switch; FCC auto-calls to the base mode are still ignored (the override holds).
+        masterMode = newMode;
 
     int isAI = not playerFCC or
                (playerFCC and ((AircraftClass *)Sms->Ownship())->AutopilotType() == AircraftClass::CombatAP) ;

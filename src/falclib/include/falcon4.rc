@@ -1,6 +1,6 @@
 // Microsoft Visual C++ generated resource script.
 //
-#include <cISO646>
+#include <iso646.h>
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -8,7 +8,7 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include "afxres.h"
+#include "winres.h"
 #include "f4version.h"
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -1469,7 +1469,7 @@ END
 
 2 TEXTINCLUDE 
 BEGIN
-    "#include ""afxres.h""\r\n"
+    "#include ""winres.h""\r\n"
     "#include ""f4version.h""\0"
 END
 

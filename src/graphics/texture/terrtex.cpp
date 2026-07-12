@@ -12,16 +12,13 @@
 #include "TOD.h"
 #include "Image.h"
 #include "TerrTex.h"
-#include "dxtlib.h"
+#include "ddsdiskhdr.h" // Artscout - 2026 (x64): correct on-disk DDS header read
+#include "Graphics/DXEngine/d3d11/D3D11TextureManager.h" // Artscout - 2026: NVTT 3 DDS export
 #include "Falclib/Include/IsBad.h"
 #include "FalcLib/include/dispopts.h"
 #include "FalcLib/include/f4thread.h"
 
 extern bool g_bEnableStaticTerrainTextures;
-extern int fileout;
-extern void ConvertToNormalMap(int kerneltype, int colorcnv, int alpha, float scale, int minz, bool wrap, bool bInvertX, bool bInvertY, int w, int h, int bits, void * data);
-extern void ReadDTXnFile(unsigned long count, void * buffer);
-extern void WriteDTXnFile(unsigned long count, void *buffer);
 
 #include "FalcLib/include/PlayerOp.h"
 
@@ -931,7 +928,7 @@ void TextureDB::Activate(SetEntry* pSet, TileEntry* pTile, int res)
             StoreMPRPalette(pSet);
         }
 
-        pTile->handle[res] = (UInt)new TextureHandle;
+        pTile->handle[res] = (DWORD_PTR)new TextureHandle; // Artscout - 2026 (x64): pointer-sized
         ShiAssert(pTile->handle[res]);
 
         // Attach the palette
@@ -985,7 +982,7 @@ void TextureDB::Activate(SetEntry* pSet, TileEntry* pTile, int res)
 
 
         // Day texture
-        pTile->handle[res] = (UInt)new TextureHandle;
+        pTile->handle[res] = (DWORD_PTR)new TextureHandle; // Artscout - 2026 (x64): pointer-sized
         ShiAssert(pTile->handle[res]);
 
         ((TextureHandle *)pTile->handle[res])->Create(
@@ -996,7 +993,7 @@ void TextureDB::Activate(SetEntry* pSet, TileEntry* pTile, int res)
         );
 
         // Night texture
-        pTile->handleN[res] = (UInt)new TextureHandle;
+        pTile->handleN[res] = (DWORD_PTR)new TextureHandle; // Artscout - 2026 (x64): pointer-sized
         ShiAssert(pTile->handleN[res]);
 
         ((TextureHandle *)pTile->handleN[res])->Create(
@@ -1150,6 +1147,39 @@ void TextureDB::Select(ContextMPR *localContext, TextureID texID)
         ShiAssert(TextureSets[set].tiles[tile].handleN[res]);
         localContext->SelectTexture2(TextureSets[set].tiles[tile].handleN[res]);
     }
+}
+
+// Artscout - 2026: #78 return the day D3D11 SRV for a tile (activating it if needed). Mirrors Select but
+// returns the SRV instead of binding through a ContextMPR -- used by the GPU terrain path (TerrainGpu.cpp).
+void *TextureDB::GetTileSRV(TextureID texID)
+{
+    if ( not IsReady()) return 0;
+    int set  = ExtractSet(texID);
+    int tile = ExtractTile(texID);
+    int res  = ExtractRes(texID);
+    if ( not (set >= 0 and set < numSets and tile >= 0 and tile < TextureSets[set].numTiles)) return 0;
+
+    SetEntry  *pSet  = &TextureSets[set];
+    TileEntry *pTile = &pSet->tiles[tile];
+
+    // Try the res the texID asks for first, then ANY other res that is loaded. The game keeps only the
+    // H/M/L mip appropriate for a tile's current distance, so the exact res in the texID may not be resident
+    // for the wider area the GPU terrain draws -> without this the tile would fall back to flat color (and
+    // flicker as the resident res changes frame to frame). #78.
+    if (res < 0 or res >= TEX_LEVELS) res = 0;
+    if (pTile->handle[res] == NULL and pTile->bits[res])
+        Activate(pSet, pTile, res);
+    if (pTile->handle[res])
+        return (void *)((TextureHandle *)pTile->handle[res])->m_pDDS;
+
+    for (int r = 0; r < TEX_LEVELS; ++r)
+    {
+        if (pTile->handle[r] == NULL and pTile->bits[r])
+            Activate(pSet, pTile, r);
+        if (pTile->handle[r])
+            return (void *)((TextureHandle *)pTile->handle[r])->m_pDDS;
+    }
+    return 0;
 }
 
 void TextureDB::RestoreAll()
@@ -1420,6 +1450,10 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     token = strtok(szTemp, sep);
     sprintf(szFileName, "%s%s.dds", texturePathD, token);
 
+    // res prefix: 'L'(0)/'M'(1)/original 'H'(2). Remember the original character,
+    // so if L/M is missing we fall back to H (always present in the Korea data).
+    char origCh = szFileName[strlen(texturePathD)];
+
     if (res == 1)
     {
         szFileName[strlen(texturePathD)] = 'M';
@@ -1431,6 +1465,15 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
 
     fp = fopen(szFileName, "rb");
 
+    // No L/M .dds (the Korea data has only H) -> load H into this res slot.
+    // No palette fallback (no file there either -> ShiError -> exit -> crash) and
+    // no garbage. This way near terrain gets a valid texture instead of black.
+    if ( not fp and origCh not_eq szFileName[strlen(texturePathD)])
+    {
+        szFileName[strlen(texturePathD)] = origCh;
+        fp = fopen(szFileName, "rb");
+    }
+
     // FRB - bad dds file name
     if ( not fp)
         return;
@@ -1439,7 +1482,11 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     ShiAssert(dwMagic == MAKEFOURCC('D', 'D', 'S', ' '));
 
     // Read first compressed mipmap
+#if defined(_M_IX86)
     fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
+#else
+    { DDSDiskHeader _h; fread(&_h, 1, DDS_DISK_HEADER_SIZE, fp); DDSDiskToDesc(_h, ddsd); } // Artscout - 2026 (x64): on-disk DDS header
+#endif
 
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
@@ -1524,10 +1571,25 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     }
 
     fp = fopen(szFileName, "rb");
+
+    // No L/M night -> fall back to H night (origCh). If that's missing too -> bail out
+    // cleanly without fread(NULL) (day already loaded; handleN stays uncreated).
+    if ( not fp and origCh not_eq szFileName[strlen(texturePathD)])
+    {
+        szFileName[strlen(texturePathD)] = origCh;
+        fp = fopen(szFileName, "rb");
+    }
+    if ( not fp)
+        return;
+
     fread(&dwMagic, 1, sizeof(DWORD), fp);
     ShiAssert(dwMagic == MAKEFOURCC('D', 'D', 'S', ' '));
 
+#if defined(_M_IX86)
     fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
+#else
+    { DDSDiskHeader _h; fread(&_h, 1, DDS_DISK_HEADER_SIZE, fp); DDSDiskToDesc(_h, ddsd); } // Artscout - 2026 (x64): on-disk DDS header
+#endif
 
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
@@ -1599,23 +1661,9 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
 
 bool TextureDB::SaveDDS_DXTn(const char *szFileName, BYTE* pDst, int dimensions)
 {
-    CompressionOptions options;
-
-#if _MSC_VER >= 1300
-
-    fileout = _open(szFileName, O_WRONLY bitor O_BINARY bitor O_CREAT, S_IWRITE);
-
-    options.MipMapType = dNoMipMaps;
-    options.bBinaryAlpha = false;
-    options.TextureFormat = dDXT1;
-
-    //nvDXTcompress((BYTE *)pDst,dimensions,dimensions,dimensions*4,&options,4,0);
-
-    _close(fileout);
-
-#endif
-
-    return true;
+    // Terrain tiles carry no alpha/chroma -> plain DXT1/BC1. Compress the BGRA
+    // source to a .dds via modern NVTT 3 (x64).
+    return D3D11TextureManager::SaveBCnDDS(szFileName, 0, pDst, dimensions, dimensions);
 }
 
 

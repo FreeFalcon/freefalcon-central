@@ -9,6 +9,7 @@
 
 #include "Graphics/DXEngine/DXTools.h"
 #include "Graphics/DXEngine/DXDefines.h"
+#include <windows.h>	// GetTickCount / DWORD for the tracer staleness cull below
 #include "Graphics/DXEngine/DXEngine.h"
 #include "Graphics/DXEngine/DXVBManager.h"
 
@@ -34,11 +35,12 @@ DrawableTracer::DrawableTracer(void)
     tailEnd.y = 0.0F;
     tailEnd.z = 0.0F;
     radius = width = 0.5f;
-    alpha = 0.2f;
+    alpha = 0.85f;   // #31 was 0.2 -> barely visible even additive; brighter + glow
     r = 1.00f;
     g = 1.00f;
     b = 0.50f;
     type = TRACER_TYPE_TRACER;
+    lastMoveMs = 0;   // Artscout - 2026: armed on first real movement in Draw()
 }
 
 /***************************************************************************\
@@ -55,11 +57,12 @@ DrawableTracer::DrawableTracer(float w)
     tailEnd.y = 0.0F;
     tailEnd.z = 0.0F;
     radius = width = w;
-    alpha = 0.2f;
+    alpha = 0.85f;   // #31 was 0.2 -> barely visible even additive; brighter + glow
     r = 1.00f;
     g = 1.00f;
     b = 0.50f;
     type = TRACER_TYPE_TRACER;
+    lastMoveMs = 0;   // Artscout - 2026: armed on first real movement in Draw()
 }
 
 /***************************************************************************\
@@ -71,11 +74,12 @@ DrawableTracer::DrawableTracer(Tpoint *p, float w)
     position = *p;
     tailEnd = *p;
     radius = width = w;
-    alpha = 0.2f;
+    alpha = 0.85f;   // #31 was 0.2 -> barely visible even additive; brighter + glow
     r = 1.00f;
     g = 1.00f;
     b = 0.50f;
     type = TRACER_TYPE_TRACER;
+    lastMoveMs = 0;   // Artscout - 2026: armed on first real movement in Draw()
 }
 
 
@@ -109,15 +113,32 @@ void DrawableTracer::Draw(class RenderOTW *renderer, int)
 
     // COBRA - RED - Tracers are updated on by the Gun Exec... this makes flying tracers to freeze
     // if no more 'driven' by the gun EXEC... they appear stopped at midair
+    // Artscout - 2026: the gun Exec runs at the sim rate; at high render FPS many frames pass
+    // between updates, so a *live* tracer's position is unchanged on most frames. The old code
+    // removed it on the first such frame, which made the tracer stream sparse/faint in Release
+    // (high FPS) while looking fine in slow Debug. Only cull once the position has been frozen for
+    // STALE_MS of real time; keep drawing the tracer in the meantime.
+    static const DWORD TRACER_STALE_MS = 150;
+
     if (LastPos.x == position.x and LastPos.z == position.z and LastPos.y == position.y and gameCompressionRatio)
     {
-        if (parentList) parentList->RemoveMe();
+        if (lastMoveMs == 0)
+            lastMoveMs = GetTickCount();   // start the staleness clock on first draw
 
-        return;
+        if ((GetTickCount() - lastMoveMs) > TRACER_STALE_MS)
+        {
+            if (parentList) parentList->RemoveMe();
+
+            return;
+        }
+        // still recent: fall through and draw it at its current position this frame
     }
-
-    // Get the last position for next comparison
-    LastPos = position;
+    else
+    {
+        // Get the last position for next comparison and stamp the move time
+        LastPos = position;
+        lastMoveMs = GetTickCount();
+    }
 
 #if 1
     // 2000-10-11 REMOVED BY S.G. SO TRACER BALL DO LONGER HAVE 'Silver bullet'
@@ -214,10 +235,17 @@ void DrawableTracer::Draw(class RenderOTW *renderer, int)
     renderer->context.RestoreState(STATE_ALPHA_GOURAUD);
     // renderer->context.SelectTexture( TracerTrailTexture.TexHandle() );
     // renderer->context.RestoreState( STATE_ALPHA_TEXTURE_GOURAUD_TRANSPARENCY_PERSPECTIVE );
-    v0.a = v1.a = alpha;
+    // Artscout - 2026 (VR): scale the tracer's core brightness in the headset only (flat path keeps alpha as-is)
+    // -> one consistent MIDDLE brightness between the bright glow-quad and the dim normalized look.
+    float aTrc = alpha;
+    {
+        extern bool g_bVrFrameActive; extern float g_fVrTracerBright;
+        if (g_bVrFrameActive) aTrc *= g_fVrTracerBright;
+    }
+    v0.a = v1.a = aTrc;
     v3.a = v2.a = 0.0f;
     v4.a = v5.a = 0.0f;
-    v1.a = alpha * 0.2f;
+    v1.a = aTrc * 0.2f;
     /* }
      else
      {
@@ -306,6 +334,46 @@ void DrawableTracer::Draw(class RenderOTW *renderer, int)
     v4.q = 1.0f;
     v5.q = 1.0f;
 
+    // Artscout - 2026 (#60 VR giant tracers): hold the tracer's ON-SCREEN thickness inside a [min..max] band in VR.
+    // The tracer width is a world-space quad whose side corners (v2/v3 near, v4/v5 far) are perspective-divided
+    // by their camera-space depth. A muzzle/near-passing tracer sits a few metres from the eye, so that depth is
+    // tiny and 1/z inflates the corner away from the centreline -> a fat orange wedge ("the source rises above
+    // the cockpit"); the MAX cap kills that. Once the pose settles the same quad projects only a couple of px
+    // wide and the tracer reads as too faint; the MIN floor pulls those back up so near and settled tracers keep
+    // a consistent, visible thickness. Done in screen space so it is independent of the foveated per-eye pixel
+    // density. Strictly VR (g_bVrFrameActive) -> the flat path is byte-for-byte untouched.
+    // Pull each side corner toward / away from its centreline vertex (v0 for the near pair, v1 for the far pair).
+    {
+        extern bool g_bVrFrameActive;
+        if (g_bVrFrameActive)
+        {
+            const float kTracerMinScreenW = 6.0f;    // tunable: min on-screen tracer thickness (px) - visibility floor
+            const float kTracerMaxScreenW = 10.0f;   // tunable: max on-screen tracer thickness (px) - giant cap
+            const float halfMin = kTracerMinScreenW * 0.5f;
+            const float halfMax = kTracerMaxScreenW * 0.5f;
+            // clamp |C - M| (screen x/y) into [halfMin, halfMax]; skip the push-out if the corner is degenerate
+            #define TW_CLAMP_CORNER(C, M)                                              \
+                {                                                                      \
+                    float _dx = (C).x - (M).x, _dy = (C).y - (M).y;                    \
+                    float _d2 = _dx * _dx + _dy * _dy;                                 \
+                    float _s = 0.0f;                                                   \
+                    if (_d2 > halfMax * halfMax)        _s = halfMax / (float)sqrt(_d2); \
+                    else if (_d2 < halfMin * halfMin && _d2 > 1.0e-4f)                 \
+                                                        _s = halfMin / (float)sqrt(_d2); \
+                    if (_s != 0.0f)                                                    \
+                    {                                                                  \
+                        (C).x = (M).x + _dx * _s;                                      \
+                        (C).y = (M).y + _dy * _s;                                      \
+                    }                                                                  \
+                }
+            TW_CLAMP_CORNER(v2, v0);
+            TW_CLAMP_CORNER(v3, v0);
+            TW_CLAMP_CORNER(v4, v1);
+            TW_CLAMP_CORNER(v5, v1);
+            #undef TW_CLAMP_CORNER
+        }
+    }
+
     // Draw the polygon
     renderer->DrawSquare(&v1, &v5, &v2, &v0, CULL_ALLOW_ALL);
     renderer->DrawSquare(&v1, &v4, &v3, &v0, CULL_ALLOW_ALL);
@@ -358,8 +426,16 @@ BOOL DrawableTracer::ConstructWidth(RenderOTW *renderer,
         mag = (float)sqrt(widthX * widthX + widthY * widthY + widthZ * widthZ);
     }
 
+    // #31 DCS/BMS style: a tracer should keep a visible (angular) thickness at distance,
+    // not collapse into a subpixel. start = camera-centric coords, |start| = distance to the camera.
+    // Minimum world width = distance * an angular coefficient -> ~constant on-screen thickness.
+    float camDist = (float)sqrt(start->x * start->x + start->y * start->y + start->z * start->z);
+    float effWidth = width;
+    float minWidth = camDist * 0.0040f;   // ~ angular size; tuned: visible but not a 'log'
+    if (effWidth < minWidth) effWidth = minWidth;
+
     // Normalize the width vector, then scale it to 1/2 of the total width of the segment
-    normalizer = scale * width / mag;
+    normalizer = scale * effWidth / mag;
     widthX *= normalizer;
     widthY *= normalizer;
     widthZ *= normalizer;
@@ -382,8 +458,17 @@ BOOL DrawableTracer::ConstructWidth(RenderOTW *renderer,
     renderer->TransformCameraCentricPoint(&left,  xformLeft);
     renderer->TransformCameraCentricPoint(&right, xformRight);
 
-    if (fabs(xformLeft->x - xformRight->x) * fabs(xformLeft->y - xformRight->y) < 0.7f and alpha == 1.0f)
-        return FALSE;
+    // Artscout - 2026 (#60 VR): bail to the faint point/line path only on the flat path. In VR this subpixel
+    // test flips globally when the foveated per-eye scale settles (projected width crosses 0.7 px^2), so a whole
+    // burst of bright glow-quad tracers suddenly drops to thin point/line tracers ("the bright yellow ones
+    // vanish, only the normalized remain"). Keep the quad in VR -- the [min..max] screen-width clamp in Draw()
+    // then holds every tracer at a consistent, visible thickness instead of letting it collapse subpixel.
+    {
+        extern bool g_bVrFrameActive;
+        if (not g_bVrFrameActive and
+            fabs(xformLeft->x - xformRight->x) * fabs(xformLeft->y - xformRight->y) < 0.7f and alpha == 1.0f)
+            return FALSE;
+    }
 
     // get location on line where we apply width
     wloc.x = start->x + dx * 0.95f;

@@ -139,7 +139,6 @@ DWORD Loader::MainLoop()
 
     while ( not shutDown)
     {
-
         // Process everything in our queue
         if (paused == RUNNING)
         {
@@ -189,7 +188,9 @@ DWORD Loader::MainLoop()
         if (actionDone)
             Sleep(TickDelay);
         else
+        {
             WaitForSingleObject(WakeEventHandle, INFINITE);
+        }
 
         //WaitForSingleObject( WakeEventHandle, 10000 ); //INFINITE
 

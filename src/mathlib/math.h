@@ -15,6 +15,9 @@
 #else
 #include <stdint.h>
 #endif
+// Artscout - 2026 (x64): SSE intrinsics + FLT_MAX for the x64 replacements of the x86 inline asm below.
+#include <xmmintrin.h>
+#include <float.h>
 
 #undef  PI
 #define PI (3.1415926535897932384626433832795028841971693993751f)
@@ -79,6 +82,7 @@ template< class T > T Lerp(T& A, T& B, float Alpha)
 
 static inline float RsqrtSSE(float x)
 {
+#if defined(_M_IX86)
     static int big = 0x7F7FFFFF;
 
     __asm
@@ -90,10 +94,19 @@ static inline float RsqrtSSE(float x)
     }
 
     return x;
+#else
+    // Artscout - 2026 (x64): same op as the asm -- min(rsqrt(x), FLT_MAX) * x (fast sqrt, 0 at x=0).
+    __m128 xx = _mm_set_ss(x);
+    __m128 r = _mm_rsqrt_ss(xx);
+    r = _mm_min_ss(r, _mm_set_ss(FLT_MAX));
+    r = _mm_mul_ss(r, xx);
+    return _mm_cvtss_f32(r);
+#endif
 }
 
 static inline float SqrtSSE(float x)
 {
+#if defined(_M_IX86)
     __asm
     {
         sqrtss xmm0, x
@@ -101,10 +114,14 @@ static inline float SqrtSSE(float x)
     }
 
     return x;
+#else
+    // Artscout - 2026 (x64): scalar SSE sqrt, identical to the asm.
+    return _mm_cvtss_f32(_mm_sqrt_ss(_mm_set_ss(x)));
+#endif
 }
 
-#define sqrt SqrtSSE
-#define sqrtf SqrtSSE
+//#define sqrt SqrtSSE  // poisoned <cmath> (C2382)
+//#define sqrtf SqrtSSE
 
 #else //_MSC_VER >= 1300
 
@@ -121,7 +138,7 @@ static inline float Rsqrt(float v)
 
 static inline float Sqrt(float x)
 {
-#if WIN32
+#if defined(_M_IX86)
     _asm
     {
         fld x;
@@ -141,7 +158,7 @@ static inline float Sqrt(float x)
 
 static inline void SinCos(const float a, float *s, float *c)
 {
-#if WIN32
+#if defined(_M_IX86)
     _asm
     {
         push edx;
@@ -192,13 +209,16 @@ static inline bool Fgreater(float f0, float f1, float tol)
 #endif
 static inline int FloatToInt32(float x)
 {
-#if WIN32
+#if defined(_M_IX86)
     __asm
     {
         fld dword ptr [x];
         fistp dword ptr [x];
         mov eax, dword ptr [x];
     }
+#elif defined(_M_X64)
+    // Artscout - 2026 (x64): cvtss2si rounds to nearest, matching fistp (not truncation).
+    return _mm_cvtss_si32(_mm_set_ss(x));
 #else
     return static_cast<int>(x);
 #endif
@@ -209,7 +229,7 @@ static inline int FloatToInt32(float x)
 
 static inline void FloatToInt32Store(int *a, float x)
 {
-#if WIN32
+#if defined(_M_IX86)
     __asm
     {
         fld dword ptr [x];
@@ -217,6 +237,7 @@ static inline void FloatToInt32Store(int *a, float x)
         fistp dword ptr [eax];
     }
 #else
+    // Artscout - 2026 (x64): routes to the cvtss2si path above.
     *a = FloatToInt32(x);
 #endif
 }

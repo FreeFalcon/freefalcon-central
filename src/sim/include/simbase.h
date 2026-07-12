@@ -1,7 +1,7 @@
 #ifndef _SIMBASE_H
 #define _SIMBASE_H
 
-#include <cISO646>
+#include <iso646.h>
 #include "FalcLib/include/f4vu.h"
 #include "Falclib/include/FalcEnt.h"
 #include "geometry.h"

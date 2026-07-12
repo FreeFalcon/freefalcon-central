@@ -1,3 +1,4 @@
+#include "stdafx.h"	// the project uses a PCH -- else C1010
 /** @file CPMirror
 * 2d cockpit mirror implementation
 */
