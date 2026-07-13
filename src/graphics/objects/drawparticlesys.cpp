@@ -49,7 +49,7 @@
 // Artscout - 2026: #VFX Phase 2 -- LIVE particle emit -> GPU-instanced billboards.
 #include <vector>
 #include <algorithm>   // Artscout - 2026: #VFX std::sort (depth-sort particle buckets)
-#include "Graphics/DXEngine/d3d11/IRenderer.h"   // IRenderer::DrawParticlesInstanced + g_pRenderer
+#include "Graphics/DXEngine/common/IRenderer.h"   // IRenderer::DrawParticlesInstanced + g_pRenderer
 
 // for when fakerand just won't do
 #define NRANDPOS ((float)( (float)rand()/(float)RAND_MAX ))

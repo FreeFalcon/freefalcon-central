@@ -2253,8 +2253,8 @@ void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface
     // (movie/surface.cpp: pDD->CreateSurface / Blt / Lock). Under D3D11 the DDraw object is NULL,
     // so playing a movie (intro logos / campaign cutscenes) would crash. No-op until the player is
     // ported to a D3D11 path. Movies are non-essential, so skipping them is safe.
-    extern bool g_bUseD3D11, g_bUseD3D12;
-    if (g_bUseD3D11 or g_bUseD3D12)   // #DX12: movie player is DDraw-based; skip under any GPU backend
+    extern bool g_bUseD3D12;
+    if (g_bUseD3D12)   // #DX12: movie player is DDraw-based; skip under any GPU backend
         return;
 
     HWND hwnd;

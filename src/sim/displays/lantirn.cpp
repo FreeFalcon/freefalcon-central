@@ -79,7 +79,6 @@ LantirnClass::~LantirnClass()
 void LantirnClass::DisplayInit(ImageBuffer* image)
 {
     RenderIR *irrend = (RenderIR *) privateDisplay;
-    extern bool g_bUseD3D11;
 
     // Already set up for this MFD surface?
     if (irrend and m_pMfdImage == image)
@@ -98,19 +97,9 @@ void LantirnClass::DisplayInit(ImageBuffer* image)
     privateDisplay = irrend;
     m_pMfdImage = image;
 
-    // Artscout - 2026: under D3D11 render the FLIR/TGP 3D scene into an OFF-SCREEN RTT, not the
-    // screen backbuffer (RenderOTW path would otherwise leak the sensor image onto the display).
-    // The scene is read back into the MFD's 2D surface in DrawTerrain (Munitions 3D-viewer pattern).
+    // Artscout - 2026 (D3D11 purge): the D3D11-only off-screen-RTT path for the FLIR/TGP scene was removed
+    // (m_pRTT stays NULL under D3D12; useRtt is hardcoded false, so the sensor goes through the shared MFD atlas).
     ImageBuffer *target = image;
-
-    if (g_bUseD3D11 and image)
-    {
-        int rw = image->targetXres();
-        int rh = image->targetYres();
-        m_pRTT = new ImageBuffer;
-        m_pRTT->Setup(image->GetDisplayDevice(), rw, rh, SystemMem, None);
-        target = m_pRTT;
-    }
 
     irrend->Setup(target, OTWDriver.GetViewpoint());
     irrend->SetColor(0xffffffff);
@@ -138,7 +127,7 @@ void LantirnClass::DrawTerrain()
     // redirect mistook that intended HUD render for a "leak" and read the off-screen RTT back into the
     // FULL HUD image (0,0,w,h, ignoring the HUD viewport) -> the FLIR scene/target appeared as a grey
     // blob next to the HUD. Render directly to the HUD viewport like the original (no RTT here).
-    extern bool g_bUseD3D11, g_bUseD3D12, g_bSensorSceneD3D12;
+    extern bool g_bUseD3D12, g_bSensorSceneD3D12;
     // #DX12 A5: like laserpod/mavdisp/lantmfd, the sensor 3D-scene render runs only under D3D11 or when the
     // D3D12 sensor scene is explicitly enabled. This HUD FLIR renders the forward world a SECOND time via
     // DrawScene straight into the HUD viewport; under D3D12 it was NOT gated, so flying an AG pass at a target
@@ -220,7 +209,7 @@ void LantirnClass::DrawTerrain()
     pRender->EndDraw();
 
     // Artscout - 2026: pull the FLIR/TGP scene out of the off-screen RTT into the MFD's 2D surface,
-    // then restore the back buffer. (Munitions 3D-viewer readback pattern, BlitD3D11RTTTo565.)
+    // then restore the back buffer. (Munitions 3D-viewer readback pattern, BlitRttTo565.)
     if (useRtt)
     {
         pRender->context.FinishFrame(NULL); // restores the back buffer as the active target
@@ -233,7 +222,7 @@ void LantirnClass::DrawTerrain()
             {
                 int w = m_pMfdImage->targetXres();
                 int h = m_pMfdImage->targetYres();
-                m_pRTT->BlitD3D11RTTTo565(dst, w, h, 0, 0, w, h);
+                m_pRTT->BlitRttTo565(dst, w, h, 0, 0, w, h);
                 m_pMfdImage->Unlock();
             }
         }

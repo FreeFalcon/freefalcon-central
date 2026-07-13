@@ -15,7 +15,14 @@
 #include <windows.h>
 #include <vector>
 #include <map>
-#include "Graphics/DXEngine/d3d11/D3D11TextureManager.h"   // reuse TexMipData (identical source layout)
+
+// Artscout - 2026 (D3D11 purge): one source mip level for texture upload. Was in d3d11texturemanager.h;
+// moved here (backend-agnostic) when the D3D11 texture manager was retired.
+struct TexMipData
+{
+	const void* data;
+	int         rowPitch;     // bytes per row (or per block-row for BCn)
+};
 
 struct ID3D12Device;
 struct ID3D12CommandQueue;
@@ -66,6 +73,10 @@ public:
 	static int  DxgiFormatFromMPR(unsigned long mprTexInfoFlags);
 	static bool IsBlockCompressed(int dxgiFormat);
 	static int  BlockBytes(int dxgiFormat);
+	// Artscout - 2026 (D3D11 purge): offline BCn .dds authoring via NVTT 3 (was D3D11TextureManager::SaveBCnDDS).
+	// Backend-agnostic (pure NVTT); the terrain/fartex DDS cache uses it. Win32 fallback returns false.
+	static bool SaveBCnDDS(const char* fileName, unsigned long mprTexInfoFlags,
+	                       const void* bgra, int width, int height);
 
 	// Create an immutable texture from mip levels already in the target format. Fills out.
 	bool Create(D3D12Texture& out, int width, int height, int dxgiFormat,

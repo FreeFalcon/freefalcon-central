@@ -73,6 +73,12 @@ cbuffer cbObject : register(b2)
                                     // N.L gradient reads, add a subtle default specular (head-move
                                     // glints on knobs/glass in VR), and a mild contrast in the PS.
                                     // World geometry / flat path never set this bit -> untouched.
+#define FF_GLOC         (1u << 15)  // Artscout - 2026: G-force / end-flight vignette (blackout/redout).
+                                    // Fullscreen post-process quad (uv 0..1): the PS ignores the texture
+                                    // and returns the tint (gMaterialColor.rgb) with alpha = radial vignette
+                                    // computed from gGloc (x=intensity, y=inner radius, z=outer radius).
+                                    // Replaces the legacy screen-space tunnel-ring -> works on D3D11/D3D12
+                                    // and, drawn per-eye in the VR loop, lands in each HMD view.
 
 cbuffer cbRender : register(b3)
 {
@@ -86,6 +92,8 @@ cbuffer cbRender : register(b3)
     float4 gMaterialColor;  // global modulate (default 1,1,1,1)
     float4 gSpecular;       // rgb = water glint color, w = power (0 -> no specular)
     float4 gWaterParams;    // #12: x = animation time (sec); y,z,w reserved
+    float4 gGloc;           // Artscout - 2026: FF_GLOC vignette -- x=intensity(0=off), y=inner radius,
+                            // z=outer radius (normalized: 0=centre .. 1=screen edge), w reserved
 };
 
 //============================ Lighting =======================================
@@ -297,6 +305,19 @@ VSOut VS_Object(VSInObject i)
 
 float4 PS_Main(VSOut i) : SV_Target
 {
+    // Artscout - 2026: FF_GLOC -- G-force blackout / redout vignette. This is a fullscreen overlay quad
+    // (uv 0..1) alpha-blended over the finished frame: output the tint (gMaterialColor.rgb) with alpha =
+    // a radial ramp so the periphery darkens/tints while the centre stays clear. Radius 0 at the screen
+    // centre, ~1 at the mid-edges (sqrt(2) at the corners); smoothstep feathers the ring and saturates
+    // to full past the outer radius. Short-circuits before any texture/lighting work.
+    if (gFlags & FF_GLOC)
+    {
+        float2 gd = i.Uv0 - 0.5f;
+        float  gr = length(gd) * 2.0f;
+        float  ga = smoothstep(gGloc.y, gGloc.z, gr) * gGloc.x;
+        return float4(gMaterialColor.rgb, saturate(ga));
+    }
+
     float4 c = gMaterialColor;
 
     if (gFlags & FF_VERTEXCOLOR || true)

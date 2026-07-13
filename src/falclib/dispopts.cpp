@@ -170,8 +170,8 @@ int DisplayOptionsClass::LoadOptions(char *filename)
     if (nVrResolutionScale < 50 or nVrResolutionScale > 100) nVrResolutionScale = 100;
 
     {
-        extern bool g_bUseD3D11, g_bUseD3D12;
-        if (g_bUseD3D11 or g_bUseD3D12)   // #DX12: GPU mode has no DDraw -> force RTT/2D-cockpit like D3D11
+        extern bool g_bUseD3D12;
+        if (g_bUseD3D12)   // #DX12: GPU mode has no DDraw -> force RTT/2D-cockpit like D3D11
         {
             DisplayOptions.bRender2DCockpit = TRUE;
             // Artscout - 2026: force render-to-texture under D3D11. The bRender2Texture==FALSE path is a

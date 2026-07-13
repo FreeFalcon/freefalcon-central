@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="D3D11Backend.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="D3D12Backend.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -30,16 +27,7 @@
     <ClCompile Include="OpenXRBackend.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="D3D11\D3D11GeometryBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11\D3D11Renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11\D3D11TextureManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11\FFStateMap.cpp">
+    <ClCompile Include="common\FFStateMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DX2DEngine.cpp">
@@ -59,9 +47,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="D3D11Backend.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="D3D12Backend.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -74,16 +59,7 @@
     <ClInclude Include="OpenXRBackend.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="D3D11\D3D11GeometryBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D11\D3D11Renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D11\D3D11TextureManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D11\FFStateMap.h">
+    <ClInclude Include="common\FFStateMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DX2DEngine.h">

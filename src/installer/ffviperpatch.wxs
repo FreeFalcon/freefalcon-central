@@ -39,7 +39,6 @@
 
     <StandardDirectory Id="ProgramFilesFolder">
       <Directory Id="INSTALLFOLDER" Name="FreeFalcon6">
-        <Directory Id="dShaders" Name="shaders" />
         <Directory Id="dConfig" Name="config">
           <Directory Id="dProfiles" Name="profiles">
             <Directory Id="dDefault" Name="default" />
@@ -94,11 +93,9 @@
         <File Source="$(GameDir)\openxr_loader.dll" />
       </Component>
 
-      <!-- shaders\FFEmu.hlsl -- packaged straight from the SOURCE TREE (not the game dir) so the patch ships
-           the current shader. Path is relative to this .wxs (src\installer). -->
-      <Component Directory="dShaders">
-        <File Name="FFEmu.hlsl" Source="..\graphics\dxengine\d3d11\shaders\ffemu.hlsl" />
-      </Component>
+      <!-- FFEmu.hlsl is NOT shipped: it is baked into the exe as the FFEMU_HLSL RCDATA resource
+           (falcon4.rc) and compiled from memory at runtime. An external shaders\FFEmu.hlsl would only
+           SHADOW the embedded one -- kept out of the patch so the two never drift. -->
 
       <!-- config\ + config\profiles\default\  (from installer res\, self-contained) -->
       <Component Directory="dConfig">

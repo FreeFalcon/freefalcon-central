@@ -143,10 +143,8 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
             // display->StartDraw() does NOT rebind it. Re-bind so the TGP symbology drawn below (crosshair/
             // FOV/box + OSB labels) lands in the atlas instead of leaking to the back buffer. Same fix as
             // the GM radar / Maverick sub-render.
-            {
-                extern bool g_bUseD3D11;
-                if (g_bUseD3D11) display->ReBindRttTarget();
-            }
+            // Artscout - 2026 (D3D11 purge): the D3D11-only RTT re-bind was removed. Under D3D12 the TGP
+            // atlas is re-bound via ConfineObjectViewportToZone before DrawScene (see the D3D12 guards below).
         }
 
         // Reset color after terrain
@@ -402,7 +400,7 @@ void LaserPodClass::DrawTerrain(void)
     // ConfineObjectViewportToZone / FlushPolyLists are backend-neutral). Without them under D3D12 the sensor
     // objects flush later against the full atlas -> full-COLOR (IR/TV mode already reset) + spill onto HUD +
     // duplicate onto other MFD pages (SMS). The MFD renders in the render loop (in-frame), so no orphan frame.
-    extern bool g_bUseD3D11, g_bUseD3D12, g_bSensorSceneD3D12;
+    extern bool g_bUseD3D12, g_bSensorSceneD3D12;
     // #DX12 A5: run the sensor 3D-scene block (atlas rebind + zone confine + DrawScene + grey + object flush)
     // ONLY under D3D11 or when the D3D12 sensor scene is explicitly enabled. Under D3D12 with it OFF (default)
     // the whole A5 block is skipped so an open sensor MFD page does NOT re-bind the atlas / set a zone scissor /
@@ -420,7 +418,7 @@ void LaserPodClass::DrawTerrain(void)
         FF_SetTerrainRadiusCap(32);                              // #91: small GPU-terrain radius for the zoomed sensor
         ((RenderTV*)display)->DrawScene(&cameraPos, &viewRotation);
         ((VirtualDisplay*)display)->ConfineObjectViewportToZone();
-        if (DisplayOptions.bZBuffering or g_bUseD3D11 or g_bUseD3D12)
+        if (DisplayOptions.bZBuffering or g_bUseD3D12)
             ((RenderTV*)display)->context.FlushPolyLists();
         FF_SetIRGrey(false);                                     // end grey before the MFD symbology
         FF_SetTerrainRadiusCap(0);                               // restore full radius for the main world view

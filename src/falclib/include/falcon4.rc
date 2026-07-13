@@ -1799,7 +1799,7 @@ BEGIN
             VALUE "FileDescription", "FreeFalcon 7.0  FFViper (US)"
             VALUE "FileVersion", "7, 0, 0, 0"
             VALUE "InternalName", "7.000"
-            VALUE "LegalCopyright", "Copyright © 1998 - 2014"
+            VALUE "LegalCopyright", "Copyright ï¿½ 1998 - 2014"
             VALUE "OriginalFilename", "FFViper.exe"
             VALUE "ProductName", "FreeFalcon 7.0"
             VALUE "ProductVersion", "7, 0, 0, 0"
@@ -1815,10 +1815,18 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// RCDATA -- Artscout - 2026: FFEmu.hlsl baked into the exe so the game runs without shipping the shader
+// file. The renderer still PREFERS an external shaders\FFEmu.hlsl when present (runtime-tunable: edit +
+// relaunch, no rebuild); this embedded copy is the fallback. Path is relative to this .rc (src\Falclib\Include).
+//
+FFEMU_HLSL RCDATA "..\\..\\Graphics\\DXEngine\\common\\shaders\\ffemu.hlsl"
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_FILE_EXIT            "Exit Sim"
 END

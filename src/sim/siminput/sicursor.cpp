@@ -163,8 +163,7 @@ BOOL CreateSimCursors()
         // the DDraw ComposeTransparent blit is dead). So the render texture must exist regardless of
         // bRender2DCockpit -- otherwise CursorRenderTexture[0] is out of range -> crash. This block
         // already ran (and worked) under D3D11 when bRender2DCockpit was TRUE, so it is D3D11-safe.
-        extern bool g_bUseD3D11;
-        if (DisplayOptions.bRender2DCockpit or g_bUseD3D11)
+        if (DisplayOptions.bRender2DCockpit)
         {
             gpSimCursors[i].CursorRenderBuffer = texFile.image.image;
 
@@ -333,7 +332,7 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
     // NULL under D3D11 -> null deref crash, confirmed). Take it ONLY under D3D7. Under D3D11 always use
     // the rendered-cursor path below, regardless of bRender2DCockpit (it can be off and would otherwise
     // route here and crash).
-    extern bool g_bUseD3D11; extern bool g_bUseGpu;   // Artscout - 2026: #DX12 -- ComposeTransparent is dead DDraw7 (m_pBltTarget NULL in BOTH GPU modes -> null deref); take it ONLY under legacy DDraw
+    extern bool g_bUseGpu;   // Artscout - 2026: #DX12 -- ComposeTransparent is dead DDraw7 (m_pBltTarget NULL in BOTH GPU modes -> null deref); take it ONLY under legacy DDraw
     if ( not DisplayOptions.bRender2DCockpit and not g_bUseGpu)
         OTWDriver.OTWImage->ComposeTransparent(gpSimCursors[gSelectedCursor].CursorBuffer, &CursorSrc, &CursorDest);
     else

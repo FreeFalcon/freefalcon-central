@@ -110,8 +110,11 @@ void RenderGMComposite::Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*,
     // D3D11 -> black ground + SetBeam NULL deref). Force it here too so the consumer is correct regardless
     // of how the option was loaded/toggled.
     {
-        extern bool g_bUseD3D11;
-        if (g_bUseD3D11)
+        // Artscout - 2026 (D3D11 purge): render-to-texture is the ONLY viable GM path on any GPU backend
+        // (the DDraw bRender2Texture==FALSE blit branch is dead in both). Force it in GPU mode regardless
+        // of how the option loaded.
+        extern bool g_bUseGpu;
+        if (g_bUseGpu)
             DisplayOptions.bRender2Texture = TRUE;
     }
 
@@ -159,7 +162,7 @@ void RenderGMComposite::Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*,
     ShiAssert(paletteHandle);
 
     // Artscout - 2026: under D3D11 give the L/R panel textures FLAG_RENDERTARGET so each gets its OWN
-    // D3D11 texture (m_pD3D11Tex) + SRV (m_pDDS) -- a real, persistent snapshot target. NewImage then
+    // D3D11 texture (m_pGpuTex) + SRV (m_pDDS) -- a real, persistent snapshot target. NewImage then
     // CopyResource's the completed off-screen sweep into it (instead of the old DDraw Blt / the broken
     // borrowed-live-SRV hack). This is what makes the ground map PERSIST between sweeps instead of
     // resetting to black when the live buffer is cleared.
@@ -167,9 +170,9 @@ void RenderGMComposite::Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*,
                        TextureHandle::FLAG_NOTMANAGED;
     {
         // #DX12 A5: both GPU backends need the panel as a real render-target texture (its own persistent
-        // RGBA8 texture) so the completed sweep can be CopyResource'd in (D3D11: m_pD3D11Tex; D3D12: m_pDDS).
-        extern bool g_bUseD3D11, g_bUseD3D12;
-        if (g_bUseD3D11 || g_bUseD3D12) gmTexFlags or_eq TextureHandle::FLAG_RENDERTARGET;
+        // RGBA8 texture) so the completed sweep can be CopyResource'd in (D3D11: m_pGpuTex; D3D12: m_pDDS).
+        extern bool g_bUseD3D12;
+        if (g_bUseD3D12) gmTexFlags or_eq TextureHandle::FLAG_RENDERTARGET;
     }
 
     lTexHandle = new TextureHandle;
@@ -356,7 +359,7 @@ void RenderGMComposite::DrawComposite(Tpoint *center, float platformHdg)
     ShiAssert(lTexHandle);
 
     // Artscout - 2026: each half-texture holds its OWN persistent snapshot (NewImage CopyResource'd the
-    // completed sweep into targetHandle->m_pD3D11Tex; m_pDDS is its own SRV). No live-buffer borrow, so
+    // completed sweep into targetHandle->m_pGpuTex; m_pDDS is its own SRV). No live-buffer borrow, so
     // the map survives the per-sweep clear.
 
     if ( not DisplayOptions.bRender2Texture)
@@ -647,7 +650,7 @@ bool RenderGMComposite::BackgroundGeneration(Tpoint *from, Tpoint *at, float pla
 void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRight, bool Shaped)
 {
     TextureHandle *targetHandle;
-    extern bool g_bUseD3D11; extern bool g_bUseGpu;   // Artscout - 2026: #DX12 -- noise overlay skipped in BOTH GPU modes
+    extern bool g_bUseGpu;   // Artscout - 2026: #DX12 -- noise overlay skipped in BOTH GPU modes
     ShiAssert(lTexHandle);
     ShiAssert(rTexHandle);
 
@@ -746,18 +749,10 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
         // (m_pDDS is a D3D12Texture* under D3D12). GPU copy on the main list, recorded after the sweep
         // draws so the half persists after the live off-screen buffer is cleared for the next sweep.
         if (targetHandle && targetHandle->m_pDDS && pSrcBuffer)
-            pSrcBuffer->CopyD3D11RTTo(targetHandle->m_pDDS);
+            pSrcBuffer->CopyRttTo(targetHandle->m_pDDS);
     }
-    else if (g_bUseD3D11)
-    {
-        // Artscout - 2026: SNAPSHOT the completed sweep into the panel texture's OWN D3D11 texture
-        // (FLAG_RENDERTARGET gave it m_pD3D11Tex + its own SRV in m_pDDS). CopyResource = GPU copy, no
-        // CPU readback. This makes the half persist after the live off-screen buffer is cleared for the
-        // next sweep -> the ground map no longer resets to black. (The old borrowed-live-SRV hack showed
-        // the buffer being cleared = black; that is reverted.) m_pDDS stays the handle's own SRV.
-        if (targetHandle && targetHandle->m_pD3D11Tex && pSrcBuffer)
-            pSrcBuffer->CopyD3D11RTTo(targetHandle->m_pD3D11Tex);
-    }
+    // Artscout - 2026 (D3D11 purge): the D3D11 snapshot branch (CopyRttTo m_pGpuTex) was removed --
+    // under D3D12 the block above snapshots into the panel handle's own D3D12 texture (m_pDDS).
     // Artscout - 2026: [DX7-PURGE] the legacy non-GPU DDraw surface->Blt snapshot is gone
     // (only the D3D11/D3D12 CopyResource snapshot paths above remain).
 

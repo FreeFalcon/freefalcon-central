@@ -18,11 +18,6 @@
 class DisplayDevice;
 enum MPRSurfaceType;
 
-// PHASE 5 (RTT): D3D11 types for the off-screen render target (MFD/HUD/radar).
-struct ID3D11Texture2D;
-struct ID3D11RenderTargetView;
-struct ID3D11ShaderResourceView;
-
 #include "d3d7compat.h"
 #include "context.h"
 
@@ -129,30 +124,26 @@ public:
 
     // Swap rolls of front and back buffers (page flip, blt, or nothing depending on types)
     void SwapBuffers(bool bDontFlip);
-    void PresentD3D11();	// PHASE 2: blit the CPU buffer into the D3D11 backbuffer
+    void PresentGpu();	// blit the CPU RGB565 buffer into the GPU backbuffer
 
-    // PHASE 5 (RTT): off-screen render target for MFD/HUD/radar under D3D11.
+    // Off-screen render target for MFD/HUD/radar (backed by the D3D12 RTT below).
     bool IsScreenBuffer() const { return m_bIsScreenBuffer; }
-    // Creates a D3D11 RTT texture (RTV+SRV) sized to the buffer; idempotent.
-    bool EnsureD3D11RenderTarget();
     // Binds the RTT as render target (+viewport over the whole buffer) and optionally clears.
-    void BindD3D11RenderTarget(bool clear);
-    // SRV for sampling the RTT as a panel texture (NULL if not RTT/not created).
-    ID3D11ShaderResourceView* GetD3D11SRV() const { return m_pD3D11SRV; }
-    // Artscout - 2026: GPU-copy this off-screen RTT's texture into another ID3D11Texture2D (same
+    void BindRttTarget(bool clear);
+    // Artscout - 2026: GPU-copy this off-screen RTT's texture into another backend texture (same
     // size/format). Used by the GM radar to SNAPSHOT a completed sweep into a persistent panel texture.
     // #DX12 A5: under D3D12 destTex2D is a D3D12Texture* (targetHandle->m_pDDS); branches internally.
-    void CopyD3D11RTTo(void* destTex2D);
+    void CopyRttTo(void* destTex2D);
     // Artscout - 2026: menu 3D-viewer (#34). Read a rect out of this off-screen RTT and convert
     // it into a 565 CPU buffer (the screen UI surface), so a 3D model preview becomes part of the
     // normal 2D blit instead of going through the present-mode chroma path (which blacks it out).
     // #DX12 A5: under D3D12 this reads back the D3D12 off-screen RTT (deferred, 1-frame latent).
-    void BlitD3D11RTTTo565(unsigned short* dst, int dstStridePix, int dstHeightPix, int x, int y, int w, int h);
+    void BlitRttTo565(unsigned short* dst, int dstStridePix, int dstHeightPix, int x, int y, int w, int h);
 
     // Artscout - 2026: #DX12 A5 -- D3D12 twin of the D3D11 off-screen RTT (TGP/FLIR/Munitions viewer +
     // GM radar). Create a D3D12 render-target texture (via the texture manager), bind it as the scene
     // target (BindSceneRtt), and on FinishFrame transition it back to PIXEL_SHADER_RESOURCE + rebind the
-    // scene. BindD3D11RenderTarget delegates here when g_bUseD3D12, so ContextMPR::StartFrame is untouched.
+    // scene. BindRttTarget delegates here when g_bUseD3D12, so ContextMPR::StartFrame is untouched.
     bool EnsureD3D12RenderTarget();
     void BindD3D12RenderTarget(bool clear);
     void UnbindD3D12RenderTarget();
@@ -180,7 +171,7 @@ protected:
     int width;
     int height;
     bool m_bIsScreenBuffer;	// PHASE 1: screen buffer (drives Present)
-    BYTE *m_pSysMem;	// PHASE 1/2: RGB565 CPU buffer under D3D11
+    BYTE *m_pSysMem;	// PHASE 1/2: RGB565 CPU buffer (GPU composites/presents from it)
     int redShift;
     int greenShift;
     int blueShift;
@@ -189,12 +180,6 @@ protected:
     CRITICAL_SECTION m_cs;
     bool m_bBitsLocked;
 
-    // PHASE 5 (RTT): D3D11 off-screen render target.
-    ID3D11Texture2D*          m_pD3D11RTTex;
-    ID3D11RenderTargetView*   m_pD3D11RTV;
-    ID3D11ShaderResourceView* m_pD3D11SRV;
-    // Artscout - 2026: lazily-created STAGING copy of the RTT for GPU->CPU readback (#34 menu 3D).
-    ID3D11Texture2D*          m_pD3D11Staging;
     // Artscout - 2026: #DX12 A5 -- D3D12 off-screen RTT (a D3D12Texture*, kept opaque as void* so this
     // widely-included header stays free of d3d12 headers). Created lazily by EnsureD3D12RenderTarget.
     void*                     m_pD3D12RTT;

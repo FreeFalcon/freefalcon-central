@@ -358,14 +358,14 @@ void LantirnDrawable::DrawTerrain()
     // (the unfinished GPU-terrain sensor path -> DEVICE_HUNG). See laserpod.cpp / #91.
     extern void FF_SetIRGrey(bool);
     extern void FF_SetTerrainRadiusCap(int);
-    extern bool g_bUseD3D11, g_bUseD3D12, g_bSensorSceneD3D12;
+    extern bool g_bUseD3D12, g_bSensorSceneD3D12;
     const bool doA5 = !g_bUseD3D12 || g_bSensorSceneD3D12;
     if (doA5)
     {
         FF_SetIRGrey(true);
         FF_SetTerrainRadiusCap(32);
         ((RenderIR*)display)->DrawScene(&cameraPos, &viewRotation);
-        if (DisplayOptions.bZBuffering or g_bUseD3D11 or g_bUseD3D12)
+        if (DisplayOptions.bZBuffering or g_bUseD3D12)
             ((RenderIR*)display)->context.FlushPolyLists();
         FF_SetIRGrey(false);
         FF_SetTerrainRadiusCap(0);

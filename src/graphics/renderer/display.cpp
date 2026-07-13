@@ -13,15 +13,14 @@
 // COBRA - DX - DX Engine includes
 #include "Graphics/DXEngine/DXVBManager.h"
 #include "Graphics/DXEngine/DXEngine.h"
-#include "Graphics/DXEngine/D3D11Backend.h"	// PHASE 5 (RTT)
-#include "Graphics/DXEngine/d3d11/D3D11Renderer.h"	// PHASE 5 (RTT)
+#include "Graphics/DXEngine/common/IRenderer.h"	// PHASE 5 (RTT)
 #include "Graphics/DXEngine/D3D12Backend.h"	// #DX12 п.3 (RTT)
 #include "Graphics/DXEngine/d3d12/D3D12Renderer.h"	// Artscout - 2026 (panel-drift DIAG): D3D12 gScreenSize getter
 #include "Graphics/DXEngine/OpenXRBackend.h"	// Artscout - 2026 (VR panel-drift DIAG, temporary): head pose for RTTDIST log
 extern bool g_bUseD3D12;
-extern bool g_bUseD3D11;	// PHASE 5 (RTT)
 extern bool g_bUseGpu;		// #DX12: D3D11 || D3D12 (GPU render mode) -- RTT composite is additive on both
 extern bool g_bUse_DX_Engine;
+extern bool g_rttBatchActive;	// Artscout - 2026 (D3D11 purge): re-homed to D3D12Renderer.cpp; StartRtt/FinishRtt set it
 
 // ASSO: BEGIN
 extern int g_nGfxFix;
@@ -1379,7 +1378,6 @@ bool VirtualDisplay::SetupRttTarget(int tXres_, int tYres_, int tBpp_)
         // #7 AA-RTT: create the MSAA atlas (displays render into it, resolve to renderTexture before
         // DrawRttQuad -> antialiased HUD/DED/MFD/RWR). best-effort. Re-ENABLED 2026-06-17 (empty
         // displays on aa.png were from an incremental-build ABI corruption, not the AA logic -- needs a Rebuild).
-        extern bool g_bUseD3D11;
         // #7 MSAA atlas OFF (test 'flat lines like BMS'): it pulled the soft composite (alpha=brightness),
         // which gave 'bulky' lines (halo) + uneven text brightness. Without MSAA -> DrawRttQuad goes
         // through a SIMPLE chroma composite: flat opaque lines, binary (even) brightness.
@@ -1475,36 +1473,9 @@ void VirtualDisplay::StartRtt(Render3D* r3d_)
     GetViewport(&oldLeft, &oldTop, &oldRight, &oldBottom);   // save the current viewport
     oldTarget = context.m_pRenderTarget;
     context.m_pRenderTarget = renderTexture->m_pDDS;
-    // PHASE 5 (RTT): in D3D11 bind the render-texture RTV (MFD/HUD draw into it).
-    if (g_bUseD3D11)
+    // #DX12 п.3 RTT: bind the render-texture as the target; displays draw their symbology into it.
+    if (g_bUseD3D12)
     {
-        if (g_pD3D11Backend && renderTexture && renderTexture->m_pD3D11RTV)
-        {
-            // clear=false: like the reference, StartRtt does NOT clear the atlas (otherwise a repeated
-            // StartRtt from the MFD erases already-drawn HUD/RWR/DED). Cleared once,
-            // via ClearDraw->ClearBuffers at the start of the RTT batch (vcock).
-            // #7 AA-RTT: draw displays into the MSAA atlas (if active) -> AA of HUD lines/circle.
-            // ClearDraw clears the BOUND RTV (ClearCurrentRTV), so the MSAA target clears itself.
-            if (g_pD3D11Backend->RttMsaaActive())
-                g_pD3D11Backend->BindRttMsaaRTV(renderTexture->m_nActualWidth, renderTexture->m_nActualHeight, false, /*unbindSRV*/ true);
-            else
-                g_pD3D11Backend->BindRenderTargetView(renderTexture->m_pD3D11RTV,
-                    renderTexture->m_nActualWidth, renderTexture->m_nActualHeight, false, /*unbindSRV*/ true);
-            if (g_pD3D11Renderer)
-                g_pD3D11Renderer->SetViewportSize(renderTexture->m_nActualWidth, renderTexture->m_nActualHeight);
-            // Display-text FIX: BindRenderTargetView(unbindSRV=true) unbound PS SRV
-            // slot 0, but the ContextMPR cache currentTexture1 stayed -> SelectTexture1
-            // for the font thought 'already bound' and SKIPPED the bind -> at draw slot 0 = null
-            // -> HUD/DED text invisible (gTex0 empty). Reset the texture cache.
-            context.InvalidateState();
-            // And reset m_hasTex0 in the renderer -> the first HUD LINES (GOURAUD2 untextured)
-            // get FF_TEXTURE0=off -> chroma won't cut them (otherwise all HUD symbology disappears).
-            if (g_pD3D11Renderer) g_pD3D11Renderer->SetTexture(0, NULL);
-        }
-    }
-    else if (g_bUseD3D12)
-    {
-        // #DX12 п.3 RTT: bind the render-texture as the target; displays draw their symbology into it.
         extern IRenderer* g_pRenderer;
         if (g_pD3D12Backend && renderTexture && renderTexture->m_pDDS)
         {
@@ -1515,7 +1486,7 @@ void VirtualDisplay::StartRtt(Render3D* r3d_)
         }
     }
     else
-        context.m_pCtxDX->SetRenderTarget(context.m_pRenderTarget);
+        context.m_pCtxDX->SetRenderTarget(context.m_pRenderTarget);   // legacy DDraw (dead; removed in DX7 purge)
     SetRttRect(0, 0, renderTexture->m_nActualWidth, renderTexture->m_nActualHeight);
     SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
     g_rttBatchActive = true;	// DIAG (RTT)
@@ -1526,7 +1497,7 @@ void VirtualDisplay::FinishRtt()
     g_rttBatchActive = false;	// DIAG (RTT)
     // PHASE 5/#DX12 (RTT): flush unfinished display content into renderTexture (still bound as RTV) BEFORE
     // switching to the backbuffer -- else the tail leaks into the backbuffer. ContextMPR draws via g_pRenderer.
-    if (g_bUseD3D11 || g_bUseD3D12)
+    if (g_bUseD3D12)
         context.FlushPending();
 
     context.m_pRenderTarget = image->targetSurface();
@@ -1545,23 +1516,8 @@ void VirtualDisplay::FinishRtt()
             if (g_pRenderer) g_pRenderer->SetViewportSize(g_pD3D12Backend->Width(), g_pD3D12Backend->Height());
         }
     }
-    // PHASE 5 (RTT): in D3D11 restore the backbuffer as the target.
-    else if (g_bUseD3D11)
-    {
-        if (g_pD3D11Backend && g_pD3D11Backend->IsValid())
-        {
-            // #7 AA-RTT: resolve the MSAA atlas -> renderTexture (its SRV is sampled by DrawRttQuad).
-            // BEFORE BindBackBuffer (resolve drops the RTV binding). Displays were drawn into MSAA above.
-            if (g_pD3D11Backend->RttMsaaActive() && renderTexture && renderTexture->m_pD3D11Tex)
-                g_pD3D11Backend->ResolveRttMsaa(renderTexture->m_pD3D11Tex);
-
-            g_pD3D11Backend->BindBackBuffer(false);
-            if (g_pD3D11Renderer)
-                g_pD3D11Renderer->SetViewportSize(g_pD3D11Backend->Width(), g_pD3D11Backend->Height());
-        }
-    }
     else
-        context.m_pCtxDX->SetRenderTarget(context.m_pRenderTarget);
+        context.m_pCtxDX->SetRenderTarget(context.m_pRenderTarget);   // legacy DDraw (dead; removed in DX7 purge)
     SetRttRect(0, 0, 0, 0, false);
     //SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
     SetViewport(oldLeft, oldTop, oldRight, oldBottom); // restore viewport
@@ -1577,21 +1533,7 @@ void VirtualDisplay::ReBindRttTarget()
 
     context.m_pRenderTarget = renderTexture->m_pDDS;
 
-    if (g_bUseD3D11 and g_pD3D11Backend and renderTexture->m_pD3D11RTV)
-    {
-        if (g_pD3D11Backend->RttMsaaActive())
-            g_pD3D11Backend->BindRttMsaaRTV(renderTexture->m_nActualWidth, renderTexture->m_nActualHeight, false, /*unbindSRV*/ true);
-        else
-            g_pD3D11Backend->BindRenderTargetView(renderTexture->m_pD3D11RTV,
-                renderTexture->m_nActualWidth, renderTexture->m_nActualHeight, false, /*unbindSRV*/ true);
-
-        if (g_pD3D11Renderer)
-            g_pD3D11Renderer->SetViewportSize(renderTexture->m_nActualWidth, renderTexture->m_nActualHeight);
-
-        context.InvalidateState();
-        if (g_pD3D11Renderer) g_pD3D11Renderer->SetTexture(0, NULL);
-    }
-    else if (g_bUseD3D12 and g_pD3D12Backend and renderTexture->m_pDDS)   // #DX12 п.3 RTT
+    if (g_bUseD3D12 and g_pD3D12Backend and renderTexture->m_pDDS)   // #DX12 п.3 RTT
     {
         extern IRenderer* g_pRenderer;
         g_pD3D12Backend->BindSceneRtt(renderTexture->m_pDDS, renderTexture->m_nActualWidth, renderTexture->m_nActualHeight, false);
@@ -1611,7 +1553,7 @@ void VirtualDisplay::ConfineObjectViewportToZone()
     // the device viewport was the sub-zone, so objects went there; this restores that behaviour.
     if (not renderTexture) return;   // #DX12: neutral backend viewport-rect (D3D11 or D3D12)
     extern IRenderBackend* g_pRenderBackend;
-    if ((g_bUseD3D11 or g_bUseD3D12) and g_pRenderBackend)
+    if ((g_bUseD3D12) and g_pRenderBackend)
         g_pRenderBackend->SetViewportRect(tLeft, tTop, tRight - tLeft, tBottom - tTop);
 }
 
@@ -1620,18 +1562,7 @@ void VirtualDisplay::AdjustRttViewport()
     context.m_pRenderTarget = renderTexture->m_pDDS;
     // PHASE 5 (RTT): in D3D11 bind the render-texture RTV. Do NOT clear (renderTexture is shared
     // by all displays = atlas; cleared once in StartRtt). The sub-region is set by the scissor.
-    if (g_bUseD3D11 && g_pD3D11Backend && renderTexture && renderTexture->m_pD3D11RTV)
-    {
-        // #7 AA-RTT: the same MSAA atlas as in StartRtt (sub-region set by the scissor).
-        if (g_pD3D11Backend->RttMsaaActive())
-            g_pD3D11Backend->BindRttMsaaRTV(renderTexture->m_nActualWidth, renderTexture->m_nActualHeight, false);
-        else
-            g_pD3D11Backend->BindRenderTargetView(renderTexture->m_pD3D11RTV,
-                renderTexture->m_nActualWidth, renderTexture->m_nActualHeight, false);
-        if (g_pD3D11Renderer)
-            g_pD3D11Renderer->SetViewportSize(renderTexture->m_nActualWidth, renderTexture->m_nActualHeight);
-    }
-    else if (g_bUseD3D12 && g_pD3D12Backend && renderTexture && renderTexture->m_pDDS)   // #DX12 п.3 RTT
+    if (g_bUseD3D12 && g_pD3D12Backend && renderTexture && renderTexture->m_pDDS)   // #DX12 п.3 RTT
     {
         extern IRenderer* g_pRenderer;
         g_pD3D12Backend->BindSceneRtt(renderTexture->m_pDDS, renderTexture->m_nActualWidth, renderTexture->m_nActualHeight, false);
@@ -1707,7 +1638,9 @@ void VirtualDisplay::DrawRttQuad()
     // bulk around lines and text. Additive composites the symbology emissively (like a real HUD/BMS):
     // the atlas's black background = 0, the gradient fades smoothly -> flat clean lines without bulk.
     int compositeState = rttBlendMode;
-    if (g_bUseD3D11 && rttBlendMode == STATE_CHROMA_TEXTURE_GOURAUD2)
+    // Artscout - 2026 (D3D11 purge): additive-emissive RTT composite on ANY GPU backend (FF_RTTSOFT is in the
+    // shared FFEmu.hlsl). Was g_bUseD3D11-only; g_bUseGpu enables it under D3D12 too (matches "additive on both").
+    if (g_bUseGpu && rttBlendMode == STATE_CHROMA_TEXTURE_GOURAUD2)
         compositeState = STATE_RTT_SOFT;
     r3d->context.RestoreState(compositeState);
     r3d->context.SelectTexture1((DWORD_PTR)renderTexture); // Artscout - 2026 (x64): pointer-sized
@@ -1718,7 +1651,7 @@ void VirtualDisplay::DrawRttQuad()
     extern bool g_bRttHudClip;
     extern IRenderer* g_pRenderer;
     const bool hudClip = g_bUseGpu && g_bRttHudClip && g_pRenderer;   // #DX12: HUD stencil clip on BOTH backends (D3D12 stencil implemented)
-    if (hudClip) g_pRenderer->SetHudStencil(D3D11Renderer::HUD_STENCIL_TEST);
+    if (hudClip) g_pRenderer->SetHudStencil(HUD_STENCIL_TEST);
 
     // #7 panel SSAA -- OFF (on request, checking if it's redundant). The MSAA atlas stays.
     // if (g_bUseD3D11 && g_pD3D11Renderer) g_pD3D11Renderer->SetForcePerSample(true);
@@ -1783,9 +1716,7 @@ void VirtualDisplay::DrawRttQuad()
     // happened to trigger a flush. Flush here so the panels composite without the overlay.
     if (g_bUseGpu)
         r3d->context.FlushPending();	// the same context that draws the quad (else per-sample won't apply)
-    if (g_bUseD3D11 && g_pD3D11Renderer)
-        g_pD3D11Renderer->SetForcePerSample(false);
-    if (hudClip) g_pRenderer->SetHudStencil(D3D11Renderer::HUD_STENCIL_OFF);   // done clipping the HUD
+    if (hudClip) g_pRenderer->SetHudStencil(HUD_STENCIL_OFF);   // done clipping the HUD
 }
 
 // Artscout - 2026 (VR HUD 3D glass): faint tinted glass plate over the combiner canvas. Drawn as an
@@ -1803,7 +1734,7 @@ void VirtualDisplay::DrawGlassPlate(float r, float g, float b, float a)
     extern bool g_bRttHudClip;
     extern IRenderer* g_pRenderer;
     const bool hudMark = g_bUseGpu && g_bRttHudClip && g_pRenderer;   // #DX12: HUD stencil clip on BOTH backends (D3D12 stencil implemented)
-    if (hudMark) g_pRenderer->SetHudStencil(D3D11Renderer::HUD_STENCIL_MARK);
+    if (hudMark) g_pRenderer->SetHudStencil(HUD_STENCIL_MARK);
 
     // Canvas is a rectangle in body frame: X = forward (const), Y = horizontal, Z = vertical.
     extern float g_fHud3DGlassSize;                      // grow the plate/aperture toward the real glass edges
@@ -1859,7 +1790,7 @@ void VirtualDisplay::DrawGlassPlate(float r, float g, float b, float a)
         r3d->context.FlushPending();
     // Stencil bit is now in the buffer; switch back to OFF so anything between here and the symbology
     // (DrawRttQuad, which re-arms TEST) composites normally. The marked bit persists in the buffer.
-    if (hudMark) g_pRenderer->SetHudStencil(D3D11Renderer::HUD_STENCIL_OFF);
+    if (hudMark) g_pRenderer->SetHudStencil(HUD_STENCIL_OFF);
 }
 
 // DIAG (RTT): draw the WHOLE renderTexture into a fixed screen rectangle (no chroma/3D/
@@ -1874,7 +1805,6 @@ void VirtualDisplay::DrawRttDebugOverlay()
     // to isolate "atlas empty (render broken)" vs "atlas full but composite broken (DrawRttQuad)".
     g_pRenderer->BeginScreenPass();
     if (g_bUseD3D12 && g_pD3D12Backend) g_pRenderer->SetViewportSize(g_pD3D12Backend->Width(), g_pD3D12Backend->Height());
-    else if (g_pD3D11Backend)           g_pRenderer->SetViewportSize(g_pD3D11Backend->Width(), g_pD3D11Backend->Height());
     g_pRenderer->SetState(STATE_TEXTURE);   // FF_TEXTURE0, opaque, no chroma/alpha-test
     // m_pDDS is the repurposed opaque handle (D3D12Texture* under D3D12); the neutral SetTexture param keeps the
     // legacy ID3D11ShaderResourceView* type name, so cast (same as the D3D11 DrawRttQuad/overlay call).
@@ -1884,7 +1814,7 @@ void VirtualDisplay::DrawRttDebugOverlay()
     // magnification, text shimmer visible. If the wanted display isn't here -- shift the UV window.
     const float S = 900.0f;        // overlay screen size (px), top-left corner
     const float UVMAX = 0.5f;      // fraction of the atlas shown (0.5 = quarter, zoom ~3.5x)
-    D3D11_TLVERTEX q[4];
+    ScreenVertex q[4];
     ZeroMemory(q, sizeof(q));
     for (int i = 0; i < 4; ++i) { q[i].sz = 0.0f; q[i].rhw = 1.0f; q[i].color = 0xFFFFFFFF; q[i].specular = 0; }
     q[0].sx = 0; q[0].sy = 0; q[0].tu0 = 0;     q[0].tv0 = 0;       // UL

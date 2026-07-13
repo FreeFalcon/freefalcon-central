@@ -12,13 +12,11 @@
 #include "Rotate.h"
 #include "Device.h"
 #include "ImageBuf.h"
-#include "Graphics/DXEngine/D3D11Backend.h"	// PHASE 1: D3D11 backend
 #include "Graphics/DXEngine/D3D12Backend.h"	// Artscout - 2026: #DX12 Phase 1
 #include "Graphics/DXEngine/d3d12/D3D12TextureManager.h"	// Artscout - 2026: #DX12 A5 -- off-screen RTT (D3D12Texture)
 #include "Graphics/DXEngine/OpenXRBackend.h"	// VR (OpenXR)
 #include "../../sim/INCLUDE/ivibedata.h"	// VR: g_intellivibeData.In3D (menu vs sim)
-#include "Graphics/DXEngine/d3d11/D3D11Renderer.h"	// PHASE 5: composite the 2D UI over 3D
-#include <d3d11.h>	// PHASE 5 (RTT): off-screen render target
+#include "Graphics/DXEngine/common/IRenderer.h"	// composite the 2D UI over 3D (renderer abstraction)
 #include "FalcLib/include/debuggr.h"
 #include "Falclib/Include/IsBad.h"
 //#define _IMAGEBUFFER_PROTECT_SURF_LOCK
@@ -48,11 +46,6 @@ ImageBuffer::ImageBuffer()
     m_bIsScreenBuffer = false;
     m_pSysMem = NULL;
 
-    // PHASE 5 (RTT)
-    m_pD3D11RTTex = NULL;
-    m_pD3D11RTV = NULL;
-    m_pD3D11SRV = NULL;
-    m_pD3D11Staging = NULL;
     m_pD3D12RTT = NULL;   // Artscout - 2026: #DX12 A5 -- off-screen RTT (D3D12Texture*)
 
 #ifdef _IMAGEBUFFER_PROTECT_SURF_LOCK
@@ -92,8 +85,8 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
         // PHASE 1 (D3D7->D3D11): no DDraw surfaces. CPU buffer 16-bit RGB565, the UI composites
         // via Lock; the screen buffer (front==Primary) drives Present.
-        extern bool g_bUseD3D11, g_bUseD3D12;
-        if (g_bUseD3D11 or g_bUseD3D12)   // #DX12: GPU mode also uses the CPU RGB565 buffer (no DDraw surfaces)
+        extern bool g_bUseD3D12;
+        if (g_bUseD3D12)   // #DX12: GPU mode also uses the CPU RGB565 buffer (no DDraw surfaces)
         {
             m_bIsScreenBuffer = (front == Primary);
             ZeroMemory(&m_ddsdFront, sizeof(m_ddsdFront));
@@ -143,12 +136,6 @@ void ImageBuffer::Cleanup(void)
     m_pDDSBack = NULL;
     m_pDDSFront = NULL;
     m_pBltTarget = NULL;
-
-    // PHASE 5 (RTT): release the off-screen render target
-    if (m_pD3D11SRV)     { m_pD3D11SRV->Release();     m_pD3D11SRV = NULL; }
-    if (m_pD3D11RTV)     { m_pD3D11RTV->Release();     m_pD3D11RTV = NULL; }
-    if (m_pD3D11RTTex)   { m_pD3D11RTTex->Release();   m_pD3D11RTTex = NULL; }
-    if (m_pD3D11Staging) { m_pD3D11Staging->Release(); m_pD3D11Staging = NULL; }
 
     // Artscout - 2026: #DX12 A5 -- free the D3D12 off-screen RTT + drop its readback slot in the backend.
     if (m_pD3D12RTT)
@@ -521,56 +508,14 @@ void ImageBuffer::ComposeRoundRot(ImageBuffer *srcBuffer, RECT *srcRect, RECT *d
 // Move this image's back buffer contents into its front buffer, possibly making it visible.
 // PHASE 2 (2D UI): blits THIS CPU buffer to the D3D11 backbuffer and presents (regardless of
 // m_bIsScreenBuffer). CopyToPrimary calls on Front_ (the composited UI frame).
-// PHASE 5 (RTT): create an off-screen render target (RTV+SRV) sized to the buffer.
-bool ImageBuffer::EnsureD3D11RenderTarget()
-{
-    extern bool g_bUseD3D11;
-    if (!g_bUseD3D11 || !g_pD3D11Backend) return false;
-    if (m_bIsScreenBuffer) return false;          // screen buffer = backbuffer
-    if (m_pD3D11RTV && m_pD3D11SRV) return true;  // already created
-    if (width <= 0 || height <= 0) return false;
-
-    ID3D11Device* dev = g_pD3D11Backend->GetDevice();
-    if (!dev) return false;
-
-    D3D11_TEXTURE2D_DESC td; ZeroMemory(&td, sizeof(td));
-    td.Width = width; td.Height = height; td.MipLevels = 1; td.ArraySize = 1;
-    td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;       // = backbuffer format (the screen path draws the same)
-    td.SampleDesc.Count = 1;
-    td.Usage = D3D11_USAGE_DEFAULT;
-    td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-    if (FAILED(dev->CreateTexture2D(&td, NULL, &m_pD3D11RTTex))) return false;
-    if (FAILED(dev->CreateRenderTargetView(m_pD3D11RTTex, NULL, &m_pD3D11RTV)))
-    { m_pD3D11RTTex->Release(); m_pD3D11RTTex = NULL; return false; }
-    if (FAILED(dev->CreateShaderResourceView(m_pD3D11RTTex, NULL, &m_pD3D11SRV)))
-    { m_pD3D11RTV->Release(); m_pD3D11RTV = NULL; m_pD3D11RTTex->Release(); m_pD3D11RTTex = NULL; return false; }
-    return true;
-}
-
-// PHASE 5 (RTT): bind as render target (MFD/HUD/radar content is drawn here).
-void ImageBuffer::BindD3D11RenderTarget(bool clear)
+// Bind as render target (MFD/HUD/radar content is drawn here).
+void ImageBuffer::BindRttTarget(bool clear)
 {
     // Artscout - 2026: #DX12 A5 -- under D3D12 the off-screen RTT is a D3D12Texture bound via BindSceneRtt.
     // ContextMPR::StartFrame calls THIS unconditionally for an off-screen IB, so the delegation keeps the
     // call site backend-agnostic (the flat D3D11 path below is untouched).
-    extern bool g_bUseD3D12;
-    if (g_bUseD3D12) { BindD3D12RenderTarget(clear); return; }
-
-    if (!EnsureD3D11RenderTarget()) return;
-    ID3D11DeviceContext* ctx = g_pD3D11Backend->GetContext();
-    if (!ctx) return;
-
-    ctx->OMSetRenderTargets(1, &m_pD3D11RTV, NULL);   // depth not needed for 2D content
-    D3D11_VIEWPORT vp;
-    vp.TopLeftX = 0; vp.TopLeftY = 0;
-    vp.Width = (FLOAT)width; vp.Height = (FLOAT)height;
-    vp.MinDepth = 0.0f; vp.MaxDepth = 1.0f;
-    ctx->RSSetViewports(1, &vp);
-
-    if (clear) { const FLOAT z[4] = { 0, 0, 0, 0 }; ctx->ClearRenderTargetView(m_pD3D11RTV, z); }
-
-    // the renderer's gScreenSize = the RTT size (VS_Screen: pixel->NDC by this size)
-    if (g_pD3D11Renderer) g_pD3D11Renderer->SetViewportSize(width, height);
+    // Artscout - 2026 (D3D11 purge): D3D12 is the sole backend -- always delegate to the D3D12 RTT bind.
+    BindD3D12RenderTarget(clear);
 }
 
 // Artscout - 2026: #DX12 A5 -- lazily create the D3D12 off-screen render-target (RGBA8, RTV+SRV) sized to
@@ -625,91 +570,32 @@ void ImageBuffer::UnbindD3D12RenderTarget()
 // 565 CPU buffer (the on-screen UI surface). The C_3dViewer renders a model into a screen-sized
 // off-screen RTT; we read its viewport rect back and stamp it into the menu's 2D surface, so the
 // model appears in the normal full 2D blit instead of the present-mode chroma path (black-out).
-void ImageBuffer::BlitD3D11RTTTo565(unsigned short* dst, int dstStridePix, int dstHeightPix, int x, int y, int w, int h)
+void ImageBuffer::BlitRttTo565(unsigned short* dst, int dstStridePix, int dstHeightPix, int x, int y, int w, int h)
 {
-    extern bool g_bUseD3D11, g_bUseD3D12;
+    extern bool g_bUseD3D12;
     // Artscout - 2026: #DX12 A5 -- read back the D3D12 off-screen RTT (deferred: this call converts the
     // PREVIOUS frame's copy into dst and records THIS frame's copy; 1-frame latent, no mid-frame GPU stall).
-    if (g_bUseD3D12)
-    {
-        if (g_pD3D12Backend && dst && m_pD3D12RTT)
-            g_pD3D12Backend->ReadbackRttTo565(m_pD3D12RTT, dst, dstStridePix, dstHeightPix, x, y, w, h);
-        return;
-    }
-    if (!g_bUseD3D11 || !g_pD3D11Backend || !dst) return;
-    if (!m_pD3D11RTTex) return;                 // nothing was rendered into the RTT
-
-    ID3D11Device* dev = g_pD3D11Backend->GetDevice();
-    ID3D11DeviceContext* ctx = g_pD3D11Backend->GetContext();
-    if (!dev || !ctx) return;
-
-    // Lazily create the STAGING copy (same size/format as the RTT, CPU-readable).
-    if (!m_pD3D11Staging)
-    {
-        D3D11_TEXTURE2D_DESC td; ZeroMemory(&td, sizeof(td));
-        td.Width = width; td.Height = height; td.MipLevels = 1; td.ArraySize = 1;
-        td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-        td.SampleDesc.Count = 1;
-        td.Usage = D3D11_USAGE_STAGING;
-        td.BindFlags = 0;
-        td.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-        if (FAILED(dev->CreateTexture2D(&td, NULL, &m_pD3D11Staging))) return;
-    }
-
-    ctx->CopyResource(m_pD3D11Staging, m_pD3D11RTTex);
-
-    D3D11_MAPPED_SUBRESOURCE map;
-    if (FAILED(ctx->Map(m_pD3D11Staging, 0, D3D11_MAP_READ, 0, &map))) return;
-
-    // Clip the requested rect to both the RTT (source) and the destination buffer.
-    int x0 = x, y0 = y;
-    if (x0 < 0) x0 = 0;
-    if (y0 < 0) y0 = 0;
-    int x1 = x + w, y1 = y + h;
-    if (x1 > width)  x1 = width;
-    if (y1 > height) y1 = height;
-    if (x1 > dstStridePix) x1 = dstStridePix;
-    if (y1 > dstHeightPix) y1 = dstHeightPix;
-
-    const BYTE* srcBase = (const BYTE*)map.pData;
-    for (int row = y0; row < y1; ++row)
-    {
-        const BYTE* src = srcBase + (size_t)row * map.RowPitch + (size_t)x0 * 4;
-        unsigned short* d = dst + (size_t)row * dstStridePix + x0;
-        for (int col = x0; col < x1; ++col)
-        {
-            BYTE r = src[0], g = src[1], b = src[2];   // R8G8B8A8
-            *d++ = (unsigned short)(((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3));
-            src += 4;
-        }
-    }
-
-    ctx->Unmap(m_pD3D11Staging, 0);
+    // Artscout - 2026 (D3D11 purge): D3D12 is the sole backend -- read back the D3D12 RTT (1-frame latent).
+    if (g_pD3D12Backend && dst && m_pD3D12RTT)
+        g_pD3D12Backend->ReadbackRttTo565(m_pD3D12RTT, dst, dstStridePix, dstHeightPix, x, y, w, h);
 }
 
 // Artscout - 2026: GPU-copy this RTT's texture into another texture (same size/format). Used by the GM
 // radar to snapshot a completed sweep into a persistent panel texture (CopyResource = no CPU readback).
-void ImageBuffer::CopyD3D11RTTo(void* destTex2D)
+void ImageBuffer::CopyRttTo(void* destTex2D)
 {
-    extern bool g_bUseD3D11, g_bUseD3D12;
+    extern bool g_bUseD3D12;
     // Artscout - 2026: #DX12 A5 -- GM radar snapshot. Under D3D12 destTex2D is the panel handle's D3D12Texture*
     // (targetHandle->m_pDDS). GPU copy on the main list (no readback): src RTT -> dst panel texture.
-    if (g_bUseD3D12)
-    {
-        if (g_pD3D12Backend && destTex2D && m_pD3D12RTT)
-            g_pD3D12Backend->CopyRtt(m_pD3D12RTT, destTex2D);
-        return;
-    }
-    if (!g_bUseD3D11 || !g_pD3D11Backend || !destTex2D || !m_pD3D11RTTex) return;
-    ID3D11DeviceContext* ctx = g_pD3D11Backend->GetContext();
-    if (!ctx) return;
-    ctx->CopyResource((ID3D11Resource*)destTex2D, (ID3D11Resource*)m_pD3D11RTTex);
+    // Artscout - 2026 (D3D11 purge): D3D12 is the sole backend -- GM radar snapshot: src RTT -> dst D3D12 texture.
+    if (g_pD3D12Backend && destTex2D && m_pD3D12RTT)
+        g_pD3D12Backend->CopyRtt(m_pD3D12RTT, destTex2D);
 }
 
-void ImageBuffer::PresentD3D11()
+void ImageBuffer::PresentGpu()
 {
     // Artscout - 2026: #DX12 -- present through D3D12. A GPU frame (3D scene recorded into the command list
-    // by D3D12Renderer, which set g_bD3D11GPUDraw + opened the frame via EnsureFrameStarted) is just presented;
+    // by D3D12Renderer, which set g_bGpuDraw + opened the frame via EnsureFrameStarted) is just presented;
     // a 2D frame (menu) opens a fresh frame and blits the RGB565 UI surface. NOTE: the UI composite OVER the 3D
     // (Phase-3 CompositeUISurface, black=transparent) is the next increment -- for now the 2D overlay is skipped
     // on GPU frames so the terrain shows on its own.
@@ -717,8 +603,8 @@ void ImageBuffer::PresentD3D11()
     {
         if (g_pD3D12Backend)
         {
-            extern bool g_bD3D11GPUDraw;
-            if (g_bD3D11GPUDraw)
+            extern bool g_bGpuDraw;
+            if (g_bGpuDraw)
             {
                 // #DX12 п.2: composite the 2D UI (black=transparent) over the 3D, then present. Clear the CPU
                 // layer afterwards so stale overlays don't ghost (overlays are redrawn each frame).
@@ -740,46 +626,11 @@ void ImageBuffer::PresentD3D11()
                     OpenXR_CacheMenuSurface(m_pSysMem, width, height);
                 }
             }
-            g_bD3D11GPUDraw = false;
+            g_bGpuDraw = false;
         }
         return;
     }
-    extern bool g_bUseD3D11;
-    extern bool g_bD3D11GPUDraw;
-    if (!g_bUseD3D11 || !g_pD3D11Backend) return;
-    // PHASE 5: 2D UI. On a GPU frame (3D scene in the RTV) composite the UI OVER 3D with
-    // black chroma-key (in-sim overlays: text/cursor/dialogs). On a pure 2D frame
-    // (menu) -- a full blit from m_pSysMem.
-    // #7 MSAA: on a 3D frame resolve the multisample target into the swapchain backbuffer BEFORE any UI
-    // (and before present), regardless of m_pSysMem presence/render validity. Without MSAA -- no-op.
-    if (g_bD3D11GPUDraw)
-        g_pD3D11Backend->ResolveMsaaToBackBuffer();
-    if (m_pSysMem)
-    {
-        if (g_bD3D11GPUDraw && g_pD3D11Renderer && g_pD3D11Renderer->IsValid())
-        {
-            g_pD3D11Renderer->CompositeUISurface(m_pSysMem, width, height);
-            // On a 3D frame clear the CPU layer to black (=transparent): overlays are drawn
-            // anew each frame, else stale content (old menu) ghosts over the 3D.
-            memset(m_pSysMem, 0, (size_t)width * height * 2);
-        }
-        else if (!g_bD3D11GPUDraw)
-        {
-            g_pD3D11Backend->BlitBitmap565(m_pSysMem, width, height);
-            // VR: this is the real (menu) 2D present path (runs on the ui95 OutputLoop
-            // thread). Cache the UI surface so the XR pump can show it as a quad panel.
-            extern bool g_bUseOpenXR;
-            if (g_bUseOpenXR)
-            {
-                // Artscout - 2026 (VR menu): COPY the surface into a lock-protected stable buffer (m_pSysMem
-                // is valid on THIS thread now) so the pump never reads a freed/resized ImageBuffer.
-                extern void OpenXR_CacheMenuSurface(const void* src565, int w, int h);
-                OpenXR_CacheMenuSurface(m_pSysMem, width, height);
-            }
-        }
-    }
-    g_pD3D11Backend->Present(true);
-    g_bD3D11GPUDraw = false;
+    // Artscout - 2026 (D3D11 purge): D3D12 is the sole backend; the D3D11 present tail was removed.
 }
 
 void ImageBuffer::SwapBuffers(bool bDontFlip)
@@ -787,14 +638,14 @@ void ImageBuffer::SwapBuffers(bool bDontFlip)
     ShiAssert(IsReady());
 
     // Artscout - 2026: #DX12 -- screen buffer present through D3D12 (same GPU-frame vs 2D-frame split as
-    // PresentD3D11 above). GPU frame (3D recorded, g_bD3D11GPUDraw set) -> present as-is; 2D frame (menu) ->
+    // PresentGpu above). GPU frame (3D recorded, g_bGpuDraw set) -> present as-is; 2D frame (menu) ->
     // fresh frame + blit the RGB565 UI. UI-over-3D composite = next increment.
     if (g_bUseD3D12)
     {
         if (m_bIsScreenBuffer && g_pD3D12Backend)
         {
-            extern bool g_bD3D11GPUDraw;
-            if (g_bD3D11GPUDraw)
+            extern bool g_bGpuDraw;
+            if (g_bGpuDraw)
             {
                 // #DX12 п.2: composite the 2D UI (black=transparent) over the 3D scene, then present.
                 if (g_pD3D12Backend) g_pD3D12Backend->ResolveMsaaToBackBuffer();   // MSAA: resolve 3D into backbuffer BEFORE the UI composite
@@ -816,64 +667,12 @@ void ImageBuffer::SwapBuffers(bool bDontFlip)
                     OpenXR_CacheMenuSurface(m_pSysMem, width, height);
                 }
             }
-            g_bD3D11GPUDraw = false;
+            g_bGpuDraw = false;
         }
         return;
     }
 
-    extern bool g_bUseD3D11;
-    extern bool g_bD3D11GPUDraw;
-    if (g_bUseD3D11)
-    {
-        if (m_bIsScreenBuffer && g_pD3D11Backend)
-        {
-            // Artscout - 2026 (VR mirror): in a VR 3D frame the scene was rendered into the XR eye
-            // images (NOT the MSAA backbuffer target), and RenderFrame already copied the eye(s) onto
-            // the back buffer for the desktop mirror. Resolving the (stale) MSAA target and compositing
-            // the (stale splash) UI surface here would ERASE that mirror -> skip both in VR. The headset
-            // gets its frame from xrEndFrame regardless; this only controls the desktop window.
-            // NOTE: gate on g_bUseOpenXR, NOT g_bVrFrameActive. This present runs on the ui95 OutputLoop
-            // thread, while g_bVrFrameActive is written on the render thread inside otwloop -- reading it here
-            // is a cross-thread race: a stale 'false' flips vrMirror off, runs an extra Resolve/Composite in
-            // the middle of a live XR frame, and desyncs the OpenXR frame loop (xrBeginFrame -> CALL_ORDER_
-            // INVALID -> _com_error flood -> black screen). g_bUseOpenXR is stable, so VR stays consistent.
-            extern bool g_bUseOpenXR, g_bXrMirror;
-            const bool vrMirror = g_bUseOpenXR && g_bXrMirror && g_bD3D11GPUDraw;
-
-            // PHASE 5: GPU frame (3D) -> composite UI over 3D; 2D (menu) -> blit.
-            // #7 MSAA: 3D frame -> resolve the multisample target into the backbuffer before UI/present (no-op without MSAA).
-            if (g_bD3D11GPUDraw && !vrMirror)
-                g_pD3D11Backend->ResolveMsaaToBackBuffer();
-            if (m_pSysMem && !vrMirror)
-            {
-                if (g_bD3D11GPUDraw && g_pD3D11Renderer && g_pD3D11Renderer->IsValid())
-                {
-                    g_pD3D11Renderer->CompositeUISurface(m_pSysMem, width, height);
-                    memset(m_pSysMem, 0, (size_t)width * height * 2);
-                }
-                else if (!g_bD3D11GPUDraw)
-                {
-                    g_pD3D11Backend->BlitBitmap565(m_pSysMem, width, height);
-                    // VR: this 2D path also carries the 3D-load splash (OTWImage 2D blit).
-                    // Cache it so the XR pump shows the splash on the panel instead of black.
-                    extern bool g_bUseOpenXR;
-                    if (g_bUseOpenXR)
-                    {
-                        extern void OpenXR_CacheMenuSurface(const void* src565, int w, int h);
-                        OpenXR_CacheMenuSurface(m_pSysMem, width, height);   // copy under lock (no UAF)
-                    }
-                }
-            }
-            g_pD3D11Backend->Present(true);
-            g_bD3D11GPUDraw = false;
-            // VR: in the 3D world the headset frame is driven by the per-eye STEREO loop in
-            // OTWDriverClass::RenderFrame (the scene is rendered once per eye into the XR eye
-            // images there). Menus are driven by the main-loop pump (OpenXR_PumpFrame). So
-            // SwapBuffers no longer drives XR for the 3D path.
-        }
-        return;
-    }
-
+    // Artscout - 2026 (D3D11 purge): D3D12 is the sole backend; the D3D11 screen-present tail was removed.
 
     // Artscout - 2026: [DX7-PURGE] DDraw Flip/Blt present removed -- the D3D11/D3D12 paths above present and return.
 }

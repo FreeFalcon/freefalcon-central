@@ -286,7 +286,7 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
     }
 
     // Artscout - 2026 (VR): show the splash in the headset during the 3D LOAD. The splash renders via the GPU
-    // 2D path (g_bD3D11GPUDraw=true), so ImageBuffer::SwapBuffers takes the Composite branch, NOT the 565-cache
+    // 2D path (g_bGpuDraw=true), so ImageBuffer::SwapBuffers takes the Composite branch, NOT the 565-cache
     // branch -> the headset got nothing and the load felt like a hang. In3D is still FALSE during the splash
     // (set later, simloop.cpp:948), so the main-thread XR pump owns the frame and presents g_pXrMenuSurface565
     // on the head-locked panel. Convert this frame to 565 and feed that cache (lock-protected copy -> no race,

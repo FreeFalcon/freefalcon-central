@@ -562,3 +562,53 @@ void D3D12TextureManager::Free(D3D12Texture* h)
 // wait on the upload fence without including the manager header.
 void D3D12TexMgr_SyncRenderQueue(ID3D12CommandQueue* renderQueue)
 { if (g_pD3D12TextureManager) g_pD3D12TextureManager->SyncRenderQueue(renderQueue); }
+
+//================================ NVTT 3 offline DDS authoring ================
+// Artscout - 2026 (D3D11 purge): moved from d3d11texturemanager.cpp when the D3D11 texture manager was retired.
+// Pure NVTT (backend-agnostic); the terrain/fartex DDS cache calls SaveBCnDDS to bake a .dds. NVTT 3.x is
+// x64-only here -> the real path compiles only under _WIN64 (or when forced); Win32 degrades to a no-op stub
+// (the runtime never authors DDS -- it loads ready ones).
+#if defined(_WIN64) || defined(REDVIPER_USE_NVTT3)
+#include <nvtt/nvtt.h>
+
+// nvtt30205.lib is linked via the Falcon4 x64 AdditionalDependencies (not a #pragma here -- /NODEFAULTLIB
+// suppresses defaultlib pragmas). Drop nvtt30205.dll next to the exe at runtime.
+namespace {
+// Pick the NVTT block format from the legacy MPR_TI_* flags (alpha -> BC2, chroma-key -> BC1a, else BC1).
+nvtt::Format NvttFormatFromMPR(unsigned long f)
+{
+	if (f & MPR_TI_ALPHA)     return nvtt::Format_BC2;
+	if (f & MPR_TI_CHROMAKEY) return nvtt::Format_BC1a;
+	return nvtt::Format_BC1;
+}
+} // namespace
+
+bool D3D12TextureManager::SaveBCnDDS(const char* fileName, unsigned long mprTexInfoFlags,
+                                     const void* bgra, int width, int height)
+{
+	if (!fileName || !bgra || width <= 0 || height <= 0)
+		return false;
+
+	nvtt::Surface image;
+	// Legacy DumpImageToFile produces tightly-packed BGRA8 (B,G,R,A bytes).
+	if (!image.setImage(nvtt::InputFormat_BGRA_8UB, width, height, 1, bgra))
+		return false;
+
+	nvtt::CompressionOptions co;
+	co.setFormat(NvttFormatFromMPR(mprTexInfoFlags));
+
+	nvtt::OutputOptions oo;
+	oo.setFileName(fileName);
+	oo.setContainer(nvtt::Container_DDS);   // legacy DX9 .dds header (no DX10 ext)
+	oo.setOutputHeader(true);
+
+	nvtt::Context ctx(true);                 // CUDA if available, else CPU fallback
+	if (!ctx.outputHeader(image, 1, co, oo)) // single mip (old path used dNoMipMaps)
+		return false;
+	return ctx.compress(image, 0, 0, co, oo);
+}
+
+#else  // !(_WIN64 || REDVIPER_USE_NVTT3)
+// Win32 / NVTT-unavailable: offline DDS authoring is not supported.
+bool D3D12TextureManager::SaveBCnDDS(const char*, unsigned long, const void*, int, int) { return false; }
+#endif // _WIN64 || REDVIPER_USE_NVTT3

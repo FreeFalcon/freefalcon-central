@@ -618,8 +618,8 @@ void STPSetupControls(void)
         // The old FindDisplayMode searches m_arrModes (EMPTY in D3D11) -> -1 -> SetValue(0) -> overwrote
         // the selection with index 0 (640/800). Because of that Apply from ANY tab (sound etc.) reset
         // the resolution to 800x600 (SaveValues reads SET_RESOLUTION regardless of the active tab).
-        extern bool g_bUseD3D11, g_bUseD3D12;
-        if ( not (g_bUseD3D11 or g_bUseD3D12))
+        extern bool g_bUseD3D12;
+        if ( not (g_bUseD3D12))
         {
             DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(DisplayOptions.DispVideoDriver);
 

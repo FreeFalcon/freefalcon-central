@@ -9,9 +9,8 @@
 #include "Image.h"
 #include "Tex.h"
 #include "PalBank.h"
-#include "Graphics/DXEngine/d3d11/D3D11TextureManager.h"	// PHASE 3
+#include "Graphics/DXEngine/d3d12/D3D12TextureManager.h"	// PHASE 3
 #include "Graphics/DXEngine/d3d12/D3D12TextureManager.h"	// #DX12 п.1
-#include "Graphics/DXEngine/D3D11Backend.h"	// PHASE 5 (RTT)
 #include <d3d11.h>	// PHASE 5 (RTT)
 #include "FalcLib/include/playerop.h"
 #include "FalcLib/include/dispopts.h"
@@ -531,7 +530,7 @@ TextureHandle::TextureHandle()
     m_pPalAttach = NULL;
     m_pImageData = NULL;
     m_nImageDataStride = -1;
-    m_pD3D11Tex = NULL;
+    m_pGpuTex = NULL;
 
 #ifdef _DEBUG
     InterlockedIncrement((long *)&m_dwNumHandles); // Number of instances
@@ -565,7 +564,7 @@ TextureHandle::~TextureHandle()
         if (g_bUseD3D12)
         {
             if (m_pDDS and g_pD3D12TextureManager) g_pD3D12TextureManager->Free((D3D12Texture*)m_pDDS);
-            m_pDDS = NULL; m_pD3D11Tex = NULL;
+            m_pDDS = NULL; m_pGpuTex = NULL;
         }
         else
         {
@@ -573,7 +572,7 @@ TextureHandle::~TextureHandle()
             if (m_pDDS) ((IUnknown*)m_pDDS)->Release();
             m_pDDS = NULL;
             // PHASE 3: release the D3D11 texture (m_pDDS already released the SRV above -- it's IUnknown)
-            if (m_pD3D11Tex) { ((IUnknown*)m_pD3D11Tex)->Release(); m_pD3D11Tex = NULL; }
+            if (m_pGpuTex) { ((IUnknown*)m_pGpuTex)->Release(); m_pGpuTex = NULL; }
         }
     }
 
@@ -605,12 +604,11 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
 
     // PHASE 3 (D3D7->D3D11): engine textures are stubbed (m_pDDS=NULL), startup proceeds; the real
     // load into a D3D11 texture is later. UI menus composite on the CPU.
-    extern bool g_bUseD3D11, g_bUseD3D12;
-    if (g_bUseD3D11 or g_bUseD3D12)   // #DX12: stub engine textures like D3D11 (RTT self-guards on g_pD3D11Backend)
+    extern bool g_bUseD3D12;
+    if (g_bUseD3D12)   // #DX12: stub engine textures like D3D11 (RTT self-guards on g_pD3D11Backend)
     {
         m_pDDS = NULL;
-        m_pD3D11Tex = NULL;
-        m_pD3D11RTV = NULL;
+        m_pGpuTex = NULL;
         if      (info & MPR_TI_DXT1) m_eSurfFmt = D3DX_SF_DXT1;
         else if (info & MPR_TI_DXT3) m_eSurfFmt = D3DX_SF_DXT3;
         else if (info & MPR_TI_DXT5) m_eSurfFmt = D3DX_SF_DXT5;
@@ -630,33 +628,9 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
             return true;
         }
 
-        // PHASE 5 (RTT): a render-target texture (3D cockpit: MFD/HUD draw into it,
-        // the panel samples it via DrawRttQuad). RTV+SRV, format like the backbuffer.
-        if ((dwFlags bitand FLAG_RENDERTARGET) and g_pD3D11Backend and width > 0 and height > 0)
-        {
-            ID3D11Device* dev = g_pD3D11Backend->GetDevice();
-            if (dev)
-            {
-                D3D11_TEXTURE2D_DESC td; ZeroMemory(&td, sizeof(td));
-                td.Width = width; td.Height = height; td.MipLevels = 1; td.ArraySize = 1;
-                td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-                td.SampleDesc.Count = 1;
-                td.Usage = D3D11_USAGE_DEFAULT;
-                td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-                ID3D11Texture2D* tex = NULL;
-                if (SUCCEEDED(dev->CreateTexture2D(&td, NULL, &tex)) and tex)
-                {
-                    ID3D11RenderTargetView*   rtv = NULL;
-                    ID3D11ShaderResourceView* srv = NULL;
-                    dev->CreateRenderTargetView(tex, NULL, &rtv);
-                    dev->CreateShaderResourceView(tex, NULL, &srv);
-                    m_pD3D11Tex  = tex;
-                    m_pD3D11RTV  = rtv;
-                    m_pDDS       = (IDirectDrawSurface7*)srv;
-                    m_nActualWidth = width; m_nActualHeight = height;
-                }
-            }
-        }
+        // Artscout - 2026 (D3D11 purge): the D3D11 render-target-texture creation (FLAG_RENDERTARGET) was
+        // removed. Under D3D12 the RTT texture is created by the D3D12 texture manager earlier in this path
+        // (m_pDDS = D3D12Texture*), so RTT displays keep working.
         return true;
     }
 
@@ -684,10 +658,7 @@ static bool EngineTexCreate(void** outHandle, void** outTex, int w, int h, int f
         if ( not g_pD3D12TextureManager->Create(*hh, w, h, fmt, mips, mipCount)) { g_pD3D12TextureManager->Free(hh); return false; }
         *outHandle = hh; *outTex = NULL; return true;
     }
-    if ( not g_pD3D11TextureManager or not g_pD3D11TextureManager->IsValid()) return false;
-    D3D11Texture out;
-    if ( not g_pD3D11TextureManager->Create(out, w, h, fmt, mips, mipCount)) return false;
-    *outHandle = out.srv; *outTex = out.tex; return true;
+    return false;   // Artscout - 2026 (D3D11 purge): D3D12 is the sole GPU texture manager
 }
 // ===========================================================================================
 // Artscout - 2026: #78 terrain -- BC1/BC3 -> RGBA8 decode + box mip-chain generation. The terrain
@@ -800,10 +771,7 @@ static bool EngineTexCreateBCn(void** outHandle, void** outTex, int w, int h, in
         if ( not g_pD3D12TextureManager->CreateBCn(*hh, w, h, fmt, blob, bytes)) { g_pD3D12TextureManager->Free(hh); return false; }
         *outHandle = hh; *outTex = NULL; return true;
     }
-    if ( not g_pD3D11TextureManager or not g_pD3D11TextureManager->IsValid()) return false;
-    D3D11Texture out;
-    if ( not g_pD3D11TextureManager->CreateBCn(out, w, h, fmt, blob, bytes)) return false;
-    *outHandle = out.srv; *outTex = out.tex; return true;
+    return false;   // Artscout - 2026 (D3D11 purge): D3D12 is the sole GPU texture manager
 }
 
 static bool ResolvePaletteToGpu(void** outHandle, void** outTex, int w, int h, int stride,
@@ -813,7 +781,7 @@ static bool ResolvePaletteToGpu(void** outHandle, void** outTex, int w, int h, i
     if (w <= 0 or h <= 0 or not src) return false;
     if (stride <= 0) stride = w;
 
-    const int fmt = D3D11TextureManager::DxgiFormatFromMPR(flags);
+    const int fmt = D3D12TextureManager::DxgiFormatFromMPR(flags);
     const bool useChroma = (flags bitand MPR_TI_CHROMAKEY) != 0;
     const bool useAlpha  = (flags bitand MPR_TI_ALPHA) != 0;
     const DWORD chromaRGB = chromaKey & 0x00FFFFFF;
@@ -888,14 +856,13 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
         return false;
     }
 
-    extern bool g_bUseD3D11, g_bUseD3D12;
-    if (g_bUseD3D11 or g_bUseD3D12)
+    extern bool g_bUseD3D12;
+    if (g_bUseD3D12)
     {
         // PHASE 3/#DX12: real load into a GPU texture on the ACTIVE backend (D3D11 SRV or D3D12 texture).
         // Immutable + thread-safe on the loader thread (D3D11: CreateTexture2D w/ initial data; D3D12: the
         // texture manager uploads via its own serialized queue). No active manager -> no-op (menu CPU-composited).
-        if (g_bUseD3D12 ? ( not g_pD3D12TextureManager or not g_pD3D12TextureManager->IsValid())
-                        : ( not g_pD3D11TextureManager or not g_pD3D11TextureManager->IsValid())) return true;
+        if ( not g_pD3D12TextureManager or not g_pD3D12TextureManager->IsValid()) return true;
 
         const int w = m_nWidth, h = m_nHeight;
         if (w <= 0 or h <= 0) return true;
@@ -904,18 +871,18 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
         if (g_bUseD3D12)
         {
             if (m_pDDS and g_pD3D12TextureManager) g_pD3D12TextureManager->Free((D3D12Texture*)m_pDDS);
-            m_pDDS = NULL; m_pD3D11Tex = NULL;
+            m_pDDS = NULL; m_pGpuTex = NULL;
         }
         else
         {
             if (m_pDDS) { ((IUnknown*)m_pDDS)->Release(); m_pDDS = NULL; }
-            if (m_pD3D11Tex) { ((IUnknown*)m_pD3D11Tex)->Release(); m_pD3D11Tex = NULL; }
+            if (m_pGpuTex) { ((IUnknown*)m_pGpuTex)->Release(); m_pGpuTex = NULL; }
         }
 
         m_nActualWidth = w; m_nActualHeight = h;
         m_dwChromaKey = RGBA_MAKE(RGBA_GETBLUE(chroma), RGBA_GETGREEN(chroma), RGBA_GETRED(chroma), RGBA_GETALPHA(chroma));
 
-        const int fmt = D3D11TextureManager::DxgiFormatFromMPR(m_dwFlags);
+        const int fmt = D3D12TextureManager::DxgiFormatFromMPR(m_dwFlags);
         const bool isDXT = (m_eSurfFmt == D3DX_SF_DXT1 or m_eSurfFmt == D3DX_SF_DXT3 or m_eSurfFmt == D3DX_SF_DXT5);
         void* hdl = NULL; void* texptr = NULL;   // #DX12: opaque handle (D3D11 SRV or D3D12Texture*)
 
@@ -923,7 +890,7 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
 
         if (isDXT)
         {
-            int bb = D3D11TextureManager::BlockBytes(fmt);
+            int bb = D3D12TextureManager::BlockBytes(fmt);
             int bytes = ((w + 3) / 4) * ((h + 3) / 4) * bb;
             // Artscout - 2026: #78 -- SMALL DXT (terrain tiles) get a decoded RGBA mip chain so the far
             // ground stops aliasing/shimmering; large atlases stay compressed single-mip (VRAM). Falls
@@ -1026,7 +993,7 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
         if (ok)
         {
             m_pDDS = (IDirectDrawSurface7*)hdl;	// SelectTexture casts back (D3D11 SRV, or D3D12Texture* under D3D12)
-            m_pD3D11Tex = (ID3D11Texture2D*)texptr;
+            m_pGpuTex = (ID3D11Texture2D*)texptr;
         }
 
         return true;
@@ -1219,8 +1186,8 @@ inline WORD _RGB8toARGB4444(DWORD sc)
 
 bool TextureHandle::Reload()
 {
-    extern bool g_bUseD3D11, g_bUseD3D12;
-    if (g_bUseD3D11 or g_bUseD3D12)
+    extern bool g_bUseD3D12;
+    if (g_bUseD3D12)
     {
         // PHASE 5/#DX12: rebake the palettized texture for the updated palette (Translate3D / TOD).
         // Non-palettized textures load once -- nothing to do here.
@@ -1242,10 +1209,10 @@ bool TextureHandle::Reload()
         else
         {
             if (m_pDDS)      ((IUnknown*)m_pDDS)->Release();
-            if (m_pD3D11Tex) ((IUnknown*)m_pD3D11Tex)->Release();
+            if (m_pGpuTex) ((IUnknown*)m_pGpuTex)->Release();
         }
         m_pDDS      = (IDirectDrawSurface7*)hdl;
-        m_pD3D11Tex = (ID3D11Texture2D*)texptr;
+        m_pGpuTex = (ID3D11Texture2D*)texptr;
         m_nActualWidth = m_nWidth; m_nActualHeight = m_nHeight;
         return true;
     }
@@ -1447,7 +1414,7 @@ bool Texture::SaveDDS_DXTn(const char *szFileName, BYTE* pDst, int dimensions, D
     // Compress the BGRA source to a DXT .dds via modern NVTT 3 (x64). The block
     // format (DXT1 / DXT1a / DXT3) is derived from the MPR_TI_* flags inside
     // SaveBCnDDS, exactly as the old nvDXTcompress path did.
-    return D3D11TextureManager::SaveBCnDDS(szFileName, flags, pDst, dimensions, dimensions);
+    return D3D12TextureManager::SaveBCnDDS(szFileName, flags, pDst, dimensions, dimensions);
 }
 
 bool Texture::DumpImageToFile(char *szFile, int palID)

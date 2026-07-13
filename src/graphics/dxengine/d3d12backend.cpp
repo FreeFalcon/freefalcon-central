@@ -39,6 +39,11 @@ bool          g_bUseGpu       = false;
 // DXContext::Init. Defined here (d3d12backend.cpp is always compiled). NULL under legacy D3D7/DDraw.
 IRenderBackend* g_pRenderBackend = NULL;
 
+// Artscout - 2026 (D3D11 purge): re-homed from the deleted d3d11backend.cpp. Per-frame sky colour written by
+// otwsky (for a sky-coloured VR per-eye clear). The D3D11 backend read it; the D3D12 eye clear does not use it
+// yet (currently write-only), so it lives here awaiting a D3D12 eye-clear wire-up.
+float g_vrClearColor[3] = { 0.0f, 0.0f, 0.0f };
+
 // Local logging -- OutputDebugStringA only, to avoid any MonoPrint signature coupling.
 static void D12Log(const char* fmt, ...)
 {

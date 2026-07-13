@@ -39,7 +39,6 @@ static void XrDbg(const char* fmt, ...)
 #include <openxr/openxr_platform.h>
 
 #include "OpenXRBackend.h"
-#include "D3D11Backend.h"                  // g_pD3D11Backend->Hwnd() for the cursor mapping
 #include "D3D12Backend.h"                  // #DX12 п.5: g_pD3D12Backend (device + queue for the XR binding)
 #include "d3d12/D3D12TextureManager.h"     // #DX12 п.5 A1: D3D12Texture (in-scene menu RTT copy source)
 #include "../../sim/INCLUDE/ivibedata.h"   // g_intellivibeData.In3D (menu vs 3D world)
@@ -54,7 +53,7 @@ int g_xrMenuH = 0;
 
 // Artscout - 2026 (VR menu): eliminate the cross-thread race on the menu 565 surface. The OLD design cached
 // g_pXrMenuSurface565 = an ImageBuffer's m_pSysMem and let the pump (other thread) read it -> the buffer
-// could be freed/resized mid-read (0xC0000005). Now the PRODUCER (PresentD3D11, where m_pSysMem is valid)
+// could be freed/resized mid-read (0xC0000005). Now the PRODUCER (PresentGpu, where m_pSysMem is valid)
 // COPIES the surface into a stable buffer under a lock, and the pump reads a snapshot of THAT. No race.
 static CRITICAL_SECTION s_xrMenuCS;
 static bool             s_xrMenuCSReady   = false;
@@ -65,7 +64,7 @@ static long             s_xrMenuSnapCap   = 0;
 
 static void XrMenuLockInit() { if (!s_xrMenuCSReady) { InitializeCriticalSection(&s_xrMenuCS); s_xrMenuCSReady = true; } }
 
-// Producer (PresentD3D11 thread): copy the (valid-here) 565 surface into the stable buffer under the lock.
+// Producer (PresentGpu thread): copy the (valid-here) 565 surface into the stable buffer under the lock.
 void OpenXR_CacheMenuSurface(const void* src565, int w, int h)
 {
 	if (!src565 || w <= 0 || h <= 0) return;
@@ -1515,10 +1514,10 @@ bool OpenXRBackend::RunMenuFrame(const void* src565, int srcW, int srcH)
 			// it would be invisible on the panel. Draw a crosshair (white core + black
 			// outline) at the real pointer position, mapped from window-client pixels to
 			// panel pixels. Mouse clicks still land via the desktop window at that spot.
-			if (g_pD3D11Backend && g_pD3D11Backend->Hwnd())
+			if (g_pD3D12Backend && g_pD3D12Backend->Hwnd())   // Artscout - 2026 (D3D11 purge): HWND from the D3D12 backend
 			{
 				POINT pt;
-				HWND hwnd = g_pD3D11Backend->Hwnd();
+				HWND hwnd = g_pD3D12Backend->Hwnd();
 				RECT rc;
 				if (GetCursorPos(&pt) && GetClientRect(hwnd, &rc))
 				{

@@ -7,11 +7,10 @@
 #include "../include/ObjectLOD.h"
 #include "DXTools.h"
 #include "DXLightEngine.h"
-#include "d3d11/D3D11Renderer.h"	// #28: GpuLightCPU + SetLights (per-object dynamic light)
-extern bool g_bUseD3D11;	// PHASE 4: D3D7 lighting replaced by a shader cbuffer (SetLights)
-extern bool g_bUseGpu;		// #DX12 п.4: dynamic object lighting on the active renderer (D3D11 || D3D12)
+#include "common/IRenderer.h"	// #28: GpuLightCPU + SetLights (per-object dynamic light)
+extern bool g_bUseGpu;		// #DX12 п.4: dynamic object lighting on the active renderer
 // #28: current-frame sun+ambient (filled in CDXEngine::FlushBuffers).
-extern D3D11Renderer::GpuLightCPU g_d3d11Sun;
+extern GpuLightCPU g_d3d11Sun;
 extern float g_d3d11Amb[4];
 
 #ifndef DEBUG_ENGINE
@@ -164,7 +163,7 @@ void CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
         // is computed by the shader (Params.x=range). Then SetLights -> cbLights for this object.
         if ( not g_pRenderer) return;
         const int MAXL = 8;	// = MAX_LIGHTS in FFEmu.hlsl
-        D3D11Renderer::GpuLightCPU lights[MAXL];
+        GpuLightCPU lights[MAXL];
         int n = 0;
         lights[n++] = g_d3d11Sun;	// sun
 
@@ -177,7 +176,7 @@ void CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
             const float range = L.dvRange + Radius;
             if (dx * dx + dy * dy + dz * dz > range * range) continue;	// too far
 
-            D3D11Renderer::GpuLightCPU &g = lights[n++];
+            GpuLightCPU &g = lights[n++];
             ZeroMemory(&g, sizeof(g));
             g.Position[0] = L.dvPosition.x; g.Position[1] = L.dvPosition.y; g.Position[2] = L.dvPosition.z;
             g.Color[0] = L.dcvDiffuse.r;    g.Color[1] = L.dcvDiffuse.g;    g.Color[2] = L.dcvDiffuse.b;

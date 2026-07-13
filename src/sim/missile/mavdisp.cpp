@@ -185,10 +185,8 @@ void MaverickDisplayClass::DrawDisplay(void)
         // display context) -- renders to the back buffer instead of the atlas -> the whole Maverick page
         // is BLACK (confirmed: page is fine with no Maverick loaded = no EndDraw/StartDraw dance). Re-bind
         // the atlas, exactly like the GM radar beam sub-render fix.
-        {
-            extern bool g_bUseD3D11;
-            if (g_bUseD3D11) display->ReBindRttTarget();
-        }
+        // Artscout - 2026 (D3D11 purge): the D3D11-only RTT re-bind was removed. Under D3D12 the sensor
+        // atlas is re-bound via ConfineObjectViewportToZone before DrawScene (see the D3D12 guards below).
     }
 
     if ((g_bGreyMFD) and ( not bNVGmode))
@@ -487,7 +485,7 @@ void MaverickDisplayClass::DrawTerrain(void)
     // #DX12 A5: the whole sensor 3D-scene block runs only under D3D11 or when the D3D12 sensor scene is enabled
     // (g_bSensorSceneD3D12). Under D3D12 with it OFF (default) the open Maverick MFD page does NOT rebind the
     // atlas / set a zone scissor / flush each frame -> stable (symbology only). See laserpod.cpp / #91.
-    extern bool g_bUseD3D11, g_bUseD3D12, g_bSensorSceneD3D12;
+    extern bool g_bUseD3D12, g_bSensorSceneD3D12;
     extern void FF_SetIRGrey(bool);
     extern void FF_SetTerrainRadiusCap(int);
     const bool doA5 = !g_bUseD3D12 || g_bSensorSceneD3D12;

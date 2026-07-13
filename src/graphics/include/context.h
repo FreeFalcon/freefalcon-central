@@ -389,8 +389,7 @@ extern  "C" {
         BYTE *m_pImageData; // Copy if palettized src image data if the device doesnt not support palettized textures
         bool m_bImageDataOwned; // self allocated or not
         int m_nImageDataStride;
-        void *m_pD3D11Tex; // PHASE 3: ID3D11Texture2D* (m_pDDS holds the SRV); NULL under D3D7
-        void *m_pD3D11RTV; // PHASE 5 (RTT): ID3D11RenderTargetView* for FLAG_RENDERTARGET textures
+        void *m_pGpuTex; // the backend texture object (D3D12Texture* under D3D12); m_pDDS holds the SRV handle
 
         enum _TextureHandleFlags
         {

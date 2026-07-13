@@ -29,12 +29,10 @@ extern DWORD p3DpitLolite; // Cobra - 3D pit low night lighting color
 
 #include "Graphics/DXEngine/DXEngine.h"
 #include "Graphics/DXEngine/DXVBManager.h"
-#include "Graphics/DXEngine/d3d11/D3D11Renderer.h"	// PHASE 4: D3D11 screen-path
-#include "Graphics/DXEngine/D3D11Backend.h"	// PHASE 4: RTV bind
+#include "Graphics/DXEngine/common/IRenderer.h"	// PHASE 4: D3D11 screen-path
 #include "Graphics/DXEngine/D3D12Backend.h"	// #DX12 п.5: per-eye gScreenSize (SceneW/H) for the 2D sky/terrain
 extern bool g_bUse_DX_Engine;
-extern bool g_bUseD3D11;
-extern bool g_bUseD3D12;   // Artscout - 2026: #DX12 -- GPU-mode (D3D12) selector, parallel to g_bUseD3D11
+extern bool g_bUseD3D12;   // Artscout - 2026: #DX12 -- the (sole) GPU backend selector
 extern bool g_bUseGpu;     // Artscout - 2026: #DX12 -- GPU render mode (D3D11 || D3D12), not dead DDraw7
 
 extern bool g_bSlowButSafe;
@@ -211,9 +209,8 @@ BOOL ContextMPR::Setup(ImageBuffer *pIB, DXContext *c)
             ZeroMemory(&m_rcVP, sizeof(m_rcVP));
             m_bViewportLocked = false;
 
-            if (g_pRenderer and g_pD3D11Backend and g_pD3D11Backend->IsValid())
-                g_pRenderer->SetViewportSize(g_pD3D11Backend->Width(), g_pD3D11Backend->Height());
-
+            // Artscout - 2026 (D3D11 purge): the D3D11 viewport-size init was removed; under D3D12 gScreenSize
+            // is set per-frame in StartFrame (SceneW/H) / per RTT.
             return TRUE;
         }
 
@@ -345,19 +342,6 @@ void ContextMPR::EndDraw(void)
         // rebound by UnbindSceneRtt/BindBackBufferRTV in the display path -- here we only fix gScreenSize.
         if (g_pRenderer) g_pRenderer->SetViewportSize(g_pD3D12Backend->SceneW(), g_pD3D12Backend->SceneH());
     }
-    else if (g_bUseD3D11 && m_pIB && not m_pIB->IsScreenBuffer()
-        && g_pD3D11Backend && g_pD3D11Backend->IsValid())
-    {
-        g_pD3D11Backend->BindBackBuffer(false);
-        if (g_pRenderer)
-        {
-            // Artscout - 2026 (VR): restore gScreenSize to the EYE size in a per-eye pass (see StartFrame).
-            if (g_pD3D11Backend->XrEyeActive())
-                g_pRenderer->SetViewportSize(g_pD3D11Backend->XrEyeW(), g_pD3D11Backend->XrEyeH());
-            else
-                g_pRenderer->SetViewportSize(g_pD3D11Backend->Width(), g_pD3D11Backend->Height());
-        }
-    }
 }
 
 
@@ -368,7 +352,7 @@ void ContextMPR::StartFrame(void)
     // #34: dead D3D7 BeginScene/Clear/surface-lost tail removed.
     if (m_pIB && not m_pIB->IsScreenBuffer())
     {
-        m_pIB->BindD3D11RenderTarget(true);
+        m_pIB->BindRttTarget(true);
     }
     else if (g_bUseD3D12 && g_pD3D12Backend)
     {
@@ -381,21 +365,6 @@ void ContextMPR::StartFrame(void)
         // (world matProj is unaffected) which is why only the pure-2D sky visibly broke.
         if (g_pRenderer) g_pRenderer->SetViewportSize(g_pD3D12Backend->SceneW(), g_pD3D12Backend->SceneH());
     }
-    else if (g_pD3D11Backend && g_pD3D11Backend->IsValid())
-    {
-        g_pD3D11Backend->BindBackBuffer(true);
-        if (g_pRenderer)
-        {
-            // Artscout - 2026 (VR): gScreenSize (cbViewport) drives VS_Screen's pixel->NDC for the
-            // CPU-projected terrain. In a per-eye pass the terrain is projected to EYE-sized pixels
-            // (VR_SetRes -> scaleX/scaleY), so gScreenSize must be the EYE size, not the back buffer
-            // -- otherwise the ground is mis-scaled/rotated/flies off (objects use matProj, unaffected).
-            if (g_pD3D11Backend->XrEyeActive())
-                g_pRenderer->SetViewportSize(g_pD3D11Backend->XrEyeW(), g_pD3D11Backend->XrEyeH());
-            else
-                g_pRenderer->SetViewportSize(g_pD3D11Backend->Width(), g_pD3D11Backend->Height());
-        }
-    }
 
     InvalidateState();
 }
@@ -407,9 +376,9 @@ void ContextMPR::BindD3D11RttNoClear(void)
     // which renders its sweep incrementally across frames into m_pRenderTarget; clearing every
     // StartDraw would wipe the accumulated image (StartScene/ClearDraw clears when a scene restarts).
     // Without this the radar sweep leaks onto the screen (no RTT bound -> draws to the back buffer).
-    // #DX12 A5: BindD3D11RenderTarget delegates to the D3D12 RTT under g_bUseD3D12.
-    if ((g_bUseD3D11 || g_bUseD3D12) && m_pIB && not m_pIB->IsScreenBuffer())
-        m_pIB->BindD3D11RenderTarget(false);
+    // #DX12 A5: BindRttTarget delegates to the D3D12 RTT under g_bUseD3D12.
+    if (g_bUseD3D12 && m_pIB && not m_pIB->IsScreenBuffer())
+        m_pIB->BindRttTarget(false);
 }
 
 void ContextMPR::ClearBoundD3D11Rtt(void)
@@ -419,16 +388,14 @@ void ContextMPR::ClearBoundD3D11Rtt(void)
     // and accumulated green to a full-field white. The GM calls this once per sweep (StartScene), after
     // StartDraw has bound its buffer; the per-beam-op accumulation within the sweep is unaffected.
     // #DX12 A5: same for the D3D12 backend (ClearCurrentRTV clears the currently-bound off-screen RTV).
-    if (g_bUseD3D11 && m_pIB && not m_pIB->IsScreenBuffer() && g_pD3D11Backend)
-        g_pD3D11Backend->ClearCurrentRTV(0.0f, 0.0f, 0.0f, 0.0f);
-    else if (g_bUseD3D12 && m_pIB && not m_pIB->IsScreenBuffer() && g_pD3D12Backend)
+    if (g_bUseD3D12 && m_pIB && not m_pIB->IsScreenBuffer() && g_pD3D12Backend)
         g_pD3D12Backend->ClearCurrentRTV(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void ContextMPR::FinishFrame(void *lpFnPtr)
 {
     FlushVB();
-    // #34 D3D11: present is done by ImageBuffer::PresentD3D11; dead D3D7 EndScene/surface-lost
+    // #34 D3D11: present is done by ImageBuffer::PresentGpu; dead D3D7 EndScene/surface-lost
     // tail removed.
 
     // Artscout - 2026: #DX12 A5 -- for an off-screen IB (TGP/FLIR/Munitions/GM) transition its D3D12 RTT
@@ -839,6 +806,15 @@ void FF_SetIRGrey(bool on)
     if (g_pRenderer) g_pRenderer->SetIRGrey(on);
 }
 
+// Artscout - 2026 (D3D11 purge): re-homed from the deleted D3D11Renderer.cpp. Free shim so the object path
+// (DXVbManager::GetDrawItem, via dxengine.h) can toggle the #72 cockpit-fidelity pass without pulling the
+// renderer header. Sticky flag on the active renderer, cleared after the pit is drawn.
+void FF_SetCockpitPass(bool on)
+{
+    extern IRenderer* g_pRenderer;
+    if (g_pRenderer) g_pRenderer->SetCockpitPass(on);
+}
+
 // COBRA - RED - Comparing or a so short conditional action has no sense, do it always
 void ContextMPR::SetPalID(int id)
 {
@@ -1018,7 +994,6 @@ void ContextMPR::FlushPolyLists(bool clearDepthBeforeObjects)
         // (z >> 100 ft) on its own, and world objects are correctly occluded by the ground.
         // The OTW world pass passes clearDepthBeforeObjects=false; mini-scene displays keep
         // the clear (default true).
-        if (clearDepthBeforeObjects and g_bUseD3D11 and g_pD3D11Backend) g_pD3D11Backend->ClearDepth();
         TheDXEngine.FlushBuffers();
         bZBuffering = k;
         InvalidateState();
@@ -1091,14 +1066,14 @@ void ContextMPR::FlushVB()
             {
                 int listType = (m_nCurPrimType == D3DPT_LINESTRIP or m_nCurPrimType == D3DPT_LINELIST) ? 2 : 4;
                 g_pRenderer->DrawTLIndexed(listType,
-                                                (D3D11_TLVERTEX *)&m_pVBCpu[m_dwStartVtx],
+                                                (ScreenVertex *)&m_pVBCpu[m_dwStartVtx],
                                                 (int)m_dwNumVtx,
                                                 m_pIdx, (int)m_dwNumIdx);
             }
             else
             {
                 g_pRenderer->DrawTL(m_nCurPrimType,
-                                         (D3D11_TLVERTEX *)&m_pVBCpu[m_dwStartVtx],
+                                         (ScreenVertex *)&m_pVBCpu[m_dwStartVtx],
                                          (int)m_dwNumVtx);
             }
         }
@@ -1238,7 +1213,7 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
                     SetTexture2(pCur->textureID1);
 
                 g_pRenderer->DrawTL(D3DPT_TRIANGLEFAN,
-                                         (D3D11_TLVERTEX *)&m_pVBCpu[base],
+                                         (ScreenVertex *)&m_pVBCpu[base],
                                          (int)pCur->numVertices);
                 base += pCur->numVertices;
             }

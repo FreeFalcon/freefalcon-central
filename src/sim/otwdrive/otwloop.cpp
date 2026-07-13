@@ -1,6 +1,5 @@
 #include "stdhdr.h"
 #include "Graphics/DXEngine/OpenXRBackend.h"   // VR: HMD head-tracking + per-eye stereo
-#include "Graphics/DXEngine/D3D11Backend.h"    // VR: per-eye render-target redirect
 #include "Graphics/DXEngine/D3D12Backend.h"    // #DX12 п.5: VR per-eye overlays under D3D12 (g_pD3D12Backend)
 #include "Graphics/Include/TOD.h"
 #include "Graphics/Include/renderow.h"
@@ -2400,11 +2399,8 @@ void OTWDriverClass::RenderFrame()
             if (g_pOpenXRBackend->BeginEye(xrEye, &eyeRtv, &eyeW, &eyeH))
             {
                 xrEyeOk = true;
-                // #DX12 п.5: bind this eye as the render target. Under D3D12 the eye RTV + VR depth were already
-                // bound by OpenXRBackend::BeginEye -> D3D12Backend::BeginEyeFrame (which opened the eye command list);
-                // under D3D11 the D3D11 backend binds the eye's D3D11 RTV here.
-                if (!g_bUseD3D12)
-                    g_pD3D11Backend->SetXrEyeTarget(eyeRtv, eyeW, eyeH);
+                // #DX12 п.5: the eye RTV + VR depth were already bound by OpenXRBackend::BeginEye ->
+                // D3D12Backend::BeginEyeFrame (which opened the eye command list). (D3D11 purge: no D3D11 bind.)
                 g_pOpenXRBackend->SetCurrentEye(xrEye);
                 // Render this eye at its full OpenXR resolution: set the engine's render
                 // res/aspect to the eye, recompute scale (SetViewport) + projection (SetFOV),
@@ -2441,16 +2437,12 @@ void OTWDriverClass::RenderFrame()
                     g_pOpenXRBackend->SetSubmitFov(hf, vf);
                 }
             }
-            { extern bool g_bD3D11GPUDraw; g_bD3D11GPUDraw = false; }   // reset per-eye GPU-draw flag
+            { extern bool g_bGpuDraw; g_bGpuDraw = false; }   // reset per-eye GPU-draw flag
         }
 
-    // Artscout - 2026: TEMP DIAG -- skip the engine render AND StartFrame; raw-clear the eye RTV only
-    // (closest to the working clear-only path: no OMSetRenderTargets / depth-bind / StartFrame clear).
-    if (xrN >= 1 and g_bXrDiagSkipScene and not g_bUseD3D12)   // D3D12: the eye is already cleared by BeginEyeFrame
+    // Draw the scene for this eye (D3D12 clears the eye RTV in BeginEyeFrame). Scoped block so the
+    // per-eye render locals don't leak into the surrounding eye-loop iteration.
     {
-        g_pD3D11Backend->DebugFillXrEye(xrEye == 0 ? 0.8f : 0.0f, xrEye == 1 ? 0.8f : 0.0f, 0.0f);
-    }
-    else {
     // Actually draw the scene
     renderer->context.StartFrame();
     renderer->StartDraw();
@@ -2839,11 +2831,23 @@ void OTWDriverClass::RenderFrame()
     {
         renderer->EndDraw();
     }
-    } // Artscout - 2026: end TEMP DIAG g_bXrDiagSkipScene else-block (engine render)
+    } // end per-eye engine render scope
 
         // ===== VR per-eye stereo: finish this eye / close the loop =====
         if (xrN >= 1)
         {
+            // Artscout - 2026: G-force blackout/redout (and end-flight fade) INTO THIS EYE, before the 2D overlays.
+            // The vignette is a fullscreen FF_GLOC pass (DrawTunnelBorder -> g_pRenderer->DrawGlocOverlay) sized to
+            // the current viewport, so it darkens the periphery of each HMD view. The flat path draws it once after
+            // the loop; in stereo it must be drawn per-eye or it never reaches the headset. Re-assert the eye res
+            // (the cockpit RTT composite may have left m_screenW/H elsewhere) so the quad spans the whole eye.
+            // Self-gates on the tunnel state -> no-op when there is no active G / end-flight effect.
+            if (xrEyeOk and eyeW > 0 and eyeH > 0)
+            {
+                renderer->VR_SetRes(eyeW, eyeH);
+                renderer->DrawTunnelBorder();
+            }
+
             // Artscout - 2026 (VR): draw the 2D overlays + mouse cursor INTO the eye(s). The flat path
             // draws all of these AFTER the eye loop, to the (uncomposited) back buffer -> invisible in
             // the headset. We split them:
@@ -2870,8 +2874,8 @@ void OTWDriverClass::RenderFrame()
                 // overlay pixel-space size, on whichever backend is live. Under D3D12 the eye stays the
                 // open command list's scene target (BindBackBufferRTV re-selects it after any display RTT);
                 // g_pD3D11Backend is NULL so its methods must never be touched on the D3D12 path.
-                #define VR_BIND_EYE()      do { if (g_bUseD3D12) g_pD3D12Backend->BindBackBufferRTV(); else g_pD3D11Backend->BindBackBuffer(false); } while(0)
-                #define VR_GSCREEN(w_,h_)  do { if (g_bUseD3D12) g_pD3D12Backend->SetGScreenSize((w_),(h_)); else g_pD3D11Backend->SetGScreenSize((w_),(h_)); } while(0)
+                #define VR_BIND_EYE()      do { g_pD3D12Backend->BindBackBufferRTV(); } while(0)
+                #define VR_GSCREEN(w_,h_)  do { g_pD3D12Backend->SetGScreenSize((w_),(h_)); } while(0)
                 const bool exitMenu = InExitMenu();
                 const bool showCur = exitMenu or
                     (gSimInputEnabled and SimDriver.GetPlayerAircraft() and
@@ -2913,23 +2917,31 @@ void OTWDriverClass::RenderFrame()
                             // exit menu (DrawExitMenu) renders endDialogObject -- a 3D BSP -- so it needs Z (else it
                             // never shows / draws scrambled). menuTex = copy source for SubmitInSceneMenuQuad.
                             void* menuTex = NULL;
-                            if (g_bUseD3D12)
-                            {
-                                g_pD3D12Backend->EnsureMenuRtt(mw, mh);
-                                menuTex = g_pD3D12Backend->MenuRttTex();
-                                if (menuTex) g_pD3D12Backend->BindMenuRtt(true);
-                            }
-                            else
-                            {
-                                g_pD3D11Backend->EnsureMenuRtt(mw, mh);
-                                if (g_pD3D11Backend->MenuRttRtv()) { g_pD3D11Backend->BindMenuRtt(true); menuTex = g_pD3D11Backend->MenuRttTex(); }
-                            }
+                            g_pD3D12Backend->EnsureMenuRtt(mw, mh);
+                            menuTex = g_pD3D12Backend->MenuRttTex();
+                            if (menuTex) g_pD3D12Backend->BindMenuRtt(true);
                             if (menuTex)
                             {
+                                // Artscout - 2026 (D3D12 VR menu fix): the comms-menu 2D text (TextCenter -> NDC ->
+                                // viewport scaleX/scaleY -> pixel -> gScreenSize) was authored against the EYE render
+                                // resolution (VR_SetRes(eyeW,eyeH) from the eye loop), while the menu RTT is (mw,mh).
+                                // Mismatch -> the text scrunched into a corner of the RTT (the 3D exit dialog uses
+                                // matProj, so it was unaffected). Re-point the ENTIRE 2D render resolution (scaleX/
+                                // scaleY + gScreenSize + viewport) at the menu RTT for the duration, then restore the eye.
+                                renderer->VR_SetRes(mw, mh);
+                                renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
                                 VR_GSCREEN(mw, mh);
                                 if (pMenuManager) pMenuManager->DisplayDraw();
                                 DrawExitMenu();
+                                // Artscout - 2026 (D3D12 VR menu): FLUSH the batched menu draws into the menu RTT
+                                // BEFORE the copy. Under D3D12 DisplayDraw/DrawExitMenu only batch into the context
+                                // VB (executed lazily on the next SelectTexture/RestoreState/EndDraw). Without this,
+                                // SubmitInSceneMenuQuad copied an EMPTY menu RTT (transparent quad) and the batch
+                                // flushed LATER into the eye at eye-res gScreenSize (menu text scrunched into a small
+                                // square). Mirrors the display-RTT FinishRtt FlushPending fix.
+                                renderer->context.FlushPending();
                                 g_pOpenXRBackend->SubmitInSceneMenuQuad(menuTex, mw, mh);
+                                renderer->VR_SetRes(ew, eh);   // restore the eye render resolution
                                 VR_GSCREEN(ew, eh);
                                 // #DX12 п.5 A1: the menu RTT was bound as the target -- return to the eye so the
                                 // subtitle/cursor overlays (and next frame) render into the eye, not the menu RTT.
@@ -3059,19 +3071,9 @@ void OTWDriverClass::RenderFrame()
             // Artscout - 2026 (VR mirror): copy this eye onto the desktop back buffer so RenderDoc /
             // screenshots can see it (RenderDoc hooks the desktop Present, not the OpenXR compositor).
             // periphery (view 0) -> left half, focus (view 2) -> right half; stereo right eye (1) -> right.
-            // #DX12 п.5: the RenderDoc desktop mirror uses the D3D11-only MirrorEyeToBackBuffer (a D3D11
-            // context blit). No D3D12 equivalent yet -- the desktop stays on its own frame under UseD3D12
-            // (headset unaffected; RenderDoc-on-D3D12 mirror is a later increment).
-            if (not g_bUseD3D12)
-            { extern bool g_bXrMirror;
-              if (g_bXrMirror)
-              {
-                  const int mw = g_pD3D11Backend->Width() / 2, mh = g_pD3D11Backend->Height();
-                  if (xrEye == 0)                       g_pD3D11Backend->MirrorEyeToBackBuffer(0, 0, mw, mh);
-                  else if (xrEye == 2)                  g_pD3D11Backend->MirrorEyeToBackBuffer(mw, 0, mw, mh);
-                  else if (xrEye == 1 && xrPasses == 2) g_pD3D11Backend->MirrorEyeToBackBuffer(mw, 0, mw, mh);
-              }
-            }
+            // Artscout - 2026 (D3D11 purge): the RenderDoc desktop mirror used the D3D11-only
+            // MirrorEyeToBackBuffer (D3D11 context blit). No D3D12 equivalent yet -- desktop mirror is a
+            // later increment; the headset is unaffected.
 
             // Artscout - 2026: ROOT FIX for the 2nd-eye-black. The eye image is bound as the render
             // target via OMSetRenderTargets (StartFrame/BindBackBuffer, and re-bound by each display
@@ -3080,13 +3082,7 @@ void OTWDriverClass::RenderFrame()
             // eye gets unbound as a side effect of the next eye's OMSetRenderTargets, so it composites
             // fine.) Unbind the eye image (bind the back buffer instead) BEFORE releasing it.
             // #DX12 п.5: under D3D12 the eye is unbound + submitted + fenced by EndEyeFrame (called from
-            // EndEye below) -- this D3D11 context-unbind sequence would deref the NULL g_pD3D11Backend.
-            if (not g_bUseD3D12)
-            {
-                g_pD3D11Backend->ClearXrEyeTarget();          // m_bXrEyeActive=false -> next bind != eye
-                g_pD3D11Backend->BindBackBuffer(false);       // unbind the eye image from the context
-                g_pD3D11Backend->FlushContext();              // submit the unbind + eye draws before release
-            }
+            // EndEye below). (D3D11 purge: the D3D11 context-unbind sequence was removed.)
             g_pOpenXRBackend->SetCurrentEye(-1);
             if (xrEyeOk)   // only release what we acquired
                 g_pOpenXRBackend->EndEye(xrEye);
@@ -3175,7 +3171,6 @@ void OTWDriverClass::RenderFrame()
         if (MouseMenuActive)
         {
             if (g_bUseD3D12 && g_pD3D12Backend)      g_pD3D12Backend->ClearDepth();
-            else if (g_pD3D11Backend)                g_pD3D11Backend->ClearDepth();
         }
         DrawExitMenu();
     }

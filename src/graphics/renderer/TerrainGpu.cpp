@@ -27,7 +27,7 @@
 #include "TerrTex.h"    // TheTerrTextures.GetTileSRV()
 #include "RViewPnt.h"   // RViewPoint
 #include "Graphics/DXEngine/DXEngine.h"            // CDXEngine::GetObjProjection/View/CameraPos
-#include "Graphics/DXEngine/d3d11/D3D11Renderer.h" // g_pRenderer
+#include "Graphics/DXEngine/common/IRenderer.h" // g_pRenderer
 #include "TerrainGpu.h"
 
 extern bool g_bGpuTerrain;

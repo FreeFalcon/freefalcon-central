@@ -37,9 +37,10 @@
 
 #include "D3D12Renderer.h"
 #include "Graphics/DXEngine/D3D12Backend.h"          // g_pD3D12Backend (device + command list)
+#include "Graphics/DXEngine/embeddedshader.h"        // Artscout - 2026: FFEmu.hlsl from external file or embedded RCDATA
 #include "Graphics/DXEngine/d3d12/D3D12TextureManager.h"   // D3D12Texture (srvCpuPtr) for the SRV ring
-#include "Graphics/DXEngine/d3d11/D3D11Renderer.h"   // full D3D11_TLVERTEX POD (shared vertex) + FFStateMap
-#include "Graphics/DXEngine/d3d11/FFStateMap.h"      // FFMapState / FFStateDesc / FF_* / STATE_* (shared with D3D11)
+#include "Graphics/DXEngine/common/IRenderer.h"   // full ScreenVertex POD (shared vertex) + FFStateMap
+#include "Graphics/DXEngine/common/FFStateMap.h"      // FFMapState / FFStateDesc / FF_* / STATE_* (shared with D3D11)
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "d3dcompiler.lib")
@@ -74,6 +75,7 @@ struct CBRender
 	float        materialColor[4];
 	float        specular[4];
 	float        waterParams[4];
+	float        gloc[4];       // Artscout - 2026: FF_GLOC vignette (x=intensity, y=inner, z=outer)
 };
 // Object/dynamic vertex layouts (match DXVbManager / the object input layout below).
 struct DynV { float p[3]; unsigned col, spec; float tu, tv; };          // 28 bytes (D3DDYNVERTEX)
@@ -92,14 +94,18 @@ static inline void ArgbToRgba(unsigned long argb, float* out, float tol = -1.0f)
 
 D3D12Renderer* g_pD3D12Renderer = NULL;   // concrete instance (g_pRenderer points here under D3D12)
 
+// Artscout - 2026 (D3D11 purge): these engine-wide globals were DEFINED in the now-deleted D3D11Renderer.cpp;
+// re-homed here (D3D12 is the sole renderer). g_pRenderer = the active neutral renderer (set in DXContext::Init);
+// g_bGpuDraw = "a GPU 3D draw happened this frame" (present path composites the 3D scene vs blitting the 2D
+// UI); g_rttBatchActive = true during the RTT display batch (StartRtt..FinishRtt). Names kept (not renamed) so
+// the ~dozen extern references across the engine stay unchanged.
+IRenderer* g_pRenderer      = NULL;
+bool       g_bGpuDraw  = false;
+bool       g_rttBatchActive = false;
+
 // #DX12: free-function hook so the texture manager can notify the renderer of a texture free WITHOUT including
 // D3D12Renderer.h (avoids a header cycle). Nulls the renderer's current-texture pointer if it is being freed.
 void D3D12Renderer_NotifyTextureFreed(const void* tex) { if (g_pD3D12Renderer) g_pD3D12Renderer->OnTextureFreed(tex); }
-
-// Artscout - 2026: #DX12 -- the universal "a GPU 3D draw happened this frame" flag (defined in d3d11renderer.cpp).
-// The present path (imagebuf) reads it: set => composite/present the 3D scene; clear => blit the 2D UI (menu).
-// Reused as-is (not renamed) so D3D12 plugs into the exact same, proven present routing as D3D11.
-extern bool g_bD3D11GPUDraw;
 
 typedef std::map<unsigned, ID3D12PipelineState*> PsoMap;
 
@@ -123,6 +129,7 @@ D3D12Renderer::D3D12Renderer()
 	m_camPos[0] = m_camPos[1] = m_camPos[2] = 0.0f; m_camPos[3] = 1.0f;
 	m_materialColor[0] = m_materialColor[1] = m_materialColor[2] = m_materialColor[3] = 1.0f;
 	m_specular[0] = m_specular[1] = m_specular[2] = m_specular[3] = 0.0f;
+	m_gloc[0] = m_gloc[1] = m_gloc[2] = m_gloc[3] = 0.0f;   // Artscout - 2026: FF_GLOC off
 	memset(m_lightsBuf, 0, sizeof(m_lightsBuf));
 	for (int f = 0; f < kFrames; ++f)
 	{
@@ -159,28 +166,29 @@ bool D3D12Renderer::Init(const char* shaderDir)
 
 bool D3D12Renderer::CompileShaders(const char* shaderDir)
 {
-	char apath[MAX_PATH];
-	_snprintf(apath, sizeof(apath) - 1, "%sFFEmu.hlsl", shaderDir ? shaderDir : ""); apath[MAX_PATH - 1] = 0;
-	wchar_t wpath[MAX_PATH];
-	MultiByteToWideChar(CP_ACP, 0, apath, -1, wpath, MAX_PATH);
+	// Artscout - 2026: prefer an external shaderDir\FFEmu.hlsl (runtime-tunable), else the embedded RCDATA copy.
+	std::wstring wpathUnused; bool fromFile = false;
+	std::string src = LoadFFEmuShaderSource(shaderDir, wpathUnused, fromFile);
+	if (src.empty()) { R12Log("[D3D12R] FFEmu.hlsl source not found (no external file, no embedded resource)\n"); return false; }
+	const char* srcName = fromFile ? "FFEmu.hlsl(file)" : "FFEmu.hlsl(embedded)";
 
 	UINT flags = 0;
 #ifdef _DEBUG
 	flags |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 	// Artscout - 2026: #VFX Phase 1 -- VS_Particle/PS_Particle are compiled here alongside the base
-	// programs (same runtime D3DCompileFromFile mechanism; entry points added to the enumeration).
+	// programs (same runtime D3DCompile mechanism; entry points added to the enumeration).
 	void**       outs[5]    = { &m_pVSScreen, &m_pVSObject, &m_pPSMain, &m_pVSParticle, &m_pPSParticle };
 	const char*  entries[5] = { "VS_Screen", "VS_Object", "PS_Main", "VS_Particle", "PS_Particle" };
 	const char*  targets[5] = { "vs_5_0",    "vs_5_0",    "ps_5_0",  "vs_5_0",      "ps_5_0"       };
 	for (int i = 0; i < 5; ++i)
 	{
 		ID3DBlob* blob = 0; ID3DBlob* err = 0;
-		HRESULT hr = D3DCompileFromFile(wpath, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE,
-		                                entries[i], targets[i], flags, 0, &blob, &err);
+		HRESULT hr = D3DCompile(src.data(), src.size(), srcName, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE,
+		                        entries[i], targets[i], flags, 0, &blob, &err);
 		if (FAILED(hr))
 		{
-			R12Log("[D3D12R] compile %s failed: %s\n", entries[i], err ? (const char*)err->GetBufferPointer() : "(no file?)");
+			R12Log("[D3D12R] compile %s failed: %s\n", entries[i], err ? (const char*)err->GetBufferPointer() : "(compile error)");
 			if (err) err->Release();
 			// #VFX Phase 1: the particle shaders (i>=3, VS_Particle/PS_Particle) are OPTIONAL -- a compile error
 			// there must NOT fail whole-renderer Init (that skips CreateWhiteTexture -> null SRV rings/white tex
@@ -639,6 +647,7 @@ void D3D12Renderer::FlushConstants()
 		memcpy(cb.materialColor, m_materialColor, sizeof(cb.materialColor));
 		memcpy(cb.specular, m_specular, sizeof(cb.specular));
 		cb.waterParams[0] = (float)(GetTickCount() % 1000000) * 0.001f;
+		memcpy(cb.gloc, m_gloc, sizeof(cb.gloc));
 		unsigned __int64 va = AllocCB(&cb, sizeof(cb)); if (va) cl->SetGraphicsRootConstantBufferView(3, va);
 		m_dRender = false;
 	}
@@ -958,11 +967,11 @@ void D3D12Renderer::RebuildTerrainRasters()     { /* PSOs are built lazily -> no
 
 //================================ draws ======================================
 
-void D3D12Renderer::DrawTL(int primType, const D3D11_TLVERTEX* verts, int count)
+void D3D12Renderer::DrawTL(int primType, const ScreenVertex* verts, int count)
 {
 	if (!verts || count <= 0) return;
 	g_pD3D12Backend->EnsureFrameStarted();
-	g_bD3D11GPUDraw = true;   // this frame drew 3D on the GPU -> present composites the scene (see imagebuf)
+	g_bGpuDraw = true;   // this frame drew 3D on the GPU -> present composites the scene (see imagebuf)
 	ID3D12GraphicsCommandList* cl = Cmd(); if (!cl) return;
 
 	// Lines aren't textured (else a leftover font gTex0 would chroma-cut them).
@@ -977,7 +986,7 @@ void D3D12Renderer::DrawTL(int primType, const D3D11_TLVERTEX* verts, int count)
 	if (m_hudStencil) cl->OMSetStencilRef(0x80);   // #76 HUD aperture ref (0x80); no-op unless a stencil PSO is bound
 
 	D3D12_VERTEX_BUFFER_VIEW vbv;
-	if (!AllocVB(verts, (unsigned)count * sizeof(D3D11_TLVERTEX), sizeof(D3D11_TLVERTEX), &vbv)) return;
+	if (!AllocVB(verts, (unsigned)count * sizeof(ScreenVertex), sizeof(ScreenVertex), &vbv)) return;
 	cl->IASetVertexBuffers(0, 1, &vbv);
 
 	if (primType == 6)   // TRIFAN -> triangle-list via an index buffer (no native fan topology)
@@ -1002,12 +1011,12 @@ void D3D12Renderer::DrawTL(int primType, const D3D11_TLVERTEX* verts, int count)
 	cl->DrawInstanced(count, 1, 0, 0);
 }
 
-void D3D12Renderer::DrawTLIndexed(int primType, const D3D11_TLVERTEX* verts, int vcount,
+void D3D12Renderer::DrawTLIndexed(int primType, const ScreenVertex* verts, int vcount,
                                   const unsigned short* indices, int icount)
 {
 	if (!verts || vcount <= 0 || !indices || icount <= 0) return;
 	g_pD3D12Backend->EnsureFrameStarted();
-	g_bD3D11GPUDraw = true;   // this frame drew 3D on the GPU -> present composites the scene (see imagebuf)
+	g_bGpuDraw = true;   // this frame drew 3D on the GPU -> present composites the scene (see imagebuf)
 	ID3D12GraphicsCommandList* cl = Cmd(); if (!cl) return;
 
 	if (primType == 2 && (m_flags & FF_TEXTURE0)) { m_flags &= ~FF_TEXTURE0; m_dRender = true; }
@@ -1020,7 +1029,7 @@ void D3D12Renderer::DrawTLIndexed(int primType, const D3D11_TLVERTEX* verts, int
 	if (m_hudStencil) cl->OMSetStencilRef(0x80);   // #76 HUD aperture ref (0x80); no-op unless a stencil PSO is bound
 
 	D3D12_VERTEX_BUFFER_VIEW vbv;
-	if (!AllocVB(verts, (unsigned)vcount * sizeof(D3D11_TLVERTEX), sizeof(D3D11_TLVERTEX), &vbv)) return;
+	if (!AllocVB(verts, (unsigned)vcount * sizeof(ScreenVertex), sizeof(ScreenVertex), &vbv)) return;
 	D3D12_INDEX_BUFFER_VIEW ibv;
 	if (!AllocIB(indices, icount, &ibv)) return;
 	cl->IASetVertexBuffers(0, 1, &vbv);
@@ -1029,7 +1038,7 @@ void D3D12Renderer::DrawTLIndexed(int primType, const D3D11_TLVERTEX* verts, int
 	cl->DrawIndexedInstanced(icount, 1, 0, 0, 0);
 }
 
-void D3D12Renderer::DrawColorTrisScreen(const D3D11_TLVERTEX* verts, int count, ID3D11ShaderResourceView* tex, int opaque, int cull)
+void D3D12Renderer::DrawColorTrisScreen(const ScreenVertex* verts, int count, ID3D11ShaderResourceView* tex, int opaque, int cull)
 {
 	if (!verts || count < 3) return;
 	BeginScreenPass();
@@ -1045,7 +1054,7 @@ void D3D12Renderer::DrawTerrainMesh(const void* verts, int vcount, const unsigne
 {
 	if (!verts || vcount <= 0 || !indices || icount <= 0) return;
 	g_pD3D12Backend->EnsureFrameStarted();
-	g_bD3D11GPUDraw = true;   // this frame drew 3D on the GPU -> present composites the scene (see imagebuf)
+	g_bGpuDraw = true;   // this frame drew 3D on the GPU -> present composites the scene (see imagebuf)
 	ID3D12GraphicsCommandList* cl = Cmd(); if (!cl) return;
 
 	FlushConstants();
@@ -1106,7 +1115,7 @@ void D3D12Renderer::DrawDynamic2D(const void* dynVerts, int vcount, ID3D11Shader
 {
 	if (!dynVerts || vcount <= 0) return;
 	g_pD3D12Backend->EnsureFrameStarted();
-	g_bD3D11GPUDraw = true;   // this frame drew 3D on the GPU -> present composites the scene (see imagebuf)
+	g_bGpuDraw = true;   // this frame drew 3D on the GPU -> present composites the scene (see imagebuf)
 	ID3D12GraphicsCommandList* cl = Cmd(); if (!cl) return;
 	SetTexture(0, srv);
 	FlushConstants();
@@ -1140,7 +1149,7 @@ void D3D12Renderer::DrawDynamic2DIndexed(const unsigned short* indices, int icou
 {
 	if (!indices || icount <= 0 || !m_dyn2DVerts || m_dyn2DVcount <= 0) return;
 	g_pD3D12Backend->EnsureFrameStarted();
-	g_bD3D11GPUDraw = true;   // this frame drew 3D on the GPU -> present composites the scene (see imagebuf)
+	g_bGpuDraw = true;   // this frame drew 3D on the GPU -> present composites the scene (see imagebuf)
 	ID3D12GraphicsCommandList* cl = Cmd(); if (!cl) return;
 	SetTexture(0, srv);
 	FlushConstants();
@@ -1180,7 +1189,7 @@ void D3D12Renderer::DrawObjectIndexed(int primType, void* vbHandle, int stride, 
 {
 	if (!vbHandle || !indices || indexCount <= 0) return;
 	g_pD3D12Backend->EnsureFrameStarted();
-	g_bD3D11GPUDraw = true;
+	g_bGpuDraw = true;
 	ID3D12GraphicsCommandList* cl = Cmd(); if (!cl) return;
 
 	FlushConstants();
@@ -1222,7 +1231,7 @@ void D3D12Renderer::DrawObjectStrip(int primType, void* vbHandle, int stride, in
 {
 	if (!vbHandle || vertexCount <= 0) return;
 	g_pD3D12Backend->EnsureFrameStarted();
-	g_bD3D11GPUDraw = true;
+	g_bGpuDraw = true;
 	ID3D12GraphicsCommandList* cl = Cmd(); if (!cl) return;
 
 	FlushConstants();
@@ -1265,7 +1274,7 @@ void D3D12Renderer::DrawParticlesInstanced(const void* inst, int count, void* at
 	}
 #endif
 	g_pD3D12Backend->EnsureFrameStarted();
-	g_bD3D11GPUDraw = true;   // this frame drew 3D on the GPU -> present composites the scene (see imagebuf)
+	g_bGpuDraw = true;   // this frame drew 3D on the GPU -> present composites the scene (see imagebuf)
 	ID3D12GraphicsCommandList* cl = Cmd(); if (!cl) return;
 	if (!EnsureParticleStatics()) return;
 
@@ -1321,7 +1330,7 @@ void D3D12Renderer::DrawBitmap2D(int dX, int dY, int w, int h, int totalWidth, i
 	const float x0 = (float)dX, y0 = (float)dY;
 	const float dw = fit ? (float)screenW : (float)w;
 	const float dh = fit ? (float)screenH : (float)h;
-	D3D11_TLVERTEX v[4]; ZeroMemory(v, sizeof(v));
+	ScreenVertex v[4]; ZeroMemory(v, sizeof(v));
 	v[0].sx = x0;      v[0].sy = y0;      v[0].tu0 = 0; v[0].tv0 = 0;   // TL
 	v[1].sx = x0 + dw; v[1].sy = y0;      v[1].tu0 = 1; v[1].tv0 = 0;   // TR
 	v[2].sx = x0;      v[2].sy = y0 + dh; v[2].tu0 = 0; v[2].tv0 = 1;   // BL
@@ -1342,6 +1351,41 @@ void D3D12Renderer::DrawBitmap2D(int dX, int dY, int w, int h, int totalWidth, i
 	SetTexture(1, NULL);
 
 	g_pD3D12TextureManager->Destroy(tmp);   // frame-deferred: released only after this frame's GPU work completes
+}
+
+// Artscout - 2026: G-force / end-flight vignette (blackout / redout) -- see D3D11Renderer::DrawGlocOverlay.
+// Fullscreen alpha-blended quad with FF_GLOC; the PS darkens/tints the periphery by radial UV distance.
+// The quad spans the current viewport (m_screenW/H, set per-eye in VR), so it lands on the flat frame and
+// in each HMD eye. Restores neutral state so following cursor/menu draws aren't tinted.
+void D3D12Renderer::DrawGlocOverlay(float intensity, float innerR, float outerR,
+                                    float tintR, float tintG, float tintB)
+{
+	if (intensity <= 0.0f || m_screenW <= 0 || m_screenH <= 0) return;
+
+	BeginScreenPass();
+	m_cull = 0; m_blend = BLEND_ALPHA; m_depthWrite = false; m_depthTest = false;   // overlay
+	m_gloc[0] = intensity; m_gloc[1] = innerR; m_gloc[2] = outerR; m_gloc[3] = 0.0f;
+	m_materialColor[0] = tintR; m_materialColor[1] = tintG; m_materialColor[2] = tintB; m_materialColor[3] = 1.0f;
+	m_flags = FF_GLOC;                // PS short-circuits to the vignette; no texture sampled
+	m_dRender = true;
+
+	const float w = (float)m_screenW, h = (float)m_screenH;
+	ScreenVertex v[4]; ZeroMemory(v, sizeof(v));
+	v[0].sx = 0; v[0].sy = 0; v[0].tu0 = 0; v[0].tv0 = 0;   // TL
+	v[1].sx = w; v[1].sy = 0; v[1].tu0 = 1; v[1].tv0 = 0;   // TR
+	v[2].sx = 0; v[2].sy = h; v[2].tu0 = 0; v[2].tv0 = 1;   // BL
+	v[3].sx = w; v[3].sy = h; v[3].tu0 = 1; v[3].tv0 = 1;   // BR
+	for (int i = 0; i < 4; ++i)
+	{
+		v[i].sz = 0.0f; v[i].rhw = 1.0f; v[i].color = 0xFFFFFFFF; v[i].specular = 0;
+		v[i].tu1 = v[i].tu0; v[i].tv1 = v[i].tv0;
+	}
+	DrawTL(5, v, 4);   // TRISTRIP
+
+	// Restore neutral render state (flags off, material white, gloc off) for subsequent draws.
+	m_flags = 0; m_gloc[0] = 0.0f;
+	m_materialColor[0] = m_materialColor[1] = m_materialColor[2] = m_materialColor[3] = 1.0f;
+	m_dRender = true;
 }
 
 // #DX12 п.2: composite the 2D-UI surface (RGB565, black=transparent) over the 3D scene, via the backend's

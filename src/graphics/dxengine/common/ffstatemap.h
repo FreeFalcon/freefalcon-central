@@ -36,6 +36,9 @@ enum FFFlags
 	FF_IRGREY      = 1u << 14,		// #DX12 A5: sensor pass grey-out (TGP/TV, Maverick/FLIR/IR) -> luma in PS
 	FF_COCKPIT     = 1u << 13,		// Artscout - 2026: #72 cockpit-fidelity pass (specular + reduced
 									// ambient flood + mild contrast). Sticky, set by SetCockpitPass().
+	FF_GLOC        = 1u << 15,		// Artscout - 2026: G-force / end-flight vignette (blackout/redout). Fullscreen
+									// post-process pass: the PS darkens/tints by radial UV distance (gGloc). Replaces
+									// the legacy screen-space tunnel-ring so it works on D3D11/D3D12 and per-eye in VR.
 };
 
 // Coarse buckets the ~38 states collapse into. Each names a small set of D3D11

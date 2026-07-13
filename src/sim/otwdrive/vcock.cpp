@@ -1,8 +1,7 @@
 #include "Graphics/Include/canvas3d.h"
 #include "Graphics/DXEngine/OpenXRBackend.h"   // VR: HMD head-tracking (independent of TrackIR)
-#include "Graphics/DXEngine/D3D11Backend.h"     // Artscout - 2026 (VR): eye size for click hit-test scaling
 #include "Graphics/DXEngine/D3D12Backend.h"     // #DX12 A2: neutral eye size (SceneW/H) for the VR hit-test under D3D12
-#include "Graphics/DXEngine/d3d11/D3D11Renderer.h"  // #DX12 A3: neutral g_pRenderer (IRenderer) + full D3D11_TLVERTEX for the controller model
+#include "Graphics/DXEngine/common/IRenderer.h"  // #DX12 A3: neutral g_pRenderer (IRenderer) + full ScreenVertex for the controller model
 #include "Graphics/Include/drawbsp.h"
 #include "Graphics/Include/renderow.h"
 #include "Graphics/Include/texbank.h"   // PHASE 5: TheTextureBank.WaitUpdates() for synchronous loading of cockpit textures
@@ -1970,7 +1969,7 @@ void OTWDriverClass::VCock_DrawControllerModel(void)
     // Draw BOTH hands, each with its OWN mesh (left->*_left, right->*_right) at its OWN grip pose. The ray/
     // cursor is NOT tied to the model -- it stays on the active hand (GetActiveHand, switched by grip squeeze)
     // in the pick block. A hand whose controller isn't tracked this frame is simply skipped.
-    static std::vector<D3D11Backend::VrTriVtx> sv;
+    static std::vector<VrTriVtx> sv;
     for (int hnd = 0; hnd < 2; ++hnd)   // 0 = left, 1 = right
     {
         float go[3], bf[3], br[3], bu[3];
@@ -2026,9 +2025,9 @@ void OTWDriverClass::VCock_DrawControllerModel(void)
             float sh = 0.55f + 0.45f*d; if (sh > 1.0f) sh = 1.0f;   // brighter floor so the textured hands aren't too dark
             unsigned rr = (unsigned)(0.62f*sh*255.0f), gg = (unsigned)(0.64f*sh*255.0f), bb = (unsigned)(0.68f*sh*255.0f);
             unsigned col = 0xFF000000u | (rr << 16) | (gg << 8) | bb;   // ARGB, opaque
-            D3D11Backend::VrTriVtx t0 = { vv[0].x, vv[0].y, col, tr.uv[0][0], tr.uv[0][1] };
-            D3D11Backend::VrTriVtx t1 = { vv[1].x, vv[1].y, col, tr.uv[1][0], tr.uv[1][1] };
-            D3D11Backend::VrTriVtx t2 = { vv[2].x, vv[2].y, col, tr.uv[2][0], tr.uv[2][1] };
+            VrTriVtx t0 = { vv[0].x, vv[0].y, col, tr.uv[0][0], tr.uv[0][1] };
+            VrTriVtx t1 = { vv[1].x, vv[1].y, col, tr.uv[1][0], tr.uv[1][1] };
+            VrTriVtx t2 = { vv[2].x, vv[2].y, col, tr.uv[2][0], tr.uv[2][1] };
             sv.push_back(t0); sv.push_back(t1); sv.push_back(t2);
         }
         // Lazy-load the diffuse texture (once) from the OBJ's mtllib map_Kd; NULL -> flat vertex-colour (v1 look).
@@ -2045,7 +2044,7 @@ void OTWDriverClass::VCock_DrawControllerModel(void)
         extern IRenderer* g_pRenderer;
         if (g_pRenderer and not sv.empty())
         {
-            static std::vector<D3D11_TLVERTEX> tl; tl.resize(sv.size());
+            static std::vector<ScreenVertex> tl; tl.resize(sv.size());
             for (size_t i = 0; i < sv.size(); ++i)
             {
                 tl[i].sx = sv[i].x; tl[i].sy = sv[i].y; tl[i].sz = 0.0f; tl[i].rhw = 1.0f;
@@ -4251,12 +4250,9 @@ void OTWDriverClass::VCock_Exec(void)
             else
             {
                 float hh = (efr - efl) * 0.5f;
-                // #DX12 A2: neutral eye size -- under D3D12 the eye render size is the backend's scene target
-                // (SceneW/H, set per eye by BeginEyeFrame); under D3D11 it's XrEyeW/H. (g_pD3D11Backend is NULL
-                // under D3D12, so the old direct deref would crash now that xrPick engages here.)
-                extern bool g_bUseD3D12;
-                int   ew = g_bUseD3D12 ? g_pD3D12Backend->SceneW() : (g_pD3D11Backend ? g_pD3D11Backend->XrEyeW() : 0);
-                int   eh = g_bUseD3D12 ? g_pD3D12Backend->SceneH() : (g_pD3D11Backend ? g_pD3D11Backend->XrEyeH() : 0);
+                // #DX12 A2: eye render size = the backend's scene target (SceneW/H, set per eye by BeginEyeFrame).
+                int   ew = g_pD3D12Backend->SceneW();
+                int   eh = g_pD3D12Backend->SceneH();
                 float vhalf = (ew > 0) ? (float)atan(tan(hh) * (double)eh / (double)ew) : hh;
                 renderer->SetVRFrustum(-hh, hh, vhalf, -vhalf);   // symmetric like SetFOV, but EYE aspect
             }
@@ -4356,80 +4352,10 @@ void OTWDriverClass::VCock_Exec(void)
                 if (hnd2 == activeHnd) drewActiveHand = true;
             }
 
-            // Artscout - 2026 (VR controller model): middle tier of hands -> MODEL -> wireframe. When hands
-            // aren't drawn, try the real controller mesh oriented by the grip pose (Index vs Oculus by the
-            // runtime's interaction profile). v1 = flat-shaded solid. Falls through to the wireframe if the
-            // model is off / not loaded / grip pose missing.
+            // Artscout - 2026 (VR controller model): the solid controller mesh is now drawn in
+            // VCock_DrawThePit (poly-list); what remains here is the wireframe fallback used only
+            // when the mesh MODEL is OFF (grip pose from the aim direction).
             extern bool g_bVrControllerModel;
-            bool drewModel = false;
-            if (false)   // Artscout - 2026: controller MODEL now drawn solid in VCock_DrawThePit (poly-list); this Render2DTri overlay path retired
-            {
-                char prof[128] = "";
-                g_pOpenXRBackend->GetInteractionProfile(activeHnd, prof, sizeof(prof));
-                bool isIndex = (prof[0] == 0) or (strstr(prof, "index") != NULL) or (strstr(prof, "knuckles") != NULL);
-                const char* base = (activeHnd == 0)
-                    ? (isIndex ? "valve_controller_knu_1_0_left"  : "oculus_cv1_controller_left")
-                    : (isIndex ? "valve_controller_knu_1_0_right" : "oculus_cv1_controller_right");
-                float bf[3], br[3], bu[3];
-                if (VrLoadCtrlObj(&s_vrModel[activeHnd], base) and g_pOpenXRBackend->GetControllerGripBasis(activeHnd, bf, br, bu))
-                {
-                    if (g_bVrRayFlipH) { bf[1] = -bf[1]; br[1] = -br[1]; bu[1] = -bu[1]; }   // match the ray/grip flips
-                    if (g_bVrRayFlipV) { bf[2] = -bf[2]; br[2] = -br[2]; bu[2] = -bu[2]; }
-                    extern float g_fVrModelScale;
-                    const float M2B = 3.28084f * B3D_POSITION_SCALING * g_fVrModelScale;    // metres -> button units
-                    float Lx = 0.3f, Ly = -0.5f, Lz = -0.8f; float Ll = sqrtf(Lx*Lx + Ly*Ly + Lz*Lz); Lx/=Ll; Ly/=Ll; Lz/=Ll;
-                    // STATE_ALPHA_GOURAUD = untextured vertex-colour with DEPTH OFF (like the canopy glass plate).
-                    // The mesh rasterised fine under STATE_GOURAUD (drawn=8926, csZ<0) but was hidden by the
-                    // cockpit depth -- the hand sits behind the near panels. Drawing depth-off makes it an overlay
-                    // (visible like the beam). v1.1 will add backface culling so the solid reads correctly.
-                    renderer->context.RestoreState(STATE_ALPHA_GOURAUD);
-                    const VrTri* T = &s_vrModel[activeHnd].tris[0];
-                    const int   nT = (int)s_vrModel[activeHnd].tris.size();
-                    int nDrawn = 0; float s0x = 0, s0y = 0, s0z = 0;   // DIAG: how many tris drew + a sample projection
-                    for (int ti = 0; ti < nT; ++ti)
-                    {
-                        const VrTri& tr = T[ti];
-                        ThreeDVertex vv[3]; bool infront = true;
-                        for (int k = 0; k < 3; ++k)
-                        {
-                            float mx = tr.p[k][0], my = tr.p[k][1], mz = tr.p[k][2];
-                            Tpoint wp;
-                            wp.x = g_vrGripPoint.x + (br[0]*mx + bu[0]*my + bf[0]*mz) * M2B;
-                            wp.y = g_vrGripPoint.y + (br[1]*mx + bu[1]*my + bf[1]*mz) * M2B + ipdY;
-                            wp.z = g_vrGripPoint.z + (br[2]*mx + bu[2]*my + bf[2]*mz) * M2B;
-                            renderer->TransformCameraCentricPoint(&wp, &vv[k]);
-                            if (vv[k].csZ >= -1.0f) infront = false;   // behind the eye -> skip tri
-                        }
-                        if (!infront) continue;
-                        float nwx = br[0]*tr.n[0] + bu[0]*tr.n[1] + bf[0]*tr.n[2];
-                        float nwy = br[1]*tr.n[0] + bu[1]*tr.n[1] + bf[1]*tr.n[2];
-                        float nwz = br[2]*tr.n[0] + bu[2]*tr.n[1] + bf[2]*tr.n[2];
-                        float d = nwx*Lx + nwy*Ly + nwz*Lz; if (d < 0) d = -d;   // two-sided lambert
-                        float sh = 0.35f + 0.65f*d; if (sh > 1.0f) sh = 1.0f;
-                        // Fill via Render2DTri -- the SAME proven 2D-immediate path as the beam's Render2DLine
-                        // (DrawTriangle queues into the poly-list batch that never flushes in this context).
-                        // Flat per-tri grey shade, depth-off overlay. Skip clipped/off-screen tris (the UInt16
-                        // cast in Render2DTri would wrap a negative/huge coord into a stray triangle).
-                        if (vv[0].clipFlag or vv[1].clipFlag or vv[2].clipFlag) continue;
-                        if (nDrawn == 0) { s0x = vv[0].x; s0y = vv[0].y; s0z = vv[0].csZ; }
-                        int sv = (int)(sh * 255.0f); if (sv < 40) sv = 40; if (sv > 255) sv = 255;
-                        // OPAQUE grey: alpha byte MUST be 0xFF -- under STATE_ALPHA_GOURAUD (alpha blend) an
-                        // alpha of 0 makes the fill fully transparent (why the mesh was invisible while the
-                        // now-fixed sun billboard, with its own opaque colour, showed). 0xAABBGGRR.
-                        renderer->SetColor(0xFF000000u | ((DWORD)sv << 16) | ((DWORD)sv << 8) | (DWORD)sv);
-                        renderer->Render2DTri(vv[0].x, vv[0].y, vv[1].x, vv[1].y, vv[2].x, vv[2].y);   // float args; self-clips off-screen
-                        ++nDrawn;
-                    }
-                    { static int s_md = 0; if ((s_md++ % 90) == 0) {
-                        char db[320]; sprintf(db, "VRMODEL grip=%.0f,%.0f,%.0f F=%.2f,%.2f,%.2f nT=%d drawn=%d M2B=%.0f ipdY=%.0f sampleXY=%.0f,%.0f csZ=%.1f\n",
-                            g_vrGripPoint.x, g_vrGripPoint.y, g_vrGripPoint.z, bf[0], bf[1], bf[2], nT, nDrawn, M2B, ipdY, s0x, s0y, s0z);
-                        OutputDebugStringA(db); FILE* d = fopen("vrmodel_diag.txt", "a"); if (d) { fputs(db, d); fclose(d); } } }
-                    renderer->SetColor(0x0000FF00);   // restore green for any later line draws
-                    drewModel = true;
-                }
-            }
-
-            (void)drewModel;
             if (!drewActiveHand and not g_bVrControllerModel and g_vrGripValid)   // wireframe fallback only when the mesh MODEL is OFF
             {
                 // Orthonormal basis from the CALIBRATED aim direction -> the model points exactly where the ray

@@ -20,7 +20,7 @@
 #define _D3D12RENDERER_H_
 
 #include <windows.h>
-#include "Graphics/DXEngine/d3d11/IRenderer.h"   // the neutral interface + D3D11_TLVERTEX (shared POD)
+#include "Graphics/DXEngine/common/IRenderer.h"   // the neutral interface + ScreenVertex (shared POD)
 
 struct ID3D12Device;
 struct ID3D12GraphicsCommandList;
@@ -100,13 +100,14 @@ public:
 	void SetTerrainRasterForLod(int level);
 	void RebuildTerrainRasters();
 
-	void DrawTL(int primType, const D3D11_TLVERTEX* verts, int count);
-	void DrawTLIndexed(int primType, const D3D11_TLVERTEX* verts, int vcount,
+	void DrawTL(int primType, const ScreenVertex* verts, int count);
+	void DrawTLIndexed(int primType, const ScreenVertex* verts, int vcount,
 	                   const unsigned short* indices, int icount);
-	void DrawColorTrisScreen(const D3D11_TLVERTEX* verts, int count,
+	void DrawColorTrisScreen(const ScreenVertex* verts, int count,
 	                         ID3D11ShaderResourceView* tex, int opaque, int cull);
 	void DrawBitmap2D(int dX, int dY, int w, int h, int totalWidth, int sX, int sY,
 	                  const unsigned* pSrc, bool fit, int screenW, int screenH);
+	void DrawGlocOverlay(float intensity, float innerR, float outerR, float tintR, float tintG, float tintB);
 	void DrawTerrainMesh(const void* verts, int vcount, const unsigned short* indices, int icount);
 	void BeginDynamic2D(bool additive);
 	void UploadDynamic2D(const void* dynVerts, int vcount);
@@ -222,6 +223,7 @@ private:
 	unsigned long              m_fogColor, m_chromaKey;
 	float                      m_chromaTol;
 	float                      m_materialColor[4], m_specular[4];
+	float                      m_gloc[4];   // Artscout - 2026: gGloc (FF_GLOC vignette: x=intensity, y=inner, z=outer)
 	bool                       m_texColorDiffuse, m_cockpitPass, m_hasTex0;
 	bool                       m_irGrey;   // #DX12 A5: sensor grey pass (sticky, like m_cockpitPass)
 	unsigned char              m_lightsBuf[16 + 16 + 8 * 64];   // cbLights shadow (ambient, num, pad, 8 lights)

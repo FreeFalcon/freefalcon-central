@@ -28,8 +28,7 @@
 #include "FalcLib/include/dispopts.h"
 #include "Graphics/DXEngine/DXEngine.h"
 #include "Graphics/DXEngine/DXVBManager.h"
-#include "Graphics/DXEngine/d3d11/D3D11Renderer.h"	// terrain fog: g_pD3D11Renderer->SetFog
-extern bool g_bUseD3D11;
+#include "Graphics/DXEngine/common/IRenderer.h"	// terrain fog: g_pD3D11Renderer->SetFog
 
 //JAM 18Nov03
 #include "RealWeather.h"
@@ -685,121 +684,32 @@ void RenderOTW::PostSceneCloudOcclusion(void)
 \***************************************************************************/
 void RenderOTW::DrawTunnelBorder(void)
 {
-    TwoDVertex vert[NumPoints * 2 + 1];
-    TwoDVertex* vertPointers[4];
-    int i;
-    int j1, j2;
-    float x, y;
-    float alpha;
+    // Artscout - 2026: G-force blackout/redout (and the end-flight fade) as a FULLSCREEN POST-PROCESS
+    // vignette instead of the legacy screen-space ring mesh. The old version built a trifan ring in screen
+    // pixels via the immediate ContextMPR path: it never composited under D3D12 (blend/viewport/late-frame
+    // fragility), and drawn once to the flat back buffer it did not map onto the VR/QuadViews per-eye frames
+    // -> it had to be gated off. Now we hand the tunnel STATE (still set by SetTunnelPercent) to the renderer's
+    // FF_GLOC pass, which darkens/tints the periphery per-pixel over the current viewport. This runs on the
+    // flat path AND per-eye inside the VR loop, so it lands correctly in every view on both backends.
 
-    // Quit now if the tunnel isn't being drawn
-    if (tunnelAlphaWidth <= 0.0f)
+    // Quit now if the tunnel isn't being drawn (matches the legacy tunnelAlphaWidth<=0 early-out).
+    if (tunnelAlphaWidth <= 0.0f or g_pRenderer == NULL)
         return;
 
-    // OW
-    ZeroMemory(vert, sizeof(vert));
+    // Map the legacy ring widths to normalized radii (0 = screen centre, 1 = edge):
+    //   the legacy alpha ramped 0 -> 1 from radius (1 - tunnelAlphaWidth) to (1 - tunnelSolidWidth), then the
+    //   solid ring (alpha 1) ran out to the edge -> here the vignette saturates past 'outer'.
+    float inner = 1.0f - tunnelAlphaWidth;   // darkening begins at this radius (can go < 0 at full close-out)
+    float outer = 1.0f - tunnelSolidWidth;   // fully dark from this radius outward
+    if (inner < 0.0f) inner = 0.0f;
+    if (outer <= inner) outer = inner + 0.01f;   // keep the PS smoothstep well-formed
 
-    // Restart the rasterizer to draw the tunnel border
-    //context.StartFrame();
+    // Tint: tunnelColor is 0 (black) for blackout / end-flight, or holds a red component for redout.
+    float r = (float)((tunnelColor)       bitand 0xFF) / 255.0f;
+    float g = (float)((tunnelColor >> 8)  bitand 0xFF) / 255.0f;
+    float b = (float)((tunnelColor >> 16) bitand 0xFF) / 255.0f;
 
-    // Put the clip rectangle at full size to allow drawing of the border
-    SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
-
-    // Initialize all the verticies
-    float r = (float)((tunnelColor) bitand 0xFF) / 255.9f;
-    float g = (float)((tunnelColor >> 8) bitand 0xFF) / 255.9f;
-    float b = (float)((tunnelColor >> 16) bitand 0xFF) / 255.9f;
-
-    for (i = 0; i < NumPoints; i++)
-    {
-        j1 = i << 1;
-        j2 = j1 + 1;
-
-        // Color
-        vert[j1].r = vert[j2].r = r;
-        vert[j1].g = vert[j2].g = g;
-        vert[j1].b = vert[j2].b = b;
-        vert[j1].a = vert[j2].a = 1.0f;
-
-        // Root location
-        vert[j1].x = viewportXtoPixel(OutsidePoints[i].x);
-        vert[j1].y = viewportYtoPixel(OutsidePoints[i].y);
-        SetClipFlags(&vert[j1]);
-
-        // Inside edge
-        x = (1.0f - tunnelSolidWidth) * OutsidePoints[i].x;
-        y = (1.0f - tunnelSolidWidth) * OutsidePoints[i].y;
-        vert[j2].x = viewportXtoPixel(x);
-        vert[j2].y = viewportYtoPixel(y);
-        SetClipFlags(&vert[j2]);
-    }
-
-    // Special pickup for the one vertex which wasn't colored this time, but will be used next
-    vert[i * 2].r = r;
-    vert[i * 2].g = g;
-    vert[i * 2].b = b;
-
-    // Draw the flat colored mesh if it is visible
-    if (tunnelSolidWidth > 0.0f)
-    {
-        context.RestoreState(STATE_SOLID);
-
-        for (i = NumPoints - 2; i >= 0; i--)
-        {
-            j1 = i << 1;
-            vertPointers[0] = &vert[j1];
-            vertPointers[1] = &vert[j1 + 2];
-            vertPointers[2] = &vert[j1 + 3];
-            vertPointers[3] = &vert[j1 + 1];
-            ClipAndDraw2DFan(vertPointers, 4);
-        }
-    }
-
-    // Update the ending alpha value and alpha percent for the closing out the view case
-    if (tunnelAlphaWidth > 1.0f)
-    {
-        alpha = (tunnelAlphaWidth - 1.0f) / PercentBlend;
-        tunnelAlphaWidth = 1.0f;
-    }
-
-    else
-        alpha = 0.0f;
-
-    // Fill the blended portion of the border
-    // NOTE:  The inside of the solid mesh is the outside of the blending mesh
-    // therefore, the odd numbered vertices from above can be reused
-
-    for (i = 0; i < NumPoints; i++)
-    {
-        j1 = (i << 1) + 1; // Index of vertex to be reused (last times inside edge)
-        j2 = j1 + 1; // Index of vertex to replace (last times outside edge)
-
-        // Alpha
-        vert[j2].a = alpha;
-
-        // Inside edge
-        x = (1.0f - tunnelAlphaWidth) * OutsidePoints[i].x;
-        y = (1.0f - tunnelAlphaWidth) * OutsidePoints[i].y;
-        vert[j2].x = viewportXtoPixel(x);
-        vert[j2].y = viewportYtoPixel(y);
-        SetClipFlags(&vert[j2]);
-    }
-
-    // Draw the blended mesh
-    context.RestoreState(STATE_ALPHA_GOURAUD);
-
-    for (i = NumPoints - 2; i >= 0; i--)
-    {
-        j1 = (i << 1) + 1;
-        vertPointers[0] = &vert[j1];
-        vertPointers[1] = &vert[j1 + 2];
-        vertPointers[2] = &vert[j1 + 3];
-        vertPointers[3] = &vert[j1 + 1];
-        ClipAndDraw2DFan(vertPointers, 4);
-    }
-
-    // Close down the renderer and flush the queue
-    //context.FinishFrame(NULL);
+    g_pRenderer->DrawGlocOverlay(1.0f, inner, outer, r, g, b);
 }
 
 
@@ -880,35 +790,12 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
     prevFOV = GetFOV();
     GetViewport(&prevLeft, &prevTop, &prevRight, &prevBottom);
 
-    // Reduce the viewport size to save on overdraw costs if there's a tunnel in effect
-    // Artscout - 2026 (VR): this overdraw optimization narrows the FOV and shrinks the viewport, which is fine
-    // on the flat path (the periphery is blacked out by the tunnel ring anyway). But VR has a FIXED per-eye
-    // projection -- shrinking it renders the scene into a small central square and leaves the rest showing the
-    // sky-blue eye clear ("blue squares per view"). In VR keep the full per-eye frame; DrawTunnelBorder still
-    // darkens the periphery from the edges inward.
-    // Gate on g_bVrFrameActive (presenting stereo this frame), not g_bUseOpenXR (enabled in options):
-    // the per-eye-projection reasoning below only applies when actually rendering to the HMD; with the
-    // headset off we render flat and the tunnel-solid fill must behave as on the normal flat path.
-    extern bool g_bVrFrameActive;
-    if (tunnelSolidWidth > 0.0f and not g_bVrFrameActive)
-    {
-        float visible = (1.0f - tunnelSolidWidth) * big;
-
-        if (visible <= 1.0f)
-        {
-            float left, top, right, bottom;
-            float fov;
-
-            right = min(visible, prevRight);
-            left = max(-visible, prevLeft);
-            top = min(visible, prevTop);
-            bottom = max(-visible, prevBottom);
-            fov = 2.0f * (float)atan(right / oneOVERtanHFOV);
-
-            SetFOV(fov);
-            SetViewport(left, top, right, bottom);
-        }
-    }
+    // Artscout - 2026: the legacy tunnel overdraw optimization (shrink the FOV/viewport to a central square
+    // when tunnelSolidWidth>0, since the periphery is blacked out) was REMOVED with the move to the FF_GLOC
+    // post-process vignette. It coupled the scene projection to the G-effect -- which broke VR (rendered the
+    // scene into a small central square, leaving "blue squares" in the per-eye periphery) and the D3D12 GPU
+    // path. The vignette now darkens the periphery as a separate fullscreen pass over the full-frame scene,
+    // so nothing here needs to touch FOV/viewport. (Minor overdraw cost only during a heavy blackout, rare.)
 
 
     // Get our world space position from our viewpoint
@@ -1153,17 +1040,8 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
     {
         viewpoint->ObjectsAboveRoof()->DrawBeyond(0.0f, 0, this);
 
-        // Restore the FOV if it was changed by the tunnel code.
-        // Artscout - 2026 (#60 VR tunnel/GLOC): in VR the shrink above is skipped (g_bVrFrameActive), so the
-        // FOV/viewport were never narrowed -- there is nothing to restore. prevFOV/prevViewport are the SYMMETRIC
-        // GetFOV()/GetViewport(); calling SetFOV/SetViewport here would OVERWRITE the per-eye OFF-AXIS frustum set
-        // by SetVRFrustum, mis-projecting the focus view (strong cant) -> the cockpit doubles/sticks under G. Skip in VR.
-        if (tunnelSolidWidth > 0.0f and not g_bVrFrameActive)
-        {
-            SetFOV(prevFOV);
-            SetViewport(prevLeft, prevTop, prevRight, prevBottom);
-        }
-
+        // Artscout - 2026: the tunnel FOV/viewport shrink was removed (see the top of DrawScene), so there is
+        // nothing to restore here -- the G-effect is now a fullscreen FF_GLOC vignette, decoupled from projection.
         return;
     }
 
@@ -1227,17 +1105,8 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
     // compile unconditionally. Call it always. (The loader's USE_NEW_PS #else branches stay as in #23.)
     DrawableParticleSys::PS_Exec(this);
 
-    // Restore the FOV if it was changed by the tunnel code.
-    // Artscout - 2026 (#60 VR tunnel/GLOC): see the skyRoof branch above. In VR the tunnel viewport-shrink is
-    // skipped, so prevFOV/prevViewport (symmetric) must NOT be re-applied -- doing so clobbers the per-eye
-    // off-axis frustum (SetVRFrustum) for everything drawn after the world (cockpit/instruments), which in the
-    // strongly-canted FOCUS view shifts the cockpit and makes the gaze inset double / look "stuck" under G. Skip in VR.
-    if (tunnelSolidWidth > 0.0f and not g_bVrFrameActive)
-    {
-        SetFOV(prevFOV);
-        SetViewport(prevLeft, prevTop, prevRight, prevBottom);
-        SetCamera(&position, orientation);
-    }
+    // Artscout - 2026: the tunnel FOV/viewport shrink was removed (see the top of DrawScene) -- the G-effect is
+    // now a fullscreen FF_GLOC vignette decoupled from projection, so there is no FOV/viewport to restore here.
 }
 
 /***************************************************************************\
@@ -2027,8 +1896,8 @@ void RenderOTW::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
     // terrain color -> a sharp 'stepped' boundary with the fogged mid zone (which the shader pulls
     // toward the haze color). Bake the haze color straight into the GOURAUD vertex color so the far zone
     // seamlessly continues the fully-fogged edge. D3D11 only, far zone only.
-    extern bool g_bUseD3D11;
-    if (g_bUseD3D11 and distance > haze_start + haze_depth)
+    extern bool g_bUseGpu;
+    if (g_bUseGpu and distance > haze_start + haze_depth)
     {
         Tcolor *fc = GetFogColor();
         r = fc->r;

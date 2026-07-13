@@ -1238,7 +1238,6 @@ int FontSet::ReadFontMetrics(int index, char*fileName) // JPO return status
             //JAM 22Dec03 - Not anymore, all modern video cards do automatic biasing.
             //TODO: Add global cfg variable for older cards.
             // if(DisplayOptions.bFontTexelAlignment)
-            extern bool g_bUseD3D11;
             if (false /* #7 texel inset OFF: tradeoff height vs (left-edge clip/column gaps),
                          not cleanly solvable in this pipeline. The real fix is ROW PADDING in the .gif
                          font atlas (1px gap), then the bleed goes away without an inset. A content fix. */)

@@ -7,9 +7,7 @@
 #include "dxvbmanager.h"
 #include "DXTools.h"
 #include <d3d11.h>	// PHASE 4: D3D11 mirror VB
-#include "D3D11Backend.h"
 #include "d3d12/D3D12TextureManager.h"	// #DX12 п.4: per-model D3D12 VB
-extern bool g_bUseD3D11;
 extern bool g_bUseGpu;   // Artscout - 2026: #DX12 -- GPU mode = D3D11 OR D3D12 (never the dead DDraw7 else-branch)
 #ifndef DEBUG_ENGINE
 #include "../../sim/INCLUDE/ivibedata.h"
@@ -548,18 +546,7 @@ bool CDXVbManager::SetupModel(DWORD ID, BYTE *Root, DWORD Class)
                 if (g_pD3D12TextureManager && dwNVertices)
                     pVBuffers[ID].VbD3D12 = (void*)g_pD3D12TextureManager->CreateVertexBufferGPU(Root + pVPool, dwNVertices * VERTEX_STRIDE);
             }
-            else if (g_pD3D11Backend && g_pD3D11Backend->IsValid() && dwNVertices)
-            {
-                D3D11_BUFFER_DESC bd;
-                ZeroMemory(&bd, sizeof(bd));
-                bd.ByteWidth = dwNVertices * VERTEX_STRIDE;
-                bd.Usage     = D3D11_USAGE_IMMUTABLE;
-                bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-                D3D11_SUBRESOURCE_DATA srd;
-                ZeroMemory(&srd, sizeof(srd));
-                srd.pSysMem = Root + pVPool;
-                g_pD3D11Backend->GetDevice()->CreateBuffer(&bd, &srd, &pVBuffers[ID].VbD3D11);
-            }
+            // Artscout - 2026 (D3D11 purge): the D3D11 IMMUTABLE-VB creation branch was removed (D3D12 owns VBs).
         }
         // Artscout - 2026: [DX7-PURGE] D3D7 IDirect3DVertexBuffer7 Lock/Unlock path removed;
         // the GPU (D3D11/D3D12) buffer is filled above.

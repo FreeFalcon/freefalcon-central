@@ -15,11 +15,9 @@
 #include "../include/Tod.h"
 #include "../../falclib/include/Fakerand.h"
 #include "../../include/ComSup.h"
-#include "d3d11/D3D11Renderer.h"	// PHASE 4: D3D11 object path
-#include "D3D11Backend.h"
+#include "common/IRenderer.h"	// PHASE 4: D3D11 object path
 #include "OpenXRBackend.h"   // temp VR stereo diag
 #include <stdio.h>
-extern bool g_bUseD3D11;
 extern bool g_bUseGpu;   // #DX12 п.4: GPU mode (D3D11 || D3D12) -- the object pass runs on the active renderer
 
 // #34: world matrix -> the shader cbObject (D3D11). The dead D3D7 m_pD3DD->SetTransform else-branch
@@ -56,7 +54,7 @@ D3DXMATRIX CDXEngine::World;
 
 // #28: current-frame sun+ambient -- for per-object dynamic lighting (UpdateDynamicLights
 // in dxlightengine.cpp builds the 'sun + nearby dynamic lamps' set and calls SetLights).
-D3D11Renderer::GpuLightCPU g_d3d11Sun = {};
+GpuLightCPU g_d3d11Sun = {};
 float g_d3d11Amb[4] = { 0.45f, 0.45f, 0.45f, 1.0f };
 D3DVIEWPORT7 CDXEngine::ViewPort;
 _MM_ALIGN16 XMMVector CDXEngine::XMMCamera; // the Camera position compatible with XMM Math
@@ -314,8 +312,8 @@ void CDXEngine::CreateZeroTexture(void)
     // PHASE 5: in D3D11 fill ZeroTex with a real WHITE texture (previously skipped ->
     // m_pDDS=NULL -> polygons with texID=-1 sampled nothing -> white/broken). ZeroTex is needed
     // as a neutral white texture for untextured polygons (result = white * vertexcolor).
-    extern bool g_bUseD3D11, g_bUseD3D12;
-    if (g_bUseD3D11 or g_bUseD3D12)   // #DX12: bake via Load (no-op stub under D3D12); skip the dead DDraw Blt path
+    extern bool g_bUseD3D12;
+    if (g_bUseD3D12)   // #DX12: bake via Load (no-op stub under D3D12); skip the dead DDraw Blt path
     {
         static DWORD s_white[64 * 64];
         for (int i = 0; i < 64 * 64; ++i) s_white[i] = 0xFFFFFFFF;
@@ -374,7 +372,7 @@ void CDXEngine::SetSunLight(float Ambient, float Diffuse, float Specular)
     if (g_bUseGpu and g_pRenderer)
     {
         float amb[4] = { TheSun.dcvAmbient.r, TheSun.dcvAmbient.g, TheSun.dcvAmbient.b, 1.0f };
-        D3D11Renderer::GpuLightCPU sun;
+        GpuLightCPU sun;
         memset(&sun, 0, sizeof(sun));
         // -LightDir: the shader takes Ldir = -L.Direction; LightDir is already 'toward the sun' (reference negates
         // GetLightDirection). Consistent with FlushBuffers (the effective path). Previously this was
@@ -1816,7 +1814,7 @@ void CDXEngine::FlushBuffers(void)
             // NVG -> green boost TheNVG, TV -> TheTV, else the sun.
             D3DLIGHT7 &envL = (m_RenderState == DX_NVG) ? TheNVG
                             : (m_RenderState == DX_TV)  ? TheTV : TheSun;
-            D3D11Renderer::GpuLightCPU sun;
+            GpuLightCPU sun;
             ZeroMemory(&sun, sizeof(sun));
             sun.Direction[0] = -LightDir.x;
             sun.Direction[1] = -LightDir.y;

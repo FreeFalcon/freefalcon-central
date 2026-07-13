@@ -14,16 +14,14 @@
 #include <math.h>
 #include "polylib.h"
 #include "Graphics/DXEngine/DXEngine.h"
-#include "Graphics/DXEngine/D3D11Backend.h"	// PHASE 1
 #include "Graphics/DXEngine/D3D12Backend.h"	// Artscout - 2026: #DX12 Phase 1
 #include "Graphics/DXEngine/d3d12/D3D12Renderer.h"	// Artscout - 2026: #DX12 Phase 3
 #include "Graphics/DXEngine/d3d12/D3D12TextureManager.h"	// Artscout - 2026: #DX12 п.1
-#include "Graphics/DXEngine/d3d11/D3D11Renderer.h"	// PHASE 4
-#include "Graphics/DXEngine/d3d11/D3D11TextureManager.h"	// PHASE 3
+#include "Graphics/DXEngine/common/IRenderer.h"	// PHASE 4
+#include "Graphics/DXEngine/d3d12/D3D12TextureManager.h"	// PHASE 3
 #include "Graphics/DXEngine/DXVBManager.h"	// PHASE 4: TheVbManager.Setup
 #include "Graphics/DXEngine/OpenXRBackend.h"	// VR (OpenXR)
 #include <dxgi.h>	// Artscout - 2026 (#89): DXGI adapter enumeration for the GPU selector
-extern bool g_bUseD3D11;
 extern bool g_bUseOpenXR;
 int g_d3d11ReqWidth=0;
 int g_d3d11ReqHeight=0;
@@ -258,7 +256,7 @@ bool DeviceManager::GetMode(int driverNum, int devNum, int modeNum, UINT *pWidth
     int i = 0;
 
     // #DX12: the resolution table is API-neutral (GPU mode = D3D11 OR D3D12), not DDraw.
-    if (g_bUseD3D11 or g_bUseD3D12)
+    if (g_bUseD3D12)
     {
         if (modeNum < 0 or modeNum >= g_nD3D11Modes) return false;
         *pWidth  = g_d3d11Modes[modeNum].w;
@@ -404,7 +402,7 @@ DXContext *DeviceManager::CreateContext(int driverNum, int devNum, int resNum, B
     {
         // PHASE 1: bypassing the DDraw enum (crashes on modern Windows), Init() brings up the GPU backend.
         // #DX12: GPU mode = D3D11 OR D3D12 (DXContext::Init picks the backend by flag). Not DDraw.
-        if (g_bUseD3D11 or g_bUseD3D12)
+        if (g_bUseD3D12)
         {
             DXContext *pCtx = new DXContext;
             if (pCtx == NULL) return NULL;
@@ -707,6 +705,14 @@ bool DXContext::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFulls
         // DXGI adapter at device-create time instead of the default. -1/OOR -> default adapter.
         g_nDispVideoCard = DisplayOptions.DispVideoCard;
 
+        // Artscout - 2026 (D3D11 purge C0): D3D12 is the sole GPU backend. g_bUseD3D11 now defaults OFF, so
+        // if a stale cfg set "UseD3D12 0" we'd have NO GPU backend -> fall through to the dead DDraw7 path -> crash.
+        // Force D3D12 on whenever D3D11 is off (i.e. always, now) so a GPU backend always comes up.
+        {
+            extern bool g_bUseD3D12;
+            g_bUseD3D12 = true;   // D3D11 purge: D3D12 is the sole GPU backend
+        }
+
         // Artscout - 2026: #DX12 Phase 1 -- bring up D3D12Backend and return. On success we clear g_bUseD3D11
         // so the (concrete) D3D11 render path stays OUT (it would call a NULL g_pD3D11Backend). Phase 1 renders
         // nothing but the per-frame clear (device+swapchain+fence+present milestone). D3D11/D3D7 untouched when
@@ -718,7 +724,7 @@ bool DXContext::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFulls
                 if (g_pD3D12Backend == NULL) g_pD3D12Backend = new D3D12Backend();
                 if (g_pD3D12Backend->Init(hWnd, nWidth, nHeight, nDepth, bFullscreen))
                 {
-                    g_bUseD3D11 = false;   // DX12 owns the frame; keep the D3D11-concrete render path out
+                    // D3D11 purge: D3D12 owns the frame (g_bUseD3D11 symbol removed).
                     { extern bool g_bUseGpu; g_bUseGpu = true; }   // #DX12: GPU render mode (not dead DDraw7)
                     g_pRenderBackend = g_pD3D12Backend;   // #DX12: active neutral backend
 
@@ -794,106 +800,11 @@ bool DXContext::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFulls
                     MonoPrint("DXContext::Init - D3D12 backend up (Phase 1)\n");
                     return true;
                 }
-                MonoPrint("DXContext::Init - D3D12 init failed, fallback D3D11\n");
+                MonoPrint("DXContext::Init - D3D12 init failed (no D3D11 fallback -- D3D12 is the sole backend)\n");
                 delete g_pD3D12Backend; g_pD3D12Backend = NULL; g_bUseD3D12 = false;
             }
         }
 
-        // PHASE 1: bring up D3D11Backend and return; DDraw/D3D7 below is bypassed
-        if (g_bUseD3D11)
-        {
-            if (g_pD3D11Backend == NULL) g_pD3D11Backend = new D3D11Backend();
-            if (g_pD3D11Backend->Init(hWnd, nWidth, nHeight, nDepth, bFullscreen))
-            {
-                g_pRenderBackend = g_pD3D11Backend;   // #DX12: active neutral backend (D3D11)
-                { extern bool g_bUseGpu; g_bUseGpu = true; }   // #DX12: GPU render mode (not dead DDraw7)
-                // PHASE 4: under D3D11 the D3D7 GetCaps() is not called -- fill D3DDEVICEDESC7
-                // with sane caps, else dwMaxTextureWidth/Height=0 breaks creation
-                // of cockpit textures (empty m_arrTex -> crash), and CheckCaps fails features.
-                if (m_pD3DHWDeviceDesc)
-                {
-                    ZeroMemory(m_pD3DHWDeviceDesc, sizeof(*m_pD3DHWDeviceDesc));
-                    m_pD3DHWDeviceDesc->dwMaxTextureWidth  = 16384;
-                    m_pD3DHWDeviceDesc->dwMaxTextureHeight = 16384;
-                    m_pD3DHWDeviceDesc->dwMaxAnisotropy    = 16;
-                    m_pD3DHWDeviceDesc->dwDevCaps          = 0xFFFFFFFF;
-                    m_pD3DHWDeviceDesc->dwTextureOpCaps    = 0xFFFFFFFF;
-                    m_pD3DHWDeviceDesc->dpcTriCaps.dwAlphaCmpCaps  = 0xFFFFFFFF;
-                    m_pD3DHWDeviceDesc->dpcTriCaps.dwDestBlendCaps = 0xFFFFFFFF;
-                    m_pD3DHWDeviceDesc->dpcTriCaps.dwSrcBlendCaps  = 0xFFFFFFFF;
-                    m_pD3DHWDeviceDesc->dpcTriCaps.dwRasterCaps    = 0xFFFFFFFF;
-                    m_pD3DHWDeviceDesc->dpcTriCaps.dwShadeCaps     = 0xFFFFFFFF;
-                    m_pD3DHWDeviceDesc->dpcTriCaps.dwTextureCaps   = 0xFFFFFFFF;
-                }
-
-                // Artscout - 2026: bring up the 3D renderer (FFEmu shaders) once. Shader source
-                // is loaded at runtime from "<game dir>\shaders\" (FalconDataDirectory), so it
-                // ships with the install instead of a hard-coded dev path.
-                if (!g_pD3D11Renderer)
-                {
-                    g_pD3D11Renderer = new D3D11Renderer();
-                    extern char FalconDataDirectory[];
-                    char shaderDir[_MAX_PATH];
-                    sprintf(shaderDir, "%s\\shaders\\", FalconDataDirectory);
-                    if (!g_pD3D11Renderer->Init(shaderDir))
-                        MonoPrint("D3D11Renderer::Init FAILED (shader compile? dir=%s)\n", shaderDir);
-                    else
-                        MonoPrint("D3D11Renderer: 3D renderer up (shaders: %s)\n", shaderDir);
-                }
-                g_pRenderer = g_pD3D11Renderer;   // #DX12: active neutral renderer (D3D11)
-
-                // PHASE 3: the texture manager (TextureHandle::Load creates D3D11 textures).
-                if (!g_pD3D11TextureManager)
-                {
-                    g_pD3D11TextureManager = new D3D11TextureManager();
-                    if (!g_pD3D11TextureManager->Init())
-                        MonoPrint("D3D11TextureManager::Init FAILED\n");
-                    else
-                        MonoPrint("D3D11TextureManager: up\n");
-                }
-
-                // VR: bring up OpenXR over the D3D11 device (best-effort; failure keeps
-                // the flat path). Init once -- the session lives for the process.
-                if (g_bUseOpenXR && g_pOpenXRBackend == NULL)
-                {
-                    g_pOpenXRBackend = new OpenXRBackend();
-                    if (g_pOpenXRBackend->Init(g_pD3D11Backend->GetDevice()))
-                        MonoPrint("OpenXR: backend up\n");
-                    else
-                    {
-                        MonoPrint("OpenXR: init failed -- VR disabled, flat path continues\n");
-                        delete g_pOpenXRBackend; g_pOpenXRBackend = NULL; g_bUseOpenXR = false;
-                    }
-                }
-
-                // PHASE 4: under D3D11 the D3D7 device-creation path (where normally
-                // TheDXEngine.Setup/TheVbManager.Setup are called) is bypassed -- initialize here.
-                // #55 LEAK: like g_pD3D11Renderer/TextureManager above -- the engine/VB are global,
-                // Setup ONCE. DXContext::Init is called on EVERY _EnterMode (3D entry); without
-                // a guard, Setup re-malloc'd buffers (m_AlphaStack/m_SolidStack=SurfaceItemType,
-                // Dyn2DVertexBuffer=D3DDYNVERTEX, SimpleBuffer=D3DSIMPLEVERTEX) WITHOUT freeing the previous
-                // -> ~20MB/entry -> std::bad_alloc. The buffers are fixed-size and don't depend on device/resolution
-                // -> no reinitialization needed.
-                static bool s_dxEngineSetupDone = false;
-
-                if (g_bUse_DX_Engine and not s_dxEngineSetupDone)
-                {
-                    TheDXEngine.Setup();	// #34 C1: statics/materials/lighting/2D
-                    TheVbManager.Setup();	// base VBs as D3D11 mirrors
-                    s_dxEngineSetupDone = true;
-                    MonoPrint("D3D11: DXEngine + VbManager initialized (once)\n");
-                }
-                // PHASE 1: windowed D3D11 -- a window with frame/title/controls, client = nWidth x nHeight.
-                SetWindowLong(hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
-                RECT rcW = { 0, 0, nWidth, nHeight };
-                AdjustWindowRect(&rcW, WS_OVERLAPPEDWINDOW, FALSE);
-                SetWindowPos(hWnd, NULL, 0, 0, rcW.right - rcW.left, rcW.bottom - rcW.top,
-                             SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
-                return true;
-            }
-            MonoPrint("DXContext::Init - D3D11 init failed, fallback D3D7\n");
-            delete g_pD3D11Backend; g_pD3D11Backend = NULL; g_bUseD3D11 = false;
-        }
 
         // Artscout - 2026: [DX7-PURGE] no DirectDraw/Direct3D7 device fallback -- if the
         // D3D11/D3D12 backend failed to init above there is nothing else to try.
@@ -1006,7 +917,7 @@ DWORD DXContext::TestCooperativeLevel()
 {
     // #DX12: GPU mode (D3D11 OR D3D12) has no DDraw device -> no cooperative-level check.
     extern bool g_bUseD3D12;
-    if (g_bUseD3D11 or g_bUseD3D12) return DD_OK;	// no DDraw coop under a GPU backend
+    if (g_bUseD3D12) return DD_OK;	// no DDraw coop under a GPU backend
     // Artscout - 2026: [DX7-PURGE] no DDraw TestCooperativeLevel under a GPU backend.
     return DD_OK;
 }

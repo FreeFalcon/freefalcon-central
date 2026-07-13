@@ -2,13 +2,12 @@
 #include "../include/ObjectInstance.h"
 #include "dxdefines.h"
 #include "DXVBManager.h"
-extern bool g_bUseD3D11;	// PHASE 4
-extern bool g_bUseGpu;		// Artscout - 2026: #DX12 -- GPU mode (D3D11||D3D12); the DDraw7 2D-engine VB path is dead in both
-// #DX12 A4: g_pRenderer (neutral IRenderer*) comes from IRenderer.h via the D3D11Renderer.h include below.
+extern bool g_bUseGpu;		// Artscout - 2026: #DX12 -- GPU mode; the DDraw7 2D-engine VB path is dead
+// #DX12 A4: g_pRenderer (neutral IRenderer*) comes from the common/IRenderer.h include below.
 #include "mmsystem.h"
 #include "../include/TexBank.h"
 #include "dxengine.h"
-#include "d3d11/D3D11Renderer.h"	// #27: DrawDynamic2D/BeginDynamic2D + g_pRenderer
+#include "common/IRenderer.h"	// #27: DrawDynamic2D/BeginDynamic2D + g_pRenderer
 #include "../include/ObjectLOD.h"
 #include "../../falclib/include/token.h"
 #include "../../falclib/include/falclib.h"

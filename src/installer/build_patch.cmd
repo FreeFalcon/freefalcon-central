@@ -6,11 +6,12 @@ REM One-time prerequisite (install the WiX UI extension for this machine):
 REM     wix extension add -g WixToolset.UI.wixext
 REM
 REM GAMEDIR supplies only the BUILD OUTPUTS / runtime files: FFViper.exe, ffviper.cfg,
-REM FFEmu.hlsl, and the ST80 voice tools (st80conv.exe, st80w.dll). Build a fresh Release
-REM first and copy FFViper.exe there, plus FFEmu.hlsl into GAMEDIR\shaders\.
+REM and the ST80 voice tools (st80conv.exe, st80w.dll). Build a fresh Release first and copy
+REM FFViper.exe there. (FFEmu.hlsl is NOT shipped -- it is baked into the exe as an RCDATA
+REM resource and compiled at runtime, so no external shader file is packaged.)
 REM All hand-edited DATA assets (art\setup, art\fonts, art\uiskin, art\ckptart, art\main,
 REM config\) now ship from this installer's own res\ tree -- the MSI is self-contained for
-REM data and does NOT depend on the game dir for those (only GAMEDIR for the exe/cfg/hlsl/st80).
+REM data and does NOT depend on the game dir for those (only GAMEDIR for the exe/cfg/st80).
 REM The big ~500MB falcon_pcm.tlk PCM bank is NO LONGER shipped; instead st80conv.exe + st80w.dll
 REM let the user transcode the native voices locally from their own falcon.tlk.
 REM ---------------------------------------------------------------------------

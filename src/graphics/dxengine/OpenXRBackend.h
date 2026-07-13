@@ -173,7 +173,7 @@ extern const void* g_pXrMenuSurface565;
 extern int g_xrMenuW;
 extern int g_xrMenuH;
 
-// Artscout - 2026 (VR menu): the producer (ImageBuffer::PresentD3D11, where m_pSysMem is valid) calls this
+// Artscout - 2026 (VR menu): the producer (ImageBuffer::PresentGpu, where m_pSysMem is valid) calls this
 // to COPY the 565 surface into a lock-protected stable buffer that the pump reads -- avoids the cross-thread
 // use-after-free on m_pSysMem. Replaces directly assigning g_pXrMenuSurface565 = m_pSysMem.
 void OpenXR_CacheMenuSurface(const void* src565, int w, int h);

@@ -9,7 +9,7 @@
 // Pragmatic typing (matches the D3D11 signatures 1:1 so D3D11Renderer inherits
 // with ZERO call-site churn): the texture handle stays typed as
 // ID3D11ShaderResourceView* but is treated as an OPAQUE handle -- each backend
-// interprets it as its own texture object. D3D11_TLVERTEX is a plain POD vertex
+// interprets it as its own texture object. ScreenVertex is a plain POD vertex
 // (layout-neutral) shared by both backends. Real neutral handle types can come
 // later; keeping signatures identical is what makes this a safe, inert first step.
 //
@@ -21,7 +21,34 @@
 #define _IRENDERER_H_
 
 struct ID3D11ShaderResourceView;   // opaque texture handle (each backend interprets)
-struct D3D11_TLVERTEX;             // POD screen vertex (defined in D3D11Renderer.h)
+
+// Artscout - 2026 (D3D11 purge): these types were defined on/inside D3D11Renderer(.h); moved here to the
+// neutral header (and de-D3D11'd) when the D3D11 backend was retired -- the layouts are backend-agnostic.
+// POD transformed+lit screen vertex (XYZRHW), shared by both backends. (Renamed from D3D11_TLVERTEX.)
+struct ScreenVertex
+{
+	float sx, sy, sz, rhw;     // screen pos + 1/w
+	unsigned long color;       // D3DCOLOR ARGB
+	unsigned long specular;    // D3DCOLOR ARGB (fog)
+	float tu0, tv0;
+	float tu1, tv1;
+};
+
+// One light for the object path (mirrors GpuLight in FFEmu.hlsl). Was GpuLightCPU.
+struct GpuLightCPU
+{
+	float Position[4];   // xyz, w
+	float Direction[4];  // xyz normalized
+	float Color[4];      // rgb
+	float Params[4];     // x=range, y=type(0=dir,1=point)
+};
+
+// HUD aperture-stencil mode for SetHudStencil(). Was the D3D11Renderer::{HUD_STENCIL_*} enum.
+enum { HUD_STENCIL_OFF = 0, HUD_STENCIL_MARK = 1, HUD_STENCIL_TEST = 2 };
+
+// VR controller/hand model triangle vertex (screen-space, pre-projected). Was D3D11Backend::VrTriVtx;
+// vcock builds these then converts to ScreenVertex for g_pRenderer->DrawColorTrisScreen.
+struct VrTriVtx { float x, y; unsigned color; float u, v; };
 
 class IRenderer
 {
@@ -67,13 +94,15 @@ public:
 	virtual void RebuildTerrainRasters() = 0;
 
 	// Draws (screen / color-tri / terrain / dynamic-2D)
-	virtual void DrawTL(int primType, const D3D11_TLVERTEX* verts, int count) = 0;
-	virtual void DrawTLIndexed(int primType, const D3D11_TLVERTEX* verts, int vcount,
+	virtual void DrawTL(int primType, const ScreenVertex* verts, int count) = 0;
+	virtual void DrawTLIndexed(int primType, const ScreenVertex* verts, int vcount,
 	                           const unsigned short* indices, int icount) = 0;
-	virtual void DrawColorTrisScreen(const D3D11_TLVERTEX* verts, int count,
+	virtual void DrawColorTrisScreen(const ScreenVertex* verts, int count,
 	                                 ID3D11ShaderResourceView* tex, int opaque, int cull) = 0;
 	virtual void DrawBitmap2D(int dX, int dY, int w, int h, int totalWidth, int sX, int sY,
 	                          const unsigned* pSrc, bool fit, int screenW, int screenH) = 0;
+	// Artscout - 2026: G-force / end-flight vignette (blackout/redout) fullscreen post-process (FF_GLOC).
+	virtual void DrawGlocOverlay(float intensity, float innerR, float outerR, float tintR, float tintG, float tintB) = 0;
 	virtual void DrawTerrainMesh(const void* verts, int vcount, const unsigned short* indices, int icount) = 0;
 	virtual void BeginDynamic2D(bool additive) = 0;
 	virtual void UploadDynamic2D(const void* dynVerts, int vcount) = 0;

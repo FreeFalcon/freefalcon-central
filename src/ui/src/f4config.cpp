@@ -8,7 +8,9 @@
 #include "../../SIM/INCLUDE/Phyconst.h" //JAM 19Sep03
 
 // PHASE 1 D3D7->D3D11: when true DXContext::Init brings up D3D11Backend instead of DDraw7/D3D7.
-bool g_bUseD3D11 = true;
+// Artscout - 2026 (D3D11 purge C0): default OFF -- D3D12 is now the sole GPU backend. Nothing sets this
+// true anymore, so the D3D11 render path in DXContext::Init is unreachable. The class/files are removed
+// in later purge stages; this flag lingers only until the last g_bUseD3D11 gate is gone.
 // Artscout - 2026: #DX12 Phase 1 -- when true DXContext::Init brings up D3D12Backend (and clears g_bUseD3D11
 // so the D3D11 render path stays out). g_bUseD3D12 itself is DEFINED in d3d12backend.cpp. "UseD3D12".
 extern bool g_bUseD3D12;

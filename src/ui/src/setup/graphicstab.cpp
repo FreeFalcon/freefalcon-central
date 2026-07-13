@@ -1146,8 +1146,8 @@ void BuildVideoCardList(C_ListBox *lbox)
     // Artscout - 2026: D3D11/D3D12 -- the DDraw device enum is bypassed. Populate the card combo from the
     // real DXGI adapters (GPU names) so the selector actually lets you pick a GPU; resolutions come from
     // g_d3d11Modes (adapter-independent). Falls back to one synthetic entry if enumeration fails.
-    extern bool g_bUseD3D11, g_bUseD3D12;
-    if (g_bUseD3D11 or g_bUseD3D12)
+    extern bool g_bUseD3D12;
+    if (g_bUseD3D12)
     {
         value = lbox->GetTextID();
         lbox->RemoveAllItems();
@@ -1214,8 +1214,8 @@ void BuildVideoDriverList(C_ListBox *lbox)
     // Artscout - 2026: under D3D11 the DDraw driver enum is bypassed (devmgr empty) -> the combo stayed
     // blank and the resolution list (keyed off the driver index) never built. Show one synthetic
     // adapter (index -> id 1 -> Driver 0) so the UI populates; the actual modes come from g_d3d11Modes.
-    extern bool g_bUseD3D11, g_bUseD3D12;
-    if (g_bUseD3D11 or g_bUseD3D12)
+    extern bool g_bUseD3D12;
+    if (g_bUseD3D12)
     {
         lbox->AddItem(1, C_TYPE_ITEM, g_bUseD3D12 ? "Direct3D 12" : "Direct3D 11");
         lbox->SetValue(1);
@@ -1262,8 +1262,8 @@ void BuildResolutionList(C_ListBox *lbox)
     // default 640x480) and the adapter/driver combos blank. The D3D11 mode list comes from GetMode's
     // curated g_d3d11Modes table (driver/card-independent), so DON'T bail under D3D11 -- pDI/pD3DDI are
     // only used by the DDraw depth filter in the !g_bUseD3D11 branch below.
-    extern bool g_bUseD3D11, g_bUseD3D12;
-    const bool bModernApi = g_bUseD3D11 or g_bUseD3D12;
+    extern bool g_bUseD3D12;
+    const bool bModernApi = g_bUseD3D12;
 
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(Driver);
 

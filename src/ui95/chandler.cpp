@@ -1214,13 +1214,13 @@ void C_Handler::CopyToPrimary()
 
     // PHASE 1/2 (D3D7->D3D11): UI95 draws into Front_ (CPU). Compose doesn't work under D3D11 (DDraw),
     // blit the composited Front_ directly to the backbuffer + Present.
-    // #DX12: GPU mode (D3D11 OR D3D12) presents the composited Front_ through PresentD3D11 (which routes to the
+    // #DX12: GPU mode (D3D11 OR D3D12) presents the composited Front_ through PresentGpu (which routes to the
     // active backend). Legacy DDraw compose path below is skipped.
-    extern bool g_bUseD3D11, g_bUseD3D12;
-    if (g_bUseD3D11 or g_bUseD3D12)
+    extern bool g_bUseD3D12;
+    if (g_bUseD3D12)
     {
-        if (Front_) Front_->PresentD3D11();
-        else if (Primary_) Primary_->PresentD3D11();
+        if (Front_) Front_->PresentGpu();
+        else if (Primary_) Primary_->PresentGpu();
         UpdateFlag = 0;
         rectcount_ = 0;
         return;
