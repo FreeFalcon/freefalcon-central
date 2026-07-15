@@ -26,11 +26,16 @@
 #include "Tpost.h"      // Tpost { z, texID, u,v,d, ... }
 #include "TerrTex.h"    // TheTerrTextures.GetTileSRV()
 #include "RViewPnt.h"   // RViewPoint
+#include "tod.h"        // Artscout - 2026: #97 -- TheTimeOfDay (moon elevation/phase drives the night ground floor)
 #include "Graphics/DXEngine/DXEngine.h"            // CDXEngine::GetObjProjection/View/CameraPos
 #include "Graphics/DXEngine/common/IRenderer.h" // g_pRenderer
 #include "TerrainGpu.h"
 
 extern bool g_bGpuTerrain;
+
+// Artscout - 2026: day/night brightness for the GPU terrain (the vertex colours carry no lighting). 1 = full day,
+// floored so a moonlit night isn't pitch black. Set per-frame in TerrainGpu_Render from the sun's diffuse level.
+static float s_terrainDayNight = 1.0f;
 
 // Object-layout vertex: must match ObjV / D3D11VertexEx (40 bytes) exactly.
 struct TGpuVert
@@ -229,6 +234,10 @@ static void DrawLodPatch(RViewPoint* vp, int LOD, int loLOD, const D3DVECTOR& cp
                         float elev = -p->z;
                         float s = 0.45f + elev / 14000.0f;
                         if (s < 0.30f) s = 0.30f; if (s > 1.00f) s = 1.00f;
+                        // Artscout - 2026: day/night -- the GPU terrain colours vertices by elevation with NO lighting,
+                        // so it stayed full-bright at midnight. Modulate by the sun's diffuse level (s_terrainDayNight,
+                        // floored so moonlit ground isn't pure black).
+                        s *= s_terrainDayNight;
                         unsigned rr2 = (unsigned)(s * 155.0f), gg = (unsigned)(s * 135.0f), bb = (unsigned)(s * 100.0f);
                         g.col = 0xFF000000u | (rr2 << 16) | (gg << 8) | bb;
                         g.ok = true;
@@ -333,7 +342,10 @@ static void DrawLodPatch(RViewPoint* vp, int LOD, int loLOD, const D3DVECTOR& cp
                     const GCell& b = grid[(i + 1) * GW + (j + 2)];   // (r,c+1) east  (+u)
                     const GCell& d = grid[(i + 2) * GW + (j + 1)];   // (r+1,c) north (-v)
                     const GCell& e = grid[(i + 2) * GW + (j + 2)];
-                    const unsigned long c0 = srv ? 0xFFFFFFFFu : a.col;
+                    // Textured tiles: white modulate = texture as-is; scale white by day/night so the textured ground
+                    // also darkens at night (texture * grey). Flat tiles already baked the factor into a.col.
+                    const unsigned dnB = (unsigned)(s_terrainDayNight * 255.0f);
+                    const unsigned long c0 = srv ? (0xFF000000u | (dnB << 16) | (dnB << 8) | dnB) : a.col;
                     if (bk.v.size() + 4 > 65000) FlushTerrainBucket(bk);   // keep base within the u16 index range
                     const unsigned short base = (unsigned short)bk.v.size();
                     TGpuVert v4[4];
@@ -359,6 +371,41 @@ void TerrainGpu_Render(RViewPoint* vp)
     Tpoint pos;
     vp->GetPos(&pos);
     D3DVECTOR cp; cp.x = pos.x; cp.y = pos.y; cp.z = pos.z;
+
+    // Day/night: the sun's diffuse level (updated per-frame from the time of day). Luminance -> [floor..1]. The
+    // terrain vertex colours below multiply by this.
+    // Artscout - 2026: #97 -- the night FLOOR is now driven by the ACTUAL moon, not a fixed constant. Old code
+    // clamped to a flat 0.10 so every night looked "moonlit" even with no moon up. Now: moon light =
+    // elevation(0..1) * phase(0 new .. 1 full). A moonless / below-horizon / new-moon night falls to a faint
+    // starlight floor (near black); a full moon high in the sky lifts the ground to a soft silver wash. This is
+    // the slight ground illumination the moon should cast (the moon disc itself is drawn self-lit in otwsky).
+    {
+        const D3DCOLORVALUE& sd = CDXEngine::TheSun.dcvDiffuse;
+        float lum = (sd.r + sd.g + sd.b) * (1.0f / 3.0f);
+
+        float moonLight = 0.0f;
+        if (TheTimeOfDay.ThereIsAMoon())
+        {
+            Tpoint md; TheTimeOfDay.CalculateSunMoonPos(&md, TRUE);
+            float up = -md.z;                                   // world z = down -> up component of the moon dir
+            if (up < 0.0f) up = 0.0f; if (up > 1.0f) up = 1.0f; // 0 at/under the horizon .. 1 at the zenith
+            float phase = (float)abs(TheTimeOfDay.CalculateMoonPercent() - NEW_MOON_PHASE) / (float)NEW_MOON_PHASE;
+            moonLight = up * phase;                             // 0 (new moon / down) .. 1 (full moon, overhead)
+        }
+        const float STAR_FLOOR = 0.012f; // starlight -- darker moonless night (was 0.02; user wanted deeper night)
+        const float MOON_MAX   = 0.16f;  // full moon high overhead -> soft silver ground
+        float night = STAR_FLOOR + moonLight * (MOON_MAX - STAR_FLOOR);
+
+        if (lum < night) lum = night; if (lum > 1.0f) lum = 1.0f;
+
+        // Artscout - 2026: #97 NVG -- image intensifiers amplify ambient light hugely. Without lifting here the
+        // night-darkened terrain (~0.012) reads as near-black even after the PS greens it. Force it BRIGHT under
+        // NVG so the goggle image shows a lit green landscape (the FF_NVG PS supplies the green tint + gain curve).
+        extern bool bNVGmode;
+        if (bNVGmode and lum < 0.75f) lum = 0.75f;
+
+        s_terrainDayNight = lum;
+    }
 
     g_pRenderer->BeginTerrainPass();
     g_pRenderer->SetProj((const float*)&CDXEngine::GetObjProjection());

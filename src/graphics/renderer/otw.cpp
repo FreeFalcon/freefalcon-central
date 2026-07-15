@@ -1031,9 +1031,20 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
 
     }*/
 
+    extern bool g_bVolumetricClouds;   // Artscout - 2026: #13 (f4config.cpp)
     // Make the wweaher to decide drawing order for 2D/Alpha stuff
-    realWeather->SetDrawingOrder(position.z);
-    realWeather->Draw();
+    // Artscout - 2026: #13 -- with volumetric clouds on, MUTE the legacy DX2D cloud quads. They are the SAME
+    // overcast deck drawn a second time (camera-facing sprites, layered by SunnyDrawOrder/PoorDrawOrder and
+    // rasterized later in DX2D_Flush2DObjects), so stacking the two double-darkens the sky and the sprites
+    // fight the raymarched layer. This is the single choke point: it covers the flat, VR and ACMI callers.
+    // NOTE realWeather->Draw() also drives lightning -- but lightning is enqueued the same 2D way, so this
+    // costs it too under volumetric clouds. Left as-is deliberately: reinstating lightning means giving it its
+    // own draw, which is a separate piece of work from the cloud layer.
+    if (!g_bVolumetricClouds)
+    {
+        realWeather->SetDrawingOrder(position.z);
+        realWeather->Draw();
+    }
 
     // Special case if we're above the roof and the roof is diplayed
     if ((containingList == 4) and (skyRoof))
@@ -1096,6 +1107,12 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
         }
     }
 
+
+    // Artscout - 2026: #13 volumetric cloud layer. HERE, and not in DrawSkyDome, on purpose: the sky pass runs
+    // with Z-buffering OFF (see the bToggle bracket around DrawSky above), which is fine only for a background
+    // at infinity. Clouds are geometry we fly through and that terrain must occlude, so the pass needs the depth
+    // buffer -- i.e. AFTER terrain and objects have written it. Before PS_Exec so explosions/smoke blend on top.
+    DrawVolumetricClouds();
 
     // Update Particle Sys
     // #36 ROOT: PS_Exec (running/drawing the NEW particle system) was under #ifdef USE_NEW_PS,

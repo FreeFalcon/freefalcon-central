@@ -13,9 +13,11 @@
 #include <stdarg.h>
 #include <string.h>
 #include <map>   // Artscout - 2026: #DX12 A5 -- per-RTT readback slots
-#ifdef _DEBUG
-#include <d3d12sdklayers.h>   // ID3D12Debug (debug layer) -- bring-up only
-#endif
+// Artscout - 2026: the validation layer is no longer _DEBUG-only -- `set g_bD3D12Debug 1` arms it in ANY build
+// (Release is what we actually play/test, and running it blind is what turned the hero-explosion hunt into eight
+// wrong guesses). Headers must therefore be unconditional.
+#include <d3d12sdklayers.h>   // ID3D12Debug / ID3D12InfoQueue
+#include <set>                // dedupe the InfoQueue drain (PumpD3D12Messages)
 
 #include "d3d12backend.h"
 #include "d3d12/D3D12TextureManager.h"   // #DX12 п.3 RTT: D3D12Texture (external RT bind)
@@ -61,15 +63,21 @@ D3D12Backend::D3D12Backend()
 	: m_hWnd(0), m_nWidth(0), m_nHeight(0), m_bFullscreen(false), m_bRecording(false),
 	  m_pDevice(0), m_pQueue(0), m_pSwapChain(0), m_pRtvHeap(0), m_rtvDescSize(0),
 	  m_pDsvHeap(0), m_pDepthTex(0), m_renderEpoch(0), m_pEyeDepthTex(0), m_pEyeDsvHeap(0), m_eyeDepthW(0), m_eyeDepthH(0),
+	  m_eyeDepthCur(0), m_viColorCur(0), m_viTier(-1), m_pList1(0),
 	  m_pMenuRtt(0), m_pMenuDepthTex(0), m_pMenuDsvHeap(0), m_menuRttW(0), m_menuRttH(0),
+	  m_pFpsRtt(0), m_fpsRttW(0), m_fpsRttH(0),
 	  m_pMsaaColorTex(0), m_pMsaaRtvHeap(0), m_pMsaaDepthTex(0), m_pMsaaDsvHeap(0),
 	  m_msaaSamples(1), m_msaaW(0), m_msaaH(0), m_curSampleCount(1), m_pEyeResolveImg(0),
 	  m_curRtvPtr(0), m_sceneRtvPtr(0), m_sceneDsvPtr(0), m_sceneW(0), m_sceneH(0),
+	  m_pSceneDepthRes(0), m_sceneDepthSlices(1), m_sceneDepthMs(false), m_sceneDepthReadable(false),
+	  m_pDepthSrvHeap(0), m_depthSrvFor(0),
 	  m_pList(0), m_pFence(0), m_fenceCounter(0), m_fenceEvent(0), m_frameIndex(0),
 	  m_pQuadRS(0), m_pQuadPSO(0), m_pQuadPSOBlend(0), m_pSrvHeap(0), m_pQuadTex(0), m_pQuadUpload(0),
 	  m_quadTexW(0), m_quadTexH(0), m_quadRowPitch(0), m_quadTexState(0)
 {
-	for (int i = 0; i < kFrameCount; ++i) { m_pBackBuffer[i] = 0; m_pAlloc[i] = 0; m_fenceValue[i] = 0; }
+	for (int i = 0; i < kFrameCount; ++i) { m_pBackBuffer[i] = 0; m_pAlloc[i] = 0; m_allocFence[i] = 0; }
+	for (int i = 0; i < 2; ++i) { m_eyeDepth[i].tex = 0; m_eyeDepth[i].dsvHeap = 0; m_eyeDepth[i].w = m_eyeDepth[i].h = m_eyeDepth[i].n = 0; m_eyeDepth[i].lru = 0; }
+	for (int i = 0; i < 2; ++i) { m_viColor[i].tex = 0; m_viColor[i].rtvHeap = 0; m_viColor[i].arrayRtv = 0; m_viColor[i].sliceRtv[0] = m_viColor[i].sliceRtv[1] = 0; m_viColor[i].w = m_viColor[i].h = m_viColor[i].fmt = 0; m_viColor[i].lru = 0; }
 }
 
 D3D12Backend::~D3D12Backend() { Release(); }
@@ -94,7 +102,13 @@ bool D3D12Backend::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFu
 
 	m_hWnd = hWnd; m_nWidth = nWidth; m_nHeight = nHeight; m_bFullscreen = bFullscreen;
 
-#ifdef _DEBUG
+	// Artscout - 2026: the validation layer used to be _DEBUG-only, so a RELEASE build (what we actually play and
+	// test in) ran BLIND -- during the hero-explosion hunt that cost eight wrong hypotheses read off the source
+	// while the runtime could have named the fault outright. `set g_bD3D12Debug 1` in FFViper.cfg now enables it
+	// in ANY build; messages are pumped into the D3D12 log (see PumpD3D12Messages, called once per Present).
+	// Default OFF: validation costs frame time and must never be on for normal play.
+	extern bool g_bD3D12Debug;
+	if (g_bD3D12Debug)
 	{
 		// Load the debug interface DYNAMICALLY -- avoids a link-time D3D12GetDebugInterface dependency
 		// (some SDK/import-lib configs don't export it into the app's d3d12.lib, causing LNK2019 even
@@ -106,10 +120,14 @@ bool D3D12Backend::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFu
 		{
 			PFN_D3D12_GET_DEBUG_INTERFACE pGetDbg = (PFN_D3D12_GET_DEBUG_INTERFACE)GetProcAddress(hD12, "D3D12GetDebugInterface");
 			ID3D12Debug* dbg = 0;
-			if (pGetDbg && SUCCEEDED(pGetDbg(IID_PPV_ARGS(&dbg))) && dbg) { dbg->EnableDebugLayer(); dbg->Release(); }
+			if (pGetDbg && SUCCEEDED(pGetDbg(IID_PPV_ARGS(&dbg))) && dbg)
+			{
+				dbg->EnableDebugLayer(); dbg->Release();
+				D12Log("[D3D12DBG] validation layer ENABLED (g_bD3D12Debug=1)\n");
+			}
+			else D12Log("[D3D12DBG] validation layer requested but unavailable (install the Graphics Tools feature)\n");
 		}
 	}
-#endif
 
 	// --- device (feature level 11_0 minimum, chosen or default adapter) ---
 	// Artscout - 2026 (#89): honour the video-card selector. GetSelectedDxgiAdapter() (devmgr.cpp) returns the
@@ -126,27 +144,41 @@ bool D3D12Backend::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFu
 	if (pChosenAdapter) pChosenAdapter->Release();
 	if (FAILED(hr) || !m_pDevice) { D12Log("[D3D12] D3D12CreateDevice failed 0x%08X\n", (unsigned)hr); return false; }
 
-#ifdef _DEBUG
-	// #DX12: with the validation layer on, the InfoQueue can be configured (by VS's "D3D Debug Layer" setting
-	// or by us) to BREAK on messages. A break per WARNING turns benign spam (#1328 COPY_DEST-ignored, etc.) into
-	// a _com_error + debugger halt on EVERY call -> hundreds of stalls at scene load -> the GPU falls behind and
-	// the TDR watchdog removes the device (DEVICE_HUNG). Keep breaks for real ERROR/CORRUPTION, silence WARNING;
-	// also explicitly mute the harmless #1328 so it doesn't even log.
+	// #DX12: with the validation layer on, the InfoQueue can be configured to BREAK on messages. A break per
+	// WARNING turns benign spam (#1328 COPY_DEST-ignored, etc.) into a _com_error + debugger halt on EVERY call
+	// -> hundreds of stalls at scene load -> the GPU falls behind and the TDR watchdog removes the device
+	// (DEVICE_HUNG). So: never break (we READ the queue in PumpD3D12Messages instead), and mute the harmless
+	// #1328. Kept alive in Release too so `set g_bD3D12Debug 1` gives a usable log without a debugger attached.
+	if (g_bD3D12Debug)
 	{
 		ID3D12InfoQueue* iq = 0;
 		if (SUCCEEDED(m_pDevice->QueryInterface(IID_PPV_ARGS(&iq))) && iq)
 		{
+			iq->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, FALSE);
+			iq->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, FALSE);
 			iq->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, FALSE);
 			iq->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_INFO, FALSE);
-			iq->SetBreakOnID(D3D12_MESSAGE_ID_CREATERESOURCE_STATE_IGNORED, FALSE);
-			D3D12_MESSAGE_ID deny[] = { D3D12_MESSAGE_ID_CREATERESOURCE_STATE_IGNORED };
+			// Artscout - 2026: the validation layer is DEVICE-wide, so it also reports the OpenXR (PVR) runtime's
+			// own D3D12 usage on our shared device -- and that runtime is sloppy. Its compositor reads our eye
+			// images back ('App Swapchain Texture[...]', an unnamed command list -- ours is named "FF-Main" and
+			// never binds an XR image as an SRV) and draws into an _SRGB target with a UNORM pipeline. That is
+			// ~9.7k messages in a single session (6509x #538 + 3255x #613), which buries every message of OURS.
+			// Nothing here is actionable for us, so deny the three IDs; drop them from this list if a genuinely
+			// ours-looking #538/#613/#552 is ever suspected.
+			D3D12_MESSAGE_ID deny[] = {
+				D3D12_MESSAGE_ID_CREATERESOURCE_STATE_IGNORED,
+				D3D12_MESSAGE_ID_INVALID_SUBRESOURCE_STATE,                        // #538  (PVR compositor)
+				D3D12_MESSAGE_ID_RENDER_TARGET_FORMAT_MISMATCH_PIPELINE_STATE,     // #613  (PVR compositor)
+				D3D12_MESSAGE_ID_COMMAND_ALLOCATOR_SYNC,                           // #552  (PVR compositor)
+			};
 			D3D12_INFO_QUEUE_FILTER filter; ZeroMemory(&filter, sizeof(filter));
-			filter.DenyList.NumIDs = 1; filter.DenyList.pIDList = deny;
+			filter.DenyList.NumIDs = (UINT)(sizeof(deny) / sizeof(deny[0])); filter.DenyList.pIDList = deny;
 			iq->AddStorageFilterEntries(&filter);
+			iq->SetMuteDebugOutput(FALSE);
 			iq->Release();
+			D12Log("[D3D12DBG] InfoQueue armed: ERROR/CORRUPTION/WARNING are logged, never break\n");
 		}
 	}
-#endif
 
 	// --- direct command queue ---
 	D3D12_COMMAND_QUEUE_DESC qd; ZeroMemory(&qd, sizeof(qd));
@@ -204,9 +236,11 @@ bool D3D12Backend::Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFu
 	m_pList->Close();
 
 	// --- fence + event ---
-	hr = m_pDevice->CreateFence(m_fenceValue[m_frameIndex], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_pFence));
+	// Artscout - 2026: #DX12 -- the fence starts at 0 and only ever climbs (SignalQueue); m_allocFence[] stays 0
+	// until an allocator's work is actually submitted, so the first Reset of each never waits.
+	m_fenceCounter = 0;
+	hr = m_pDevice->CreateFence(m_fenceCounter, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_pFence));
 	if (FAILED(hr)) { D12Log("[D3D12] CreateFence failed 0x%08X\n", (unsigned)hr); return false; }
-	m_fenceValue[m_frameIndex]++;
 	m_fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 	if (!m_fenceEvent) { D12Log("[D3D12] CreateEvent failed\n"); return false; }
 
@@ -284,8 +318,7 @@ void D3D12Backend::BeginFrame(unsigned long argb)
 {
 	if (!m_pDevice || !m_pList) return;
 
-	m_pAlloc[m_frameIndex]->Reset();
-	m_pList->Reset(m_pAlloc[m_frameIndex], NULL);
+	BeginCommandList();
 	m_renderEpoch++;   // #DX12 п.5: new render epoch -> the renderer resets its per-frame rings
 	// Artscout - 2026 (#65 perf): advance the texture pool's frame clock so freed placed-resource regions become
 	// reusable only after the GPU is guaranteed done with the texture that held them.
@@ -322,6 +355,8 @@ void D3D12Backend::BeginFrame(unsigned long argb)
 	if (g_pD3D12Renderer) g_pD3D12Renderer->SetDepthTargetBound(m_pDsvHeap != 0);
 	// #DX12 п.5: this frame's scene target is the back buffer (VR overrides it per eye in BeginEyeFrame).
 	m_sceneRtvPtr = (unsigned __int64)rtv.ptr; m_sceneDsvPtr = m_pDsvHeap ? (unsigned __int64)dsv.ptr : 0;
+	// Artscout - 2026: #13 -- record WHICH depth this pass bound, so SceneDepthSrvCpu can view it for the clouds.
+	m_pSceneDepthRes = m_pDepthTex; m_sceneDepthSlices = 1; m_sceneDepthMs = false; m_sceneDepthReadable = false;
 	m_sceneW = m_nWidth; m_sceneH = m_nHeight;
 
 	const float clear[4] = {
@@ -342,9 +377,46 @@ void D3D12Backend::BeginFrame(unsigned long argb)
 	m_bRecording = true;
 }
 
+// Artscout - 2026: drain the validation InfoQueue into the D3D12 log. Called once per Present so a RELEASE build
+// with `set g_bD3D12Debug 1` reports faults WITHOUT a debugger attached -- the whole point being that a bad draw
+// (wrong state, dropped by the runtime, resource used while in the wrong state) is named by D3D itself instead of
+// being guessed at from the source. Deduped by (id,severity) so a per-frame fault logs once, not 90 times/sec.
+static void PumpD3D12Messages(ID3D12Device* dev)
+{
+	extern bool g_bD3D12Debug;
+	if (!g_bD3D12Debug || !dev) return;
+	ID3D12InfoQueue* iq = 0;
+	if (FAILED(dev->QueryInterface(IID_PPV_ARGS(&iq))) || !iq) return;
+
+	static std::set<unsigned __int64> s_seen;
+	const UINT64 n = iq->GetNumStoredMessages();
+	for (UINT64 i = 0; i < n; ++i)
+	{
+		SIZE_T len = 0;
+		if (FAILED(iq->GetMessage(i, NULL, &len)) || !len) continue;
+		D3D12_MESSAGE* m = (D3D12_MESSAGE*)malloc(len);
+		if (!m) continue;
+		if (SUCCEEDED(iq->GetMessage(i, m, &len)))
+		{
+			const unsigned __int64 key = ((unsigned __int64)m->ID << 4) | (unsigned)m->Severity;
+			if (s_seen.insert(key).second)
+			{
+				const char* sev = (m->Severity == D3D12_MESSAGE_SEVERITY_CORRUPTION) ? "CORRUPTION"
+				                : (m->Severity == D3D12_MESSAGE_SEVERITY_ERROR)      ? "ERROR"
+				                : (m->Severity == D3D12_MESSAGE_SEVERITY_WARNING)    ? "WARNING" : "INFO";
+				D12Log("[D3D12DBG] %s #%d: %.*s\n", sev, (int)m->ID, (int)m->DescriptionByteLength, m->pDescription);
+			}
+		}
+		free(m);
+	}
+	iq->ClearStoredMessages();
+	iq->Release();
+}
+
 void D3D12Backend::Present(bool bVSync)
 {
 	if (!m_pDevice || !m_pList || !m_pSwapChain) return;
+	PumpD3D12Messages(m_pDevice);
 
 	if (m_bRecording)
 	{
@@ -371,32 +443,105 @@ void D3D12Backend::Present(bool bVSync)
 	MoveToNextFrame();
 }
 
+// Artscout - 2026: #DX12 -- one strictly-increasing counter feeds EVERY signal on the render queue, so a fence
+// value can never be re-posted or go backwards (the old per-index m_fenceValue[] could, once the VR paths began
+// bumping it mid-frame). Returns the value posted; the GPU reaching it means all work submitted so far is retired.
+unsigned __int64 D3D12Backend::SignalQueue()
+{
+	if (!m_pQueue || !m_pFence) return m_fenceCounter;
+	++m_fenceCounter;
+	m_pQueue->Signal(m_pFence, m_fenceCounter);
+	return m_fenceCounter;
+}
+
+void D3D12Backend::WaitForFence(unsigned __int64 v)
+{
+	if (!m_pFence || !m_fenceEvent || v == 0) return;
+	if (m_pFence->GetCompletedValue() >= v) return;
+	m_pFence->SetEventOnCompletion(v, m_fenceEvent);
+	WaitForSingleObject(m_fenceEvent, INFINITE);
+}
+
+// Artscout - 2026: #DX12 -- THE allocator-recycle gate (fixes debug-layer ERROR #552). Every path that opens a
+// command list goes through here, so an allocator is only ever Reset after the GPU has retired the work recorded
+// from it. Previously each Begin*Frame reset m_pAlloc[m_frameIndex] outright, trusting that MoveToNextFrame had
+// already waited for that index -- which the VR paths (keyed off a swapchain index they never present) broke.
+void D3D12Backend::BeginCommandList()
+{
+	if (!m_pDevice || !m_pList) return;
+	// A list left open by an early-returning End*Frame still owns its allocator's memory: close (discarding the
+	// unsubmitted work) so the Reset below is legal instead of corrupting a live allocator.
+	if (m_bRecording) { m_pList->Close(); m_bRecording = false; }
+	WaitForFence(m_allocFence[m_frameIndex]);
+	m_pAlloc[m_frameIndex]->Reset();
+	m_pList->Reset(m_pAlloc[m_frameIndex], NULL);
+}
+
 void D3D12Backend::WaitForGpu()
 {
 	if (!m_pQueue || !m_pFence) return;
-	const unsigned __int64 v = m_fenceValue[m_frameIndex];
-	m_pQueue->Signal(m_pFence, v);
-	if (m_pFence->GetCompletedValue() < v)
-	{
-		m_pFence->SetEventOnCompletion(v, m_fenceEvent);
-		WaitForSingleObject(m_fenceEvent, INFINITE);
-	}
-	m_fenceValue[m_frameIndex]++;
+	WaitForFence(SignalQueue());   // drains everything, so every m_allocFence[] is now satisfied too
 }
 
+//============================ #13 scene depth as an SRV ======================
+// Artscout - 2026: the cloud raymarch reads the scene depth to know where the world cuts each ray short. It has
+// to: the rasterizer's depth test can only compare ONE depth per pixel, which is meaningless for a volume the
+// camera sits inside. Depth WRITE is off in the cloud pass, so DEPTH_READ|PIXEL_SHADER_RESOURCE is legal.
+unsigned __int64 D3D12Backend::SceneDepthSrvCpu()
+{
+	// Only while the depth is actually transitioned for reading -- otherwise it is still DEPTH_WRITE and the
+	// debug layer would (rightly) flag the bind.
+	if (!m_sceneDepthReadable || !m_pDevice || !m_pSceneDepthRes) return 0;
+	// Flat MSAA: a multisampled depth cannot be viewed as Texture2DArray. The cloud shader has ONE view type
+	// (see the header), so no clamp there -- the clouds still draw, they just do not know about the terrain.
+	if (m_sceneDepthMs) return 0;
+
+	if (!m_pDepthSrvHeap)
+	{
+		D3D12_DESCRIPTOR_HEAP_DESC hd; ZeroMemory(&hd, sizeof(hd));
+		hd.NumDescriptors = 1; hd.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+		hd.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;   // CPU staging: FlushConstants copies it into the shader ring
+		if (FAILED(m_pDevice->CreateDescriptorHeap(&hd, IID_PPV_ARGS(&m_pDepthSrvHeap)))) { m_pDepthSrvHeap = 0; return 0; }
+		m_depthSrvFor = 0;
+	}
+	const D3D12_CPU_DESCRIPTOR_HANDLE h = m_pDepthSrvHeap->GetCPUDescriptorHandleForHeapStart();
+	if (m_depthSrvFor != m_pSceneDepthRes)
+	{
+		// D32_FLOAT_S8X24 -> read the DEPTH plane only; the stencil plane is X8X24 and not sampled here.
+		D3D12_SHADER_RESOURCE_VIEW_DESC sd; ZeroMemory(&sd, sizeof(sd));
+		sd.Format = DXGI_FORMAT_R32_FLOAT_X8X24_TYPELESS;
+		sd.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		sd.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DARRAY;   // a non-array depth is just an array of 1
+		sd.Texture2DArray.MipLevels = 1;
+		sd.Texture2DArray.ArraySize = (UINT)(m_sceneDepthSlices > 0 ? m_sceneDepthSlices : 1);
+		m_pDevice->CreateShaderResourceView(m_pSceneDepthRes, &sd, h);
+		m_depthSrvFor = m_pSceneDepthRes;
+	}
+	return (unsigned __int64)h.ptr;
+}
+
+void D3D12Backend::SetSceneDepthReadable(bool readable)
+{
+	if (!m_pList || !m_bRecording || !m_pSceneDepthRes) { m_sceneDepthReadable = false; return; }
+	if (m_sceneDepthReadable == readable) return;
+	D3D12_RESOURCE_BARRIER b; ZeroMemory(&b, sizeof(b));
+	b.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	b.Transition.pResource   = m_pSceneDepthRes;
+	b.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	b.Transition.StateBefore = readable ? D3D12_RESOURCE_STATE_DEPTH_WRITE
+	                                    : (D3D12_RESOURCE_STATES)(D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	b.Transition.StateAfter  = readable ? (D3D12_RESOURCE_STATES)(D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE)
+	                                    : D3D12_RESOURCE_STATE_DEPTH_WRITE;
+	m_pList->ResourceBarrier(1, &b);
+	m_sceneDepthReadable = readable;
+}
+
+// Artscout - 2026: #DX12 -- stamp the fence value that retires THIS frame's allocator, then hand the ring on. The
+// wait itself now lives in BeginCommandList (as late as possible), keyed to the allocator rather than the index.
 void D3D12Backend::MoveToNextFrame()
 {
-	const unsigned __int64 cur = m_fenceValue[m_frameIndex];
-	m_pQueue->Signal(m_pFence, cur);
-
+	m_allocFence[m_frameIndex] = SignalQueue();
 	m_frameIndex = m_pSwapChain->GetCurrentBackBufferIndex();
-
-	if (m_pFence->GetCompletedValue() < m_fenceValue[m_frameIndex])
-	{
-		m_pFence->SetEventOnCompletion(m_fenceValue[m_frameIndex], m_fenceEvent);
-		WaitForSingleObject(m_fenceEvent, INFINITE);
-	}
-	m_fenceValue[m_frameIndex] = cur + 1;
 }
 
 bool D3D12Backend::Resize(int nWidth, int nHeight)
@@ -407,8 +552,9 @@ bool D3D12Backend::Resize(int nWidth, int nHeight)
 	WaitForGpu();
 	ReleaseBackBufferViews();
 	m_nWidth = nWidth; m_nHeight = nHeight;
-	// keep the same frame's fence baseline across all buffers after the resize
-	for (int i = 0; i < kFrameCount; ++i) m_fenceValue[i] = m_fenceValue[m_frameIndex];
+	// Artscout - 2026: #DX12 -- the WaitForGpu above retired every allocator, so clear their fences: nothing is in
+	// flight and the back buffers are about to be recreated. (The old code rebased a per-index fence baseline here.)
+	for (int i = 0; i < kFrameCount; ++i) m_allocFence[i] = 0;
 	m_pSwapChain->ResizeBuffers(kFrameCount, nWidth, nHeight, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
 	m_frameIndex = m_pSwapChain->GetCurrentBackBufferIndex();
 	if (!CreateBackBufferViews()) return false;
@@ -529,6 +675,8 @@ void D3D12Backend::BindMsaaScene(unsigned long argb, int w, int h)
 	if (g_pD3D12Renderer) g_pD3D12Renderer->SetDepthTargetBound(true);
 	m_curRtvPtr = (unsigned __int64)rtv.ptr;
 	m_sceneRtvPtr = (unsigned __int64)rtv.ptr; m_sceneDsvPtr = (unsigned __int64)dsv.ptr;
+	// #13: MSAA depth -- multisampled, so it has NO Texture2DArray view (SceneDepthSrvCpu returns 0 -> no clamp).
+	m_pSceneDepthRes = m_pMsaaDepthTex; m_sceneDepthSlices = 1; m_sceneDepthMs = true; m_sceneDepthReadable = false;
 	m_sceneW = w; m_sceneH = h; m_curSampleCount = m_msaaSamples;
 	const float clr[4] = { ((argb>>16)&0xFF)/255.0f, ((argb>>8)&0xFF)/255.0f, (argb&0xFF)/255.0f, ((argb>>24)&0xFF)/255.0f };
 	m_pList->ClearRenderTargetView(rtv, clr, 0, NULL);
@@ -872,6 +1020,303 @@ bool D3D12Backend::EnsureEyeDepth(int w, int h)
 	return true;
 }
 
+// Artscout - 2026: #DX12 п.5 -- query the device's ViewInstancing tier once. Tier 1+ = the rasterizer can
+// replicate primitives to multiple RT-array slices driven by SV_ViewID (single-pass stereo). Cached in m_viTier.
+bool D3D12Backend::ViewInstancingSupported()
+{
+	if (m_viTier < 0)
+	{
+		m_viTier = 0;
+		if (m_pDevice)
+		{
+			D3D12_FEATURE_DATA_D3D12_OPTIONS3 o3; ZeroMemory(&o3, sizeof(o3));
+			if (SUCCEEDED(m_pDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS3, &o3, sizeof(o3))))
+				m_viTier = (int)o3.ViewInstancingTier;   // 0 = not supported
+		}
+		D12Log("[D3D12] ViewInstancingTier = %d\n", m_viTier);
+	}
+	return m_viTier >= 1;
+}
+
+// Artscout - 2026: #DX12 п.5 -- 2-slice ARRAY depth for the single-pass stereo eye target. Three DSVs: [0] the
+// whole 2-slice array (VI geometry pass), [1]/[2] the individual slices (per-eye 2D overlay tail). Reversed-Z
+// float depth + stencil, same format as the flat/per-eye path.
+bool D3D12Backend::EnsureEyeDepthArray(int w, int h, int nViews)
+{
+	if (w < 1 || h < 1) return false;
+	if (nViews < 1) nViews = 1; if (nViews > 4) nViews = 4;
+
+	// Slot cache: reuse a slot already at (w,h,nViews) (quad's periphery + focus stay resident across frames -> no
+	// realloc of the large committed depth). Otherwise fill an empty slot, else evict the least-recently-used.
+	int slot = -1;
+	for (int i = 0; i < 2; ++i)
+		if (m_eyeDepth[i].tex && m_eyeDepth[i].w == w && m_eyeDepth[i].h == h && m_eyeDepth[i].n == nViews) { slot = i; break; }
+	if (slot < 0) for (int i = 0; i < 2; ++i) if (!m_eyeDepth[i].tex) { slot = i; break; }
+	if (slot < 0) slot = (m_eyeDepth[0].lru <= m_eyeDepth[1].lru) ? 0 : 1;
+
+	EyeDepthSlot& S = m_eyeDepth[slot];
+	if (S.tex && S.w == w && S.h == h && S.n == nViews)   // exact reuse
+	{
+		S.lru = m_renderEpoch; m_eyeDepthCur = slot; return true;
+	}
+	if (S.tex) { S.tex->Release(); S.tex = 0; }
+	if (S.dsvHeap && S.n != nViews) { S.dsvHeap->Release(); S.dsvHeap = 0; }   // re-heap only if slice count changed
+	if (!S.dsvHeap)
+	{
+		D3D12_DESCRIPTOR_HEAP_DESC hd; ZeroMemory(&hd, sizeof(hd));
+		hd.NumDescriptors = 1 + nViews; hd.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV; hd.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+		if (FAILED(m_pDevice->CreateDescriptorHeap(&hd, IID_PPV_ARGS(&S.dsvHeap)))) return false;
+	}
+	D3D12_HEAP_PROPERTIES hp; ZeroMemory(&hp, sizeof(hp)); hp.Type = D3D12_HEAP_TYPE_DEFAULT;
+	D3D12_RESOURCE_DESC rd; ZeroMemory(&rd, sizeof(rd));
+	rd.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D; rd.Width = (UINT64)w; rd.Height = (UINT)h;
+	rd.DepthOrArraySize = (UINT16)nViews; rd.MipLevels = 1; rd.Format = DXGI_FORMAT_D32_FLOAT_S8X24_UINT; rd.SampleDesc.Count = 1;
+	rd.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+	D3D12_CLEAR_VALUE cv; ZeroMemory(&cv, sizeof(cv)); cv.Format = DXGI_FORMAT_D32_FLOAT_S8X24_UINT; cv.DepthStencil.Depth = 0.0f;
+	if (FAILED(m_pDevice->CreateCommittedResource(&hp, D3D12_HEAP_FLAG_NONE, &rd, D3D12_RESOURCE_STATE_DEPTH_WRITE, &cv, IID_PPV_ARGS(&S.tex)))) return false;
+
+	unsigned inc = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+	D3D12_CPU_DESCRIPTOR_HANDLE base = S.dsvHeap->GetCPUDescriptorHandleForHeapStart();
+	// [0] array covering all N slices.
+	{
+		D3D12_DEPTH_STENCIL_VIEW_DESC dv; ZeroMemory(&dv, sizeof(dv));
+		dv.Format = DXGI_FORMAT_D32_FLOAT_S8X24_UINT; dv.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2DARRAY;
+		dv.Texture2DArray.FirstArraySlice = 0; dv.Texture2DArray.ArraySize = (UINT)nViews;
+		m_pDevice->CreateDepthStencilView(S.tex, &dv, base);
+	}
+	// [1..N] single slices.
+	for (int s = 0; s < nViews; ++s)
+	{
+		D3D12_CPU_DESCRIPTOR_HANDLE h1 = base; h1.ptr += (SIZE_T)inc * (1 + s);
+		D3D12_DEPTH_STENCIL_VIEW_DESC dv; ZeroMemory(&dv, sizeof(dv));
+		dv.Format = DXGI_FORMAT_D32_FLOAT_S8X24_UINT; dv.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2DARRAY;
+		dv.Texture2DArray.FirstArraySlice = (UINT)s; dv.Texture2DArray.ArraySize = 1;
+		m_pDevice->CreateDepthStencilView(S.tex, &dv, h1);
+	}
+	S.w = w; S.h = h; S.n = nViews; S.lru = m_renderEpoch;
+	m_eyeDepthCur = slot;
+	return true;
+}
+
+// Artscout - 2026: #DX12 п.5 -- open ONE command list bound to the 2-slice ARRAY eye RTV + array depth, clear
+// both slices, and set the view instance mask 0b11 so the VI PSOs rasterize both eyes. The world scene draws once.
+void D3D12Backend::BeginStereoInstancedFrame(void* arrayImg, unsigned __int64 arrayRtvPtr, int w, int h, int nViews)
+{
+	if (!m_pDevice || !m_pList || !arrayImg || !arrayRtvPtr) return;
+	if (nViews < 1) nViews = 1; if (nViews > 4) nViews = 4;
+	BeginCommandList();
+	m_renderEpoch++;
+	extern void D3D12TexMgr_TickFrame(unsigned renderEpoch);
+	D3D12TexMgr_TickFrame(m_renderEpoch);
+	if (!EnsureEyeDepthArray(w, h, nViews)) { D12Log("[D3D12] BeginStereoInstancedFrame: array depth alloc failed\n"); }
+	// Artscout - 2026: #DX12 п.5 -- one-shot confirmation in the NORMAL log (the OpenXR "ACTIVE" line is XrDbg/
+	// OutputDebugString only). If this never prints, view instancing fell back to the per-eye loop.
+	{ static bool s_once = false; if (!s_once) { s_once = true; D12Log("[VI] single-pass view-instanced ACTIVE (%dx%d, %d slices/views)\n", w, h, nViews); } }
+
+	// Same invariant as BeginEyeFrame: do NOT barrier the XR swapchain image (runtime hands it in RENDER_TARGET).
+	(void)arrayImg;
+	D3D12_CPU_DESCRIPTOR_HANDLE rtv; rtv.ptr = (SIZE_T)arrayRtvPtr;
+	ID3D12DescriptorHeap* dsvHeap = m_eyeDepth[m_eyeDepthCur].dsvHeap;   // slot chosen by EnsureEyeDepthArray
+	bool haveDsv = (dsvHeap != 0);
+	D3D12_CPU_DESCRIPTOR_HANDLE dsv = haveDsv ? dsvHeap->GetCPUDescriptorHandleForHeapStart() : D3D12_CPU_DESCRIPTOR_HANDLE();
+	m_pList->OMSetRenderTargets(1, &rtv, FALSE, haveDsv ? &dsv : NULL);
+	if (g_pD3D12Renderer) g_pD3D12Renderer->SetDepthTargetBound(haveDsv);
+	const float black[4] = { 0, 0, 0, 1 };
+	m_pList->ClearRenderTargetView(rtv, black, 0, NULL);   // array RTV -> clears both slices
+	if (haveDsv) m_pList->ClearDepthStencilView(dsv, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 0.0f, 0, 0, NULL);
+	D3D12_VIEWPORT vp; vp.TopLeftX = 0; vp.TopLeftY = 0; vp.Width = (FLOAT)w; vp.Height = (FLOAT)h; vp.MinDepth = 0; vp.MaxDepth = 1;
+	D3D12_RECT sc; sc.left = 0; sc.top = 0; sc.right = w; sc.bottom = h;
+	m_pList->RSSetViewports(1, &vp); m_pList->RSSetScissorRects(1, &sc);
+
+	// View instance mask (1<<N)-1 -> all N views active for the VI geometry pass.
+	if (!m_pList1) m_pList->QueryInterface(IID_PPV_ARGS(&m_pList1));
+	if (m_pList1) m_pList1->SetViewInstanceMask((UINT)((1u << nViews) - 1u));
+
+	m_curRtvPtr = arrayRtvPtr;
+	m_curSampleCount = 1;
+	m_sceneRtvPtr = arrayRtvPtr; m_sceneDsvPtr = haveDsv ? (unsigned __int64)dsv.ptr : 0;
+	// #13: VI depth = a single-sample nView-slice array (m_curSampleCount is 1 here) -> viewable as Texture2DArray.
+	m_pSceneDepthRes = m_eyeDepth[m_eyeDepthCur].tex; m_sceneDepthSlices = m_eyeDepth[m_eyeDepthCur].n;
+	m_sceneDepthMs = false; m_sceneDepthReadable = false;
+	m_sceneW = w; m_sceneH = h;
+	m_bRecording = true;
+}
+
+// Artscout - 2026: #DX12 п.5 -- re-bind a SINGLE array slice (RTV + that slice's depth) for the per-eye 2D
+// overlay tail. View instance mask 1 -> only view 0 rasterizes (the draws are ordinary, non-VI PSOs). No clear
+// (the geometry pass already filled both slices; the 2D overlays manage their own Z as on the flat path).
+void D3D12Backend::BindEyeSlice(int view, unsigned __int64 sliceRtvPtr, int w, int h)
+{
+	if (!m_pList || !m_bRecording || !sliceRtvPtr) return;
+	EyeDepthSlot& S = m_eyeDepth[m_eyeDepthCur];   // slot bound by the group's BeginStereoInstancedFrame
+	if (view < 0) view = 0; if (S.n > 0 && view >= S.n) view = S.n - 1;
+	D3D12_CPU_DESCRIPTOR_HANDLE rtv; rtv.ptr = (SIZE_T)sliceRtvPtr;
+	bool haveDsv = (S.dsvHeap != 0);
+	D3D12_CPU_DESCRIPTOR_HANDLE dsv = D3D12_CPU_DESCRIPTOR_HANDLE();
+	if (haveDsv)
+	{
+		unsigned inc = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+		dsv = S.dsvHeap->GetCPUDescriptorHandleForHeapStart();
+		dsv.ptr += (SIZE_T)inc * (1 + view);   // [1..N] per-slice DSV
+	}
+	m_pList->OMSetRenderTargets(1, &rtv, FALSE, haveDsv ? &dsv : NULL);
+	if (g_pD3D12Renderer) g_pD3D12Renderer->SetDepthTargetBound(haveDsv);
+	D3D12_VIEWPORT vp; vp.TopLeftX = 0; vp.TopLeftY = 0; vp.Width = (FLOAT)w; vp.Height = (FLOAT)h; vp.MinDepth = 0; vp.MaxDepth = 1;
+	D3D12_RECT sc; sc.left = 0; sc.top = 0; sc.right = w; sc.bottom = h;
+	m_pList->RSSetViewports(1, &vp); m_pList->RSSetScissorRects(1, &sc);
+	if (m_pList1) m_pList1->SetViewInstanceMask(0x1);   // single view (non-VI draws)
+	m_curRtvPtr = sliceRtvPtr; m_curSampleCount = 1;
+	m_sceneRtvPtr = sliceRtvPtr; m_sceneDsvPtr = haveDsv ? (unsigned __int64)dsv.ptr : 0;
+	m_sceneW = w; m_sceneH = h;
+}
+
+// Artscout - 2026: #DX12 п.5 -- close + execute + fence the single stereo command list (both eyes filled).
+void D3D12Backend::EndStereoInstancedFrame(void* arrayImg)
+{
+	if (!m_pList || !m_bRecording || !arrayImg) return;
+	(void)arrayImg;   // runtime owns the swapchain image state (no RT->COMMON barrier; see BeginEyeFrame)
+	m_pList->Close();
+	ID3D12CommandList* lists[] = { (ID3D12CommandList*)m_pList };
+	extern void D3D12TexMgr_SyncRenderQueue(struct ID3D12CommandQueue* q);
+	D3D12TexMgr_SyncRenderQueue(m_pQueue);
+	// Artscout - 2026: #DX12 -- stamp the fence that retires THIS allocator, then drain on it: the runtime's
+	// xrReleaseSwapchainImage assumes our GPU work on the array image is done. Stamping (rather than leaning on
+	// the drain) is what lets BeginCommandList recycle this allocator safely on its own terms.
+	m_pQueue->ExecuteCommandLists(1, lists);
+	m_allocFence[m_frameIndex] = SignalQueue();
+	WaitForFence(m_allocFence[m_frameIndex]);
+	m_bRecording = false;
+}
+
+// Artscout - 2026: #DX12 п.5 QUAD copy path -- typeless of a RGBA/BGRA swapchain format (so one committed resource
+// takes both a UNORM RTV, to render into, and a copy to an SRGB/UNORM swapchain image of the same family).
+static DXGI_FORMAT ViTypelessOf(DXGI_FORMAT f)
+{
+	switch (f)
+	{
+	case DXGI_FORMAT_R8G8B8A8_UNORM: case DXGI_FORMAT_R8G8B8A8_UNORM_SRGB: case DXGI_FORMAT_R8G8B8A8_TYPELESS:
+		return DXGI_FORMAT_R8G8B8A8_TYPELESS;
+	case DXGI_FORMAT_B8G8R8A8_UNORM: case DXGI_FORMAT_B8G8R8A8_UNORM_SRGB: case DXGI_FORMAT_B8G8R8A8_TYPELESS:
+		return DXGI_FORMAT_B8G8R8A8_TYPELESS;
+	default: return f;
+	}
+}
+static DXGI_FORMAT ViUnormOf(DXGI_FORMAT f)
+{
+	switch (f)
+	{
+	case DXGI_FORMAT_R8G8B8A8_UNORM: case DXGI_FORMAT_R8G8B8A8_UNORM_SRGB: case DXGI_FORMAT_R8G8B8A8_TYPELESS:
+		return DXGI_FORMAT_R8G8B8A8_UNORM;
+	case DXGI_FORMAT_B8G8R8A8_UNORM: case DXGI_FORMAT_B8G8R8A8_UNORM_SRGB: case DXGI_FORMAT_B8G8R8A8_TYPELESS:
+		return DXGI_FORMAT_B8G8R8A8_UNORM;
+	default: return f;
+	}
+}
+
+// Artscout - 2026: #DX12 п.5 QUAD copy path -- private 2-slice ARRAY color target for one VI group (typeless RGBA,
+// UNORM RTVs so the scene writes match the direct eye path's no-gamma-re-encode). Two-slot LRU cache keyed by
+// (w,h,fmt) so periphery + focus coexist without a per-frame realloc of the large committed target.
+bool D3D12Backend::EnsureViColorArray(int w, int h, int fmt)
+{
+	if (w < 1 || h < 1 || !m_pDevice) return false;
+	int slot = -1;
+	for (int i = 0; i < 2; ++i)
+		if (m_viColor[i].tex && m_viColor[i].w == w && m_viColor[i].h == h && m_viColor[i].fmt == fmt) { slot = i; break; }
+	if (slot < 0) for (int i = 0; i < 2; ++i) if (!m_viColor[i].tex) { slot = i; break; }
+	if (slot < 0) slot = (m_viColor[0].lru <= m_viColor[1].lru) ? 0 : 1;
+
+	ViColorSlot& S = m_viColor[slot];
+	if (S.tex && S.w == w && S.h == h && S.fmt == fmt) { S.lru = m_renderEpoch; m_viColorCur = slot; return true; }
+	if (S.tex) { S.tex->Release(); S.tex = 0; }
+	if (!S.rtvHeap)
+	{
+		D3D12_DESCRIPTOR_HEAP_DESC hd; ZeroMemory(&hd, sizeof(hd));
+		hd.NumDescriptors = 3; hd.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; hd.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+		if (FAILED(m_pDevice->CreateDescriptorHeap(&hd, IID_PPV_ARGS(&S.rtvHeap)))) return false;
+	}
+	const DXGI_FORMAT resFmt = ViTypelessOf((DXGI_FORMAT)fmt);
+	const DXGI_FORMAT rtvFmt = ViUnormOf((DXGI_FORMAT)fmt);
+	D3D12_HEAP_PROPERTIES hp; ZeroMemory(&hp, sizeof(hp)); hp.Type = D3D12_HEAP_TYPE_DEFAULT;
+	D3D12_RESOURCE_DESC rd; ZeroMemory(&rd, sizeof(rd));
+	rd.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D; rd.Width = (UINT64)w; rd.Height = (UINT)h;
+	rd.DepthOrArraySize = 2; rd.MipLevels = 1; rd.Format = resFmt; rd.SampleDesc.Count = 1;
+	rd.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+	D3D12_CLEAR_VALUE cv; ZeroMemory(&cv, sizeof(cv)); cv.Format = rtvFmt; cv.Color[0] = cv.Color[1] = cv.Color[2] = 0.0f; cv.Color[3] = 1.0f;
+	if (FAILED(m_pDevice->CreateCommittedResource(&hp, D3D12_HEAP_FLAG_NONE, &rd, D3D12_RESOURCE_STATE_RENDER_TARGET, &cv, IID_PPV_ARGS(&S.tex)))) return false;
+
+	unsigned inc = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	D3D12_CPU_DESCRIPTOR_HANDLE base = S.rtvHeap->GetCPUDescriptorHandleForHeapStart();
+	// [0] array RTV (both slices, the VI geometry pass).
+	{
+		D3D12_RENDER_TARGET_VIEW_DESC rv; ZeroMemory(&rv, sizeof(rv));
+		rv.Format = rtvFmt; rv.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
+		rv.Texture2DArray.FirstArraySlice = 0; rv.Texture2DArray.ArraySize = 2;
+		m_pDevice->CreateRenderTargetView(S.tex, &rv, base);
+		S.arrayRtv = (unsigned __int64)base.ptr;
+	}
+	// [1],[2] per-slice RTVs (the per-eye 2D overlay tail).
+	for (int s = 0; s < 2; ++s)
+	{
+		D3D12_CPU_DESCRIPTOR_HANDLE h1 = base; h1.ptr += (SIZE_T)inc * (1 + s);
+		D3D12_RENDER_TARGET_VIEW_DESC rv; ZeroMemory(&rv, sizeof(rv));
+		rv.Format = rtvFmt; rv.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
+		rv.Texture2DArray.FirstArraySlice = (UINT)s; rv.Texture2DArray.ArraySize = 1;
+		m_pDevice->CreateRenderTargetView(S.tex, &rv, h1);
+		S.sliceRtv[s] = (unsigned __int64)h1.ptr;
+	}
+	S.w = w; S.h = h; S.fmt = fmt; S.lru = m_renderEpoch;
+	m_viColorCur = slot;
+	return true;
+}
+
+// Artscout - 2026: #DX12 п.5 QUAD copy path -- open the VI list on this group's PRIVATE array color target (reuses
+// BeginStereoInstancedFrame). The world VI pass + per-slice tail then render into the private array; EndViCopyGroup
+// copies its 2 slices into the 2 per-view swapchain images. sliceRtvsOut[0..1] = the private slice RTVs (tail).
+void D3D12Backend::BeginViCopyGroup(int w, int h, int fmt, void** sliceRtvsOut)
+{
+	for (int v = 0; v < 4; ++v) if (sliceRtvsOut) sliceRtvsOut[v] = 0;
+	if (!EnsureViColorArray(w, h, fmt)) { D12Log("[D3D12] BeginViCopyGroup: private VI color array alloc failed\n"); return; }
+	ViColorSlot& S = m_viColor[m_viColorCur];
+	BeginStereoInstancedFrame((void*)S.tex, S.arrayRtv, w, h, 2);
+	for (int v = 0; v < 2; ++v) if (sliceRtvsOut) sliceRtvsOut[v] = (void*)(SIZE_T)S.sliceRtv[v];
+}
+
+// Artscout - 2026: #DX12 п.5 QUAD copy path -- copy the private array's 2 slices into the 2 per-view swapchain
+// images (foveated layer wants separate arraySize=1 swapchains), then close+execute+fence. The swapchain images are
+// handed by the runtime in RENDER_TARGET (same invariant as the direct eye path); barrier RT->COPY_DEST->RT around
+// the copy; the private array RENDER_TARGET->COPY_SOURCE->RT.
+void D3D12Backend::EndViCopyGroup(void* dstImg0, void* dstImg1)
+{
+	if (!m_pList || !m_bRecording) return;
+	ViColorSlot& S = m_viColor[m_viColorCur];
+	if (S.tex)
+	{
+		ID3D12Resource* dst[2] = { (ID3D12Resource*)dstImg0, (ID3D12Resource*)dstImg1 };
+		D3D12_RESOURCE_BARRIER b; ZeroMemory(&b, sizeof(b));
+		b.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION; b.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		b.Transition.pResource = S.tex; b.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; b.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
+		m_pList->ResourceBarrier(1, &b);
+		for (int i = 0; i < 2; ++i)
+		{
+			if (!dst[i]) continue;
+			D3D12_RESOURCE_BARRIER bd; ZeroMemory(&bd, sizeof(bd));
+			bd.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION; bd.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+			bd.Transition.pResource = dst[i]; bd.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; bd.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
+			m_pList->ResourceBarrier(1, &bd);
+			D3D12_TEXTURE_COPY_LOCATION sl; ZeroMemory(&sl, sizeof(sl));
+			sl.pResource = S.tex; sl.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX; sl.SubresourceIndex = (UINT)i;   // array slice i (mip 0)
+			D3D12_TEXTURE_COPY_LOCATION dl; ZeroMemory(&dl, sizeof(dl));
+			dl.pResource = dst[i]; dl.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX; dl.SubresourceIndex = 0;
+			m_pList->CopyTextureRegion(&dl, 0, 0, 0, &sl, NULL);
+			bd.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST; bd.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+			m_pList->ResourceBarrier(1, &bd);
+		}
+		b.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE; b.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		m_pList->ResourceBarrier(1, &b);
+	}
+	EndStereoInstancedFrame((void*)(S.tex ? S.tex : (ID3D12Resource*)dstImg0));
+}
+
 // #DX12 п.5 A1 (in-scene VR menu): (re)create the off-screen menu color RTT (via the texture manager, so it has
 // an SRV to sample + an RTV to draw into) plus a private D32 depth (the exit dialog is a 3D BSP that needs Z).
 // Cached; only rebuilt on a size change (the RTV/SRV heap slots are not reclaimed, so avoid per-frame rebuilds).
@@ -951,12 +1396,50 @@ void D3D12Backend::BindMenuRtt(bool clear)
 
 void* D3D12Backend::MenuRttTex() { return (m_pMenuRtt && m_pMenuRtt->tex) ? (void*)m_pMenuRtt : NULL; }
 
+// Artscout - 2026: #DX12 п.5 -- small colour-only RTT for the head-locked VR FPS quad (2D text, no depth needed).
+void D3D12Backend::EnsureFpsRtt(int w, int h)
+{
+	if (!m_pDevice || w <= 0 || h <= 0) return;
+	if (m_pFpsRtt && m_pFpsRtt->tex && m_fpsRttW == w && m_fpsRttH == h) return;   // already at size
+	if (m_pFpsRtt) { if (g_pD3D12TextureManager) g_pD3D12TextureManager->Destroy(*m_pFpsRtt); delete m_pFpsRtt; m_pFpsRtt = 0; }
+	m_fpsRttW = m_fpsRttH = 0;
+	if (!g_pD3D12TextureManager) return;
+	m_pFpsRtt = new D3D12Texture();
+	if (!g_pD3D12TextureManager->CreateRenderTarget(*m_pFpsRtt, w, h)) { delete m_pFpsRtt; m_pFpsRtt = 0; return; }
+	m_fpsRttW = w; m_fpsRttH = h;
+}
+
+// Bind the FPS RTT (colour only, no depth) + set the viewport + clear transparent. Draws land in it on the eye list.
+void D3D12Backend::BindFpsRtt(bool clear)
+{
+	if (!m_pList || !m_bRecording || !m_pFpsRtt || !m_pFpsRtt->tex) return;
+	if (m_pFpsRtt->rtState != (unsigned)D3D12_RESOURCE_STATE_RENDER_TARGET)
+	{
+		D3D12_RESOURCE_BARRIER b; ZeroMemory(&b, sizeof(b));
+		b.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		b.Transition.pResource = m_pFpsRtt->tex; b.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		b.Transition.StateBefore = (D3D12_RESOURCE_STATES)m_pFpsRtt->rtState;
+		b.Transition.StateAfter  = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		m_pList->ResourceBarrier(1, &b); m_pFpsRtt->rtState = (unsigned)D3D12_RESOURCE_STATE_RENDER_TARGET;
+	}
+	D3D12_CPU_DESCRIPTOR_HANDLE rtv; rtv.ptr = (SIZE_T)m_pFpsRtt->rtvCpuPtr;
+	m_curRtvPtr = (unsigned __int64)rtv.ptr;
+	m_curSampleCount = 1;
+	m_pList->OMSetRenderTargets(1, &rtv, FALSE, NULL);   // no depth for 2D text
+	if (g_pD3D12Renderer) g_pD3D12Renderer->SetDepthTargetBound(false);
+	D3D12_VIEWPORT vp; vp.TopLeftX = 0; vp.TopLeftY = 0; vp.Width = (FLOAT)m_fpsRttW; vp.Height = (FLOAT)m_fpsRttH; vp.MinDepth = 0; vp.MaxDepth = 1;
+	D3D12_RECT sc; sc.left = 0; sc.top = 0; sc.right = m_fpsRttW; sc.bottom = m_fpsRttH;
+	m_pList->RSSetViewports(1, &vp); m_pList->RSSetScissorRects(1, &sc);
+	if (clear) { const float z[4] = { 0, 0, 0, 0 }; m_pList->ClearRenderTargetView(rtv, z, 0, NULL); }   // transparent canvas
+}
+
+void* D3D12Backend::FpsRttTex() { return (m_pFpsRtt && m_pFpsRtt->tex) ? (void*)m_pFpsRtt : NULL; }
+
 // #DX12 п.5 (VR): open a command list rendering INTO an XR eye image (bind eye RTV + VR depth, clear both).
 void D3D12Backend::BeginEyeFrame(void* eyeImg, unsigned __int64 eyeRtvPtr, int w, int h)
 {
 	if (!m_pDevice || !m_pList || !eyeImg || !eyeRtvPtr) return;
-	m_pAlloc[m_frameIndex]->Reset();
-	m_pList->Reset(m_pAlloc[m_frameIndex], NULL);
+	BeginCommandList();
 	m_renderEpoch++;
 	// Artscout - 2026 (#65 perf): also tick the texture pool in the VR eye path (it may not run BeginFrame), else
 	// deferred placed-resource frees never reclaim in VR.
@@ -983,6 +1466,8 @@ void D3D12Backend::BeginEyeFrame(void* eyeImg, unsigned __int64 eyeRtvPtr, int w
 	m_curSampleCount = 1;   // Artscout - 2026: VR eye is single-sample for now (MSAA-in-VR = a later increment; flat MSAA works today)
 	// #DX12 п.5: the scene target for this eye is the eye image -> FinishRtt rebinds to THIS (not the back buffer).
 	m_sceneRtvPtr = eyeRtvPtr; m_sceneDsvPtr = m_pEyeDsvHeap ? (unsigned __int64)dsv.ptr : 0;
+	// #13: per-eye depth = single-sample, single slice -> viewable as an array of 1.
+	m_pSceneDepthRes = m_pEyeDepthTex; m_sceneDepthSlices = 1; m_sceneDepthMs = false; m_sceneDepthReadable = false;
 	m_sceneW = w; m_sceneH = h;
 	m_bRecording = true;
 }
@@ -1000,8 +1485,10 @@ void D3D12Backend::EndEyeFrame(void* eyeImg)
 	// resident before the render queue draws them (replaces the old per-upload CPU wait).
 	extern void D3D12TexMgr_SyncRenderQueue(struct ID3D12CommandQueue* q);
 	D3D12TexMgr_SyncRenderQueue(m_pQueue);
+	// Artscout - 2026: #DX12 -- see EndStereoInstancedFrame: stamp this allocator's retire fence, then drain on it.
 	m_pQueue->ExecuteCommandLists(1, lists);
-	WaitForGpu();   // the runtime's xrReleaseSwapchainImage assumes our GPU work on the image is done
+	m_allocFence[m_frameIndex] = SignalQueue();
+	WaitForFence(m_allocFence[m_frameIndex]);
 	m_bRecording = false;
 }
 
@@ -1196,7 +1683,7 @@ void D3D12Backend::ReadbackRttTo565(void* rttHandle, unsigned short* dst, int ds
 	m_pList->ResourceBarrier(1, &b2);
 	t->rtState = (unsigned)D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 
-	s.copyFence = m_fenceValue[m_frameIndex];   // value this frame's Present (MoveToNextFrame) will signal
+	s.copyFence = NextSignalValue();   // value this frame's Present (MoveToNextFrame) will signal for this allocator
 	s.pending = true;
 }
 
@@ -1273,9 +1760,15 @@ void D3D12Backend::Release()
 	ReleaseMsaaTargets();   // Artscout - 2026: free MSAA color/depth targets + their descriptor heaps
 	D12_RELEASE(m_pEyeDepthTex);
 	D12_RELEASE(m_pEyeDsvHeap);
+	for (int i = 0; i < 2; ++i) { D12_RELEASE(m_eyeDepth[i].tex); D12_RELEASE(m_eyeDepth[i].dsvHeap); }   // #DX12 п.5 per-group VI array depth
+	for (int i = 0; i < 2; ++i) { D12_RELEASE(m_viColor[i].tex); D12_RELEASE(m_viColor[i].rtvHeap); }   // #DX12 п.5 quad private VI color arrays
+	D12_RELEASE(m_pList1);
 	if (m_pMenuRtt) { if (g_pD3D12TextureManager) g_pD3D12TextureManager->Destroy(*m_pMenuRtt); delete m_pMenuRtt; m_pMenuRtt = 0; }
+	if (m_pFpsRtt)  { if (g_pD3D12TextureManager) g_pD3D12TextureManager->Destroy(*m_pFpsRtt);  delete m_pFpsRtt;  m_pFpsRtt = 0; }
 	D12_RELEASE(m_pMenuDepthTex);
 	D12_RELEASE(m_pMenuDsvHeap);
+	D12_RELEASE(m_pDepthSrvHeap);   // Artscout - 2026: #13 cloud depth-read SRV
+	m_depthSrvFor = 0; m_pSceneDepthRes = 0; m_sceneDepthReadable = false;
 	D12_RELEASE(m_pDsvHeap);
 	D12_RELEASE(m_pRtvHeap);
 	D12_RELEASE(m_pFence);

@@ -122,6 +122,22 @@ public:
 	// releases it). eyeImg = ID3D12Resource* of the eye image (from OpenXRBackend), eyeRtvPtr = its RTV handle.
 	void BeginEyeFrame(void* eyeImg, unsigned __int64 eyeRtvPtr, int w, int h);
 	void EndEyeFrame(void* eyeImg);
+
+	// Artscout - 2026: #DX12 п.5 view-instanced single-pass stereo. ViewInstancingSupported() queries
+	// D3D12_FEATURE_D3D12_OPTIONS3.ViewInstancingTier once (cached). BeginStereoInstancedFrame opens ONE command
+	// list bound to the 2-slice ARRAY eye RTV + a 2-slice array depth, clears both slices, and sets the view
+	// instance mask 0b11 so both views rasterize. The world scene is then drawn ONCE (VI PSOs). BindEyeSlice
+	// re-binds a SINGLE array slice (RTV + that slice's depth) with view instance mask 1 for the per-eye 2D
+	// overlay tail. EndStereoInstancedFrame closes+executes+fences (like EndEyeFrame). arrayRtvPtr / sliceRtvPtr
+	// come from OpenXRBackend (it owns the array swapchain image + its RTVs).
+	bool ViewInstancingSupported();
+	void BeginStereoInstancedFrame(void* arrayImg, unsigned __int64 arrayRtvPtr, int w, int h, int nViews);
+	void BindEyeSlice(int view, unsigned __int64 sliceRtvPtr, int w, int h);
+	void EndStereoInstancedFrame(void* arrayImg);
+	// #DX12 п.5 QUAD copy path (foveated layer rejects array swapchains): VI-render a group into a PRIVATE 2-slice
+	// array target, then copy its slices into the 2 per-view swapchain images. See m_viColor below.
+	void BeginViCopyGroup(int w, int h, int fmt, void** sliceRtvsOut /*[4]*/);
+	void EndViCopyGroup(void* dstImg0, void* dstImg1);
 	// A monotonic render-frame counter: bumped by BeginFrame AND BeginEyeFrame. The renderer resets its per-frame
 	// rings when this changes (each VR eye is a separate render epoch even though the swap-chain index doesn't move).
 	unsigned RenderEpoch() const { return m_renderEpoch; }
@@ -137,6 +153,11 @@ public:
 	void  EnsureMenuRtt(int w, int h);   // (re)create at this size, best-effort (cached; recreated on size change)
 	void  BindMenuRtt(bool clear);       // bind the menu color RTV + its depth, set viewport, optionally clear
 	void* MenuRttTex();                  // D3D12Texture* (copy source for the XR UI swapchain); NULL if not up
+	// Artscout - 2026: #DX12 п.5 -- a SMALL colour-only RTT for the head-locked VR FPS quad (2D text; no depth). Same
+	// pattern as the menu RTT but separate so FPS + a menu don't thrash one RTT's size. See OpenXRBackend::SubmitFpsQuad.
+	void  EnsureFpsRtt(int w, int h);
+	void  BindFpsRtt(bool clear);
+	void* FpsRttTex();
 	// Fixed formats the renderer bakes into its PSOs (must match the swap chain / depth buffer).
 	static int BackBufferFormat();   // DXGI_FORMAT_R8G8B8A8_UNORM
 	static int DepthFormat();        // DXGI_FORMAT_D32_FLOAT_S8X24_UINT (reversed-Z float depth + stencil)
@@ -148,13 +169,49 @@ public:
 	int  CurrentSampleCount() const { return m_curSampleCount > 0 ? m_curSampleCount : 1; }
 	bool MsaaActive() const { return m_msaaSamples > 1 && m_pMsaaColorTex != 0; }
 
+	// Artscout - 2026: #13 volumetric clouds -- the scene depth, readable as t2 so the cloud raymarch can clamp
+	// itself against the world instead of leaning on the rasterizer's depth test (which cannot work for a volume
+	// you fly through). Returns a CPU descriptor for a Texture2DArray<float> view of the CURRENTLY-bound scene
+	// depth, or 0 when there is none / it cannot be viewed that way.
+	//   ONE view type suffices because both VR paths are single-sample (BeginEyeFrame / BeginStereoInstancedFrame
+	// both set m_curSampleCount = 1 -- "MSAA-in-VR = a later increment"), so VR depth is a plain 2-or-4 slice
+	// array, and a non-array Texture2D is viewable as an array of 1. Only the FLAT MSAA path has a multisampled
+	// depth, which a Texture2DArray cannot view -> 0 there (see SceneDepthSrvCpu).
+	unsigned __int64 SceneDepthSrvCpu();
+	// Transition the scene depth between DEPTH_WRITE and DEPTH_READ|PIXEL_SHADER_RESOURCE around the cloud draw.
+	// Legal only because the cloud pass does not write depth.
+	void SetSceneDepthReadable(bool readable);
+
 private:
+	struct ID3D12Resource*     m_pSceneDepthRes;   // #13: the depth resource the CURRENT scene pass bound (not owned)
+	int                        m_sceneDepthSlices; // #13: its array slice count (1 flat, 2 stereo, 2/4 quad groups)
+	bool                       m_sceneDepthMs;     // #13: true = multisampled (flat MSAA) -> no array SRV
+	bool                       m_sceneDepthReadable;
+	struct ID3D12DescriptorHeap* m_pDepthSrvHeap;  // #13: tiny CPU heap holding the depth SRV
+	struct ID3D12Resource*     m_depthSrvFor;      // #13: which resource m_pDepthSrvHeap's descriptor describes
+
 	bool CreateBackBufferViews();
 	void ReleaseBackBufferViews();
 	bool CreateDepthBuffer();          // Artscout - 2026: #DX12 Phase 3 -- D32 depth-stencil for the scene
 	void ReleaseDepthBuffer();
 	void WaitForGpu();          // block until the GPU has finished ALL submitted work
-	void MoveToNextFrame();     // signal current frame's fence, advance, wait if the next is in flight
+	void MoveToNextFrame();     // signal this frame's allocator fence, then advance to the next back buffer
+
+	// Artscout - 2026: #DX12 -- command-allocator lifetime. An allocator may only be Reset once the GPU has
+	// retired EVERY command list recorded from it, so each allocator now carries the fence value signalled right
+	// after its work was submitted, and BeginCommandList() waits that value out before recycling it.
+	// The previous scheme instead leaned on an implicit "MoveToNextFrame already waited for this index"
+	// invariant: correct for the flat BeginFrame->Present loop, but the VR entry points
+	// (BeginStereoInstancedFrame / BeginEyeFrame) reset the allocator themselves and key off the SWAPCHAIN
+	// index -- which their frames never present -- so the invariant did not hold there and the debug layer
+	// flagged it (ERROR #552: allocator reset while its executions are still in flight -> CPU stomps command
+	// memory the GPU is reading -> non-deterministic garbage geometry). Tying the wait to the allocator itself
+	// makes every path (flat / stereo / eye / quad-copy / mid-frame WaitForGpu / early return) correct by
+	// construction rather than by convention.
+	unsigned __int64 SignalQueue();                    // post the next strictly-increasing value on m_pQueue
+	void             WaitForFence(unsigned __int64 v); // block until the fence reaches v
+	void             BeginCommandList();               // wait out m_pAlloc[m_frameIndex], then reset alloc + list
+	unsigned __int64 NextSignalValue() const { return m_fenceCounter + 1; }   // value the NEXT SignalQueue() posts
 
 	// Phase 2 (2D UI): lazily build the fullscreen-quad pipeline + the (resizable) UI texture.
 	bool EnsureQuadPipeline();
@@ -180,6 +237,28 @@ private:
 	ID3D12DescriptorHeap*     m_pEyeDsvHeap;
 	int                       m_eyeDepthW, m_eyeDepthH;
 	bool EnsureEyeDepth(int w, int h);
+	// Artscout - 2026: #DX12 п.5 view-instancing. 2-slice ARRAY depth per VI GROUP (a view pair). Each slot's DSV
+	// heap holds 3 views: [0] = whole 2-slice array (VI geometry pass), [1] = slice 0, [2] = slice 1 (per-eye 2D
+	// overlay tail). TWO slots so quad's periphery + focus resolutions coexist WITHOUT a huge per-frame depth
+	// realloc (stereo uses one). EnsureEyeDepthArray picks/builds the slot matching (w,h) and sets m_eyeDepthCur;
+	// Begin/BindEyeSlice use that slot. m_viTier caches D3D12_FEATURE_D3D12_OPTIONS3 (-1 = not queried, 0 = none,
+	// >=1 = tier). m_pList1 = SetViewInstanceMask (ID3D12GraphicsCommandList1).
+	struct EyeDepthSlot { ID3D12Resource* tex; ID3D12DescriptorHeap* dsvHeap; int w, h, n; unsigned lru; };
+	EyeDepthSlot              m_eyeDepth[2];    // one per VI group (resolution)
+	int                       m_eyeDepthCur;    // slot bound by the last EnsureEyeDepthArray
+	int                       m_viTier;         // -1 unknown, 0 none, >=1 supported
+	struct ID3D12GraphicsCommandList1* m_pList1;
+	bool EnsureEyeDepthArray(int w, int h, int nViews);
+	// Artscout - 2026: #DX12 п.5 QUAD copy path. The PVR quad_views_foveated layer rejects ANY array swapchain
+	// (arraySize 2 or 4 -> xrEndFrame HANDLE_INVALID); it wants 4 separate arraySize=1 per-view swapchains. So for
+	// quad we VI-render each group into a PRIVATE 2-slice array color target (typeless RGBA, matched to the
+	// swapchain family), then CopyTextureRegion each slice into the matching per-view swapchain image. Two slots so
+	// periphery + focus resolutions coexist (LRU, like m_eyeDepth). BeginViCopyGroup reuses BeginStereoInstancedFrame
+	// on the private array; EndViCopyGroup copies the 2 slices to the 2 swapchain images then closes+fences.
+	struct ViColorSlot { ID3D12Resource* tex; ID3D12DescriptorHeap* rtvHeap; unsigned __int64 arrayRtv; unsigned __int64 sliceRtv[2]; int w, h; int fmt; unsigned lru; };
+	ViColorSlot               m_viColor[2];
+	int                       m_viColorCur;
+	bool EnsureViColorArray(int w, int h, int fmt);
 	// Artscout - 2026: MSAA scene targets (bound instead of the backbuffer/eye when active; resolved down in
 	// ResolveMsaaToBackBuffer (flat) / EndEyeFrame (VR)).
 	ID3D12Resource*       m_pMsaaColorTex;
@@ -198,6 +277,8 @@ private:
 	ID3D12Resource*           m_pMenuDepthTex;  // its depth (exit dialog is a 3D BSP -> needs Z)
 	ID3D12DescriptorHeap*     m_pMenuDsvHeap;
 	int                       m_menuRttW, m_menuRttH;
+	D3D12Texture*             m_pFpsRtt;        // #DX12 п.5 -- small VR FPS quad color RTT (owned; no depth)
+	int                       m_fpsRttW, m_fpsRttH;
 	ID3D12Resource*           m_pBackBuffer[kFrameCount];
 	ID3D12CommandAllocator*   m_pAlloc[kFrameCount];
 	ID3D12GraphicsCommandList* m_pList;
@@ -209,8 +290,8 @@ private:
 	unsigned __int64          m_sceneDsvPtr;
 	int                       m_sceneW, m_sceneH;
 	ID3D12Fence*              m_pFence;
-	unsigned __int64          m_fenceValue[kFrameCount];
-	unsigned __int64          m_fenceCounter;
+	unsigned __int64          m_allocFence[kFrameCount];   // value signalled after m_pAlloc[i]'s work was submitted
+	unsigned __int64          m_fenceCounter;              // last value posted on m_pQueue (strictly increasing)
 	HANDLE                    m_fenceEvent;
 	unsigned                  m_frameIndex;
 

@@ -81,6 +81,8 @@ public:
 	virtual void SetAfterburner(bool on) = 0;
 	virtual void SetCockpitPass(bool on) = 0;
 	virtual void SetIRGrey(bool on) = 0;   // #DX12 A5: sensor pass -> monochrome grey (TGP/TV, Maverick/FLIR/IR)
+	virtual void SetNvgMode(bool on) { (void)on; }   // Artscout - 2026: #97 NVG -- green the world passes (default no-op)
+	virtual void SetFullBright(bool on) { (void)on; } // Artscout - 2026: #97 unlit full-bright (exit-menu; default no-op)
 	virtual void SetTexColorDiffuse(bool on) = 0;
 	virtual void SetForcePerSample(bool on) = 0;
 	virtual void SetStencil(int mode, unsigned ref) = 0;
@@ -92,6 +94,20 @@ public:
 	virtual void BeginTerrainPass() = 0;
 	virtual void SetTerrainRasterForLod(int level) = 0;
 	virtual void RebuildTerrainRasters() = 0;
+	// Artscout - 2026: #96 3D skydome -- object-path pass for the sky dome: vertex-colour only (no lighting/fog),
+	// depth OFF (drawn FIRST as the background; terrain/objects then draw over it). Default reuses BeginTerrainPass;
+	// D3D12 overrides for the true depth-off state. blend=true for the sun/moon discs (alpha blend over the dome).
+	virtual void BeginSkyPass(bool /*blend*/ = false) { BeginTerrainPass(); }
+	// Artscout - 2026: #13 volumetric clouds -- object-path pass for the cloud layer, drawn AFTER terrain/objects
+	// with depth TEST on and depth WRITE off (the backing disc is real geometry at the layer altitude, so the
+	// depth buffer sorts it against the world). Default no-op: only D3D12 implements the raymarch.
+	virtual void BeginCloudPass() {}
+	virtual void EndCloudPass() {}
+	virtual void SetCloudParams(float /*zTop*/, float /*zBot*/, float /*coverage*/, float /*density*/,
+	                            float /*anchorX*/, float /*anchorY*/, float /*noiseScale*/, float /*steps*/,
+	                            const float* /*sunDir*/, float /*ambient*/,
+	                            const float* /*sunColor*/, float /*powder*/, float /*camZ*/,
+	                            float /*profile*/) {}
 
 	// Draws (screen / color-tri / terrain / dynamic-2D)
 	virtual void DrawTL(int primType, const ScreenVertex* verts, int count) = 0;
@@ -113,6 +129,9 @@ public:
 	// UI + textures
 	virtual void CompositeUISurface(const void* src565, int w, int h) = 0;
 	virtual ID3D11ShaderResourceView* LoadTextureFile(const char* path) = 0;
+	// Artscout - 2026: #96 -- create a static texture from a 32bpp RGBA buffer (rowPitch = w*4). Used to bake the
+	// palettized moon into an object-path-samplable RGBA texture. Default = none (D3D11 not needed); D3D12 overrides.
+	virtual ID3D11ShaderResourceView* LoadTextureRGBA(const void* /*rgba*/, int /*w*/, int /*h*/) { return 0; }
 
 	// #DX12 п.4: object/BSP path (aircraft/cockpit models). vbHandle is an OPAQUE per-model vertex buffer
 	// (ID3D11Buffer* under D3D11, ID3D12Resource* under D3D12 -- from the VB manager). lights is a packed

@@ -35,6 +35,113 @@ bool g_bVrFrameActive = false;
 // OFF by default so the proven 2-view stereo path stays the norm. Enable with FFViper.cfg "UseQuadViews 1".
 bool g_bUseQuadViews = false;
 
+// Artscout - 2026: #DX12 п.5 -- single-pass STEREO via D3D12 view instancing (SV_ViewID). When true AND the
+// device exposes a ViewInstancing tier AND the DXC/SM6.1 VI shaders compile AND the session is 2-view STEREO
+// (NOT quad), the whole GPU-matProj scene (terrain/objects/cockpit BSP/particles) is drawn ONCE and the
+// rasterizer replicates each primitive to both eye RT-array slices -> ~halves the scene draw-call submission
+// (the #65 CPU bottleneck). The screen-space 2D symbology (HUD/RTT displays/menu/cursor) still renders per
+// eye in a thin tail. OFF by default so the proven per-eye loop stays the norm; any prerequisite failing
+// falls back to it automatically. Enable with FFViper.cfg "VrViewInstancing 1". Needs dxcompiler.dll shipped.
+bool g_bVrViewInstancing = true;   // Artscout - 2026: default ON (confirmed working; falls back if SM6.1/DXC unavailable)
+// IPD sign for the per-eye view matrices built for the VI pass (headset-tuned: flip to -1 if the eyes swap).
+float g_fVrViewInstIpdSign = 1.0f;
+// #DX12 п.5: intermediate VR sky fix under VI -- give the QUAD FOCUS group its off-axis for the 2D-screen sky so it
+// matches the periphery (fixes "focus sky contrast/wander"). Periphery stays symmetric. Off if it misbehaves.
+bool g_bVrPerEyeSky = true;
+// #96: 3D world-space skydome (gradient dome + sun/moon world billboards, VI-correct per slice) replacing the 2D
+// screen-space sky. OFF by default (legacy 2D path ships until confirmed in-headset). Tunables: dome radius (ft),
+// sun/moon angular size as a fraction of the radius (so tan(halfAngle) ~ size).
+// Artscout - 2026: D3D12 VALIDATION LAYER in any build (Release included). `set g_bD3D12Debug 1` + restart ->
+// the layer is armed and every ERROR/CORRUPTION/WARNING is drained into the D3D12 log once per Present (deduped).
+// Costs frame time -- diagnostics only, never for normal play. Needs the Windows "Graphics Tools" feature.
+bool  g_bD3D12Debug = false;
+bool  g_b3DSky = true;   // Artscout - 2026: #96 default ON (3D skydome + stars/moon; confirmed)
+// Artscout - 2026: #13 volumetric clouds. Default OFF until confirmed in-headset. Turning it ON also SUPPRESSES the
+// legacy DX2D cloud quads (otw.cpp gates realWeather->Draw), so the two never stack.
+bool  g_bVolumetricClouds = false;
+// #13 tuning. The layer itself comes from the sim (realWeather->stratusZ +/- stratusDepth/2); these shape it.
+//   Steps    = march samples along the ray. THE perf knob: cost is linear in it, and in VR at the quad-view
+//              focus resolution it is the only thing between "free" and "unflyable". Steps are GEOMETRIC (see
+//              CloudMarch), so this buys near-camera detail, not wasted samples 40 km out: at 32, a
+//              near-horizontal ray starts at a 525 ft step (Nyquist for the noise wants <= 1785) and coarsens
+//              to ~17 km at the far end, where the haze has dissolved the cloud anyway. The old UNIFORM 24
+//              gave that same ray a flat 6666 ft step -- 3.7x undersampled -- which is what put the march's
+//              sample planes on screen as stacked plates.
+//   Coverage = 0 clear .. 1 solid. -1 = derive from the weather condition (POOR/INCLEMENT get more).
+//   Density  = extinction per FOOT, and it is a real physical quantity, so it is set from physics rather
+//              than taste: a cumulus at LWC ~0.3 g/m^3 with 10 um droplets has beta = 3*LWC/(2*rho*r_eff)
+//              ~= 0.045 /m ~= 0.014 /ft. The old 0.0016 was ~9x too thin -- a cloud core came out at an
+//              optical depth of ~2 (85% opaque, i.e. visibly see-through grey) where a real one is ~30
+//              (utterly opaque). That is most of why the clouds read as thin gauze.
+//   Scale    = noise frequency (1/feet). Smaller = larger, lazier cloud masses.
+//   Ambient  = how much haze colour lights the deck's shadowed side (0..1).
+//   Powder   = silver-lining strength on sunward edges.
+float g_fCloudSteps    = 500.0f;
+float g_fCloudCoverage = -1.0f;
+float g_fCloudDensity  = 0.012f;
+float g_fCloudScale    = 0.0007f;
+float g_fCloudAmbient  = 0.55f;
+float g_fCloudPowder   = 1.0f;
+// #13 CUMULUS layer. The sim only fills cumulusZ meaningfully at FAIR (cumulusBase starts 0 and only the FAIR
+// branch sets it), so outside FAIR the base comes from this knob -- ~5.5k ft is a normal fair-weather cumulus
+// base. Thick: base-to-top extent; cumulus need real vertical extent or they read as lumpy stratus.
+// Coverage: -1 = derive from the weather condition (SUNNY scattered / FAIR the sim's cumulus day / else broken).
+float g_fCumulusBase     = 5500.0f;   // ft above sea level (POSITIVE; the code negates it into Falcon z)
+float g_fCumulusThick    = 2000.0f;   // ft -- fair-weather cumulus: base ~5500, tops ~7500. 6000 was thunderstorm scale.
+float g_fCumulusCoverage = 0.55f;   // #13 density INSIDE a weather patch (the map decides where; this, how much)
+// #13 erosion strength on cloud edges (0 = off). Constant by height on purpose: making it rise as the envelope
+// fell re-introduced a height-modulated threshold and laid down horizontal dead bands.
+float g_fCloudErode   = 1.0f;
+// #13 vertical noise scale. Added as a fix for horizontal layering -- that diagnosis was WRONG (the layering
+// came from the step formula: a constant growth factor made the first step collapse to 0 as step count rose).
+// Stretching z flattens the noise toward 2D and costs clouds their vertical structure. 1.0 = isotropic, as the
+// reference uses. Kept only as a tuning handle.
+float g_fCloudVertScale = 1.0f;
+// #13 diag view, drawn INSTEAD of lit cloud (no sun march, no fog), at the first sample along each ray that has
+// any density. 1 = ALL THREE fields at once in colour channels: R=density, G=envelope, B=noise -- one screenshot
+// then carries every field with identical geometry (switching modes needs a restart, and the exact view could
+// never be reproduced). 2/3/4 = single quantity in grey: envelope / noise / height fraction.
+float g_fCloudDebug = 0.0f;
+// #13 WEATHER MAP -- coverage was one number for the whole theatre, which sprinkles clouds evenly. These make
+// it vary across the map so the sky clusters: a clump here, a clear stretch there.
+//   PatchScale = the map's frequency relative to the cloud noise. 0.12 = patches ~8x wider than a cloud.
+//                Smaller = broader weather; larger = busier.
+//   Amount     = FRACTION OF SKY that carries weather (0..1). NOT a coverage multiplier: multiplying starved
+//                the threshold to nothing (0.26 * 0.45 * 0.35 = 0.041 -> demanded nb > 0.959 -> crumbs). It sets
+//                where the map opens up; inside a patch, coverage applies at FULL strength, which is what lets a
+//                patch hold real clouds. 0.30 = weather over ~30% of the sky, clear elsewhere.
+float g_fCloudPatchScale = 0.06f;   // patches ~2x broader than before -- clusters read at flight altitude
+float g_fCloudAmount     = 0.30f;
+// #13 how much cloud TOP HEIGHT varies between clouds. h is a fraction of the SLAB, so h=1 is one absolute
+// altitude across the whole sky -- without this every cloud dies at the same ceiling and the field gets a
+// flat lid, however smoothly the envelope tapers. 0 = all tops equal, 0.6 = squat ones next to towers.
+float g_fCloudTopVary    = 0.55f;
+// #21+: Instant Action starting/held fuel (lbs) for the OWNSHIP. Fuel is frozen (NoFuelBurn) in IA, so a lower value
+// = lighter jet = better maneuverability (fuel never runs out anyway). 0 = don't override (full internal ~7200).
+float g_fInstantActionFuel = 2000.0f;
+// #96 sun disc warmth: blends the disc from untouched white (0) to the LEGACY sun's own tint (1 = default),
+// which is 8-bit (252,250,223) taken from the pre-skydome DrawSun -- a mild warm white, tuned against
+// SUN.DDS, which is already yellow. Atmospheric extinction multiplies on top at any setting and is 1,1,1
+// at high sun, so the default reproduces the legacy sun exactly and still reddens the disc at sunset.
+float g_fSunWarmth      = 1.0f;
+float g_fSkyDomeRadius  = 200000.0f;
+// #96: sun sprite HALF-size as a fraction of the dome radius. NOTE the sun is NOT like the moon: SUN.DDS has its
+// halo BAKED IN -- the full-luminance disc is only the central ~28% of the sprite (measured: core out to ~36px of
+// the 128px half-width, light gone by ~96px). So the sprite is NOT the disc. At the old 0.030 the sprite spanned
+// 3.44deg and the visible DISC was 0.97deg -- 1.8x the real Sun. 0.01644 puts the disc at the true 0.53deg (the
+// Sun and Moon are nearly the same angular size -- that is why total eclipses work), with the baked halo fading
+// out by ~1.4deg and the wide additive glare (SUN_GLARE_HALF) on top of that.
+float g_fSkyDomeSunSize = 0.01644f;
+// #96: moon HALF-size as a fraction of the dome radius, so the angular DIAMETER = 2*this radians. 0.00455 = 0.52deg
+// = the real Moon. The old 0.018 was 2.06deg -- FOUR times life-size, which is why it read as "too close": angular
+// size is the brain's main distance cue for a body whose real size it knows. (Stereo is not involved: the dome sits
+// at 200000ft, so the eye-to-eye parallax is ~1e-6 rad -- already at infinity.)
+float g_fSkyDomeMoonSize = 0.00455f;
+float g_fSkyDomeStarSize = 0.0011f;  // #96: star quad half-size (fraction of radius). Runtime knob `set g_fSkyDomeStarSize`.
+float g_fSkyMapRotate    = 0.0f;     // #96: equirect starmap azimuth rotation (0..1 = full turn). `set g_fSkyMapRotate`.
+float g_fSkyMapBright    = 0.85f;    // #96: starmap brightness multiplier. `set g_fSkyMapBright`.
+float g_fSkyMapTilt      = 0.0f;     // #96: starmap tilt OFFSET (turns) on top of the auto latitude tilt. `set g_fSkyMapTilt`.
+
 // Artscout - 2026: graphics options driven by the Graphics/Advanced setup pages (persisted in
 // DisplayOptions XML, synced into these engine globals at startup in winmain after LoadOptions, and on
 // Apply). The engine reads these globals at the point of use; DisplayOptions is the UI source of truth.
@@ -120,14 +227,14 @@ float g_fVrMouseRayY     = 1.0f;
 float g_fVrMouseRayRadius = 2.0f;
 float g_fVrThumbThresh   = 0.6f;    // thumbstick deflection that counts as a press. "VrThumbThresh".
 float g_fVrKnobRepeatMs  = 160.0f;  // held-thumbstick repeat interval for knobs/switches (ms). "VrKnobRepeat".
-float g_fVrRayOriginOfs  = -80.0f;  // calibration: shift the ray origin forward along its dir (button units). "VrRayOriginOfs". Default from glove-hand calibration.
-// Artscout - 2026 (VR): fine-align the visible/pick ray to the hand model's FINGER -- angle (deg) tilts the aim
-// direction, up/right (button units) shift the ray ORIGIN sideways to the fingertip. "VrRayPitch/Yaw/OriginUp/Right".
-// Defaults are the glove-hand calibration (ray leaves the index finger). Retune per controller (Oculus/Index) in cfg.
-float g_fVrRayPitch      = -50.0f;
+float g_fVrRayOriginOfs  = 0.0f;    // calibration: shift the ray origin forward along its dir (button units). "VrRayOriginOfs".
+// Artscout - 2026 (VR): fine-align the visible/pick ray. The ray now leaves the index FINGERTIP directly (same
+// transform as the drawn mesh -- VrIndexTip/Dir), so these are just fine-tune: pitch/yaw (deg) tilt the direction,
+// up/right/ofs (button units) nudge the ORIGIN. DEFAULT 0 (ray already on the finger). "VrRayPitch/Yaw/OriginUp/Right".
+float g_fVrRayPitch      = 0.0f;
 float g_fVrRayYaw        = 0.0f;
-float g_fVrRayOriginUp   = -350.0f;
-float g_fVrRayOriginRight = -50.0f;
+float g_fVrRayOriginUp   = 0.0f;
+float g_fVrRayOriginRight = 0.0f;
 bool  g_bVrRayFlipH      = true;    // flip the ray's right axis (horizontal). The axis fix is a 180deg turn that
                                     // inverts left/right; this un-inverts it. Toggle in-headset. "VrRayFlipH".
 bool  g_bVrRayFlipV      = false;   // flip the ray's vertical axis if up/down comes out inverted. "VrRayFlipV".
@@ -154,6 +261,22 @@ float g_fVrModelRoll       = 5.0f; // glove-hand calibration default; retune per
 // -- flip 1<->2 if the solid hand looks inside-out. "VrModelCull". Both apply live (no rebuild).
 bool  g_bVrModelOpaque     = true;
 float g_fVrModelCull       = 1.0f;
+
+// Artscout - 2026 (VR hands): pointing gesture. Squeeze grip -> hand curls to a fist with the index extended
+// and the laser turns on (from the fingertip). g_nVrRayToggle: -1 auto (Touch=hold, Index/Knuckles=toggle
+// because the capacitive force grip is tiring to hold), 0 always hold, 1 always toggle. "VrRayToggle".
+int   g_nVrRayToggle       = -1;
+float g_fVrGripThresh      = 0.5f;   // squeeze value above which the grip counts as engaged. "VrGripThresh".
+float g_fVrClenchSpeed     = 6.0f;   // clench morph speed (units/sec; ~0.17s to full fist). "VrClenchSpeed".
+// Index fingertip point + "continue-the-finger" direction in model-local metres (RIGHT hand; left mirrors X),
+// from the offline baker. The laser leaves this point along this direction. Retune only if the mesh changes.
+// "VrIndexTipX/Y/Z", "VrIndexDirX/Y/Z".
+float g_fVrIndexTipX       = 0.0226f;
+float g_fVrIndexTipY       = -0.2301f;
+float g_fVrIndexTipZ       = 0.0537f;
+float g_fVrIndexDirX       = 0.297f;
+float g_fVrIndexDirY       = -0.952f;
+float g_fVrIndexDirZ       = 0.078f;
 
 // Artscout - 2026 (#58 VR mouse): SEPARATE clickable-cockpit calibration for PLAIN STEREO (no quad-views).
 // The quad-views constants above were tuned against the FOCUS view's narrow gaze FOV; plain stereo projects
@@ -1285,6 +1408,11 @@ static ConfigOption<bool> BoolOpts[] =
     { "UnlimitedAmmo", &g_bUnlimitedAmmo }, //Cobra
     { "AnimPilotHead", &g_bAnimPilotHead}, // Cobra - Animate the pilot's head
     { "UseQuadViews", &g_bUseQuadViews}, // Artscout - 2026 (VR): 4-view quad (foveated) config -- experimental
+    { "VrViewInstancing", &g_bVrViewInstancing}, // Artscout - 2026: #DX12 п.5 single-pass stereo via view instancing (SM6.1/DXC)
+    { "VrPerEyeSky", &g_bVrPerEyeSky}, // Artscout - 2026: #DX12 п.5 quad focus-group off-axis sky (fixes focus contrast)
+    { "3DSky", &g_b3DSky}, // Artscout - 2026: #96 3D world-space skydome. set g_b3DSky 1 (parser strips g_b -> "3DSky")
+    { "VolumetricClouds", &g_bVolumetricClouds}, // Artscout - 2026: #13 raymarched cloud layer (also mutes the legacy DX2D clouds)
+    { "D3D12Debug", &g_bD3D12Debug}, // Artscout - 2026: arm the D3D12 validation layer in ANY build (diagnostics; costs perf)
     { "XrMirror", &g_bXrMirror}, // Artscout - 2026 (VR): mirror rendered eye(s) to the desktop window (RenderDoc/screenshots)
     { "VrRttWorldCam", &g_bVrRttWorldCam}, // Artscout - 2026 (VR #61): RTT display quads in real cockpit-world frame (depth)
     { NULL, NULL }
@@ -1293,6 +1421,7 @@ static ConfigOption<bool> BoolOpts[] =
 static ConfigOption<int> IntOpts[] =
 {
     { "ThrottleMode", &g_nThrottleMode },
+    { "VrRayToggle", &g_nVrRayToggle }, // Artscout - 2026 (VR hands): -1 auto(by profile) / 0 hold / 1 toggle grip activation
 
     { "FarLodExtra", &g_nFarLodExtra }, // Artscout - 2026 (#79): extra coarse terrain LOD rings (geomorph target for far tiles)
     { "PadlockBoxSize", &g_nPadlockBoxSize },
@@ -1436,6 +1565,32 @@ static ConfigOption<float> FloatOpts[] =
     { "Hud3DGlassSize", &g_fHud3DGlassSize}, // Artscout - 2026 (VR): glass plate / aperture size vs the HUD canvas
     { "Hud3DGlassTop", &g_fHud3DGlassTop}, // Artscout - 2026 (VR): #76 top-edge extent of the glass plate/aperture (pull the top down so the tint doesn't overshoot the frame)
     { "QuadOffAxisX", &g_fQuadOffAxisX}, // Artscout - 2026 (VR quad-views): off-axis H sign/scale (1=on, -1=flip, 0=off)
+    { "VrViewInstIpdSign", &g_fVrViewInstIpdSign}, // Artscout - 2026: #DX12 п.5 per-eye view-matrix IPD sign (flip if eyes swap)
+    { "InstantActionFuel", &g_fInstantActionFuel}, // Artscout - 2026: IA ownship fuel lbs (lighter = more agile; 0 = full)
+    { "SunWarmth", &g_fSunWarmth},         // #96 sun disc: 1 = legacy tint (default), 0 = untouched SUN.DDS
+    { "SkyDomeRadius", &g_fSkyDomeRadius}, // Artscout - 2026: #96 skydome radius (ft)
+    // Artscout - 2026: #13 volumetric-cloud tuning. set g_fCloudSteps 16 etc. (parser strips g_f)
+    { "CloudSteps", &g_fCloudSteps},       // march samples through the slab -- THE perf knob (cost is linear)
+    { "CloudCoverage", &g_fCloudCoverage}, // 0 clear .. 1 solid; -1 = derive from the weather condition
+    { "CloudDensity", &g_fCloudDensity},   // extinction per foot
+    { "CloudScale", &g_fCloudScale},       // noise frequency (1/ft); smaller = bigger cloud masses
+    { "CloudAmbient", &g_fCloudAmbient},   // haze light on the shadowed side (0..1)
+    { "CloudPowder", &g_fCloudPowder},     // silver-lining strength
+    { "CumulusBase", &g_fCumulusBase},         // #13 cumulus base (ft ASL) when the sim's cumulusZ is unusable
+    { "CumulusThick", &g_fCumulusThick},       // #13 cumulus base-to-top extent (ft)
+    { "CumulusCoverage", &g_fCumulusCoverage}, // #13 0..1; -1 = derive from the weather condition
+    { "CloudErode", &g_fCloudErode},           // #13 diag: 0 = erosion noise off
+    { "CloudVertScale", &g_fCloudVertScale}, // #13 vertical noise scale (1.0 = isotropic)
+    { "CloudDebug", &g_fCloudDebug},           // #13 diag: 1=RGB(density,envelope,noise) 2=env 3=noise 4=height
+    { "CloudPatchScale", &g_fCloudPatchScale}, // #13 weather-map frequency (smaller = broader patches)
+    { "CloudAmount", &g_fCloudAmount},         // #13 fraction of sky carrying weather
+    { "CloudTopVary", &g_fCloudTopVary},       // #13 how much cloud tops differ (0 = flat lid)
+    { "SkyDomeSunSize", &g_fSkyDomeSunSize}, // Artscout - 2026: #96 sun disc size (fraction of radius)
+    { "SkyDomeMoonSize", &g_fSkyDomeMoonSize}, // Artscout - 2026: #96 moon disc size (fraction of radius)
+    { "SkyDomeStarSize", &g_fSkyDomeStarSize}, // Artscout - 2026: #96 star quad size (fraction of radius)
+    { "SkyMapRotate", &g_fSkyMapRotate},       // Artscout - 2026: #96 equirect starmap azimuth rotation (0..1)
+    { "SkyMapBright", &g_fSkyMapBright},        // Artscout - 2026: #96 starmap brightness multiplier
+    { "SkyMapTilt", &g_fSkyMapTilt},            // Artscout - 2026: #96 starmap tilt (lifts pole off zenith)
     { "QuadOffAxisY", &g_fQuadOffAxisY}, // Artscout - 2026 (VR quad-views): off-axis V sign/scale
     { "VrDisplayIpd", &g_fVrDisplayIpd}, // Artscout - 2026 (VR): IPD for RTT display convergence (tune sign/mag)
     { "AsecScale", &g_fAsecScale}, // Artscout - 2026 (HUD): bore 262mr ASEC display scale (fit small HUD, no tape overlap)
@@ -1465,6 +1620,14 @@ static ConfigOption<float> FloatOpts[] =
     { "VrModelPitch", &g_fVrModelPitch}, // Artscout - 2026 (VR controller model): mesh local pitch (deg)
     { "VrModelRoll", &g_fVrModelRoll}, // Artscout - 2026 (VR controller model): mesh local roll (deg)
     { "VrModelCull", &g_fVrModelCull}, // Artscout - 2026 (VR model): 0=no cull, 1=back, 2=front (flip if inside-out)
+    { "VrGripThresh", &g_fVrGripThresh},   // Artscout - 2026 (VR hands): squeeze threshold for grip activation
+    { "VrClenchSpeed", &g_fVrClenchSpeed}, // Artscout - 2026 (VR hands): fist clench morph speed (units/sec)
+    { "VrIndexTipX", &g_fVrIndexTipX}, // Artscout - 2026 (VR hands): index fingertip local point (metres, right hand; left mirrors X)
+    { "VrIndexTipY", &g_fVrIndexTipY},
+    { "VrIndexTipZ", &g_fVrIndexTipZ},
+    { "VrIndexDirX", &g_fVrIndexDirX}, // Artscout - 2026 (VR hands): "continue the finger" ray direction (local, right hand)
+    { "VrIndexDirY", &g_fVrIndexDirY},
+    { "VrIndexDirZ", &g_fVrIndexDirZ},
     { "GpuTerrainSlopeBias", &g_fGpuTerrainSlopeBias}, // Artscout - 2026: #78 terrain slope-scaled depth bias (grazing z-fight vs runway/objects)
     { "GpuTerrainDepthBias", &g_fGpuTerrainDepthBias}, // Artscout - 2026: #78 terrain constant depth bias
     { "VrCursorMagnetStereo", &g_fVrCursorMagnetStereo}, // Artscout - 2026 (#58): plain-stereo (non-quad) snap radius

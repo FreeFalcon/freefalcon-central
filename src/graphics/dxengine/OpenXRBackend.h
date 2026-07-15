@@ -74,6 +74,20 @@ public:
 	bool BeginEye(int eye, void** outRtv, int* outW, int* outH);
 	// Records eye's projection view (no swapchain release -- see ReleaseEyes).
 	void EndEye(int eye);
+
+	// Artscout - 2026: #DX12 п.5 view-instanced single-pass stereo. ViewInstancingActive() reports whether this
+	// session brought up the 2-slice ARRAY swapchain (STEREO + tier + DXC shaders). When active, otwloop skips the
+	// per-eye loop: BeginStereoInstanced acquires the array image + opens ONE stereo list (both slices), the world
+	// scene draws once with the VI PSOs, then a per-slice tail draws the 2D overlays via D3D12Backend::BindEyeSlice
+	// (using the two returned single-slice RTVs), and EndStereoInstanced closes/releases + fills both projViews.
+	// EndStereoFrame then submits the projection layer as usual.
+	bool ViewInstancingActive() const;
+	void GetViewInstancingDiag(bool* active, bool* flag, bool* stereo, bool* tier, bool* shaders) const;  // one-shot diag
+	// group = view pair: stereo has 1 group (views 0,1); quad has 2 groups (periphery 0,1 + focus 2,3), each its
+	// own arraySize=2 swapchain at that pair's foveated resolution. Each group is one 2-view VI pass.
+	bool BeginStereoInstanced(int group, void** sliceRtvsOut /*[4]*/, int* outCount, int* outW, int* outH);
+	void EndStereoInstanced(int group);
+	int  ViewInstancingGroupCount() const;   // #DX12 п.5: number of VI groups (0 = VI inactive; 1 = stereo; 2 = quad)
 	// Artscout - 2026: release ALL eye images acquired this frame; call after both eyes render,
 	// before EndStereoFrame (deferred release fixes the 2nd-eye-black on Pimax/PiOpenXR).
 	void ReleaseEyes();
@@ -87,6 +101,11 @@ public:
 	// elsewhere). Copies it into the UI swapchain and stages a quad in VIEW space (always in front of the
 	// head, independent of quad-views/gaze). The quad is added by EndStereoFrame. Returns false if not staged.
 	bool SubmitInSceneMenuQuad(void* menuTex, int w, int h);
+
+	// Artscout - 2026: #DX12 п.5 -- stage a small head-locked FPS quad (fpsTex = a backend RGBA8 RTT with "FPS N"
+	// drawn, transparent elsewhere). Head-locked (independent of gaze/foveation), so the counter stays put. Added by
+	// EndStereoFrame. D3D12 only.
+	bool SubmitFpsQuad(void* fpsTex, int w, int h);
 
 	// Submit the projection layer (all eyes) -- balances BeginStereoFrame's xrBeginFrame.
 	void EndStereoFrame();
@@ -152,6 +171,7 @@ public:
 private:
 	void PollEvents();                       // drive the session state machine
 	bool EnsureUiSwapchain(int w, int h);    // (re)create the menu quad swapchain
+	bool EnsureFpsSwapchain(int w, int h);   // (re)create the FPS quad swapchain (#DX12 п.5)
 	bool CreateInputActions();               // Artscout - 2026 (VR controllers): action set + bindings + spaces + attach
 	void SyncControllers();                  // Artscout - 2026 (VR controllers): per-frame xrSyncActions + pose/state read
 

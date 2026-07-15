@@ -82,6 +82,7 @@ SurfaceStackType CDXEngine::m_FrameStack;
 #endif
 bool CDXEngine::DrawPoints, CDXEngine::DrawLines;
 bool CDXEngine::m_LinearFog;
+
 VBItemType CDXEngine::m_VB;
 NodeScannerType CDXEngine::m_NODE;
 ObjectInstance *CDXEngine::m_TheObjectInstance;

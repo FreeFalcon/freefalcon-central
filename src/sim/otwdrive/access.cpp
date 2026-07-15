@@ -1,6 +1,7 @@
 #include "Graphics/Include/TOD.h"
 #include "Graphics/Include/RenderOW.h"
 #include "Graphics/Include/RenderNVG.h"
+#include "Graphics/DXEngine/common/IRenderer.h"   // Artscout - 2026: #97 g_pRenderer->SetNvgMode (green world passes)
 #include "Graphics/Include/Canvas3D.h"
 #include "Graphics/Include/RViewPnt.h"
 #include "Graphics/Include/Drawbsp.h"
@@ -122,6 +123,7 @@ void OTWDriverClass::NVGToggle(void)
         //TheDXEngine.SetState(DX_NVG);
         renderer->SetGreenMode(true); //sfr
         bNVGmode = true;
+        if (g_pRenderer) g_pRenderer->SetNvgMode(true);   // #97: green the DX world passes (cockpit/aircraft/terrain/sky)
     }
     else
     {
@@ -130,6 +132,7 @@ void OTWDriverClass::NVGToggle(void)
         //TheDXEngine.SetState(DX_OTW);
         renderer->SetGreenMode(false); //sfr
         bNVGmode = false;
+        if (g_pRenderer) g_pRenderer->SetNvgMode(false);
     }
 
     //JAM 12Oct03

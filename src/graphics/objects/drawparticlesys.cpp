@@ -106,11 +106,11 @@ Tcolor gParticleSysLitColor = {1, 1, 1};
 bool g_bGpuParticles = true;
 
 // Artscout - 2026: #VFX -- master toggle for the dedicated HERO-flipbook explosions (the single
-// EmberGen billboard spawned per blast event). Default OFF: under D3D12 the hero path SUPPRESSED
-// the whole native volumetric particle cloud (PS_NearActiveHero) and replaced it with a few flat
-// camera-facing plates -> the DX11 "volume" regressed to "flat / layered". With this OFF the full
-// native cloud (many sorted alpha billboards -- smoke, fire, sparks, debris) renders as it did in
-// D3D11. Re-enable only once the hero atlases are worth compositing ON TOP of the native cloud.
+// EmberGen billboard spawned per blast event), composited ON TOP of the native volumetric cloud.
+// HISTORY (the old comment here still said "Default OFF" long after we turned it ON, which cost us
+// a debugging detour -- do not let it drift again): the hero path once SUPPRESSED the whole native
+// cloud (PS_NearActiveHero) and left only a few flat camera-facing plates, so it was parked OFF.
+// That was fixed and hero now runs alongside the native cloud, hence ON.
 bool g_bHeroExplosions = true;
 
 namespace
@@ -237,14 +237,22 @@ const HeroDef kHero[] =
 };
 const int kHeroCount = (int)(sizeof(kHero) / sizeof(kHero[0]));
 
-// Lazily-resolved atlas SRV per hero row (the TextureFile= load happens at PS init; here we
-// only look the handle up once). NULL -> atlas missing -> that effect gets no hero billboard.
-struct HeroSrvCache { void* srv; bool tried; HeroSrvCache() : srv(NULL), tried(false) {} };
-HeroSrvCache g_heroSrv[kHeroCount];
+// Artscout - 2026: the atlas SRV is resolved FRESH on every spawn -- deliberately NOT cached.
+// It used to be memoised per row behind a `tried` flag that was never reset. That flag outlived a 3D
+// exit, but the texture it pointed at did not: leaving 3D destroys the textures, so on the SECOND entry
+// PS_HeroSrv handed back a dangling D3D12Texture*. FlushConstants' stale-pointer guard then swapped in
+// the 1x1 white default (a freed texture reports srvCpuPtr == -1), and every hero flipbook billboard
+// rendered as a flat white QUAD. That is the whole "hero explosions are squares" bug: first entry fine,
+// second broken -- which is also why it looked non-deterministic for so long.
+// Resolving per spawn costs one texture-list walk per EXPLOSION EVENT (not per frame, not per particle),
+// which is nothing, and it cannot go stale by construction.
 
 // A live hero explosion: fixed WORLD centre + own animation clock. `rot` is a per-instance
 // random billboard roll so several explosions (a killed flight) don't stack as identical plates.
-struct HeroExplosion { float cx, cy, cz, size, rot; int startMs, durMs; void* srv; bool bottom; };
+// Artscout - 2026: holds the hero ROW, not a texture pointer. Same reason as PS_HeroSrv above: an explosion
+// spawned before a 3D exit could still be in this list on the next entry, and a cached srv would by then be
+// dangling. A row index cannot go stale; the srv is resolved at draw time.
+struct HeroExplosion { float cx, cy, cz, size, rot; int startMs, durMs; int row; bool bottom; };
 std::vector<HeroExplosion> g_heroExpl;
 
 // True if (x,y,z) is inside any live hero explosion's EARLY/bright phase -- used to suppress the
@@ -279,14 +287,10 @@ int PS_FindHeroRow(const char* effect)
 
 void* PS_HeroSrv(int row)
 {
-    HeroSrvCache &c = g_heroSrv[row];
-    if ( not c.tried)
-    {
-        c.tried = true;
-        DWORD_PTR h = TheDXEngine.GetTextureHandle((char*)kHero[row].atlas);
-        c.srv = h ? (void*)((TextureHandle*)h)->m_pDDS : NULL;
-    }
-    return c.srv;
+    // NO caching here -- see the note above HeroExplosion. A stale texture pointer across a 3D re-entry
+    // is exactly what turned hero explosions into white squares.
+    DWORD_PTR h = TheDXEngine.GetTextureHandle((char*)kHero[row].atlas);
+    return h ? (void*)((TextureHandle*)h)->m_pDDS : NULL;
 }
 
 // Spawn a hero billboard for `effect` at world (x,y,z), if that effect is mapped + its atlas
@@ -333,7 +337,7 @@ void PS_SpawnHero(const char* effect, float x, float y, float z, int nowMs)
         e.size    = (s == 0) ? baseSize : baseSize * (0.55f + PRANDFloatPos() * 0.45f);
         e.startMs = nowMs - (int)(PRANDFloatPos() * 150.0f);   // phase-shift so the sub-frames desync
         e.durMs   = kHero[row].durMs;
-        e.srv     = srv;
+        e.row     = row;   // resolve the atlas at DRAW time -- never cache it across a 3D exit
         e.bottom  = kHero[row].bottom;
         e.rot     = PRANDFloatPos() * 6.2831853f;
         g_heroExpl.push_back(e);
@@ -388,7 +392,7 @@ void PS_TickHeroExplosions(int nowMs)
         inst.uvRect[2] = inv;
         inst.uvRect[3] = inv;
 
-        PS_BucketFor(e.srv, 2).push_back(inst);
+        PS_BucketFor(PS_HeroSrv(e.row), 2).push_back(inst);   // resolved per frame -- never a cached pointer
 #ifdef _DEBUG
         {   // #VFX Phase 2b TEMP diag: confirm the flipbook advances (frame 1..63, not stuck/empty).
             static int s_n = 0;

@@ -8577,6 +8577,7 @@ void SimInteriorLight(unsigned long val, int state, void *)
 
         TheColorBank.PitLightLevel = (int)ac->GetInteriorLight();
 
+
         if (OTWDriver.pCockpitManager not_eq NULL)
         {
             OTWDriver.pCockpitManager->UpdatePalette();
@@ -8612,6 +8613,7 @@ void SimInstrumentLight(unsigned long val, int state, void *)
         //sfr: this is messing light system, interior has its own switch
         //SimDriver.GetPlayerAircraft()->SetInteriorLight(AircraftClass::LT_OFF);
 
+
         if (OTWDriver.pCockpitManager not_eq NULL)
         {
             OTWDriver.pCockpitManager->UpdatePalette();
@@ -8643,6 +8645,7 @@ void SimSpotLight(unsigned long val, int state, void *)
 
         if (OTWDriver.GetVirtualCockpit())
             OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_SPOT_LITE, 1 << SimDriver.GetPlayerAircraft()->GetSpotLight());
+
     }
 }
 //MI TMS switch

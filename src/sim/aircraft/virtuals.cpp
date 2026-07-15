@@ -386,12 +386,21 @@ void AircraftClass::MakePlayerVehicle(void)
     // Unlimited fuel? #21: also unconditionally in Instant Action (independent of option).
     if (PlayerOptions.UnlimitedFuel() or SimDriver.RunningInstantAction())
     {
+        const bool ia = SimDriver.RunningInstantAction();
+        extern float g_fInstantActionFuel;   // Artscout - 2026: IA ownship fuel (lighter jet = more agile)
         VuListIterator updateWalker(GetCampaignObject()->GetComponents());
         curEntity = updateWalker.GetFirst();
 
         while (curEntity)
         {
-            ((AircraftClass*)curEntity)->af->SetFlag(AirframeClass::NoFuelBurn);
+            AircraftClass* ac = (AircraftClass*)curEntity;
+            ac->af->SetFlag(AirframeClass::NoFuelBurn);
+            // #21+: in IA, cap the OWNSHIP's fuel to g_fInstantActionFuel (default 2000 lbs). Fuel is frozen by
+            // NoFuelBurn anyway, so a lower load just makes the jet lighter -> better turn/energy. Self-limiting:
+            // once Fuel() reaches the target the guard stops re-allocating (AllocateFuel redistributes across tanks).
+            if (ia and g_fInstantActionFuel > 0.0f and ac->IsSetFlag(MOTION_OWNSHIP)
+                and ac->af->Fuel() > g_fInstantActionFuel)
+                ac->af->AllocateFuel(g_fInstantActionFuel);
             curEntity = updateWalker.GetNext();
         }
     }

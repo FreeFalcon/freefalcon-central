@@ -39,6 +39,13 @@ enum FFFlags
 	FF_GLOC        = 1u << 15,		// Artscout - 2026: G-force / end-flight vignette (blackout/redout). Fullscreen
 									// post-process pass: the PS darkens/tints by radial UV distance (gGloc). Replaces
 									// the legacy screen-space tunnel-ring so it works on D3D11/D3D12 and per-eye in VR.
+	FF_NVG         = 1u << 16,		// Artscout - 2026: #97 night-vision goggles -- recolor world passes (terrain/
+									// objects/cockpit/sky) to green phosphor + tube gain in the PS. OR'd into m_flags
+									// by the world Begin*Pass funcs when SetNvgMode(true).
+	FF_FULLBRIGHT  = 1u << 17,		// Artscout - 2026: #97 unlit/full-bright -- force lit=1 so a lit BSP renders at full
+									// material colour regardless of time-of-day. For the exit-menu dialog (dark at night).
+	FF_CLOUD       = 1u << 18,		// Artscout - 2026: #13 volumetric cloud layer -- the PS raymarches the slab in
+									// gCloud0/1/2/3 along the view ray. Set only by BeginCloudPass.
 };
 
 // Coarse buckets the ~38 states collapse into. Each names a small set of D3D11

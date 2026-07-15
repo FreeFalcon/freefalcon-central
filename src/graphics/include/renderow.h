@@ -210,6 +210,9 @@ public:
     virtual void Setup(class ImageBuffer *imageBuffer, class RViewPoint *vp);
     virtual void Cleanup(void);
 
+    // Artscout - 2026: #DX12 п.5 -- per-eye sun/moon draw for the view-instanced VR tail (see otwsky.cpp).
+    void VrDrawCelestial(void);
+
     // Overload this function to get extra work done at start frame
     virtual void StartDraw(void) ;
     virtual void EndDraw(void) ;
@@ -291,6 +294,19 @@ protected:
     void DrawGapFiller(SpanListEntry *span);
 
     BOOL DrawSky(void);
+    // Artscout - 2026: #96 -- 3D world-space skydome + sun/moon billboards (VI-correct; replaces the 2D sky path
+    // when g_b3DSky). DrawSkyBillboard: camera-facing world disc (dir=Tpoint*). See otwsky.cpp.
+    void DrawSkyDome(void);
+    // Artscout - 2026: #13 -- raymarched volumetric cloud LAYER (g_bVolumetricClouds). Called AFTER terrain and
+    // objects (otw.cpp) so the depth buffer already holds the world: the backing geometry is a camera-relative
+    // disc AT the layer altitude, so the rasterizer occludes it against terrain with no depth SRV needed.
+    void DrawVolumetricClouds(void);
+    // flatten = VERTICAL scale of the disc (1 = round). Atmospheric refraction squashes a body near the horizon --
+    // the lower limb is lifted more than the upper one, so it reads as an oval (~0.8 at the horizon). Refraction
+    // never magnifies: a symmetric atmosphere can only lift and compress. See DrawSkyDome's moon block.
+    // additive = the atmospheric glare (scattered light ADDS to the sky; alpha-blending it just greys the sky).
+    void DrawSkyBillboard(const void* dir, float R, float sz, float r, float g, float b, void* srv = 0, float a = 1.0f,
+                          float flatten = 1.0f, bool additive = false);
     void DrawSkyNoRoof(void);
     void DrawSkyAbove(void);
     void DrawSkyBelow(void);

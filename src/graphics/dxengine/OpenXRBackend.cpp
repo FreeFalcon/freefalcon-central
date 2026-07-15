@@ -40,6 +40,7 @@ static void XrDbg(const char* fmt, ...)
 
 #include "OpenXRBackend.h"
 #include "D3D12Backend.h"                  // #DX12 п.5: g_pD3D12Backend (device + queue for the XR binding)
+#include "d3d12/D3D12Renderer.h"           // #DX12 п.5: g_pD3D12Renderer (ViewInstancingAvailable for the VI decision)
 #include "d3d12/D3D12TextureManager.h"     // #DX12 п.5 A1: D3D12Texture (in-scene menu RTT copy source)
 #include "../../sim/INCLUDE/ivibedata.h"   // g_intellivibeData.In3D (menu vs 3D world)
 
@@ -148,11 +149,21 @@ struct OpenXRBackend::Impl
 		std::vector<ID3D11RenderTargetView*>  rtvs;
 		// #DX12 п.5: parallel D3D12 swapchain images + their RTV CPU handles (in Impl::rtvHeap12).
 		std::vector<XrSwapchainImageD3D12KHR> images12;
-		std::vector<unsigned __int64>         rtvs12;
+		std::vector<unsigned __int64>         rtvs12;      // per-eye: TEXTURE2D RTV; VI: TEXTURE2DARRAY (all slices)
+		// #DX12 п.5 view-instancing: when this is the single ARRAY swapchain (arraySize=N, 2 stereo / 4 quad),
+		// rtvs12 above is the array RTV (all slices) for the single VI geometry pass; sliceRtvs12[v] are the
+		// per-slice single-slice RTVs used by the per-view 2D overlay tail.
+		std::vector<unsigned __int64>         sliceRtvs12[4];
 	};
-	std::vector<Swapchain> swapchains;   // one per eye
+	std::vector<Swapchain> swapchains;   // one per eye (VI: a single 2-slice array swapchain in [0])
 
 	int64_t      swapchainFormat;        // DXGI_FORMAT chosen for the eye color images
+
+	// #DX12 п.5 view-instancing: single-pass stereo is active (STEREO + tier + DXC shaders). When true the
+	// color swapchain is ONE 2-slice array (swapchains[0]) rendered in a single VI pass instead of N per-eye.
+	bool                       viActive;
+	bool                       viDiagFlag, viDiagStereo, viDiagTier, viDiagSh;   // decision breakdown (for the runtime diag)
+	bool                       viAcquired[2];   // per-group: swapchain image actually acquired this frame (release guard)
 
 	// #DX12 п.5: D3D12 VR path (session bound to the D3D12 device+queue instead of D3D11). Selected by g_bUseD3D12.
 	bool                       useD3D12;
@@ -179,6 +190,14 @@ struct OpenXRBackend::Impl
 	ID3D12Resource*  uiUpload12;
 	unsigned         uiRowPitch12;
 	void*            menuTexD3D12;    // #DX12 п.5 A1: D3D12Texture* staged by SubmitInSceneMenuQuad, copied in EndStereoFrame
+
+	// Artscout - 2026: #DX12 п.5 -- dedicated head-locked FPS quad (a small independent copy of the menu-quad path).
+	XrSwapchain      fpsSwapchain;
+	int              fpsW, fpsH;
+	std::vector<XrSwapchainImageD3D12KHR> fpsImages12;
+	void*            fpsTexD3D12;     // D3D12Texture* staged by SubmitFpsQuad, copied in EndStereoFrame
+	bool             fpsQuadPending;
+	XrCompositionLayerQuad fpsQuad;
 
 	ID3D11Device*        device;
 	ID3D11DeviceContext* ctx;
@@ -228,6 +247,7 @@ struct OpenXRBackend::Impl
 		float   squeeze;   bool    squeezeDown;   // grip button -> active-hand switch (rising edge)
 		float   thumbX, thumbY;
 		bool    aBtn, bBtn;
+		bool    prevBBtn;   // Artscout - 2026: edge-detect for the ALWAYS-ON recenter (see SyncControllers)
 	} hand[2];
 
 	// Artscout - 2026 (VR hands): XR_EXT_hand_tracking. Index/knuckles synthesise a hand skeleton from the
@@ -249,6 +269,7 @@ struct OpenXRBackend::Impl
 		  viewConfigType(XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO),
 		  swapchainFormat(0),
 		  uiSwapchain(XR_NULL_HANDLE), uiW(0), uiH(0), uiFormat(0), uiStaging(NULL),
+		  fpsSwapchain(XR_NULL_HANDLE), fpsW(0), fpsH(0), fpsTexD3D12(NULL), fpsQuadPending(false),
 		  device(NULL), ctx(NULL),
 		  nearZ(1.0f), farZ(80000.0f), haveHeadPose(false),
 		  lastYaw(0.0f), lastPitch(0.0f), lastRoll(0.0f), haveHeadAngles(false),
@@ -261,6 +282,7 @@ struct OpenXRBackend::Impl
 		  pfnLocateHandJoints(NULL),
 		  // #DX12 п.5: D3D12 members must be zero-initialized (raw pointers/handles) -- otherwise
 		  // EnsureUiSwapchain's `if(p->uiUpload12) Release()` derefs garbage (0xFFFF... read AV).
+		  viActive(false), viDiagFlag(false), viDiagStereo(false), viDiagTier(false), viDiagSh(false), viAcquired(),
 		  useD3D12(false), d3d12Device(NULL), d3d12Queue(NULL), rtvHeap12(NULL), rtvInc12(0), rtvHead12(0),
 		  alloc12(NULL), list12(NULL), fence12(NULL), fenceVal12(0), fenceEvt12(NULL),
 		  uiUpload12(NULL), uiRowPitch12(0), menuTexD3D12(NULL)
@@ -551,6 +573,16 @@ void OpenXRBackend::SyncControllers()
 		hi.aBtn = (XR_SUCCEEDED(xrGetActionStateBoolean(p->session, &gi, &sb)) && sb.isActive) ? (sb.currentState != XR_FALSE) : false;
 		gi.action = p->bBtnAction;
 		hi.bBtn = (XR_SUCCEEDED(xrGetActionStateBoolean(p->session, &gi, &sb)) && sb.isActive) ? (sb.currentState != XR_FALSE) : false;
+
+		// Artscout - 2026: RECENTER on the B/Y rising edge -- here, and for BOTH hands, precisely because this
+		// runs every VR frame regardless of what the hands are doing. It used to live inside vcock's ray/pick
+		// block, which only executes while a hand is ACTIVE (grip held, or the Index capacitive toggle armed),
+		// so you had to wake a hand up before you could re-centre. Recentering is a VIEW action, not a cockpit
+		// interaction: it has no business being gated on the cursor/hand at all.
+		//   Recenter() only raises recenterPending; the render thread applies it (it owns appSpace), so calling
+		// it from here is safe and at worst costs one frame. Repeated calls are idempotent.
+		if (hi.bBtn && !hi.prevBBtn) Recenter();
+		hi.prevBBtn = hi.bBtn;
 	}
 
 	// Artscout - 2026 (VR hands): locate the 26 hand joints for each hand in the app (LOCAL) space, this
@@ -608,7 +640,7 @@ bool OpenXRBackend::Init(ID3D11Device* device)
 		if (!p->d3d12Device || !p->d3d12Queue) { XrDbg("OpenXR: Init - null D3D12 device/queue\n"); return false; }
 		// RTV heap + a command list/allocator/fence for the eye clear/composite work (D3D12 has no clear-by-view).
 		D3D12_DESCRIPTOR_HEAP_DESC hd; ZeroMemory(&hd, sizeof(hd));
-		hd.NumDescriptors = 32; hd.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; hd.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+		hd.NumDescriptors = 64; hd.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; hd.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;   // #DX12 п.5: quad VI = 1 array + 4 slice RTVs per image
 		if (FAILED(p->d3d12Device->CreateDescriptorHeap(&hd, IID_PPV_ARGS(&p->rtvHeap12)))) { XrDbg("OpenXR: RTV heap failed\n"); return false; }
 		p->rtvInc12 = p->d3d12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 		p->rtvHead12 = 0;
@@ -903,16 +935,43 @@ bool OpenXRBackend::Init(ID3D11Device* device)
 		for (uint32_t i = 0; i < fmtCount; ++i)
 			if (fmts[i] == uiPref[pf]) { p->uiFormat = uiPref[pf]; break; }
 
-	// --- 9. Per-eye swapchains + RTVs ----------------------------------------
-	p->swapchains.resize(viewCount);
-	for (uint32_t e = 0; e < viewCount; ++e)
+	// --- 8b. #DX12 п.5 -- decide single-pass view instancing. Requires: the cfg flag, D3D12, a 2-view STEREO
+	// session (NOT quad), the device's ViewInstancing tier, AND the renderer's DXC/SM6.1 VI shaders. Any miss ->
+	// the proven per-eye path. (Renderer inits before OpenXR, so ViewInstancingAvailable() is valid here.)
+	{
+		extern bool g_bVrViewInstancing;
+		// VI supports 2-view STEREO (1 group) and 4-view QUAD (2 groups: periphery pair + focus pair). QUAD is
+		// done as TWO 2-view VI passes, each into its OWN arraySize=2 swapchain at that pair's resolution -- this
+		// keeps foveated per-pair resolution AND avoids the arraySize=4 swapchain the quad_views_foveated layer
+		// rejects (xrEndFrame HANDLE_INVALID). Each group is a standard 2-view VI (reuses the stereo machinery).
+		bool viewsOk = (viewCount == 2 || viewCount == 4);
+		bool want   = g_bVrViewInstancing && p->useD3D12 && viewsOk;
+		bool tierOk = g_pD3D12Backend && g_pD3D12Backend->ViewInstancingSupported();
+		bool shOk   = g_pD3D12Renderer && g_pD3D12Renderer->ViewInstancingAvailable();
+		p->viActive = want && tierOk && shOk;
+		p->viDiagFlag = g_bVrViewInstancing; p->viDiagStereo = viewsOk; p->viDiagTier = tierOk; p->viDiagSh = shOk;
+		XrDbg("OpenXR: view instancing %s (flag=%d viewsOk=%d d3d12=%d tier=%d shaders=%d viewCount=%d)\n",
+		      p->viActive ? (viewCount == 4 ? "ACTIVE (2-pass QUAD foveated: periphery+focus)" : "ACTIVE (single-pass stereo)") : "off (per-eye)",
+		      (int)g_bVrViewInstancing, (int)viewsOk, (int)p->useD3D12, (int)tierOk, (int)shOk, (int)viewCount);
+	}
+
+	// --- 9. Swapchains + RTVs. THREE layouts:
+	//  * non-VI      : N per-eye swapchains, arraySize 1, rendered directly per eye.
+	//  * VI DIRECT   : stereo (2 views) -> ONE arraySize=2 array swapchain, single VI pass (no foveation layer).
+	//  * VI COPY     : quad (4 views) -> 4 per-view arraySize=1 swapchains (the quad_views_foveated layer rejects
+	//                  ANY array swapchain -> HANDLE_INVALID); the VI pass renders into a PRIVATE array target and
+	//                  the slices are COPIED into these per-view images. Per-view resolution = configViews[e] (foveated).
+	const bool viDirect = p->viActive && (viewCount == 2);
+	const bool viCopy   = p->viActive && (viewCount == 4);
+	const uint32_t scCount = viDirect ? 1u : (uint32_t)viewCount;   // viCopy + non-VI = one swapchain per view
+	p->swapchains.resize(scCount);
+	for (uint32_t e = 0; e < scCount; ++e)
 	{
 		Impl::Swapchain& sc = p->swapchains[e];
-		// Full per-eye resolution from OpenXR (per headset). The engine renders each eye at
-		// this size: otwloop pushes it into the renderer's xRes/yRes so the projection aspect
-		// matches the eye viewport (no distortion), and submits the engine fov.
-		sc.width  = (int32_t)p->configViews[e].recommendedImageRectWidth;
-		sc.height = (int32_t)p->configViews[e].recommendedImageRectHeight;
+		// Resolution: viDirect group 0 = configViews[0]; viCopy/non-VI per view = configViews[e] (foveated per view).
+		const uint32_t cvi = viDirect ? 0u : e;
+		sc.width  = (int32_t)p->configViews[cvi].recommendedImageRectWidth;
+		sc.height = (int32_t)p->configViews[cvi].recommendedImageRectHeight;
 
 		// Artscout - 2026: optional per-eye resolution scale (Advanced page "OpenXR Resolution Scale", 70..100%).
 		// Trades sharpness for GPU headroom. 100 = the runtime's recommended size (unchanged). The whole engine
@@ -932,15 +991,21 @@ bool OpenXRBackend::Init(ID3D11Device* device)
 		}
 
 		XrSwapchainCreateInfo scci = { XR_TYPE_SWAPCHAIN_CREATE_INFO };
+		// Artscout - 2026: keep usage IDENTICAL to the proven non-VI quad path (COLOR_ATTACHMENT | SAMPLED). Do NOT
+		// add TRANSFER_DST_BIT for viCopy: the quad_views_foveated layer appears to reject it (xrEndFrame ->
+		// HANDLE_INVALID). D3D12 lets us CopyTextureRegion into the image regardless (COPY_DEST is a state, not a
+		// creation flag), so the XR transfer hint is unnecessary.
 		scci.usageFlags = XR_SWAPCHAIN_USAGE_COLOR_ATTACHMENT_BIT | XR_SWAPCHAIN_USAGE_SAMPLED_BIT;
 		scci.format     = p->swapchainFormat;
 		scci.sampleCount = 1;
 		scci.width  = sc.width;
 		scci.height = sc.height;
 		scci.faceCount = 1;
-		scci.arraySize = 1;
+		scci.arraySize = viDirect ? 2 : 1;   // #DX12 п.5: stereo VI = one 2-slice array; quad VI (copy) + non-VI = per-view arraySize 1
 		scci.mipCount  = 1;
 		XR_BAIL(xrCreateSwapchain(p->session, &scci, &sc.handle), "xrCreateSwapchain");
+		XrDbg("OpenXR: swapchain[%u] %dx%d arr=%u handle=%p (viDirect=%d viCopy=%d)\n",
+		      e, (int)sc.width, (int)sc.height, (unsigned)scci.arraySize, (void*)sc.handle, (int)viDirect, (int)viCopy);
 
 		uint32_t imgCount = 0;
 		XR_BAIL(xrEnumerateSwapchainImages(sc.handle, 0, &imgCount, NULL), "xrEnumerateSwapchainImages(count)");
@@ -952,21 +1017,43 @@ bool OpenXRBackend::Init(ID3D11Device* device)
 			XR_BAIL(xrEnumerateSwapchainImages(sc.handle, imgCount, &imgCount,
 			        (XrSwapchainImageBaseHeader*)sc.images12.data()), "xrEnumerateSwapchainImages(D3D12)");
 			sc.rtvs12.resize(imgCount, 0);
+			if (viDirect) { sc.sliceRtvs12[0].resize(imgCount, 0); sc.sliceRtvs12[1].resize(imgCount, 0); }   // stereo: 2 slice RTVs
+			// #DX12 п.5: the runtime picks an _SRGB swapchain format (fmt=29 R8G8B8A8_UNORM_SRGB), but the
+			// renderer's PSOs bake R8G8B8A8_UNORM -> #613 RENDER_TARGET_FORMAT_MISMATCH and dropped draws.
+			// Create the RTV with the UNORM cast of the same family (legal, same memory layout) so the eye
+			// image accepts the scene draws (no gamma re-encode -- matches how the D3D11 eye path writes).
+			DXGI_FORMAT rtvFmt = (DXGI_FORMAT)p->swapchainFormat;
+			if (rtvFmt == DXGI_FORMAT_R8G8B8A8_UNORM_SRGB) rtvFmt = DXGI_FORMAT_R8G8B8A8_UNORM;
+			else if (rtvFmt == DXGI_FORMAT_B8G8R8A8_UNORM_SRGB) rtvFmt = DXGI_FORMAT_B8G8R8A8_UNORM;
 			for (uint32_t i = 0; i < imgCount; ++i)
 			{
-				D3D12_CPU_DESCRIPTOR_HANDLE h = p->rtvHeap12->GetCPUDescriptorHandleForHeapStart();
-				h.ptr += (SIZE_T)p->rtvHead12 * p->rtvInc12; p->rtvHead12++;
-				D3D12_RENDER_TARGET_VIEW_DESC rd; ZeroMemory(&rd, sizeof(rd));
-				// #DX12 п.5: the runtime picks an _SRGB swapchain format (fmt=29 R8G8B8A8_UNORM_SRGB), but the
-				// renderer's PSOs bake R8G8B8A8_UNORM -> #613 RENDER_TARGET_FORMAT_MISMATCH and dropped draws.
-				// Create the RTV with the UNORM cast of the same family (legal, same memory layout) so the eye
-				// image accepts the scene draws (no gamma re-encode -- matches how the D3D11 eye path writes).
-				DXGI_FORMAT rtvFmt = (DXGI_FORMAT)p->swapchainFormat;
-				if (rtvFmt == DXGI_FORMAT_R8G8B8A8_UNORM_SRGB) rtvFmt = DXGI_FORMAT_R8G8B8A8_UNORM;
-				else if (rtvFmt == DXGI_FORMAT_B8G8R8A8_UNORM_SRGB) rtvFmt = DXGI_FORMAT_B8G8R8A8_UNORM;
-				rd.Format = rtvFmt; rd.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-				p->d3d12Device->CreateRenderTargetView(sc.images12[i].texture, &rd, h);
-				sc.rtvs12[i] = (unsigned __int64)h.ptr;
+				if (!viDirect)   // viCopy + non-VI: per-view 2D RTV (viCopy's is unused -- slices are copied in)
+				{
+					D3D12_CPU_DESCRIPTOR_HANDLE h = p->rtvHeap12->GetCPUDescriptorHandleForHeapStart();
+					h.ptr += (SIZE_T)p->rtvHead12 * p->rtvInc12; p->rtvHead12++;
+					D3D12_RENDER_TARGET_VIEW_DESC rd; ZeroMemory(&rd, sizeof(rd));
+					rd.Format = rtvFmt; rd.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+					p->d3d12Device->CreateRenderTargetView(sc.images12[i].texture, &rd, h);
+					sc.rtvs12[i] = (unsigned __int64)h.ptr;
+				}
+				else
+				{
+					// Each VI-group swapchain has 2 slices (a 2-view pass). One array RTV covering both slices (the
+					// VI geometry pass) + one RTV per slice (the per-view 2D overlay tail). Entry 0 = array
+					// (FirstSlice 0, ArraySize 2); entries 1,2 = individual slices.
+					for (int v = 0; v <= 2; ++v)
+					{
+						D3D12_CPU_DESCRIPTOR_HANDLE h = p->rtvHeap12->GetCPUDescriptorHandleForHeapStart();
+						h.ptr += (SIZE_T)p->rtvHead12 * p->rtvInc12; p->rtvHead12++;
+						D3D12_RENDER_TARGET_VIEW_DESC rd; ZeroMemory(&rd, sizeof(rd));
+						rd.Format = rtvFmt; rd.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
+						rd.Texture2DArray.FirstArraySlice = (v == 0) ? 0 : (UINT)(v - 1);
+						rd.Texture2DArray.ArraySize       = (v == 0) ? 2u : 1u;
+						p->d3d12Device->CreateRenderTargetView(sc.images12[i].texture, &rd, h);
+						if (v == 0) sc.rtvs12[i] = (unsigned __int64)h.ptr;
+						else        sc.sliceRtvs12[v - 1][i] = (unsigned __int64)h.ptr;
+					}
+				}
 			}
 		}
 		else
@@ -1655,6 +1742,7 @@ int OpenXRBackend::BeginStereoFrame()
 	p->inStereoFrame = true;
 	p->projViews.clear();
 	p->menuQuadPending = false;   // Artscout - 2026 (#59): no stale menu quad carried into a new frame
+	p->fpsQuadPending = false;    // #DX12 п.5: same for the FPS quad
 
 	// Artscout - 2026 (#67): apply a pending recenter here -- the render thread owns appSpace and we have a
 	// fresh predicted time, so this is safe (no destroy-while-in-use). Rebuild the LOCAL app space at the
@@ -1822,6 +1910,161 @@ void OpenXRBackend::EndEye(int eye)
 	}
 }
 
+// Artscout - 2026: #DX12 п.5 -- is single-pass view-instanced stereo the active path this session?
+bool OpenXRBackend::ViewInstancingActive() const { return m_impl && m_impl->viActive; }
+int  OpenXRBackend::ViewInstancingGroupCount() const { return (m_impl && m_impl->viActive) ? ((int)m_impl->configViews.size() / 2) : 0; }   // pairs: stereo=1, quad=2
+
+// Artscout - 2026: #DX12 п.5 -- decision breakdown (for the one-shot runtime diag in otwloop). Any NULL is skipped.
+void OpenXRBackend::GetViewInstancingDiag(bool* active, bool* flag, bool* stereo, bool* tier, bool* shaders) const
+{
+	if (!m_impl) return;
+	if (active)  *active  = m_impl->viActive;
+	if (flag)    *flag    = m_impl->viDiagFlag;
+	if (stereo)  *stereo  = m_impl->viDiagStereo;
+	if (tier)    *tier    = m_impl->viDiagTier;
+	if (shaders) *shaders = m_impl->viDiagSh;
+}
+
+// Artscout - 2026: #DX12 п.5 -- open ONE group's VI pass. A group is a view pair: stereo = group 0 (views 0,1);
+// quad = group 0 (periphery 0,1) + group 1 (focus 2,3). TWO layouts:
+//  * viDirect (stereo): render directly into the group's 2-slice ARRAY swapchain (no foveation layer).
+//  * viCopy (quad): render into a PRIVATE 2-slice array target (the foveated layer rejects array swapchains),
+//    acquiring the group's TWO per-view arraySize=1 swapchains now so EndStereoInstanced can copy the slices in.
+// Fills sliceRtvsOut[0..1] with the 2 per-slice RTVs (the per-view 2D overlay tail), outCount=2, render size.
+bool OpenXRBackend::BeginStereoInstanced(int group, void** sliceRtvsOut, int* outCount, int* outW, int* outH)
+{
+	Impl* p = m_impl;
+	if (!p->viActive || group < 0) return false;
+	const bool viCopy = (p->configViews.size() == 4);
+	if ((int)p->eyeImgIndex.size() < (int)p->swapchains.size()) p->eyeImgIndex.resize(p->swapchains.size(), 0);
+
+	if (viCopy)
+	{
+		// Quad: this group's two per-view swapchains (periphery = 0,1; focus = 2,3).
+		const int sc0 = 2 * group, sc1 = 2 * group + 1;
+		if (sc0 < 0 || sc1 >= (int)p->swapchains.size()) return false;
+		Impl::Swapchain& a = p->swapchains[sc0];
+		Impl::Swapchain& b = p->swapchains[sc1];
+		uint32_t i0 = 0, i1 = 0;
+		XrSwapchainImageAcquireInfo ai = { XR_TYPE_SWAPCHAIN_IMAGE_ACQUIRE_INFO };
+		XrSwapchainImageWaitInfo   wi = { XR_TYPE_SWAPCHAIN_IMAGE_WAIT_INFO }; wi.timeout = XR_INFINITE_DURATION;
+		XrSwapchainImageReleaseInfo ri = { XR_TYPE_SWAPCHAIN_IMAGE_RELEASE_INFO };
+		if (XR_FAILED(xrAcquireSwapchainImage(a.handle, &ai, &i0))) return false;
+		if (XR_FAILED(xrWaitSwapchainImage(a.handle, &wi))) { xrReleaseSwapchainImage(a.handle, &ri); return false; }
+		if (XR_FAILED(xrAcquireSwapchainImage(b.handle, &ai, &i1))) { xrReleaseSwapchainImage(a.handle, &ri); return false; }
+		if (XR_FAILED(xrWaitSwapchainImage(b.handle, &wi))) { xrReleaseSwapchainImage(a.handle, &ri); xrReleaseSwapchainImage(b.handle, &ri); return false; }
+		p->eyeImgIndex[sc0] = i0; p->eyeImgIndex[sc1] = i1;
+		if (group < 2) p->viAcquired[group] = true;
+		// Render into the PRIVATE array target at this group's foveated resolution; copy happens in End.
+		g_pD3D12Backend->BeginViCopyGroup((int)a.width, (int)a.height, (int)p->swapchainFormat, sliceRtvsOut);
+		if (outCount) *outCount = 2;
+		if (outW) *outW = a.width;
+		if (outH) *outH = a.height;
+		return true;
+	}
+
+	// viDirect (stereo): one 2-slice array swapchain, rendered directly.
+	if (group >= (int)p->swapchains.size()) return false;
+	Impl::Swapchain& sc = p->swapchains[group];
+	uint32_t idx = 0;
+	XrSwapchainImageAcquireInfo ai = { XR_TYPE_SWAPCHAIN_IMAGE_ACQUIRE_INFO };
+	if (XR_FAILED(xrAcquireSwapchainImage(sc.handle, &ai, &idx))) return false;
+	XrSwapchainImageWaitInfo wi = { XR_TYPE_SWAPCHAIN_IMAGE_WAIT_INFO };
+	wi.timeout = XR_INFINITE_DURATION;
+	if (XR_FAILED(xrWaitSwapchainImage(sc.handle, &wi)))
+	{
+		XrSwapchainImageReleaseInfo ri = { XR_TYPE_SWAPCHAIN_IMAGE_RELEASE_INFO };
+		xrReleaseSwapchainImage(sc.handle, &ri);
+		return false;
+	}
+	p->eyeImgIndex[group] = idx;
+	if (group < 2) p->viAcquired[group] = true;
+	if (idx < sc.images12.size())
+		g_pD3D12Backend->BeginStereoInstancedFrame(sc.images12[idx].texture, sc.rtvs12[idx], sc.width, sc.height, 2);
+	for (int v = 0; v < 4; ++v)
+		if (sliceRtvsOut) sliceRtvsOut[v] = (void*)(SIZE_T)((v < 2 && idx < sc.sliceRtvs12[v].size()) ? sc.sliceRtvs12[v][idx] : 0);
+	if (outCount) *outCount = 2;
+	if (outW) *outW = sc.width;
+	if (outH) *outH = sc.height;
+	return true;
+}
+
+// Artscout - 2026: #DX12 п.5 -- close+execute ONE group's list, release its array image, and fill the group's 2
+// projection views (its swapchain, imageArrayIndex 0/1). Global view index = 2*group + local. QUAD submits each
+// view's RAW per-view fov (off-center gaze -- the foveated compositor needs it); STEREO submits the symmetric
+// submitFov the engine rendered with. Pose is the runtime's per-view located pose. Called per group; mirrors EndEye.
+void OpenXRBackend::EndStereoInstanced(int group)
+{
+	Impl* p = m_impl;
+	if (!p->viActive || group < 0) return;
+	if (group < 2 && !p->viAcquired[group]) return;   // never acquired this frame (acquire failed) -> nothing to release
+	const bool viCopy = (p->configViews.size() == 4);
+	XrSwapchainImageReleaseInfo ri = { XR_TYPE_SWAPCHAIN_IMAGE_RELEASE_INFO };
+	const int nTot = (int)p->projViews.size();
+	const bool quad = (nTot > 2);
+
+	if (viCopy)
+	{
+		// Quad: copy the private array's 2 slices into this group's TWO per-view swapchain images, then release
+		// both. Each per-view swapchain is its own arraySize=1 image (imageArrayIndex 0) at its foveated res.
+		const int sc0 = 2 * group, sc1 = 2 * group + 1;
+		if (sc0 < 0 || sc1 >= (int)p->swapchains.size()) return;
+		Impl::Swapchain& a = p->swapchains[sc0];
+		Impl::Swapchain& b = p->swapchains[sc1];
+		int i0 = (sc0 < (int)p->eyeImgIndex.size()) ? (int)p->eyeImgIndex[sc0] : -1;
+		int i1 = (sc1 < (int)p->eyeImgIndex.size()) ? (int)p->eyeImgIndex[sc1] : -1;
+		void* dst0 = (i0 >= 0 && i0 < (int)a.images12.size()) ? (void*)a.images12[i0].texture : NULL;
+		void* dst1 = (i1 >= 0 && i1 < (int)b.images12.size()) ? (void*)b.images12[i1].texture : NULL;
+		g_pD3D12Backend->EndViCopyGroup(dst0, dst1);
+		xrReleaseSwapchainImage(a.handle, &ri);
+		xrReleaseSwapchainImage(b.handle, &ri);
+		if (group < 2) p->viAcquired[group] = false;
+
+		for (int j = 0; j < 2; ++j)
+		{
+			const int e = 2 * group + j;   // global view index
+			if (e >= nTot) break;
+			Impl::Swapchain& s = p->swapchains[e];
+			XrCompositionLayerProjectionView& pv = p->projViews[e];
+			pv.type = XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW; pv.next = NULL;
+			pv.pose = p->views[e].pose;
+			pv.fov  = p->views[e].fov;   // quad: raw per-view fov (foveated compositor)
+			pv.subImage.swapchain = s.handle;
+			pv.subImage.imageRect.offset.x = 0;
+			pv.subImage.imageRect.offset.y = 0;
+			pv.subImage.imageRect.extent.width  = s.width;
+			pv.subImage.imageRect.extent.height = s.height;
+			pv.subImage.imageArrayIndex = 0;   // per-view swapchain -> single slice
+		}
+		return;
+	}
+
+	// viDirect (stereo): one 2-slice array swapchain rendered directly.
+	if (group >= (int)p->swapchains.size()) return;
+	Impl::Swapchain& sc = p->swapchains[group];
+	int idx = (group < (int)p->eyeImgIndex.size()) ? (int)p->eyeImgIndex[group] : -1;
+	if (idx >= 0 && idx < (int)sc.images12.size())
+		g_pD3D12Backend->EndStereoInstancedFrame(sc.images12[idx].texture);
+	xrReleaseSwapchainImage(sc.handle, &ri);
+	if (group < 2) p->viAcquired[group] = false;
+
+	for (int j = 0; j < 2; ++j)
+	{
+		const int e = 2 * group + j;   // global view index
+		if (e >= nTot) break;
+		XrCompositionLayerProjectionView& pv = p->projViews[e];
+		pv.type = XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW; pv.next = NULL;
+		pv.pose = p->views[e].pose;
+		pv.fov  = (p->haveSubmitFov && !quad) ? p->submitFov : p->views[e].fov;
+		pv.subImage.swapchain = sc.handle;
+		pv.subImage.imageRect.offset.x = 0;
+		pv.subImage.imageRect.offset.y = 0;
+		pv.subImage.imageRect.extent.width  = sc.width;
+		pv.subImage.imageRect.extent.height = sc.height;
+		pv.subImage.imageArrayIndex = j;   // local slice within the group's swapchain
+	}
+}
+
 // Artscout - 2026: TEMP DIAG -- replicate the M1 clear path INSIDE an already-begun stereo frame
 // (sim thread): for each eye acquire/wait/clear(distinct color)/release, fill projViews, xrEndFrame.
 // No engine rendering between eyes. If both eyes show their color -> two separate swapchains compose
@@ -1980,6 +2223,63 @@ bool OpenXRBackend::SubmitInSceneMenuQuad(void* menuTex, int w, int h)
 	return true;
 }
 
+// Artscout - 2026: #DX12 п.5 -- small head-locked FPS quad swapchain (D3D12 only; the FPS RTT is GPU-copied into it
+// in EndStereoFrame, no upload buffer needed). Mirrors EnsureUiSwapchain, minus the D3D11 565->RGBA staging.
+bool OpenXRBackend::EnsureFpsSwapchain(int w, int h)
+{
+	Impl* p = m_impl;
+	if (!p->useD3D12 || w <= 0 || h <= 0 || p->uiFormat == 0) return false;
+	if (p->fpsSwapchain != XR_NULL_HANDLE && p->fpsW == w && p->fpsH == h) return true;
+	if (p->fpsSwapchain != XR_NULL_HANDLE) { xrDestroySwapchain(p->fpsSwapchain); p->fpsSwapchain = XR_NULL_HANDLE; }
+	p->fpsImages12.clear();
+
+	XrSwapchainCreateInfo ci = { XR_TYPE_SWAPCHAIN_CREATE_INFO };
+	ci.usageFlags = XR_SWAPCHAIN_USAGE_COLOR_ATTACHMENT_BIT | XR_SWAPCHAIN_USAGE_SAMPLED_BIT | XR_SWAPCHAIN_USAGE_TRANSFER_DST_BIT;
+	ci.format = p->uiFormat; ci.sampleCount = 1; ci.width = w; ci.height = h; ci.faceCount = 1; ci.arraySize = 1; ci.mipCount = 1;
+	if (XR_FAILED(xrCreateSwapchain(p->session, &ci, &p->fpsSwapchain))) { XrDbg("OpenXR: FPS xrCreateSwapchain failed (%dx%d)\n", w, h); return false; }
+
+	uint32_t imgCount = 0;
+	xrEnumerateSwapchainImages(p->fpsSwapchain, 0, &imgCount, NULL);
+	p->fpsImages12.resize(imgCount);
+	for (uint32_t i = 0; i < imgCount; ++i) { p->fpsImages12[i].type = XR_TYPE_SWAPCHAIN_IMAGE_D3D12_KHR; p->fpsImages12[i].next = NULL; }
+	xrEnumerateSwapchainImages(p->fpsSwapchain, imgCount, &imgCount, (XrSwapchainImageBaseHeader*)p->fpsImages12.data());
+	p->fpsW = w; p->fpsH = h;
+	return true;
+}
+
+// Artscout - 2026: #DX12 п.5 -- stage the FPS RTT (a D3D12Texture*) as a small HEAD-LOCKED quad (upper-centre, in
+// front of the head, independent of gaze/foveation). Copy into the FPS swapchain happens in EndStereoFrame (the RTT
+// was drawn on the not-yet-executed eye list). Mirrors SubmitInSceneMenuQuad but small + positioned up.
+bool OpenXRBackend::SubmitFpsQuad(void* tex, int w, int h)
+{
+	Impl* p = m_impl;
+	if (!p->inStereoFrame || !tex || w <= 0 || h <= 0 || !p->useD3D12) return false;
+	if (p->viewSpace == XR_NULL_HANDLE) return false;
+	if (!EnsureFpsSwapchain(w, h)) return false;
+
+	p->fpsTexD3D12 = tex;
+	const float aspect  = (float)w / (float)h;
+	const float heightM = 0.11f;    // small panel
+	const float distM   = 1.4f;     // close, head-locked
+	XrCompositionLayerQuad& q = p->fpsQuad;
+	memset(&q, 0, sizeof(q));
+	q.type = XR_TYPE_COMPOSITION_LAYER_QUAD;
+	q.layerFlags = XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT;   // transparent canvas alpha-keys out
+	q.space = p->viewSpace;                  // head-locked
+	q.eyeVisibility = XR_EYE_VISIBILITY_BOTH;
+	q.subImage.swapchain = p->fpsSwapchain;
+	q.subImage.imageRect.extent.width  = w;
+	q.subImage.imageRect.extent.height = h;
+	q.subImage.imageArrayIndex = 0;
+	q.pose.orientation.w = 1.0f;
+	q.pose.position.y = 0.30f;    // upper area of the view
+	q.pose.position.z = -distM;
+	q.size.width  = heightM * aspect;
+	q.size.height = heightM;
+	p->fpsQuadPending = true;
+	return true;
+}
+
 void OpenXRBackend::EndStereoFrame()
 {
 	Impl* p = m_impl;
@@ -2008,6 +2308,28 @@ void OpenXRBackend::EndStereoFrame()
 		p->menuTexD3D12 = NULL;
 	}
 
+	// Artscout - 2026: #DX12 п.5 -- same deferred copy for the FPS quad: the FPS RTT was drawn on the eye list (now
+	// executed+fenced), so copy it into the FPS swapchain image here.
+	if (p->useD3D12 && p->fpsQuadPending && p->fpsTexD3D12 && p->fpsSwapchain != XR_NULL_HANDLE)
+	{
+		D3D12Texture* ft = (D3D12Texture*)p->fpsTexD3D12;
+		if (ft && ft->tex)
+		{
+			uint32_t idx = 0;
+			XrSwapchainImageAcquireInfo ai = { XR_TYPE_SWAPCHAIN_IMAGE_ACQUIRE_INFO };
+			if (XR_SUCCEEDED(xrAcquireSwapchainImage(p->fpsSwapchain, &ai, &idx)))
+			{
+				XrSwapchainImageWaitInfo wi = { XR_TYPE_SWAPCHAIN_IMAGE_WAIT_INFO }; wi.timeout = XR_INFINITE_DURATION;
+				if (XR_SUCCEEDED(xrWaitSwapchainImage(p->fpsSwapchain, &wi)) && idx < p->fpsImages12.size())
+					XrCopyD3D12TexToUiImage(p->alloc12, p->list12, p->d3d12Queue, p->fence12, p->fenceEvt12, &p->fenceVal12,
+					                        ft->tex, ft->rtState, p->fpsImages12[idx].texture);
+				XrSwapchainImageReleaseInfo ri = { XR_TYPE_SWAPCHAIN_IMAGE_RELEASE_INFO };
+				xrReleaseSwapchainImage(p->fpsSwapchain, &ri);
+			}
+		}
+		p->fpsTexD3D12 = NULL;
+	}
+
 	XrCompositionLayerProjection layer = { XR_TYPE_COMPOSITION_LAYER_PROJECTION };
 	const bool haveLayer = !p->projViews.empty();
 	if (haveLayer)
@@ -2016,22 +2338,39 @@ void OpenXRBackend::EndStereoFrame()
 		layer.viewCount = (uint32_t)p->projViews.size();
 		layer.views = p->projViews.data();
 	}
-	// Artscout - 2026 (#59 VR menu): projection layer first, then the head-locked menu quad ON TOP (if staged).
-	XrCompositionLayerBaseHeader* layers[2];
+	// Artscout - 2026 (#59 VR menu): projection layer first, then head-locked quads ON TOP (menu, then FPS).
+	XrCompositionLayerBaseHeader* layers[3];
 	uint32_t nLayers = 0;
 	if (haveLayer)          layers[nLayers++] = (XrCompositionLayerBaseHeader*)&layer;
 	if (p->menuQuadPending) layers[nLayers++] = (XrCompositionLayerBaseHeader*)&p->menuQuad;
+	if (p->fpsQuadPending)  layers[nLayers++] = (XrCompositionLayerBaseHeader*)&p->fpsQuad;
+
+	// Artscout - 2026: #DX12 п.5 -- one-shot dump of the submitted projection views (which swapchain handle + array
+	// index each references). If xrEndFrame returns HANDLE_INVALID, this pinpoints the bad handle/layout.
+	if (p->viActive)
+	{
+		static bool s_once = false;
+		if (!s_once) { s_once = true;
+			XrDbg("OpenXR: SUBMIT nLayers=%u projViews=%u\n", nLayers, (unsigned)p->projViews.size());
+			for (uint32_t e = 0; e < (uint32_t)p->projViews.size(); ++e)
+				XrDbg("  projView[%u] swapchain=%p arrayIdx=%d rect=%dx%d\n", e,
+				      (void*)p->projViews[e].subImage.swapchain, (int)p->projViews[e].subImage.imageArrayIndex,
+				      (int)p->projViews[e].subImage.imageRect.extent.width, (int)p->projViews[e].subImage.imageRect.extent.height);
+		}
+	}
 
 	XrFrameEndInfo fei = { XR_TYPE_FRAME_END_INFO };
 	fei.displayTime = p->stereoFrameState.predictedDisplayTime;
 	fei.environmentBlendMode = XR_ENVIRONMENT_BLEND_MODE_OPAQUE;
 	fei.layerCount = nLayers;
 	fei.layers = nLayers ? layers : NULL;
-	xrEndFrame(p->session, &fei);
+	XrResult efr = xrEndFrame(p->session, &fei);
+	if (p->viActive && XR_FAILED(efr)) { static bool s_e = false; if (!s_e) { s_e = true; XrDbg("OpenXR: xrEndFrame -> %d (viActive quad=%d)\n", (int)efr, (int)(p->configViews.size()==4)); } }
 
 	p->inStereoFrame = false;
 	p->currentEye = -1;
 	p->menuQuadPending = false;   // consumed this frame
+	p->fpsQuadPending = false;
 }
 
 //=============================================================================
@@ -2311,6 +2650,7 @@ void OpenXRBackend::Shutdown()
 	if (p->uiUpload12) { p->uiUpload12->Release(); p->uiUpload12 = NULL; }   // #DX12 п.5
 	p->uiImages12.clear();
 	if (p->uiSwapchain != XR_NULL_HANDLE) { xrDestroySwapchain(p->uiSwapchain); p->uiSwapchain = XR_NULL_HANDLE; }
+	if (p->fpsSwapchain != XR_NULL_HANDLE) { xrDestroySwapchain(p->fpsSwapchain); p->fpsSwapchain = XR_NULL_HANDLE; }
 
 	// Artscout - 2026 (VR hands): destroy the hand trackers.
 	if (p->pfnDestroyHandTracker)

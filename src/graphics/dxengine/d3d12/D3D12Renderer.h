@@ -71,6 +71,24 @@ public:
 	void SetProj(const float* m);
 	void SetWorld(const float* m);
 	void SetCameraPos(float x, float y, float z);
+	// #DX12 п.5: read back the last-set view/proj (the VI pass captures the engine-built per-eye matrices here).
+	const float* GetView() const { return m_view; }
+	const float* GetProj() const { return m_proj; }
+
+	// Artscout - 2026: #DX12 п.5 view-instanced single-pass stereo. ViewInstancingAvailable() is true only when
+	// the DXC/SM6.1 VI shaders compiled AND the device reports a ViewInstancing tier (else the caller keeps the
+	// per-eye loop). The engine builds ONE shared head-centre camera (gView is rotation-only) into cbView(b1)
+	// during the object pass. SetViewInstancingParams supplies what differs per VIEW (2 stereo / 4 quad): the world
+	// offset from the head centre to each eye (= cameraRot's right axis x IPD, from otwloop) and, for quad, each
+	// view's off-axis projection. FlushConstants then DERIVES cbViewStereo(b5) from the LIVE b1 + these deltas -- so
+	// no fragile pre-capture of gView is needed (gView is only known once the object pass runs). SetViewInstancing
+	// (true) makes GetPSO hand back the VI PSOs + bind b5; (false) restores the per-draw path (the 2D overlay tail).
+	bool ViewInstancingAvailable() const { return m_viAvailable; }
+	// nViews = 2 (stereo) or 4 (quad-views). worldOff = per-view head-centre->eye offset (world feet), nViews x3.
+	// projs = per-view projection (nViews x16) or NULL to use the live base m_proj for every view (symmetric stereo).
+	void SetViewInstancingParams(int nViews, const float* worldOff, const float* projs);
+	void SetViewInstancing(bool on) { if (m_stereoActive != on) { m_stereoActive = on; m_dStereo = true; } }
+	int  ViewInstanceCount() const { return m_stereoViewCount; }
 	void SetState(int legacyState);
 
 	void SetTexture(unsigned slot, ID3D11ShaderResourceView* srv);
@@ -89,6 +107,8 @@ public:
 	void SetAfterburner(bool on);
 	void SetCockpitPass(bool on);
 	void SetIRGrey(bool on);   // #DX12 A5: sensor pass -> grey (luma in PS)
+	void SetNvgMode(bool on) override;   // Artscout - 2026: #97 NVG -- green the world passes (terrain/objects/cockpit/sky)
+	void SetFullBright(bool on) override; // Artscout - 2026: #97 unlit -- force full material colour (exit-menu dialog)
 	void SetTexColorDiffuse(bool on);
 	void SetForcePerSample(bool on);
 	void SetStencil(int mode, unsigned ref);
@@ -97,6 +117,13 @@ public:
 	void BeginScreenPass();
 	void BeginObjectPass();
 	void BeginTerrainPass();
+	void BeginSkyPass(bool blend = false);   // Artscout - 2026: #96 3D skydome (depth-off background pass)
+	void BeginCloudPass();                   // Artscout - 2026: #13 volumetric cloud layer (reads depth as t2)
+	void EndCloudPass();                     // #13: restore the scene depth to DEPTH_WRITE
+	void SetCloudParams(float zTop, float zBot, float coverage, float density,
+	                    float anchorX, float anchorY, float noiseScale, float steps,
+	                    const float sunDir[3], float ambient,
+	                    const float sunColor[3], float powder, float camZ, float profile);
 	void SetTerrainRasterForLod(int level);
 	void RebuildTerrainRasters();
 
@@ -116,6 +143,7 @@ public:
 
 	void CompositeUISurface(const void* src565, int w, int h);
 	ID3D11ShaderResourceView* LoadTextureFile(const char* path);
+	ID3D11ShaderResourceView* LoadTextureRGBA(const void* rgba, int w, int h);   // Artscout - 2026: #96 baked moon
 
 	// #DX12 п.4: object/BSP path. vbHandle = ID3D12Resource* (per-model VB from the VB manager).
 	void DrawObjectIndexed(int primType, void* vbHandle, int stride, int baseVertex,
@@ -168,6 +196,17 @@ private:
 	void*                      m_pVSParticle; // Artscout - 2026: #VFX ID3DBlob* -- FFEmu VS_Particle
 	void*                      m_pPSParticle; // Artscout - 2026: #VFX ID3DBlob* -- FFEmu PS_Particle
 
+	// Artscout - 2026: #DX12 п.5 -- DXC/SM6.1 (DXIL) blobs for the view-instanced PSOs. A PSO cannot mix DXBC
+	// and DXIL, so the VI variants need DXIL for BOTH stages: VS_Screen(sky), VS_ObjectVI, VS_ParticleVI, and
+	// the pixel shaders PS_Main/PS_Particle. Compiled once in CompileShaders via dxcompiler.dll (loaded at
+	// runtime); the raw bytecode is copied into these malloc'd buffers so no DXC COM object lives in the header.
+	// If DXC is unavailable or any compile fails, all stay NULL and m_viAvailable=false (caller keeps per-eye loop).
+	enum { VI_SCREEN = 0, VI_OBJECT, VI_PARTICLE_VS, VI_PSMAIN, VI_PSPARTICLE, VI_BLOB_COUNT };
+	void*                      m_viBlob[VI_BLOB_COUNT];      // malloc'd DXIL bytecode
+	unsigned                   m_viBlobSize[VI_BLOB_COUNT];  // bytes
+	bool                       m_viAvailable;               // DXC blobs ready AND device tier supports VI
+	bool                       CompileViShaders(const char* shaderDir);   // DXC/SM6.1 pass (dxcompiler.dll)
+
 	// Artscout - 2026: #VFX Phase 1 -- static geometry shared by every instanced particle draw: a unit quad
 	// (4 verts, slot 0) + a 6-index buffer. Created once via the texture manager (DEFAULT heap); the IB is
 	// transitioned VERTEX_AND_CONSTANT_BUFFER -> INDEX_BUFFER once on the first draw (needs an open list).
@@ -185,7 +224,8 @@ private:
 	unsigned                   m_srvRingCount;        // capacity (descriptors per ring)
 	unsigned                   m_srvInc;              // CBV_SRV_UAV descriptor increment
 	ID3D12DescriptorHeap*      m_pWhiteStaging;       // CPU heap: 1 white SRV (copy source for untextured slots)
-	unsigned __int64           m_whiteSrvCpu;         // white SRV CPU handle .ptr
+	unsigned __int64           m_whiteSrvCpu;
+	unsigned __int64           m_whiteArraySrvCpu;   // #13: Texture2DArray view of the same white (t2 stand-in)         // white SRV CPU handle .ptr
 	ID3D12Resource*            m_pWhiteTex;
 	ID3D12Resource*            m_pWhiteUpload;
 	bool                       m_whiteUploaded;
@@ -224,12 +264,27 @@ private:
 	float                      m_chromaTol;
 	float                      m_materialColor[4], m_specular[4];
 	float                      m_gloc[4];   // Artscout - 2026: gGloc (FF_GLOC vignette: x=intensity, y=inner, z=outer)
+	// Artscout - 2026: #13 volumetric clouds -- mirror cbRender's cloud fields (see SetCloudParams).
+	float                      m_cloud0[4], m_cloud1[4], m_cloud2[4], m_cloudSun[4], m_cloud3[4], m_cloudFwd[4];
 	bool                       m_texColorDiffuse, m_cockpitPass, m_hasTex0;
 	bool                       m_irGrey;   // #DX12 A5: sensor grey pass (sticky, like m_cockpitPass)
+	bool                       m_nvg;      // Artscout - 2026: #97 NVG mode (sticky; OR'd into world-pass flags)
+	bool                       m_fullBright;// Artscout - 2026: #97 unlit mode (OR'd into cb.flags; wraps the exit-menu draw)
 	unsigned char              m_lightsBuf[16 + 16 + 8 * 64];   // cbLights shadow (ambient, num, pad, 8 lights)
 
 	// Dirty flags: which CBs changed since last bind (per-slot root CBV rebind).
 	bool                       m_dViewport, m_dView, m_dObject, m_dRender, m_dLights;
+
+	// Artscout - 2026: #DX12 п.5 -- view-instanced state (2 stereo / 4 quad). m_stereoActive gates GetPSO onto the
+	// VI PSO variants + binds cbViewStereo(b5). m_stereoWorldOff[view] = world head-centre->eye offset (feet, from
+	// otwloop). m_stereoProj[view] = per-view projection when m_stereoHasProj (quad off-axis); else the live base
+	// m_proj. b5 is built from the LIVE b1 (m_view) + these in FlushConstants. m_dStereo = b5 needs re-upload.
+	bool                       m_stereoActive;
+	bool                       m_dStereo;
+	int                        m_stereoViewCount;        // 2 = stereo, 4 = quad-views
+	bool                       m_stereoHasProj;          // true = use per-view m_stereoProj[]; false = live base proj
+	float                      m_stereoWorldOff[4][3];   // per-view head-centre -> eye offset, world feet
+	float                      m_stereoProj[4][16];      // per-view projection (quad off-axis)
 };
 
 extern D3D12Renderer* g_pD3D12Renderer;   // concrete instance; g_pRenderer aliases it under D3D12

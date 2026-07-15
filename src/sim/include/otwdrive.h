@@ -252,6 +252,11 @@ public:
     void Reset3DParameters(void);
     void RenderFirstFrame(void);
     void RenderFrame(void);
+    // Artscout - 2026: #DX12 п.5 -- the world view-instanced pass for ONE view group/pair (member so it can call
+    // VCock_HeadCalc etc.). group = 0 (stereo, or quad periphery) / 1 (quad focus). outSlices = the group's 2
+    // single-slice RTVs [4]; outCount = 2 (a group is always a 2-view pass); outW/H = the group's foveated size.
+    void RenderWorldViewInstanced(class RenderOTW* renderer, void* pHeadOrigin, void* pCameraRot,
+                                  int group, void** outSlices, int* outCount, int* outW, int* outH);
 
 public:
     enum {NumPopups = 4};

@@ -1,6 +1,7 @@
 #include "stdhdr.h"
 #include "Graphics/DXEngine/OpenXRBackend.h"   // VR: HMD head-tracking + per-eye stereo
 #include "Graphics/DXEngine/D3D12Backend.h"    // #DX12 п.5: VR per-eye overlays under D3D12 (g_pD3D12Backend)
+#include "Graphics/DXEngine/d3d12/D3D12Renderer.h"  // #DX12 п.5: g_pD3D12Renderer (view-instanced stereo params)
 #include "Graphics/Include/TOD.h"
 #include "Graphics/Include/renderow.h"
 #include "Graphics/Include/RViewPnt.h"
@@ -1599,6 +1600,115 @@ void OTWDriverClass::DisplayProfilerText(void)
 #include "simio.h"   // Retro 31Dec2003
 extern SIMLIB_IO_CLASS IO;   // Retro 31Dec2003
 
+// Artscout - 2026: #DX12 п.5 -- the WORLD view-instanced pass for ONE view GROUP (a view pair). Draws
+// terrain/objects/sky ONCE into BOTH slices of that group's 2-slice array swapchain, then leaves the command list
+// OPEN for the per-slice cockpit/2D tail (the per-eye loop in RenderFrame). group = 0 for stereo (views 0,1);
+// quad calls it twice: group 0 (periphery 0,1) + group 1 (focus 2,3), each its own foveated resolution -> HALF the
+// geometry submission of the per-eye path (2 passes vs 4). Returns the group's 2 slice RTVs + the group render size.
+// Member of OTWDriverClass so it can call VCock_HeadCalc for the shared/per-eye camera.
+void OTWDriverClass::RenderWorldViewInstanced(RenderOTW* renderer, void* pHeadOrigin, void* pCameraRot,
+                                              int group, void** outSlices, int* outCount, int* outW, int* outH)
+{
+    for (int v = 0; v < 4; ++v) outSlices[v] = NULL;
+    *outCount = 0; *outW = *outH = 0;
+    extern D3D12Renderer* g_pD3D12Renderer;
+    if (!g_pOpenXRBackend || !g_pD3D12Renderer) return;
+
+    void* slices[4] = { NULL, NULL, NULL, NULL }; int nV = 0, ew = 0, eh = 0;
+    if (!g_pOpenXRBackend->BeginStereoInstanced(group, slices, &nV, &ew, &eh)) return;   // acquires the group's array image + opens the list
+    nV = 2;   // every VI group is a 2-view pass
+    for (int v = 0; v < 4; ++v) outSlices[v] = slices[v];
+    *outCount = nV; *outW = ew; *outH = eh;
+
+    { extern bool g_bGpuDraw; g_bGpuDraw = false; }
+
+    // Base engine setup (mirrors the per-eye body's StartFrame/StartDraw/ResetState/ClearStencil). Per pass -- each
+    // group is its own command list (BeginStereoInstancedFrame reset it), so fresh engine state per group.
+    renderer->context.StartFrame();
+    renderer->StartDraw();
+    TheDXEngine.ResetState();
+    TheDXEngine.ClearStencil();
+    renderer->VR_SetRes(ew, eh);
+    renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
+
+    // Head-centre camera: ONE VCock_HeadCalc per FRAME (group 0 only) with CurrentEye=-1 -- multiple calls
+    // accumulate head lean, and quad runs two groups per frame, so only group 0 recomputes it; the head state
+    // persists across both passes (same frame). Cockpit modes only (external view has its own orbit camera).
+    (void)pHeadOrigin;
+    g_pOpenXRBackend->SetCurrentEye(-1);
+    if (group == 0)
+    {
+        OTWDisplayMode dm = GetOTWDisplayMode();
+        if (dm == Mode3DCockpit || dm == ModePadlockF3) VCock_HeadCalc();
+    }
+
+    // Per-view deltas for the group's TWO views (global view index gv = 2*group + localV; shader SV_ViewID 0/1
+    // indexes the group's two entries). IPD world offset = cameraRot * (0, +/-eyeLatFeet[gv], 0) (eye separation
+    // along the CAMERA right axis). QUAD (>1 group): each view has its OWN off-axis projection (periphery canted,
+    // focus gaze) captured via SetVRFrustum(views[gv].fov). STEREO (1 group): symmetric, projs = NULL.
+    extern float g_fVrViewInstIpdSign;
+    const float sgn = g_fVrViewInstIpdSign;
+    Trotation* camRot = (Trotation*)pCameraRot;
+    const bool quad = (g_pOpenXRBackend->ViewInstancingGroupCount() > 1);
+    float worldOffs[4 * 3]; for (int i = 0; i < 4 * 3; ++i) worldOffs[i] = 0.0f;
+    float projs[4 * 16];    for (int i = 0; i < 4 * 16; ++i) projs[i] = (i % 17 == 0) ? 1.0f : 0.0f;
+    for (int localV = 0; localV < 2; ++localV)
+    {
+        const int gv = 2 * group + localV;
+        Tpoint bv; bv.x = 0.0f; bv.y = sgn * g_pOpenXRBackend->GetEyeLateralOffsetFeet(gv); bv.z = 0.0f;
+        Tpoint wv; MatrixMult(camRot, &bv, &wv);
+        worldOffs[localV*3+0] = wv.x; worldOffs[localV*3+1] = wv.y; worldOffs[localV*3+2] = wv.z;
+        if (quad)
+        {
+            float fl, fr, fu, fd;
+            if (g_pOpenXRBackend->GetEyeFovAngles(gv, &fl, &fr, &fu, &fd))
+            {
+                renderer->SetVRFrustum(fl, fr, fu, fd);   // off-axis matProj -> CDXEngine::Projection
+                memcpy(projs + localV*16, (const float*)&CDXEngine::GetObjProjection(), 16 * sizeof(float));
+            }
+        }
+    }
+
+    // Base projection for the 2D-screen / CPU-projected sky (VS_Screen; the GPU geometry reads the per-view b5).
+    const int gv0 = 2 * group;
+    float fl0, fr0, fu0, fd0, hf = renderer->GetFOV();
+    const bool haveF0 = g_pOpenXRBackend->GetEyeFovAngles(gv0, &fl0, &fr0, &fu0, &fd0);
+    if (haveF0) hf = fr0 - fl0;
+    { float vf = (ew > 0) ? 2.0f*(float)atan(tan(hf*0.5f)*(double)eh/(double)ew) : hf; g_pOpenXRBackend->SetSubmitFov(hf, vf); }
+    // Intermediate VR sky fix (until the full 3D skydome): the FOCUS group (group 1, heavily gaze-canted) needs its
+    // OFF-AXIS folded into the sky's CPU projection (SetVRFrustum -> the T-matrix fold in DrawScene's SetCamera), or
+    // the focus sky doesn't match the periphery -> the "focus sky contrast / wander". The PERIPHERY group (0,
+    // ~symmetric wide FOV) STAYS on symmetric SetFOV -- giving IT off-axis darkened the periphery horizon on roll.
+    // Non-VI quad did this per eye (openxr-impl notes); here it's per group (both focus slices share the focus off-
+    // axis -- negligible for a celestial-distance sky). Stereo (1 group, symmetric) -> SetFOV.
+    extern bool g_bVrPerEyeSky;
+    if (g_bVrPerEyeSky && quad && haveF0 && group == 1)
+        renderer->SetVRFrustum(fl0, fr0, fu0, fd0);
+    else
+        renderer->SetFOV(hf);
+    g_pD3D12Renderer->SetViewInstancingParams(nV, worldOffs, quad ? projs : NULL);
+    g_pD3D12Renderer->SetViewInstancing(true);
+
+    // Draw the world into both slices (VU crit around the object-list traversal, as the per-eye body).
+    // NOTE: the sun/moon are drawn here (in the VI pass) via the shared VS_Screen path -> ONE NDC to both slices, so
+    // under quad foveation the gaze-canted focus eyes see a slightly doubled sun. A per-eye redraw in the tail was
+    // tried but SPLIT the sun disc from its horizon HAZE (the haze bands stay in this pass) -> the sky "wandered" and
+    // the horizon darkened in the focus. A correct fix must move the WHOLE sky (bands+haze+disc) per eye (depth-aware)
+    // -- deferred. For now keep the stock sky here (minor disc doubling >> broken haze). See VrDrawCelestial.
+#if NO_VU_LOCK
+#else
+    VuEnterCriticalSection();
+#endif
+    renderer->DrawScene((struct Tpoint*)pHeadOrigin, (struct Trotation*)pCameraRot);
+    if (DisplayOptions.bZBuffering) renderer->context.FlushPolyLists(false);
+#if NO_VU_LOCK
+#else
+    VuExitCriticalSection();
+#endif
+
+    g_pD3D12Renderer->SetViewInstancing(false);
+}
+
 void OTWDriverClass::RenderFrame()
 {
     int i;
@@ -2377,7 +2487,30 @@ void OTWDriverClass::RenderFrame()
         g_pOpenXRBackend->DiagClearEyesAndEnd();
         return;   // skip the engine render + normal EndStereoFrame this frame
     }
+    // #DX12 п.5: single-pass view-instanced stereo. When active, the per-eye loop below is skipped and a
+    // dedicated VI branch (after the loop) draws the WORLD once into both eye slices, then a per-slice tail
+    // draws the cockpit + RTT displays + 2D overlays per eye. Any prerequisite missing -> per-eye loop.
+    const bool xrVI = (xrN >= 1) and g_pOpenXRBackend and g_pOpenXRBackend->ViewInstancingActive();
     const int xrPasses = (xrN >= 1) ? xrN : 1;
+    // Artscout - 2026: #DX12 п.5 -- ONE-SHOT unambiguous verdict in the log (OutputDebugString; all engine logs
+    // go there). Prints exactly ON or OFF + the reason breakdown, so it's clear whether view instancing engaged.
+    {
+        static bool s_viDiagDone = false;
+        extern bool g_bVrViewInstancing;
+        if (not s_viDiagDone and g_bVrViewInstancing and xrN >= 1 and g_pOpenXRBackend)
+        {
+            s_viDiagDone = true;
+            bool act = false, flag = false, ster = false, tier = false, sh = false;
+            g_pOpenXRBackend->GetViewInstancingDiag(&act, &flag, &ster, &tier, &sh);
+            char b[256];
+            int grp = xrVI ? g_pOpenXRBackend->ViewInstancingGroupCount() : 0;
+            if (xrVI) _snprintf(b, sizeof(b) - 1, "[VIEW-INSTANCING] ==> ON (%s, %d group(s), %d pass(es))\n",
+                                (grp > 1) ? "2-pass QUAD foveated" : "single-pass stereo", grp, grp);
+            else      _snprintf(b, sizeof(b) - 1, "[VIEW-INSTANCING] ==> OFF (per-eye). reason: flag=%d stereo=%d tier=%d shaders=%d active=%d\n",
+                                (int)flag, (int)ster, (int)tier, (int)sh, (int)act);
+            b[sizeof(b) - 1] = 0; OutputDebugStringA(b);
+        }
+    }
     // Artscout - 2026: publish the per-frame "VR actually presenting stereo" flag. xrN >= 1 means
     // BeginStereoFrame began a real HMD frame; xrN < 1 (headset off / no runtime / shouldRender==false)
     // means we fall through to the FLAT desktop render. Per-frame VR rendering branches (popmenu reposition,
@@ -2387,6 +2520,15 @@ void OTWDriverClass::RenderFrame()
     g_bVrFrameActive = (xrN >= 1);
     const int xrSavedResX = (xrN >= 1) ? renderer->VR_GetResX() : 0;   // restore after the loop
     const int xrSavedResY = (xrN >= 1) ? renderer->VR_GetResY() : 0;
+    // #DX12 п.5: world view-instanced pass. Draw the terrain/objects/sky ONCE per GROUP into that group's 2 eye
+    // slices, then a per-slice tail draws the cockpit + RTT displays + 2D overlays. This is where the bulk of the
+    // draw calls live (~thousands of terrain tiles) -> the #65 CPU win. Stereo = 1 group (views 0,1); quad = 2
+    // groups (periphery 0,1 + focus 2,3), HALF the geometry submission of the per-eye path. The group's world pass
+    // is issued at its FIRST view (even xrEye) and the group's list closed+submitted at its LAST view (odd xrEye),
+    // folded into the existing per-eye loop (xrEye stays GLOBAL for the tail's cursor/overlay logic; slice = xrEye&1).
+    // All heavily gated on xrVI -> the per-eye path is byte-for-byte unchanged when view instancing is off.
+    void* xrSlices[4] = { NULL, NULL, NULL, NULL }; int xrViCount = 0, xrViW = 0, xrViH = 0;
+
     for (int xrEye = 0; xrEye < xrPasses; ++xrEye)
     {
         bool xrEyeOk = false;
@@ -2396,7 +2538,25 @@ void OTWDriverClass::RenderFrame()
         if (xrN >= 1)
         {
             void* eyeRtv = NULL;
-            if (g_pOpenXRBackend->BeginEye(xrEye, &eyeRtv, &eyeW, &eyeH))
+            // #DX12 п.5: under view instancing the array image + world were already drawn (RenderWorldViewInstanced
+            // opened the list); here we only re-bind THIS eye's single array slice for the cockpit + 2D tail (no
+            // acquire/reset). Otherwise the normal per-eye acquire.
+            bool eyeBound;
+            if (xrVI)
+            {
+                // Group = view pair (xrEye/2); slice within the group = xrEye&1. At the group's first view (even
+                // xrEye) draw that group's world into both slices + open its list; then bind this view's slice.
+                const int xrLocal = xrEye & 1;
+                if (xrLocal == 0)
+                    RenderWorldViewInstanced(renderer, &headOrigin, &cameraRot, xrEye / 2, xrSlices, &xrViCount, &xrViW, &xrViH);
+                void* sliceRtv = (xrLocal >= 0 && xrLocal < 4) ? xrSlices[xrLocal] : NULL;
+                eyeW = xrViW; eyeH = xrViH; eyeRtv = sliceRtv;
+                eyeBound = (sliceRtv != NULL);
+                if (eyeBound) g_pD3D12Backend->BindEyeSlice(xrLocal, (unsigned __int64)(SIZE_T)sliceRtv, eyeW, eyeH);
+            }
+            else
+                eyeBound = g_pOpenXRBackend->BeginEye(xrEye, &eyeRtv, &eyeW, &eyeH);
+            if (eyeBound)
             {
                 xrEyeOk = true;
                 // #DX12 п.5: the eye RTV + VR depth were already bound by OpenXRBackend::BeginEye ->
@@ -2553,7 +2713,16 @@ void OTWDriverClass::RenderFrame()
     //STOP_PROFILE("RENDER 3DPIT");
 
     //START_PROFILE("RENDER DRAWSCENE");
-    renderer->DrawScene((struct Tpoint *) &headOrigin, (struct Trotation *) &cameraRot);
+    // #DX12 п.5: under view instancing the world (terrain/objects/sky) was already drawn ONCE into both eye
+    // slices by RenderWorldViewInstanced; this per-eye tail only adds the cockpit + RTT displays + 2D overlays.
+    if (not xrVI)
+        renderer->DrawScene((struct Tpoint *) &headOrigin, (struct Trotation *) &cameraRot);
+    else
+        // The cockpit (VCock_DrawThePit) batched with the head-relative camera, but its poly-list is FLUSHED
+        // later with whatever camera is current -- and DrawScene is what normally sets it to (headOrigin,
+        // cameraRot) before the flush. Skipping DrawScene left the stale head camera -> the cockpit rendered
+        // sideways (camera == headMatrix instead of cameraRot). Set the world camera here, exactly as DrawScene.
+        renderer->SetCamera((struct Tpoint *) &headOrigin, (struct Trotation *) &cameraRot);
     //STOP_PROFILE("RENDER DRAWSCENE");
 
     // Artscout - 2026 (VR quad-views): do NOT clear off-axis here. The RTT display PANELS (HUD/MFD/DED/
@@ -2950,23 +3119,51 @@ void OTWDriverClass::RenderFrame()
                         }
                     }
 
-                    // ---- SUBTITLES + FPS: per-eye periphery (these are NOT the comms/exit menu) ----
+                    // ---- FPS: HEAD-LOCKED QUAD (once, at xrEye==0). Render "FPS N" into a small RTT (green text on a
+                    // transparent canvas), submit as its OWN composition layer -- head-locked, so it stays put and is
+                    // always readable regardless of quad-views/gaze. Same pattern as the menu quad. D3D12 VR only.
+                    if (xrEye == 0 and ShowFrameRate and g_fpsVrStr[0] and g_bUseD3D12 and g_pOpenXRBackend and g_pD3D12Backend)
+                    {
+                        const int fw = 512, fh = 128;
+                        g_pD3D12Backend->EnsureFpsRtt(fw, fh);
+                        void* fpsTex = g_pD3D12Backend->FpsRttTex();
+                        if (fpsTex)
+                        {
+                            g_pD3D12Backend->BindFpsRtt(true);   // transparent clear
+                            renderer->VR_SetRes(fw, fh);
+                            renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
+                            VR_GSCREEN(fw, fh);
+                            renderer->SetColor(0xff00ff00);      // bright green
+                            VirtualDisplay::SetFont(2);
+                            renderer->TextLeft(-0.92F, 0.35F, g_fpsVrStr, 2);
+                            renderer->context.FlushPending();    // flush the text into the RTT before the deferred copy
+                            g_pOpenXRBackend->SubmitFpsQuad(fpsTex, fw, fh);
+                            renderer->VR_SetRes(ew, eh);
+                            VR_GSCREEN(ew, eh);
+                            g_pD3D12Backend->BindBackBufferRTV(); // return to the eye (subtitle/cursor blocks re-bind too)
+                        }
+                    }
+
+                    // ---- SUBTITLES: per-eye periphery (these are NOT the comms/exit menu) ----
                     if (xrEye == 0 or xrEye == 1)
                     {
                         VR_BIND_EYE();                                        // bind eye RTV (no clear of color)
                         OTWDriver.renderer->context.ClearBuffers(MPR_CI_ZBUFFER);
                         VR_GSCREEN(DisplayOptions.DispWidth, DisplayOptions.DispHeight);
                         DisplayFrontText();
-                        // Artscout - 2026 (VR): draw the cached FPS string INTO the eye (top-left) so the
-                        // framerate counter is visible in the headset, not just on the desktop mirror. Left eye only.
-                        if (xrEye == 0 and ShowFrameRate and g_fpsVrStr[0])
-                        {
-                            OTWDriver.renderer->SetColor(0xfff0f0f0);
-                            VirtualDisplay::SetFont(2);
-                            OTWDriver.renderer->TextLeft(-0.95F, 0.95F, g_fpsVrStr, 2);
-                        }
                         VR_GSCREEN(ew, eh);
                     }
+
+                    // ---- FPS counter: draw in EVERY eye so it's actually visible in the headset. The old code drew
+                    // it only in the LEFT PERIPHERY eye (xrEye==0) at the top-left of a WIDE, low-res fov -> the text
+                    // landed in the far corner of vision, monocular, ~invisible. Drawing in all eyes puts a legible
+                    // copy in the FOCUS eyes (high-res, near-centre for the narrow focus fov). Slightly inset from
+                    // the corner so it's not clipped. (vsync caps at the HMD Hz, so read this in a HEAVY scene to see
+                    // the VI win -- per-eye quad dips there while VI holds.)
+                    // FPS is now a HEAD-LOCKED QUAD (drawn once at xrEye==0 into a small RTT, submitted as its own
+                    // composition layer -- see the block below). In-eye text was impossible under quad foveation:
+                    // the focus eyes gaze-track (text rode the gaze), the periphery-center is overdrawn by the focus
+                    // inset. The quad is head-locked -> stays put + always readable.
 
                     // ---- MOUSE CURSOR ----
                     if (showCur)
@@ -3084,9 +3281,17 @@ void OTWDriverClass::RenderFrame()
             // #DX12 п.5: under D3D12 the eye is unbound + submitted + fenced by EndEyeFrame (called from
             // EndEye below). (D3D11 purge: the D3D11 context-unbind sequence was removed.)
             g_pOpenXRBackend->SetCurrentEye(-1);
-            if (xrEyeOk)   // only release what we acquired
+            // #DX12 п.5: non-VI releases what we acquired per eye. (VI closes the group's list below, OUTSIDE this
+            // if(eyeBound) block, so the group is always submitted+released even if the last slice failed to bind.)
+            if (not xrVI and xrEyeOk)
                 g_pOpenXRBackend->EndEye(xrEye);
         }
+        // #DX12 п.5: under view instancing the group's command list is closed+submitted once by EndStereoInstanced
+        // at the group's LAST view (odd slice, or the final view of the pass) -- NOT per eye (that would execute/
+        // release mid-tail). Outside if(eyeBound) so a failed last-slice bind still submits+releases the group
+        // (the backend's per-group viAcquired guard no-ops if the group was never acquired).
+        if (xrVI and g_pOpenXRBackend and ((xrEye & 1) == 1 or xrEye == xrPasses - 1))
+            g_pOpenXRBackend->EndStereoInstanced(xrEye / 2);
         #undef VR_BIND_EYE
         #undef VR_GSCREEN
     } // end per-eye render loop
@@ -3097,11 +3302,13 @@ void OTWDriverClass::RenderFrame()
         renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
         renderer->SetFOV(renderer->GetFOV());
     }
+    // #DX12 п.5: each group's view-instanced list is closed+submitted per group INSIDE the loop (at its last view),
+    // filling that group's projection views. So nothing to do here before EndStereoFrame submits the layer.
     if (g_pOpenXRBackend and g_pOpenXRBackend->StereoActive())
     {
         // Artscout - 2026: release both eye images now (deferred from EndEye) -- both eyes have
         // rendered, so the runtime composites both. Releasing per-eye made the 2nd eye black.
-        g_pOpenXRBackend->ReleaseEyes();
+        if (not xrVI) g_pOpenXRBackend->ReleaseEyes();
         g_pOpenXRBackend->EndStereoFrame();
     }
 

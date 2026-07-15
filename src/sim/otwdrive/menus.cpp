@@ -16,6 +16,7 @@
 #include "simio.h" // Retro 25Mar2004
 #include "Graphics/DXEngine/DXEngine.h"
 #include "Graphics/DXEngine/DXVBManager.h"
+#include "Graphics/DXEngine/common/IRenderer.h"   // Artscout - 2026: #97 g_pRenderer->SetFullBright (exit-menu dialog)
 
 #include "fsound.h"
 #include "fakerand.h"
@@ -158,7 +159,7 @@ void OTWDriverClass::ShowFlaps(void)
         }
         else
         {
-            showFlaps = true; // Retro 1Feb2004 so that we don´t enter here if the ac has no flaps anyway
+            showFlaps = true; // Retro 1Feb2004 so that we donï¿½t enter here if the ac has no flaps anyway
         }
     }
 }
@@ -407,6 +408,10 @@ void OTWDriverClass::DrawExitMenu(void)
         //oldState = renderer->GetObjectTextureState();
         //renderer->SetObjectTextureState( TRUE );
         // DX - End
+        // Artscout - 2026: #97 -- the exit dialog is a lit 3D-BSP, so at night it renders near-black (the old
+        // SetFOV(45) hack barely helped). Draw it FULL-BRIGHT: force lit=1 in the PS for these surfaces so the
+        // dialog reads at full material colour regardless of time-of-day. Cleared after the flush executes them.
+        if (g_pRenderer) g_pRenderer->SetFullBright(true);
         renderer->StartDraw();
         renderer->SetViewport(-1.0F, 1.0F, 1.0F, -1.0F);
         renderer->SetCamera(&origin, &IMatrix);
@@ -420,6 +425,7 @@ void OTWDriverClass::DrawExitMenu(void)
         TheDXEngine.FlushBuffers();
         // And restore previous state
         TheDXEngine.RestoreState();
+        if (g_pRenderer) g_pRenderer->SetFullBright(false);   // #97: menu drawn -> back to normal lighting
         // DX - Not necessary
         //renderer->SetObjectTextureState( oldState );
         // DX - End
